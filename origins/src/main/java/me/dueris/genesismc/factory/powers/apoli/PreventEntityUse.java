@@ -26,70 +26,70 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 
 public class PreventEntityUse extends CraftPower implements Listener {
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @EventHandler
-    public void OnClickREACH(PlayerInteractEvent e) {
-        Player p = e.getPlayer();
-        if (prevent_entity_use.contains(e.getPlayer())) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+	@EventHandler
+	public void OnClickREACH(PlayerInteractEvent e) {
+		Player p = e.getPlayer();
+		if (prevent_entity_use.contains(e.getPlayer())) {
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 
-                Location eyeloc = p.getEyeLocation();
-                Predicate<Entity> filter = (entity) -> !entity.equals(p);
-                RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), getFinalReach(p), FluidCollisionMode.NEVER, false, 0, filter);
+				Location eyeloc = p.getEyeLocation();
+				Predicate<Entity> filter = (entity) -> !entity.equals(p);
+				RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), getFinalReach(p), FluidCollisionMode.NEVER, false, 0, filter);
 
-                if (traceResult4_5F != null) {
-                    Entity entity = traceResult4_5F.getHitEntity();
-                    if (entity == null) return;
-                    Player attacker = p;
-                    if (entity.isDead() || !(entity instanceof LivingEntity)) return;
-                    if (entity.isInvulnerable()) return;
-                    LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
-                    if (attacker.getLocation().distance(victim.getLocation()) <= AttributeHandler.Reach.getFinalReach(p)) {
-                        if (entity.getPassengers().contains(p)) return;
-                        if (!entity.isDead()) {
-                            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                                if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity) && ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
-                                    e.setCancelled(true);
-                                    setActive(p, power.getTag(), true);
-                                } else {
-                                    setActive(p, power.getTag(), false);
-                                }
-                            }
-                        }
-                    } else {
-                        e.setCancelled(true);
-                    }
-                }
-            }
-        }
-    }
+				if (traceResult4_5F != null) {
+					Entity entity = traceResult4_5F.getHitEntity();
+					if (entity == null) return;
+					Player attacker = p;
+					if (entity.isDead() || !(entity instanceof LivingEntity)) return;
+					if (entity.isInvulnerable()) return;
+					LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
+					if (attacker.getLocation().distance(victim.getLocation()) <= AttributeHandler.Reach.getFinalReach(p)) {
+						if (entity.getPassengers().contains(p)) return;
+						if (!entity.isDead()) {
+							ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+							for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+								if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity) && ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
+									e.setCancelled(true);
+									setActive(p, power.getTag(), true);
+								} else {
+									setActive(p, power.getTag(), false);
+								}
+							}
+						}
+					} else {
+						e.setCancelled(true);
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:prevent_entity_use";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:prevent_entity_use";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return prevent_entity_use;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return prevent_entity_use;
+	}
 }

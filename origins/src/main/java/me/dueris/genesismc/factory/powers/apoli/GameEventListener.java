@@ -17,54 +17,55 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameEventListener extends CraftPower implements Listener {
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @EventHandler
-    public void event(GenericGameEvent e) {
-        if (e.getEntity() == null) return;
-        if (e.getEntity() instanceof Player p) {
-            if (!this.getPowerArray().contains(p)) return;
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                        Object event = power.getObjectOrDefault("event", null);
-                        if(event == null) throw new IllegalArgumentException("Event for game_event_listener must not be null");
-                        if (event.toString().contains(":")) {
-                            event = event.toString().split(":")[1];
-                        }
-                        if (e.getEvent().toString().equals(event.toString())) {
-                            Actions.EntityActionType(e.getEntity(), power.getAction("entity_action"));
-                        }
-                    }
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void event(GenericGameEvent e) {
+		if (e.getEntity() == null) return;
+		if (e.getEntity() instanceof Player p) {
+			if (!this.getPowerArray().contains(p)) return;
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+						Object event = power.getObjectOrDefault("event", null);
+						if (event == null)
+							throw new IllegalArgumentException("Event for game_event_listener must not be null");
+						if (event.toString().contains(":")) {
+							event = event.toString().split(":")[1];
+						}
+						if (e.getEvent().toString().equals(event.toString())) {
+							Actions.EntityActionType(e.getEntity(), power.getAction("entity_action"));
+						}
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:game_event_listener";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:game_event_listener";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return game_event_listener;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return game_event_listener;
+	}
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 }

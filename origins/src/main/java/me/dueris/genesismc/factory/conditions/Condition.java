@@ -10,7 +10,7 @@ import org.json.simple.JSONObject;
 import java.util.Optional;
 
 public interface Condition {
-    String condition_type();
+	String condition_type();
 
-    Optional<Boolean> check(JSONObject condition, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent);
+	Optional<Boolean> check(JSONObject condition, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent);
 }

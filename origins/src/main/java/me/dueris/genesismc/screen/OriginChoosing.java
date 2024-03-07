@@ -42,103 +42,103 @@ import static org.bukkit.Bukkit.getServer;
 
 public class OriginChoosing implements Listener {
 
-    public static HashMap<Player, Layer> choosing = new HashMap<>();
+	public static HashMap<Player, Layer> choosing = new HashMap<>();
 
-    @EventHandler
-    public void onOrbClick(PlayerInteractEvent e) {
-        Player p = e.getPlayer();
-        if (GenesisConfigs.getMainConfig().getString("orb-of-origins").equalsIgnoreCase("true")) {
-            if (e.getAction().isRightClick()) {
-                ItemStack item = orb;
-                if (e.getItem() != null) {
-                    if (e.getItem().isSimilar(item)) {
-                        if(!((CraftPlayer)p).getHandle().getAbilities().instabuild){
-                            Utils.consumeItem(e.getItem());
-                        }
-                        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                            OriginPlayerAccessor.setOrigin(p, layer, CraftApoli.nullOrigin());
-                        }
-                        OrbInteractEvent event = new OrbInteractEvent(p);
-                        getServer().getPluginManager().callEvent(event);
-                    }
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void onOrbClick(PlayerInteractEvent e) {
+		Player p = e.getPlayer();
+		if (GenesisConfigs.getMainConfig().getString("orb-of-origins").equalsIgnoreCase("true")) {
+			if (e.getAction().isRightClick()) {
+				ItemStack item = orb;
+				if (e.getItem() != null) {
+					if (e.getItem().isSimilar(item)) {
+						if (!((CraftPlayer) p).getHandle().getAbilities().instabuild) {
+							Utils.consumeItem(e.getItem());
+						}
+						for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+							OriginPlayerAccessor.setOrigin(p, layer, CraftApoli.nullOrigin());
+						}
+						OrbInteractEvent event = new OrbInteractEvent(p);
+						getServer().getPluginManager().callEvent(event);
+					}
+				}
+			}
+		}
+	}
 
-    @EventHandler
-    public void onOrbRandom(InventoryClickEvent e) {
-        if (e.getCurrentItem() == null) return;
-        if (e.getCurrentItem().getItemMeta() == null) return;
-        if (e.getView().getTitle().startsWith("Choosing Menu")) {
-            NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "orb");
-            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) == null)
-                return;
-            if (!Objects.equals(e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING), "orb"))
-                return;
+	@EventHandler
+	public void onOrbRandom(InventoryClickEvent e) {
+		if (e.getCurrentItem() == null) return;
+		if (e.getCurrentItem().getItemMeta() == null) return;
+		if (e.getView().getTitle().startsWith("Choosing Menu")) {
+			NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "orb");
+			if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) == null)
+				return;
+			if (!Objects.equals(e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING), "orb"))
+				return;
 
-            Player p = (Player) e.getWhoClicked();
-            List<Origin> origins = CraftApoli.getOriginsFromRegistry();
-            List<Layer> layers = CraftApoli.getLayersFromRegistry();
-            Random random = new Random();
-            Origin origin = origins.get(random.nextInt(origins.size()));
-            for (Layer layer : layers) {
-                OriginPlayerAccessor.setOrigin(p, layer, origin);
-                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.randomOrigins").replace("%layer%", layer.getTag()).replace("%originName%", origin.getName())).color(TextColor.fromHexString(AQUA)));
-            }
+			Player p = (Player) e.getWhoClicked();
+			List<Origin> origins = CraftApoli.getOriginsFromRegistry();
+			List<Layer> layers = CraftApoli.getLayersFromRegistry();
+			Random random = new Random();
+			Origin origin = origins.get(random.nextInt(origins.size()));
+			for (Layer layer : layers) {
+				OriginPlayerAccessor.setOrigin(p, layer, origin);
+				p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.randomOrigins").replace("%layer%", layer.getTag()).replace("%originName%", origin.getName())).color(TextColor.fromHexString(AQUA)));
+			}
 
-            e.setCancelled(true);
-            p.closeInventory();
+			e.setCancelled(true);
+			p.closeInventory();
 
-            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-            p.closeInventory();
-            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 2);
-            p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
-            p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);
-            p.setCustomNameVisible(false);
-            p.setHealthScaled(false);
+			p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+			p.closeInventory();
+			p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 2);
+			p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
+			p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);
+			p.setCustomNameVisible(false);
+			p.setHealthScaled(false);
 
-            OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
-            getServer().getPluginManager().callEvent(chooseEvent);
-            OriginChangeEvent Event = new OriginChangeEvent(p, origin, true);
-            getServer().getPluginManager().callEvent(Event);
+			OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
+			getServer().getPluginManager().callEvent(chooseEvent);
+			OriginChangeEvent Event = new OriginChangeEvent(p, origin, true);
+			getServer().getPluginManager().callEvent(Event);
 
-            SendCharts.originPopularity(p);
-        }
-    }
+			SendCharts.originPopularity(p);
+		}
+	}
 
-    @EventHandler(priority = EventPriority.HIGH)
-    public void OriginChoose(InventoryClickEvent e) {
-        if (e.getCurrentItem() != null) {
-            if (e.getCurrentItem().getType() == Material.MAGMA_CREAM) return;
-            if (e.getCurrentItem().getItemMeta() == null) return;
+	@EventHandler(priority = EventPriority.HIGH)
+	public void OriginChoose(InventoryClickEvent e) {
+		if (e.getCurrentItem() != null) {
+			if (e.getCurrentItem().getType() == Material.MAGMA_CREAM) return;
+			if (e.getCurrentItem().getItemMeta() == null) return;
 
-            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originChoose"), PersistentDataType.INTEGER) != null) {
-                String originTag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originTag"), PersistentDataType.STRING);
-                Origin origin = CraftApoli.getOrigin(originTag);
-                Player p = (Player) e.getWhoClicked();
+			if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originChoose"), PersistentDataType.INTEGER) != null) {
+				String originTag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originTag"), PersistentDataType.STRING);
+				Origin origin = CraftApoli.getOrigin(originTag);
+				Player p = (Player) e.getWhoClicked();
 
-                ScreenConstants.setAttributesToDefault(p);
-                OriginPlayerAccessor.setOrigin(p, choosing.get(p), origin);
-                choosing.remove(p);
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                        if (phasing.contains(p)) {
-                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
-                        } else {
-                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
-                        }
-                        ScreenConstants.DefaultChoose(p);
-                    }
-                }.runTaskLater(GenesisMC.getPlugin(), 1);
-                ModifyPlayerSpawnPower power = new ModifyPlayerSpawnPower();
-                power.runHandle(p);
-                OriginChangeEvent event = new OriginChangeEvent(p, origin, false);
-                event.callEvent();
-            }
-        }
-    }
+				ScreenConstants.setAttributesToDefault(p);
+				OriginPlayerAccessor.setOrigin(p, choosing.get(p), origin);
+				choosing.remove(p);
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+						if (phasing.contains(p)) {
+							p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
+						} else {
+							p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
+						}
+						ScreenConstants.DefaultChoose(p);
+					}
+				}.runTaskLater(GenesisMC.getPlugin(), 1);
+				ModifyPlayerSpawnPower power = new ModifyPlayerSpawnPower();
+				power.runHandle(p);
+				OriginChangeEvent event = new OriginChangeEvent(p, origin, false);
+				event.callEvent();
+			}
+		}
+	}
 
 }

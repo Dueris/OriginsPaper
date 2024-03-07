@@ -19,51 +19,51 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 
 public class PreventBeingUsed extends CraftPower implements Listener {
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
 
-    @EventHandler
-    public void run(PlayerInteractEvent e) {
-        if (prevent_being_used.contains(e.getPlayer())) {
-            Player p = e.getPlayer();
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
-                        setActive(p, power.getTag(), true);
-                        e.setCancelled(true);
-                    } else {
+	@EventHandler
+	public void run(PlayerInteractEvent e) {
+		if (prevent_being_used.contains(e.getPlayer())) {
+			Player p = e.getPlayer();
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
+						setActive(p, power.getTag(), true);
+						e.setCancelled(true);
+					} else {
 
-                        setActive(p, power.getTag(), false);
-                    }
-                }
-            }
-        }
-    }
+						setActive(p, power.getTag(), false);
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:prevent_being_used";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:prevent_being_used";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return prevent_being_used;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return prevent_being_used;
+	}
 }

@@ -7,21 +7,21 @@ import java.util.List;
 
 public class ComponentMultiLine {
 
-    public static Component apply(String string) {
-        Component component = stringToComponent(string);
-        return component;
-    }
+	public static Component apply(String string) {
+		Component component = stringToComponent(string);
+		return component;
+	}
 
-    public static Component stringToComponent(String string) {
-        return Component.text(string);
-    }
+	public static Component stringToComponent(String string) {
+		return Component.text(string);
+	}
 
-    public static List<Component> apply(List<String> string) {
-        List<Component> compList = new ArrayList();
-        string.forEach((st) -> {
-            compList.add(ComponentMultiLine.apply(st));
-        });
+	public static List<Component> apply(List<String> string) {
+		List<Component> compList = new ArrayList();
+		string.forEach((st) -> {
+			compList.add(ComponentMultiLine.apply(st));
+		});
 
-        return compList;
-    }
+		return compList;
+	}
 }

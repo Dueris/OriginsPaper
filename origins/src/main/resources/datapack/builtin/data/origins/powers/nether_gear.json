@@ -1,111 +1,111 @@
 {
-  "name":"Brutish Gear",
-  "description":"You are accustomed to the gear of the nether (You can only wear gold, stone, leather, and netherite tools/weapons/armor)",
-  "type":"origins:multiple",
+  "name": "Brutish Gear",
+  "description": "You are accustomed to the gear of the nether (You can only wear gold, stone, leather, and netherite tools/weapons/armor)",
+  "type": "origins:multiple",
   "hidden": false,
-  "bow":{
+  "bow": {
     "hidden": true,
-    "type":"origins:prevent_item_use",
-    "item_condition":{
-      "type":"origins:ingredient",
-      "ingredient":{
-        "item":"minecraft:bow"
+    "type": "origins:prevent_item_use",
+    "item_condition": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:bow"
       }
     }
   },
-  "trident":{
+  "trident": {
     "hidden": true,
-    "type":"origins:prevent_item_use",
-    "item_condition":{
-      "type":"origins:ingredient",
-      "ingredient":{
-        "item":"minecraft:trident"
+    "type": "origins:prevent_item_use",
+    "item_condition": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:trident"
       }
     }
   },
-  "no_iron_armor":{
+  "no_iron_armor": {
     "hidden": true,
-    "type":"origins:restrict_armor",
-    "head":{
-      "type":"origins:ingredient",
-      "ingredient":{
-        "item":"minecraft:iron_helmet"
+    "type": "origins:restrict_armor",
+    "head": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:iron_helmet"
       }
     },
-    "chest":{
-      "type":"origins:ingredient",
-      "ingredient":{
-        "item":"minecraft:iron_chestplate"
+    "chest": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:iron_chestplate"
       }
     },
-    "legs":{
-      "type":"origins:ingredient",
-      "ingredient":{
-        "item":"minecraft:iron_leggings"
+    "legs": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:iron_leggings"
       }
     },
-    "feet":{
-      "type":"origins:ingredient",
-      "ingredient":{
-        "item":"minecraft:iron_boots"
+    "feet": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:iron_boots"
       }
     },
     "tick_rate": 1
   },
-  "no_diamond_armor":{
+  "no_diamond_armor": {
     "hidden": true,
-    "type":"origins:restrict_armor",
-    "head":{
-      "type":"origins:ingredient",
-      "ingredient":{
-        "item":"minecraft:diamond_helmet"
+    "type": "origins:restrict_armor",
+    "head": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:diamond_helmet"
       }
     },
-    "chest":{
-      "type":"origins:ingredient",
-      "ingredient":{
-        "item":"minecraft:diamond_chestplate"
+    "chest": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:diamond_chestplate"
       }
     },
-    "legs":{
-      "type":"origins:ingredient",
-      "ingredient":{
-        "item":"minecraft:diamond_leggings"
+    "legs": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:diamond_leggings"
       }
     },
-    "feet":{
-      "type":"origins:ingredient",
-      "ingredient":{
-        "item":"minecraft:diamond_boots"
+    "feet": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:diamond_boots"
       }
     },
     "tick_rate": 1
   },
-  "no_chainmail_armor":{
+  "no_chainmail_armor": {
     "hidden": true,
-    "type":"origins:restrict_armor",
-    "head":{
-      "type":"origins:ingredient",
-      "ingredient":{
-        "item":"minecraft:chainmail_helmet"
+    "type": "origins:restrict_armor",
+    "head": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:chainmail_helmet"
       }
     },
-    "chest":{
-      "type":"origins:ingredient",
-      "ingredient":{
-        "item":"minecraft:chainmail_chestplate"
+    "chest": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:chainmail_chestplate"
       }
     },
-    "legs":{
-      "type":"origins:ingredient",
-      "ingredient":{
-        "item":"minecraft:chainmail_leggings"
+    "legs": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:chainmail_leggings"
       }
     },
-    "feet":{
-      "type":"origins:ingredient",
-      "ingredient":{
-        "item":"minecraft:chainmail_boots"
+    "feet": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:chainmail_boots"
       }
     },
     "tick_rate": 1

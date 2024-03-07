@@ -21,52 +21,52 @@ import java.util.HashMap;
 
 public class SelfGlow extends CraftPower {
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
-    @Override
-    public void run(Player p) {
-        if (!getPowerArray().contains(p)) return;
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()) {
-                    if (entity instanceof Player player) {
-                        if (ConditionExecutor.testEntity(power.get("entity_condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.get("entity_condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
-                            setActive(p, power.getTag(), true);
-                            CraftPlayer craftPlayers = (CraftPlayer) player;
-                            craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
-                                    new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
-                        } else {
-                            setActive(p, power.getTag(), false);
-                        }
-                    }
-                }
-                CraftPlayer craftPlayer = (CraftPlayer) p;
-                craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(craftPlayer.getEntityId(),
-                        new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
-            }
-        }
-    }
+	@Override
+	public void run(Player p) {
+		if (!getPowerArray().contains(p)) return;
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+				ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+				for (Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()) {
+					if (entity instanceof Player player) {
+						if (ConditionExecutor.testEntity(power.get("entity_condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.get("entity_condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
+							setActive(p, power.getTag(), true);
+							CraftPlayer craftPlayers = (CraftPlayer) player;
+							craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
+								new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
+						} else {
+							setActive(p, power.getTag(), false);
+						}
+					}
+				}
+				CraftPlayer craftPlayer = (CraftPlayer) p;
+				craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(craftPlayer.getEntityId(),
+					new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:self_glow";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:self_glow";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return self_glow;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return self_glow;
+	}
 }

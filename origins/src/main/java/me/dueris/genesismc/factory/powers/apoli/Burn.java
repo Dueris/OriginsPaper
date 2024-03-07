@@ -17,67 +17,67 @@ import java.util.HashMap;
 
 public class Burn extends CraftPower {
 
-    private Long interval;
+	private Long interval;
 
-    public Burn() {
-        this.interval = 1L;
-    }
+	public Burn() {
+		this.interval = 1L;
+	}
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
-    @Override
-    public void run(Player p) {
-        if (getPowerArray().contains(p)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (power == null) continue;
-                    if (power.getObject("interval") == null) {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
-                        return;
-                    }
+	@Override
+	public void run(Player p) {
+		if (getPowerArray().contains(p)) {
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+					if (power == null) continue;
+					if (power.getObject("interval") == null) {
+						Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
+						return;
+					}
 
-                    interval = power.getLong("interval");
-                    if(interval == 0) interval = 1L;
-                    if (Bukkit.getServer().getCurrentTick() % interval != 0) {
-                        return;
-                    } else {
-                        if (p.isInWaterOrRainOrBubbleColumn()) return;
-                        if (p.getGameMode() == GameMode.CREATIVE) return;
-                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                            setActive(p, power.getTag(), true);
+					interval = power.getLong("interval");
+					if (interval == 0) interval = 1L;
+					if (Bukkit.getServer().getCurrentTick() % interval != 0) {
+						return;
+					} else {
+						if (p.isInWaterOrRainOrBubbleColumn()) return;
+						if (p.getGameMode() == GameMode.CREATIVE) return;
+						ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+							setActive(p, power.getTag(), true);
 
-                            Long burn_duration = power.getLongOrDefault("burn_duration", 100L);
-                            p.setFireTicks(burn_duration.intValue() * 20);
-                        } else {
-                            setActive(p, power.getTag(), false);
-                        }
+							Long burn_duration = power.getLongOrDefault("burn_duration", 100L);
+							p.setFireTicks(burn_duration.intValue() * 20);
+						} else {
+							setActive(p, power.getTag(), false);
+						}
 
-                    }
-                }
-            }
-        }
-    }
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:burn";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:burn";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return burn;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return burn;
+	}
 }

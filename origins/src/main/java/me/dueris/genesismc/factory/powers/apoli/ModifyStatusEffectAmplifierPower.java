@@ -23,76 +23,76 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyStatusEffectAmplifierPower extends CraftPower implements Listener {
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
-    @EventHandler
-    public void runD(EntityPotionEffectEvent e) {
-        if (e.getEntity() instanceof Player p) {
-            if (!modify_effect_amplifier.contains(p)) return;
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                        setActive(p, power.getTag(), true);
-                        if (power.getStringOrDefault("status_effect", null) != null) {
-                            if (e.getNewEffect().getType().equals(PotionEffectType.getByName(power.getStringOrDefault("status_effect", null)))) {
-                                PotionEffect effect = e.getNewEffect();
-                                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-                                    Float value = Float.valueOf(modifier.get("value").toString());
-                                    String operation = modifier.get("operation").toString();
-                                    BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                                    if (mathOperator != null) {
-                                        float result = (float) mathOperator.apply(effect.getAmplifier(), value);
-                                        effect.withAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result))));
-                                    }
-                                }
+	@EventHandler
+	public void runD(EntityPotionEffectEvent e) {
+		if (e.getEntity() instanceof Player p) {
+			if (!modify_effect_amplifier.contains(p)) return;
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+						setActive(p, power.getTag(), true);
+						if (power.getStringOrDefault("status_effect", null) != null) {
+							if (e.getNewEffect().getType().equals(PotionEffectType.getByName(power.getStringOrDefault("status_effect", null)))) {
+								PotionEffect effect = e.getNewEffect();
+								for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+									Float value = Float.valueOf(modifier.get("value").toString());
+									String operation = modifier.get("operation").toString();
+									BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+									if (mathOperator != null) {
+										float result = (float) mathOperator.apply(effect.getAmplifier(), value);
+										effect.withAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result))));
+									}
+								}
 
-                            }
-                        } else {
-                            for (PotionEffect effect : p.getActivePotionEffects()) {
-                                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-                                    Float value = Float.valueOf(modifier.get("value").toString());
-                                    String operation = modifier.get("operation").toString();
-                                    BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                                    if (mathOperator != null) {
-                                        float result = (float) mathOperator.apply(effect.getAmplifier(), value);
-                                        effect.withAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result))));
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        setActive(p, power.getTag(), false);
-                    }
-                }
+							}
+						} else {
+							for (PotionEffect effect : p.getActivePotionEffects()) {
+								for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+									Float value = Float.valueOf(modifier.get("value").toString());
+									String operation = modifier.get("operation").toString();
+									BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+									if (mathOperator != null) {
+										float result = (float) mathOperator.apply(effect.getAmplifier(), value);
+										effect.withAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result))));
+									}
+								}
+							}
+						}
+					} else {
+						setActive(p, power.getTag(), false);
+					}
+				}
 
-            }
-        }
-    }
+			}
+		}
+	}
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:modify_status_effect_amplifier";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:modify_status_effect_amplifier";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return modify_effect_amplifier;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return modify_effect_amplifier;
+	}
 }

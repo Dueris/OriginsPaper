@@ -21,55 +21,55 @@ import java.util.HashMap;
 
 public class SelfActionOnKill extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @EventHandler
-    public void k(EntityDeathEvent e) {
-        Entity target = e.getEntity();
+	@EventHandler
+	public void k(EntityDeathEvent e) {
+		Entity target = e.getEntity();
 
-        if (!(target instanceof Player player)) return;
-        if (!getPowerArray().contains(target)) return;
+		if (!(target instanceof Player player)) return;
+		if (!getPowerArray().contains(target)) return;
 
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                if (CooldownUtils.isPlayerInCooldownFromTag(player, Utils.getNameOrTag(power))) continue;
-                if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
-                    setActive(player, power.getTag(), true);
-                    Actions.EntityActionType(target, power.getEntityAction());
-                    if (power.getObjectOrDefault("cooldown", 1) != null) {
-                        CooldownUtils.addCooldown((Player) target, Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), power.get("hud_render"));
-                    }
-                } else {
-                    setActive(player, power.getTag(), false);
-                }
-            }
-        }
-    }
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+				if (CooldownUtils.isPlayerInCooldownFromTag(player, Utils.getNameOrTag(power))) continue;
+				if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
+					setActive(player, power.getTag(), true);
+					Actions.EntityActionType(target, power.getEntityAction());
+					if (power.getObjectOrDefault("cooldown", 1) != null) {
+						CooldownUtils.addCooldown((Player) target, Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), power.get("hud_render"));
+					}
+				} else {
+					setActive(player, power.getTag(), false);
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:self_action_on_kill";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:self_action_on_kill";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return self_action_on_kill;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return self_action_on_kill;
+	}
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 }

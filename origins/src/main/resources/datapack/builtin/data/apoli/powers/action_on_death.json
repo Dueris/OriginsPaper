@@ -1,10 +1,10 @@
 {
-    "type": "origins:action_on_death",
-    "bientity_action": {
-        "type": "origins:target_action",
-        "action": {
-            "type": "origins:execute_command",
-            "command": "say welp, i'm dead"
-        }
+  "type": "origins:action_on_death",
+  "bientity_action": {
+    "type": "origins:target_action",
+    "action": {
+      "type": "origins:execute_command",
+      "command": "say welp, i'm dead"
     }
+  }
 }

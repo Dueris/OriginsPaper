@@ -35,159 +35,159 @@ import java.util.HashMap;
 
 public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
-    @EventHandler
-    public void MoveBackChange(OriginChangeEvent e) {
-        Player p = e.getPlayer();
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (!shulker_inventory.contains(p)) {
-                            ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
-                            org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
+	@EventHandler
+	public void MoveBackChange(OriginChangeEvent e) {
+		Player p = e.getPlayer();
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						if (!shulker_inventory.contains(p)) {
+							ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
+							org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
 
-                            vaultItems.stream()
-                                    .forEach(itemStack -> vault.addItem(itemStack));
-                            for (ItemStack item : vault.getContents()) {
-                                if (item != null && item.getType() != Material.AIR) {
-                                    p.getWorld().dropItemNaturally(p.getLocation(), item);
-                                    vault.removeItem(item);
-                                }
-                            }
-                            ArrayList<ItemStack> prunedItems = new ArrayList<>();
+							vaultItems.stream()
+								.forEach(itemStack -> vault.addItem(itemStack));
+							for (ItemStack item : vault.getContents()) {
+								if (item != null && item.getType() != Material.AIR) {
+									p.getWorld().dropItemNaturally(p.getLocation(), item);
+									vault.removeItem(item);
+								}
+							}
+							ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
-                            Arrays.stream(vault.getContents())
-                                    .filter(itemStack -> {
-                                        return itemStack != null;
-                                    })
-                                    .forEach(itemStack -> prunedItems.add(itemStack));
+							Arrays.stream(vault.getContents())
+								.filter(itemStack -> {
+									return itemStack != null;
+								})
+								.forEach(itemStack -> prunedItems.add(itemStack));
 
-                            InventoryUtils.storeItems(prunedItems, p);
-                            vault.clear();
-                            this.cancel();
-                        }
-                    }
-                }.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
-            }
-        }
-    }
+							InventoryUtils.storeItems(prunedItems, p);
+							vault.clear();
+							this.cancel();
+						}
+					}
+				}.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
+			}
+		}
+	}
 
-    @EventHandler
-    public void keytrigger(KeybindTriggerEvent e) {
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (getPowerArray().contains(e.getPlayer())) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (CooldownUtils.isPlayerInCooldownFromTag(e.getPlayer(), Utils.getNameOrTag(power))) continue;
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
-                        setActive(e.getPlayer(), power.getTag(), true);
-                        if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), e.getPlayer())) {
-                            ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
-                            org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(power.getStringOrDefault("container_type", "chest").toUpperCase()), power.getStringOrDefault("title", "inventory.container.title").replace("%player%", e.getPlayer().getName()));
-                            vaultItems.stream()
-                                    .forEach(itemStack -> vault.addItem(itemStack));
-                            e.getPlayer().openInventory(vault);
-                        }
-                    } else {
-                        setActive(e.getPlayer(), power.getTag(), false);
-                    }
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void keytrigger(KeybindTriggerEvent e) {
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			if (getPowerArray().contains(e.getPlayer())) {
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+					if (CooldownUtils.isPlayerInCooldownFromTag(e.getPlayer(), Utils.getNameOrTag(power))) continue;
+					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
+						setActive(e.getPlayer(), power.getTag(), true);
+						if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), e.getPlayer())) {
+							ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
+							org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(power.getStringOrDefault("container_type", "chest").toUpperCase()), power.getStringOrDefault("title", "inventory.container.title").replace("%player%", e.getPlayer().getName()));
+							vaultItems.stream()
+								.forEach(itemStack -> vault.addItem(itemStack));
+							e.getPlayer().openInventory(vault);
+						}
+					} else {
+						setActive(e.getPlayer(), power.getTag(), false);
+					}
+				}
+			}
+		}
+	}
 
-    @EventHandler
-    public void deathTIMEEE(PlayerDeathEvent e) {
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (shulker_inventory.contains(e.getPlayer())) {
-                Player p = e.getPlayer();
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (power.getBooleanOrDefault("drop_on_death", false)) {
-                        ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
-                        org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
+	@EventHandler
+	public void deathTIMEEE(PlayerDeathEvent e) {
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			if (shulker_inventory.contains(e.getPlayer())) {
+				Player p = e.getPlayer();
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+					if (power.getBooleanOrDefault("drop_on_death", false)) {
+						ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
+						org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
 
-                        vaultItems.stream()
-                                .forEach(itemStack -> vault.addItem(itemStack));
-                        for (ItemStack item : vault.getContents()) {
-                            if (item != null && item.getType() != Material.AIR) {
-                                p.getWorld().dropItemNaturally(p.getLocation(), item);
-                                vault.removeItem(item);
-                            }
-                        }
-                        ArrayList<ItemStack> prunedItems = new ArrayList<>();
+						vaultItems.stream()
+							.forEach(itemStack -> vault.addItem(itemStack));
+						for (ItemStack item : vault.getContents()) {
+							if (item != null && item.getType() != Material.AIR) {
+								p.getWorld().dropItemNaturally(p.getLocation(), item);
+								vault.removeItem(item);
+							}
+						}
+						ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
-                        Arrays.stream(vault.getContents())
-                                .filter(itemStack -> {
-                                    return itemStack != null;
-                                })
-                                .forEach(itemStack -> prunedItems.add(itemStack));
+						Arrays.stream(vault.getContents())
+							.filter(itemStack -> {
+								return itemStack != null;
+							})
+							.forEach(itemStack -> prunedItems.add(itemStack));
 
-                        InventoryUtils.storeItems(prunedItems, p);
-                        vault.clear();
-                    }
-                }
-            }
-        }
-    }
+						InventoryUtils.storeItems(prunedItems, p);
+						vault.clear();
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (sender instanceof Player p) {
-            //opens target players shulk inventory
-            if (args.length >= 2 && p.hasPermission("genesism.origins.cmd.othershulk")) {
-                Player target = Bukkit.getPlayer(args[1]);
-                if (target != null) {
-                    ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(target);
-                    org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: " + target.getName());
-                    vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
-                    p.openInventory(vault);
-                    return true;
-                }
-            }
+		if (sender instanceof Player p) {
+			//opens target players shulk inventory
+			if (args.length >= 2 && p.hasPermission("genesism.origins.cmd.othershulk")) {
+				Player target = Bukkit.getPlayer(args[1]);
+				if (target != null) {
+					ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(target);
+					org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: " + target.getName());
+					vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
+					p.openInventory(vault);
+					return true;
+				}
+			}
 
-            //opens own shulk inventory
-            if (shulker_inventory.contains((Player) sender)) {
-                ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
-                org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: " + p.getName());
-                vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
-                p.openInventory(vault);
-            } else {
-                p.sendMessage(Component.text("powers.inventoryOpenPower").color(TextColor.fromHexString(ColorConstants.RED)));
-            }
-        }
+			//opens own shulk inventory
+			if (shulker_inventory.contains((Player) sender)) {
+				ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
+				org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: " + p.getName());
+				vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
+				p.openInventory(vault);
+			} else {
+				p.sendMessage(Component.text("powers.inventoryOpenPower").color(TextColor.fromHexString(ColorConstants.RED)));
+			}
+		}
 
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:inventory";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:inventory";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return shulker_inventory;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return shulker_inventory;
+	}
 }
 

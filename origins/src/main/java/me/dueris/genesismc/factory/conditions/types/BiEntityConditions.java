@@ -29,214 +29,215 @@ import java.util.function.Function;
 
 public class BiEntityConditions implements Listener {
 
-    public void prep(){
-        // Meta conditions, shouldnt execute
-        // Meta conditions are added in each file to ensure they dont error and skip them when running
-        // a meta condition inside another meta condition
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("and"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("or"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("chance"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("constant"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        // Meta conditions end
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("both"), (condition, pair) -> {
-            AtomicBoolean a = new AtomicBoolean(true);
-            AtomicBoolean t = new AtomicBoolean(true);
-            a.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.first())); // actor
-            t.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.second())); // target
+	private static double getAngleBetween(Vec3 a, Vec3 b) {
+		double dot = a.dot(b);
+		return dot / (a.length() * b.length());
+	}
 
-            return a.get() && t.get();
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("either"), (condition, pair) -> {
-            AtomicBoolean a = new AtomicBoolean(true);
-            AtomicBoolean t = new AtomicBoolean(true);
-            a.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.first())); // actor
-            t.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.second())); // target
+	private static Vec3 reduceAxes(Vec3 vector, EnumSet<Direction.Axis> axesToKeep) {
+		return new Vec3(
+			axesToKeep.contains(Direction.Axis.X) ? vector.x : 0,
+			axesToKeep.contains(Direction.Axis.Y) ? vector.y : 0,
+			axesToKeep.contains(Direction.Axis.Z) ? vector.z : 0
+		);
+	}
 
-            return a.get() || t.get();
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("invert"), (condition, pair) -> {
-            return ConditionExecutor.testBiEntity((JSONObject) condition.get("condition"), pair.second(), pair.first());
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("undirected"), (condition, pair) -> {
-            AtomicBoolean a = new AtomicBoolean(true); // Not swapped
-            AtomicBoolean b = new AtomicBoolean(true); // Swapped
+	private static Vec3 getBodyRotationVector(net.minecraft.world.entity.Entity entity) {
 
-            a.set(ConditionExecutor.testBiEntity((JSONObject) condition.get("condition"), pair.first(), pair.second())); // actor, target
-            b.set(ConditionExecutor.testBiEntity((JSONObject) condition.get("condition"), pair.second(), pair.first())); // target, actor
+		if (!(entity instanceof LivingEntity livingEntity)) {
+			return entity.getViewVector(1.0f);
+		}
 
-            return a.get() || b.get();
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("actor_condition"), (condition, pair) -> {
-            return ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.first());
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("target_condition"), (condition, pair) -> {
-            return ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.second());
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("relative_rotation"), (condition, pair) -> {
-            net.minecraft.world.entity.Entity nmsActor = pair.first().getHandle();
-            net.minecraft.world.entity.Entity nmsTarget = pair.second().getHandle();
+		float f = livingEntity.getXRot() * ((float) Math.PI / 180);
+		float g = -livingEntity.getYRot() * ((float) Math.PI / 180);
 
-            RotationType actorRotationType = Utils.getRotationType(condition.get("actor_rotation").toString());
-            RotationType targetRotationType = Utils.getRotationType(condition.get("target_rotation").toString());
+		float h = Mth.cos(g);
+		float i = Mth.sin(g);
+		float j = Mth.cos(f);
+		float k = Mth.sin(f);
 
-            Vec3 actorRotation = actorRotationType.getRotation(nmsActor);
-            Vec3 targetRotation = targetRotationType.getRotation(nmsTarget);
+		return new Vec3(i * j, -k, h * j);
 
-            ArrayList<String> strings = new ArrayList<>();
-            if(condition.containsKey("axes")){
-                for(Object object : ((JSONArray)condition.get("axes"))){
-                    strings.add(object.toString());
-                }
-            }else{
-                ArrayList<String> deSt = new ArrayList<>();
-                deSt.add("x");
-                deSt.add("y");
-                deSt.add("z");
-                strings.addAll(deSt);
-            }
+	}
 
-            EnumSet<Direction.Axis> axes = EnumSet.noneOf(Direction.Axis.class);
-            strings.forEach(axis -> axes.add(Direction.Axis.valueOf(axis)));
+	// Apoli -- remapped -- added for accuracy
 
-            actorRotation = reduceAxes(actorRotation, axes);
-            targetRotation = reduceAxes(targetRotation, axes);
-            String comparison = condition.get("comparison").toString();
-            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+	public void prep() {
+		// Meta conditions, shouldnt execute
+		// Meta conditions are added in each file to ensure they dont error and skip them when running
+		// a meta condition inside another meta condition
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("and"), (condition, obj) -> {
+			throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("or"), (condition, obj) -> {
+			throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("chance"), (condition, obj) -> {
+			throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("constant"), (condition, obj) -> {
+			throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+		}));
+		// Meta conditions end
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("both"), (condition, pair) -> {
+			AtomicBoolean a = new AtomicBoolean(true);
+			AtomicBoolean t = new AtomicBoolean(true);
+			a.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.first())); // actor
+			t.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.second())); // target
 
-            return Utils.compareValues(getAngleBetween(actorRotation, targetRotation), comparison, compare_to);
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("attack_target"), (condition, pair) -> {
-            net.minecraft.world.entity.Entity craftActor = pair.first().getHandle();
-            net.minecraft.world.entity.Entity craftTarget = pair.second().getHandle();
+			return a.get() && t.get();
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("either"), (condition, pair) -> {
+			AtomicBoolean a = new AtomicBoolean(true);
+			AtomicBoolean t = new AtomicBoolean(true);
+			a.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.first())); // actor
+			t.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.second())); // target
 
-            return (craftActor instanceof Mob mobActor && craftTarget.equals(mobActor.getTarget())) || (craftActor instanceof NeutralMob angerableActor && craftTarget.equals(angerableActor.getTarget()));
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("attacker"), (condition, pair) -> {
-            net.minecraft.world.entity.Entity craftActor = pair.first().getHandle();
-            net.minecraft.world.entity.Entity craftTarget = pair.second().getHandle();
+			return a.get() || t.get();
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("invert"), (condition, pair) -> {
+			return ConditionExecutor.testBiEntity((JSONObject) condition.get("condition"), pair.second(), pair.first());
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("undirected"), (condition, pair) -> {
+			AtomicBoolean a = new AtomicBoolean(true); // Not swapped
+			AtomicBoolean b = new AtomicBoolean(true); // Swapped
 
-            return craftTarget instanceof LivingEntity livingEntity && craftActor.equals(livingEntity.lastHurtByMob);
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("distance"), (condition, pair) -> {
-            String comparison = condition.get("comparison").toString();
-            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-            return Utils.compareValues(pair.first().getHandle().position().distanceToSqr(pair.second().getHandle().position()), comparison, compare_to);
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_set"), (condition, pair) -> {
-            return EntitySetPower.isInEntitySet(pair.second(), condition.get("set").toString());
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("can_see"), (condition, pair) -> {
-            if (pair.first() instanceof Player pl) {
-                return pl.canSee(pair.second());
-            }
-            return false;
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("owner"), (condition, pair) -> {
-            if (pair.second() instanceof Tameable tameable) {
-                return tameable.getOwner().equals(pair.first());
-            }
-            return false;
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("riding_recursive"), (condition, pair) -> {
-            return pair.first().getPassengers().contains(pair.second());
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("riding_root"), (condition, pair) -> {
-            for (int i = 0; i < pair.first().getPassengers().toArray().length; i++) {
-                if (pair.first().getPassengers().isEmpty()) return false;
-                if (pair.first().getPassengers().get(i) != null) {
-                    return i == pair.first().getPassengers().toArray().length;
-                } else {
-                    return false;
-                }
-            }
-            return false;
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("riding"), (condition, pair) -> {
-            return pair.second().getPassengers().contains(pair.first());
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("equals"), (condition, pair) -> {
-            return pair.first() == pair.second();
-        }));
-    }
+			a.set(ConditionExecutor.testBiEntity((JSONObject) condition.get("condition"), pair.first(), pair.second())); // actor, target
+			b.set(ConditionExecutor.testBiEntity((JSONObject) condition.get("condition"), pair.second(), pair.first())); // target, actor
 
-    private void register(ConditionFactory factory){
-        GenesisMC.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION).register(factory);
-    }
+			return a.get() || b.get();
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("actor_condition"), (condition, pair) -> {
+			return ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.first());
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("target_condition"), (condition, pair) -> {
+			return ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.second());
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("relative_rotation"), (condition, pair) -> {
+			net.minecraft.world.entity.Entity nmsActor = pair.first().getHandle();
+			net.minecraft.world.entity.Entity nmsTarget = pair.second().getHandle();
 
-    public class ConditionFactory implements Registerable {
-        NamespacedKey key;
-        BiPredicate<JSONObject, Pair<CraftEntity, CraftEntity>> test;
+			RotationType actorRotationType = Utils.getRotationType(condition.get("actor_rotation").toString());
+			RotationType targetRotationType = Utils.getRotationType(condition.get("target_rotation").toString());
 
-        public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, Pair<CraftEntity, CraftEntity>> test){
-            this.key = key;
-            this.test = test;
-        }
+			Vec3 actorRotation = actorRotationType.getRotation(nmsActor);
+			Vec3 targetRotation = targetRotationType.getRotation(nmsTarget);
 
-        public boolean test(JSONObject condition, Pair<CraftEntity, CraftEntity> tester){
-            return test.test(condition, tester);
-        }
+			ArrayList<String> strings = new ArrayList<>();
+			if (condition.containsKey("axes")) {
+				for (Object object : ((JSONArray) condition.get("axes"))) {
+					strings.add(object.toString());
+				}
+			} else {
+				ArrayList<String> deSt = new ArrayList<>();
+				deSt.add("x");
+				deSt.add("y");
+				deSt.add("z");
+				strings.addAll(deSt);
+			}
 
-        @Override
-        public NamespacedKey getKey() {
-            return key;
-        }
-    }
-    
-    // Apoli -- remapped -- added for accuracy
+			EnumSet<Direction.Axis> axes = EnumSet.noneOf(Direction.Axis.class);
+			strings.forEach(axis -> axes.add(Direction.Axis.valueOf(axis)));
 
-    private static double getAngleBetween(Vec3 a, Vec3 b) {
-        double dot = a.dot(b);
-        return dot / (a.length() * b.length());
-    }
+			actorRotation = reduceAxes(actorRotation, axes);
+			targetRotation = reduceAxes(targetRotation, axes);
+			String comparison = condition.get("comparison").toString();
+			double compare_to = Double.parseDouble(condition.get("compare_to").toString());
 
-    private static Vec3 reduceAxes(Vec3 vector, EnumSet<Direction.Axis> axesToKeep) {
-        return new Vec3(
-                axesToKeep.contains(Direction.Axis.X) ? vector.x : 0,
-                axesToKeep.contains(Direction.Axis.Y) ? vector.y : 0,
-                axesToKeep.contains(Direction.Axis.Z) ? vector.z : 0
-        );
-    }
+			return Utils.compareValues(getAngleBetween(actorRotation, targetRotation), comparison, compare_to);
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("attack_target"), (condition, pair) -> {
+			net.minecraft.world.entity.Entity craftActor = pair.first().getHandle();
+			net.minecraft.world.entity.Entity craftTarget = pair.second().getHandle();
 
-    private static Vec3 getBodyRotationVector(net.minecraft.world.entity.Entity entity) {
+			return (craftActor instanceof Mob mobActor && craftTarget.equals(mobActor.getTarget())) || (craftActor instanceof NeutralMob angerableActor && craftTarget.equals(angerableActor.getTarget()));
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("attacker"), (condition, pair) -> {
+			net.minecraft.world.entity.Entity craftActor = pair.first().getHandle();
+			net.minecraft.world.entity.Entity craftTarget = pair.second().getHandle();
 
-        if (!(entity instanceof LivingEntity livingEntity)) {
-            return entity.getViewVector(1.0f);
-        }
+			return craftTarget instanceof LivingEntity livingEntity && craftActor.equals(livingEntity.lastHurtByMob);
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("distance"), (condition, pair) -> {
+			String comparison = condition.get("comparison").toString();
+			double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+			return Utils.compareValues(pair.first().getHandle().position().distanceToSqr(pair.second().getHandle().position()), comparison, compare_to);
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_set"), (condition, pair) -> {
+			return EntitySetPower.isInEntitySet(pair.second(), condition.get("set").toString());
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("can_see"), (condition, pair) -> {
+			if (pair.first() instanceof Player pl) {
+				return pl.canSee(pair.second());
+			}
+			return false;
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("owner"), (condition, pair) -> {
+			if (pair.second() instanceof Tameable tameable) {
+				return tameable.getOwner().equals(pair.first());
+			}
+			return false;
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("riding_recursive"), (condition, pair) -> {
+			return pair.first().getPassengers().contains(pair.second());
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("riding_root"), (condition, pair) -> {
+			for (int i = 0; i < pair.first().getPassengers().toArray().length; i++) {
+				if (pair.first().getPassengers().isEmpty()) return false;
+				if (pair.first().getPassengers().get(i) != null) {
+					return i == pair.first().getPassengers().toArray().length;
+				} else {
+					return false;
+				}
+			}
+			return false;
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("riding"), (condition, pair) -> {
+			return pair.second().getPassengers().contains(pair.first());
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("equals"), (condition, pair) -> {
+			return pair.first() == pair.second();
+		}));
+	}
 
-        float f = livingEntity.getXRot() * ((float) Math.PI / 180);
-        float g = -livingEntity.getYRot() * ((float) Math.PI / 180);
+	private void register(ConditionFactory factory) {
+		GenesisMC.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION).register(factory);
+	}
 
-        float h = Mth.cos(g);
-        float i = Mth.sin(g);
-        float j = Mth.cos(f);
-        float k = Mth.sin(f);
+	public enum RotationType {
 
-        return new Vec3(i * j, -k, h * j);
+		HEAD(e -> e.getViewVector(1.0F)),
+		BODY(BiEntityConditions::getBodyRotationVector);
 
-    }
+		private final Function<net.minecraft.world.entity.Entity, Vec3> function;
 
-    public enum RotationType {
+		RotationType(Function<net.minecraft.world.entity.Entity, Vec3> function) {
+			this.function = function;
+		}
 
-        HEAD(e -> e.getViewVector(1.0F)),
-        BODY(BiEntityConditions::getBodyRotationVector);
+		public Vec3 getRotation(net.minecraft.world.entity.Entity entity) {
+			return function.apply(entity);
+		}
 
-        private final Function<net.minecraft.world.entity.Entity, Vec3> function;
-        RotationType(Function<net.minecraft.world.entity.Entity, Vec3> function) {
-            this.function = function;
-        }
+	}
 
-        public Vec3 getRotation(net.minecraft.world.entity.Entity entity) {
-            return function.apply(entity);
-        }
+	public class ConditionFactory implements Registerable {
+		NamespacedKey key;
+		BiPredicate<JSONObject, Pair<CraftEntity, CraftEntity>> test;
 
-    }
-    // Apoli end
+		public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, Pair<CraftEntity, CraftEntity>> test) {
+			this.key = key;
+			this.test = test;
+		}
+
+		public boolean test(JSONObject condition, Pair<CraftEntity, CraftEntity> tester) {
+			return test.test(condition, tester);
+		}
+
+		@Override
+		public NamespacedKey getKey() {
+			return key;
+		}
+	}
+	// Apoli end
 }

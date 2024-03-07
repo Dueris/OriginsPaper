@@ -1,26 +1,26 @@
 {
-    "type": "origins:action_over_time",
-    "interval": 100,
-    "entity_action": {
-        "type": "origins:modify_inventory",
-        "inventory_type": "inventory",
-        "item_action": {
-            "type": "origins:modify",
-            "modifier": "origins:smelt"
-        },
-        "item_condition": {
-            "type": "origins:smeltable"
-        },
-        "slots": [
-            "hotbar.0",
-            "hotbar.1",
-            "hotbar.2",
-            "hotbar.3",
-            "hotbar.4",
-            "hotbar.5",
-            "hotbar.6",
-            "hotbar.7",
-            "hotbar.8"
-        ]
-    }
+  "type": "origins:action_over_time",
+  "interval": 100,
+  "entity_action": {
+    "type": "origins:modify_inventory",
+    "inventory_type": "inventory",
+    "item_action": {
+      "type": "origins:modify",
+      "modifier": "origins:smelt"
+    },
+    "item_condition": {
+      "type": "origins:smeltable"
+    },
+    "slots": [
+      "hotbar.0",
+      "hotbar.1",
+      "hotbar.2",
+      "hotbar.3",
+      "hotbar.4",
+      "hotbar.5",
+      "hotbar.6",
+      "hotbar.7",
+      "hotbar.8"
+    ]
+  }
 }

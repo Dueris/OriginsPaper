@@ -21,56 +21,56 @@ import java.util.HashMap;
 
 public class AttackerActionWhenHit extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @EventHandler
-    public void a(EntityDamageByEntityEvent e) {
-        Entity actor = e.getEntity();
+	@EventHandler
+	public void a(EntityDamageByEntityEvent e) {
+		Entity actor = e.getEntity();
 
-        if (!(actor instanceof Player player)) return;
-        if (!getPowerArray().contains(actor)) return;
+		if (!(actor instanceof Player player)) return;
+		if (!getPowerArray().contains(actor)) return;
 
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                if (power == null) continue;
-                if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+				if (power == null) continue;
+				if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
 
-                setActive(player, power.getTag(), true);
-                Actions.BiEntityActionType(actor, actor, power.getBiEntityAction());
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        setActive(player, power.getTag(), false);
-                    }
-                }.runTaskLater(GenesisMC.getPlugin(), 2L);
-            }
-        }
-    }
+				setActive(player, power.getTag(), true);
+				Actions.BiEntityActionType(actor, actor, power.getBiEntityAction());
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						setActive(player, power.getTag(), false);
+					}
+				}.runTaskLater(GenesisMC.getPlugin(), 2L);
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:attacker_action_when_hit";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:attacker_action_when_hit";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return attacker_action_when_hit;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return attacker_action_when_hit;
+	}
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 }

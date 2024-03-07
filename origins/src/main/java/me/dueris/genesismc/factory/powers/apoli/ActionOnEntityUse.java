@@ -21,68 +21,70 @@ import java.util.HashMap;
 
 public class ActionOnEntityUse extends CraftPower implements Listener {
 
-    private static final ArrayList<Player> cooldownTick = new ArrayList<>();
+	private static final ArrayList<Player> cooldownTick = new ArrayList<>();
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @EventHandler
-    public void entityRightClickEntity(PlayerInteractEntityEvent e) {
-        Player actor = e.getPlayer();
-        Entity target = e.getRightClicked();
+	@EventHandler
+	public void entityRightClickEntity(PlayerInteractEntityEvent e) {
+		Player actor = e.getPlayer();
+		Entity target = e.getRightClicked();
 
-        if (!getPowerArray().contains(actor)) return;
-        if (cooldownTick.contains(actor)) return;
+		if (!getPowerArray().contains(actor)) return;
+		if (cooldownTick.contains(actor)) return;
 
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
-                if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
-                if (!ConditionExecutor.testItem(power.get("item_condition"), actor.getInventory().getItem(e.getHand()))) return;
-                if (!ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target)) return;
-                cooldownTick.add(actor);
-                setActive(e.getPlayer(), power.getTag(), true);
-                Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
-                Actions.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
-                Actions.ItemActionType(actor.getActiveItem(), power.getAction("result_item_action"));
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        setActive(e.getPlayer(), power.getTag(), false);
-                    }
-                }.runTaskLater(GenesisMC.getPlugin(), 2L);
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        cooldownTick.remove(actor);
-                    }
-                }.runTaskLater(GenesisMC.getPlugin(), 1);
-            }
-        }
-    }
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
+				if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
+				if (!ConditionExecutor.testItem(power.get("item_condition"), actor.getInventory().getItem(e.getHand())))
+					return;
+				if (!ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
+					return;
+				cooldownTick.add(actor);
+				setActive(e.getPlayer(), power.getTag(), true);
+				Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
+				Actions.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
+				Actions.ItemActionType(actor.getActiveItem(), power.getAction("result_item_action"));
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						setActive(e.getPlayer(), power.getTag(), false);
+					}
+				}.runTaskLater(GenesisMC.getPlugin(), 2L);
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						cooldownTick.remove(actor);
+					}
+				}.runTaskLater(GenesisMC.getPlugin(), 1);
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:action_on_entity_use";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:action_on_entity_use";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return action_on_entity_use;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return action_on_entity_use;
+	}
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 }

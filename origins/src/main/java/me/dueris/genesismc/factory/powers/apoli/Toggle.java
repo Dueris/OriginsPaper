@@ -23,97 +23,97 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Toggle extends CraftPower implements Listener {
-    public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
+	public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
 
-    @EventHandler
-    public void inContinuousFix(KeybindTriggerEvent e) {
-        Player p = e.getPlayer();
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (getPowerArray().contains(p)) {
-                in_continuous.putIfAbsent(p, new ArrayList<>());
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
-                        if(true /* Toggle power always execute continuously */){
-                            if (in_continuous.get(p).contains(power.get("key").getOrDefault("key", "key.origins.primary_active").toString())) {
-                                in_continuous.get(p).remove(power.get("key").getOrDefault("key", "key.origins.primary_active").toString());
-                            } else {
-                                in_continuous.get(p).add(power.get("key").getOrDefault("key", "key.origins.primary_active").toString());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void inContinuousFix(KeybindTriggerEvent e) {
+		Player p = e.getPlayer();
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			if (getPowerArray().contains(p)) {
+				in_continuous.putIfAbsent(p, new ArrayList<>());
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+					if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
+						if (true /* Toggle power always execute continuously */) {
+							if (in_continuous.get(p).contains(power.get("key").getOrDefault("key", "key.origins.primary_active").toString())) {
+								in_continuous.get(p).remove(power.get("key").getOrDefault("key", "key.origins.primary_active").toString());
+							} else {
+								in_continuous.get(p).add(power.get("key").getOrDefault("key", "key.origins.primary_active").toString());
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
-    @EventHandler
-    public void keybindPress(KeybindTriggerEvent e) {
-        Player p = e.getPlayer();
-        for(Layer layer : CraftApoli.getLayersFromRegistry()){
-            for(Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)){
-                if (getPowerArray().contains(p)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                        if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
-                            if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
-                                execute(p, power);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void keybindPress(KeybindTriggerEvent e) {
+		Player p = e.getPlayer();
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+				if (getPowerArray().contains(p)) {
+					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+						if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
+							if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
+								execute(p, power);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-    public void execute(Player p, Power power){
-        in_continuous.putIfAbsent(p, new ArrayList<>());
-        int cooldown = power.getIntOrDefault("cooldown", 1);
-        String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
-        KeybindingUtils.toggleKey(p, key);
+	public void execute(Player p, Power power) {
+		in_continuous.putIfAbsent(p, new ArrayList<>());
+		int cooldown = power.getIntOrDefault("cooldown", 1);
+		String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
+		KeybindingUtils.toggleKey(p, key);
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                AtomicBoolean cond = new AtomicBoolean(true);
-                Optional.of(ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)).ifPresent(bool -> cond.set(bool));
-                if(!cond.get() || ((true /* Toggle power always execute continuously */ || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key))){
-                    CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.get("hud_render"));
-                    KeybindingUtils.toggleKey(p, key);
-                    setActive(p, power.getTag(), false);
-                    this.cancel();
-                    return;
-                }
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				AtomicBoolean cond = new AtomicBoolean(true);
+				Optional.of(ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)).ifPresent(bool -> cond.set(bool));
+				if (!cond.get() || ((true /* Toggle power always execute continuously */ || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key))) {
+					CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.get("hud_render"));
+					KeybindingUtils.toggleKey(p, key);
+					setActive(p, power.getTag(), false);
+					this.cancel();
+					return;
+				}
 
-                setActive(p, power.getTag(), true);
-            }
-        }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
-    }
+				setActive(p, power.getTag(), true);
+			}
+		}.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+	}
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:toggle";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:toggle";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return toggle_power;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return toggle_power;
+	}
 }

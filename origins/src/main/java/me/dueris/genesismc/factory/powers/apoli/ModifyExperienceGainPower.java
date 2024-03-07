@@ -22,69 +22,69 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyExperienceGainPower extends CraftPower implements Listener {
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @EventHandler
-    public void run(PlayerExpChangeEvent e) {
-        Player p = e.getPlayer();
-        if (modify_xp_gain.contains(p)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
-                try {
-                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                            for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
-                                Float value = Float.valueOf(modifier.get("value").toString());
-                                String operation = modifier.get("operation").toString();
-                                BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                                if (mathOperator != null) {
-                                    float result = (float) mathOperator.apply(e.getAmount(), value);
-                                    e.setAmount(Math.toIntExact(Long.valueOf(String.valueOf(result))));
-                                    if (power == null) {
-                                        getPowerArray().remove(p);
-                                        return;
-                                    }
-                                    if (!getPowerArray().contains(p)) return;
-                                    setActive(p, power.getTag(), true);
-                                }
-                            }
+	@EventHandler
+	public void run(PlayerExpChangeEvent e) {
+		Player p = e.getPlayer();
+		if (modify_xp_gain.contains(p)) {
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
+				try {
+					ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+					for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+							for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
+								Float value = Float.valueOf(modifier.get("value").toString());
+								String operation = modifier.get("operation").toString();
+								BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+								if (mathOperator != null) {
+									float result = (float) mathOperator.apply(e.getAmount(), value);
+									e.setAmount(Math.toIntExact(Long.valueOf(String.valueOf(result))));
+									if (power == null) {
+										getPowerArray().remove(p);
+										return;
+									}
+									if (!getPowerArray().contains(p)) return;
+									setActive(p, power.getTag(), true);
+								}
+							}
 
-                        } else {
-                            setActive(p, power.getTag(), false);
-                        }
-                    }
-                } catch (Exception ev) {
-                    ev.printStackTrace();
-                }
-            }
-        }
-    }
+						} else {
+							setActive(p, power.getTag(), false);
+						}
+					}
+				} catch (Exception ev) {
+					ev.printStackTrace();
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:modify_xp_gain";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:modify_xp_gain";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return modify_xp_gain;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return modify_xp_gain;
+	}
 }

@@ -14,43 +14,43 @@ import java.util.HashMap;
 
 public class Freeze extends CraftPower {
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
-    @Override
-    public void run(Player p) {
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (freeze.contains(p)) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                        setActive(p, power.getTag(), true);
-                        p.setFreezeTicks(300);
-                    } else {
-                        setActive(p, power.getTag(), false);
-                    }
-                }
-            }
-        }
-    }
+	@Override
+	public void run(Player p) {
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			if (freeze.contains(p)) {
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+						setActive(p, power.getTag(), true);
+						p.setFreezeTicks(300);
+					} else {
+						setActive(p, power.getTag(), false);
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:freeze";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:freeze";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return freeze;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return freeze;
+	}
 }

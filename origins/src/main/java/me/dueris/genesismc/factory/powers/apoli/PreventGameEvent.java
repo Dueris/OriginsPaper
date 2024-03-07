@@ -18,54 +18,54 @@ import java.util.HashMap;
 import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_game_event;
 
 public class PreventGameEvent extends CraftPower implements Listener {
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @EventHandler
-    public void event(GenericGameEvent e) {
-        if (e.getEntity() == null) return;
-        if (e.getEntity() instanceof Player p) {
-            if (!this.getPowerArray().contains(p)) return;
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                        String event = power.getString("event");
-                        if (event.contains(":")) {
-                            event = event.split(":")[1];
-                        }
-                        if (e.getEvent().key().asString().equals(event)) {
-                            e.setCancelled(true);
-                        }
-                    }
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void event(GenericGameEvent e) {
+		if (e.getEntity() == null) return;
+		if (e.getEntity() instanceof Player p) {
+			if (!this.getPowerArray().contains(p)) return;
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+						String event = power.getString("event");
+						if (event.contains(":")) {
+							event = event.split(":")[1];
+						}
+						if (e.getEvent().key().asString().equals(event)) {
+							e.setCancelled(true);
+						}
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:prevent_game_event";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:prevent_game_event";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return prevent_game_event;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return prevent_game_event;
+	}
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
 }

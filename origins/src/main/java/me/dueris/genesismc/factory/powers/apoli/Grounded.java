@@ -18,64 +18,64 @@ import java.util.HashMap;
 
 public class Grounded extends CraftPower {
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
-    @Override
-    public void run(Player player) {
-        ArrayList<Location> platform_pos = new ArrayList<>();
-        if (grounded.contains(player)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                Location location = player.getLocation();
-                Location current_block_platform_pos = location.add(0, -1, 0);
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
-                        setActive(player, power.getTag(), true);
-                        if (current_block_platform_pos.getBlock().getType().equals(Material.AIR)) {
-                            platform_pos.add(current_block_platform_pos);
-                            CraftPlayer craftPlayer = (CraftPlayer) player;
-                            craftPlayer.sendBlockChange(current_block_platform_pos, Material.BARRIER.createBlockData());
-                            if (player.isSneaking()) {
-                                craftPlayer.sendBlockChange(current_block_platform_pos, current_block_platform_pos.getBlock().getBlockData());
-                                if (!current_block_platform_pos.add(0, -1, 0).getBlock().isCollidable()) {
-                                    craftPlayer.teleportAsync(current_block_platform_pos.add(0, -1, 0));
-                                }
-                            }
-                        } else {
-                            for (Location thing : platform_pos) {
-                                Block block = thing.getBlock();
-                                CraftPlayer craftPlayer = (CraftPlayer) player;
-                                craftPlayer.sendBlockChange(thing, block.getBlockData());
-                            }
-                        }
-                    } else {
-                        setActive(player, power.getTag(), false);
-                    }
-                }
-            }
-        }
-    }
+	@Override
+	public void run(Player player) {
+		ArrayList<Location> platform_pos = new ArrayList<>();
+		if (grounded.contains(player)) {
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				Location location = player.getLocation();
+				Location current_block_platform_pos = location.add(0, -1, 0);
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
+						setActive(player, power.getTag(), true);
+						if (current_block_platform_pos.getBlock().getType().equals(Material.AIR)) {
+							platform_pos.add(current_block_platform_pos);
+							CraftPlayer craftPlayer = (CraftPlayer) player;
+							craftPlayer.sendBlockChange(current_block_platform_pos, Material.BARRIER.createBlockData());
+							if (player.isSneaking()) {
+								craftPlayer.sendBlockChange(current_block_platform_pos, current_block_platform_pos.getBlock().getBlockData());
+								if (!current_block_platform_pos.add(0, -1, 0).getBlock().isCollidable()) {
+									craftPlayer.teleportAsync(current_block_platform_pos.add(0, -1, 0));
+								}
+							}
+						} else {
+							for (Location thing : platform_pos) {
+								Block block = thing.getBlock();
+								CraftPlayer craftPlayer = (CraftPlayer) player;
+								craftPlayer.sendBlockChange(thing, block.getBlockData());
+							}
+						}
+					} else {
+						setActive(player, power.getTag(), false);
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:grounded";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:grounded";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return grounded;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return grounded;
+	}
 
 
 }

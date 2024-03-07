@@ -18,66 +18,66 @@ import static me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect.getP
 
 public class EffectImmunity extends CraftPower {
 
-    public EffectImmunity() {
+	public EffectImmunity() {
 
-    }
+	}
 
-    @Override
-    public void run(Player p) {
-        if (effect_immunity.contains(p)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                        setActive(p, power.getTag(), true);
-                        List<String> effects = new ArrayList<>();
-                        if(power.getStringOrDefault("effect", null) != null){
-                            effects.add(power.getString("effect"));
-                        }
-                        if(!power.getStringList("effects").isEmpty()){
-                            effects.addAll(power.getStringList("effects"));
-                        }
-                        if(!effects.isEmpty()){
-                            for (String effectString : effects) {
-                                PotionEffectType effectType = getPotionEffectType(effectString);
-                                if (effectType != null) {
-                                    if (p.hasPotionEffect(effectType)) {
-                                        p.removePotionEffect(effectType);
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        setActive(p, power.getTag(), false);
-                    }
-                }
+	@Override
+	public void run(Player p) {
+		if (effect_immunity.contains(p)) {
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+						setActive(p, power.getTag(), true);
+						List<String> effects = new ArrayList<>();
+						if (power.getStringOrDefault("effect", null) != null) {
+							effects.add(power.getString("effect"));
+						}
+						if (!power.getStringList("effects").isEmpty()) {
+							effects.addAll(power.getStringList("effects"));
+						}
+						if (!effects.isEmpty()) {
+							for (String effectString : effects) {
+								PotionEffectType effectType = getPotionEffectType(effectString);
+								if (effectType != null) {
+									if (p.hasPotionEffect(effectType)) {
+										p.removePotionEffect(effectType);
+									}
+								}
+							}
+						}
+					} else {
+						setActive(p, power.getTag(), false);
+					}
+				}
 
-            }
-        }
-    }
+			}
+		}
+	}
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:effect_immunity";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:effect_immunity";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return effect_immunity;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return effect_immunity;
+	}
 }

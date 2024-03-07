@@ -1,34 +1,34 @@
 {
-  "type":"origins:multiple",
+  "type": "origins:multiple",
   "netherite": {
     "hidden": true,
-    "type":"origins:modify_damage_dealt",
+    "type": "origins:modify_damage_dealt",
     "item_condition": {
       "type": "origins:ingredient",
       "ingredient": {
         "item": "minecraft:golden_axe"
       }
     },
-    "modifier":{
-      "operation":"multiplication",
-      "value":1.3
+    "modifier": {
+      "operation": "multiplication",
+      "value": 1.3
     }
   },
   "gold": {
     "hidden": true,
-    "type":"origins:modify_damage_dealt",
+    "type": "origins:modify_damage_dealt",
     "item_condition": {
       "type": "origins:ingredient",
       "ingredient": {
         "item": "minecraft:netherite_axe"
       }
     },
-    "modifier":{
-      "operation":"multiplication",
-      "value":1.3
+    "modifier": {
+      "operation": "multiplication",
+      "value": 1.3
     }
   },
   "hidden": false,
-  "name":"Brutish Training",
-  "description":"You deal extra damage with axes."
+  "name": "Brutish Training",
+  "description": "You deal extra damage with axes."
 }

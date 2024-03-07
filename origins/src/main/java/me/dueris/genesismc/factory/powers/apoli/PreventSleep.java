@@ -25,65 +25,65 @@ import static org.bukkit.Material.*;
 
 public class PreventSleep extends CraftPower implements Listener {
 
-    public static EnumSet<Material> beds;
+	public static EnumSet<Material> beds;
 
-    static {
-        beds = EnumSet.of(WHITE_BED, LIGHT_GRAY_BED, GRAY_BED, BLACK_BED, BROWN_BED, RED_BED, ORANGE_BED, YELLOW_BED, LIME_BED, GREEN_BED,
-                CYAN_BED, LIGHT_BLUE_BED, BLUE_BED, PURPLE_BED, MAGENTA_BED, PINK_BED);
-    }
+	static {
+		beds = EnumSet.of(WHITE_BED, LIGHT_GRAY_BED, GRAY_BED, BLACK_BED, BROWN_BED, RED_BED, ORANGE_BED, YELLOW_BED, LIME_BED, GREEN_BED,
+			CYAN_BED, LIGHT_BLUE_BED, BLUE_BED, PURPLE_BED, MAGENTA_BED, PINK_BED);
+	}
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @EventHandler
-    public void runD(PlayerInteractEvent e) {
-        if (e.getClickedBlock() == null) return;
-        if (e.getAction().isLeftClick()) return;
-        if (beds.contains(e.getClickedBlock().getType())) {
-            Player player = e.getPlayer();
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                Block clickedBlock = e.getClickedBlock();
-                Location blockLocation = clickedBlock.getLocation();
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    boolean meetsCondition = ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) player.getLocation().getBlock());
+	@EventHandler
+	public void runD(PlayerInteractEvent e) {
+		if (e.getClickedBlock() == null) return;
+		if (e.getAction().isLeftClick()) return;
+		if (beds.contains(e.getClickedBlock().getType())) {
+			Player player = e.getPlayer();
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+				Block clickedBlock = e.getClickedBlock();
+				Location blockLocation = clickedBlock.getLocation();
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+					boolean meetsCondition = ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) player.getLocation().getBlock());
 
-                    if (meetsCondition) {
-                        if (power.getBooleanOrDefault("set_spawn_point", false)) {
-                            player.setBedSpawnLocation(blockLocation);
-                        }
-                        String message = power.getStringOrDefault("message", LangConfig.getLocalizedString(player, "origins.cant_sleep"));
-                        player.sendMessage(message);
-                        e.setCancelled(true);
-                    }
-                }
-            }
-        }
-    }
+					if (meetsCondition) {
+						if (power.getBooleanOrDefault("set_spawn_point", false)) {
+							player.setBedSpawnLocation(blockLocation);
+						}
+						String message = power.getStringOrDefault("message", LangConfig.getLocalizedString(player, "origins.cant_sleep"));
+						player.sendMessage(message);
+						e.setCancelled(true);
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:prevent_sleep";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:prevent_sleep";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return prevent_sleep;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return prevent_sleep;
+	}
 }

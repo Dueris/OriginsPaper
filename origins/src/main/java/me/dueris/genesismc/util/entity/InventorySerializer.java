@@ -16,29 +16,29 @@ import java.util.Arrays;
 
 public class InventorySerializer implements Listener {
 
-    @EventHandler
-    public void onInventoryClose(InventoryCloseEvent e) {
+	@EventHandler
+	public void onInventoryClose(InventoryCloseEvent e) {
 
-        Player p = (Player) e.getPlayer();
+		Player p = (Player) e.getPlayer();
 
-        if (e.getView().getTitle().startsWith("Shulk Inventory")) {
+		if (e.getView().getTitle().startsWith("Shulk Inventory")) {
 
-            ArrayList<ItemStack> prunedItems = new ArrayList<>();
+			ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
-            Arrays.stream(e.getInventory().getContents())
-                    .filter(itemStack -> {
-                        return itemStack != null;
-                    })
-                    .forEach(itemStack -> prunedItems.add(itemStack));
+			Arrays.stream(e.getInventory().getContents())
+				.filter(itemStack -> {
+					return itemStack != null;
+				})
+				.forEach(itemStack -> prunedItems.add(itemStack));
 
-            Player target = (Player) e.getPlayer();
-            if (target == null) {
-                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "errors.inventorySaveFail").replace("%player%", e.getView().getTitle().split(":")[1].substring(1))).color(TextColor.fromHexString(ColorConstants.RED)));
-                return;
-            }
-            InventoryUtils.storeItems(prunedItems, target);
-        }
+			Player target = (Player) e.getPlayer();
+			if (target == null) {
+				p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "errors.inventorySaveFail").replace("%player%", e.getView().getTitle().split(":")[1].substring(1))).color(TextColor.fromHexString(ColorConstants.RED)));
+				return;
+			}
+			InventoryUtils.storeItems(prunedItems, target);
+		}
 
-    }
+	}
 
 }

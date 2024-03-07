@@ -17,64 +17,64 @@ import java.util.HashMap;
 
 public class KeepInventory extends CraftPower implements Listener {
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
 
-    @EventHandler
-    public void keepinv(PlayerDeathEvent e) {
-        Player player = e.getEntity();
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (keep_inventory.contains(player)) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
-                        ArrayList<Long> slots = new ArrayList<>();
-                        setActive(player, power.getTag(), true);
-                        if (power.getLongList("slots") != null) {
-                            slots.addAll(power.getLongList("slots"));
-                        }
+	@EventHandler
+	public void keepinv(PlayerDeathEvent e) {
+		Player player = e.getEntity();
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			if (keep_inventory.contains(player)) {
+				ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
+						ArrayList<Long> slots = new ArrayList<>();
+						setActive(player, power.getTag(), true);
+						if (power.getLongList("slots") != null) {
+							slots.addAll(power.getLongList("slots"));
+						}
 
-                        if (!slots.isEmpty()) {
-                            for (int i = 0; i < player.getInventory().getSize(); i++) {
-                                if (slots.contains((long) i)) {
-                                    if(ConditionExecutor.testItem(power.get("item_condition"), player.getInventory().getItem(i))){
-                                        e.getItemsToKeep().add(player.getInventory().getItem(i));
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        setActive(player, power.getTag(), false);
-                    }
-                }
-            }
-        }
-    }
+						if (!slots.isEmpty()) {
+							for (int i = 0; i < player.getInventory().getSize(); i++) {
+								if (slots.contains((long) i)) {
+									if (ConditionExecutor.testItem(power.get("item_condition"), player.getInventory().getItem(i))) {
+										e.getItemsToKeep().add(player.getInventory().getItem(i));
+									}
+								}
+							}
+						}
+					} else {
+						setActive(player, power.getTag(), false);
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:keep_inventory";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:keep_inventory";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return keep_inventory;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return keep_inventory;
+	}
 }

@@ -53,7 +53,7 @@ tasks {
     }
 }
 
-tasks.register<Jar>("makePublisher"){
+tasks.register<Jar>("makePublisher") {
     dependsOn(tasks.shadowJar)
     archiveFileName.set("genesis-v0.2.8-SNAPSHOT.jar")
     from(sourceSets.main.get().output)
@@ -72,8 +72,8 @@ publishing {
             name = "sonatype"
             url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
             credentials {
-                username=System.getenv("OSSRH_USERNAME")
-                password=System.getenv("OSSRH_PASSWORD")
+                username = System.getenv("OSSRH_USERNAME")
+                password = System.getenv("OSSRH_PASSWORD")
             }
         }
     }

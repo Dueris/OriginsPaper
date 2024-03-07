@@ -1,6 +1,5 @@
 {
   "comment": "Revokes an advancment.",
-
   "type": "origins:active_self",
   "entity_action": {
     "type": "origins:revoke_advancement",

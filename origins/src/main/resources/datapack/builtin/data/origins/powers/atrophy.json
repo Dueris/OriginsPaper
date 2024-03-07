@@ -1,16 +1,16 @@
 {
-  "name":"Atrophy",
-  "description":"You take 2x wither damage.",
-  "type":"origins:modify_damage_taken",
-  "damage_condition":{
-    "type":"origins:attacker",
-    "entity_condition":{
-      "type":"origins:entity_type",
-      "entity_type":"minecraft:wither"
+  "name": "Atrophy",
+  "description": "You take 2x wither damage.",
+  "type": "origins:modify_damage_taken",
+  "damage_condition": {
+    "type": "origins:attacker",
+    "entity_condition": {
+      "type": "origins:entity_type",
+      "entity_type": "minecraft:wither"
     }
   },
-  "modifier":{
-    "operation":"multiplication",
+  "modifier": {
+    "operation": "multiplication",
     "value": 2
   },
   "hidden": false

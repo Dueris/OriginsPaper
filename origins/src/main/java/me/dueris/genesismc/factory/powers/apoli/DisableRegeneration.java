@@ -17,55 +17,55 @@ import java.util.HashMap;
 
 public class DisableRegeneration extends CraftPower implements Listener {
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
+	@Override
+	public void setActive(Player p, String tag, Boolean bool) {
+		if (powers_active.containsKey(p)) {
+			if (powers_active.get(p).containsKey(tag)) {
+				powers_active.get(p).replace(tag, bool);
+			} else {
+				powers_active.get(p).put(tag, bool);
+			}
+		} else {
+			powers_active.put(p, new HashMap());
+			setActive(p, tag, bool);
+		}
+	}
 
 
-    @EventHandler
-    public void disable(EntityRegainHealthEvent e) {
-        if (e.getEntity() instanceof Player p) {
-            if (disable_regen.contains(p)) {
-                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                    ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                            setActive(p, power.getTag(), true);
-                            if (e.getRegainReason().equals(EntityRegainHealthEvent.RegainReason.SATIATED)) {
-                                e.setAmount(0);
-                                e.setCancelled(true);
-                            }
-                        } else {
-                            setActive(p, power.getTag(), false);
-                        }
-                    }
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void disable(EntityRegainHealthEvent e) {
+		if (e.getEntity() instanceof Player p) {
+			if (disable_regen.contains(p)) {
+				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+					ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+					for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+							setActive(p, power.getTag(), true);
+							if (e.getRegainReason().equals(EntityRegainHealthEvent.RegainReason.SATIATED)) {
+								e.setAmount(0);
+								e.setCancelled(true);
+							}
+						} else {
+							setActive(p, power.getTag(), false);
+						}
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:disable_regen";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:disable_regen";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return disable_regen;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return disable_regen;
+	}
 }

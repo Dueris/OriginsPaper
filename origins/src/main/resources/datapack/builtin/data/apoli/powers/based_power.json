@@ -1,327 +1,327 @@
 {
-    "type": "origins:multiple",
-    "state": {
-        "type": "origins:resource",
-        "min": 0,
-        "max": 4,
-        "hud_render": {
-            "should_render": false
-        }
-    },
-    "state_update": {
-        "type": "origins:action_over_time",
-        "hud_render": {
-            "should_render": false
-        },
-        "entity_action": {
-            "type": "origins:if_else",
-            "condition": {
-                "type": "origins:resource",
-                "resource": "*:*_state",
-                "comparison": "==",
-                "compare_to": 4
-            },
-            "if_action": {
-                "type": "origins:change_resource",
-                "resource": "*:*_state",
-                "change": 0,
-                "operation": "SET"
-            },
-            "else_action": {
-                "type": "origins:change_resource",
-                "resource": "*:*_state",
-                "change": 1
-            }
-        }
-    },
-    "resource_1": {
-        "type": "origins:resource",
-        "min": 0,
-        "max": 7,
-        "hud_render": [
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 7,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 0
-                },
-                "order": 0
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 8,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 1
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 9,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 2
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 7,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 3
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 8,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 4
-                }
-            }
-        ]
-    },
-    "resource_2": {
-        "type": "origins:resource",
-        "min": 0,
-        "max": 7,
-        "hud_render": [
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 8,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 0
-                },
-                "order": 1
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 9,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 1
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 7,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 2
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 8,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 3
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 9,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 4
-                }
-            }
-        ]
-    },
-    "resource_3": {
-        "type": "origins:resource",
-        "min": 0,
-        "max": 7,
-        "hud_render": [
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 9,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 0
-                },
-                "order": 2
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 7,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 1
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 8,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 2
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 9,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 3
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 7,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 4
-                }
-            }
-        ]
-    },
-    "resource_4": {
-        "type": "origins:resource",
-        "min": 0,
-        "max": 7,
-        "hud_render": [
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 8,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 0
-                },
-                "order": 3
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 9,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 1
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 7,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 2
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 8,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 3
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 9,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 4
-                }
-            }
-        ]
-    },
-    "resource_5": {
-        "type": "origins:resource",
-        "min": 0,
-        "max": 7,
-        "hud_render": [
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 7,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 0
-                },
-                "order": 4
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 8,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 1
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 9,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 2
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 7,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 3
-                }
-            },
-            {
-                "sprite_location": "origins:textures/gui/colored_bar.png",
-                "bar_index": 8,
-                "condition": {
-                    "type": "origins:resource",
-                    "resource": "*:*_state",
-                    "comparison": "==",
-                    "compare_to": 4
-                }
-            }
-        ]
+  "type": "origins:multiple",
+  "state": {
+    "type": "origins:resource",
+    "min": 0,
+    "max": 4,
+    "hud_render": {
+      "should_render": false
     }
+  },
+  "state_update": {
+    "type": "origins:action_over_time",
+    "hud_render": {
+      "should_render": false
+    },
+    "entity_action": {
+      "type": "origins:if_else",
+      "condition": {
+        "type": "origins:resource",
+        "resource": "*:*_state",
+        "comparison": "==",
+        "compare_to": 4
+      },
+      "if_action": {
+        "type": "origins:change_resource",
+        "resource": "*:*_state",
+        "change": 0,
+        "operation": "SET"
+      },
+      "else_action": {
+        "type": "origins:change_resource",
+        "resource": "*:*_state",
+        "change": 1
+      }
+    }
+  },
+  "resource_1": {
+    "type": "origins:resource",
+    "min": 0,
+    "max": 7,
+    "hud_render": [
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 7,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 0
+        },
+        "order": 0
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 8,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 1
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 9,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 2
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 7,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 3
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 8,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 4
+        }
+      }
+    ]
+  },
+  "resource_2": {
+    "type": "origins:resource",
+    "min": 0,
+    "max": 7,
+    "hud_render": [
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 8,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 0
+        },
+        "order": 1
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 9,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 1
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 7,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 2
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 8,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 3
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 9,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 4
+        }
+      }
+    ]
+  },
+  "resource_3": {
+    "type": "origins:resource",
+    "min": 0,
+    "max": 7,
+    "hud_render": [
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 9,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 0
+        },
+        "order": 2
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 7,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 1
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 8,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 2
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 9,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 3
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 7,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 4
+        }
+      }
+    ]
+  },
+  "resource_4": {
+    "type": "origins:resource",
+    "min": 0,
+    "max": 7,
+    "hud_render": [
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 8,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 0
+        },
+        "order": 3
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 9,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 1
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 7,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 2
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 8,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 3
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 9,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 4
+        }
+      }
+    ]
+  },
+  "resource_5": {
+    "type": "origins:resource",
+    "min": 0,
+    "max": 7,
+    "hud_render": [
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 7,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 0
+        },
+        "order": 4
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 8,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 1
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 9,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 2
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 7,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 3
+        }
+      },
+      {
+        "sprite_location": "origins:textures/gui/colored_bar.png",
+        "bar_index": 8,
+        "condition": {
+          "type": "origins:resource",
+          "resource": "*:*_state",
+          "comparison": "==",
+          "compare_to": 4
+        }
+      }
+    ]
+  }
 }

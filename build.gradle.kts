@@ -41,19 +41,13 @@ allprojects {
     }
 }
 
-tasks.register<Jar>("makePublisher"){
-    dependsOn(tasks.shadowJar)
-    archiveFileName.set("genesis-v0.2.8-SNAPSHOT.jar")
-    from(sourceSets.main.get().output)
-}
-
-tasks.register<Jar>("buildJar"){
-    dependsOn(":origins:reobfJar")
-    doLast{
-        val file = findOriginsFile("./origins/build/libs")
-        if(file != null){
+tasks{
+    build{
+        dependsOn(":origins:reobfJar")
+        doLast{
             val targetJarDirectory: Path = projectDir.toPath().toAbsolutePath().resolve("build/libs")
             val subProject: Project = project("origins");
+            println("Loading GenesisMC version-build : ".plus(subProject.version))
             if(!targetJarDirectory.isDirectory()) error("Target path is not a directory?!")
 
             Files.createDirectories(targetJarDirectory)
@@ -69,10 +63,14 @@ tasks.register<Jar>("buildJar"){
                 targetJarDirectory.resolve("genesis-".plus(subProject.version).plus(".jar")),
                 StandardCopyOption.REPLACE_EXISTING
             )
-        }else{
-            error("Couldn't build GenesisMC because output file was null!")
         }
     }
+}
+
+tasks.register<Jar>("makePublisher"){
+    dependsOn(tasks.shadowJar)
+    archiveFileName.set("genesis-v0.2.8-SNAPSHOT.jar")
+    from(sourceSets.main.get().output)
 }
 
 fun findOriginsFile(path: String): File? {
@@ -95,7 +93,7 @@ fun findOriginsFile(path: String): File? {
     }
 }
 
-tasks.getByName("build").dependsOn("buildJar")
+//tasks.getByName("build").dependsOn("buildJar")
 
 publishing {
     publications.create<MavenPublication>("genesismc") {
