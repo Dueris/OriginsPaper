@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -30,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -133,17 +135,12 @@ public class ModelColor { // Left empty due to it needing to be registered on ce
 		}
 
 		@Override
-		public void setActive(Player p, String tag, Boolean bool) {
-			if (powers_active.containsKey(p)) {
-				if (powers_active.get(p).containsKey(tag)) {
-					powers_active.get(p).replace(tag, bool);
-				} else {
-					powers_active.get(p).put(tag, bool);
-				}
-			} else {
-				powers_active.put(p, new HashMap());
-				setActive(p, tag, bool);
-			}
+		public List<FactoryObjectInstance> getValidObjectFactory() {
+			return super.getDefaultObjectFactory(List.of(
+				new FactoryObjectInstance("red", Float.class, 1.0f),
+				new FactoryObjectInstance("blue", Float.class, 1.0f),
+				new FactoryObjectInstance("green", Float.class, 1.0f)
+			));
 		}
 	}
 }

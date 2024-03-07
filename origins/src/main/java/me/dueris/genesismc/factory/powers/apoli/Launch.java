@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -11,14 +12,17 @@ import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static me.dueris.genesismc.factory.powers.apoli.FireProjectile.in_continuous;
 
@@ -103,5 +107,16 @@ public class Launch extends CraftPower implements Listener {
 	@Override
 	public ArrayList<Player> getPowerArray() {
 		return launch_into_air;
+	}
+
+	@Override
+	public List<FactoryObjectInstance> getValidObjectFactory() {
+		return super.getDefaultObjectFactory(List.of(
+			new FactoryObjectInstance("cooldown", Integer.class, 1),
+			new FactoryObjectInstance("speed", Float.class, null),
+			new FactoryObjectInstance("hud_render", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("sound", NamespacedKey.class, NamespacedKey.fromString("entity.egg.throw")),
+			new FactoryObjectInstance("key", JSONObject.class, new JSONObject())
+		));
 	}
 }

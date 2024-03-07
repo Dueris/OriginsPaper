@@ -85,4 +85,9 @@ public abstract class CraftPower implements ApoliPower {
 		list.add(new FactoryObjectInstance("condition", JSONObject.class, new JSONObject()));
 		return list;
 	}
+
+	@Override
+	public List<FactoryObjectInstance> getValidObjectFactory() {
+		return getDefaultObjectFactory(List.of());
+	}
 }
