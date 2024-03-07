@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
@@ -29,12 +28,10 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
@@ -177,18 +174,6 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
     @Override
     public ArrayList<Player> getPowerArray() {
         return shulker_inventory;
-    }
-
-    @Override
-    public List<FactoryObjectInstance> getValidObjectFactory() {
-        return super.getDefaultObjectFactory(List.of(
-            new FactoryObjectInstance("title", String.class, "container.inventory"),
-            new FactoryObjectInstance("container_type", String.class, "dropper"),
-            new FactoryObjectInstance("drop_on_death", Boolean.class, false),
-            new FactoryObjectInstance("drop_on_death_filter", JSONObject.class, new JSONObject()),
-            new FactoryObjectInstance("recoverable", Boolean.class, true),
-            new FactoryObjectInstance("key", JSONObject.class, new JSONObject())
-        ));
     }
 }
 

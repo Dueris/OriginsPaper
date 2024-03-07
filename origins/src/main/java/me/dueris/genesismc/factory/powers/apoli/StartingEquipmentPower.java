@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -15,12 +14,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class StartingEquipmentPower extends CraftPower implements Listener {
 
@@ -77,14 +73,5 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
     @Override
     public ArrayList<Player> getPowerArray() {
         return starting_equip;
-    }
-
-    @Override
-    public List<FactoryObjectInstance> getValidObjectFactory() {
-        return super.getDefaultObjectFactory(List.of(
-            new FactoryObjectInstance("stack", JSONObject.class, new JSONObject()),
-            new FactoryObjectInstance("stacks", JSONArray.class, new JSONArray()),
-            new FactoryObjectInstance("recurrent", Boolean.class, false)
-        ));
     }
 }

@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -17,11 +16,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -69,6 +66,7 @@ public class Toggle extends CraftPower implements Listener {
 
     public void execute(Player p, Power power){
         in_continuous.putIfAbsent(p, new ArrayList<>());
+        int cooldown = power.getIntOrDefault("cooldown", 1);
         String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
         KeybindingUtils.toggleKey(p, key);
 
@@ -78,6 +76,7 @@ public class Toggle extends CraftPower implements Listener {
                 AtomicBoolean cond = new AtomicBoolean(true);
                 Optional.of(ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)).ifPresent(bool -> cond.set(bool));
                 if(!cond.get() || ((true /* Toggle power always execute continuously */ || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key))){
+                    CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.get("hud_render"));
                     KeybindingUtils.toggleKey(p, key);
                     setActive(p, power.getTag(), false);
                     this.cancel();
@@ -102,13 +101,5 @@ public class Toggle extends CraftPower implements Listener {
     @Override
     public ArrayList<Player> getPowerArray() {
         return toggle_power;
-    }
-
-    @Override
-    public List<FactoryObjectInstance> getValidObjectFactory() {
-        return super.getDefaultObjectFactory(List.of(
-            new FactoryObjectInstance("key", JSONObject.class, new JSONObject()),
-            new FactoryObjectInstance("retain_state", Boolean.class, true)
-        ));
     }
 }
