@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import com.google.common.base.Preconditions;
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
@@ -17,9 +18,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class EntitySetPower extends CraftPower implements Listener {
 	// Map<KEY, ARRAY_OF_ENTITIES>
@@ -160,5 +163,13 @@ public class EntitySetPower extends CraftPower implements Listener {
 	@Override
 	public ArrayList<Player> getPowerArray() {
 		return entity_set;
+	}
+
+	@Override
+	public List<FactoryObjectInstance> getValidObjectFactory() {
+		return super.getDefaultObjectFactory(List.of(
+			new FactoryObjectInstance("action_on_add", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("action_on_remove", JSONObject.class, new JSONObject())
+		));
 	}
 }

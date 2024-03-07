@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -12,6 +13,7 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Exhaust extends CraftPower {
 
@@ -60,5 +62,13 @@ public class Exhaust extends CraftPower {
 	@Override
 	public ArrayList<Player> getPowerArray() {
 		return more_exhaustion;
+	}
+
+	@Override
+	public List<FactoryObjectInstance> getValidObjectFactory() {
+		return super.getDefaultObjectFactory(List.of(
+			new FactoryObjectInstance("interval", Integer.class, 20),
+			new FactoryObjectInstance("exhaustion", Float.class, null)
+		));
 	}
 }

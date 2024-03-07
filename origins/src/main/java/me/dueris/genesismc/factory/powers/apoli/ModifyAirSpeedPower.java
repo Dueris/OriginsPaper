@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -11,9 +12,12 @@ import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsFloat;
@@ -86,5 +90,13 @@ public class ModifyAirSpeedPower extends CraftPower {
 		} else {
 			valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
 		}
+	}
+
+	@Override
+	public List<FactoryObjectInstance> getValidObjectFactory() {
+		return super.getDefaultObjectFactory(List.of(
+			new FactoryObjectInstance("modifier", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("modifiers", JSONArray.class, new JSONArray())
+		));
 	}
 }

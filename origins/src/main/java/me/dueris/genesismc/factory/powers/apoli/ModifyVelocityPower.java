@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -15,10 +16,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsFloat;
@@ -84,6 +89,19 @@ public class ModifyVelocityPower extends CraftPower implements Listener {
 	@Override
 	public ArrayList<Player> getPowerArray() {
 		return ValueModifyingSuperClass.modify_velocity;
+	}
+
+	@Override
+	public List<FactoryObjectInstance> getValidObjectFactory() {
+		JSONArray array = new JSONArray();
+		array.add("x");
+		array.add("y");
+		array.add("z");
+		return super.getDefaultObjectFactory(List.of(
+			new FactoryObjectInstance("modifier", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("modifiers", JSONArray.class, new JSONArray()),
+			new FactoryObjectInstance("axes", JSONArray.class, array)
+		));
 	}
 
 }

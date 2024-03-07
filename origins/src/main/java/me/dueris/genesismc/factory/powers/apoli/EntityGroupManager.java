@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -17,6 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EntityGroupManager extends CraftPower {
@@ -163,6 +165,13 @@ public class EntityGroupManager extends CraftPower {
 	@Override
 	public ArrayList<Player> getPowerArray() {
 		return entity_group;
+	}
+
+	@Override
+	public List<FactoryObjectInstance> getValidObjectFactory() {
+		return super.getDefaultObjectFactory(List.of(
+			new FactoryObjectInstance("group", String.class, null)
+		));
 	}
 
 }

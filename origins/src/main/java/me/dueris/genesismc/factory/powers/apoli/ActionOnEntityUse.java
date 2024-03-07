@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
@@ -14,9 +15,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ActionOnEntityUse extends CraftPower implements Listener {
 
@@ -71,5 +75,17 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
 	@Override
 	public ArrayList<Player> getPowerArray() {
 		return action_on_entity_use;
+	}
+
+	@Override
+	public List<FactoryObjectInstance> getValidObjectFactory() {
+		return super.getDefaultObjectFactory(List.of(
+			new FactoryObjectInstance("bientity_action", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("held_item_action", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("result_item_action", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("bientity_condition", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("item_condition", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("result_stack", ItemStack.class, new JSONObject())
+		));
 	}
 }
