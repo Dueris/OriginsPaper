@@ -4,7 +4,8 @@ import me.dueris.calio.builder.CalioBuilder;
 import me.dueris.calio.builder.inst.AccessorRoot;
 import me.dueris.calio.parse.JsonParser;
 import net.minecraft.resources.ResourceLocation;
-
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.NamespacedKey;
 
 import java.io.File;

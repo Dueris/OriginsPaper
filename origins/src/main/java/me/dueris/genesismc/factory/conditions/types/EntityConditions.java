@@ -770,10 +770,6 @@ public class EntityConditions {
             this.key = key;
             this.test = test;
         }
-        
-        public BiPredicate<JSONObject, CraftEntity> getRawPredicate(){
-            return this.test;
-        }
 
         public boolean test(JSONObject condition, CraftEntity tester){
             return test.test(condition, tester);

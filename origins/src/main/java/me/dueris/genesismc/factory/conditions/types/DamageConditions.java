@@ -126,10 +126,6 @@ public class DamageConditions {
             this.test = test;
         }
 
-        public BiPredicate<JSONObject, EntityDamageEvent> getRawPredicate(){
-            return this.test;
-        }
-
         public boolean test(JSONObject condition, EntityDamageEvent tester){
             return test.test(condition, tester);
         }

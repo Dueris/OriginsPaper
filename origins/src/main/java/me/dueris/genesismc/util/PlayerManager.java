@@ -5,7 +5,7 @@ import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
-import me.dueris.genesismc.factory.powers.genesismc.GravityPower;
+import me.dueris.genesismc.factory.powers.apoli.GravityPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;

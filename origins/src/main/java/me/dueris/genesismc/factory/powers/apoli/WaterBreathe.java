@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -25,7 +24,6 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
 public class WaterBreathe extends CraftPower implements Listener {
@@ -38,6 +36,20 @@ public class WaterBreathe extends CraftPower implements Listener {
         if (block.getType().equals(Material.WATER)) {
             return true;
         } else return player.isInWater() && !material.equals(Material.AIR);
+    }
+
+    @Override
+    public void setActive(Player p, String tag, Boolean bool) {
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
+                powers_active.get(p).replace(tag, bool);
+            } else {
+                powers_active.get(p).put(tag, bool);
+            }
+        } else {
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
+        }
     }
 
     @EventHandler
@@ -161,10 +173,5 @@ public class WaterBreathe extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public List<FactoryObjectInstance> getValidObjectFactory() {
-        return super.getDefaultObjectFactory(List.of());
     }
 }

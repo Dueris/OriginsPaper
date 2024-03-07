@@ -96,7 +96,7 @@ public class Layer implements Serializable, FactoryInstance {
      * @param originTags Adds the specified originTags to the layer. If you only need to pass in one originTag use an array list with one tag.
      */
     public void addOrigin(ArrayList<String> originTags) {
-        this.layerFile.addInstance(originTags);
+        this.layerFile.addOrigin(originTags);
     }
 
     @Override
@@ -122,6 +122,6 @@ public class Layer implements Serializable, FactoryInstance {
                 CraftCalio.INSTANCE.getLogger().severe("Origin not found inside layer");
             }
         }
-        registrar.register(new Layer(namespacedTag, new DatapackFile(obj.keySet().stream().toList(), obj.values().stream().toList(), obj), list));
+        registrar.register(new Layer(namespacedTag, new DatapackFile(obj.keySet().stream().toList(), obj.values().stream().toList()), list));
     }
 }

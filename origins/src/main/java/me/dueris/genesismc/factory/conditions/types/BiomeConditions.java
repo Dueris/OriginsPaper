@@ -95,10 +95,6 @@ public class BiomeConditions {
             this.test = test;
         }
 
-        public BiPredicate<JSONObject, net.minecraft.world.level.biome.Biome> getRawPredicate(){
-            return this.test;
-        }
-
         public boolean test(JSONObject condition, net.minecraft.world.level.biome.Biome tester){
             return test.test(condition, tester);
         }

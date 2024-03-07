@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
@@ -23,7 +22,6 @@ import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class ActionOnBlockBreak extends CraftPower implements Listener {
     public static HashMap<Player, Boolean> playersMining = new HashMap<>();
@@ -88,12 +86,16 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
     }
 
     @Override
-    public List<FactoryObjectInstance> getValidObjectFactory() {
-        return super.getDefaultObjectFactory(List.of(
-            new FactoryObjectInstance("entity_action", JSONObject.class, new JSONObject()),
-            new FactoryObjectInstance("block_action", JSONObject.class, new JSONObject()),
-            new FactoryObjectInstance("block_condition", JSONObject.class, new JSONObject()),
-            new FactoryObjectInstance("only_when_harvested", Boolean.class, true)
-        ));
+    public void setActive(Player p, String tag, Boolean bool) {
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
+                powers_active.get(p).replace(tag, bool);
+            } else {
+                powers_active.get(p).put(tag, bool);
+            }
+        } else {
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
+        }
     }
 }

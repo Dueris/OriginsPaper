@@ -3,7 +3,7 @@ package me.dueris.calio.parse;
 import me.dueris.calio.builder.NamespaceRemapper;
 import me.dueris.calio.builder.inst.AccessorRoot;
 import me.dueris.calio.builder.inst.FactoryProvider;
-import me.dueris.calio.parse.validation.JsonFactoryValidator;
+import me.dueris.calio.parse.verification.JsonFactoryValidator;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.registry.impl.CalioRegistry;
 

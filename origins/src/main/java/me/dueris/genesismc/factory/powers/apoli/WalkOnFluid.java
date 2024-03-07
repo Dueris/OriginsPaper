@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -9,18 +8,30 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class WalkOnFluid extends CraftPower {
 
     HashMap<Player, Location> loc = new HashMap<>();
+
+    @Override
+    public void setActive(Player p, String tag, Boolean bool) {
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
+                powers_active.get(p).replace(tag, bool);
+            } else {
+                powers_active.get(p).put(tag, bool);
+            }
+        } else {
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
+        }
+    }
 
     @Override
     public void run(Player p) {
@@ -70,12 +81,5 @@ public class WalkOnFluid extends CraftPower {
     @Override
     public ArrayList<Player> getPowerArray() {
         return walk_on_fluid;
-    }
-
-    @Override
-    public List<FactoryObjectInstance> getValidObjectFactory() {
-        return super.getDefaultObjectFactory(List.of(
-            new FactoryObjectInstance("fluid", NamespacedKey.class, null)
-        ));
     }
 }

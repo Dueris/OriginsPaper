@@ -1,13 +1,10 @@
 package me.dueris.genesismc.factory;
 
 import me.dueris.calio.builder.NamespaceRemapper;
-import me.dueris.calio.builder.inst.FactoryProvider;
-import me.dueris.calio.parse.validation.JsonFactoryValidator;
 import me.dueris.calio.registry.IRegistry;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.*;
@@ -100,13 +97,9 @@ public class CraftApoli {
 
             if (subPowerValue instanceof JSONObject subPowerJson) {
                 DatapackFile subPowerFile = fileToFileContainer(subPowerJson);
-                NamespacedKey finalKey = new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase());
 
-                ApoliPower craftPower = ((Registrar<ApoliPower>)GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).get(new FactoryProvider(subPowerJson).getNamespacedKey("type"));
-                Power newPower = new Power(finalKey, subPowerFile, JsonParser.parseString(subPowerJson.toJSONString()), true, false, powerContainer);
-                if(JsonFactoryValidator.validateFactory(new FactoryProvider(subPowerJson), craftPower.getValidObjectFactory(), finalKey) != null){
-                    ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(newPower);
-                }
+                Power newPower = new Power(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), subPowerFile, JsonParser.parseString(subPowerJson.toJSONString()), true, false, powerContainer);
+                ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(newPower);
             }
         }
     }
@@ -185,6 +178,213 @@ public class CraftApoli {
         }
         return false;
     }
+
+    /**
+     * Loads the custom origins from the datapack dir into memory.
+     *
+     * @throws ExecutionException
+     * @throws InterruptedException
+     **/
+    /*public static void loadOrigins(IRegistry registry) throws InterruptedException, ExecutionException {
+        if(((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).hasEntries() || ((Registrar<Origin>)GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).hasEntries() || ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).hasEntries()) return; // Already parsed.
+        boolean showErrors = Boolean.valueOf(GenesisConfigs.getMainConfig().get("console-print-parse-errors").toString());
+        List<File> datapacks = new ArrayList();
+        ((Registrar<DatapackRepository>)registry.retrieve(Registries.PACK_SOURCE)).forEach((k, l) -> {
+            for(File file : l.getPath().toFile().listFiles()){
+                datapacks.add(file);
+            }
+        });
+        if (datapacks == null || datapacks.isEmpty()) return;
+
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+            for (File datapack : datapacks) {
+                if (FilenameUtils.getExtension(datapack.getName()).equals(".zip") || FilenameUtils.getExtension(datapack.getName()).equals("zip")) {
+                    try {
+                        unzip(datapack, GenesisMC.getTmpFolder().getAbsolutePath() + File.separator + datapack.getName().replace(".zip", ""));
+                        unzippedFiles.add(Path.of(GenesisMC.getTmpFolder().getAbsolutePath() + File.separator + datapack.getName().replace(".zip", "")).toFile());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            List<File> datapacksToParse = new ArrayList();
+            datapacksToParse.addAll(datapacks);
+            datapacksToParse.addAll(unzippedFiles);
+            for (File datapack : datapacksToParse) {
+                try {
+                    CompletableFuture.runAsync(() -> {
+                        File dataDir = new File(datapack.getAbsolutePath() + File.separator + "data");
+                        if (!dataDir.isDirectory()) return;
+                        File origin_layer = null;
+
+                        //find layer file
+                        for (File namespace : dataDir.listFiles()) {
+                            if (!namespace.isDirectory()) continue;
+                            for (File powerDir : namespace.listFiles()) {
+                                if (powerDir.getName().equals("powers") && powerDir.isDirectory()) {
+                                    for (File powerFile : powerDir.listFiles()) {
+                                        try {
+                                            if (!powerFile.isDirectory()) {
+                                                JsonValidator.validateJsonFile(powerFile.getAbsolutePath());
+                                                String powerFolder = namespace.getName().toLowerCase();
+                                                String powerFileName = powerFile.getName().replace(".json", "").toLowerCase();
+
+                                                JSONObject powerParser = NamespaceRemapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
+                                                if (powerParser.containsKey("type") && "apoli:multiple".equals(powerParser.get("type"))) {
+                                                    Power powerContainer = new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerFile), false, true);
+                                                    ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(powerContainer);
+                                                    processNestedPowers(powerContainer, new ArrayList<>(), powerFolder, powerFileName);
+                                                } else {
+                                                    Power power = new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerFile), false);
+                                                    ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(power);
+                                                }
+
+                                            }
+                                        } catch (Exception ee) {
+                                            ee.printStackTrace();
+                                            if (showErrors)
+                                                System.err.println("[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\"".replace("%powerFolder%", namespace.getName()).replace("%powerFileName%", powerFile.getName()));
+                                        }
+                                    }
+                                }
+                            }
+                            String layerNamespace = namespace.getName();
+                            File originLayers = new File(namespace.getAbsolutePath() + File.separator + "origin_layers");
+                            if (!originLayers.isDirectory()) continue;
+                            for (File originLayer : originLayers.listFiles()) {
+                                if (!FilenameUtils.getExtension(originLayer.getName()).equals("json")) continue;
+                                String layerName = FilenameUtils.getBaseName(originLayer.getName());
+                                try {
+                                    Layer layer = new Layer(new NamespacedKey(layerNamespace, layerName), fileToFileContainer((JSONObject) new JSONParser().parse(new FileReader(originLayer))));
+
+                                    if (layer.getReplace() && layerExists(layer)) {
+                                        //removes an origin layer if a layer with the same namespace has the replace key set to true
+                                        AtomicBoolean r = new AtomicBoolean(false);
+                                        ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).forEach((k, l) -> {
+                                            if(!r.get() && l.getTag().equals(layer.getTag())){
+                                                r.set(true);
+                                            }
+                                        });
+                                        if(r.get()){
+                                            ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).removeFromRegistry(NamespacedKey.fromString(layer.getTag()));
+                                        }
+                                        ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).register(layer);
+                                    } else if (layerExists(layer)) {
+                                        //adds an origin to a layer if it already exists and the replace key is null or false
+                                        Layer existingLayer = ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).get(NamespacedKey.fromString(layer.getTag()));
+                                        existingLayer.addOrigin(layer.getOrigins());
+                                        ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).replaceEntry(NamespacedKey.fromString(layer.getTag()), existingLayer);
+                                    } else {
+                                        ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).register(layer);
+                                    }
+
+                                    origin_layer = new File(datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json");
+                                } catch (Exception e) {
+                                    if (showErrors) {
+                                        System.err.println("[GenesisMC] Error parsing \"%datapack%%sep%data%sep%%namespace%%sep%origin_layers%sep%%layerName%.json\"".replace("%datapack%", datapack.getName()).replace("%sep%", File.separator).replace("%namespace%", namespace.getName()).replace("%layerName%", layerName));
+                                    }
+                                }
+                            }
+                        }
+
+                        if (origin_layer == null) return;
+
+                        //sets up arrays for origins in the datapack
+                        ArrayList<String> originFolder = new ArrayList<>();
+                        ArrayList<String> originFileName = new ArrayList<>();
+
+                        try {
+                            JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath().replace(datapack.getName(), "") + origin_layer.getPath()));
+                            JSONArray originLayer_origins = ((JSONArray) originLayerParser.get("origins"));
+
+                            //gets every origin from the layer
+                            for (Object o : originLayer_origins) {
+                                String value = (String) o;
+                                String[] valueSplit = value.split(":");
+                                originFolder.add(valueSplit[0]);
+                                originFileName.add(valueSplit[1]);
+                            }
+
+                            //gets the powers for every origin
+                            while (originFolder.size() > 0) {
+
+                                try {
+                                    JSONObject originParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json"));
+                                    ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
+
+                                    ArrayList<Power> powerContainers = new ArrayList<>();
+
+                                    if (powersList != null) {
+                                        for (String string : powersList) {
+                                            boolean finished = false;
+                                            if (((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).rawRegistry.containsKey(NamespacedKey.fromString(string))) {
+                                                powerContainers.add(((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(string)));
+                                                finished = true;
+                                            }
+                                            for (Power power : getNestedPowers(((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(string)))) {
+                                                if (power != null) {
+                                                    powerContainers.add(power);
+                                                    finished = true;
+                                                }
+                                            }
+                                            if (!finished) {
+                                                // Not found in database, probably an error, move to backup parse to ensure all powers are added
+                                                String[] powerLocation = string.split(":");
+                                                String powerFolder = powerLocation[0];
+                                                String powerFileName = powerLocation[1];
+
+                                                try {
+
+                                                    JSONObject powerParser = NamespaceRemapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
+                                                    if (powerParser.containsKey("type") && "apoli:multiple".equals(powerParser.get("type"))) {
+                                                        Power powerContainer = new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser),Utils.readJSONFileAsString(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")), false, true);
+                                                        powerContainers.add(powerContainer);
+                                                        processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
+                                                    } else {
+                                                        powerContainers.add(new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")), false));
+                                                    }
+                                                } catch (Exception fileNotFoundException) {
+                                                    if (showErrors)
+                                                        System.err.println("[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\" for \"%originFolder%:%originFileName%\"".replace("%powerFolder", powerFolder).replace("%powerFileName", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0)));
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Origin origin = new Origin(new NamespacedKey(originFolder.get(0), originFileName.get(0)), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers);
+                                    ((Registrar<Origin>)GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).register(origin);
+
+                                } catch (Exception fileNotFoundException) {
+                                    fileNotFoundException.printStackTrace();
+                                    if (showErrors)
+                                        //Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + datapack.getName() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json" + "\"").color(TextColor.color(255, 0, 0)));
+                                        System.err.println("[GenesisMC] Error parsing \"%datapack%%sep%data%sep%%originFolder%%sep%origins%sep%%originFileName%.json\"".replace("%datapack%", datapack.getName()).replace("%originFolder", originFolder.get(0)).replace("%sep%", File.separator).replace("%originFileName%", originFileName.get(0)));
+                                }
+                                originFolder.remove(0);
+                                originFileName.remove(0);
+                            }
+                        } catch (Exception e) {
+                            if (showErrors)
+                                e.printStackTrace();
+                            //Bukkit.getServer().getConsoleSender().sendMessage("[GenesisMC] Failed to parse the \"/data/origins/origin_layers/origin.json\" file for " + datapack.getName() + ". Is it a valid origin file?");
+                        }
+                    }, GenesisMC.loaderThreadPool).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).thenRun(() -> {
+            //if an origin is a core one checks if there are translations for the powers
+            translateOrigins();
+            TagRegistryParser.runParse();
+        }).thenRun(() -> {
+            
+        }).thenRun(() -> {
+            
+        });
+
+        future.get();
+    }*/
 
     public static void unloadData() {
         GenesisMC.getPlugin().registry.clearRegistries();
