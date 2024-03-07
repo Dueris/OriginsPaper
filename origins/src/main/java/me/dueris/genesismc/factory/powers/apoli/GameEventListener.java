@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -13,10 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.GenericGameEvent;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class GameEventListener extends CraftPower implements Listener {
 	@Override
@@ -55,13 +52,5 @@ public class GameEventListener extends CraftPower implements Listener {
 	@Override
 	public ArrayList<Player> getPowerArray() {
 		return game_event_listener;
-	}
-
-	@Override
-	public List<FactoryObjectInstance> getValidObjectFactory() {
-		return super.getDefaultObjectFactory(List.of(
-			new FactoryObjectInstance("event", String.class, null),
-			new FactoryObjectInstance("entity_action", JSONObject.class, new JSONObject())
-		));
 	}
 }
