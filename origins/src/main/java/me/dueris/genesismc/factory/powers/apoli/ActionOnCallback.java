@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.event.PowerUpdateEvent;
@@ -17,10 +16,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ActionOnCallback extends CraftPower implements Listener {
 
@@ -87,18 +84,5 @@ public class ActionOnCallback extends CraftPower implements Listener {
 	@Override
 	public ArrayList<Player> getPowerArray() {
 		return action_on_callback;
-	}
-
-	@Override
-	public List<FactoryObjectInstance> getValidObjectFactory() {
-		return super.getDefaultObjectFactory(List.of(
-			new FactoryObjectInstance("entity_action_chosen", JSONObject.class, new JSONObject()),
-			new FactoryObjectInstance("execute_chosen_when_orb", Boolean.class, true),
-			new FactoryObjectInstance("entity_action_gained", JSONObject.class, new JSONObject()),
-			new FactoryObjectInstance("entity_action_lost", JSONObject.class, new JSONObject()),
-			new FactoryObjectInstance("entity_action_added", JSONObject.class, new JSONObject()),
-			new FactoryObjectInstance("entity_action_removed", JSONObject.class, new JSONObject()),
-			new FactoryObjectInstance("entity_action_respawned", JSONObject.class, new JSONObject())
-		));
 	}
 }

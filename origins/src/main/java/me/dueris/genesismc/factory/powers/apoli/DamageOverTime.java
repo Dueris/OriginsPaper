@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -16,18 +15,14 @@ import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
-import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class DamageOverTime extends CraftPower implements Listener {
@@ -94,6 +89,7 @@ public class DamageOverTime extends CraftPower implements Listener {
 						}
 
 						protection_effectiveness = power.getDoubleOrDefault("protection_effectiveness", 1);
+						ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
 						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
 							setActive(p, power.getTag(), true);
 
@@ -161,17 +157,5 @@ public class DamageOverTime extends CraftPower implements Listener {
 	@Override
 	public ArrayList<Player> getPowerArray() {
 		return damage_over_time;
-	}
-
-	@Override
-	public List<FactoryObjectInstance> getValidObjectFactory() {
-		return super.getDefaultObjectFactory(List.of(
-			new FactoryObjectInstance("interval", Integer.class, 20),
-			new FactoryObjectInstance("onset_delay", Integer.class, 0),
-			new FactoryObjectInstance("damage", Float.class, null),
-			new FactoryObjectInstance("damage_easy", Float.class, 0),
-			new FactoryObjectInstance("damage_source", NamespacedKey.class, "apoli:damage_over_time"),
-			new FactoryObjectInstance("damage_type", NamespacedKey.class, NamespacedKey.fromString("apoli:damage_over_time"))
-		));
 	}
 }

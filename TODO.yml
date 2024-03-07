@@ -1,0 +1,20 @@
+# This is a TODO for all things genesis-related that are needed to be done, ranging in priority
+
+# 1: Make a JSON system for ensuring that powers are able to at least function correctly during parsing
+# 2: Make errors not stop parsing during load
+# 3: Fix meta-condition types
+4: apoli:prevent_item_pickup power
+5: apoli:action_on_item_pickup power
+6: apoli:item_on_item power
+7: apoli:edible_item -- lets just make this better, no?
+8: apoli:predicate condition
+9: apoli:scoreboard condition
+10: apoli:block_state condition
+11: apoli:command condition
+12: apoli:walk_on_fluid -- can we make this any better?
+13: Add origins predicates && advancement triggers to NMS during bootstrap
+a: [
+  ADVT: origins:chose_origin = https://origins.readthedocs.io/en/latest/misc/advancement_triggers/chose_origin/,
+  # PRED: origins:origin = https://origins.readthedocs.io/en/latest/misc/predicates/origin/,
+  # PRED: origins:power = https://origins.readthedocs.io/en/latest/misc/predicates/power/
+]

@@ -263,6 +263,12 @@ public class Power implements Serializable, FactoryInstance {
 		return Boolean.parseBoolean(obj.toString());
 	}
 
+	public short getShortOrDefault(String key, short def) {
+		Object obj = powerFile.get(key);
+		if (obj == null) return def;
+		return Short.parseShort(obj.toString());
+	}
+
 	public long getLongOrDefault(String key, long def) {
 		Object obj = powerFile.get(key);
 		if (obj == null) return def;

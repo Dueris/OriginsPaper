@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -14,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DisableRegeneration extends CraftPower implements Listener {
 
@@ -54,10 +52,5 @@ public class DisableRegeneration extends CraftPower implements Listener {
 	@Override
 	public ArrayList<Player> getPowerArray() {
 		return disable_regen;
-	}
-
-	@Override
-	public List<FactoryObjectInstance> getValidObjectFactory() {
-		return super.getDefaultObjectFactory(List.of());
 	}
 }
