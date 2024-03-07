@@ -17,45 +17,46 @@ import org.bukkit.event.world.GenericGameEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ActionOnLand extends CraftPower implements Listener {
-	private final double MIN_FALL_DISTANCE = 0.5;
+    private final double MIN_FALL_DISTANCE = 0.5;
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@EventHandler
-	public void e(GenericGameEvent e) {
-		if (e.getEvent() != GameEvent.HIT_GROUND) return;
-		if (!(e.getEntity() instanceof Player player)) return;
-		if (!getPowerArray().contains(player)) return;
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+    @EventHandler
+    public void e(GenericGameEvent e) {
+        if (e.getEvent() != GameEvent.HIT_GROUND) return;
+        if (!(e.getEntity() instanceof Player player)) return;
+        if (!getPowerArray().contains(player)) return;
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 //            if (e.getFrom().getY() > e.getTo().getY() && e.getFrom().getY() - e.getTo().getY() >= MIN_FALL_DISTANCE) {
-			for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-				if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) return;
-				setActive(player, power.getTag(), true);
-				Actions.EntityActionType(player, power.getEntityAction());
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						setActive(player, power.getTag(), false);
-					}
-				}.runTaskLater(GenesisMC.getPlugin(), 2L);
-			}
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) return;
+                setActive(player, power.getTag(), true);
+                Actions.EntityActionType(player, power.getEntityAction());
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        setActive(player, power.getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
 
 //            }
-		}
-	}
+        }
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:action_on_land";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:action_on_land";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return action_on_land;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return action_on_land;
+    }
 }

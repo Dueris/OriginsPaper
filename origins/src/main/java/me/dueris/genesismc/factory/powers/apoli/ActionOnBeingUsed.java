@@ -21,61 +21,61 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ActionOnBeingUsed extends CraftPower implements Listener {
 
-	@EventHandler
-	public void entityRightClickEntity(PlayerInteractEntityEvent e) {
-		Player actor = e.getPlayer();
-		Entity target = e.getRightClicked();
-		if (!(target instanceof Player player)) return;
-		if (!getPowerArray().contains(player)) return;
+    @EventHandler
+    public void entityRightClickEntity(PlayerInteractEntityEvent e) {
+        Player actor = e.getPlayer();
+        Entity target = e.getRightClicked();
+        if(!(target instanceof Player player)) return;
+        if(!getPowerArray().contains(player)) return;
 
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-				if (!(ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target) && ConditionExecutor.testItem(power.get("item_condition"), actor.getInventory().getItem(e.getHand()))))
-					return;
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                if(!(ConditionExecutor.testEntity((JSONObject) power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target) && ConditionExecutor.testItem(power.get("item_condition"), actor.getInventory().getItem(e.getHand())))) return;
 
-				setActive(player, power.getTag(), true);
-				Actions.ItemActionType(actor.getInventory().getItem(e.getHand()), power.getAction("held_item_action"));
-				actor.getInventory().addItem(power.getPowerFile().getFactoryProvider().getItemStack("result_stack"));
-				Actions.ItemActionType(power.getPowerFile().getFactoryProvider().getItemStack("result_stack"), power.getAction("result_item_action"));
-				Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						setActive(player, power.getTag(), false);
-					}
-				}.runTaskLater(GenesisMC.getPlugin(), 2L);
-			}
-		}
-	}
+                setActive(player, power.getTag(), true);
+                Actions.ItemActionType(actor.getInventory().getItem(e.getHand()), power.getAction("held_item_action"));
+                actor.getInventory().addItem(power.getPowerFile().getFactoryProvider().getItemStack("result_stack"));
+                Actions.ItemActionType(power.getPowerFile().getFactoryProvider().getItemStack("result_stack"), power.getAction("result_item_action"));
+                Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        setActive(player, power.getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
+        }
+    }
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:action_on_being_used";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:action_on_being_used";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return action_on_being_used;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return action_on_being_used;
+    }
 
-	@Override
-	public List<FactoryObjectInstance> getValidObjectFactory() {
-		return super.getDefaultObjectFactory(List.of(
-			new FactoryObjectInstance("bientity_action", JSONObject.class, new JSONObject()),
-			new FactoryObjectInstance("held_item_action", JSONObject.class, new JSONObject()),
-			new FactoryObjectInstance("result_item_action", JSONObject.class, new JSONObject()),
-			new FactoryObjectInstance("bientity_condition", JSONObject.class, new JSONObject()),
-			new FactoryObjectInstance("item_condition", JSONObject.class, new JSONObject()),
-			new FactoryObjectInstance("result_stack", ItemStack.class, new ItemStack(Material.AIR))
-		));
-	}
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of(
+            new FactoryObjectInstance("bientity_action", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("held_item_action", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("result_item_action", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("bientity_condition", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("item_condition", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("result_stack", ItemStack.class, new ItemStack(Material.AIR))
+        ));
+    }
 }

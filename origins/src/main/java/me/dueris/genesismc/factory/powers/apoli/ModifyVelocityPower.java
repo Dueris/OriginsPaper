@@ -25,65 +25,65 @@ import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOpera
 
 public class ModifyVelocityPower extends CraftPower implements Listener {
 
-	@Override
-	public void run(Player p) {
-		// do nothing
-	}
+    @Override
+    public void run(Player p) {
+        // do nothing
+    }
 
-	@EventHandler
-	public void velcotiyWEEEEEEEE(PlayerVelocityEvent e) {
-		if (getPowerArray().contains(e.getPlayer())) {
-			Player p = e.getPlayer();
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-						List<String> identifiers = power.getJsonArray("axes");
-						if (identifiers.isEmpty()) {
-							identifiers.add("x");
-							identifiers.add("y");
-							identifiers.add("z");
-						}
-						Vector vel = e.getVelocity();
-						for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
-							Float value = Float.valueOf(modifier.get("value").toString());
-							String operation = modifier.get("operation").toString();
-							BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-							for (String axis : identifiers) {
-								if (axis == "x") {
-									vel.setX((float) mathOperator.apply(vel.getX(), value));
-								}
-								if (axis == "y") {
-									vel.setY((float) mathOperator.apply(vel.getY(), value));
-								}
-								if (axis == "z") {
-									vel.setZ((float) mathOperator.apply(vel.getZ(), value));
-								}
-							}
-						}
-						setActive(p, power.getTag(), true);
-						e.setVelocity(vel);
-						new BukkitRunnable() {
-							@Override
-							public void run() {
-								setActive(p, power.getTag(), false);
-							}
+    @EventHandler
+    public void velcotiyWEEEEEEEE(PlayerVelocityEvent e) {
+        if (getPowerArray().contains(e.getPlayer())) {
+            Player p = e.getPlayer();
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                        List<String> identifiers = power.getJsonArray("axes");
+                        if (identifiers.isEmpty()) {
+                            identifiers.add("x");
+                            identifiers.add("y");
+                            identifiers.add("z");
+                        }
+                        Vector vel = e.getVelocity();
+                        for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
+                            Float value = Float.valueOf(modifier.get("value").toString());
+                            String operation = modifier.get("operation").toString();
+                            BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                            for (String axis : identifiers) {
+                                if (axis == "x") {
+                                    vel.setX((float) mathOperator.apply(vel.getX(), value));
+                                }
+                                if (axis == "y") {
+                                    vel.setY((float) mathOperator.apply(vel.getY(), value));
+                                }
+                                if (axis == "z") {
+                                    vel.setZ((float) mathOperator.apply(vel.getZ(), value));
+                                }
+                            }
+                        }
+                        setActive(p, power.getTag(), true);
+                        e.setVelocity(vel);
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                setActive(p, power.getTag(), false);
+                            }
 
-						}.runTaskLater(GenesisMC.getPlugin(), 1);
-					}
+                        }.runTaskLater(GenesisMC.getPlugin(), 1);
+                    }
 
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:modify_velocity";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:modify_velocity";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return ValueModifyingSuperClass.modify_velocity;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return ValueModifyingSuperClass.modify_velocity;
+    }
 
 }

@@ -25,96 +25,96 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyBreakSpeedPower extends CraftPower implements Listener {
 
-	String MODIFYING_KEY = "modify_break_speed";
+    String MODIFYING_KEY = "modify_break_speed";
 
-	public int calculateHasteAmplifier(float value) {
-		float maxValue = 10000.0f;
-		float minValue = 0.1f;
-		int maxAmplifier = 10;
-		int minAmplifier = 0;
+    public int calculateHasteAmplifier(float value) {
+        float maxValue = 10000.0f;
+        float minValue = 0.1f;
+        int maxAmplifier = 10;
+        int minAmplifier = 0;
 
-		float normalizedValue = Math.max(minValue, Math.min(value, maxValue));
-		float percentage = (normalizedValue - minValue) / (maxValue - minValue);
-		int amplifier = (int) (percentage * (maxAmplifier - minAmplifier)) + minAmplifier;
+        float normalizedValue = Math.max(minValue, Math.min(value, maxValue));
+        float percentage = (normalizedValue - minValue) / (maxValue - minValue);
+        int amplifier = (int) (percentage * (maxAmplifier - minAmplifier)) + minAmplifier;
 
-		return amplifier + 1;
-	}
+        return amplifier + 1;
+    }
 
-	@EventHandler
-	public void swing(PlayerArmSwingEvent e) {
-		Player p = e.getPlayer();
-		if (modify_break_speed.contains(p)) {
-			if (p.getGameMode().equals(GameMode.CREATIVE)) return;
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
-				try {
-					ConditionExecutor conditionExecutor = GenesisMC.getConditionExecutor();
-					for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) p.getTargetBlockExact(Math.toIntExact(Math.round(AttributeHandler.Reach.getFinalReach(p)))))) {
-							setActive(p, power.getTag(), true);
-							// if(power.getPossibleModifiers("modifier", "modifiers"))
-							for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-								if (Float.valueOf(modifier.get("value").toString()) <= 0) {
-									// Slower mine
-									p.addPotionEffect(
-										new PotionEffect(
-											PotionEffectType.SLOW_DIGGING,
-											20,
-											(Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
-											false, false, false
-										)
-									);
-								} else {
-									// Speed up
-									p.addPotionEffect(
-										new PotionEffect(
-											PotionEffectType.FAST_DIGGING,
-											20,
-											(Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
-											false, false, false
-										)
-									);
-								}
-							}
-						} else {
-							setActive(p, power.getTag(), false);
-						}
-					}
-				} catch (Exception ev) {
-					ev.printStackTrace();
-				}
-			}
-		}
-	}
+    @EventHandler
+    public void swing(PlayerArmSwingEvent e) {
+        Player p = e.getPlayer();
+        if (modify_break_speed.contains(p)) {
+            if (p.getGameMode().equals(GameMode.CREATIVE)) return;
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
+                try {
+                    ConditionExecutor conditionExecutor = GenesisMC.getConditionExecutor();
+                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) p.getTargetBlockExact(Math.toIntExact(Math.round(AttributeHandler.Reach.getFinalReach(p)))))) {
+                            setActive(p, power.getTag(), true);
+                            // if(power.getPossibleModifiers("modifier", "modifiers"))
+                            for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                                if (Float.valueOf(modifier.get("value").toString()) <= 0) {
+                                    // Slower mine
+                                    p.addPotionEffect(
+                                            new PotionEffect(
+                                                    PotionEffectType.SLOW_DIGGING,
+                                                    20,
+                                                    (Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
+                                                    false, false, false
+                                            )
+                                    );
+                                } else {
+                                    // Speed up
+                                    p.addPotionEffect(
+                                            new PotionEffect(
+                                                    PotionEffectType.FAST_DIGGING,
+                                                    20,
+                                                    (Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
+                                                    false, false, false
+                                            )
+                                    );
+                                }
+                            }
+                        } else {
+                            setActive(p, power.getTag(), false);
+                        }
+                    }
+                } catch (Exception ev) {
+                    ev.printStackTrace();
+                }
+            }
+        }
+    }
 
-	public void apply(Player p) {
-		ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
-		if (modify_break_speed.contains(p)) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-					for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
-						Float value = Float.valueOf(modifier.get("value").toString());
-						valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, value); // Why does there need to be a binary operator if the operator does nothing?
-					}
-				}
-			}
-		} else {
-			valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
-		}
-	}
+    public void apply(Player p) {
+        ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
+        if (modify_break_speed.contains(p)) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
+                        Float value = Float.valueOf(modifier.get("value").toString());
+                        valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, value); // Why does there need to be a binary operator if the operator does nothing?
+                    }
+                }
+            }
+        } else {
+            valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
+        }
+    }
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:modify_break_speed";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:modify_break_speed";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return modify_break_speed;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return modify_break_speed;
+    }
 }

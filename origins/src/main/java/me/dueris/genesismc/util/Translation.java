@@ -11,19 +11,19 @@ import java.io.File;
 
 public class Translation {
 
-	public static String getPlayerLocale(CommandSender player) {
-		if (player instanceof Player) {
-			CraftPlayer craftPlayer = (CraftPlayer) player;
-			@NotNull String language = craftPlayer.getClientOption(ClientOption.LOCALE);
-			return language;
-		}
-		return GenesisConfigs.getMainConfig().getString("lang");
-	}
+    public static String getPlayerLocale(CommandSender player) {
+        if (player instanceof Player) {
+            CraftPlayer craftPlayer = (CraftPlayer) player;
+            @NotNull String language = craftPlayer.getClientOption(ClientOption.LOCALE);
+            return language;
+        }
+        return GenesisConfigs.getMainConfig().getString("lang");
+    }
 
-	public File getPlayerLangFromLocale(String locale) {
-		if (LangConfig.getFile(locale) == null && GenesisConfigs.getMainConfig().getString("adapt_lang") == "true") {
-			return LangConfig.getLangFile();
-		}
-		return LangConfig.getFile(locale);
-	}
+    public File getPlayerLangFromLocale(String locale) {
+        if (LangConfig.getFile(locale) == null && GenesisConfigs.getMainConfig().getString("adapt_lang") == "true") {
+            return LangConfig.getLangFile();
+        }
+        return LangConfig.getFile(locale);
+    }
 }

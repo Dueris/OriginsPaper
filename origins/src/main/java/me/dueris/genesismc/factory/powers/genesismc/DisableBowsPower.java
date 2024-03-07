@@ -10,16 +10,16 @@ import static me.dueris.genesismc.factory.powers.ApoliPower.bow_nope;
 
 public class DisableBowsPower implements Listener {
 
-	@EventHandler
-	public void onUseBow(PlayerInteractEvent e) {
-		Player p = e.getPlayer();
-		if (bow_nope.contains(e.getPlayer())) {
-			if (e.getItem() != null) {
-				if (e.getItem().getType().equals(Material.BOW)) {
-					e.setCancelled(true);
-				}
-			}
-		}
-	}
+    @EventHandler
+    public void onUseBow(PlayerInteractEvent e) {
+        Player p = e.getPlayer();
+        if (bow_nope.contains(e.getPlayer())) {
+            if (e.getItem() != null) {
+                if (e.getItem().getType().equals(Material.BOW)) {
+                    e.setCancelled(true);
+                }
+            }
+        }
+    }
 }
 

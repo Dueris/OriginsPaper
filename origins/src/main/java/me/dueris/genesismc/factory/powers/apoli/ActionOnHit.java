@@ -17,48 +17,48 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ActionOnHit extends CraftPower implements Listener {
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@EventHandler
-	public void action(EntityDamageByEntityEvent e) {
-		if (e.getDamager() instanceof Player p) {
-			Player actor = p;
-			Entity target = e.getEntity();
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				if (getPowerArray().contains(p)) {
-					for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-						if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
-						if (!ConditionExecutor.testDamage(power.get("damage_condition"), e)) return;
-						if (!ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
-							return;
-						setActive(p, power.getTag(), true);
-						Actions.EntityActionType(actor, power.getEntityAction());
-						Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
-						new BukkitRunnable() {
-							@Override
-							public void run() {
-								setActive(p, power.getTag(), false);
-							}
-						}.runTaskLater(GenesisMC.getPlugin(), 2L);
-					}
-				}
-			}
-		}
-	}
+    @EventHandler
+    public void action(EntityDamageByEntityEvent e) {
+        if (e.getDamager() instanceof Player p) {
+            Player actor = p;
+            Entity target = e.getEntity();
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                if (getPowerArray().contains(p)) {
+                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                        if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
+                        if (!ConditionExecutor.testDamage(power.get("damage_condition"), e)) return;
+                        if (!ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target)) return;
+                        setActive(p, power.getTag(), true);
+                        Actions.EntityActionType(actor, power.getEntityAction());
+                        Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                setActive(p, power.getTag(), false);
+                            }
+                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:action_on_hit";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:action_on_hit";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return action_on_hit;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return action_on_hit;
+    }
 }

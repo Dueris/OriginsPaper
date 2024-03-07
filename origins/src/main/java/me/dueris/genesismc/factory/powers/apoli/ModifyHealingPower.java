@@ -22,43 +22,43 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 public class ModifyHealingPower extends CraftPower implements Listener {
 
 
-	@EventHandler
-	public void runD(EntityRegainHealthEvent e) {
-		if (e.getEntity() instanceof Player p) {
-			if (!modify_healing.contains(p)) return;
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-					for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-						Float value = Float.valueOf(modifier.get("value").toString());
-						String operation = modifier.get("operation").toString();
-						BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-						if (mathOperator != null) {
-							float result = (float) mathOperator.apply(e.getAmount(), value);
-							if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-								setActive(p, power.getTag(), true);
-								e.setAmount(result);
-							} else {
-								setActive(p, power.getTag(), false);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+    @EventHandler
+    public void runD(EntityRegainHealthEvent e) {
+        if (e.getEntity() instanceof Player p) {
+            if (!modify_healing.contains(p)) return;
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                        Float value = Float.valueOf(modifier.get("value").toString());
+                        String operation = modifier.get("operation").toString();
+                        BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                        if (mathOperator != null) {
+                            float result = (float) mathOperator.apply(e.getAmount(), value);
+                            if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                                setActive(p, power.getTag(), true);
+                                e.setAmount(result);
+                            } else {
+                                setActive(p, power.getTag(), false);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:modify_healing";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:modify_healing";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return modify_healing;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return modify_healing;
+    }
 }

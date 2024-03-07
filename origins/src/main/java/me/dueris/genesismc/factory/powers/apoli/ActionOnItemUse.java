@@ -16,49 +16,50 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ActionOnItemUse extends CraftPower implements Listener {
 
-	public ActionOnItemUse() {
+    public ActionOnItemUse() {
 
-	}
+    }
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@EventHandler
-	public void entityRightClick(PlayerInteractEvent e) {
-		Player player = e.getPlayer(); // aka "actor"
-		if (!getPowerArray().contains(player)) return;
-		if (!e.getAction().isRightClick()) return;
+    @EventHandler
+    public void entityRightClick(PlayerInteractEvent e) {
+        Player player = e.getPlayer(); // aka "actor"
+        if (!getPowerArray().contains(player)) return;
+        if (!e.getAction().isRightClick()) return;
 
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-				if (power == null) continue;
-				if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) return;
-				if (!ConditionExecutor.testItem(power.get("condition"), e.getItem())) return;
-				setActive(e.getPlayer(), power.getTag(), true);
-				Actions.ItemActionType(e.getItem(), power.getAction("item_action"));
-				Actions.EntityActionType(player, power.getAction("entity_action"));
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						setActive(e.getPlayer(), power.getTag(), false);
-					}
-				}.runTaskLater(GenesisMC.getPlugin(), 2L);
-			}
-		}
-	}
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                if (power == null) continue;
+                if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) return;
+                if (!ConditionExecutor.testItem(power.get("condition"), e.getItem())) return;
+                setActive(e.getPlayer(), power.getTag(), true);
+                Actions.ItemActionType(e.getItem(), power.getAction("item_action"));
+                Actions.EntityActionType(player, power.getAction("entity_action"));
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        setActive(e.getPlayer(), power.getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
+        }
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:action_on_item_use";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:action_on_item_use";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return action_on_item_use;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return action_on_item_use;
+    }
 }

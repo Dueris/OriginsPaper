@@ -11,38 +11,39 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Freeze extends CraftPower {
 
-	@Override
-	public void run(Player p) {
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			if (freeze.contains(p)) {
-				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-						setActive(p, power.getTag(), true);
-						p.setFreezeTicks(300);
-					} else {
-						setActive(p, power.getTag(), false);
-					}
-				}
-			}
-		}
-	}
+    @Override
+    public void run(Player p) {
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            if (freeze.contains(p)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                        setActive(p, power.getTag(), true);
+                        p.setFreezeTicks(300);
+                    } else {
+                        setActive(p, power.getTag(), false);
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:freeze";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:freeze";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return freeze;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return freeze;
+    }
 
-	@Override
-	public List<FactoryObjectInstance> getValidObjectFactory() {
-		return super.getDefaultObjectFactory(List.of());
-	}
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of());
+    }
 }

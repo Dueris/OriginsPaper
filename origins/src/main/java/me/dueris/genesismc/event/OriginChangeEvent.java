@@ -7,30 +7,30 @@ import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class OriginChangeEvent extends PlayerEvent {
-	private static final HandlerList handlers = new HandlerList();
-	private final Origin origin;
-	private final boolean fromOrb;
+    private static final HandlerList handlers = new HandlerList();
+    private final Origin origin;
+    private boolean fromOrb;
 
-	public OriginChangeEvent(@NotNull Player who, Origin origin, boolean fromOrb) {
-		super(who);
-		this.origin = origin;
-		this.fromOrb = fromOrb;
-	}
+    public OriginChangeEvent(@NotNull Player who, Origin origin, boolean fromOrb) {
+        super(who);
+        this.origin = origin;
+        this.fromOrb = fromOrb;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	public Origin getOrigin() {
-		return origin;
-	}
+    public Origin getOrigin() {
+        return origin;
+    }
 
-	public boolean isFromOrb() {
-		return fromOrb;
-	}
+    public boolean isFromOrb() {
+        return fromOrb;
+    }
 }

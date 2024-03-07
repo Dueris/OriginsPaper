@@ -26,75 +26,74 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ActionOnBlockBreak extends CraftPower implements Listener {
-	public static HashMap<Player, Boolean> playersMining = new HashMap<>();
-	public static HashMap<Player, BlockPos> playersMiningBlockPos = new HashMap<>();
+    public static HashMap<Player, Boolean> playersMining = new HashMap<>();
+    public static HashMap<Player, BlockPos> playersMiningBlockPos = new HashMap<>();
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@EventHandler
-	public void brek(BlockBreakEvent e) {
-		Player actor = e.getPlayer();
+    @EventHandler
+    public void brek(BlockBreakEvent e) {
+        Player actor = e.getPlayer();
 
-		if (!getPowerArray().contains(actor)) return;
+        if (!getPowerArray().contains(actor)) return;
 
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power powerContainer : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
-				if (powerContainer == null) continue;
-				if (!(ConditionExecutor.testBlock(powerContainer.get("block_condition"), (CraftBlock) e.getBlock()) && ConditionExecutor.testEntity(powerContainer.get("condition"), (CraftEntity) e.getPlayer())))
-					return;
-				boolean pass = powerContainer.getBooleanOrDefault("only_when_harvested", true) && ((CraftPlayer) actor).getHandle().hasCorrectToolForDrops(((CraftBlock) e.getBlock()).getNMS());
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power powerContainer : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
+                if (powerContainer == null) continue;
+                if(!(ConditionExecutor.testBlock(powerContainer.get("block_condition"), (CraftBlock) e.getBlock()) && ConditionExecutor.testEntity((JSONObject) powerContainer.get("condition"), (CraftEntity) e.getPlayer()))) return;
+                boolean pass = powerContainer.getBooleanOrDefault("only_when_harvested", true) && ((CraftPlayer)actor).getHandle().hasCorrectToolForDrops(((CraftBlock) e.getBlock()).getNMS());
 
-				setActive(actor, powerContainer.getTag(), true);
-				if (pass) {
-					Actions.BlockActionType(e.getBlock().getLocation(), powerContainer.getBlockAction());
-					Actions.EntityActionType(e.getPlayer(), powerContainer.getEntityAction());
-				}
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						setActive(actor, powerContainer.getTag(), false);
-					}
-				}.runTaskLater(GenesisMC.getPlugin(), 2L);
-			}
-		}
-	}
-	// Checks for if the player is mining
+                setActive(actor, powerContainer.getTag(), true);
+                if(pass){
+                    Actions.BlockActionType(e.getBlock().getLocation(), powerContainer.getBlockAction());
+                    Actions.EntityActionType(e.getPlayer(), powerContainer.getEntityAction());
+                }
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        setActive(actor, powerContainer.getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
+        }
+    }
+    // Checks for if the player is mining
 
-	@EventHandler
-	public void breakTick(BlockDamageEvent e) {
-		if (!e.isCancelled()) {
-			playersMining.put(e.getPlayer(), true);
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					playersMining.put(e.getPlayer(), false);
-				}
-			}.runTaskLater(GenesisMC.getPlugin(), 1);
-			playersMiningBlockPos.put(e.getPlayer(), new BlockPos(e.getBlock().getLocation().getBlockX(), e.getBlock().getLocation().getBlockY(), e.getBlock().getLocation().getBlockZ()));
-		}
-	}
-	// End
+    @EventHandler
+    public void breakTick(BlockDamageEvent e){
+        if(!e.isCancelled()){
+            playersMining.put(e.getPlayer(), true);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    playersMining.put(e.getPlayer(), false);
+                }
+            }.runTaskLater(GenesisMC.getPlugin(), 1);
+            playersMiningBlockPos.put(e.getPlayer(), new BlockPos(e.getBlock().getLocation().getBlockX(), e.getBlock().getLocation().getBlockY(), e.getBlock().getLocation().getBlockZ()));
+        }
+    }
+    // End
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:action_on_block_break";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:action_on_block_break";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return action_on_block_break;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return action_on_block_break;
+    }
 
-	@Override
-	public List<FactoryObjectInstance> getValidObjectFactory() {
-		return super.getDefaultObjectFactory(List.of(
-			new FactoryObjectInstance("entity_action", JSONObject.class, new JSONObject()),
-			new FactoryObjectInstance("block_action", JSONObject.class, new JSONObject()),
-			new FactoryObjectInstance("block_condition", JSONObject.class, new JSONObject()),
-			new FactoryObjectInstance("only_when_harvested", Boolean.class, true)
-		));
-	}
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of(
+            new FactoryObjectInstance("entity_action", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("block_action", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("block_condition", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("only_when_harvested", Boolean.class, true)
+        ));
+    }
 }

@@ -14,49 +14,50 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_harvest;
 
 public class ModifyHarvestPower extends CraftPower implements Listener {
 
 
-	@EventHandler
-	public void runD(BlockBreakEvent e) {
-		Player p = e.getPlayer();
-		if (modify_harvest.contains(p)) {
-			if (p.getGameMode().equals(GameMode.CREATIVE)) return;
-			try {
-				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-					for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-							e.setDropItems(false);
-							setActive(p, power.getTag(), true);
-							if (power.getBooleanOrDefault("allow", true) && !e.isDropItems()) {
-								e.getBlock().getDrops().forEach((itemStack -> p.getWorld().dropItemNaturally(e.getBlock().getLocation(), itemStack)));
-							}
-						} else {
-							setActive(p, power.getTag(), false);
-						}
-					}
-				}
-			} catch (Exception ee) {
+    @EventHandler
+    public void runD(BlockBreakEvent e) {
+        Player p = e.getPlayer();
+        if (modify_harvest.contains(p)) {
+            if (p.getGameMode().equals(GameMode.CREATIVE)) return;
+            try {
+                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                            e.setDropItems(false);
+                            setActive(p, power.getTag(), true);
+                            if (power.getBooleanOrDefault("allow", true) && !e.isDropItems()) {
+                                e.getBlock().getDrops().forEach((itemStack -> p.getWorld().dropItemNaturally(e.getBlock().getLocation(), itemStack)));
+                            }
+                        } else {
+                            setActive(p, power.getTag(), false);
+                        }
+                    }
+                }
+            } catch (Exception ee) {
 
-			}
-		}
-	}
+            }
+        }
+    }
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:modify_harvest";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:modify_harvest";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return modify_harvest;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return modify_harvest;
+    }
 }

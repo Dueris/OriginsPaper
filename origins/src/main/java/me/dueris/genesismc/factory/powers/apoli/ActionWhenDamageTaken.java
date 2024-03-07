@@ -17,45 +17,46 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ActionWhenDamageTaken extends CraftPower implements Listener {
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@EventHandler
-	public void d(EntityDamageEvent e) {
-		if (e.getDamage() == 0 || e.isCancelled()) return;
-		Entity actor = e.getEntity();
-		if (!(actor instanceof Player player)) return;
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-				if (power == null) continue;
-				if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
-				if (!ConditionExecutor.testDamage(power.get("damage_condition"), e)) return;
-				Actions.EntityActionType(actor, power.getEntityAction());
-				Actions.EntityActionType(actor, power.getAction("action"));
+    @EventHandler
+    public void d(EntityDamageEvent e) {
+        if(e.getDamage() == 0 || e.isCancelled()) return;
+        Entity actor = e.getEntity();
+        if (!(actor instanceof Player player)) return;
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                if (power == null) continue;
+                if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
+                if (!ConditionExecutor.testDamage(power.get("damage_condition"), e)) return;
+                Actions.EntityActionType(actor, power.getEntityAction());
+                Actions.EntityActionType(actor, power.getAction("action"));
 
-				setActive(player, power.getTag(), true);
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						setActive(player, power.getTag(), false);
-					}
-				}.runTaskLater(GenesisMC.getPlugin(), 2L);
-			}
-		}
-	}
+                setActive(player, power.getTag(), true);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        setActive(player, power.getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
+        }
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:action_when_damage_taken";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:action_when_damage_taken";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return action_when_damage_taken;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return action_when_damage_taken;
+    }
 }
