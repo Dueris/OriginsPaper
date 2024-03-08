@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.conditions.types;
 import com.mojang.brigadier.StringReader;
 
 import me.dueris.calio.data.Comparison;
+import me.dueris.calio.data.Shape;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
@@ -265,7 +266,7 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("block_in_radius"), (condition, entity) -> {
 			int radius = Math.toIntExact((Long) condition.get("radius"));
-			String shape = condition.get("shape").toString();
+			Shape shape = Shape.valueOf(condition.get("shape").toString().toUpperCase());
 			String comparison = condition.get("comparison").toString();
 			int compare_to = Integer.parseInt(condition.get("compare_to").toString());
 
@@ -282,13 +283,13 @@ public class EntityConditions {
 			int maxY = center.getBlockY() + radius;
 			int maxZ = center.getBlockZ() + radius;
 
-			int blockCount = 0;
-			JSONObject ingredientMap = (JSONObject) condition.get("block_condition");
-			if (shape.equalsIgnoreCase("sphere")) {
+			int blockCount;
+			JSONObject ingredientMap = condition;
+			if (shape.equals(Shape.SPHERE)) {
 				blockCount = countBlocksInSphere(centerX, centerY, centerZ, radius, world, ingredientMap, entity);
-			} else if (shape.equalsIgnoreCase("star")) {
+			} else if (shape.equals(Shape.STAR)) {
 				blockCount = countBlocksInStar(centerX, centerY, centerZ, radius, world, ingredientMap, entity);
-			} else if (shape.equalsIgnoreCase("cube")) {
+			} else if (shape.equals(Shape.CUBE)) {
 				blockCount = countBlocksInCube(minX, minY, minZ, maxX, maxY, maxZ, world, ingredientMap, entity);
 			} else {
 				return false;
