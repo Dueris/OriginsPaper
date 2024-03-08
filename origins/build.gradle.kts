@@ -26,7 +26,7 @@ tasks {
     jar {
         manifest {
             attributes(
-                "Main-Class" to "me.dueris.genesismc.util.GuiWarning"
+                "Main-Class" to "me.dueris.genesismc.util.LaunchWarning"
             )
         }
     }

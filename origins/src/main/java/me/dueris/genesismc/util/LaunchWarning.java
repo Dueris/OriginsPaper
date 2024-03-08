@@ -3,10 +3,10 @@ package me.dueris.genesismc.util;
 import javax.swing.*;
 import java.lang.reflect.Method;
 
-public class GuiWarning {
+public class LaunchWarning {
 	public static void main(String[] args) {
 		if (System.console() == null && !isHeadless()) {
-			JOptionPane.showMessageDialog(null, getMessage(), "GenesisMC-Origins", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, getMessage(), "GenesisMC", JOptionPane.ERROR_MESSAGE);
 		}
 
 		System.out.println(getMessage());
@@ -24,7 +24,7 @@ public class GuiWarning {
 	}
 
 	private static String getMessage() {
-		String msg = "You have attempted to load Genesis as a jar! You CANNOT do this!\nGenesisMC is a plugin and should be placed in the plugins directory of your server. Then start your server jar, and enjoy GenesisMC!";
+		String msg = "You have tried to launch GenesisMC(a Minecraft plugin) directly, but its not an executable program or installer.\nInstead, please install Paper or a fork of it and place the jar in the plugins folder.";
 		return msg;
 	}
 }
