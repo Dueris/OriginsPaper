@@ -4,16 +4,16 @@ import me.dueris.calio.data.Comparison;
 import me.dueris.calio.data.MaterialParser;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.LiquidBlockContainer;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.TileState;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
@@ -56,19 +56,9 @@ public class BlockConditions {
 			}
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, block) -> {
-			if (TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
-				if (!blockTagMappings.containsKey(condition.get("tag"))) {
-					blockTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
-					for (String mat : TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
-						blockTagMappings.get(condition.get("tag")).add(Material.valueOf(mat.split(":")[1].toUpperCase()));
-					}
-					return false;
-				} else {
-					// mappings exist, now we can start stuff
-					return blockTagMappings.get(condition.get("tag")).contains(block.getType());
-				}
-			}
-			return false;
+
+			Tag<Material> blockTag = Bukkit.getTag(org.bukkit.Tag.REGISTRY_BLOCKS, NamespacedKey.fromString(condition.get("tag").toString()), Material.class);
+			return blockTag.isTagged(block.getType());
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("adjacent"), (condition, block) -> {
 			int adj = 0;
