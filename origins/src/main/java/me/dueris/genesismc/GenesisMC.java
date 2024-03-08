@@ -56,6 +56,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
@@ -427,7 +428,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
-		OriginDataContainer.unloadAllData();
+		for(Player player : Bukkit.getOnlinePlayers()){
+			player.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerAccessor.getOrigin(player), player));
+			OriginPlayerAccessor.unassignPowers(player);
+			OriginDataContainer.unloadData(player);
+		}
 		CraftApoli.unloadData();
 		OriginPlayerAccessor.playerPowerMapping.clear();
 		OriginPlayerAccessor.powersAppliedList.clear();
@@ -440,12 +445,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		this.registry.clearRegistries();
 		scheduler.cancel();
 		EntityGroupManager.stop();
-
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			Team team = p.getScoreboard().getTeam("origin-players");
-			if (team != null) team.removeEntity(p);
-			RaycastUtils.executeCommandAtHit(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "skin clear @s");
-		}
 
 		getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "disable")).color(TextColor.fromHexString("#fb5454")));
 	}
