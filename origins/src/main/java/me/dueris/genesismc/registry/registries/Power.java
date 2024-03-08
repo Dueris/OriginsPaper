@@ -169,7 +169,7 @@ public class Power implements Serializable, FactoryInstance {
 	 */
 	public String getDescription() {
 		Object description = this.powerFile.get("description");
-		if (description == null) return "No Description.";
+		if (description == null) return "No Description";
 		return (String) description;
 	}
 

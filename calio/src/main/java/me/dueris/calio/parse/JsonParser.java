@@ -12,14 +12,18 @@ import java.io.File;
 import java.util.Arrays;
 
 public class JsonParser {
-	public static void parseDirectory(File directory, AccessorRoot root, String namespace) {
-		Arrays.stream(directory.listFiles()).filter(file -> !file.isDirectory()).toList().forEach(jsonFile -> {
+	public static void parseDirectory(File directory, AccessorRoot root, String namespace, String before) {
+		Arrays.stream(directory.listFiles()).toList().forEach(jsonFile -> {
 			try {
-				JSONObject remappedJSON = NamespaceRemapper.createRemapped(jsonFile);
-				NamespacedKey key = new NamespacedKey(namespace, jsonFile.getName().replace(".json", ""));
-				FactoryProvider validatedFactory = JsonFactoryValidator.validateFactory(new FactoryProvider(remappedJSON), root.getFactoryInst().getValidObjectFactory(), key);
-				if (validatedFactory != null) {
-					root.getFactoryInst().createInstance(validatedFactory, jsonFile, CalioRegistry.INSTANCE.retrieve(root.getPutRegistry()), key);
+				if(!jsonFile.isDirectory()){
+					JSONObject remappedJSON = NamespaceRemapper.createRemapped(jsonFile);
+					NamespacedKey key = new NamespacedKey(namespace, before + jsonFile.getName().replace(".json", ""));
+					FactoryProvider validatedFactory = JsonFactoryValidator.validateFactory(new FactoryProvider(remappedJSON), root.getFactoryInst().getValidObjectFactory(), key);
+					if (validatedFactory != null) {
+						root.getFactoryInst().createInstance(validatedFactory, jsonFile, CalioRegistry.INSTANCE.retrieve(root.getPutRegistry()), key);
+					}
+				}else{
+					parseDirectory(jsonFile, root, namespace, jsonFile.getName() + "/");
 				}
 			} catch (Exception e) {
 				throw new RuntimeException(e);
