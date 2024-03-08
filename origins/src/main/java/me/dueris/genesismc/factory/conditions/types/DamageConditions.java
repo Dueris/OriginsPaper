@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.conditions.types;
 
+import me.dueris.calio.data.Comparison;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
@@ -109,7 +110,7 @@ public class DamageConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("amount"), (condition, event) -> {
 			String comparison = condition.get("comparison").toString();
 			Long compare_to = (Long) condition.get("compare_to");
-			return Utils.compareValues(event.getDamage(), comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(event.getDamage(), compare_to);
 		}));
 	}
 

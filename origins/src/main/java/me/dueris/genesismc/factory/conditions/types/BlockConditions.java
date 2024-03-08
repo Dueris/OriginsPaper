@@ -1,5 +1,7 @@
 package me.dueris.genesismc.factory.conditions.types;
 
+import me.dueris.calio.data.Comparison;
+import me.dueris.calio.data.MaterialParser;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
@@ -45,11 +47,7 @@ public class BlockConditions {
 		// Meta conditions end
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("material"), (condition, block) -> {
 			try {
-				String matSplit = condition.get("material").toString().toUpperCase();
-				if (matSplit.contains(":")) {
-					matSplit = matSplit.split(":")[1];
-				}
-				Material mat = Material.valueOf(matSplit);
+				Material mat = MaterialParser.getMaterial(condition.get("material"));
 				return block.getType().equals(mat);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -86,7 +84,7 @@ public class BlockConditions {
 			String comparison = condition.get("comparison").toString();
 			float compare_to = Float.parseFloat(condition.get("compare_to").toString());
 
-			return Utils.compareValues(adj, comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(adj, compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("attachable"), (condition, block) -> {
 			if (block != null && block.getType() != Material.AIR) {
@@ -111,7 +109,7 @@ public class BlockConditions {
 			String comparison = condition.get("comparison").toString();
 			float compare_to = Float.parseFloat(condition.get("compare_to").toString());
 			float bR = block.getType().getBlastResistance();
-			return Utils.compareValues(bR, comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(bR, compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("block_entity"), (condition, block) -> {
 			return block.getState() instanceof TileState;
@@ -129,13 +127,13 @@ public class BlockConditions {
 			String comparison = condition.get("comparison").toString();
 			float compare_to = Float.parseFloat(condition.get("compare_to").toString());
 			float bR = block.getType().getHardness();
-			return Utils.compareValues(bR, comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(bR, compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("height"), (condition, block) -> {
 			String comparison = condition.get("comparison").toString();
 			float compare_to = Float.parseFloat(condition.get("compare_to").toString());
 			float bR = block.getLocation().getBlockY();
-			return Utils.compareValues(bR, comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(bR, compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("light_blocking"), (condition, block) -> {
 			return !block.getType().isOccluding();
@@ -159,12 +157,12 @@ public class BlockConditions {
 			String comparison = condition.get("comparison").toString();
 			float compare_to = Float.parseFloat(condition.get("compare_to").toString());
 			float bR = level;
-			return Utils.compareValues(bR, comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(bR, compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("slipperiness"), (condition, block) -> {
 			String comparison = condition.get("comparison").toString();
 			float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-			return Utils.compareValues(block.getBlockData().getMaterial().getSlipperiness(), comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(block.getBlockData().getMaterial().getSlipperiness(), compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("movement_blocking"), (condition, block) -> {
 			return block.getType().isCollidable();

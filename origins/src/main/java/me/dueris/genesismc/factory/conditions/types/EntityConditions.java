@@ -1,6 +1,8 @@
 package me.dueris.genesismc.factory.conditions.types;
 
 import com.mojang.brigadier.StringReader;
+
+import me.dueris.calio.data.Comparison;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
@@ -236,11 +238,11 @@ public class EntityConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("food_level"), (condition, entity) -> {
 			String comparison = condition.get("comparison").toString();
 			int compare_to = Integer.parseInt(condition.get("compare_to").toString());
-			return entity instanceof Player p && Utils.compareValues(p.getFoodLevel(), comparison, compare_to);
+			return entity instanceof Player p && Comparison.getFromString(comparison).compare(p.getFoodLevel(), compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("air"), (condition, entity) -> {
 			if (entity instanceof Player p) {
-				return Utils.compareValues(p.getRemainingAir(), condition.get("comparison").toString(), Integer.parseInt(condition.get("compare_to").toString()));
+				return Comparison.getFromString(condition.get("comparison").toString()).compare(p.getRemainingAir(), Integer.parseInt(condition.get("compare_to").toString()));
 			}
 			return false;
 		}));
@@ -291,7 +293,7 @@ public class EntityConditions {
 			} else {
 				return false;
 			}
-			return Utils.compareValues(blockCount, comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(blockCount, compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("set_size"), (condition, entity) -> {
 			String tag = condition.get("set").toString();
@@ -299,7 +301,7 @@ public class EntityConditions {
 			if (entities.contains(entity)) {
 				String comparison = condition.get("comparison").toString();
 				int compare_to = Integer.parseInt(condition.get("compare_to").toString());
-				return Utils.compareValues(entities.size(), comparison, compare_to);
+				return Comparison.getFromString(comparison).compare(entities.size(), compare_to);
 			}
 			return false;
 		}));
@@ -317,7 +319,7 @@ public class EntityConditions {
 				int score = scoreboard.getPlayerScoreInfo(((CraftEntity) entity).getHandle(), value).value();
 				String comparison = condition.get("comparison").toString();
 				int compare_to = Integer.parseInt(condition.get("compare_to").toString());
-				return Utils.compareValues(score, comparison, compare_to);
+				return Comparison.getFromString(comparison).compare(score, compare_to);
 			}
 			return false;
 		}));
@@ -349,13 +351,13 @@ public class EntityConditions {
 				ambientLight = 1;
 			}
 			brightness = ambientLight + (1 - ambientLight) * lightLevel / (60 - 3 * lightLevel);
-			return Utils.compareValues(brightness, comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(brightness, compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("light_level"), (condition, entity) -> {
 			String comparison = condition.get("comparison").toString();
 			double compare_to = Double.parseDouble(condition.get("compare_to").toString());
 			int lightLevel = entity.getLocation().getBlock().getLightLevel();
-			return Utils.compareValues(lightLevel, comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(lightLevel, compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("climbing"), (condition, entity) -> {
 			if (entity instanceof Player player) {
@@ -434,7 +436,7 @@ public class EntityConditions {
 				if (Resource.registeredBars.containsKey(entity) && Resource.registeredBars.get(entity).containsKey(condition.get("resource").toString())) {
 					String comparison = condition.get("comparison").toString();
 					double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-					return Utils.compareValues(Resource.getResource(entity, condition.get("resource").toString()).left().getProgress(), comparison, compare_to);
+					return Comparison.getFromString(comparison).compare(Resource.getResource(entity, condition.get("resource").toString()).left().getProgress(), compare_to);
 				} else {
 					return false;
 				}
@@ -467,7 +469,7 @@ public class EntityConditions {
 						if (item.containsEnchantment(enchantment)) {
 							int enchantmentLevel = item.getEnchantmentLevel(enchantment);
 
-							return Utils.compareValues(enchantmentLevel, comparison, compareTo);
+							return Comparison.getFromString(comparison).compare(enchantmentLevel, compareTo);
 						} else {
 							if (Double.compare(compareTo, 0.0) == 0 && comparison.equals("==")) {
 								return !item.containsEnchantment(enchantment);
@@ -512,7 +514,7 @@ public class EntityConditions {
 			@NotNull Vector targetVector = entity.getWorld().getSpawnLocation().toVector();
 			String comparison = condition.get("comparison").toString();
 			double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-			return Utils.compareValues(actorVector.distance(targetVector), comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(actorVector.distance(targetVector), compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("elytra_flight_possible"), (condition, entity) -> {
 			boolean hasElytraPower = FlightElytra.elytra.contains(entity);
@@ -529,7 +531,7 @@ public class EntityConditions {
 			return hasElytraPower || hasElytraEquipment;
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_distance"), (condition, entity) -> {
-			return Utils.compareValues(entity.getFallDistance(), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString()));
+			return Comparison.getFromString(condition.get("comparison").toString()).compare(entity.getFallDistance(), Double.parseDouble(condition.get("compare_to").toString()));
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("gamemode"), (condition, entity) -> {
 			if (entity instanceof Player player) {
@@ -542,7 +544,7 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("health"), (condition, entity) -> {
 			if (entity instanceof LivingEntity le) {
-				return Utils.compareValues(le.getHealth(), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString()));
+				return Comparison.getFromString(condition.get("comparison").toString()).compare(le.getHealth(), Double.parseDouble(condition.get("compare_to").toString()));
 			}
 			return false;
 		}));
@@ -604,7 +606,7 @@ public class EntityConditions {
 				String comparison = condition.get("comparison").toString();
 				double compare_to = Double.parseDouble(condition.get("compare_to").toString());
 				double fin = le.getHealth() / le.getMaxHealth();
-				return Utils.compareValues(fin, comparison, compare_to);
+				return Comparison.getFromString(comparison).compare(fin, compare_to);
 			}
 			return false;
 		}));
@@ -640,7 +642,7 @@ public class EntityConditions {
 			}
 			String comparison = condition.get("comparison").toString();
 			double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-			return Utils.compareValues(count, comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(count, compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("passenger_recursive"), (condition, entity) -> {
 			int count = 0;
@@ -655,7 +657,7 @@ public class EntityConditions {
 			}
 			String comparison = condition.getOrDefault("comparison", ">=").toString();
 			int compare_to = Integer.parseInt(condition.getOrDefault("compare_to", 1).toString());
-			return Utils.compareValues(count, comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(count, compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("passenger"), (condition, entity) -> {
 			int count = 0;
@@ -670,14 +672,14 @@ public class EntityConditions {
 			}
 			String comparison = condition.getOrDefault("comparison", ">=").toString();
 			int compare_to = Integer.parseInt(condition.getOrDefault("compare_to", 1).toString());
-			return Utils.compareValues(count, comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(count, compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("saturation_level"), (condition, entity) -> {
 			if (entity instanceof Player le) {
 				String comparison = condition.get("comparison").toString();
 				double compare_to = Double.parseDouble(condition.get("compare_to").toString());
 				double fin = le.getSaturation();
-				return Utils.compareValues(fin, comparison, compare_to);
+				return Comparison.getFromString(comparison).compare(fin, compare_to);
 			}
 			return false;
 		}));
@@ -710,7 +712,7 @@ public class EntityConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("time_of_day"), (condition, entity) -> {
 			String comparison = condition.get("comparison").toString();
 			double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-			return Utils.compareValues(entity.getWorld().getTime(), comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(entity.getWorld().getTime(), compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("using_effective_tool"), (condition, entity) -> {
 			if (entity instanceof Player player) {
@@ -738,7 +740,7 @@ public class EntityConditions {
 			if (entity instanceof Player p) {
 				String comparison = condition.get("comparison").toString();
 				double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-				return Utils.compareValues(p.getExpToLevel(), comparison, compare_to);
+				return Comparison.getFromString(comparison).compare(p.getExpToLevel(), compare_to);
 			}
 			return false;
 		}));
@@ -746,7 +748,7 @@ public class EntityConditions {
 			if (entity instanceof Player p) {
 				String comparison = condition.get("comparison").toString();
 				double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-				return Utils.compareValues(p.getTotalExperience(), comparison, compare_to);
+				return Comparison.getFromString(comparison).compare(p.getTotalExperience(), compare_to);
 			}
 			return false;
 		}));

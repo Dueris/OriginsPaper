@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.conditions.types;
 
 import it.unimi.dsi.fastutil.Pair;
+import me.dueris.calio.data.Comparison;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -144,7 +145,7 @@ public class BiEntityConditions implements Listener {
 			String comparison = condition.get("comparison").toString();
 			double compare_to = Double.parseDouble(condition.get("compare_to").toString());
 
-			return Utils.compareValues(getAngleBetween(actorRotation, targetRotation), comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(getAngleBetween(actorRotation, targetRotation), compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("attack_target"), (condition, pair) -> {
 			net.minecraft.world.entity.Entity craftActor = pair.first().getHandle();
@@ -161,7 +162,7 @@ public class BiEntityConditions implements Listener {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("distance"), (condition, pair) -> {
 			String comparison = condition.get("comparison").toString();
 			double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-			return Utils.compareValues(pair.first().getHandle().position().distanceToSqr(pair.second().getHandle().position()), comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(pair.first().getHandle().position().distanceToSqr(pair.second().getHandle().position()), compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_set"), (condition, pair) -> {
 			return EntitySetPower.isInEntitySet(pair.second(), condition.get("set").toString());

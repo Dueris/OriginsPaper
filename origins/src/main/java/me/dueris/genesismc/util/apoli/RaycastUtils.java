@@ -1,6 +1,6 @@
 package me.dueris.genesismc.util.apoli;
 
-import me.dueris.calio.util.Space;
+import me.dueris.calio.data.Space;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
@@ -30,7 +30,7 @@ public class RaycastUtils {
 		Vec3 direction = entity.getViewVector(1);
 		if (data.containsKey("direction")) {
 			direction = Utils.createDirection((JSONObject) data.get("direction"));
-			Space space = Utils.getSpaceFromString(data.get("space").toString());
+			Space space = Space.getSpace(data.get("space").toString());
 			Vector3f vector3f = new Vector3f((float) direction.x, (float) direction.y, (float) direction.z).normalize();
 			space.toGlobal(vector3f, entity);
 			direction = new Vec3(vector3f);
@@ -165,7 +165,7 @@ public class RaycastUtils {
 		Vec3 direction = entity.getViewVector(1);
 		if (data.containsKey("direction")) {
 			direction = Utils.createDirection((JSONObject) data.get("direction"));
-			Space space = Utils.getSpaceFromString(data.get("space").toString());
+			Space space = Space.getSpace(data.get("space").toString());
 			Vector3f vector3f = new Vector3f((float) direction.x, (float) direction.y, (float) direction.z).normalize();
 			space.toGlobal(vector3f, entity);
 			direction = new Vec3(vector3f);

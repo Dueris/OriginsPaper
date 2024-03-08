@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.conditions.types;
 
+import me.dueris.calio.data.Comparison;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
@@ -75,10 +76,10 @@ public class BiomeConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("temperature"), (condition, biome) -> {
 			String comparison = condition.get("comparison").toString();
 			float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-			return Utils.compareValues(biome.getBaseTemperature(), comparison, compare_to);
+			return Comparison.getFromString(comparison).compare(biome.getBaseTemperature(), compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("high_humidity"), (condition, biome) -> {
-			return Utils.compareValues(biome.climateSettings.downfall(), ">=", 0.85f);
+			return Comparison.getFromString(">=").compare(biome.climateSettings.downfall(), 0.85f);
 		}));
 	}
 

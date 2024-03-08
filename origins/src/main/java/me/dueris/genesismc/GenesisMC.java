@@ -20,7 +20,6 @@ import me.dueris.genesismc.content.enchantment.generation.VillagerTradeHook;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.conditions.CraftCondition;
 import me.dueris.genesismc.factory.conditions.types.*;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -234,15 +233,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		}
 
 		OriginDataContainer.loadData();
-		// Pre-load condition types to prevent constant calling
-		CraftCondition.bientity = new BiEntityConditions();
-		CraftCondition.biome = new BiomeConditions();
-		CraftCondition.blockCon = new BlockConditions();
-		CraftCondition.damage = new DamageConditions();
-		CraftCondition.entity = new EntityConditions();
-		CraftCondition.fluidCon = new FluidConditions();
-		CraftCondition.item = new ItemConditions();
-		// Pre-load end
 		conditionExecutor = new ConditionExecutor();
 
 		this.registry = CalioRegistry.INSTANCE;

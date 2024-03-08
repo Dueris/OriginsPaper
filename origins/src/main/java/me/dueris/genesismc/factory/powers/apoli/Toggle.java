@@ -87,8 +87,7 @@ public class Toggle extends CraftPower implements Listener {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				AtomicBoolean cond = new AtomicBoolean(true);
-				Optional.of(ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)).ifPresent(bool -> cond.set(bool));
+				AtomicBoolean cond = new AtomicBoolean(ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p));
 				if (!cond.get() || ((true /* Toggle power always execute continuously */ || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key))) {
 					CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.get("hud_render"));
 					KeybindingUtils.toggleKey(p, key);

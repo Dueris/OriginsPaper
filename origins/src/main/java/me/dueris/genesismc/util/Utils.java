@@ -7,7 +7,6 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.Pair;
-import me.dueris.calio.util.Space;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.types.BiEntityConditions;
 import me.dueris.genesismc.registry.registries.Power;
@@ -165,38 +164,6 @@ public class Utils {
 		Bukkit.getLogger().info(values.toString());
 	}
 
-	public static Space getSpaceFromString(String space) {
-		switch (space.toLowerCase()) {
-			case "world" -> {
-				return Space.WORLD;
-			}
-			case "local" -> {
-				return Space.LOCAL;
-			}
-			case "local_horizontal" -> {
-				return Space.LOCAL_HORIZONTAL;
-			}
-			case "local_horizontal_normalized" -> {
-				return Space.LOCAL_HORIZONTAL_NORMALIZED;
-			}
-			case "velocity" -> {
-				return Space.VELOCITY;
-			}
-			case "velocity_normalized" -> {
-				return Space.VELOCITY_NORMALIZED;
-			}
-			case "velocity_horizontal" -> {
-				return Space.VELOCITY_HORIZONTAL;
-			}
-			case "velocity_horizontal_normalized" -> {
-				return Space.VELOCITY_HORIZONTAL_NORMALIZED;
-			}
-			default -> {
-				return Space.WORLD;
-			}
-		}
-	}
-
 	public static BiEntityConditions.RotationType getRotationType(String string) {
 		switch (string.toLowerCase()) {
 			case "head" -> {
@@ -292,27 +259,6 @@ public class Utils {
 
 	public static void consumeItem(ItemStack item) {
 		item.setAmount(item.getAmount() - 1);
-	}
-
-	public static boolean compareValues(double value1, String comparison, double value2) {
-		switch (comparison) {
-			case ">":
-				return value1 > value2;
-			case ">=":
-				return value1 >= value2;
-			case "<":
-				return value1 < value2;
-			case "<=":
-				return value1 <= value2;
-			case "==":
-				return value1 == value2;
-			case "=":
-				return value1 == value2;
-			case "!=":
-				return value1 != value2;
-			default:
-				return false;
-		}
 	}
 
 	// Math

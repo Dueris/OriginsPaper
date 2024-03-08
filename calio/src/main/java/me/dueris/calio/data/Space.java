@@ -1,4 +1,4 @@
-package me.dueris.calio.util;
+package me.dueris.calio.data;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -96,5 +96,9 @@ public enum Space {
 				transformVectorToBase(baseForwardVector, vector, entity.getYRot(), this == VELOCITY_NORMALIZED || this == VELOCITY_HORIZONTAL_NORMALIZED);
 				break;
 		}
+	}
+
+	public static Space getSpace(String string){
+		return Space.valueOf(string.toUpperCase());
 	}
 }

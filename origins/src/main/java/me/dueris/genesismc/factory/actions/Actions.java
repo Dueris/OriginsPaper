@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.actions;
 
+import me.dueris.calio.data.Space;
 import me.dueris.calio.registry.Registrar;
-import me.dueris.calio.util.Space;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
@@ -164,13 +164,8 @@ public class Actions {
 		} else if (type.equals("apoli:nothing")) {
 			// Literally does nothing
 		} else if (type.equals("apoli:if_else")) {
-			Optional<Boolean> bool = Optional.of(ConditionExecutor.testItem((JSONObject) power.get("item_condition"), item));
-			if (bool.isPresent()) {
-				if (bool.get()) {
-					ItemActionType(item, (JSONObject) power.get("if_action"));
-				} else {
-					ItemActionType(item, (JSONObject) power.get("else_action"));
-				}
+			if (ConditionExecutor.testItem((JSONObject) power.get("item_condition"), item)) {
+				ItemActionType(item, (JSONObject) power.get("if_action"));
 			} else {
 				ItemActionType(item, (JSONObject) power.get("else_action"));
 			}
@@ -297,13 +292,8 @@ public class Actions {
 		} else if (type.equals("apoli:nothing")) {
 			// Literally does nothing
 		} else if (type.equals("apoli:if_else")) {
-			Optional<Boolean> bool = Optional.of(ConditionExecutor.testBlock((JSONObject) action.get("block_condition"), (CraftBlock) location.getBlock()));
-			if (bool.isPresent()) {
-				if (bool.get()) {
-					BlockActionType(location, (JSONObject) action.get("if_action"));
-				} else {
-					BlockActionType(location, (JSONObject) action.get("else_action"));
-				}
+			if (ConditionExecutor.testBlock((JSONObject) action.get("block_condition"), (CraftBlock) location.getBlock())) {
+				BlockActionType(location, (JSONObject) action.get("if_action"));
 			} else {
 				BlockActionType(location, (JSONObject) action.get("else_action"));
 			}
@@ -799,7 +789,7 @@ public class Actions {
 			float y = 0f;
 			float x = 0f;
 			float z = 0f;
-			Space space = Utils.getSpaceFromString(action.getOrDefault("space", "world").toString());
+			Space space = Space.getSpace(action.getOrDefault("space", "world").toString());
 			if (action.containsKey("y")) y = Float.parseFloat(action.get("y").toString());
 			if (action.containsKey("x")) x = Float.parseFloat(action.get("x").toString());
 			if (action.containsKey("z")) z = Float.parseFloat(action.get("z").toString());

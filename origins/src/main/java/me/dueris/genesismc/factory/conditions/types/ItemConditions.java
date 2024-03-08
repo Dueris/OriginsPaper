@@ -1,6 +1,8 @@
 package me.dueris.genesismc.factory.conditions.types;
 
 import com.mojang.brigadier.StringReader;
+
+import me.dueris.calio.data.Comparison;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.content.OrbOfOrigins;
@@ -86,16 +88,9 @@ public class ItemConditions {
 		nonMeatMaterials.add(Material.WHEAT);
 		nonMeatMaterials.add(Material.MELON_SLICE);
 		nonMeatMaterials.add(Material.PUMPKIN);
-//        nonMeatMaterials.add(Material.BAMBOO);
-
 		nonMeatMaterials.add(Material.KELP);
 		nonMeatMaterials.add(Material.DRIED_KELP);
 		nonMeatMaterials.add(Material.SEAGRASS);
-
-		// nonMeatMaterials.add(Material.MILK_BUCKET); // allow milk buckets
-//        nonMeatMaterials.add(Material.EGG);
-
-//        nonMeatMaterials.add(Material.SUGAR);
 		nonMeatMaterials.add(Material.HONEY_BOTTLE);
 		nonMeatMaterials.add(Material.GLOW_BERRIES);
 		nonMeatMaterials.add(Material.CHORUS_FRUIT);
@@ -105,10 +100,6 @@ public class ItemConditions {
 		nonMeatMaterials.add(Material.PUMPKIN_PIE);
 		nonMeatMaterials.add(Material.SUSPICIOUS_STEW);
 		nonMeatMaterials.add(Material.MUSHROOM_STEW);
-
-		// nonMeatMaterials.add(Material.WATER_BUCKET); // why were these even here??
-		// nonMeatMaterials.add(Material.LAVA_BUCKET); // why were these even here??
-
 		nonMeatMaterials.add(Material.BREAD);
 		nonMeatMaterials.add(Material.CAKE);
 		nonMeatMaterials.add(Material.COOKIE);
@@ -171,7 +162,7 @@ public class ItemConditions {
 			String comparison = condition.get("comparison").toString();
 			double compareTo = Double.parseDouble(condition.get("compare_to").toString());
 			double amt = itemStack.getDurability() / itemStack.getType().getMaxDurability();
-			return Utils.compareValues(amt, comparison, compareTo);
+			return Comparison.getFromString(comparison).compare(amt, compareTo);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("is_equippable"), (condition, itemStack) -> {
 			return EnchantTableHandler.wearable.contains(itemStack.getType());
@@ -188,7 +179,7 @@ public class ItemConditions {
 			for (Enchantment enchantment : itemStack.getEnchantments().keySet()) {
 				if (enchantment.getName().equalsIgnoreCase(String.valueOf(condition.getOrDefault("enchantment", enchantment.getName())))) {
 					int amt = itemStack.getEnchantments().get(enchantment);
-					return Utils.compareValues(amt, comparison, compareTo);
+					return Comparison.getFromString(comparison).compare(amt, compareTo);
 				}
 			}
 			return false;
@@ -203,19 +194,19 @@ public class ItemConditions {
 			String comparison = condition.get("comparison").toString();
 			double compareTo = Double.parseDouble(condition.get("compare_to").toString());
 			double amt = itemStack.getDurability();
-			return Utils.compareValues(amt, comparison, compareTo);
+			return Comparison.getFromString(comparison).compare(amt, compareTo);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("armor_value"), (condition, itemStack) -> {
 			String comparison = condition.get("comparison").toString();
 			double compareTo = Double.parseDouble(condition.get("compare_to").toString());
 			double amt = Utils.getArmorValue(itemStack);
-			return Utils.compareValues(amt, comparison, compareTo);
+			return Comparison.getFromString(comparison).compare(amt, compareTo);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("amount"), (condition, itemStack) -> {
 			String comparison = condition.get("comparison").toString();
 			double compareTo = Double.parseDouble(condition.get("compare_to").toString());
 			int amt = itemStack.getAmount();
-			return Utils.compareValues(amt, comparison, compareTo);
+			return Comparison.getFromString(comparison).compare(amt, compareTo);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("fuel"), (condition, itemStack) -> {
 			return itemStack.getType().isFuel();
