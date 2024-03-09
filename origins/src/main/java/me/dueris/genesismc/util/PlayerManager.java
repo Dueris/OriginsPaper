@@ -6,6 +6,7 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
 import me.dueris.genesismc.factory.powers.apoli.GravityPower;
+import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
@@ -15,6 +16,7 @@ import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.util.legacy.LegacyOriginContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -57,22 +59,30 @@ public class PlayerManager implements Listener {
 		HashMap<Layer, Origin> origins = OriginPlayerAccessor.getOrigin(p);
 		ArrayList<Layer> deletedLayers = new ArrayList<>();
 		for (Layer layer : origins.keySet()) {
-			//check if the player layer exists
-			if (!CraftApoli.layerExists(layer)) {
-				deletedLayers.add(layer);
-				p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.layerRemoved").replace("%layerName%", layer.getName())).color(TextColor.fromHexString(ColorConstants.RED)));
-				continue;
+			for(String tag : layer.getOrigins()){
+				NamespacedKey fixedKey = NamespacedKey.fromString(tag);
+				if(GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(fixedKey) == null){
+					// Layer not in registry, cry.
+					origins.replace(layer, CraftApoli.nullOrigin());
+					p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.originRemoved").replace("%originName%", fixedKey.asString()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(ColorConstants.RED)));
+				}
 			}
-			//origin check
-			layer.getTag();
-			CraftApoli.getLayerFromTag(layer.getTag()).getOrigins();
-			origins.get(layer).getTag();
-			CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag());
-
-			if (!CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag())) {
-				origins.replace(layer, CraftApoli.nullOrigin());
-				p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.originRemoved").replace("%originName%", origins.get(layer).getName()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(ColorConstants.RED)));
-			}
+//			//check if the player layer exists
+//			if (!CraftApoli.layerExists(layer)) {
+//				deletedLayers.add(layer);
+//				p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.layerRemoved").replace("%layerName%", layer.getName())).color(TextColor.fromHexString(ColorConstants.RED)));
+//				continue;
+//			}
+//			//origin check
+//			layer.getTag();
+//			CraftApoli.getLayerFromTag(layer.getTag()).getOrigins();
+//			origins.get(layer).getTag();
+//			CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag());
+//
+//			if (!CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag())) {
+//				origins.replace(layer, CraftApoli.nullOrigin());
+//				p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.originRemoved").replace("%originName%", origins.get(layer).getName()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(ColorConstants.RED)));
+//			}
 		}
 
 		//check if the player has all the existing layers

@@ -112,10 +112,13 @@ public class ModifyFallingPower extends CraftPower implements Listener {
 				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 					for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
 						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-							if (power.getBooleanOrDefault("take_fall_damage", true)) {
+							if (!power.getBooleanOrDefault("take_fall_damage", true)) {
 								if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+									System.out.println(e.getCause());
 									e.setDamage(0);
 									e.setCancelled(true);
+								}else{
+									System.out.println(e.getCause());
 								}
 							}
 						}

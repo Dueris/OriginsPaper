@@ -393,13 +393,31 @@ public class EntityConditions {
 			return entity.getWorld().getKey().equals(NamespacedKey.fromString(dim));
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid_height"), (condition, entity) -> {
-			String fluidD = condition.get("fluid").toString();
+			String fluidD = NamespacedKey.fromString(condition.get("fluid").toString()).asString();
 
-			if (fluidD.equalsIgnoreCase("lava") || fluidD.equalsIgnoreCase("minecraft:lava")) {
-				return entity.isInLava();
-			} else if (fluidD.equalsIgnoreCase("water") || fluidD.equalsIgnoreCase("minecraft:water")) {
-				return entity.isInWaterOrBubbleColumn();
-			} else {
+			boolean go = false;
+
+			if (fluidD.equalsIgnoreCase("minecraft:lava") || fluidD.equalsIgnoreCase("minecraft:water")) {
+				go = true;
+			}
+
+			if(go){
+				String comparison = condition.get("comparison").toString();
+				double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+				double height = 0.0;
+				if(entity.isInLava() || entity.isInWaterOrBubbleColumn()){
+					Location center = entity.getLocation().getBlock().getLocation();
+					for(double i : new double[]{-2.0, -1.9, -1.8, -1.7, -1.6, -1.5, -1.4, -1.3, -1.2, -1.1, -1, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0,
+						0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0}){
+						if(center.add(0, i, 0).getBlock().isLiquid()){
+							height = i;
+							break;
+						}
+					}
+
+				}
+				return Comparison.getFromString(comparison).compare(height, compare_to);
+			}else{
 				return false;
 			}
 		}));

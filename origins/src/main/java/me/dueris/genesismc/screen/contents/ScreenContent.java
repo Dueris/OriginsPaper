@@ -44,15 +44,14 @@ public class ScreenContent {
 
 		//puts all loaded the core origins into the hashmap
 		HashMap<String, String> originDetails = new HashMap<>();
-		for (Origin origin : CraftApoli.getOriginsFromRegistry().stream().filter(origin -> CraftApoli.isCoreOrigin(origin)).toList()) {
-			if (!choosing.get(p).getOrigins().contains(origin.getTag())) continue;
+		for (Origin origin : CraftApoli.getOriginsFromRegistry().stream().toList()) {
 			originDetails.put(origin.getTag(), origin.getName());
 		}
 
 		//if (originDetails.isEmpty()) return ChooseMenuContents.ChooseMenuContent(0, choosing.get(p));
 
 		HashMap<String, String> originDescriptions = new HashMap<>();
-		for (Origin origin : CraftApoli.getOriginsFromRegistry().stream().filter(origin -> CraftApoli.isCoreOrigin(origin)).toList()) {
+		for (Origin origin : CraftApoli.getOriginsFromRegistry().stream().toList()) {
 			originDescriptions.put(origin.getTag(), origin.getDescription());
 		}
 

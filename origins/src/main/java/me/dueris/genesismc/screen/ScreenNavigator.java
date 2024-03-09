@@ -94,7 +94,6 @@ public class ScreenNavigator implements Listener {
 		NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
 		if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != null && !e.getView().getTitle().startsWith("Origin")) {
 			Player p = (Player) e.getWhoClicked();
-			@NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Origin - " + choosing.get(p).getName());
 			String originTag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
 			if (originTag == null) return;
 
@@ -106,6 +105,8 @@ public class ScreenNavigator implements Listener {
 					break;
 				}
 			}
+
+			@NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Origin - " + origin.getName());
 
 			p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
 
