@@ -130,7 +130,6 @@ public class Layer implements Serializable, FactoryInstance {
 				}
 			}
 			registrar.get(namespacedTag).getOrigins().stream().forEach(e -> list.add(CraftApoli.getOrigin(e)));
-			list.forEach(o -> System.out.println(o.getTag()));
 			registrar.replaceEntry(namespacedTag, new Layer(namespacedTag, new DatapackFile(obj.keySet().stream().toList(), obj.values().stream().toList()), list));
 		}else{
 			List<Origin> list = new ArrayList<>();
