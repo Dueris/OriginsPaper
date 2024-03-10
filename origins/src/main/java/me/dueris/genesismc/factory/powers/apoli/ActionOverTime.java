@@ -35,7 +35,6 @@ public class ActionOverTime extends CraftPower {
 					if (Bukkit.getServer().getCurrentTick() % interval != 0) {
 						return;
 					} else {
-						ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
 						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
 							setActive(p, power.getTag(), true);
 							Actions.EntityActionType(p, power.getEntityAction());

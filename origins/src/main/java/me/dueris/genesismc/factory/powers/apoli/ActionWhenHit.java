@@ -28,18 +28,16 @@ public class ActionWhenHit extends CraftPower implements Listener {
 
 	@EventHandler
 	public void h(EntityDamageByEntityEvent e) {
-		if (e.getDamage() == 0 || e.isCancelled()) return;
 		Entity actor = e.getEntity();
 		Entity target = e.getDamager();
 
-		if (!(target instanceof Player player)) return;
-		if (!getPowerArray().contains(target)) return;
+		if (!(actor instanceof Player player)) return;
+		if (!getPowerArray().contains(actor)) return;
 
 		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 			for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
 				if (power == null) continue;
-				if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
-				if (!getPowerArray().contains(target)) return;
+				if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor) || !ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target)) return;
 				setActive(player, power.getTag(), true);
 				Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
 				new BukkitRunnable() {
