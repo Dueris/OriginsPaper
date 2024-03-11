@@ -8,6 +8,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.registry.Registries;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
+import org.bukkit.craftbukkit.v1_20_R3.damage.CraftDamageType;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.damage.DamageType;
@@ -62,17 +63,7 @@ public class DamageConditions {
 			return false;
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("name"), (condition, event) -> {
-			String input = condition.get("name").toString();
-			StringBuilder output = new StringBuilder();
-
-			for (char c : input.toCharArray()) {
-				if (Character.isUpperCase(c)) {
-					output.append('_').append(Character.toLowerCase(c));
-				} else {
-					output.append(c);
-				}
-			}
-			return event.getDamageSource().getDamageType().getKey() == NamespacedKey.minecraft(output.toString());
+			return CraftDamageType.bukkitToMinecraft(event.getDamageSource().getDamageType()).msgId().equalsIgnoreCase(condition.get("name").toString());
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, event) -> {
 			String tag = condition.get("tag").toString();
