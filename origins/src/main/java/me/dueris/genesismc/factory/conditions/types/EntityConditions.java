@@ -400,8 +400,10 @@ public class EntityConditions {
 			String fluidD = NamespacedKey.fromString(condition.get("fluid").toString()).asString();
 
 			boolean go = false;
+			boolean isLava = fluidD.equalsIgnoreCase("minecraft:lava");
+			boolean isWater = fluidD.equalsIgnoreCase("minecraft:water");
 
-			if (fluidD.equalsIgnoreCase("minecraft:lava") || fluidD.equalsIgnoreCase("minecraft:water")) {
+			if (isLava || isWater) {
 				go = true;
 			}
 
@@ -415,7 +417,8 @@ public class EntityConditions {
 				if(!state.is(Fluids.EMPTY)){
 					height = state.getHeight(((CraftWorld)entity.getWorld()).getHandle(), new BlockPos(entity.getLocation().getBlock().getX(), entity.getLocation().getBlock().getY(), entity.getLocation().getBlock().getZ()));
 				}
-				return Comparison.getFromString(comparison).compare(height, compare_to);
+				boolean compare = Comparison.getFromString(comparison).compare(height, compare_to);
+				return isLava ? compare && (state.is(Fluids.FLOWING_LAVA) || state.is(Fluids.LAVA)) : isWater ? compare && (state.is(Fluids.FLOWING_WATER) || state.is(Fluids.WATER)) : false;
 			}else{
 				return false;
 			}
