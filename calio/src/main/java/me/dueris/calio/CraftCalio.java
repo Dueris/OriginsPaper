@@ -16,13 +16,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Logger;
 
-import static me.dueris.calio.ParsingStage.*;
-
 public class CraftCalio {
 	public static CraftCalio INSTANCE = new CraftCalio();
-	private ParsingStage state;
 	private boolean isDebugging;
-	private List<File> datapackDirectoriesToParse = new ArrayList();
+	private final List<File> datapackDirectoriesToParse = new ArrayList<>();
 
 	public static NamespacedKey bukkitIdentifier(String namespace, String path) {
 		return NamespacedKey.fromString(namespace + ":" + path);
@@ -39,9 +36,7 @@ public class CraftCalio {
 	public void start(boolean debug, ExecutorService threadPool) {
 		this.isDebugging = debug;
 		Runnable parser = () -> {
-			setState(ParsingStage.PRE);
 			debug("Starting CraftCalio parser...");
-			setState(ParsingStage.PARSE);
 			// Collections
 			getBuilder().accessorRoots.stream().sorted(Comparator.comparingInt(AccessorRoot::getPriority)).toList().forEach((root) -> {
 				datapackDirectoriesToParse.forEach(rootFolder -> {
@@ -97,33 +92,5 @@ public class CraftCalio {
 
 	public CalioBuilder getBuilder() {
 		return CalioBuilder.INSTANCE;
-	}
-
-	public boolean isPrelaunch() {
-		return this.state.equals(PRE);
-	}
-
-	public boolean isParsing() {
-		return this.state.equals(PARSE);
-	}
-
-	public boolean isBuilding() {
-		return this.state.equals(BUILD);
-	}
-
-	public boolean isRegistering() {
-		return this.state.equals(REGISTER);
-	}
-
-	public boolean isFinished() {
-		return this.state.equals(POST);
-	}
-
-	public ParsingStage getState() {
-		return this.state;
-	}
-
-	private void setState(ParsingStage state) {
-		this.state = state;
 	}
 }
