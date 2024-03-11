@@ -7,10 +7,12 @@ import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.world.BiomeMappings;
+import net.minecraft.core.BlockPos;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBiome;
 import org.json.simple.JSONObject;
+import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,21 +53,21 @@ public class BiomeConditions {
 					return false;
 				} else {
 					// mappings exist, now we can start stuff
-					return biomeTagMappings.get(condition.get("tag")).contains(CraftBiome.minecraftToBukkit(biome).getKey().asString().toLowerCase());
+					return biomeTagMappings.get(condition.get("tag")).contains(CraftBiome.minecraftToBukkit(biome.getA()).getKey().asString().toLowerCase());
 				}
 			} else {
 				return false;
 			}
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("precipitation"), (condition, biome) -> {
-			return biome.hasPrecipitation() ?
-				biome.getBaseTemperature() <= 0.15f ?
+			return biome.getA().hasPrecipitation() ?
+				biome.getA().getTemperature(biome.getB()) <= 0.15f ?
 					condition.get("precipitation").toString().equals("snow")
 					: condition.get("precipitation").toString().equals("rain")
 				: condition.get("precipitation").toString().equals("none");
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("category"), (condition, biome) -> {
-			Biome b = CraftBiome.minecraftToBukkit(biome);
+			Biome b = CraftBiome.minecraftToBukkit(biome.getA());
 			for (String biS : BiomeMappings.getBiomeIDs(condition.get("category").toString())) {
 				if (Biome.valueOf(biS.split(":")[1].toUpperCase()).equals(b)) {
 					return true;
@@ -76,10 +78,10 @@ public class BiomeConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("temperature"), (condition, biome) -> {
 			String comparison = condition.get("comparison").toString();
 			float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-			return Comparison.getFromString(comparison).compare(biome.getBaseTemperature(), compare_to);
+			return Comparison.getFromString(comparison).compare(biome.getA().getTemperature(biome.getB()), compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("high_humidity"), (condition, biome) -> {
-			return Comparison.getFromString(">=").compare(biome.climateSettings.downfall(), 0.85f);
+			return Comparison.getFromString(">=").compare(biome.getA().climateSettings.downfall(), 0.85f);
 		}));
 	}
 
@@ -89,14 +91,14 @@ public class BiomeConditions {
 
 	public class ConditionFactory implements Registerable {
 		NamespacedKey key;
-		BiPredicate<JSONObject, net.minecraft.world.level.biome.Biome> test;
+		BiPredicate<JSONObject, Pair<net.minecraft.world.level.biome.Biome, BlockPos>> test;
 
-		public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, net.minecraft.world.level.biome.Biome> test) {
+		public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, Pair<net.minecraft.world.level.biome.Biome, BlockPos>> test) {
 			this.key = key;
 			this.test = test;
 		}
 
-		public boolean test(JSONObject condition, net.minecraft.world.level.biome.Biome tester) {
+		public boolean test(JSONObject condition, Pair<net.minecraft.world.level.biome.Biome, BlockPos> tester) {
 			return test.test(condition, tester);
 		}
 

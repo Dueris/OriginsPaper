@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AttributeExecuteEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
@@ -76,65 +77,60 @@ public class AttributeHandler extends CraftPower implements Listener {
 	}
 
 	@EventHandler
-	public void respawn(PlayerRespawnEvent e) {
+	public void respawn(PlayerPostRespawnEvent e) {
 		Player p = e.getPlayer();
 		ScreenConstants.setAttributesToDefault(p);
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				if (attribute.contains(p)) {
-					for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-						for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-							if (power == null) continue;
+		if (attribute.contains(p)) {
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+					if (power == null) continue;
 
-							for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-								if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
-									extra_reach.add(p);
-									return;
-								} else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
-									extra_reach_attack.add(p);
-									return;
+					for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+						if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
+							extra_reach.add(p);
+							continue;
+						} else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
+							extra_reach_attack.add(p);
+							continue;
+						} else {
+							Reach.setFinalReach(p, Reach.getDefaultReach(p));
+						}
+
+						try {
+							Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+
+							Object valueObj = modifier.get("value");
+
+							if (valueObj instanceof Number) {
+								double value;
+								if (valueObj instanceof Integer) {
+									value = ((Number) valueObj).intValue();
+								} else if (valueObj instanceof Double) {
+									value = ((Number) valueObj).doubleValue();
+								} else if (valueObj instanceof Float) {
+									value = ((Number) valueObj).floatValue();
+								} else if (valueObj instanceof Long) {
+									value = ((Number) valueObj).longValue();
 								} else {
-									Reach.setFinalReach(p, Reach.getDefaultReach(p));
+									Objects.requireNonNull(valueObj);
+									continue;
 								}
 
-								try {
-									Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-
-									Object valueObj = modifier.get("value");
-
-									if (valueObj instanceof Number) {
-										double value;
-										if (valueObj instanceof Integer) {
-											value = ((Number) valueObj).intValue();
-										} else if (valueObj instanceof Double) {
-											value = ((Number) valueObj).doubleValue();
-										} else if (valueObj instanceof Float) {
-											value = ((Number) valueObj).floatValue();
-										} else if (valueObj instanceof Long) {
-											value = ((Number) valueObj).longValue();
-										} else {
-											Objects.requireNonNull(valueObj);
-											continue;
-										}
-
-										double base_value = p.getAttribute(attribute_modifier).getBaseValue();
-										String operation = String.valueOf(modifier.get("operation"));
-										executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-										AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), power);
-										Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
-										setActive(p, power.getTag(), true);
-										p.sendHealthUpdate();
-									}
-								} catch (Exception ev) {
-									ev.printStackTrace();
-								}
+								double base_value = p.getAttribute(attribute_modifier).getBaseValue();
+								String operation = String.valueOf(modifier.get("operation"));
+								executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+								AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), power);
+								Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
+								setActive(p, power.getTag(), true);
+								p.sendHealthUpdate();
 							}
+						} catch (Exception ev) {
+							ev.printStackTrace();
 						}
 					}
 				}
 			}
-		}.runTaskLater(GenesisMC.getPlugin(), 5L);
+		}
 	}
 
 	@EventHandler
@@ -163,6 +159,7 @@ public class AttributeHandler extends CraftPower implements Listener {
 								try {
 									Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
 
+									System.out.println(attribute_modifier.getKey().asString());
 									Object valueObj = modifier.get("value");
 
 									if (valueObj instanceof Number) {

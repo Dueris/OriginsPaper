@@ -910,26 +910,18 @@ public class Actions {
 
 	public static EquipmentSlot getSlotFromString(String slotName) {
 		switch (slotName.toLowerCase()) {
-			case "armor.helmet":
+			case "armor.helmet", "head":
 				return EquipmentSlot.HEAD;
-			case "armor.chest":
+			case "armor.chest", "chest":
 				return EquipmentSlot.CHEST;
-			case "armor.legs":
+			case "armor.legs", "legs":
 				return EquipmentSlot.LEGS;
-			case "armor.feet":
+			case "armor.feet", "feet":
 				return EquipmentSlot.FEET;
-			case "hand":
+			case "hand", "mainhand": // Have "hand" for legacy support
 				return EquipmentSlot.HAND;
 			case "offhand":
 				return EquipmentSlot.OFF_HAND;
-			case "head":
-				return EquipmentSlot.HEAD;
-			case "chest":
-				return EquipmentSlot.CHEST;
-			case "legs":
-				return EquipmentSlot.LEGS;
-			case "feet":
-				return EquipmentSlot.FEET;
 			default:
 				return null;
 		}

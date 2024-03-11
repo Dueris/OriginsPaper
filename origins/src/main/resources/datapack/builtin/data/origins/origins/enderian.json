@@ -4,8 +4,7 @@
     "origins:water_vulnerability",
     "origins:pumpkin_hate",
     "origins:extra_reach",
-    "origins:ender_particles",
-    "origins:silk_touch"
+    "origins:ender_particles"
   ],
   "icon": {
     "item": "minecraft:ender_pearl"

@@ -22,7 +22,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Scoreboard;
@@ -405,16 +409,11 @@ public class EntityConditions {
 				String comparison = condition.get("comparison").toString();
 				double compare_to = Double.parseDouble(condition.get("compare_to").toString());
 				double height = 0.0;
-				if(entity.isInLava() || entity.isInWaterOrBubbleColumn()){
-					Location center = entity.getLocation().getBlock().getLocation();
-					for(double i : new double[]{-2.0, -1.9, -1.8, -1.7, -1.6, -1.5, -1.4, -1.3, -1.2, -1.1, -1, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0,
-						0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0}){
-						if(center.add(0, i, 0).getBlock().isLiquid()){
-							height = i;
-							break;
-						}
-					}
 
+				BlockState nms = ((CraftBlock)entity.getLocation().getBlock()).getNMS();
+				FluidState state = nms.getFluidState();
+				if(!state.is(Fluids.EMPTY)){
+					height = state.getHeight(((CraftWorld)entity.getWorld()).getHandle(), new BlockPos(entity.getLocation().getBlock().getX(), entity.getLocation().getBlock().getY(), entity.getLocation().getBlock().getZ()));
 				}
 				return Comparison.getFromString(comparison).compare(height, compare_to);
 			}else{
@@ -599,16 +598,15 @@ public class EntityConditions {
 			return isEntityMoving(entity);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("on_block"), (condition, entity) -> {
-			BlockConditions blockCondition = ConditionExecutor.blockCondition;
 			if (condition.get("block_condition") == null) {
 				return entity.isOnGround();
 			} else {
-				return ConditionExecutor.testBlock((JSONObject) condition.get("block_condition"), (CraftBlock) entity.getLocation().add(0, -1, 0).getBlock()) && entity.isOnGround();
+				return ConditionExecutor.testBlock((JSONObject) condition.get("block_condition"), (CraftBlock) entity.getLocation().add(0, -1, 0).getBlock());
 			}
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("biome"), (condition, entity) -> {
 			if (condition.containsKey("condition")) {
-				return ConditionExecutor.testBiome((JSONObject) condition.get("condition"), entity.getLocation().getBlock().getBiome());
+				return ConditionExecutor.testBiome((JSONObject) condition.get("condition"), entity.getLocation().getBlock().getBiome(), entity.getLocation());
 			} else { // Assumed to be trying to get biome type
 				String key = condition.get("biome").toString();
 				if (key.contains(":")) {
