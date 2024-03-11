@@ -526,8 +526,7 @@ public class Power implements Serializable, FactoryInstance {
 			new FactoryObjectInstance("type", NamespacedKey.class, null),
 			new FactoryObjectInstance("name", String.class, "No Name"),
 			new FactoryObjectInstance("description", String.class, "No Description"),
-			new FactoryObjectInstance("hidden", Boolean.class, false),
-			new FactoryObjectInstance("condition", JSONObject.class, new JSONObject())
+			new FactoryObjectInstance("hidden", Boolean.class, false)
 		);
 	}
 
@@ -539,7 +538,7 @@ public class Power implements Serializable, FactoryInstance {
 			CraftCalio.INSTANCE.getLogger().severe("Unknown type({t}) was provided when registering new Power: ".replace("{t}", root.get("type").toString()) + namespacedTag.asString());
 		}
 		try {
-			Power newPower = new Power(namespacedTag, new DatapackFile(root.keySet().stream().toList(), root.values().stream().toList()), Utils.readJSONFileAsString(rawFile), false, root.get("type").toString().equalsIgnoreCase("apoli:multiple"));
+			Power newPower = new Power(namespacedTag, new DatapackFile(root.keySet().stream().toList(), root.values().stream().toList()), root.getGsonElement(), false, root.get("type").toString().equalsIgnoreCase("apoli:multiple"));
 			registrar.register(newPower);
 			if (root.get("type").toString().equalsIgnoreCase("apoli:multiple")) {
 				CraftApoli.processNestedPowers(
@@ -548,7 +547,7 @@ public class Power implements Serializable, FactoryInstance {
 					namespacedTag.getNamespace(),
 					namespacedTag.getKey());
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
