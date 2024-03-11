@@ -19,7 +19,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Toggle extends CraftPower implements Listener {

@@ -1,39 +1,25 @@
 package me.dueris.genesismc.factory;
 
-import me.dueris.calio.builder.NamespaceRemapper;
-import me.dueris.calio.registry.IRegistry;
+import com.google.gson.JsonParser;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.registry.registries.*;
+import me.dueris.genesismc.registry.registries.DatapackFile;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Origin;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.storage.GenesisConfigs;
-import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.world.level.storage.LevelResource;
-import org.apache.commons.io.FilenameUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import com.google.gson.JsonParser;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public class CraftApoli {

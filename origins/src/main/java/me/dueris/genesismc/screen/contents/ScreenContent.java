@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static me.dueris.genesismc.content.OrbOfOrigins.orb;
-import static me.dueris.genesismc.screen.OriginChoosing.choosing;
 import static me.dueris.genesismc.screen.ScreenConstants.*;
 import static org.bukkit.ChatColor.*;
 

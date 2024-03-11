@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.conditions.types;
 
 import com.mojang.brigadier.StringReader;
-
 import me.dueris.calio.data.Comparison;
 import me.dueris.calio.data.Shape;
 import me.dueris.calio.registry.Registerable;
@@ -22,9 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.LevelResource;

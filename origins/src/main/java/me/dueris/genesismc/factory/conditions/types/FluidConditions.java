@@ -1,17 +1,13 @@
 package me.dueris.genesismc.factory.conditions.types;
 
-import me.dueris.calio.builder.inst.FactoryInstance;
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.registry.Registries;
 import net.minecraft.world.level.material.Fluid;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.CraftFluid;
 import org.json.simple.JSONObject;
 
-import java.util.List;
 import java.util.function.BiPredicate;
 
 public class FluidConditions {

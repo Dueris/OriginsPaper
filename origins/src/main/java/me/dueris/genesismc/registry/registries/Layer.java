@@ -7,7 +7,6 @@ import me.dueris.calio.builder.inst.FactoryProvider;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.factory.CraftApoli;
-
 import org.bukkit.NamespacedKey;
 import org.json.simple.JSONArray;
 

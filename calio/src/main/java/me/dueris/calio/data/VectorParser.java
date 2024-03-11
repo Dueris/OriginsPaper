@@ -1,10 +1,9 @@
 package me.dueris.calio.data;
 
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftVector;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONObject;
-
-import net.minecraft.world.phys.Vec3;
 
 public class VectorParser {
     public static Vector getVector(JSONObject object){

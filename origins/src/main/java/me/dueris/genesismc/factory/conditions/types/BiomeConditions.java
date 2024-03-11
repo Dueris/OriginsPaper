@@ -5,7 +5,6 @@ import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.world.BiomeMappings;
 import net.minecraft.core.BlockPos;
 import org.bukkit.NamespacedKey;

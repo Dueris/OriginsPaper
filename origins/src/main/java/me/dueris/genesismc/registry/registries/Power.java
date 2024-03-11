@@ -1,5 +1,6 @@
 package me.dueris.genesismc.registry.registries;
 
+import com.google.gson.JsonElement;
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.inst.FactoryInstance;
 import me.dueris.calio.builder.inst.FactoryObjectInstance;
@@ -9,16 +10,11 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.util.Utils;
-
 import org.bukkit.NamespacedKey;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.google.gson.JsonElement;
-
 import java.io.File;
-import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;

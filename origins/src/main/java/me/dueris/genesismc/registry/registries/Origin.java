@@ -8,7 +8,6 @@ import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.Registries;
-
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -19,7 +18,6 @@ import java.io.File;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Origin implements Serializable, FactoryInstance {
