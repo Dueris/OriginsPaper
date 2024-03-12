@@ -27,8 +27,13 @@ public class TextureLocation implements Registerable {
 	}
 
 	public static void parseAll() throws IOException {
+		if (CraftApoli.datapacksInDir() == null) return;
 		for (File pack : CraftApoli.datapacksInDir()) {
+			if (pack == null) continue;
+			if (!pack.isDirectory()) continue;
+			if (pack.listFiles() == null) continue;
 			for (File folders : pack.listFiles()) {
+				if (folders == null) continue;
 				if (folders.getName().equalsIgnoreCase("assets")) {
 					for (File root : folders.listFiles()) {
 						String rootname = root.getName();
@@ -49,7 +54,11 @@ public class TextureLocation implements Registerable {
 		}
 
 		for (TextureLocation location : ((Registrar<TextureLocation>) GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION)).values()) {
+			if (CraftApoli.datapacksInDir() == null) return;
 			for (File pack : CraftApoli.datapacksInDir()) {
+				if (pack == null) continue;
+				if (!pack.isDirectory()) continue;
+				if (pack.listFiles() == null) continue;
 				for (File folders : pack.listFiles()) {
 					if (folders.getName().equalsIgnoreCase("assets")) {
 						File mainRoot = new File(folders, location.key.asString().split(":")[0]);
