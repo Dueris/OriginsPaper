@@ -164,20 +164,6 @@ public class Utils {
 		Bukkit.getLogger().info(values.toString());
 	}
 
-	public static BiEntityConditions.RotationType getRotationType(String string) {
-		switch (string.toLowerCase()) {
-			case "head" -> {
-				return BiEntityConditions.RotationType.HEAD;
-			}
-			case "body" -> {
-				return BiEntityConditions.RotationType.BODY;
-			}
-			default -> {
-				return BiEntityConditions.RotationType.BODY;
-			}
-		}
-	}
-
 	public static Vec3 createDirection(JSONObject jsonObject) {
 		if (jsonObject == null || jsonObject.isEmpty()) return null;
 		float x = 0;

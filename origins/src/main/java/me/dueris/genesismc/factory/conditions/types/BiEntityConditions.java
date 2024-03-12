@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.conditions.types;
 
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.data.Comparison;
+import me.dueris.calio.data.RotationType;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -29,39 +30,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 public class BiEntityConditions implements Listener {
-
-	private static double getAngleBetween(Vec3 a, Vec3 b) {
-		double dot = a.dot(b);
-		return dot / (a.length() * b.length());
-	}
-
-	private static Vec3 reduceAxes(Vec3 vector, EnumSet<Direction.Axis> axesToKeep) {
-		return new Vec3(
-			axesToKeep.contains(Direction.Axis.X) ? vector.x : 0,
-			axesToKeep.contains(Direction.Axis.Y) ? vector.y : 0,
-			axesToKeep.contains(Direction.Axis.Z) ? vector.z : 0
-		);
-	}
-
-	private static Vec3 getBodyRotationVector(net.minecraft.world.entity.Entity entity) {
-
-		if (!(entity instanceof LivingEntity livingEntity)) {
-			return entity.getViewVector(1.0f);
-		}
-
-		float f = livingEntity.getXRot() * ((float) Math.PI / 180);
-		float g = -livingEntity.getYRot() * ((float) Math.PI / 180);
-
-		float h = Mth.cos(g);
-		float i = Mth.sin(g);
-		float j = Mth.cos(f);
-		float k = Mth.sin(f);
-
-		return new Vec3(i * j, -k, h * j);
-
-	}
-
-	// Apoli -- remapped -- added for accuracy
 
 	public void prep() {
 		// Meta conditions, shouldnt execute
@@ -118,8 +86,8 @@ public class BiEntityConditions implements Listener {
 			net.minecraft.world.entity.Entity nmsActor = pair.first().getHandle();
 			net.minecraft.world.entity.Entity nmsTarget = pair.second().getHandle();
 
-			RotationType actorRotationType = Utils.getRotationType(condition.get("actor_rotation").toString());
-			RotationType targetRotationType = Utils.getRotationType(condition.get("target_rotation").toString());
+			RotationType actorRotationType = RotationType.getRotationType(condition.get("actor_rotation").toString());
+			RotationType targetRotationType = RotationType.getRotationType(condition.get("target_rotation").toString());
 
 			Vec3 actorRotation = actorRotationType.getRotation(nmsActor);
 			Vec3 targetRotation = targetRotationType.getRotation(nmsTarget);
@@ -140,12 +108,12 @@ public class BiEntityConditions implements Listener {
 			EnumSet<Direction.Axis> axes = EnumSet.noneOf(Direction.Axis.class);
 			strings.forEach(axis -> axes.add(Direction.Axis.valueOf(axis)));
 
-			actorRotation = reduceAxes(actorRotation, axes);
-			targetRotation = reduceAxes(targetRotation, axes);
+			actorRotation = RotationType.reduceAxes(actorRotation, axes);
+			targetRotation = RotationType.reduceAxes(targetRotation, axes);
 			String comparison = condition.get("comparison").toString();
 			double compare_to = Double.parseDouble(condition.get("compare_to").toString());
 
-			return Comparison.getFromString(comparison).compare(getAngleBetween(actorRotation, targetRotation), compare_to);
+			return Comparison.getFromString(comparison).compare(RotationType.getAngleBetween(actorRotation, targetRotation), compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("attack_target"), (condition, pair) -> {
 			net.minecraft.world.entity.Entity craftActor = pair.first().getHandle();
@@ -205,23 +173,6 @@ public class BiEntityConditions implements Listener {
 		GenesisMC.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION).register(factory);
 	}
 
-	public enum RotationType {
-
-		HEAD(e -> e.getViewVector(1.0F)),
-		BODY(BiEntityConditions::getBodyRotationVector);
-
-		private final Function<net.minecraft.world.entity.Entity, Vec3> function;
-
-		RotationType(Function<net.minecraft.world.entity.Entity, Vec3> function) {
-			this.function = function;
-		}
-
-		public Vec3 getRotation(net.minecraft.world.entity.Entity entity) {
-			return function.apply(entity);
-		}
-
-	}
-
 	public class ConditionFactory implements Registerable {
 		NamespacedKey key;
 		BiPredicate<JSONObject, Pair<CraftEntity, CraftEntity>> test;
@@ -240,5 +191,4 @@ public class BiEntityConditions implements Listener {
 			return key;
 		}
 	}
-	// Apoli end
 }
