@@ -5,6 +5,7 @@ import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
+import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
@@ -495,13 +496,18 @@ public class Actions {
 			double finalChange = 1.0 / Resource.getResource(entity, resource).right();
 			BossBar bossBar = Resource.getResource(entity, resource).left();
 			double toRemove = finalChange * change;
-			double newP = bossBar.getProgress() + toRemove;
+			double newP = Utils.getOperationMappingsDouble().get(action.getOrDefault("operation", "add").toString()).apply(bossBar.getProgress(), toRemove);
 			if (newP > 1.0) {
 				newP = 1.0;
 			} else if (newP < 0) {
 				newP = 0.0;
 			}
 			bossBar.setProgress(newP);
+			if(bossBar.getProgress() == 1.0){
+				Actions.EntityActionType(entity, CraftApoli.getPowerFromTag(resource).getAction("max_action"));
+			} else if(bossBar.getProgress() == 0.0){
+				Actions.EntityActionType(entity, CraftApoli.getPowerFromTag(resource).getAction("min_action"));
+			}
 			bossBar.addPlayer((Player) entity);
 			bossBar.setVisible(true);
 			resourceChangeTimeout.put(entity, true);

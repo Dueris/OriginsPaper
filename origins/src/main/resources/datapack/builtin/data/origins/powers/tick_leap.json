@@ -1,14 +1,79 @@
 {
-  "type": "genesis:leap",
-  "hidden": false,
-  "name": "Big Leap",
-  "description": "You can leap in the direction you are looking to",
-  "modifier": {
-    "cooldown": 40,
-    "tick_charge": 20
+  "type": "origins:multiple",
+  "main": {
+    "type": "origins:action_over_time",
+    "hidden": false,
+    "name": "Big Leap",
+    "description": "You can leap in the direction you are looking to",
+    "condition": {
+      "type": "origins:and",
+      "conditions": [
+        {
+          "type": "origins:power_active",
+          "power": "origins:tick_leap_toggle"
+        },
+        {
+          "type": "origins:sneaking"
+        },
+        {
+          "type": "origins:creative_flying",
+          "inverted": true
+        }
+      ]
+    },
+    "entity_action": {
+      "type": "origins:change_resource",
+      "resource": "origins:tick_leap_resource",
+      "change": 1
+    },
+    "falling_action": {
+      "type": "origins:change_resource",
+      "resource": "origins:tick_leap_resource",
+      "change": 0,
+      "operation": "set"
+    }
   },
-  "condition": {
-    "type": "origins:power_active",
-    "power": "origins:tick_leap_toggle"
-  }
+  "resource": {
+    "type": "origins:resource",
+    "hidden": true,
+    "min": 0,
+    "max": 5,
+    "hud_render": {
+      "sprite_location": "origins:textures/gui/resource_bar.png",
+      "bar_index": 6
+    },
+    "start_value": 0,
+    "max_action": {
+      "type": "origins:and",
+      "actions": [
+        {
+          "type": "origins:add_velocity",
+          "z": 2.4,
+          "y": 0.2,
+          "space": "local"
+        },
+        {
+          "type": "origins:change_resource",
+          "resource": "origins:tick_leap_resource",
+          "change": 0,
+          "operation": "set"
+        },
+        {
+          "type": "origins:spawn_particles",
+          "particle": {
+            "type": "minecraft:cloud"
+          },
+          "count": 15,
+          "speed": 0,
+          "force": false,
+          "spread": {
+            "x": 0.5,
+            "y": 0.5,
+            "z": 0.5
+          }
+        }
+      ]
+    }
+  },
+  "hidden": true
 }

@@ -251,12 +251,17 @@ public class Utils {
 	public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
 		Map<String, BinaryOperator<Double>> operationMap = new HashMap<>();
 		operationMap.put("addition", (a, b) -> a + b);
+		operationMap.put("add", (a, b) -> a + b);
 		operationMap.put("subtraction", (a, b) -> a - b);
+		operationMap.put("subtract", (a, b) -> a - b);
 		operationMap.put("multiplication", (a, b) -> a * b);
+		operationMap.put("multiply", (a, b) -> a * b);
 		operationMap.put("division", (a, b) -> a / b);
+		operationMap.put("divide", (a, b) -> a / b);
 		operationMap.put("multiply_base", (a, b) -> a * (b + 1));
 		operationMap.put("multiply_total", (a, b) -> a * (1 + b));
 		operationMap.put("set_total", (a, b) -> b);
+		operationMap.put("set", (a, b) -> b);
 		operationMap.put("add_base_early", (a, b) -> a + b);
 		operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
 		operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
@@ -275,12 +280,17 @@ public class Utils {
 	public static Map<String, BinaryOperator<Long>> getOperationMappingsLong() {
 		Map<String, BinaryOperator<Long>> operationMap = new HashMap<>();
 		operationMap.put("addition", (a, b) -> a + b);
+		operationMap.put("add", (a, b) -> a + b);
 		operationMap.put("subtraction", (a, b) -> a - b);
+		operationMap.put("subtract", (a, b) -> a - b);
 		operationMap.put("multiplication", (a, b) -> a * b);
+		operationMap.put("multiply", (a, b) -> a * b);
 		operationMap.put("division", (a, b) -> a / b);
+		operationMap.put("divide", (a, b) -> a / b);
 		operationMap.put("multiply_base", (a, b) -> a * (b + 1));
 		operationMap.put("multiply_total", (a, b) -> a * (1 + b));
 		operationMap.put("set_total", (a, b) -> b);
+		operationMap.put("set", (a, b) -> b);
 		operationMap.put("add_base_early", (a, b) -> a + b);
 		operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
 		operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
@@ -299,12 +309,17 @@ public class Utils {
 	public static Map<String, BinaryOperator<Integer>> getOperationMappingsInteger() {
 		Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
 		operationMap.put("addition", (a, b) -> a + b);
+		operationMap.put("add", (a, b) -> a + b);
 		operationMap.put("subtraction", (a, b) -> a - b);
+		operationMap.put("subtract", (a, b) -> a - b);
 		operationMap.put("multiplication", (a, b) -> a * b);
+		operationMap.put("multiply", (a, b) -> a * b);
 		operationMap.put("division", (a, b) -> a / b);
+		operationMap.put("divide", (a, b) -> a / b);
 		operationMap.put("multiply_base", (a, b) -> a * (b + 1));
 		operationMap.put("multiply_total", (a, b) -> a * (1 + b));
 		operationMap.put("set_total", (a, b) -> b);
+		operationMap.put("set", (a, b) -> b);
 		operationMap.put("add_base_early", (a, b) -> a + b);
 		operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
 		operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
@@ -324,12 +339,17 @@ public class Utils {
 	public static Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
 		Map<String, BinaryOperator<Float>> operationMap = new HashMap<>();
 		operationMap.put("addition", (a, b) -> a + b);
+		operationMap.put("add", (a, b) -> a + b);
 		operationMap.put("subtraction", (a, b) -> a - b);
+		operationMap.put("subtract", (a, b) -> a - b);
 		operationMap.put("multiplication", (a, b) -> a * b);
+		operationMap.put("multiply", (a, b) -> a * b);
 		operationMap.put("division", (a, b) -> a / b);
+		operationMap.put("divide", (a, b) -> a / b);
 		operationMap.put("multiply_base", (a, b) -> a * (b + 1));
 		operationMap.put("multiply_total", (a, b) -> a * (1 + b));
 		operationMap.put("set_total", (a, b) -> b);
+		operationMap.put("set", (a, b) -> b);
 		operationMap.put("add_base_early", (a, b) -> a + b);
 		operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
 		operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));

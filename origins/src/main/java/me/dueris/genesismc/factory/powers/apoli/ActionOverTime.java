@@ -18,6 +18,7 @@ public class ActionOverTime extends CraftPower {
 
 	private final int ticksE;
 	private Long interval;
+	private static HashMap<String /*tag*/, Boolean /*allowed*/> taggedAllowedMap = new HashMap<>();
 
 	public ActionOverTime() {
 		this.interval = 1L;
@@ -35,10 +36,19 @@ public class ActionOverTime extends CraftPower {
 					if (Bukkit.getServer().getCurrentTick() % interval != 0) {
 						return;
 					} else {
+						taggedAllowedMap.putIfAbsent(power.getTag(), false);
 						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+							if(!taggedAllowedMap.get(power.getTag())){
+								taggedAllowedMap.put(power.getTag(), true);
+								Actions.EntityActionType(p, power.getAction("rising_action"));
+							}
 							setActive(p, power.getTag(), true);
 							Actions.EntityActionType(p, power.getEntityAction());
 						} else {
+							if(taggedAllowedMap.get(power.getTag())){
+								taggedAllowedMap.put(power.getTag(), false);
+								Actions.EntityActionType(p, power.getAction("falling_action"));
+							}
 							setActive(p, power.getTag(), false);
 						}
 					}

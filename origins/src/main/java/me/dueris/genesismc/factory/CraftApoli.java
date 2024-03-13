@@ -59,6 +59,12 @@ public class CraftApoli {
 		return ((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).get(new NamespacedKey("origins", "origin"));
 	}
 
+	public static Power getPowerFromTag(String powerTag) {
+		for (Power p: ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).values())
+			if (p.getTag().equals(powerTag)) return p;
+		return null;
+	}
+
 	/**
 	 * @return A copy of The null origin.
 	 **/

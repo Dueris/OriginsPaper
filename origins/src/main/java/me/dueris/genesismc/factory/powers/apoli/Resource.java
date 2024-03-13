@@ -29,7 +29,6 @@ import static me.dueris.genesismc.util.CooldownUtils.getBarColor;
 
 public class Resource extends CraftPower implements Listener {
 	public static HashMap<Player, HashMap<String, Pair<BossBar, Double>>> registeredBars = new HashMap();
-	public static Resource INSTANCE = new Resource();
 
 	public static double countNumbersBetween(int start, int end) {
 		if (start > end) {
@@ -83,7 +82,7 @@ public class Resource extends CraftPower implements Listener {
 				final String tag = power.getTag();
 				JSONObject hudRender = power.get("hud_render");
 				BossBar bar = createCooldownBar(p, getBarColor(hudRender), BarStyle.SEGMENTED_6, Utils.getNameOrTag(power).first());
-				bar.setProgress(1.0);
+				bar.setProgress(0.0);
 				Pair<BossBar, Double> pair = new Pair<BossBar, Double>() {
 					@Override
 					public BossBar left() {
