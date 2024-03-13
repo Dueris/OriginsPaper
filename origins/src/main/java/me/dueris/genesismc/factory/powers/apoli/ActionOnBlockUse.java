@@ -52,7 +52,7 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
 					Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
 					Actions.ItemActionType(e.getItem(), power.getItemAction());
 					Actions.ItemActionType(e.getItem(), power.getAction("held_item_action"));
-					if (power.get("result_stack") != null) {
+					if (power.getOrDefault("result_stack", null) != null) {
 						JSONObject jsonObject = power.get("result_stack");
 						int amt;
 						if (jsonObject.get("amount").toString() != null) {
@@ -87,17 +87,4 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
 		return action_on_block_use;
 	}
 
-	@Override
-	public void setActive(Player p, String tag, Boolean bool) {
-		if (powers_active.containsKey(p)) {
-			if (powers_active.get(p).containsKey(tag)) {
-				powers_active.get(p).replace(tag, bool);
-			} else {
-				powers_active.get(p).put(tag, bool);
-			}
-		} else {
-			powers_active.put(p, new HashMap());
-			setActive(p, tag, bool);
-		}
-	}
 }

@@ -24,19 +24,6 @@ public class Climbing extends CraftPower {
 
 	public ArrayList<Player> active_climbing = new ArrayList<>();
 
-	@Override
-	public void setActive(Player p, String tag, Boolean bool) {
-		if (powers_active.containsKey(p)) {
-			if (powers_active.get(p).containsKey(tag)) {
-				powers_active.get(p).replace(tag, bool);
-			} else {
-				powers_active.get(p).put(tag, bool);
-			}
-		} else {
-			powers_active.put(p, new HashMap());
-			setActive(p, tag, bool);
-		}
-	}
 
 	public boolean isActiveClimbing(Player player) {
 		return active_climbing.contains(player);

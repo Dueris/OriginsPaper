@@ -31,19 +31,6 @@ public class LeapChargePower extends CraftPower implements Listener {
 	private static final HashMap<UUID, Boolean> playSound = new HashMap<>();
 	private static final ArrayList<UUID> inAir = new ArrayList<>();
 
-	@Override
-	public void setActive(Player p, String tag, Boolean bool) {
-		if (powers_active.containsKey(p)) {
-			if (powers_active.get(p).containsKey(tag)) {
-				powers_active.get(p).replace(tag, bool);
-			} else {
-				powers_active.get(p).put(tag, bool);
-			}
-		} else {
-			powers_active.put(p, new HashMap());
-			setActive(p, tag, bool);
-		}
-	}
 
 	@EventHandler
 	public void onRabbitLeap(PlayerToggleSneakEvent e) {
