@@ -1,22 +1,84 @@
 {
-  "type": "genesis:explode_tick",
+  "type": "origins:multiple",
   "hidden": true,
-  "modifier": {
-    "power": 3,
-    "resistance": 2,
-    "charge": 2300,
-    "fire": false,
-    "break_blocks": true,
-    "thunder_modifier": {
-      "power": 6,
-      "fire": true,
-      "break_blocks": true,
-      "charge": 1900,
-      "resistance": 3
+  "main": {
+    "type": "origins:action_over_time",
+    "hidden": true,
+    "condition": {
+      "type": "origins:and",
+      "conditions": [
+        {
+          "type": "origins:power_active",
+          "power": "origins:explode_tick_toggle"
+        },
+        {
+          "type": "origins:sneaking"
+        },
+        {
+          "type": "origins:creative_flying",
+          "inverted": true
+        }
+      ]
+    },
+    "entity_action": {
+      "type": "origins:change_resource",
+      "resource": "origins:explode_tick_resource",
+      "change": 1
+    },
+    "falling_action": {
+      "type": "origins:change_resource",
+      "resource": "origins:explode_tick_resource",
+      "change": 0,
+      "operation": "set"
     }
   },
-  "condition": {
-    "type": "origins:power_active",
-    "power": "origins:explode_tick_toggle"
+  "resource": {
+    "type": "origins:resource",
+    "hidden": true,
+    "min": 0,
+    "max": 5,
+    "hud_render": {
+      "sprite_location": "origins:textures/gui/community/spiderkolo/resource_bar_01.png",
+      "bar_index": 1
+    },
+    "start_value": 0,
+    "max_action": {
+      "type": "origins:and",
+      "actions": [
+        {
+          "type": "origins:if_else",
+          "condition": {
+            "type": "origins:in_thunderstorm"
+          },
+          "if_action": {
+            "type": "origins:explode",
+            "power": 7,
+            "create_fire": false
+          },
+          "else_action": {
+            "type": "origins:explode",
+            "power": 5,
+            "create_fire": false
+          }
+        },
+        {
+          "type": "origins:change_resource",
+          "resource": "origins:explode_tick_resource",
+          "change": 0,
+          "operation": "set"
+        }
+      ]
+    }
+  },
+  "toggle": {
+    "type": "origins:toggle",
+    "active_by_default": true,
+    "retain_state": true,
+    "key": {
+      "key": "key.origins.primary_active"
+    },
+    "hidden": false,
+    "name": "BOOOM",
+    "description": "You can explode at will by holding shift, toggleable with keybind"
   }
 }

@@ -1,10 +1,9 @@
 {
   "type": "origins:multiple",
+  "hidden": true,
   "main": {
     "type": "origins:action_over_time",
-    "hidden": false,
-    "name": "Big Leap",
-    "description": "You can leap in the direction you are looking to",
+    "hidden": true,
     "condition": {
       "type": "origins:and",
       "conditions": [
@@ -75,5 +74,15 @@
       ]
     }
   },
-  "hidden": true
+  "toggle": {
+    "type": "origins:toggle",
+    "active_by_default": true,
+    "retain_state": true,
+    "key": {
+      "key": "key.origins.primary_active"
+    },
+    "name": "Big Leap",
+    "description": "You can leap in the direction you are looking to",
+    "hidden": false
+  }
 }

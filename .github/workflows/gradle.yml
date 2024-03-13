@@ -23,7 +23,6 @@ jobs:
       run: |
         chmod +x ./gradlew
         ./gradlew build
-        ./gradlew publishGenesismcPublicationToSonatypeRepository
       env:
         GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
