@@ -55,6 +55,7 @@ public class BlockConditions {
 			}
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, block) -> {
+			if(block == null) return false;
 			if (TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
 				if (!blockTagMappings.containsKey(condition.get("tag"))) {
 					blockTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
