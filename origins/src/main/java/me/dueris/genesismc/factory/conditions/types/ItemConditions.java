@@ -217,7 +217,7 @@ public class ItemConditions {
 			return NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.getTag(), true);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("ingredient"), (condition, itemStack) -> {
-			if (itemStack.getType() != null) {
+			if (itemStack != null && itemStack.getType() != null) {
 				if (condition.containsKey("ingredient")) {
 					Map<String, Object> ingredientMap = (Map<String, Object>) condition.get("ingredient");
 					if (ingredientMap.containsKey("item")) {
