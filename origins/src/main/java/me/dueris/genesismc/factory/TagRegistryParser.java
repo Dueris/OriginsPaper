@@ -36,10 +36,13 @@ public class TagRegistryParser {
 		if (datapacks == null) return;
 
 		for (File datapack : datapacks) {
+			if (!datapack.isDirectory()) continue;
 			File dataDir = new File(datapack.getAbsolutePath() + File.separator + "data");
 			if (!dataDir.isDirectory()) continue;
 			for (File mainDIR : dataDir.listFiles()) {
+				if (!mainDIR.isDirectory()) continue;
 				for (File insideDIR : mainDIR.listFiles()) {
+					if (!insideDIR.isDirectory()) continue;
 					if (!insideDIR.getName().equalsIgnoreCase("tags")) continue;
 					for (File tagFolder : insideDIR.listFiles()) {
 						for (String av : available_types) {
