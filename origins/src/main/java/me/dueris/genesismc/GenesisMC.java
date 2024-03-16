@@ -4,7 +4,7 @@ import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.CraftCalio;
-import me.dueris.calio.builder.NamespaceRemapper;
+import me.dueris.calio.builder.ObjectRemapper;
 import me.dueris.calio.registry.IRegistry;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.registry.impl.CalioRegistry;
@@ -59,6 +59,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +71,7 @@ import java.nio.file.Path;
 import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -203,7 +205,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			Bukkit.getServer().getPluginManager().disablePlugin(this);
 		}
 		CraftApoli.setupDynamicThreadCount();
-		NamespaceRemapper.mappings.add(new Pair<String, String>() {
+		ObjectRemapper.typeMappings.add(new Pair<String, String>() {
 			@Override
 			public String left() {
 				return "origins";
@@ -212,6 +214,28 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			@Override
 			public String right() {
 				return "apoli";
+			}
+		});
+		ObjectRemapper.addObjectMapping("key", new Pair<Object, Object>() {
+			@Override
+			public Object left() {
+				return "primary";
+			}
+
+			@Override
+			public Object right() {
+				return new JSONObject(Map.of("key", "key.origins.primary_active"));
+			}
+		});
+		ObjectRemapper.addObjectMapping("key", new Pair<Object, Object>() {
+			@Override
+			public Object left() {
+				return "secondary";
+			}
+
+			@Override
+			public Object right() {
+				return new JSONObject(Map.of("key", "key.origins.secondary_active"));
 			}
 		});
 		ThreadFactory threadFactory = new NamedThreadFactory("OriginParsingPool");

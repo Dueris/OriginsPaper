@@ -1,4 +1,4 @@
-package me.dueris.genesismc.util;
+package me.dueris.calio.util;
 
 import org.bukkit.NamespacedKey;
 
@@ -9,10 +9,10 @@ public class NamespaceUtils {
 			String namespace = split[0];
 			String path = split[1];
 			if (path.contains("*")) {
-				path.replace("*", NamespacedKey.fromString(currentNamespace).asString().split(":")[1]);
+				path = path.replace("*", currentNamespace.split(":")[1]);
 			}
 			if (namespace.contains("*")) {
-				namespace.replace("*", NamespacedKey.fromString(currentNamespace).asString().split(":")[0]);
+				namespace = namespace.replace("*", currentNamespace.split(":")[0]);
 			}
 			return getNamespaceStringAsBukkit(namespace + ":" + path);
 		}

@@ -197,18 +197,8 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("power_active"), (condition, entity) -> {
 			if (!ApoliPower.powers_active.containsKey(entity)) return false;
-			if (condition.get("power").toString().contains("*")) {
-				String[] powerK = condition.get("power").toString().split("\\*");
-				for (String string : ApoliPower.powers_active.get(entity).keySet()) {
-					if (string.startsWith(powerK[0]) && string.endsWith(powerK[1])) {
-						return ApoliPower.powers_active.get(entity).get(string);
-					}
-				}
-			} else {
-				String power = condition.get("power").toString();
-				return ApoliPower.powers_active.get(entity).getOrDefault(power, false);
-			}
-			return false;
+			String power = condition.get("power").toString();
+			return ApoliPower.powers_active.get(entity).getOrDefault(power, false);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("advancement"), (condition, entity) -> {
 			String advancementString = condition.get("advancement").toString();
