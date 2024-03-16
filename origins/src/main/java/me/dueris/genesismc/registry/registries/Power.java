@@ -195,6 +195,10 @@ public class Power implements Serializable, FactoryInstance {
 		return (String) type;
 	}
 
+	public boolean containsInstance(String inst){
+		return this.powerFile.contains(inst);
+	}
+
 	public JSONObject get(String key) {
 		JSONObject jsonObject = (JSONObject) this.powerFile.get(key);
 		if (jsonObject == null) return new JSONObject();

@@ -8,6 +8,7 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.apoli.ModifyPlayerSpawnPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.SendCharts;
@@ -133,8 +134,15 @@ public class OriginChoosing implements Listener {
 						ScreenConstants.DefaultChoose(p);
 					}
 				}.runTaskLater(GenesisMC.getPlugin(), 1);
-				ModifyPlayerSpawnPower power = new ModifyPlayerSpawnPower();
-				power.runHandle(p);
+				if (p.getBedSpawnLocation() != null) {
+					p.teleport(p.getBedSpawnLocation());
+				} else {
+					for(Layer layer : CraftApoli.getLayersFromRegistry()){
+						for(Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, "apoli:modify_player_spawn", layer)){
+							new ModifyPlayerSpawnPower().teleportToModifiedSpawn(((CraftPlayer)p).getHandle(), power);
+						}
+					}
+				}
 				OriginChangeEvent event = new OriginChangeEvent(p, origin, false);
 				event.callEvent();
 			}
