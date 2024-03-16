@@ -89,7 +89,7 @@ public class Actions {
 			}
 
 			if (!actionsList.isEmpty()) {
-				int randomIndex = (int) (Math.random() * actionsList.size());
+				int randomIndex = (int) new Random().nextInt(actionsList.size());
 				JSONObject chosenAction = actionsList.get(randomIndex);
 				BiEntityActionType(actor, target, chosenAction);
 			}
