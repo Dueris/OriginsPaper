@@ -672,8 +672,17 @@ public class Actions {
 		}
 		if (type.equals("apoli:feed")) {
 			if (entity instanceof Player player) {
-				player.setFoodLevel(player.getFoodLevel() + Integer.parseInt(action.get("food").toString()));
-				player.setSaturation(player.getSaturation() + Float.parseFloat(action.get("saturation").toString()));
+				if(player.getFoodLevel() == 20 || player.getFoodLevel() + Integer.parseInt(action.get("food").toString()) >= 20){
+					player.setFoodLevel(20);
+				}else{
+					player.setFoodLevel(player.getFoodLevel() + Integer.parseInt(action.get("food").toString()));
+				}
+
+				if(player.getSaturation() == 20 || player.getSaturation() + Float.parseFloat(action.get("saturation").toString()) >= 20){
+					player.setSaturation(20);
+				}else{
+					player.setSaturation(player.getSaturation() + Float.parseFloat(action.get("saturation").toString()));
+				}
 			}
 		}
 		if (type.equals("apoli:fire_projectile")) {
