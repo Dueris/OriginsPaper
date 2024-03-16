@@ -267,9 +267,9 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("block_in_radius"), (condition, entity) -> {
 			int radius = Math.toIntExact((Long) condition.get("radius"));
-			Shape shape = Shape.valueOf(condition.get("shape").toString().toUpperCase());
-			String comparison = condition.get("comparison").toString();
-			int compare_to = Integer.parseInt(condition.get("compare_to").toString());
+			Shape shape = Shape.valueOf(condition.getOrDefault("shape", "cube").toString().toUpperCase());
+			String comparison = condition.getOrDefault("comparison", ">=").toString();
+			int compare_to = Integer.parseInt(condition.getOrDefault("compare_to", 1).toString());
 
 			Location center = entity.getLocation();
 			int centerX = center.getBlockX();
