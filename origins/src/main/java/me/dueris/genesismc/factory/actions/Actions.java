@@ -356,15 +356,17 @@ public class Actions {
 			block.applyBoneMeal(BlockFace.UP);
 		}
 		if (type.equals("apoli:explode")) {
-
-			float explosionPower = 1f;
+			long explosionPower = 1l;
+			if(action.get("power") instanceof Long lep){
+				explosionPower = lep;
+			} else if (action.get("power") instanceof Double dep) {
+				explosionPower = Math.round(dep);
+			}
 			String destruction_type = "break";
 			JSONObject indestructible = new JSONObject();
 			JSONObject destructible = new JSONObject();
 			boolean create_fire = false;
 
-			if (action.containsKey("action"))
-				explosionPower = Float.parseFloat(action.get("action").toString());
 			if (action.containsKey("destruction_type"))
 				destruction_type = action.get("destruction_type").toString();
 			if (action.containsKey("indestructible"))
@@ -619,14 +621,17 @@ public class Actions {
 			}
 		}
 		if (type.equals("apoli:explode")) {
-			float explosionPower = 1f;
+			long explosionPower = 1l;
+			if(action.get("power") instanceof Long lep){
+				explosionPower = lep;
+			} else if (action.get("power") instanceof Double dep) {
+				explosionPower = Math.round(dep);
+			}
 			String destruction_type = "break";
 			JSONObject indestructible = new JSONObject();
 			JSONObject destructible = new JSONObject();
 			boolean create_fire = false;
 
-			if (action.containsKey("action"))
-				explosionPower = Float.parseFloat(action.get("action").toString());
 			if (action.containsKey("destruction_type"))
 				destruction_type = action.get("destruction_type").toString();
 			if (action.containsKey("indestructible"))
