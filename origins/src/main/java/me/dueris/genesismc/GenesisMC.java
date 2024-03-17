@@ -250,6 +250,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			new PlaceHolderAPI(this).register();
 		}
 
+		try {
+			Bootstrap.deleteDirectory(GenesisMC.getTmpFolder().toPath(), true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		if (!getTmpFolder().exists()) {
 			getTmpFolder().mkdirs();
 		}
