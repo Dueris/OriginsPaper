@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "me.dueris"
-version = "mc1.20-v0.2.8"
+version = "mc1.20-v1.0.0"
 description = "Bringing the Origins Mod to PaperMC"
 
 dependencies {
@@ -55,7 +55,7 @@ tasks {
 
 tasks.register<Jar>("makePublisher") {
     dependsOn(tasks.shadowJar)
-    archiveFileName.set("genesis-v0.2.8-SNAPSHOT.jar")
+    archiveFileName.set("genesis-v1.0.0-SNAPSHOT.jar")
     from(sourceSets.main.get().output)
 }
 
@@ -64,7 +64,7 @@ publishing {
         artifact(tasks.getByName("makePublisher")) {
             groupId = "io.github.dueris"
             artifactId = "genesis"
-            version = "v0.2.8-SNAPSHOT"
+            version = "v1.0.0-SNAPSHOT"
         }
     }
     repositories {
