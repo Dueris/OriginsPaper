@@ -230,6 +230,7 @@ public class KeybindingUtils implements Listener {
 		if (e.getAction().isRightClick()) {
 			triggerExecution("key.use", e.getPlayer());
 			if (e.getItem() != null) {
+				if (e.getItem().getItemMeta() == null) return;
 				if (e.getItem().getItemMeta().getPersistentDataContainer().has(GenesisMC.identifier("origin_item_data"))) { // Is keybind
 					triggerExecution(e.getItem().getItemMeta().getPersistentDataContainer().get(GenesisMC.identifier("origin_item_data"), PersistentDataType.STRING), e.getPlayer());
 				}
