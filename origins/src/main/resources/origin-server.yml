@@ -15,9 +15,6 @@ adapt_lang: false
 # Enables debug information, when making a bug report, please include a screenshot of the startup while this is "true".
 console-startup-debug: false
 
-# Disabled a very very laggy power
-disable-ActionOnItemUse-power: true
-
 # If true then the errors encountered when parsing a file will be displayed.
 console-print-parse-errors: true
 
@@ -40,9 +37,6 @@ shouldTickReload: false
 
 # Tickrate default is 12000, or 10 minutes
 tickRate: 12000
-
-# Allow modify render power to be disabled. Disabled by default due to cpu intensity
-disable-render-power: true
 
 # Allows to set the max number of threads the power/origin loader will use. Default is 6
 max-loader-threads: 6
