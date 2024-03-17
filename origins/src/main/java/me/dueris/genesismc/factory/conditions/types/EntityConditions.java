@@ -384,6 +384,7 @@ public class EntityConditions {
 			return entity.getWorld().getKey().equals(NamespacedKey.fromString(dim));
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid_height"), (condition, entity) -> {
+			if(!entity.isInWaterOrBubbleColumn() && !entity.isInLava()) return false;
 			String fluidD = NamespacedKey.fromString(condition.get("fluid").toString()).asString();
 
 			boolean go = false;
