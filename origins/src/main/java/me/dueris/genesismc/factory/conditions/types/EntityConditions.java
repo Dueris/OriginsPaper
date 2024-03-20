@@ -239,9 +239,9 @@ public class EntityConditions {
 			return false;
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("block_collision"), (condition, entity) -> {
-			String offsetX = condition.get("offset_x").toString();
-			String offsetY = condition.get("offset_y").toString();
-			String offsetZ = condition.get("offset_z").toString();
+			String offsetX = condition.getOrDefault("offset_x", "0").toString();
+			String offsetY = condition.getOrDefault("offset_y", "0").toString();
+			String offsetZ = condition.getOrDefault("offset_z", "0").toString();
 			if (entity instanceof Player player) {
 				Location playerLocation = player.getEyeLocation();
 				World world = player.getWorld();
