@@ -8,6 +8,14 @@ import org.bukkit.NamespacedKey;
 import java.util.List;
 
 public class JsonFactoryValidator {
+	/**
+	 * Validate the FactoryProvider and return a cloned instance with validated objects.
+	 *
+	 * @param  provider    the original FactoryProvider to be validated
+	 * @param  valid       the list of valid FactoryObjectInstance to be validated against the provider
+	 * @param  factoryKey  the NamespacedKey representing the factory
+	 * @return             a cloned and validated FactoryProvider
+	 */
 	public static FactoryProvider validateFactory(FactoryProvider provider, List<FactoryObjectInstance> valid, NamespacedKey factoryKey) {
 		FactoryProvider cloned = (FactoryProvider) provider.clone();
 		for (FactoryObjectInstance instance : valid) {

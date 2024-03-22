@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.actions;
 
 import me.dueris.calio.data.Space;
 import me.dueris.calio.registry.Registrar;
+import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
@@ -768,7 +769,10 @@ public class Actions {
 			entity.setFireTicks(0);
 		}
 		if (type.equals("apoli:play_sound")) {
-			entity.getWorld().playSound(entity, Sound.valueOf(action.get("sound").toString().toUpperCase().split(":")[1].replace(".", "_")), 8, 1);
+			Sound sound = MiscUtils.parseSound(action.get("sound").toString());
+			Float volume = Float.parseFloat(action.getOrDefault("volume", 1.0).toString());
+			Float pitch = Float.parseFloat(action.getOrDefault("pitch", 1.0).toString());
+			entity.getWorld().playSound(entity, sound, volume, pitch);
 		}
 		if (type.equals("apoli:gain_air")) {
 			long amt = (long) action.get("value");
@@ -884,7 +888,7 @@ public class Actions {
 		}
 		if (type.equals("apoli:apply_effect")) {
 			if (entity instanceof LivingEntity le) {
-				Utils.statusEffectInstance(le, action);
+				le.addPotionEffect(MiscUtils.parseAndApplyStatusEffectInstance(action));
 			}
 		}
 		if (type.equals("apoli:area_of_effect")) {

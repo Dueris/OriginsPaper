@@ -14,5 +14,13 @@ public interface FactoryInstance extends Registerable {
 	 */
 	public List<FactoryObjectInstance> getValidObjectFactory();
 
+	/**
+	 * Creates an instance of the FactoryProvider class using the provided raw file, registry, and namespaced tag associated with the instance being created.
+	 *
+	 * @param  obj          the FactoryProvider object to create an instance of
+	 * @param  rawFile      the raw file to use for creating the instance
+	 * @param  registry      the registry to use for creating the instance
+	 * @param  namespacedTag the namespaced tag to use for creating the instance
+	 */
 	public void createInstance(FactoryProvider obj, File rawFile, Registrar<? extends Registerable> registry, NamespacedKey namespacedTag);
 }

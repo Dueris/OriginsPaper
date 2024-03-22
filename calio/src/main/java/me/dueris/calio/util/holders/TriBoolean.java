@@ -1,4 +1,4 @@
-package me.dueris.calio.util;
+package me.dueris.calio.util.holders;
 
 import java.util.Optional;
 

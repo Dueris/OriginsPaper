@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import com.mojang.brigadier.StringReader;
 import io.papermc.paper.util.MCUtil;
+import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -172,7 +173,7 @@ public class FireProjectile extends CraftPower implements Listener {
 												CompoundTag mergedTag = entityToSpawn.saveWithoutId(new CompoundTag());
 												String[] finalNbtTag = {""};
 												if (power.get("tag") != null) {
-													finalNbtTag[0] = mergedTag.merge(Utils.ParserUtils.parseJson(new StringReader(tag), CompoundTag.CODEC)).getAsString();
+													finalNbtTag[0] = mergedTag.merge(MiscUtils.ParserUtils.parseJson(new StringReader(tag), CompoundTag.CODEC)).getAsString();
 												} else {
 													finalNbtTag[0] = mergedTag.getAsString();
 												}

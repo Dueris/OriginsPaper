@@ -1,6 +1,8 @@
 package me.dueris.genesismc.util.apoli;
 
+import me.dueris.calio.data.RotationType;
 import me.dueris.calio.data.Space;
+import me.dueris.calio.util.ClipContextUtils;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
@@ -29,7 +31,7 @@ public class RaycastUtils {
 		Vec3 origin = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
 		Vec3 direction = entity.getViewVector(1);
 		if (data.containsKey("direction")) {
-			direction = Utils.createDirection((JSONObject) data.get("direction"));
+			direction = RotationType.parseDirection((JSONObject) data.get("direction"));
 			Space space = Space.getSpace(data.get("space").toString());
 			Vector3f vector3f = new Vector3f((float) direction.x, (float) direction.y, (float) direction.z).normalize();
 			space.toGlobal(vector3f, entity);
@@ -164,7 +166,7 @@ public class RaycastUtils {
 		Vec3 origin = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
 		Vec3 direction = entity.getViewVector(1);
 		if (data.containsKey("direction")) {
-			direction = Utils.createDirection((JSONObject) data.get("direction"));
+			direction = RotationType.parseDirection((JSONObject) data.get("direction"));
 			Space space = Space.getSpace(data.get("space").toString());
 			Vector3f vector3f = new Vector3f((float) direction.x, (float) direction.y, (float) direction.z).normalize();
 			space.toGlobal(vector3f, entity);
@@ -185,7 +187,7 @@ public class RaycastUtils {
 		if (data.get("block") != null && (boolean) data.get("block")) {
 			double distance = getBlockReach(data, entity);
 			target = origin.add(direction.scale(distance));
-			BlockHitResult blockHit = performBlockRaycast(entity, origin, target, Utils.getShapeType(data.get("shape_type").toString()), Utils.getFluidHandling(data.get("fluid_handling").toString()));
+			BlockHitResult blockHit = performBlockRaycast(entity, origin, target, ClipContextUtils.getShapeType(data.get("shape_type").toString()), ClipContextUtils.getFluidHandling(data.get("fluid_handling").toString()));
 			if (blockHit.getType() != HitResult.Type.MISS) {
 				if (hitResult == null || hitResult.getType() == HitResult.Type.MISS) {
 					hitResult = blockHit;

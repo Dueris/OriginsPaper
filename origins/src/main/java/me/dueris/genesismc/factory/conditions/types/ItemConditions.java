@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.conditions.types;
 import com.mojang.brigadier.StringReader;
 import me.dueris.calio.data.Comparison;
 import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
@@ -214,7 +215,7 @@ public class ItemConditions {
 			return getMeatMaterials().contains(itemStack.getType());
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, itemStack) -> {
-			return NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.getTag(), true);
+			return NbtUtils.compareNbt(MiscUtils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.getTag(), true);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("ingredient"), (condition, itemStack) -> {
 			if (itemStack != null && itemStack.getType() != null) {

@@ -18,8 +18,6 @@ import java.util.HashSet;
 
 public class EntityGlowPower extends CraftPower {
 
-
-
 	public Collection<Entity> getEntitiesInRadius(Player player, int radius) {
 		Collection<Entity> entitiesInRadius = new HashSet<>();
 		for (Entity entity : player.getLocation().getWorld().getEntities()) {
@@ -38,7 +36,10 @@ public class EntityGlowPower extends CraftPower {
 				for (Entity entity : entitiesWithinRadius) {
 					ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
 					for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
+						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) &&
+							ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity) &&
+							ConditionExecutor.testEntity(power.get("entity_condition"), (CraftEntity) entity)
+						) {
 							CraftPlayer craftPlayer = (CraftPlayer) p;
 //                                MobEffect effect = MobEffects.GLOWING;
 //                                craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(entity.getEntityId(), new MobEffectInstance(effect, 60, 2, false, false, false)));

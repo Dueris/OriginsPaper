@@ -164,83 +164,9 @@ public class Utils {
 		Bukkit.getLogger().info(values.toString());
 	}
 
-	public static Vec3 createDirection(JSONObject jsonObject) {
-		if (jsonObject == null || jsonObject.isEmpty()) return null;
-		float x = 0;
-		float z = 0;
-		float y = 0;
-		if (jsonObject.containsKey("x")) x = (float) jsonObject.get("x");
-		if (jsonObject.containsKey("z")) z = (float) jsonObject.get("z");
-		if (jsonObject.containsKey("y")) y = (float) jsonObject.get("y");
-		return new Vec3(x, y, z);
-	}
-
-	public static ClipContext.Block getShapeType(String string) {
-		switch (string.toLowerCase()) {
-			case "collider" -> {
-				return ClipContext.Block.COLLIDER;
-			}
-			case "outline" -> {
-				return ClipContext.Block.OUTLINE;
-			}
-			case "visual" -> {
-				return ClipContext.Block.VISUAL;
-			}
-			default -> {
-				return null;
-			}
-		}
-	}
-
-	public static ClipContext.Fluid getFluidHandling(String string) {
-		switch (string.toLowerCase()) {
-			case "none" -> {
-				return ClipContext.Fluid.NONE;
-			}
-			case "any" -> {
-				return ClipContext.Fluid.ANY;
-			}
-			case "source_only" -> {
-				return ClipContext.Fluid.SOURCE_ONLY;
-			}
-			default -> {
-				return null;
-			}
-		}
-	}
-
 	public static int getArmorValue(ItemStack armorItem) {
 		net.minecraft.world.item.Item stack = CraftItemStack.asNMSCopy(armorItem).getItem();
 		return stack instanceof ArmorItem item ? item.getDefense() : 0;
-	}
-
-	public static void statusEffectInstance(LivingEntity player, JSONObject power) {
-		JSONObject singleEffect = (JSONObject) power.get("effect");
-		JSONArray effects = (JSONArray) power.getOrDefault("effects", new JSONArray());
-
-		if (singleEffect != null) {
-			effects.add(singleEffect);
-		}
-
-		for (Object obj : effects) {
-			JSONObject effect = (JSONObject) obj;
-			String potionEffect = "minecraft:luck";
-			int duration = 100;
-			int amplifier = 0;
-			boolean isAmbient = false;
-			boolean showParticles = true;
-			boolean showIcon = true;
-
-			if (effect.containsKey("effect")) potionEffect = effect.get("effect").toString();
-			if (effect.containsKey("duration")) duration = Integer.parseInt(effect.get("duration").toString());
-			if (effect.containsKey("amplifier")) amplifier = Integer.parseInt(effect.get("amplifier").toString());
-			if (effect.containsKey("is_ambient")) isAmbient = Boolean.parseBoolean(effect.get("is_ambient").toString());
-			if (effect.containsKey("show_particles"))
-				showParticles = Boolean.parseBoolean(effect.get("show_particles").toString());
-			if (effect.containsKey("show_icon")) showIcon = Boolean.parseBoolean(effect.get("show_icon").toString());
-
-			player.addPotionEffect(new PotionEffect(PotionEffectType.getByKey(new NamespacedKey(potionEffect.split(":")[0], potionEffect.split(":")[1])), duration, amplifier, isAmbient, showParticles, showIcon));
-		}
 	}
 
 	public static void consumeItem(ItemStack item) {
@@ -363,51 +289,5 @@ public class Utils {
 		operationMap.put("divide_random_max", (a, b) -> a / random.nextFloat(b));
 
 		return operationMap;
-	}
-
-	public static class ParserUtils {
-		private static final Field JSON_READER_POS = Util.make(() -> {
-			try {
-				Field field = JsonReader.class.getDeclaredField("pos");
-				field.setAccessible(true);
-				return field;
-			} catch (NoSuchFieldException var1) {
-				throw new IllegalStateException("Couldn't get field 'pos' for JsonReader", var1);
-			}
-		});
-		private static final Field JSON_READER_LINESTART = Util.make(() -> {
-			try {
-				Field field = JsonReader.class.getDeclaredField("lineStart");
-				field.setAccessible(true);
-				return field;
-			} catch (NoSuchFieldException var1) {
-				throw new IllegalStateException("Couldn't get field 'lineStart' for JsonReader", var1);
-			}
-		});
-
-		private static int getPos(JsonReader jsonReader) {
-			try {
-				return JSON_READER_POS.getInt(jsonReader) - JSON_READER_LINESTART.getInt(jsonReader) + 1;
-			} catch (IllegalAccessException var2) {
-				throw new IllegalStateException("Couldn't read position of JsonReader", var2);
-			}
-		}
-
-		public static <T> T parseJson(StringReader stringReader, Codec<T> codec) {
-			JsonReader jsonReader = new JsonReader(new java.io.StringReader(stringReader.getRemaining()));
-			jsonReader.setLenient(true);
-
-			Object var4;
-			try {
-				JsonElement jsonElement = Streams.parse(jsonReader);
-				var4 = Util.getOrThrow(codec.parse(JsonOps.INSTANCE, jsonElement), JsonParseException::new);
-			} catch (StackOverflowError var8) {
-				throw new JsonParseException(var8);
-			} finally {
-				stringReader.setCursor(stringReader.getCursor() + getPos(jsonReader));
-			}
-
-			return (T) var4;
-		}
 	}
 }

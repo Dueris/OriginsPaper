@@ -24,6 +24,13 @@ public class ObjectRemapper {
 	 */
 	private static HashMap<String, ArrayList<Pair<Object, Object>>> objectMappings = new HashMap<>();
 
+	/**
+	 * Creates a remapped JSON object by parsing the contents of the specified file and remapping the keys using the given current namespace.
+	 *
+	 * @param  file              the file to be parsed
+	 * @param  currentNamespace  the current namespace used for remapping
+	 * @return                   the remapped JSON object
+	 */
 	public static JSONObject createRemapped(File file, NamespacedKey currentNamespace) {
 		try {
 			JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(file));
@@ -35,6 +42,13 @@ public class ObjectRemapper {
 		return new JSONObject();
 	}
 
+	/**
+	 * Adds a mapping for the given key and mapper.
+	 *
+	 * @param  key     the key for the mapping
+	 * @param  mapper  the mapper to be added
+	 * @return         void
+	 */
 	public static void addObjectMapping(String key, Pair<Object, Object> mapper){
 		if(objectMappings.containsKey(key)){
 			objectMappings.get(key).add(mapper);
@@ -45,6 +59,12 @@ public class ObjectRemapper {
 		}
 	}
 
+	/**
+	 * Recursively remaps the keys and values of a JSON object based on predefined mappings and dynamic namespaces.
+	 *
+	 * @param obj                 the JSON object to be remapped
+	 * @param currentNamespace    the current namespace used for dynamic namespace remapping
+	 */
 	private static void remapJsonObject(JSONObject obj, NamespacedKey currentNamespace) {
 		for (Object key : obj.keySet()) {
 			Object valueInst = obj.get(key.toString());

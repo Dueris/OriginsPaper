@@ -20,8 +20,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyHarvestPower extends CraftPower implements Listener {
 
-
-
 	@EventHandler
 	public void runD(BlockBreakEvent e) {
 		Player p = e.getPlayer();
@@ -31,10 +29,13 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
 				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 					for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
 						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-							e.setDropItems(false);
 							setActive(p, power.getTag(), true);
 							if (power.getBooleanOrDefault("allow", true) && !e.isDropItems()) {
+								System.out.println("ksflkfjlskdfsdfssddvfsd");
 								e.getBlock().getDrops().forEach((itemStack -> p.getWorld().dropItemNaturally(e.getBlock().getLocation(), itemStack)));
+							} else if (e.isDropItems() && !power.getBooleanOrDefault("allow", true)) {
+								System.out.println("lsfjkfdjls");
+								e.setDropItems(false);
 							}
 						} else {
 							setActive(p, power.getTag(), false);

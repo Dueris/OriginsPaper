@@ -5,6 +5,7 @@ import me.dueris.calio.data.Comparison;
 import me.dueris.calio.data.Shape;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
+import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.actions.Actions;
@@ -433,7 +434,7 @@ public class EntityConditions {
 			return level.canSeeSky(blockPos);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, entity) -> {
-			return NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), ((CraftEntity) entity).getHandle().saveWithoutId(new CompoundTag()), true);
+			return NbtUtils.compareNbt(MiscUtils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), ((CraftEntity) entity).getHandle().saveWithoutId(new CompoundTag()), true);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("sneaking"), (condition, entity) -> {
 			return entity.isSneaking();

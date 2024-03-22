@@ -1,7 +1,7 @@
 package me.dueris.calio.builder.inst;
 
 import me.dueris.calio.CraftCalio;
-import me.dueris.calio.util.TriPair;
+import me.dueris.calio.util.holders.TriPair;
 
 public class FactoryObjectInstance extends TriPair {
 	public FactoryObjectInstance(String objName, Class type, Object defaultVal) {

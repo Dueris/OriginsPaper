@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
+import org.json.simple.JSONObject;
 
 public enum RotationType {
     HEAD(e -> e.getViewVector(1.0F)),
@@ -65,5 +66,16 @@ public enum RotationType {
 
 		return new Vec3(i * j, -k, h * j);
 
+	}
+
+	public static Vec3 parseDirection(JSONObject jsonObject) {
+		if (jsonObject == null || jsonObject.isEmpty()) return null;
+		float x = 0;
+		float z = 0;
+		float y = 0;
+		if (jsonObject.containsKey("x")) x = (float) jsonObject.get("x");
+		if (jsonObject.containsKey("z")) z = (float) jsonObject.get("z");
+		if (jsonObject.containsKey("y")) y = (float) jsonObject.get("y");
+		return new Vec3(x, y, z);
 	}
 }

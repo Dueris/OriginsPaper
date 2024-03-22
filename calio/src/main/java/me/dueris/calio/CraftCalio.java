@@ -29,10 +29,22 @@ public class CraftCalio {
 		return new ResourceLocation(namespace, path);
 	}
 
+	/**
+	 * Add a datapack path to the list of directories to parse.
+	 *
+	 * @param  path  the path to be added
+	 * @return       void
+	 */
 	public void addDatapackPath(Path path) {
 		datapackDirectoriesToParse.add(path.toFile());
 	}
 
+	/**
+	 * A method to start parsing with a provided debug mode and ExecutorService.
+	 *
+	 * @param  debug        a boolean indicating whether debugging is enabled
+	 * @param  threadPool   an ExecutorService for managing threads
+	 */
 	public void start(boolean debug, ExecutorService threadPool) {
 		this.isDebugging = debug;
 		Runnable parser = () -> {
@@ -76,20 +88,40 @@ public class CraftCalio {
 		}
 	}
 
+	/**
+	 * Starts the CraftCalio parser with optional debugging.
+	 *
+	 * @param  debug  a boolean indicating whether debug mode is enabled or disabled
+	 */
 	public void start(boolean debug) {
 		this.start(debug, null);
 	}
 
+	/**
+	 * Logs a debug message if debugging is enabled.
+	 *
+	 * @param  msg  the debug message to be logged
+	 */
 	public void debug(String msg) {
 		if (isDebugging) {
 			getLogger().info(msg);
 		}
 	}
 
+	/**
+	 * Returns the Logger object for the "CraftCalio" logger.
+	 *
+	 * @return the Logger object for "CraftCalio"
+	 */
 	public Logger getLogger() {
 		return Logger.getLogger("CraftCalio");
 	}
 
+	/**
+	 * Retrieves the instance of the CalioBuilder.
+	 *
+	 * @return the CalioBuilder instance
+	 */
 	public CalioBuilder getBuilder() {
 		return CalioBuilder.INSTANCE;
 	}
