@@ -723,6 +723,12 @@ public class EntityConditions {
 			double compare_to = Double.parseDouble(condition.get("compare_to").toString());
 			return Comparison.getFromString(comparison).compare(entity.getWorld().getTime(), compare_to);
 		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("set_size"), (condition, entity) -> {
+			NamespacedKey key = NamespacedKey.fromString(condition.get("set").toString());
+				String comparison = condition.get("comparison").toString();
+				int compare_to = Integer.parseInt(condition.get("compare_to").toString());
+				return Comparison.getFromString(comparison).compare(EntitySetPower.entity_sets.getOrDefault(key.toString(), new ArrayList<>()).size(), compare_to);
+		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("using_effective_tool"), (condition, entity) -> {
 			if (entity instanceof Player player) {
 				ServerPlayer p = ((CraftPlayer) player).getHandle();
