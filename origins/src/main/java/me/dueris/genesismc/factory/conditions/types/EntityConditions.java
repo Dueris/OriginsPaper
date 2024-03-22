@@ -20,12 +20,21 @@ import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.LevelResource;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootDataType;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Scoreboard;
 import org.bukkit.*;
@@ -36,6 +45,7 @@ import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.EquipmentSlot;
@@ -55,6 +65,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiPredicate;
 
 public class EntityConditions {
@@ -728,6 +739,23 @@ public class EntityConditions {
 				String comparison = condition.get("comparison").toString();
 				int compare_to = Integer.parseInt(condition.get("compare_to").toString());
 				return Comparison.getFromString(comparison).compare(EntitySetPower.entity_sets.getOrDefault(key.toString(), new ArrayList<>()).size(), compare_to);
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("predicate"), (condition, entity) -> {
+			MinecraftServer server = GenesisMC.server;
+			ServerLevel level = (ServerLevel) entity.getHandle().level();
+
+			LootItemCondition predicate = server.getLootData().getElement(LootDataType.PREDICATE, CraftNamespacedKey.toMinecraft(
+				NamespacedKey.fromString(condition.get("predicate").toString())
+			));
+			
+			LootParams params = new LootParams.Builder(level)
+				.withParameter(LootContextParams.ORIGIN, entity.getHandle().position())
+				.withOptionalParameter(LootContextParams.THIS_ENTITY, entity.getHandle())
+				.create(LootContextParamSets.COMMAND);
+			
+			LootContext context = new LootContext.Builder(params).create(Optional.empty());
+
+			return predicate.test(context);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("using_effective_tool"), (condition, entity) -> {
 			if (entity instanceof Player player) {
