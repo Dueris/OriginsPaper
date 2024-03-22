@@ -6,10 +6,15 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.GameMode;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
@@ -20,7 +25,7 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyHarvestPower extends CraftPower implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void runD(BlockBreakEvent e) {
 		Player p = e.getPlayer();
 		if (modify_harvest.contains(p)) {
@@ -30,12 +35,10 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
 					for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
 						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
 							setActive(p, power.getTag(), true);
-							if (power.getBooleanOrDefault("allow", true) && !e.isDropItems()) {
-								System.out.println("ksflkfjlskdfsdfssddvfsd");
+							if(e.isCancelled()) return;
+							boolean willDrop = ((CraftPlayer)p).getHandle().hasCorrectToolForDrops(((CraftBlock)e.getBlock()).getNMS());
+							if (power.getBooleanOrDefault("allow", true) && !willDrop) {
 								e.getBlock().getDrops().forEach((itemStack -> p.getWorld().dropItemNaturally(e.getBlock().getLocation(), itemStack)));
-							} else if (e.isDropItems() && !power.getBooleanOrDefault("allow", true)) {
-								System.out.println("lsfjkfdjls");
-								e.setDropItems(false);
 							}
 						} else {
 							setActive(p, power.getTag(), false);
