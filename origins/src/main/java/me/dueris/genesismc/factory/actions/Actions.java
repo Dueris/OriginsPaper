@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.actions;
 
+import me.dueris.calio.data.DestructionType;
 import me.dueris.calio.data.Space;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.util.MiscUtils;
@@ -8,6 +9,7 @@ import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.DataTypes;
 import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect;
@@ -20,12 +22,19 @@ import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.apoli.RaycastUtils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.ExplosionDamageCalculator;
+
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.boss.BossBar;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
@@ -662,19 +671,30 @@ public class Actions {
 				explosionPower = Math.round(dep);
 			}
 			String destruction_type = "break";
-			JSONObject indestructible = new JSONObject();
-			JSONObject destructible = new JSONObject();
 			boolean create_fire = false;
+			ServerLevel level = ((CraftWorld)entity.getWorld()).getHandle();
 
 			if (action.containsKey("destruction_type"))
 				destruction_type = action.get("destruction_type").toString();
-			if (action.containsKey("indestructible"))
-				indestructible = (JSONObject) action.get("indestructible");
-			if (action.containsKey("destructible")) destructible = (JSONObject) action.get("destructible");
 			if (action.containsKey("create_fire"))
 				create_fire = Boolean.parseBoolean(action.get("create_fire").toString());
 
-			entity.getLocation().createExplosion(explosionPower, create_fire);
+			Explosion explosion = new Explosion(
+				level,
+				((CraftEntity)entity).getHandle(),
+				level.damageSources().generic(),
+				new ExplosionDamageCalculator(),
+				entity.getLocation().getX(),
+				entity.getLocation().getY(),
+				entity.getLocation().getZ(),
+				explosionPower,
+				create_fire,
+				DestructionType.parse(destruction_type).getNMS(),
+				ParticleTypes.EXPLOSION,
+				ParticleTypes.EXPLOSION_EMITTER,
+				SoundEvents.GENERIC_EXPLODE
+			);
+			DataTypes.getExplosionMask(explosion, level).apply(action, true);
 		}
 		if (type.equals("apoli:crafting_table")) {
 			if (entity instanceof Player player) {

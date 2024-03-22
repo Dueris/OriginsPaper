@@ -47,6 +47,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Utils {
 	public static Registry<DamageType> DAMAGE_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
@@ -162,6 +164,12 @@ public class Utils {
 
 		// Print the concatenated values
 		Bukkit.getLogger().info(values.toString());
+	}
+
+	public static void computeIfObjectPresent(String key, JSONObject object, Consumer<Object> function){
+		if(object.containsKey(key)){
+			function.accept(object.get(key));
+		}
 	}
 
 	public static int getArmorValue(ItemStack armorItem) {
