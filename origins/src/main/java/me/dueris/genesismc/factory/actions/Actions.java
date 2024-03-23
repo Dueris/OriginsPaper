@@ -6,7 +6,6 @@ import me.dueris.genesismc.factory.actions.types.BlockActions;
 import me.dueris.genesismc.factory.actions.types.EntityActions;
 import me.dueris.genesismc.factory.actions.types.ItemActions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;

@@ -12,10 +12,7 @@ public enum DestructionType {
             case "none" -> {
                 return NONE;
             }
-            case "break" -> {
-                return BREAK;
-            }
-            case "destroy" -> {
+			case "destroy" -> {
                 return DESTROY;
             }
             default -> {

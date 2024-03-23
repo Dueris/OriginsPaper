@@ -70,12 +70,6 @@ public enum RotationType {
 
 	public static Vec3 parseDirection(JSONObject jsonObject) {
 		if (jsonObject == null || jsonObject.isEmpty()) return null;
-		float x = 0;
-		float z = 0;
-		float y = 0;
-		if (jsonObject.containsKey("x")) x = (float) jsonObject.get("x");
-		if (jsonObject.containsKey("z")) z = (float) jsonObject.get("z");
-		if (jsonObject.containsKey("y")) y = (float) jsonObject.get("y");
-		return new Vec3(x, y, z);
+		return VectorGetter.getNMSVector(jsonObject);
 	}
 }

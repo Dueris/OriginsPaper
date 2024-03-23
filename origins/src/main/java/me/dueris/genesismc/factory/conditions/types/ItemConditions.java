@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.conditions.types;
 
 import com.mojang.brigadier.StringReader;
-
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;

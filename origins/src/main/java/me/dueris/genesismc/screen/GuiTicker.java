@@ -3,18 +3,15 @@ package me.dueris.genesismc.screen;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChoosePromptEvent;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.screen.contents.ScreenContent;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.json.simple.JSONObject;
 
 import static me.dueris.genesismc.screen.OriginChoosing.choosing;
 

@@ -9,6 +9,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.DestructionType;
 import me.dueris.genesismc.factory.data.types.ExplosionMask;
 import me.dueris.genesismc.factory.data.types.Space;
+import me.dueris.genesismc.factory.data.types.VectorGetter;
 import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect;
@@ -438,15 +439,9 @@ public class EntityActions {
 			}
 		}
 		if (type.equals("apoli:add_velocity")) {
-			float y = 0f;
-			float x = 0f;
-			float z = 0f;
 			Space space = Space.getSpace(action.getOrDefault("space", "world").toString());
-			if (action.containsKey("y")) y = Float.parseFloat(action.get("y").toString());
-			if (action.containsKey("x")) x = Float.parseFloat(action.get("x").toString());
-			if (action.containsKey("z")) z = Float.parseFloat(action.get("z").toString());
 
-			Vector3f vec = new Vector3f(x, y, z);
+			Vector3f vec = VectorGetter.getAsVector3f(action);
 			net.minecraft.world.entity.Entity en = ((CraftLivingEntity) entity).getHandle();
 			space.toGlobal(vec, en);
 			if (Boolean.parseBoolean(action.getOrDefault("set", "false").toString())) {

@@ -7,10 +7,7 @@ public enum Shape {
 
     public static Shape getShape(String raw){
         switch(raw.toLowerCase()) {
-            case "cube" -> {
-                return CUBE;
-            }
-            case "star" -> {
+			case "star" -> {
                 return STAR;
             }
             case "sphere" -> {

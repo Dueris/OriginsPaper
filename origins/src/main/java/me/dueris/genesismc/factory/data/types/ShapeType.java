@@ -13,10 +13,7 @@ public enum ShapeType {
             case "outline" -> {
                 return OUTLINE;
             }
-            case "visual" -> {
-                return VISUAL;
-            }
-            default -> {
+			default -> {
                 return VISUAL;
             }
         }

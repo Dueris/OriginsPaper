@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.data.types;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftVector;
 import org.bukkit.util.Vector;
+import org.joml.Vector3f;
 import org.json.simple.JSONObject;
 
 public class VectorGetter {
@@ -28,5 +29,9 @@ public class VectorGetter {
 
     public static Vec3 createNMSVector(float x, float y, float z){
         return new Vec3(x, y, z);
+    }
+
+    public static Vector3f getAsVector3f(JSONObject object){
+        return getVector(object).toVector3f();
     }
 }

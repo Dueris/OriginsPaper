@@ -1,13 +1,12 @@
 package me.dueris.genesismc.factory.actions.types;
 
+import me.dueris.calio.util.MiscUtils;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
-
-import me.dueris.calio.util.MiscUtils;
-import net.minecraft.nbt.CompoundTag;
 
 public class ItemActions {
 

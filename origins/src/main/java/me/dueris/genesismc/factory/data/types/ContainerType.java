@@ -1,14 +1,13 @@
 package me.dueris.genesismc.factory.data.types;
 
-import java.util.Optional;
-
+import me.dueris.genesismc.util.Utils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
-import me.dueris.genesismc.util.Utils;
-import net.kyori.adventure.text.Component;
+import java.util.Optional;
 
 public enum ContainerType {
     CHEST(27, InventoryType.CHEST),
@@ -27,10 +26,7 @@ public enum ContainerType {
 
     public static ContainerType getContainerType(String raw){
         switch(raw.toLowerCase()) {
-            case "chest" -> {
-                return CHEST;
-            }
-            case "hopper" -> {
+			case "hopper" -> {
                 return HOPPER;
             }
             case "dropper" -> {

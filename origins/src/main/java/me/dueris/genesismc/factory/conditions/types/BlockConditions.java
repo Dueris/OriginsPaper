@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.conditions.types;
 
-import me.dueris.calio.data.MaterialParser;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
