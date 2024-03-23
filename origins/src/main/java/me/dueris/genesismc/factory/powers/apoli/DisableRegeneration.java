@@ -13,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class DisableRegeneration extends CraftPower implements Listener {
 

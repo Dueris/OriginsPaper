@@ -18,7 +18,6 @@ import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ActionOnBlockPlace extends CraftPower implements Listener {
 

@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Invisibility extends CraftPower {
 	@Override

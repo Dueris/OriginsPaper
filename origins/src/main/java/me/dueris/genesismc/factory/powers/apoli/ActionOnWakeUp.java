@@ -14,7 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ActionOnWakeUp extends CraftPower implements Listener {
 

@@ -17,7 +17,6 @@ import org.bukkit.event.world.GenericGameEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ActionOnLand extends CraftPower implements Listener {
 	private final double MIN_FALL_DISTANCE = 0.5;

@@ -17,7 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class SelfActionWhenHit extends CraftPower implements Listener {
 

@@ -21,7 +21,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class StackingStatusEffect extends CraftPower implements Listener {
 	public static PotionEffectType getPotionEffectType(String effectString) {

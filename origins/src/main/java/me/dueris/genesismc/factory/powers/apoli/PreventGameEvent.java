@@ -13,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.GenericGameEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_game_event;
 

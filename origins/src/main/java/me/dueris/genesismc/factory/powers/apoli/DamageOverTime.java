@@ -23,7 +23,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 public class DamageOverTime extends CraftPower implements Listener {

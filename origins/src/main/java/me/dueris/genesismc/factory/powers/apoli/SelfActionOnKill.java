@@ -17,7 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class SelfActionOnKill extends CraftPower implements Listener {
 

@@ -11,6 +11,8 @@ import me.dueris.genesismc.registry.registries.Power;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.LiquidBlockContainer;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -20,6 +22,7 @@ import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.function.BiPredicate;
 
@@ -116,6 +119,30 @@ public class BlockConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("block"), (condition, block) -> {
 			return block.getType().equals(Material.valueOf(condition.get("block").toString().split(":")[1].toUpperCase()));
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("block_state"), (condition, block) -> {
+			BlockState state = block.getNMS();
+			Collection<Property<?>> properties = state.getProperties();
+			String desiredPropertyName = condition.get("property").toString();
+			Property<?> property = null;
+			for(Property<?> p : properties) {
+				if(p.getName().equals(desiredPropertyName)) {
+					property = p;
+					break;
+				}
+			}
+			if(property != null) {
+				Object value = state.getValue(property);
+				if(condition.containsKey("enum") && value instanceof Enum) {
+					return ((Enum)value).name().equalsIgnoreCase(condition.get("enum").toString());
+				} else if(condition.containsKey("value") && value instanceof Boolean) {
+					return value == condition.get("value");
+				} else if(condition.containsKey("comparison") && condition.containsKey("compare_to") && value instanceof Integer valInt) {
+					return Comparison.getFromString(condition.get("comparison").toString()).compare(valInt, (int) condition.get("compare_to"));
+				}
+				return true;
+			}
+			return false;
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("exposed_to_sky"), (condition, block) -> {
 			return block.getLightFromSky() > 0;

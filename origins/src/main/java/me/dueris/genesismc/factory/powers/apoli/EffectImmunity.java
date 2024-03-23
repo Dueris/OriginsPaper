@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect.getPotionEffectType;

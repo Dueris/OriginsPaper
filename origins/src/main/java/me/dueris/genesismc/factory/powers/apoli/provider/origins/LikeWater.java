@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class LikeWater extends CraftPower implements Listener, PowerProvider {
 	private static final GravityPower gravityHook = new GravityPower();

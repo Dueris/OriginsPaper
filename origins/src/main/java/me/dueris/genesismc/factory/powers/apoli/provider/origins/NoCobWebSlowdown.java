@@ -11,7 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class NoCobWebSlowdown extends CraftPower implements Listener, PowerProvider {
 	public static ArrayList<Player> cobwebBypassers = new ArrayList<>();

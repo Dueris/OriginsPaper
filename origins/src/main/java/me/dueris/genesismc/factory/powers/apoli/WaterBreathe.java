@@ -23,7 +23,6 @@ import org.bukkit.event.entity.EntityAirChangeEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 public class WaterBreathe extends CraftPower implements Listener {
