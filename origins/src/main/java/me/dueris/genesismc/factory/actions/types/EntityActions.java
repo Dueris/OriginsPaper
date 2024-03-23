@@ -1,14 +1,14 @@
 package me.dueris.genesismc.factory.actions.types;
 
-import me.dueris.calio.data.DestructionType;
-import me.dueris.calio.data.Space;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.data.DataTypes;
+import me.dueris.genesismc.factory.data.GenesisDataTypes;
+import me.dueris.genesismc.factory.data.types.DestructionType;
+import me.dueris.genesismc.factory.data.types.Space;
 import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect;
@@ -266,7 +266,7 @@ public class EntityActions {
 				ParticleTypes.EXPLOSION_EMITTER,
 				SoundEvents.GENERIC_EXPLODE
 			);
-			DataTypes.getExplosionMask(explosion, level).apply(action, true);
+			GenesisDataTypes.getExplosionMask(explosion, level).apply(action, true);
 		}
 		if (type.equals("apoli:crafting_table")) {
 			if (entity instanceof Player player) {
