@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.actions.types;
 
 import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
+import me.dueris.genesismc.factory.data.types.VectorGetter;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
@@ -18,18 +19,11 @@ public class BiEntityActions {
 		if (action == null || action.isEmpty()) return;
 		String type = action.get("type").toString();
 		if (type.equals("apoli:add_velocity")) {
-			float x = 0.0f;
-			float y = 0.0f;
-			float z = 0.0f;
-			boolean set = false;
+			boolean set = action.containsKey("set") ? (boolean) action.get("set") : false;
+			Vector vector = VectorGetter.getVector(action);
 
-			if (action.containsKey("x")) x = Float.parseFloat(action.get("x").toString());
-			if (action.containsKey("y")) y = Float.parseFloat(action.get("y").toString());
-			if (action.containsKey("z")) z = Float.parseFloat(action.get("z").toString());
-			if (action.containsKey("set")) set = Boolean.parseBoolean(action.get("set").toString());
-
-			if (set) target.setVelocity(new Vector(x, y, z));
-			else target.setVelocity(target.getVelocity().add(new Vector(x, y, z)));
+			if (set) target.setVelocity(vector);
+			else target.setVelocity(target.getVelocity().add(vector));
 		}
 		if (type.equals("apoli:remove_from_set")) {
 			RemoveFromSetEvent ev = new RemoveFromSetEvent(target, action.get("set").toString());

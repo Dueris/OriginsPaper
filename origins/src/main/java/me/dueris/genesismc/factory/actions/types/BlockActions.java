@@ -1,9 +1,15 @@
 package me.dueris.genesismc.factory.actions.types;
 
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.data.GenesisDataTypes;
+import me.dueris.genesismc.factory.data.types.DestructionType;
 import me.dueris.genesismc.factory.data.types.ResourceOperation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.bukkit.Location;
@@ -76,19 +82,30 @@ public class BlockActions {
 				explosionPower = Math.round(dep);
 			}
 			String destruction_type = "break";
-			JSONObject indestructible = new JSONObject();
-			JSONObject destructible = new JSONObject();
 			boolean create_fire = false;
+			ServerLevel level = ((CraftWorld)location.getWorld()).getHandle();
 
 			if (action.containsKey("destruction_type"))
 				destruction_type = action.get("destruction_type").toString();
-			if (action.containsKey("indestructible"))
-				indestructible = (JSONObject) action.get("indestructible");
-			if (action.containsKey("destructible")) destructible = (JSONObject) action.get("destructible");
 			if (action.containsKey("create_fire"))
 				create_fire = Boolean.parseBoolean(action.get("create_fire").toString());
 
-			location.createExplosion(explosionPower, create_fire);
+			Explosion explosion = new Explosion(
+				level,
+				null,
+				level.damageSources().generic(),
+				new ExplosionDamageCalculator(),
+				location.getX(),
+				location.getY(),
+				location.getZ(),
+				explosionPower,
+				create_fire,
+				DestructionType.parse(destruction_type).getNMS(),
+				ParticleTypes.EXPLOSION,
+				ParticleTypes.EXPLOSION_EMITTER,
+				SoundEvents.GENERIC_EXPLODE
+			);
+			GenesisDataTypes.getExplosionMask(explosion, level).apply(action, true);
 		}
 		if (type.equals("apoli:set_block")) {
 			location.getBlock().setType(Material.valueOf(action.get("block").toString().split(":")[1].toUpperCase()));
