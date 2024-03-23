@@ -1,11 +1,11 @@
 package me.dueris.genesismc.factory.conditions.types;
 
 import it.unimi.dsi.fastutil.Pair;
-import me.dueris.calio.data.Comparison;
-import me.dueris.calio.data.RotationType;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Comparison;
+import me.dueris.genesismc.factory.data.types.RotationType;
 import me.dueris.genesismc.factory.powers.apoli.EntitySetPower;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;

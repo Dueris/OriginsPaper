@@ -1,8 +1,7 @@
 package me.dueris.genesismc.factory.conditions.types;
 
 import com.mojang.brigadier.StringReader;
-import me.dueris.calio.data.Comparison;
-import me.dueris.calio.data.Shape;
+
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.util.MiscUtils;
@@ -10,6 +9,8 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Comparison;
+import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.registry.Registries;
@@ -269,7 +270,7 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("block_in_radius"), (condition, entity) -> {
 			int radius = Math.toIntExact((Long) condition.get("radius"));
-			Shape shape = Shape.valueOf(condition.getOrDefault("shape", "cube").toString().toUpperCase());
+			Shape shape = Shape.getShape(condition.get("shape").toString());
 			String comparison = condition.getOrDefault("comparison", ">=").toString();
 			int compare_to = Integer.parseInt(condition.getOrDefault("compare_to", 1).toString());
 
@@ -286,16 +287,18 @@ public class EntityConditions {
 			int maxY = center.getBlockY() + radius;
 			int maxZ = center.getBlockZ() + radius;
 
-			int blockCount;
+			int blockCount = 0;
 			JSONObject ingredientMap = condition;
-			if (shape.equals(Shape.SPHERE)) {
-				blockCount = countBlocksInSphere(centerX, centerY, centerZ, radius, world, ingredientMap, entity);
-			} else if (shape.equals(Shape.STAR)) {
-				blockCount = countBlocksInStar(centerX, centerY, centerZ, radius, world, ingredientMap, entity);
-			} else if (shape.equals(Shape.CUBE)) {
-				blockCount = countBlocksInCube(minX, minY, minZ, maxX, maxY, maxZ, world, ingredientMap, entity);
-			} else {
-				return false;
+			switch(shape) {
+				case SPHERE -> {
+					blockCount = countBlocksInSphere(centerX, centerY, centerZ, radius, world, ingredientMap, entity);
+				}
+				case STAR -> {
+					blockCount = countBlocksInStar(centerX, centerY, centerZ, radius, world, ingredientMap, entity);
+				}
+				case CUBE -> {
+					blockCount = countBlocksInCube(minX, minY, minZ, maxX, maxY, maxZ, world, ingredientMap, entity);
+				}
 			}
 			return Comparison.getFromString(comparison).compare(blockCount, compare_to);
 		}));

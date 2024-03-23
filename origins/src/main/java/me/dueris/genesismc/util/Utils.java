@@ -45,6 +45,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
@@ -170,6 +171,15 @@ public class Utils {
 		if(object.containsKey(key)){
 			function.accept(object.get(key));
 		}
+	}
+
+	public static <T> T getOrAbsent(Optional<T> optional, T absent){
+        return optional.isPresent() ? optional.get() : absent;
+    }
+
+	public static <T> Optional<T> createIfPresent(T instance){
+		if(instance != null) return Optional.of(instance);
+		return Optional.empty();
 	}
 
 	public static int getArmorValue(ItemStack armorItem) {

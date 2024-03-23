@@ -1,11 +1,11 @@
-package me.dueris.calio.data;
+package me.dueris.genesismc.factory.data.types;
 
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftVector;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONObject;
 
-public class VectorParser {
+public class VectorGetter {
     public static Vector getVector(JSONObject object){
         float x = 0.0f;
         float y = 0.0f;

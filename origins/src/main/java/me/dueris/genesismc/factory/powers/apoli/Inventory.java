@@ -5,6 +5,7 @@ import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.ContainerType;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
@@ -33,8 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class Inventory extends CraftPower implements CommandExecutor, Listener {
-
+public class Inventory extends CraftPower implements Listener {
 
 	@EventHandler
 	public void MoveBackChange(OriginChangeEvent e) {
@@ -84,7 +84,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
 						setActive(e.getPlayer(), power.getTag(), true);
 						if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), e.getPlayer())) {
 							ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
-							org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(power.getStringOrDefault("container_type", "chest").toUpperCase()), power.getStringOrDefault("title", "inventory.container.title").replace("%player%", e.getPlayer().getName()));
+							org.bukkit.inventory.Inventory vault = ContainerType.getContainerType(power.get("container_type").toString()).createInventory(e.getPlayer(), Utils.createIfPresent(power.getString("title")));
 							vaultItems.stream()
 								.forEach(itemStack -> vault.addItem(itemStack));
 							e.getPlayer().openInventory(vault);
@@ -129,37 +129,6 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
 				}
 			}
 		}
-	}
-
-	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
-		if (sender instanceof Player p) {
-			//opens target players shulk inventory
-			if (args.length >= 2 && p.hasPermission("genesism.origins.cmd.othershulk")) {
-				Player target = Bukkit.getPlayer(args[1]);
-				if (target != null) {
-					ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(target);
-					org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: " + target.getName());
-					vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
-					p.openInventory(vault);
-					return true;
-				}
-			}
-
-			//opens own shulk inventory
-			if (shulker_inventory.contains((Player) sender)) {
-				ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
-				org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: " + p.getName());
-				vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
-				p.openInventory(vault);
-			} else {
-				p.sendMessage(Component.text("powers.inventoryOpenPower").color(TextColor.fromHexString(ColorConstants.RED)));
-			}
-		}
-
-
-		return true;
 	}
 
 	@Override

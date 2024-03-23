@@ -1,4 +1,4 @@
-package me.dueris.calio.data;
+package me.dueris.genesismc.factory.data.types;
 
 import net.minecraft.world.level.Explosion;
 

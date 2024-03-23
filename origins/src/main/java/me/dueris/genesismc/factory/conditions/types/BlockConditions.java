@@ -1,11 +1,12 @@
 package me.dueris.genesismc.factory.conditions.types;
 
-import me.dueris.calio.data.Comparison;
 import me.dueris.calio.data.MaterialParser;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.DataTypeUtils;
+import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Power;
 import net.minecraft.core.BlockPos;
@@ -46,7 +47,7 @@ public class BlockConditions {
 		// Meta conditions end
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("material"), (condition, block) -> {
 			try {
-				Material mat = MaterialParser.getMaterial(condition.get("material"));
+				Material mat = DataTypeUtils.getMaterial(condition.get("material"));
 				return block.getType().equals(mat);
 			} catch (Exception e) {
 				e.printStackTrace();

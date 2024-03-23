@@ -1,4 +1,4 @@
-package me.dueris.calio.data;
+package me.dueris.genesismc.factory.data.types;
 
 public enum Comparison {
     LESS_THAN("<"),

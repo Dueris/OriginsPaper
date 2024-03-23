@@ -1,9 +1,9 @@
 package me.dueris.genesismc.util.apoli;
 
-import me.dueris.calio.data.RotationType;
-import me.dueris.calio.data.Space;
 import me.dueris.calio.util.ClipContextUtils;
 import me.dueris.genesismc.factory.actions.Actions;
+import me.dueris.genesismc.factory.data.types.RotationType;
+import me.dueris.genesismc.factory.data.types.Space;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
 import net.minecraft.commands.CommandSource;
