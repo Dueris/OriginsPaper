@@ -1,8 +1,8 @@
 package me.dueris.genesismc.factory.actions.types;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.data.GenesisDataTypes;
 import me.dueris.genesismc.factory.data.types.DestructionType;
+import me.dueris.genesismc.factory.data.types.ExplosionMask;
 import me.dueris.genesismc.factory.data.types.ResourceOperation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -105,7 +105,7 @@ public class BlockActions {
 				ParticleTypes.EXPLOSION_EMITTER,
 				SoundEvents.GENERIC_EXPLODE
 			);
-			GenesisDataTypes.getExplosionMask(explosion, level).apply(action, true);
+			ExplosionMask.getExplosionMask(explosion, level).apply(action, true);
 		}
 		if (type.equals("apoli:set_block")) {
 			location.getBlock().setType(Material.valueOf(action.get("block").toString().split(":")[1].toUpperCase()));

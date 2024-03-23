@@ -6,8 +6,8 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.data.GenesisDataTypes;
 import me.dueris.genesismc.factory.data.types.DestructionType;
+import me.dueris.genesismc.factory.data.types.ExplosionMask;
 import me.dueris.genesismc.factory.data.types.Space;
 import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
@@ -266,7 +266,7 @@ public class EntityActions {
 				ParticleTypes.EXPLOSION_EMITTER,
 				SoundEvents.GENERIC_EXPLODE
 			);
-			GenesisDataTypes.getExplosionMask(explosion, level).apply(action, true);
+			ExplosionMask.getExplosionMask(explosion, level).apply(action, true);
 		}
 		if (type.equals("apoli:crafting_table")) {
 			if (entity instanceof Player player) {

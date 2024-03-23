@@ -84,4 +84,8 @@ public class ExplosionMask {
     public List<Block> getBlocksToDestroy(){
         return this.blocks;
     }
+
+    public static ExplosionMask getExplosionMask(Explosion explosion, ServerLevel level){
+        return new ExplosionMask(explosion, level);
+    }
 }
