@@ -91,6 +91,7 @@ public class Actions {
 	}
 
 	public static void ItemActionType(ItemStack item, JSONObject power) {
+		if(item == null) return;
 		if (power == null || power.isEmpty()) return;
 		String type = power.get("type").toString();
 

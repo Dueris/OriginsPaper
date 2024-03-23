@@ -25,21 +25,18 @@ public class Power implements Serializable, FactoryInstance {
 	@Serial
 	private static final long serialVersionUID = 2L;
 	public static List<NamespacedKey> allowedSkips = new ArrayList<>();
+	public static List<NamespacedKey> notPossibleTypes = new ArrayList<>();
 
 	static {
 		allowedSkips.add(new NamespacedKey("apoli", "simple"));
 		allowedSkips.add(new NamespacedKey("apoli", "model_color"));
 		allowedSkips.add(new NamespacedKey("apoli", "cooldown"));
-		allowedSkips.add(new NamespacedKey("apoli", "lava_vision")); // Not possible
-		allowedSkips.add(new NamespacedKey("apoli", "item_on_item")); // Not finished
-		allowedSkips.add(new NamespacedKey("apoli", "shader")); // Not possible
-		allowedSkips.add(new NamespacedKey("apoli", "modify_grindstone")); // Not finished
-		allowedSkips.add(new NamespacedKey("apoli", "replace_loot_table")); // Not finished
-		allowedSkips.add(new NamespacedKey("apoli", "modify_slipperiness")); // Not finished
-		allowedSkips.add(new NamespacedKey("apoli", "edible_item")); // Not finished
+		notPossibleTypes.add(new NamespacedKey("apoli", "lava_vision")); // Not possible
+		notPossibleTypes.add(new NamespacedKey("apoli", "shader")); // Not possible
 		allowedSkips.add(new NamespacedKey("apoli", "modify_attribute")); // Not planned, use origins:attribute
-		allowedSkips.add(new NamespacedKey("apoli", "prevent_feature_render")); // Not possible
-		allowedSkips.add(new NamespacedKey("apoli", "modify_insomnia_ticks")); // Not possible
+		notPossibleTypes.add(new NamespacedKey("apoli", "prevent_feature_render")); // Not possible
+		notPossibleTypes.add(new NamespacedKey("apoli", "modify_insomnia_ticks")); // Not possible
+		notPossibleTypes.add(new NamespacedKey("apoli", "modify_slipperiness"));
 	}
 
 	NamespacedKey powerTag;
@@ -48,6 +45,7 @@ public class Power implements Serializable, FactoryInstance {
 	boolean originMultipleParent;
 	JsonElement jsonData;
 	Power powerParent;
+	public FactoryProvider rawAccessor;
 
 	public Power(boolean toRegistry) {
 		if (!toRegistry) {
@@ -60,13 +58,14 @@ public class Power implements Serializable, FactoryInstance {
 	 * @param powerFile      The data within a power file.
 	 * @param originMultiple Tells the plugin if its an instance of an origins:multiple sub-power
 	 */
-	public Power(NamespacedKey powerTag, DatapackFile powerFile, JsonElement jsonData, boolean originMultiple) {
+	public Power(NamespacedKey powerTag, DatapackFile powerFile, JsonElement jsonData, boolean originMultiple, FactoryProvider accessor) {
 		this.powerTag = powerTag;
 		this.powerFile = powerFile;
 		this.originMultiple = originMultiple;
 		this.originMultipleParent = false;
 		this.jsonData = jsonData;
 		this.powerParent = null;
+		this.rawAccessor = accessor;
 	}
 
 	/**
@@ -75,13 +74,14 @@ public class Power implements Serializable, FactoryInstance {
 	 * @param originMultiple       Tells the plugin if its an instance of an origins:multiple sub-power
 	 * @param originMultipleParent Tells the plugin if its an origins:multiple parent power
 	 */
-	public Power(NamespacedKey powerTag, DatapackFile powerFile, JsonElement jsonData, boolean originMultiple, boolean originMultipleParent) {
+	public Power(NamespacedKey powerTag, DatapackFile powerFile, JsonElement jsonData, boolean originMultiple, boolean originMultipleParent, FactoryProvider accessor) {
 		this.powerTag = powerTag;
 		this.powerFile = powerFile;
 		this.originMultiple = false;
 		this.originMultipleParent = originMultipleParent;
 		this.jsonData = jsonData;
 		this.powerParent = null;
+		this.rawAccessor = accessor;
 	}
 
 	/**
@@ -91,13 +91,14 @@ public class Power implements Serializable, FactoryInstance {
 	 * @param originMultipleParent Tells the plugin if its an origins:multiple parent power
 	 * @param powerParent          Tells the plugin what to use as an "Inheritance" for values like the name
 	 */
-	public Power(NamespacedKey powerTag, DatapackFile powerFile, JsonElement jsonData, boolean originMultiple, boolean originMultipleParent, Power powerParent) {
+	public Power(NamespacedKey powerTag, DatapackFile powerFile, JsonElement jsonData, boolean originMultiple, boolean originMultipleParent, Power powerParent, FactoryProvider accessor) {
 		this.powerTag = powerTag;
 		this.powerFile = powerFile;
 		this.originMultiple = false;
 		this.originMultipleParent = originMultipleParent;
 		this.jsonData = jsonData;
 		this.powerParent = powerParent;
+		this.rawAccessor = accessor;
 	}
 
 	@Override
@@ -535,10 +536,14 @@ public class Power implements Serializable, FactoryInstance {
 		Registrar<Power> registrar = (Registrar<Power>) registry;
 		List<NamespacedKey> validTypes = ((Registrar<ApoliPower>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).rawRegistry.keySet().stream().toList();
 		if (!validTypes.contains(root.getNamespacedKey("type")) && !allowedSkips.contains(root.getNamespacedKey("type"))) {
-			CraftCalio.INSTANCE.getLogger().severe("Unknown type({t}) was provided when registering new Power: ".replace("{t}", root.get("type").toString()) + namespacedTag.asString());
+			if (notPossibleTypes.contains(root.getNamespacedKey("type"))) {
+				CraftCalio.INSTANCE.getLogger().warning("Provided type({t}) is not possible with GenesisMC due to limitations of the ServerSide, power({p}) will not function correctly.".replace("{t}", root.get("type").toString()).replace("{p}", namespacedTag.asString()));
+			} else {
+				CraftCalio.INSTANCE.getLogger().severe("Unknown type({t}) was provided when registering new Power: ".replace("{t}", root.get("type").toString()) + namespacedTag.asString());
+			}
 		}
 		try {
-			Power newPower = new Power(namespacedTag, new DatapackFile(root.keySet().stream().toList(), root.values().stream().toList()), root.getGsonElement(), false, root.get("type").toString().equalsIgnoreCase("apoli:multiple"));
+			Power newPower = new Power(namespacedTag, new DatapackFile(root.keySet().stream().toList(), root.values().stream().toList()), root.getGsonElement(), false, root.get("type").toString().equalsIgnoreCase("apoli:multiple"), root);
 			registrar.register(newPower);
 			if (root.get("type").toString().equalsIgnoreCase("apoli:multiple")) {
 				CraftApoli.processNestedPowers(

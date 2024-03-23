@@ -25,6 +25,7 @@ public class FactoryProvider extends JSONObject {
 
 	public ItemStack getItemStack(String accessor) {
 		Object inst = this.get(accessor);
+		if (inst == null) return null;
 		if (inst instanceof JSONObject obj) {
 			String materialVal = "head";
 			int amt = 1;

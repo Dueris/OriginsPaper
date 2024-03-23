@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory;
 
 import com.google.gson.JsonParser;
+import me.dueris.calio.builder.inst.FactoryProvider;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.Registries;
@@ -69,7 +70,7 @@ public class CraftApoli {
 	 * @return A copy of The null origin.
 	 **/
 	public static Origin nullOrigin() {
-		return new Origin(new NamespacedKey("genesis", "origin-null"), new DatapackFile(new ArrayList<>(List.of("hidden", "unchoosable", "name", "description")), new ArrayList<>(List.of(true, true, "Null", "Still Null"))), new ArrayList<>(List.of(new Power(new NamespacedKey("genesis", "null"), new DatapackFile(new ArrayList<>(), new ArrayList<>()), null, false))));
+		return new Origin(new NamespacedKey("genesis", "origin-null"), new DatapackFile(new ArrayList<>(List.of("hidden", "unchoosable", "name", "description")), new ArrayList<>(List.of(true, true, "Null", "Still Null"))), new ArrayList<>(List.of(new Power(new NamespacedKey("genesis", "null"), new DatapackFile(new ArrayList<>(), new ArrayList<>()), null, false, null))));
 	}
 
 	/**
@@ -90,9 +91,10 @@ public class CraftApoli {
 			Object subPowerValue = powerContainer.getPowerFile().get(key);
 
 			if (subPowerValue instanceof JSONObject subPowerJson) {
+				FactoryProvider accessor = new FactoryProvider(subPowerJson);
 				DatapackFile subPowerFile = fileToFileContainer(subPowerJson);
 
-				Power newPower = new Power(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), subPowerFile, JsonParser.parseString(subPowerJson.toJSONString()), true, false, powerContainer);
+				Power newPower = new Power(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), subPowerFile, JsonParser.parseString(subPowerJson.toJSONString()), true, false, powerContainer, accessor);
 				((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(newPower);
 			}
 		}

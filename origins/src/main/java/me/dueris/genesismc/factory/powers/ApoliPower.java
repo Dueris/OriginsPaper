@@ -31,7 +31,6 @@ public interface ApoliPower extends Registerable {
 	ArrayList<Player> translucent = new ArrayList<>();
 	ArrayList<Player> water_vision = new ArrayList<>();
 	ArrayList<Player> elytra = new ArrayList<>();
-	ArrayList<Player> apply_effect = new ArrayList<>();
 	ArrayList<Player> effect_immunity = new ArrayList<>();
 	ArrayList<Player> attribute = new ArrayList<>();
 	ArrayList<Player> conditioned_attribute = new ArrayList<>();
@@ -60,10 +59,10 @@ public interface ApoliPower extends Registerable {
 	ArrayList<Player> toggle_power = new ArrayList<>();
 	ArrayList<Player> tooltip = new ArrayList<>();
 	ArrayList<Player> walk_on_fluid = new ArrayList<>();
-	ArrayList<Player> bioluminescent = new ArrayList<>();
 	ArrayList<Player> damage_over_time = new ArrayList<>();
 	//actions
 	ArrayList<Player> action_on_being_used = new ArrayList<>();
+	ArrayList<Player> action_on_item_pickup = new ArrayList<>();
 	ArrayList<Player> action_on_block_break = new ArrayList<>();
 	ArrayList<Player> action_on_block_place = new ArrayList<>();
 	ArrayList<Player> action_on_block_use = new ArrayList<>();
@@ -83,13 +82,10 @@ public interface ApoliPower extends Registerable {
 	ArrayList<Player> self_action_on_kill = new ArrayList<>();
 	ArrayList<Player> self_action_when_hit = new ArrayList<>();
 	ArrayList<Player> target_action_on_hit = new ArrayList<>();
-	//genesis
-	ArrayList<Player> bow_nope = new ArrayList<>();
 	ArrayList<Player> silk_touch = new ArrayList<>();
-	ArrayList<Player> explode_tick = new ArrayList<>();
-	ArrayList<Player> big_leap_tick = new ArrayList<>();
 	ArrayList<Player> attribute_modify_transfer = new ArrayList<>();
 	ArrayList<Player> no_gravity = new ArrayList<>();
+	ArrayList<Player> item_on_item = new ArrayList<>();
 
 	default NamespacedKey getKey() {
 		try {

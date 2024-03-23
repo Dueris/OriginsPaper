@@ -52,11 +52,11 @@ public class ConditionExecutor {
 	}
 
 	private static boolean chance(JSONObject condition) {
-		float chance = (float) condition.get("chance");
+		float chance = condition.get("chance") instanceof Float ? (float) condition.get("chance") : Float.valueOf(String.valueOf(condition.get("chance")));
 		if (chance > 1f) {
 			chance = 1f;
 		}
-		return new Random().nextFloat(1.0f) < chance;
+		return new Random().nextFloat(1.0f) <= chance;
 	}
 
 	public static boolean testBiEntity(JSONObject condition, CraftEntity actor, CraftEntity target) {

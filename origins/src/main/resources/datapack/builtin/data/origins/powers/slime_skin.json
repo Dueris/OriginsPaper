@@ -1,10 +1,105 @@
 {
-  "type": "origins:model_color",
-  "red": 0.25,
-  "green": 0.75,
-  "blue": 0.25,
-  "alpha": 1,
-  "name": "Slimy Skin",
-  "description": "You have the green skin of a slime",
+  "type": "origins:multiple",
+  "skin": {
+    "type": "origins:model_color",
+    "hidden": true,
+    "red": 0.25,
+    "green": 0.75,
+    "blue": 0.25,
+    "alpha": 1
+  },
+  "cream": {
+    "type": "origins:action_on_item_use",
+    "hidden": true,
+    "item_action": {
+      "type": "origins:consume"
+    },
+    "item_condition": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:magma_cream"
+      }
+    },
+    "entity_action": {
+      "type": "origins:apply_effect",
+      "effect": {
+        "effect": "minecraft:fire_resistance",
+        "duration": 200,
+        "amplifier": 0
+      }
+    }
+  },
+  "consume": {
+    "type": "origins:action_on_item_use",
+    "hidden": false,
+    "condition": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:slime_ball"
+      }
+    },
+    "entity_action": {
+      "type": "origins:heal",
+      "amount": 1
+    },
+    "item_action": {
+      "type": "origins:consume"
+    },
+    "name": "Absorption",
+    "description": "You can absorb some items, granting you temporary effects"
+  },
+  "flamable": {
+    "type": "origins:modify_damage_taken",
+    "hidden": false,
+    "damage_condition": {
+      "type": "origins:name",
+      "name": "onFire"
+    },
+    "modifier": {
+      "operation": "multiply",
+      "value": 2
+    },
+    "name": "Flammable",
+    "description": "You take double damage from fire"
+  },
+  "humidity": {
+    "type": "origins:action_over_time",
+    "hidden": true,
+    "condition": {
+      "type": "origins:high_humidity"
+    },
+    "action": {
+      "type": "origins:apply_effect",
+      "effect": {
+        "effect": "minecraft:slowness",
+        "duration": 40,
+        "amplifier": 0
+      }
+    }
+  },
+  "digestion": {
+    "type": "origins:exhaust",
+    "interval": 150,
+    "exhaustion": 1,
+    "hidden": false,
+    "condition": {
+      "type": "origins:chance",
+      "chance": 0.67
+    },
+    "name": "Faster Digestion",
+    "description": "You exhaust faster, even when standing still"
+  },
+  "sprinting": {
+    "name": "Less Stamina",
+    "description": "Because of your sludgy composition, you need more food to sprint",
+    "type": "origins:prevent_sprinting",
+    "condition": {
+      "type": "origins:food_level",
+      "comparison": "<=",
+      "compare_to": 10
+    }
+  },
+  "name": "Slime-Like",
+  "description": "You have the green skin of a slime, and when too cold you become more solid",
   "hidden": false
 }

@@ -8,6 +8,7 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 
@@ -16,11 +17,9 @@ import java.util.ArrayList;
 public class Exhaust extends CraftPower {
 
 	private Long interval;
-	private int ticksE;
 
 	public Exhaust() {
 		this.interval = 1L;
-		this.ticksE = 0;
 	}
 
 
@@ -35,18 +34,17 @@ public class Exhaust extends CraftPower {
 						return;
 					}
 					interval = power.getLong("interval");
-					if (interval == 0) interval = 1L;
-					if (ticksE < interval) {
-						ticksE++;
+					if (Bukkit.getServer().getCurrentTick() % interval != 0) {
 						return;
 					} else {
 						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
 							setActive(p, power.getTag(), true);
-							p.setExhaustion(p.getExhaustion() - power.getFloatOrDefault("exhaustion", 1));
+							if(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
+							if(Math.round(p.getFoodLevel() - power.getFloatOrDefault("exhaustion", 1)) <= 0) p.setFoodLevel(0);
+							else p.setFoodLevel(Math.round(p.getFoodLevel() - power.getFloatOrDefault("exhaustion", 1)));
 						} else {
 							setActive(p, power.getTag(), false);
 						}
-						ticksE = 0;
 					}
 				}
 			}

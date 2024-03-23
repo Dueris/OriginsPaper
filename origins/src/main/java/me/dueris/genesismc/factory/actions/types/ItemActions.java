@@ -17,7 +17,8 @@ public class ItemActions {
 			item.setDurability((short) (item.getDurability() + Short.parseShort(action.get("amount").toString())));
 		}
 		if (type.equals("apoli:consume")) {
-			item.setAmount(item.getAmount() - 1);
+			int amount = action.get("amount") == null ? 1 : action.get("amount") instanceof Long ? Math.toIntExact((long) action.get("amount")) : (int) action.get("amount");
+			item.setAmount(item.getAmount() - amount);
 		}
 		if (type.equals("apoli:remove_enchantment")) {
 			Enchantment enchantment = Enchantment.getByKey(new NamespacedKey(action.get("enchantment").toString().split(":")[0], action.get("enchantment").toString().split(":")[1]));

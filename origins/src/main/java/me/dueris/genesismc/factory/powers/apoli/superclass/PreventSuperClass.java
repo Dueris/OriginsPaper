@@ -15,6 +15,7 @@ public class PreventSuperClass {
 	public static ArrayList<Player> prevent_entity_render = new ArrayList<>();
 	public static ArrayList<Player> prevent_entity_use = new ArrayList<>();
 	public static ArrayList<Player> prevent_item_use = new ArrayList<>();
+	public static ArrayList<Player> prevent_item_pickup = new ArrayList<>();
 	public static ArrayList<Player> prevent_sleep = new ArrayList<>();
 	public static ArrayList<Player> prevent_sprinting = new ArrayList<>();
 

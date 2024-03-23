@@ -7,6 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameEvent;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBiome;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,6 +37,7 @@ public class BounceSlimeBlock extends CraftPower implements Listener, PowerProvi
 				Bukkit.getPluginManager().callEvent(playerHitGroundEvent);
 				if (player.isSneaking()) return;
 				if (!bouncePlayers.contains(player) && !lastLoc.containsKey(player)) return;
+				if (CraftBiome.bukkitToMinecraft(player.getLocation().getBlock().getBiome()).getTemperature(CraftLocation.toBlockPosition(player.getLocation())) < 0.2) return;
 				Location lastLocation = lastLoc.get(player);
 
 				if (lastLocation.getY() > player.getY()) {

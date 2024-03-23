@@ -394,7 +394,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		Bukkit.getServer().getConsoleSender().sendMessage("");
 		if (debugOrigins) {
 			Bukkit.getServer().getConsoleSender().sendMessage("* (-debugOrigins={true}) || BEGINNING DEBUG {");
-			Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @1 powers".replace("@1", String.valueOf(this.registry.retrieve(Registries.CRAFT_POWER).registrySize())));
+			Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @1 powers".replace("@1", String.valueOf(this.registry.retrieve(Registries.POWER).registrySize())));
 			Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @4 layers".replace("@4", String.valueOf(this.registry.retrieve(Registries.LAYER).registrySize())));
 			Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @2 origins = [".replace("@2", String.valueOf(this.registry.retrieve(Registries.ORIGIN).registrySize())));
 			((Registrar<Origin>) this.registry.retrieve(Registries.ORIGIN)).forEach((k, o) -> {
