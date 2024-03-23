@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -15,8 +14,10 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,19 +41,21 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
 
 		return amplifier + 1;
 	}
+	// TODO: use 1.20.5 attributes instead of effects
 
 	@EventHandler
-	public void swing(PlayerArmSwingEvent e) {
+	public void swing(BlockDamageEvent e) {
 		Player p = e.getPlayer();
 		if (modify_break_speed.contains(p)) {
 			if (p.getGameMode().equals(GameMode.CREATIVE)) return;
 			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 				ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
 				try {
-					ConditionExecutor conditionExecutor = GenesisMC.getConditionExecutor();
 					for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) p.getTargetBlockExact(Math.toIntExact(Math.round(AttributeHandler.Reach.getFinalReach(p)))))) {
+						if(e.getBlock() == null || e.getBlock().getState() == null) return;
+						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) e.getBlock())) {
 							setActive(p, power.getTag(), true);
+							if(p.hasPotionEffect(PotionEffectType.FAST_DIGGING)) return;
 							// if(power.getPossibleModifiers("modifier", "modifiers"))
 							for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
 								if (Float.valueOf(modifier.get("value").toString()) <= 0) {
@@ -60,7 +63,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
 									p.addPotionEffect(
 										new PotionEffect(
 											PotionEffectType.SLOW_DIGGING,
-											20,
+											120,
 											(Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
 											false, false, false
 										)
@@ -70,14 +73,24 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
 									p.addPotionEffect(
 										new PotionEffect(
 											PotionEffectType.FAST_DIGGING,
-											20,
+											120,
 											(Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
 											false, false, false
 										)
 									);
 								}
+								p.addScoreboardTag("breaking_genesis_block_at_key_holder");
+								new BukkitRunnable() {
+									@Override
+									public void run() {
+										p.getScoreboardTags().remove("breaking_genesis_block_at_key_holder");
+									}
+								}.runTaskLater(GenesisMC.getPlugin(), 120);
 							}
 						} else {
+							if(p.getScoreboardTags().contains("breaking_genesis_block_at_key_holder")){
+								p.removePotionEffect(PotionEffectType.FAST_DIGGING);
+							}
 							setActive(p, power.getTag(), false);
 						}
 					}

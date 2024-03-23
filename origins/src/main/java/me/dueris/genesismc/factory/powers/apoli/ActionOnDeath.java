@@ -17,7 +17,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ActionOnDeath extends CraftPower implements Listener {
 

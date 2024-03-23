@@ -1,18 +1,17 @@
 package me.dueris.genesismc.factory.data.types;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
-import org.json.simple.JSONObject;
-
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Explosion;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
+import org.json.simple.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExplosionMask {
     List<Block> blocks;
@@ -59,7 +58,7 @@ public class ExplosionMask {
     }
 
     public void destroyBlocks(boolean particles){
-        this.explosion.finalizeExplosion(true);
+        this.explosion.finalizeExplosion(particles);
     }
 
     private List<Block> createBlockList(List<BlockPos> blockPos, ServerLevel level){

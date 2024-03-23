@@ -17,7 +17,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ActionWhenDamageTaken extends CraftPower implements Listener {
 

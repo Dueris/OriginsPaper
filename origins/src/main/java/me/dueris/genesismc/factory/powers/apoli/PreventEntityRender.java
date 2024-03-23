@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_entity_render;

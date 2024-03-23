@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Bioluminescent extends CraftPower implements Listener, PowerProvider {
 	public static ArrayList<Player> players = new ArrayList<>();

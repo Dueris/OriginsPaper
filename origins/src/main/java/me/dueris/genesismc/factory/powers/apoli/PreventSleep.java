@@ -18,7 +18,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.HashMap;
 
 import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_sleep;
 import static org.bukkit.Material.*;

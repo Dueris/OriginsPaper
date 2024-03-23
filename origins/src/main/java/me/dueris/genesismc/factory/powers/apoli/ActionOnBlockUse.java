@@ -21,7 +21,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ActionOnBlockUse extends CraftPower implements Listener {
 

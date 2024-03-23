@@ -23,7 +23,6 @@ import org.bukkit.event.entity.EntityAirChangeEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 public class WaterBreathe extends CraftPower implements Listener {
@@ -42,7 +41,7 @@ public class WaterBreathe extends CraftPower implements Listener {
 		WaterBreathe waterBreathe = new WaterBreathe();
 		Bukkit.getScheduler().runTaskTimer(GenesisMC.getPlugin(), () -> {
 			waterBreathe.run();
-		}, 0, 1);
+		}, 0, 20);
 	}
 
 
@@ -70,8 +69,9 @@ public class WaterBreathe extends CraftPower implements Listener {
 	@Override
 	public void run(Player p) {
 		if (!getPowerArray().contains(p)) return;
+		if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
+			return;
 		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
 			for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
 				if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
 					setActive(p, power.getTag(), true);
@@ -99,8 +99,6 @@ public class WaterBreathe extends CraftPower implements Listener {
 							}
 							outofAIR.remove(p);
 						} else {
-							if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
-								return;
 							int remainingAir = p.getRemainingAir();
 							if (remainingAir <= 5) {
 								p.setRemainingAir(lowestAir);
@@ -147,12 +145,12 @@ public class WaterBreathe extends CraftPower implements Listener {
 			if (outofAIR.contains(p)) {
 				int remainingAir = p.getRemainingAir();
 				if (remainingAir <= 5) {
-					int finalDmg = 3;
+					float finalDmg = 1;
 					if (p.getInventory().getHelmet() != null) {
 						if (p.getInventory().getHelmet().getType() == Material.TURTLE_HELMET) {
-							finalDmg = 2;
+							finalDmg = 0.5f;
 						} else if (p.getInventory().getHelmet().containsEnchantment(Enchantment.OXYGEN)) {
-							finalDmg = 2;
+							finalDmg = 0.5f;
 						}
 					}
 					DamageType dmgType = Utils.DAMAGE_REGISTRY.get(new ResourceLocation("origins", "no_water_for_gills"));

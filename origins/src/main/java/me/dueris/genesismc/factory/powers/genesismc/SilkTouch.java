@@ -22,7 +22,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.HashMap;
 
 public class SilkTouch extends CraftPower implements Listener {
 

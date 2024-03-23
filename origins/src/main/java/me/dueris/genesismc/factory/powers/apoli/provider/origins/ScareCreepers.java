@@ -19,7 +19,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ScareCreepers extends CraftPower implements Listener, PowerProvider {
 	public static ArrayList<Player> scaryPlayers = new ArrayList<>();

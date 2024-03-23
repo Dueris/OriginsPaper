@@ -18,7 +18,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.RayTraceResult;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.Predicate;
 
 import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.Reach.getFinalReach;

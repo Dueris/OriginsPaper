@@ -18,7 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ActionOnCallback extends CraftPower implements Listener {
 

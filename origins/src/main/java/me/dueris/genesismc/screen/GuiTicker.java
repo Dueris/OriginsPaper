@@ -23,6 +23,7 @@ public class GuiTicker extends BukkitRunnable {
 	public void run() {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				if(layer.testChoosable(p).isEmpty()) continue;
 				try {
 					if (OriginPlayerAccessor.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
 						String openInventoryTitle = p.getOpenInventory().getTitle();
@@ -32,20 +33,10 @@ public class GuiTicker extends BukkitRunnable {
 							Bukkit.getPluginManager().callEvent(event);
 							if (!event.isCanceled()) {
 								if (OriginPlayerAccessor.getOrigin(p, layer).getTag().equals(CraftApoli.nullOrigin().getTag())) {
-									if (ori.getOriginFile().get("condition") != null) {
-										if (ConditionExecutor.testEntity((JSONObject) ori.getOriginFile().get("condition"), (CraftEntity) p)) {
-											choosing.put(p, layer);
-											Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu - " + layer.getName());
-											mainmenu.setContents(ScreenContent.GenesisMainMenuContents(p));
-											p.openInventory(mainmenu);
-										}
-									} else {
-										choosing.put(p, layer);
-										Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu - " + layer.getName());
-										mainmenu.setContents(ScreenContent.GenesisMainMenuContents(p));
-										p.openInventory(mainmenu);
-									}
-
+									choosing.put(p, layer);
+									Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu - " + layer.getName());
+									mainmenu.setContents(ScreenContent.GenesisMainMenuContents(p));
+									p.openInventory(mainmenu);
 								}
 							}
 						}

@@ -1,13 +1,13 @@
 package me.dueris.genesismc.factory.data.types;
 
-import java.util.EnumSet;
-import java.util.function.Function;
-
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.json.simple.JSONObject;
+
+import java.util.EnumSet;
+import java.util.function.Function;
 
 public enum RotationType {
     HEAD(e -> e.getViewVector(1.0F)),

@@ -13,7 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Overlay extends CraftPower implements Listener {
 

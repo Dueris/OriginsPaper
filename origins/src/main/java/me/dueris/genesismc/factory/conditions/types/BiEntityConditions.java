@@ -8,9 +8,7 @@ import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.factory.data.types.RotationType;
 import me.dueris.genesismc.factory.powers.apoli.EntitySetPower;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.phys.Vec3;
@@ -27,7 +25,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 
 public class BiEntityConditions implements Listener {
 

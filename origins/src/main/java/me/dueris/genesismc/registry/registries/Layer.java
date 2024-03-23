@@ -7,8 +7,12 @@ import me.dueris.calio.builder.inst.FactoryProvider;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.entity.Entity;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.Serial;
@@ -43,6 +47,20 @@ public class Layer implements Serializable, FactoryInstance {
 	@Override
 	public String toString() {
 		return "Tag = " + tag + " LayerFile = " + layerFile.toString();
+	}
+
+	public List<Origin> testChoosable(Entity entity){
+		List<Origin> tested = new ArrayList<Origin>();
+		for(Origin origin : this.origins){
+			if(origin.getUsesCondition()){
+				if(ConditionExecutor.testEntity(origin.choosingCondition, (CraftEntity) entity)){
+					tested.add(origin);
+				}
+			}else{
+				tested.add(origin);
+			}
+		}
+		return tested;
 	}
 
 	@Override
@@ -133,10 +151,21 @@ public class Layer implements Serializable, FactoryInstance {
 		}else{
 			List<Origin> list = new ArrayList<>();
 			for (Object orRaw : ((JSONArray) obj.get("origins"))) {
-				if (CraftApoli.getOrigin(orRaw.toString()) != null) {
-					list.add(CraftApoli.getOrigin(orRaw.toString()));
-				} else {
-					CraftCalio.INSTANCE.getLogger().severe("Origin not found inside layer");
+				if(orRaw instanceof JSONObject jsonObject){
+					for(Object string : (JSONArray)jsonObject.get("origins")){
+						if (CraftApoli.getOrigin(orRaw.toString()) != null) {
+							Origin origin = CraftApoli.getOrigin(string.toString());
+							origin.setUsesCondition((JSONObject) jsonObject.get("condition"));
+						} else {
+							CraftCalio.INSTANCE.getLogger().severe("Origin(%a%) not found inside layer".replace("%a%", string.toString()));
+						}
+					}
+				} else if (orRaw instanceof String) {
+					if (CraftApoli.getOrigin(orRaw.toString()) != null) {
+						list.add(CraftApoli.getOrigin(orRaw.toString()));
+					} else {
+						CraftCalio.INSTANCE.getLogger().severe("Origin(%a%) not found inside layer".replace("%a%", orRaw.toString()));
+					}
 				}
 			}
 			registrar.register(new Layer(namespacedTag, new DatapackFile(obj.keySet().stream().toList(), obj.values().stream().toList()), list));

@@ -10,6 +10,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -164,7 +165,7 @@ public class ScreenContent {
 
 	}
 
-	public static @Nullable ItemStack @NotNull [] ChooseMenuContent(int pageNumber, Layer choosingLayer) {
+	public static @Nullable ItemStack @NotNull [] ChooseMenuContent(int pageNumber, Layer choosingLayer, Entity entity) {
 		ItemStack sides = itemProperties(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), "", ItemFlag.HIDE_ENCHANTS, null, null);
 		ItemStack menu = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + me.dueris.genesismc.util.LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "menu.customChoose.return"), ItemFlag.HIDE_ENCHANTS, null, null);
 		ItemStack back = itemProperties(new ItemStack(Material.ARROW), LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "menu.customChoose.back"), ItemFlag.HIDE_ENCHANTS, null, null);
@@ -179,7 +180,7 @@ public class ScreenContent {
 		//removes origins not in the layer
 		for (int i = 0; i < originContainers.size(); i++) {
 			Origin origin = originContainers.get(i);
-			if (!choosingLayer.getOrigins().contains(origin.getTag())) originContainers.remove(origin);
+			if (!choosingLayer.testChoosable(entity).contains(origin.getTag())) originContainers.remove(origin);
 		}
 
 		//removes the origins that can't be displayed on the page due to page size constraints.

@@ -14,7 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.GenericGameEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class GameEventListener extends CraftPower implements Listener {
 	@Override

@@ -17,7 +17,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class RestrictArmor extends CraftPower implements Listener {
 

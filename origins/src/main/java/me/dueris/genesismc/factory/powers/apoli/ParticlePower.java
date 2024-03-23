@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ParticlePower extends CraftPower {
 
