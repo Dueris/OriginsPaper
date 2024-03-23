@@ -28,6 +28,7 @@ public class Origin implements Serializable, FactoryInstance {
 	NamespacedKey tag;
 	DatapackFile originFile;
 	ArrayList<Power> powerContainer;
+	JSONObject choosingCondition;
 
 	public Origin(boolean toRegistry) {
 		if (!toRegistry) {
@@ -39,7 +40,6 @@ public class Origin implements Serializable, FactoryInstance {
 	 * An object that stores an origin and all the details about it.
 	 *
 	 * @param tag            The origin tag.
-	 * @param layerFile      The origin layer file data.
 	 * @param originFile     The origin file, parsed into a HashMap.
 	 * @param powerContainer An array of powers that the origin has.
 	 */
@@ -55,6 +55,14 @@ public class Origin implements Serializable, FactoryInstance {
 	@Override
 	public String toString() {
 		return "Tag: " + this.tag + ", OriginFile: " + this.originFile + ", PowerContainer: " + this.powerContainer.toString();
+	}
+
+	public void setUsesCondition(JSONObject condition) {
+		this.choosingCondition = condition;
+	}
+
+	public boolean getUsesCondition() {
+		return this.choosingCondition != null;
 	}
 
 	@Override

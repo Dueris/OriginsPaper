@@ -45,7 +45,7 @@ public class ScreenNavigator implements Listener {
 			@NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins - " + choosing.get(p).getName());
 			if (e.getCurrentItem().getType().equals(Material.TIPPED_ARROW)) {
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-				custommenu.setContents(ChooseMenuContent(0, choosing.get(p)));
+				custommenu.setContents(ChooseMenuContent(0, choosing.get(p), p));
 				e.getWhoClicked().openInventory(custommenu);
 
 			}
@@ -246,7 +246,7 @@ public class ScreenNavigator implements Listener {
 					}
 
 					@NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins - " + choosing.get(p).getName());
-					custommenu.setContents(ChooseMenuContent(0, choosing.get(p)));
+					custommenu.setContents(ChooseMenuContent(0, choosing.get(p), p));
 					e.getWhoClicked().openInventory(custommenu);
 				} else e.setCancelled(true);
 			}
@@ -277,7 +277,7 @@ public class ScreenNavigator implements Listener {
 					Player p = (Player) e.getWhoClicked();
 					@NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins - " + choosing.get(p).getName());
 					NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "page");
-					custommenu.setContents(ChooseMenuContent(item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.INTEGER), choosing.get(p)));
+					custommenu.setContents(ChooseMenuContent(item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.INTEGER), choosing.get(p), p));
 					p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
 					e.getWhoClicked().closeInventory();
 					e.getWhoClicked().openInventory(custommenu);
