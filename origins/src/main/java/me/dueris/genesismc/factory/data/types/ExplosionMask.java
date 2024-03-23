@@ -59,7 +59,7 @@ public class ExplosionMask {
     }
 
     public void destroyBlocks(boolean particles){
-        this.explosion.finalizeExplosion(true);
+        this.explosion.finalizeExplosion(particles);
     }
 
     private List<Block> createBlockList(List<BlockPos> blockPos, ServerLevel level){
