@@ -20,9 +20,7 @@ public class ItemOnItemPower extends CraftPower implements Listener {
 
     @EventHandler
     public void itemOnItem(InventoryClickEvent e) {
-        System.out.println("fs");
         if (e.getCursor() != null && e.getCurrentItem() != null) { // Valid event
-            System.out.println("valid");
             Player p = (Player) e.getWhoClicked();
             if (p.getGameMode().equals(GameMode.CREATIVE)) return;
             if (this.getPowerArray().contains(p)) {

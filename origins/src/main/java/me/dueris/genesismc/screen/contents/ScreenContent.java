@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static me.dueris.genesismc.content.OrbOfOrigins.orb;
 import static me.dueris.genesismc.screen.ScreenConstants.*;
@@ -171,23 +172,21 @@ public class ScreenContent {
         ItemStack back = itemProperties(new ItemStack(Material.ARROW), LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "menu.customChoose.back"), ItemFlag.HIDE_ENCHANTS, null, null);
         ItemStack next = itemProperties(new ItemStack(Material.ARROW), LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "menu.customChoose.next"), ItemFlag.HIDE_ENCHANTS, null, null);
 
+        HashMap<Integer/*page number*/, List<Origin>/*origins on that page*/> pagesClone = new HashMap<>();
+        for (int pageint : pages.keySet()) {
+            for (Origin originContainer : pages.get(pageint)) {
+                if (!choosingLayer.getOrigins().contains(originContainer.getTag())) continue;
+                if (choosingLayer.testChoosable(entity).contains(originContainer)) {
+                    if (!pagesClone.containsKey(pageNumber)) {
+                        pagesClone.put(pageNumber, new ArrayList<>());
+                        pagesClone.get(pageNumber).add(originContainer);
+                    } else {
+                        pagesClone.get(pageNumber).add(originContainer);
+                    }
+                }
+            }
+        }
         ArrayList<ItemStack> contents = new ArrayList<>();
-        ArrayList<Origin> originContainers = new ArrayList<>(CraftApoli.getOriginsFromRegistry());
-
-        //removes the core origins
-        originContainers.removeIf(CraftApoli::isCoreOrigin);
-
-        //removes origins not in the layer
-        for (int i = 0; i < originContainers.size(); i++) {
-            Origin origin = originContainers.get(i);
-            if (!choosingLayer.testChoosable(entity).contains(origin.getTag())) originContainers.remove(origin);
-        }
-
-        //removes the origins that can't be displayed on the page due to page size constraints.
-        for (int i = 0; 35 * pageNumber > i; i++) {
-            if (originContainers.isEmpty()) break;
-            originContainers.remove(0);
-        }
 
         //sets which page the arrows will go to
         NamespacedKey pageKey = new NamespacedKey(GenesisMC.getPlugin(), "page");
@@ -197,9 +196,7 @@ public class ScreenContent {
         back.setItemMeta(backMeta);
 
         ItemMeta nextMeta = next.getItemMeta();
-        if (originContainers.size() < 37)
-            nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber);
-        else nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber + 1);
+        nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber + 1);
         next.setItemMeta(nextMeta);
 
 
@@ -216,12 +213,10 @@ public class ScreenContent {
             } else if (i >= 46) {
                 contents.add(new ItemStack(Material.AIR));
             } else {
-                if (originContainers.size() > 0) {
-                    Origin origin = originContainers.get(0);
-                    while (origin.getUnchooseable()) {
-                        originContainers.remove(0);
-                        origin = originContainers.get(0);
-                    }
+                List<Origin> originList = pagesClone.get(pageNumber);
+                if (originList != null && originList.toArray().length > 0) {
+                    Origin origin = originList.get(0);
+
                     String minecraftItem = origin.getIcon();
                     String item = null;
                     if (minecraftItem.contains(":")) {
@@ -239,7 +234,8 @@ public class ScreenContent {
                     originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origin.getTag());
                     originIcon.setItemMeta(originIconmeta);
                     contents.add(originIcon);
-                    originContainers.remove(0);
+                    originList.remove(origin);
+                    pagesClone.put(pageNumber, originList); // Ensure updating
                 } else {
                     contents.add(new ItemStack(Material.AIR));
                 }

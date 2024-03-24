@@ -146,6 +146,10 @@ public class Origin implements Serializable, FactoryInstance {
         }
     }
 
+    public int getOrder() {
+        return this.originFile.get("order") == null ? 5 : this.originFile.get("order") instanceof Long ? Math.toIntExact((long) this.originFile.get("order")) : (int) this.originFile.get("order");
+    }
+
     /**
      * @return The icon as a Material Object.
      */

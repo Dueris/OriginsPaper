@@ -15,6 +15,9 @@
           "type": "origins:sneaking"
         },
         {
+          "type": "origins:on_block"
+        },
+        {
           "type": "origins:creative_flying",
           "inverted": true
         }

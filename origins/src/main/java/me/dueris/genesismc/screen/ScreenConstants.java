@@ -1,6 +1,11 @@
 package me.dueris.genesismc.screen;
 
+import me.dueris.calio.registry.Registrar;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChooseEvent;
+import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.util.SendCharts;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -12,11 +17,41 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.bukkit.Bukkit.getServer;
 
 public class ScreenConstants {
+    public static HashMap<Integer/*page number*/, List<Origin>/*origins on that page*/> pages = new HashMap<>();
+
+    public static void splitPages() {
+        Registrar<Origin> registry = GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN);
+        List<Origin> sortedOrigins = registry.rawRegistry.values().stream()
+            .sorted(Comparator.comparingInt(Origin::getOrder))
+            .filter(origin -> !CraftApoli.isCoreOrigin(origin))
+            .filter(origin -> !origin.getUnchooseable())
+            .toList();
+        AtomicInteger pageNumber = new AtomicInteger();
+        AtomicInteger index = new AtomicInteger();
+        sortedOrigins.forEach(origin -> {
+            if (index.get() < 35) {
+                pageNumber.getAndIncrement();
+                index.set(0);
+            } else {
+                index.getAndIncrement();
+            }
+            if (pages.containsKey(pageNumber.get())) {
+                pages.get(pageNumber.get()).add(origin);
+            } else {
+                pages.put(pageNumber.get(), new ArrayList<>() {{
+                    add(origin);
+                }});
+            }
+        });
+    }
 
     public static void DefaultChoose(Player p) {
         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);

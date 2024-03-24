@@ -103,17 +103,8 @@ public class Layer implements Serializable, FactoryInstance {
     /**
      * @return An array list of the loaded origins tags
      */
-    public ArrayList<String> getOrigins() {
-        Object array = layerFile.get("origins");
-        if (array instanceof JSONArray origins) return new ArrayList<String>(origins);
-        return new ArrayList<>();
-    }
-
-    /**
-     * @param originTags Adds the specified originTags to the layer. If you only need to pass in one originTag use an array list with one tag.
-     */
-    public void addOrigin(ArrayList<String> originTags) {
-        this.layerFile.addOrigin(originTags);
+    public List<String> getOrigins() {
+        return origins.stream().map(Origin::getTag).toList();
     }
 
     @Override
@@ -131,23 +122,18 @@ public class Layer implements Serializable, FactoryInstance {
     @Override
     public void createInstance(FactoryProvider obj, File rawFile, Registrar<? extends Registerable> registry, NamespacedKey namespacedTag) {
         Registrar<Layer> registrar = (Registrar<Layer>) registry;
-        AtomicBoolean merge = new AtomicBoolean(false);
-        registrar.forEach((k, l) -> {
-            if (namespacedTag.asString().equalsIgnoreCase(k.asString())) {
-                merge.set(true);
-            }
-        });
+        AtomicBoolean merge = new AtomicBoolean(!(boolean) obj.getOrDefault("replace", false) && registry.rawRegistry.containsKey(namespacedTag));
         if (merge.get()) {
-            List<Origin> list = new ArrayList<>();
+            List<Origin> originList = new ArrayList<>();
             for (Object orRaw : ((JSONArray) obj.get("origins"))) {
                 if (CraftApoli.getOrigin(orRaw.toString()) != null) {
-                    list.add(CraftApoli.getOrigin(orRaw.toString()));
+                    originList.add(CraftApoli.getOrigin(orRaw.toString()));
                 } else {
                     CraftCalio.INSTANCE.getLogger().severe("Origin not found inside layer");
                 }
             }
-            registrar.get(namespacedTag).getOrigins().stream().forEach(e -> list.add(CraftApoli.getOrigin(e)));
-            registrar.replaceEntry(namespacedTag, new Layer(namespacedTag, new DatapackFile(obj.keySet().stream().toList(), obj.values().stream().toList()), list));
+            registrar.get(namespacedTag).getOrigins().stream().forEach(tag -> originList.add(CraftApoli.getOrigin(tag)));
+            registrar.replaceEntry(namespacedTag, new Layer(namespacedTag, new DatapackFile(obj.keySet().stream().toList(), obj.values().stream().toList()), originList));
         } else {
             List<Origin> list = new ArrayList<>();
             for (Object orRaw : ((JSONArray) obj.get("origins"))) {

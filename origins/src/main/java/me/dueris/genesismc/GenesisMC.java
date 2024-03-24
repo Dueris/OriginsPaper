@@ -33,6 +33,7 @@ import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.GuiTicker;
 import me.dueris.genesismc.screen.OriginChoosing;
+import me.dueris.genesismc.screen.ScreenConstants;
 import me.dueris.genesismc.screen.ScreenNavigator;
 import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.storage.OriginDataContainer;
@@ -407,6 +408,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
         Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         // Shutdown executor, we dont need it anymore
+        ScreenConstants.splitPages();
         loaderThreadPool.shutdown();
         OriginCommand.commandProvidedTaggedRecipies.addAll(RecipePower.taggedRegistry.keySet());
         OriginCommand.commandProvidedPowers.addAll(((Registrar<Power>) this.registry.retrieve(Registries.POWER)).values().stream().toList());
