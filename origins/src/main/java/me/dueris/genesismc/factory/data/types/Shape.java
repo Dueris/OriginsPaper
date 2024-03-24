@@ -5,8 +5,9 @@ public enum Shape {
     STAR,
     SPHERE;
 
-    public static Shape getShape(String raw) {
-        switch (raw.toLowerCase()) {
+    public static Shape getShape(Object raw) {
+        if(raw == null) return CUBE;
+        switch (raw.toString().toLowerCase()) {
             case "star" -> {
                 return STAR;
             }
