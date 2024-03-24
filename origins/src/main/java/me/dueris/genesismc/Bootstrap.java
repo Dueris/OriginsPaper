@@ -62,30 +62,30 @@ public class Bootstrap implements PluginBootstrap {
         }
     }
 
-    public static void copyOriginDatapack(Path datapackPath) {
-        for (String string : oldDV) {
-            if (Files.exists(datapackPath)) {
-                String path = Path.of(datapackPath + File.separator + string).toAbsolutePath().toString();
-                try {
-                    deleteDirectory(Path.of(path), true);
-                } catch (IOException e) {
-
-                }
-            } else {
-                File file = new File(datapackPath.toAbsolutePath().toString());
-                file.mkdirs();
-                copyOriginDatapack(datapackPath);
-            }
-        }
-        try {
-            CodeSource src = Utils.class.getProtectionDomain().getCodeSource();
-            URL jar = src.getLocation();
-            ZipInputStream zip = new ZipInputStream(jar.openStream());
-            while (true) {
-                ZipEntry entry = zip.getNextEntry();
-                if (entry == null)
-                    break;
-                String name = entry.getName();
+	public static void copyOriginDatapack(Path datapackPath) {
+		for (String string : oldDV) {
+			if (Files.exists(datapackPath)) {
+				String path = Path.of(datapackPath + File.separator + string).toAbsolutePath().toString();
+				try {
+					deleteDirectory(Path.of(path), true);
+				} catch (IOException e) {
+					// Something happened when deleting, ignore.
+				}
+			} else {
+				File file = new File(datapackPath.toAbsolutePath().toString());
+				file.mkdirs();
+				copyOriginDatapack(datapackPath);
+			}
+		}
+		try {
+			CodeSource src = Utils.class.getProtectionDomain().getCodeSource();
+			URL jar = src.getLocation();
+			ZipInputStream zip = new ZipInputStream(jar.openStream());
+			while (true) {
+				ZipEntry entry = zip.getNextEntry();
+				if (entry == null)
+					break;
+				String name = entry.getName();
 
                 if (!name.startsWith("datapack/")) continue;
                 if (name.startsWith("datapack/builtin")) continue;

@@ -367,11 +367,10 @@ public class KeybindingUtils implements Listener {
         }
     }
 
-    @EventHandler
-    public void onInventoryMoveItem(InventoryMoveItemEvent event) {
-        if (event.getSource().equals(event.getDestination())) {
-        } else if (event.getItem().getItemMeta().getPersistentDataContainer().has(GenesisMC.identifier("origin_item_data"))) {
-            event.setCancelled(true);
-        }
-    }
+	@EventHandler
+	public void onInventoryMoveItem(InventoryMoveItemEvent event) {
+		if (!event.getSource().equals(event.getDestination()) && event.getItem().getItemMeta().getPersistentDataContainer().has(GenesisMC.identifier("origin_item_data"))) {
+			event.setCancelled(true);
+		}
+	}
 }
