@@ -21,37 +21,37 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 
 public class PreventBlockPlace extends CraftPower implements Listener {
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@EventHandler
-	public void blockBreak(BlockPlaceEvent e) {
-		if (prevent_block_place.contains(e.getPlayer())) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-					if (!(ConditionExecutor.testEntity((JSONObject) power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem((JSONObject) power.get("item_condition"), e.getItemInHand()) && ConditionExecutor.testBlock((JSONObject) power.get("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock((JSONObject) power.get("place_on_condition"), (CraftBlock) e.getBlockAgainst())))
-						return;
-					e.setCancelled(true);
-					setActive(e.getPlayer(), power.getTag(), true);
-					Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
-					Actions.ItemActionType(e.getItemInHand(), power.getAction("held_item_action"));
-					Actions.BlockActionType(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
-					Actions.BlockActionType(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
-				}
-			}
-		}
-	}
+    @EventHandler
+    public void blockBreak(BlockPlaceEvent e) {
+        if (prevent_block_place.contains(e.getPlayer())) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                    if (!(ConditionExecutor.testEntity((JSONObject) power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem((JSONObject) power.get("item_condition"), e.getItemInHand()) && ConditionExecutor.testBlock((JSONObject) power.get("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock((JSONObject) power.get("place_on_condition"), (CraftBlock) e.getBlockAgainst())))
+                        return;
+                    e.setCancelled(true);
+                    setActive(e.getPlayer(), power.getTag(), true);
+                    Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
+                    Actions.ItemActionType(e.getItemInHand(), power.getAction("held_item_action"));
+                    Actions.BlockActionType(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
+                    Actions.BlockActionType(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
+                }
+            }
+        }
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:prevent_block_place";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:prevent_block_place";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return prevent_block_place;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return prevent_block_place;
+    }
 
 }

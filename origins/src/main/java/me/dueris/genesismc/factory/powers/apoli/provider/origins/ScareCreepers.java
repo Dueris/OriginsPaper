@@ -21,94 +21,94 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ScareCreepers extends CraftPower implements Listener, PowerProvider {
-	public static ArrayList<Player> scaryPlayers = new ArrayList<>();
-	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("scare_creepers");
-	private final NamespacedKey hitByPlayerKey = new NamespacedKey(GenesisMC.getPlugin(), "hit-by-player");
+    public static ArrayList<Player> scaryPlayers = new ArrayList<>();
+    protected static NamespacedKey powerReference = GenesisMC.originIdentifier("scare_creepers");
+    private final NamespacedKey hitByPlayerKey = new NamespacedKey(GenesisMC.getPlugin(), "hit-by-player");
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@Override
-	public String getPowerFile() {
-		return null;
-	}
+    @Override
+    public String getPowerFile() {
+        return null;
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return scaryPlayers;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return scaryPlayers;
+    }
 
 
-	@EventHandler
-	public void load(EntitySpawnEvent event) {
-		if (event.getEntity() instanceof Creeper creeper) {
-			applyPatch(creeper);
-		}
-	}
+    @EventHandler
+    public void load(EntitySpawnEvent event) {
+        if (event.getEntity() instanceof Creeper creeper) {
+            applyPatch(creeper);
+        }
+    }
 
-	@EventHandler
-	public void load(EntitiesLoadEvent event) {
-		for (Entity entity : event.getEntities()) {
-			if (entity instanceof Creeper creeper) {
-				applyPatch(creeper);
-			}
-		}
-	}
+    @EventHandler
+    public void load(EntitiesLoadEvent event) {
+        for (Entity entity : event.getEntities()) {
+            if (entity instanceof Creeper creeper) {
+                applyPatch(creeper);
+            }
+        }
+    }
 
-	public void applyPatch(Creeper creeper) {
-		Bukkit.getMobGoals().addGoal(creeper, 0, new AvoidEntityGoal<>(
-			(PathfinderMob) ((CraftEntity) creeper).getHandle(), net.minecraft.world.entity.player.Player.class, 6, 1, 1.2,
-			livingEntity -> {
-				if (livingEntity.getBukkitEntity() instanceof Player player) {
-					if (getPowerArray().contains(player)) {
-						String data = creeper.getPersistentDataContainer().get(hitByPlayerKey, PersistentDataType.STRING);
-						if (data == null) {
-							return true;
-						}
-						return !data.equals(player.getName());
-					}
-				}
-				return false;
-			}
-		).asPaperVanillaGoal());
-	}
+    public void applyPatch(Creeper creeper) {
+        Bukkit.getMobGoals().addGoal(creeper, 0, new AvoidEntityGoal<>(
+                (PathfinderMob) ((CraftEntity) creeper).getHandle(), net.minecraft.world.entity.player.Player.class, 6, 1, 1.2,
+                livingEntity -> {
+                    if (livingEntity.getBukkitEntity() instanceof Player player) {
+                        if (getPowerArray().contains(player)) {
+                            String data = creeper.getPersistentDataContainer().get(hitByPlayerKey, PersistentDataType.STRING);
+                            if (data == null) {
+                                return true;
+                            }
+                            return !data.equals(player.getName());
+                        }
+                    }
+                    return false;
+                }
+        ).asPaperVanillaGoal());
+    }
 
-	@EventHandler
-	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-		if (event.getEntity().getType().equals(EntityType.CREEPER)) {
-			Player player;
-			if (event.getDamager() instanceof Projectile projectile) {
-				if (projectile.getShooter() instanceof org.bukkit.entity.Player shooter) player = shooter;
-				else return;
-			} else if (event.getDamager() instanceof org.bukkit.entity.Player damager) {
-				player = damager;
-			} else {
-				return;
-			}
-			event.getEntity().getPersistentDataContainer().set(hitByPlayerKey, PersistentDataType.STRING, player.getName());
-		}
-	}
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        if (event.getEntity().getType().equals(EntityType.CREEPER)) {
+            Player player;
+            if (event.getDamager() instanceof Projectile projectile) {
+                if (projectile.getShooter() instanceof org.bukkit.entity.Player shooter) player = shooter;
+                else return;
+            } else if (event.getDamager() instanceof org.bukkit.entity.Player damager) {
+                player = damager;
+            } else {
+                return;
+            }
+            event.getEntity().getPersistentDataContainer().set(hitByPlayerKey, PersistentDataType.STRING, player.getName());
+        }
+    }
 
-	@EventHandler
-	public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
-		if (event.getEntity().getType().equals(EntityType.CREEPER)) {
-			if (event.getTarget() instanceof Player player) {
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						String data = event.getEntity().getPersistentDataContainer().get(hitByPlayerKey, PersistentDataType.STRING);
-						if (data == null) {
-							event.setCancelled(true);
-							return;
-						}
-						if (!data.equals(player.getName())) {
-							event.setCancelled(true);
-						}
-					}
-				}.runTask(GenesisMC.getPlugin());
-			}
-		}
-	}
+    @EventHandler
+    public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
+        if (event.getEntity().getType().equals(EntityType.CREEPER)) {
+            if (event.getTarget() instanceof Player player) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        String data = event.getEntity().getPersistentDataContainer().get(hitByPlayerKey, PersistentDataType.STRING);
+                        if (data == null) {
+                            event.setCancelled(true);
+                            return;
+                        }
+                        if (!data.equals(player.getName())) {
+                            event.setCancelled(true);
+                        }
+                    }
+                }.runTask(GenesisMC.getPlugin());
+            }
+        }
+    }
 }

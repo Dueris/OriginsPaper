@@ -18,49 +18,49 @@ import java.util.ArrayList;
 
 public class ItemOnItemPower extends CraftPower implements Listener {
 
-	@EventHandler
-	public void itemOnItem(InventoryClickEvent e){
-		System.out.println("fs");
-		if(e.getCursor() != null && e.getCurrentItem() != null){ // Valid event
-			System.out.println("valid");
-			Player p = (Player) e.getWhoClicked();
-			if(p.getGameMode().equals(GameMode.CREATIVE)) return;
-			if(this.getPowerArray().contains(p)){
-				for(Layer layer : CraftApoli.getLayersFromRegistry()){
-					for(Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)){
-						boolean pass =
-							ConditionExecutor.testItem(power.get("using_item_condition"), e.getCursor()) &&
-							ConditionExecutor.testItem(power.get("on_item_condition"), e.getCurrentItem());
-						if(pass){
-							ItemStack stack = power.rawAccessor.getItemStack("result");
-							if(stack != null){
-								Actions.ItemActionType(stack, power.getAction("result_item_action"));
-								for(int i = 0; i < power.getIntOrDefault("result_from_on_stack", 1); i++){
-									p.getInventory().addItem(stack);
-								}
-							}
-							Actions.ItemActionType(e.getCursor(), power.getAction("using_item_action"));
-							Actions.ItemActionType(e.getCurrentItem(), power.getAction("on_item_action"));
-							Actions.EntityActionType(e.getWhoClicked(), power.getEntityAction());
-						}
-					}
-				}
-			}
-		}
-	}
+    @EventHandler
+    public void itemOnItem(InventoryClickEvent e) {
+        System.out.println("fs");
+        if (e.getCursor() != null && e.getCurrentItem() != null) { // Valid event
+            System.out.println("valid");
+            Player p = (Player) e.getWhoClicked();
+            if (p.getGameMode().equals(GameMode.CREATIVE)) return;
+            if (this.getPowerArray().contains(p)) {
+                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                        boolean pass =
+                                ConditionExecutor.testItem(power.get("using_item_condition"), e.getCursor()) &&
+                                        ConditionExecutor.testItem(power.get("on_item_condition"), e.getCurrentItem());
+                        if (pass) {
+                            ItemStack stack = power.rawAccessor.getItemStack("result");
+                            if (stack != null) {
+                                Actions.ItemActionType(stack, power.getAction("result_item_action"));
+                                for (int i = 0; i < power.getIntOrDefault("result_from_on_stack", 1); i++) {
+                                    p.getInventory().addItem(stack);
+                                }
+                            }
+                            Actions.ItemActionType(e.getCursor(), power.getAction("using_item_action"));
+                            Actions.ItemActionType(e.getCurrentItem(), power.getAction("on_item_action"));
+                            Actions.EntityActionType(e.getWhoClicked(), power.getEntityAction());
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:item_on_item";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:item_on_item";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return item_on_item;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return item_on_item;
+    }
 }

@@ -15,67 +15,67 @@ import static me.dueris.genesismc.factory.actions.Actions.EntityActionType;
 
 public class BiEntityActions {
 
-	public static void runbiEntity(Entity actor, Entity target, JSONObject action) {
-		if (action == null || action.isEmpty()) return;
-		String type = action.get("type").toString();
-		if (type.equals("apoli:add_velocity")) {
-			boolean set = action.containsKey("set") ? (boolean) action.get("set") : false;
-			Vector vector = VectorGetter.getVector(action);
+    public static void runbiEntity(Entity actor, Entity target, JSONObject action) {
+        if (action == null || action.isEmpty()) return;
+        String type = action.get("type").toString();
+        if (type.equals("apoli:add_velocity")) {
+            boolean set = action.containsKey("set") ? (boolean) action.get("set") : false;
+            Vector vector = VectorGetter.getVector(action);
 
-			if (set) target.setVelocity(vector);
-			else target.setVelocity(target.getVelocity().add(vector));
-		}
-		if (type.equals("apoli:remove_from_set")) {
-			RemoveFromSetEvent ev = new RemoveFromSetEvent(target, action.get("set").toString());
-			ev.callEvent();
-		}
-		if (type.equals("apoli:add_to_set")) {
-			AddToSetEvent ev = new AddToSetEvent(target, action.get("set").toString());
-			ev.callEvent();
-		}
-		if (type.equals("apoli:damage")) {
-			if (target.isDead() || !(target instanceof LivingEntity)) return;
-			float amount = 0.0f;
+            if (set) target.setVelocity(vector);
+            else target.setVelocity(target.getVelocity().add(vector));
+        }
+        if (type.equals("apoli:remove_from_set")) {
+            RemoveFromSetEvent ev = new RemoveFromSetEvent(target, action.get("set").toString());
+            ev.callEvent();
+        }
+        if (type.equals("apoli:add_to_set")) {
+            AddToSetEvent ev = new AddToSetEvent(target, action.get("set").toString());
+            ev.callEvent();
+        }
+        if (type.equals("apoli:damage")) {
+            if (target.isDead() || !(target instanceof LivingEntity)) return;
+            float amount = 0.0f;
 
-			if (action.containsKey("amount"))
-				amount = Float.parseFloat(action.get("amount").toString());
+            if (action.containsKey("amount"))
+                amount = Float.parseFloat(action.get("amount").toString());
 
-			String namespace;
-			String key;
-			if (action.get("damage_type") != null) {
-				if (action.get("damage_type").toString().contains(":")) {
-					namespace = action.get("damage_type").toString().split(":")[0];
-					key = action.get("damage_type").toString().split(":")[1];
-				} else {
-					namespace = "minecraft";
-					key = action.get("damage_type").toString();
-				}
-			} else {
-				namespace = "minecraft";
-				key = "generic";
-			}
-			DamageType dmgType = Utils.DAMAGE_REGISTRY.get(new ResourceLocation(namespace, key));
-			net.minecraft.world.entity.LivingEntity serverEn = ((CraftLivingEntity) target).getHandle();
-			serverEn.hurt(Utils.getDamageSource(dmgType), amount);
-		}
-		if (type.equals("apoli:mount")) {
-			target.addPassenger(actor);
-		}
-		if (type.equals("apoli:set_in_love")) {
-			if (target instanceof Animals targetAnimal) {
-				targetAnimal.setLoveModeTicks(600);
-			}
-		}
-		if (type.equals("apoli:tame")) {
-			if (target instanceof Tameable targetTameable && actor instanceof AnimalTamer actorTamer) {
-				targetTameable.setOwner(actorTamer);
-			}
-		}
-		if (type.equals("apoli:actor_action")) {
-			EntityActionType(actor, (JSONObject) action.get("action"));
-		}
-		if (type.equals("apoli:target_action")) {
-			EntityActionType(target, (JSONObject) action.get("action"));
-		}
-	}
+            String namespace;
+            String key;
+            if (action.get("damage_type") != null) {
+                if (action.get("damage_type").toString().contains(":")) {
+                    namespace = action.get("damage_type").toString().split(":")[0];
+                    key = action.get("damage_type").toString().split(":")[1];
+                } else {
+                    namespace = "minecraft";
+                    key = action.get("damage_type").toString();
+                }
+            } else {
+                namespace = "minecraft";
+                key = "generic";
+            }
+            DamageType dmgType = Utils.DAMAGE_REGISTRY.get(new ResourceLocation(namespace, key));
+            net.minecraft.world.entity.LivingEntity serverEn = ((CraftLivingEntity) target).getHandle();
+            serverEn.hurt(Utils.getDamageSource(dmgType), amount);
+        }
+        if (type.equals("apoli:mount")) {
+            target.addPassenger(actor);
+        }
+        if (type.equals("apoli:set_in_love")) {
+            if (target instanceof Animals targetAnimal) {
+                targetAnimal.setLoveModeTicks(600);
+            }
+        }
+        if (type.equals("apoli:tame")) {
+            if (target instanceof Tameable targetTameable && actor instanceof AnimalTamer actorTamer) {
+                targetTameable.setOwner(actorTamer);
+            }
+        }
+        if (type.equals("apoli:actor_action")) {
+            EntityActionType(actor, (JSONObject) action.get("action"));
+        }
+        if (type.equals("apoli:target_action")) {
+            EntityActionType(target, (JSONObject) action.get("action"));
+        }
+    }
 }

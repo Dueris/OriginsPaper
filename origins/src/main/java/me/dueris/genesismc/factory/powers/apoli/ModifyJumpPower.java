@@ -22,43 +22,43 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 public class ModifyJumpPower extends CraftPower implements Listener {
 
 
-	@EventHandler
-	public void ruDn(PlayerJumpEvent e) {
-		Player p = e.getPlayer();
-		if (modify_jump.contains(p)) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-						for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-							if (modifier.get("value") instanceof Number) {
-								double modifierValue = ((Number) modifier.get("value")).doubleValue();
-								int jumpBoostLevel = (int) /*((modifierValue - 1.0) * 2.0)*/ Math.round(modifierValue * 4);
+    @EventHandler
+    public void ruDn(PlayerJumpEvent e) {
+        Player p = e.getPlayer();
+        if (modify_jump.contains(p)) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                        for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                            if (modifier.get("value") instanceof Number) {
+                                double modifierValue = ((Number) modifier.get("value")).doubleValue();
+                                int jumpBoostLevel = (int) /*((modifierValue - 1.0) * 2.0)*/ Math.round(modifierValue * 4);
 
-								if (jumpBoostLevel >= 0) {
-									p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, jumpBoostLevel, false, false, false));
-									setActive(p, power.getTag(), true);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+                                if (jumpBoostLevel >= 0) {
+                                    p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, jumpBoostLevel, false, false, false));
+                                    setActive(p, power.getTag(), true);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:modify_jump";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:modify_jump";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return modify_jump;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return modify_jump;
+    }
 }

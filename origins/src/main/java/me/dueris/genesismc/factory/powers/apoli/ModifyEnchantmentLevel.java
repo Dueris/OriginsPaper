@@ -23,52 +23,52 @@ import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOpera
 
 public class ModifyEnchantmentLevel extends CraftPower {
 
-	@Override
-	public void run(Player p) {
-		if (getPowerArray().contains(p)) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-					HashSet<ItemStack> items = new HashSet<>(Arrays.stream(p.getInventory().getArmorContents()).toList());
-					items.add(p.getInventory().getItemInMainHand());
-					for (ItemStack item : items) {
-						if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
-						if (!ConditionExecutor.testItem(power.get("item_condition"), item)) return;
-						for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-							Enchantment enchant = Enchantment.getByKey(NamespacedKey.fromString(power.getString("enchantment")));
-							if (item.containsEnchantment(enchant)) {
-								item.removeEnchantment(enchant);
-							}
-							int result = 1;
-							Integer value = Integer.valueOf(modifier.get("value").toString());
-							String operation = modifier.get("operation").toString();
-							BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
-							if (mathOperator != null) {
-								result = Integer.valueOf(String.valueOf(mathOperator.apply(0, value)));
-							}
-							if (result < 0) {
-								result = 1;
-							}
-							try {
-								item.addEnchantment(enchant, result);
-							} catch (Exception e) {
-								// ignore. -- cannot apply enchant to itemstack
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+    @Override
+    public void run(Player p) {
+        if (getPowerArray().contains(p)) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    HashSet<ItemStack> items = new HashSet<>(Arrays.stream(p.getInventory().getArmorContents()).toList());
+                    items.add(p.getInventory().getItemInMainHand());
+                    for (ItemStack item : items) {
+                        if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
+                        if (!ConditionExecutor.testItem(power.get("item_condition"), item)) return;
+                        for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                            Enchantment enchant = Enchantment.getByKey(NamespacedKey.fromString(power.getString("enchantment")));
+                            if (item.containsEnchantment(enchant)) {
+                                item.removeEnchantment(enchant);
+                            }
+                            int result = 1;
+                            Integer value = Integer.valueOf(modifier.get("value").toString());
+                            String operation = modifier.get("operation").toString();
+                            BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
+                            if (mathOperator != null) {
+                                result = Integer.valueOf(String.valueOf(mathOperator.apply(0, value)));
+                            }
+                            if (result < 0) {
+                                result = 1;
+                            }
+                            try {
+                                item.addEnchantment(enchant, result);
+                            } catch (Exception e) {
+                                // ignore. -- cannot apply enchant to itemstack
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:modify_enchantment_level";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:modify_enchantment_level";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return ValueModifyingSuperClass.modify_enchantment_level;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return ValueModifyingSuperClass.modify_enchantment_level;
+    }
 
 
 }

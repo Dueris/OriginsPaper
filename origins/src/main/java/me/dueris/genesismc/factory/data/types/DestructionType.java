@@ -7,12 +7,12 @@ public enum DestructionType {
     NONE,
     DESTROY;
 
-    public static DestructionType parse(String string){
-        switch(string.toLowerCase()){
+    public static DestructionType parse(String string) {
+        switch (string.toLowerCase()) {
             case "none" -> {
                 return NONE;
             }
-			case "destroy" -> {
+            case "destroy" -> {
                 return DESTROY;
             }
             default -> {
@@ -21,8 +21,8 @@ public enum DestructionType {
         }
     }
 
-    public Explosion.BlockInteraction getNMS(){
-        switch(this){
+    public Explosion.BlockInteraction getNMS() {
+        switch (this) {
             case DESTROY -> {
                 return Explosion.BlockInteraction.DESTROY_WITH_DECAY;
             }

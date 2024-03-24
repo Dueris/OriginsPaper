@@ -18,30 +18,33 @@ public class ExplosionMask {
     Explosion explosion;
     ServerLevel level;
 
-    public ExplosionMask(Explosion explosion, ServerLevel level){
+    public ExplosionMask(Explosion explosion, ServerLevel level) {
         this.blocks = new ArrayList<>();
         this.explosion = explosion;
         this.level = level;
     }
 
-    public ExplosionMask apply(JSONObject getter, boolean destroyAfterMask){
+    public static ExplosionMask getExplosionMask(Explosion explosion, ServerLevel level) {
+        return new ExplosionMask(explosion, level);
+    }
+
+    public ExplosionMask apply(JSONObject getter, boolean destroyAfterMask) {
         this.explosion.explode(); // Setup explosion stuff -- includes iterator for explosions
         this.blocks = createBlockList(this.explosion.getToBlow(), this.level);
-        List<Block> finalBlocks = new ArrayList<>();
-        finalBlocks.addAll(this.blocks);
+        List<Block> finalBlocks = new ArrayList<>(this.blocks);
         boolean testFilters = getter.containsKey("indestructible") || getter.containsKey("destructible");
 
-        if(testFilters){
+        if (testFilters) {
             this.blocks.forEach((block) -> {
                 Utils.computeIfObjectPresent("indestructible", getter, (rawObjCondition) -> {
                     JSONObject condition = (JSONObject) rawObjCondition;
-                    if(!ConditionExecutor.testBlock(condition, (CraftBlock) block)){
+                    if (!ConditionExecutor.testBlock(condition, (CraftBlock) block)) {
                         finalBlocks.add(block);
                     }
                 });
                 Utils.computeIfObjectPresent("destructible", getter, (rawObjCondition) -> {
                     JSONObject condition = (JSONObject) getter.get("destructible");
-                    if(ConditionExecutor.testBlock(condition, (CraftBlock) block)){
+                    if (ConditionExecutor.testBlock(condition, (CraftBlock) block)) {
                         finalBlocks.add(block);
                     }
                 });
@@ -51,17 +54,17 @@ public class ExplosionMask {
         this.explosion.clearToBlow();
         this.explosion.getToBlow().addAll(createBlockPosList(finalBlocks));
 
-        if(destroyAfterMask){
+        if (destroyAfterMask) {
             destroyBlocks(true);
         }
         return this;
     }
 
-    public void destroyBlocks(boolean particles){
+    public void destroyBlocks(boolean particles) {
         this.explosion.finalizeExplosion(particles);
     }
 
-    private List<Block> createBlockList(List<BlockPos> blockPos, ServerLevel level){
+    private List<Block> createBlockList(List<BlockPos> blockPos, ServerLevel level) {
         List<Block> blocks = new ArrayList<>();
         blockPos.forEach(pos -> {
             blocks.add(level.getWorld().getBlockAt(pos.getX(), pos.getY(), pos.getZ()));
@@ -69,7 +72,7 @@ public class ExplosionMask {
         return blocks;
     }
 
-    private List<BlockPos> createBlockPosList(List<Block> blocks){
+    private List<BlockPos> createBlockPosList(List<Block> blocks) {
         List<BlockPos> positions = new ArrayList<>();
         blocks.forEach(block -> {
             positions.add(CraftLocation.toBlockPosition(block.getLocation()));
@@ -77,15 +80,11 @@ public class ExplosionMask {
         return positions;
     }
 
-    public Explosion getExplosion(){
+    public Explosion getExplosion() {
         return this.explosion;
     }
 
-    public List<Block> getBlocksToDestroy(){
+    public List<Block> getBlocksToDestroy() {
         return this.blocks;
-    }
-
-    public static ExplosionMask getExplosionMask(Explosion explosion, ServerLevel level){
-        return new ExplosionMask(explosion, level);
     }
 }

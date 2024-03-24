@@ -9,11 +9,21 @@ public enum Comparison {
     NOT_EQUAL_TO("!=");
 
     String val;
-    private Comparison(String raw){
+
+    private Comparison(String raw) {
         this.val = raw;
     }
 
-    public boolean compare(double val, double compare_to){
+    public static Comparison getFromString(String string) {
+        for (Comparison value : Comparison.values()) {
+            if (value.getRaw().equalsIgnoreCase(string)) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    public boolean compare(double val, double compare_to) {
         switch (this) {
             case LESS_THAN:
                 return val < compare_to;
@@ -32,16 +42,7 @@ public enum Comparison {
         }
     }
 
-    public String getRaw(){
+    public String getRaw() {
         return val;
-    }
-
-    public static Comparison getFromString(String string){
-        for(Comparison value : Comparison.values()){
-            if(value.getRaw().equalsIgnoreCase(string)){
-                return value;
-            }
-        }
-        return null;
     }
 }

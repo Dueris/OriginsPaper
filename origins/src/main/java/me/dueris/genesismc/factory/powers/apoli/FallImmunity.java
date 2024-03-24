@@ -17,38 +17,38 @@ import java.util.ArrayList;
 public class FallImmunity extends CraftPower implements Listener {
 
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@EventHandler
-	public void acrobatics(EntityDamageEvent e) {
-		if (!(e.getEntity() instanceof Player p)) return;
-		if (fall_immunity.contains(p)) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-						setActive(p, power.getTag(), true);
-						if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
-							e.setCancelled(true);
-						}
-					} else {
-						setActive(p, power.getTag(), false);
-					}
-				}
-			}
-		}
-	}
+    @EventHandler
+    public void acrobatics(EntityDamageEvent e) {
+        if (!(e.getEntity() instanceof Player p)) return;
+        if (fall_immunity.contains(p)) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                        setActive(p, power.getTag(), true);
+                        if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+                            e.setCancelled(true);
+                        }
+                    } else {
+                        setActive(p, power.getTag(), false);
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:fall_immunity";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:fall_immunity";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return fall_immunity;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return fall_immunity;
+    }
 }

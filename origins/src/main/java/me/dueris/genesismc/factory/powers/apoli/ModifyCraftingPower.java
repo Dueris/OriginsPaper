@@ -20,55 +20,55 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 public class ModifyCraftingPower extends CraftPower implements Listener {
 
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@EventHandler
-	public void runD(PrepareItemCraftEvent e) {
-		Player p = (Player) e.getInventory().getHolder();
-		if (modify_crafting.contains(p)) {
-			if (e.getRecipe() == null) return;
-			if (e.getInventory().getResult() == null) return;
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+    @EventHandler
+    public void runD(PrepareItemCraftEvent e) {
+        Player p = (Player) e.getInventory().getHolder();
+        if (modify_crafting.contains(p)) {
+            if (e.getRecipe() == null) return;
+            if (e.getInventory().getResult() == null) return;
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
 //                        if (conditionExecutor.check("item_condition", "item_condition", p, power, "apoli:modify_crafting", p, null, p.getLocation().getBlock(), null, e.getInventory().getResult(), null)) {
-						String currKey = RecipePower.computeTag(e.getRecipe());
-						if (currKey == null) return;
-						String provKey = power.getStringOrDefault("recipe", currKey);
-						boolean set = false;
-						if (currKey == provKey) { // Matched on crafting
-							set = ConditionExecutor.testItem(power.get("item_condition"), e.getInventory().getResult());
-						}
-						if (set) {
-							if (power.getOrDefault("result", null) != null) {
-								e.getInventory().setResult(RecipePower.computeResult(power.get("result")));
-							}
-							Actions.EntityActionType(p, power.getAction("entity_action"));
-							Actions.ItemActionType(e.getInventory().getResult(), power.getItemAction());
-							Actions.BlockActionType(p.getLocation(), power.getBlockAction());
-						}
+                        String currKey = RecipePower.computeTag(e.getRecipe());
+                        if (currKey == null) return;
+                        String provKey = power.getStringOrDefault("recipe", currKey);
+                        boolean set = false;
+                        if (currKey == provKey) { // Matched on crafting
+                            set = ConditionExecutor.testItem(power.get("item_condition"), e.getInventory().getResult());
+                        }
+                        if (set) {
+                            if (power.getOrDefault("result", null) != null) {
+                                e.getInventory().setResult(RecipePower.computeResult(power.get("result")));
+                            }
+                            Actions.EntityActionType(p, power.getAction("entity_action"));
+                            Actions.ItemActionType(e.getInventory().getResult(), power.getItemAction());
+                            Actions.BlockActionType(p.getLocation(), power.getBlockAction());
+                        }
 //                        } else {
 //                            setActive(p, power.getTag(), false);
 //                        }
-					} else {
-						setActive(p, power.getTag(), false);
-					}
-				}
-			}
-		}
-	}
+                    } else {
+                        setActive(p, power.getTag(), false);
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:modify_crafting";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:modify_crafting";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return modify_crafting;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return modify_crafting;
+    }
 }

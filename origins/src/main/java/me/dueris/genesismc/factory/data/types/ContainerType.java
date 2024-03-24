@@ -19,14 +19,14 @@ public enum ContainerType {
     private int size;
     private InventoryType bukkit;
 
-    private ContainerType(int size, InventoryType type){
+    private ContainerType(int size, InventoryType type) {
         this.size = size == -1 ? type.getDefaultSize() : size;
         this.bukkit = type;
     }
 
-    public static ContainerType getContainerType(String raw){
-        switch(raw.toLowerCase()) {
-			case "hopper" -> {
+    public static ContainerType getContainerType(String raw) {
+        switch (raw.toLowerCase()) {
+            case "hopper" -> {
                 return HOPPER;
             }
             case "dropper" -> {
@@ -44,15 +44,15 @@ public enum ContainerType {
         }
     }
 
-    public InventoryType getBukkit(){
+    public InventoryType getBukkit() {
         return this.bukkit;
     }
 
-    public int getSize(){
+    public int getSize() {
         return this.size;
     }
 
-    public Inventory createInventory(InventoryHolder holder, Optional<String> string){
+    public Inventory createInventory(InventoryHolder holder, Optional<String> string) {
         Component name = Component.text(Utils.getOrAbsent(string, "container.inventory"));
         return this == DOUBLE_CHEST ? Bukkit.createInventory(holder, this.getSize(), name) : this == CHEST ? Bukkit.createInventory(holder, this.getSize(), name) : Bukkit.createInventory(holder, this.bukkit, name);
     }

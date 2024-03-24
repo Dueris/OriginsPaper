@@ -5,15 +5,15 @@ public enum ShapeType {
     OUTLINE,
     VISUAL;
 
-    public static ShapeType getShapeType(String raw){
-        switch(raw.toLowerCase()){
+    public static ShapeType getShapeType(String raw) {
+        switch (raw.toLowerCase()) {
             case "collider" -> {
                 return COLLIDER;
             }
             case "outline" -> {
                 return OUTLINE;
             }
-			default -> {
+            default -> {
                 return VISUAL;
             }
         }

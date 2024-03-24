@@ -19,38 +19,37 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 public class PreventDeath extends CraftPower implements Listener {
 
 
+    @EventHandler
+    public void run(PlayerDeathEvent e) {
+        if (prevent_death.contains(e.getPlayer())) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.get("damage_condition"), e.getEntity().getLastDamageCause())) {
+                        e.setCancelled(true);
+                        if (!getPowerArray().contains(e.getPlayer())) return;
+                        setActive(e.getPlayer(), power.getTag(), true);
+                    } else {
+                        if (!getPowerArray().contains(e.getPlayer())) return;
+                        setActive(e.getPlayer(), power.getTag(), false);
+                    }
+                }
+            }
+        }
+    }
 
-	@EventHandler
-	public void run(PlayerDeathEvent e) {
-		if (prevent_death.contains(e.getPlayer())) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.get("damage_condition"), e.getEntity().getLastDamageCause())) {
-						e.setCancelled(true);
-						if (!getPowerArray().contains(e.getPlayer())) return;
-						setActive(e.getPlayer(), power.getTag(), true);
-					} else {
-						if (!getPowerArray().contains(e.getPlayer())) return;
-						setActive(e.getPlayer(), power.getTag(), false);
-					}
-				}
-			}
-		}
-	}
+    @Override
+    public void run(Player p) {
 
-	@Override
-	public void run(Player p) {
+    }
 
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:prevent_death";
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:prevent_death";
-	}
-
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return prevent_death;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return prevent_death;
+    }
 }

@@ -18,37 +18,37 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 public class PreventItemUse extends CraftPower implements Listener {
 
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@EventHandler
-	public void runD(PlayerInteractEvent e) {
-		if (prevent_item_use.contains(e.getPlayer())) {
-			if (e.getItem() == null) return;
+    @EventHandler
+    public void runD(PlayerInteractEvent e) {
+        if (prevent_item_use.contains(e.getPlayer())) {
+            if (e.getItem() == null) return;
 
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-					if (power == null) {
-						getPowerArray().remove(e.getPlayer());
-						return;
-					} else {
-						boolean shouldCancel = ConditionExecutor.testItem(power.get("item_condition"), e.getItem());
-						if (shouldCancel) e.setCancelled(true);
-					}
-				}
-			}
-		}
-	}
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                    if (power == null) {
+                        getPowerArray().remove(e.getPlayer());
+                        return;
+                    } else {
+                        boolean shouldCancel = ConditionExecutor.testItem(power.get("item_condition"), e.getItem());
+                        if (shouldCancel) e.setCancelled(true);
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:prevent_item_use";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:prevent_item_use";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return prevent_item_use;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return prevent_item_use;
+    }
 }

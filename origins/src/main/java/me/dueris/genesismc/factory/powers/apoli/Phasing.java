@@ -53,244 +53,244 @@ import java.util.HashMap;
  */
 public class Phasing extends CraftPower implements Listener {
 
-	public static ArrayList<Player> inPhantomFormBlocks = new ArrayList<>();
-	public static HashMap<Player, Boolean> test = new HashMap<>();
+    public static ArrayList<Player> inPhantomFormBlocks = new ArrayList<>();
+    public static HashMap<Player, Boolean> test = new HashMap<>();
 
-	protected static void sendJavaPacket(ServerPlayer player) {
-		GameType gamemode = GameType.SPECTATOR;
-		ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(player.getUUID(), player.getGameProfile(), true, 1, gamemode, player.getTabListDisplayName(), Optionull.map(player.getChatSession(), RemoteChatSession::asData));
-		ClientboundPlayerInfoUpdatePacket packet = new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE), entry);
-		player.connection.send(packet);
-	}
+    protected static void sendJavaPacket(ServerPlayer player) {
+        GameType gamemode = GameType.SPECTATOR;
+        ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(player.getUUID(), player.getGameProfile(), true, 1, gamemode, player.getTabListDisplayName(), Optionull.map(player.getChatSession(), RemoteChatSession::asData));
+        ClientboundPlayerInfoUpdatePacket packet = new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE), entry);
+        player.connection.send(packet);
+    }
 
-	protected static void resyncJavaPlayer(ServerPlayer player) {
-		if (player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR)) {
-			player.gameMode.changeGameModeForPlayer(GameType.SURVIVAL);
-		}
-		GameType gamemode = player.gameMode.getGameModeForPlayer();
-		ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(player.getUUID(), player.getGameProfile(), true, 1, gamemode, player.getTabListDisplayName(), Optionull.map(player.getChatSession(), RemoteChatSession::asData));
-		ClientboundPlayerInfoUpdatePacket packet = new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE), entry);
-		player.connection.send(packet);
-	}
+    protected static void resyncJavaPlayer(ServerPlayer player) {
+        if (player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR)) {
+            player.gameMode.changeGameModeForPlayer(GameType.SURVIVAL);
+        }
+        GameType gamemode = player.gameMode.getGameModeForPlayer();
+        ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(player.getUUID(), player.getGameProfile(), true, 1, gamemode, player.getTabListDisplayName(), Optionull.map(player.getChatSession(), RemoteChatSession::asData));
+        ClientboundPlayerInfoUpdatePacket packet = new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE), entry);
+        player.connection.send(packet);
+    }
 
-	public static void initializePhantomOverlay(Player player) {
-		CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
-		border.setCenter(player.getWorld().getWorldBorder().getCenter());
-		border.setSize(player.getWorld().getWorldBorder().getSize());
-		border.setWarningDistance(999999999);
-		player.setWorldBorder(border);
-	}
+    public static void initializePhantomOverlay(Player player) {
+        CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
+        border.setCenter(player.getWorld().getWorldBorder().getCenter());
+        border.setSize(player.getWorld().getWorldBorder().getSize());
+        border.setWarningDistance(999999999);
+        player.setWorldBorder(border);
+    }
 
-	public static void deactivatePhantomOverlay(Player player) {
-		player.setWorldBorder(player.getWorld().getWorldBorder());
-	}
+    public static void deactivatePhantomOverlay(Player player) {
+        player.setWorldBorder(player.getWorld().getWorldBorder());
+    }
 
-	public static float getGamemodeFloat(GameMode gameMode) {
-		switch (gameMode) {
-			case CREATIVE:
-				return 1.0f;
-			case SURVIVAL:
-				return 0.0f;
-			case ADVENTURE:
-				return 2.0f;
-			case SPECTATOR:
-				return 3.0f;
-			default:
-				return 0.0f;
-		}
-	}
+    public static float getGamemodeFloat(GameMode gameMode) {
+        switch (gameMode) {
+            case CREATIVE:
+                return 1.0f;
+            case SURVIVAL:
+                return 0.0f;
+            case ADVENTURE:
+                return 2.0f;
+            case SPECTATOR:
+                return 3.0f;
+            default:
+                return 0.0f;
+        }
+    }
 
-	public void setInPhasingBlockForm(Player p) {
-		test.put(p, true);
-		ServerPlayer player = ((CraftPlayer) p).getHandle();
-		inPhantomFormBlocks.add(p);
-		sendJavaPacket(player);
-		p.setCollidable(false);
-		p.setAllowFlight(true);
-		p.setFlying(true);
-	}
+    public void setInPhasingBlockForm(Player p) {
+        test.put(p, true);
+        ServerPlayer player = ((CraftPlayer) p).getHandle();
+        inPhantomFormBlocks.add(p);
+        sendJavaPacket(player);
+        p.setCollidable(false);
+        p.setAllowFlight(true);
+        p.setFlying(true);
+    }
 
-	@EventHandler
-	public void stEnd(ServerTickEndEvent event) {
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			((CraftPlayer) player).getHandle().noPhysics = true;
-		}
-	}
+    @EventHandler
+    public void stEnd(ServerTickEndEvent event) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            ((CraftPlayer) player).getHandle().noPhysics = true;
+        }
+    }
 
-	@EventHandler
-	public void warn(PlayerJoinEvent e) {
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				if (isBedrock(e.getPlayer()) && getPowerArray().contains(e.getPlayer())) {
-					e.getPlayer().sendMessage(ChatColor.YELLOW + "Warning! You are using a power(Phasing) that is highly experimental/breakable on bedrock! If you get stuck in a \"spectator like\" mode, type \"./origins-fixMe\" in chat to be fixed.");
-				}
-			}
-		}.runTaskLater(GenesisMC.getPlugin(), 20);
-	}
+    @EventHandler
+    public void warn(PlayerJoinEvent e) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (isBedrock(e.getPlayer()) && getPowerArray().contains(e.getPlayer())) {
+                    e.getPlayer().sendMessage(ChatColor.YELLOW + "Warning! You are using a power(Phasing) that is highly experimental/breakable on bedrock! If you get stuck in a \"spectator like\" mode, type \"./origins-fixMe\" in chat to be fixed.");
+                }
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 20);
+    }
 
-	@EventHandler
-	public void chatEvent(PlayerChatEvent e) {
-		if (e.getMessage().equalsIgnoreCase("./origins-fixme")) {
-			RaycastUtils.executeCommandAtHit(((CraftEntity) e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "gamemode survival @s");
-			e.setCancelled(true);
-		}
-	}
+    @EventHandler
+    public void chatEvent(PlayerChatEvent e) {
+        if (e.getMessage().equalsIgnoreCase("./origins-fixme")) {
+            RaycastUtils.executeCommandAtHit(((CraftEntity) e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "gamemode survival @s");
+            e.setCancelled(true);
+        }
+    }
 
-	@EventHandler
-	public void shiftGoDown(PlayerToggleSneakEvent e) {
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				if (e.isSneaking()) {
-					if (getPowerArray().contains(e.getPlayer())) {
-						Player p = e.getPlayer();
-						for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-							ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-							for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-								if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-									if (ConditionExecutor.testBlock(power.get("phase_down_condition"), (CraftBlock) p.getLocation().add(0, -1, 0).getBlock())) {
-										p.teleportAsync(p.getLocation().add(0, -0.1, 0));
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}.runTaskLater(GenesisMC.getPlugin(), 1);
-	}
+    @EventHandler
+    public void shiftGoDown(PlayerToggleSneakEvent e) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (e.isSneaking()) {
+                    if (getPowerArray().contains(e.getPlayer())) {
+                        Player p = e.getPlayer();
+                        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                                if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                                    if (ConditionExecutor.testBlock(power.get("phase_down_condition"), (CraftBlock) p.getLocation().add(0, -1, 0).getBlock())) {
+                                        p.teleportAsync(p.getLocation().add(0, -0.1, 0));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 1);
+    }
 
-	@EventHandler
-	public void je(PlayerJoinEvent e) {
-		test.put(e.getPlayer(), false);
-	}
+    @EventHandler
+    public void je(PlayerJoinEvent e) {
+        test.put(e.getPlayer(), false);
+    }
 
-	@Override
-	public void run(Player p) {
-		if (getPowerArray().contains(p)) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-						setActive(p, power.getTag(), true);
-						if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
-							p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
-							p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
-							p.getLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
-							p.getLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
-							p.getLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
-							p.getLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
-							p.getLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid() ||
-							p.getLocation().add(0, 0.5, 0).getBlock().isSolid() ||
+    @Override
+    public void run(Player p) {
+        if (getPowerArray().contains(p)) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                        setActive(p, power.getTag(), true);
+                        if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
+                                p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
+                                p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
+                                p.getLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
+                                p.getLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
+                                p.getLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
+                                p.getLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
+                                p.getLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid() ||
+                                p.getLocation().add(0, 0.5, 0).getBlock().isSolid() ||
 
-							p.getEyeLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
-							p.getEyeLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
-							p.getEyeLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
-							p.getEyeLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
-							p.getEyeLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
-							p.getEyeLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
-							p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
-							p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
-						) {
-							if (!isBedrock(p)) {
-								setInPhasingBlockForm(p);
-							} else {
-								if (p.getGameMode() != GameMode.SPECTATOR) {
-									p.setGameMode(GameMode.SPECTATOR);
-								}
-							}
+                                p.getEyeLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
+                                p.getEyeLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
+                                p.getEyeLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
+                                p.getEyeLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
+                                p.getEyeLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
+                                p.getEyeLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
+                                p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
+                                p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
+                        ) {
+                            if (!isBedrock(p)) {
+                                setInPhasingBlockForm(p);
+                            } else {
+                                if (p.getGameMode() != GameMode.SPECTATOR) {
+                                    p.setGameMode(GameMode.SPECTATOR);
+                                }
+                            }
 
-							p.setFlySpeed(0.03F);
-							p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
+                            p.setFlySpeed(0.03F);
+                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
 
-						} else {
-							if (!isBedrock(p)) {
-								resyncJavaPlayer(((CraftPlayer) p).getHandle());
-							} else {
-								if (p.getGameMode() == GameMode.SPECTATOR) {
-									GameMode gameMode = p.getPreviousGameMode();
-									if (gameMode.equals(GameMode.SPECTATOR)) {
-										gameMode = GameMode.SURVIVAL;
-									}
-									p.setGameMode(gameMode);
-								}
-							}
-							p.setFlySpeed(0.1F);
-							inPhantomFormBlocks.remove(p);
-							p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
-						}
-					} else {
-						setActive(p, power.getTag(), false);
-						inPhantomFormBlocks.remove(p);
-						if (test.get(p) == null) {
-							test.put(p, false);
-						} else if (test.get(p)) {
-							if (!isBedrock(p)) {
-								resyncJavaPlayer(((CraftPlayer) p).getHandle());
-							} else {
-								GameMode gameMode = p.getPreviousGameMode();
-								if (gameMode.equals(GameMode.SPECTATOR)) {
-									gameMode = GameMode.SURVIVAL;
-								}
-								p.setGameMode(gameMode);
-							}
-							p.setFlySpeed(0.1F);
-							p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
-							test.put(p, false);
-						}
-					}
-				}
-			}
-		}
-	}
+                        } else {
+                            if (!isBedrock(p)) {
+                                resyncJavaPlayer(((CraftPlayer) p).getHandle());
+                            } else {
+                                if (p.getGameMode() == GameMode.SPECTATOR) {
+                                    GameMode gameMode = p.getPreviousGameMode();
+                                    if (gameMode.equals(GameMode.SPECTATOR)) {
+                                        gameMode = GameMode.SURVIVAL;
+                                    }
+                                    p.setGameMode(gameMode);
+                                }
+                            }
+                            p.setFlySpeed(0.1F);
+                            inPhantomFormBlocks.remove(p);
+                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
+                        }
+                    } else {
+                        setActive(p, power.getTag(), false);
+                        inPhantomFormBlocks.remove(p);
+                        if (test.get(p) == null) {
+                            test.put(p, false);
+                        } else if (test.get(p)) {
+                            if (!isBedrock(p)) {
+                                resyncJavaPlayer(((CraftPlayer) p).getHandle());
+                            } else {
+                                GameMode gameMode = p.getPreviousGameMode();
+                                if (gameMode.equals(GameMode.SPECTATOR)) {
+                                    gameMode = GameMode.SURVIVAL;
+                                }
+                                p.setGameMode(gameMode);
+                            }
+                            p.setFlySpeed(0.1F);
+                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
+                            test.put(p, false);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	public boolean isBedrock(Player p) {
-		if (Bukkit.getPluginManager().isPluginEnabled("floodgate")) {
-			return GeyserApi.api().connectionByUuid(p.getUniqueId()) != null;
-		} else {
-			return false;
-		}
-	}
+    public boolean isBedrock(Player p) {
+        if (Bukkit.getPluginManager().isPluginEnabled("floodgate")) {
+            return GeyserApi.api().connectionByUuid(p.getUniqueId()) != null;
+        } else {
+            return false;
+        }
+    }
 
-	@EventHandler
-	public void dmgEventRemoveSuff(EntityDamageEvent e) {
-		if (e.getEntity() instanceof Player player) {
-			if (!inPhantomFormBlocks.contains(player)) return;
-			if (e.getCause().equals(EntityDamageEvent.DamageCause.SUFFOCATION)) {
-				e.setCancelled(true);
-			}
-		}
-	}
+    @EventHandler
+    public void dmgEventRemoveSuff(EntityDamageEvent e) {
+        if (e.getEntity() instanceof Player player) {
+            if (!inPhantomFormBlocks.contains(player)) return;
+            if (e.getCause().equals(EntityDamageEvent.DamageCause.SUFFOCATION)) {
+                e.setCancelled(true);
+            }
+        }
+    }
 
-	@EventHandler
-	public void fixMineSpeed(ServerTickEndEvent e) {
-		for (Player p : inPhantomFormBlocks) {
-			if (!p.getActivePotionEffects().contains(new PotionEffect(PotionEffectType.FAST_DIGGING, 5, 3, false, false, false))) {
-				p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 5, 3, false, false, false));
-			}
-		}
-	}
+    @EventHandler
+    public void fixMineSpeed(ServerTickEndEvent e) {
+        for (Player p : inPhantomFormBlocks) {
+            if (!p.getActivePotionEffects().contains(new PotionEffect(PotionEffectType.FAST_DIGGING, 5, 3, false, false, false))) {
+                p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 5, 3, false, false, false));
+            }
+        }
+    }
 
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:phasing";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:phasing";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return phasing;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return phasing;
+    }
 
-	@EventHandler
-	public void CancelSpectate(PlayerStartSpectatingEntityEvent e) {
-		Player p = e.getPlayer();
-		if (phasing.contains(p)) {
-			if (OriginPlayerAccessor.isInPhantomForm(p)) {
-				e.setCancelled(true);
-			}
+    @EventHandler
+    public void CancelSpectate(PlayerStartSpectatingEntityEvent e) {
+        Player p = e.getPlayer();
+        if (phasing.contains(p)) {
+            if (OriginPlayerAccessor.isInPhantomForm(p)) {
+                e.setCancelled(true);
+            }
 
-		}
-	}
+        }
+    }
 }

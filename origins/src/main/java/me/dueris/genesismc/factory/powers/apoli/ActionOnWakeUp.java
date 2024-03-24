@@ -17,32 +17,32 @@ import java.util.ArrayList;
 
 public class ActionOnWakeUp extends CraftPower implements Listener {
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@EventHandler
-	public void w(PlayerBedLeaveEvent e) {
-		if (!getPowerArray().contains(e.getPlayer())) return;
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-				if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) return;
-				setActive(e.getPlayer(), power.getTag(), true);
-				Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
-				Actions.BlockActionType(e.getBed().getLocation(), power.getBlockAction());
-			}
-		}
-	}
+    @EventHandler
+    public void w(PlayerBedLeaveEvent e) {
+        if (!getPowerArray().contains(e.getPlayer())) return;
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) return;
+                setActive(e.getPlayer(), power.getTag(), true);
+                Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
+                Actions.BlockActionType(e.getBed().getLocation(), power.getBlockAction());
+            }
+        }
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:action_on_wake_up";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:action_on_wake_up";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return action_on_wake_up;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return action_on_wake_up;
+    }
 
 }

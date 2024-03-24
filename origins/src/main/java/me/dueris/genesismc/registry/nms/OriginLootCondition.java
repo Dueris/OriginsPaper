@@ -20,43 +20,43 @@ import org.bukkit.entity.Player;
 import java.util.Optional;
 
 public class OriginLootCondition implements LootItemCondition {
-	public static final Codec<OriginLootCondition> CODEC = RecordCodecBuilder.create((instance) -> {
-		return instance.group(ResourceLocation.CODEC.fieldOf("origin").forGetter(OriginLootCondition::getOriginId), ResourceLocation.CODEC.optionalFieldOf("source").forGetter(OriginLootCondition::getOriginSourceId)).apply(instance, OriginLootCondition::new);
-	});
-	public static final LootItemConditionType TYPE;
+    public static final Codec<OriginLootCondition> CODEC = RecordCodecBuilder.create((instance) -> {
+        return instance.group(ResourceLocation.CODEC.fieldOf("origin").forGetter(OriginLootCondition::getOriginId), ResourceLocation.CODEC.optionalFieldOf("source").forGetter(OriginLootCondition::getOriginSourceId)).apply(instance, OriginLootCondition::new);
+    });
+    public static final LootItemConditionType TYPE;
 
-	static {
-		TYPE = new LootItemConditionType(CODEC);
-	}
+    static {
+        TYPE = new LootItemConditionType(CODEC);
+    }
 
-	private ResourceLocation originId;
-	private ResourceLocation originSourceId;
+    private ResourceLocation originId;
+    private ResourceLocation originSourceId;
 
-	private OriginLootCondition(ResourceLocation originId, Optional<ResourceLocation> originSourceId) {
-	}
+    private OriginLootCondition(ResourceLocation originId, Optional<ResourceLocation> originSourceId) {
+    }
 
-	public boolean test(LootContext context) {
-		Entity entity = (Entity) context.getParam(LootContextParams.THIS_ENTITY);
-		CraftEntity var4 = entity.getBukkitEntity();
-		if (var4 instanceof Player) {
-			Player player = (Player) var4;
-			NamespacedKey key = CraftNamespacedKey.fromMinecraft(this.originId);
-			Origin origin = (Origin) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(key);
-			return OriginPlayerAccessor.hasOrigin(player, origin.getTag());
-		} else {
-			return false;
-		}
-	}
+    public boolean test(LootContext context) {
+        Entity entity = (Entity) context.getParam(LootContextParams.THIS_ENTITY);
+        CraftEntity var4 = entity.getBukkitEntity();
+        if (var4 instanceof Player) {
+            Player player = (Player) var4;
+            NamespacedKey key = CraftNamespacedKey.fromMinecraft(this.originId);
+            Origin origin = (Origin) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(key);
+            return OriginPlayerAccessor.hasOrigin(player, origin.getTag());
+        } else {
+            return false;
+        }
+    }
 
-	public LootItemConditionType getType() {
-		return OriginLootCondition.TYPE;
-	}
+    public LootItemConditionType getType() {
+        return OriginLootCondition.TYPE;
+    }
 
-	public ResourceLocation getOriginId() {
-		return this.originId;
-	}
+    public ResourceLocation getOriginId() {
+        return this.originId;
+    }
 
-	public Optional<ResourceLocation> getOriginSourceId() {
-		return Optional.of(this.originSourceId);
-	}
+    public Optional<ResourceLocation> getOriginSourceId() {
+        return Optional.of(this.originSourceId);
+    }
 }

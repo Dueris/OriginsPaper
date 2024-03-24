@@ -16,48 +16,51 @@ import java.util.ArrayList;
 
 public class Exhaust extends CraftPower {
 
-	private Long interval;
+    private Long interval;
 
-	public Exhaust() {
-		this.interval = 1L;
-	}
+    public Exhaust() {
+        this.interval = 1L;
+    }
 
 
-	@Override
-	public void run(Player p) {
-		if (more_exhaustion.contains(p)) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-					if (power == null) continue;
-					if (power.getObject("interval") == null) {
-						Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.exhaust"));
-						return;
-					}
-					interval = power.getLong("interval");
-					if (Bukkit.getServer().getCurrentTick() % interval != 0) {
-						return;
-					} else {
-						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-							setActive(p, power.getTag(), true);
-							if(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
-							if(Math.round(p.getFoodLevel() - power.getFloatOrDefault("exhaustion", 1)) <= 0) p.setFoodLevel(0);
-							else p.setFoodLevel(Math.round(p.getFoodLevel() - power.getFloatOrDefault("exhaustion", 1)));
-						} else {
-							setActive(p, power.getTag(), false);
-						}
-					}
-				}
-			}
-		}
-	}
+    @Override
+    public void run(Player p) {
+        if (more_exhaustion.contains(p)) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    if (power == null) continue;
+                    if (power.getObject("interval") == null) {
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.exhaust"));
+                        return;
+                    }
+                    interval = power.getLong("interval");
+                    if (Bukkit.getServer().getCurrentTick() % interval != 0) {
+                        return;
+                    } else {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                            setActive(p, power.getTag(), true);
+                            if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
+                                return;
+                            if (Math.round(p.getFoodLevel() - power.getFloatOrDefault("exhaustion", 1)) <= 0)
+                                p.setFoodLevel(0);
+                            else
+                                p.setFoodLevel(Math.round(p.getFoodLevel() - power.getFloatOrDefault("exhaustion", 1)));
+                        } else {
+                            setActive(p, power.getTag(), false);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "apoli:exhaust";
-	}
+    @Override
+    public String getPowerFile() {
+        return "apoli:exhaust";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return more_exhaustion;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return more_exhaustion;
+    }
 }

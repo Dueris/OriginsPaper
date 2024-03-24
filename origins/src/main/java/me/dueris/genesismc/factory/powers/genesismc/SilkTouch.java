@@ -25,76 +25,76 @@ import java.util.EnumSet;
 
 public class SilkTouch extends CraftPower implements Listener {
 
-	private static final EnumSet<Material> m;
+    private static final EnumSet<Material> m;
 
-	static {
-		m = EnumSet.of(Material.PISTON_HEAD, Material.VINE, Material.WHEAT, Material.MELON_STEM, Material.ATTACHED_MELON_STEM, Material.PUMPKIN_STEM, Material.ATTACHED_PUMPKIN_STEM, Material.BEETROOTS, Material.CARROTS, Material.POTATOES, Material.END_PORTAL, Material.NETHER_PORTAL, Material.FIRE, Material.SOUL_FIRE);
-	}
+    static {
+        m = EnumSet.of(Material.PISTON_HEAD, Material.VINE, Material.WHEAT, Material.MELON_STEM, Material.ATTACHED_MELON_STEM, Material.PUMPKIN_STEM, Material.ATTACHED_PUMPKIN_STEM, Material.BEETROOTS, Material.CARROTS, Material.POTATOES, Material.END_PORTAL, Material.NETHER_PORTAL, Material.FIRE, Material.SOUL_FIRE);
+    }
 
 
-	@EventHandler
-	public void onBlockBreak(BlockBreakEvent e) {
-		if (!e.getBlock().getType().equals(Material.AIR)) {
-			Player p = e.getPlayer();
-			if (silk_touch.contains(e.getPlayer())) {
-				ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-					for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-						if (executor.testEntity(power.get("condition"), (CraftPlayer) p)) {
-							setActive(p, power.getTag(), true);
-							if (p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
-								if (!e.getBlock().getType().isItem()) {
-									return;
-								}
-								if (!m.contains(e.getBlock().getType())) {
-									if (e.getBlock().getState() instanceof ShulkerBox) {
-										return;
-									}
-									if (!m.contains(e.getBlock().getType())) {
-										if (e.getBlock().getState() instanceof CreatureSpawner) {
-											return;
-										}
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent e) {
+        if (!e.getBlock().getType().equals(Material.AIR)) {
+            Player p = e.getPlayer();
+            if (silk_touch.contains(e.getPlayer())) {
+                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                        if (executor.testEntity(power.get("condition"), (CraftPlayer) p)) {
+                            setActive(p, power.getTag(), true);
+                            if (p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
+                                if (!e.getBlock().getType().isItem()) {
+                                    return;
+                                }
+                                if (!m.contains(e.getBlock().getType())) {
+                                    if (e.getBlock().getState() instanceof ShulkerBox) {
+                                        return;
+                                    }
+                                    if (!m.contains(e.getBlock().getType())) {
+                                        if (e.getBlock().getState() instanceof CreatureSpawner) {
+                                            return;
+                                        }
 
-										if (e.getBlock().getType().toString().endsWith("BANNER")) {
-											return;
-										}
+                                        if (e.getBlock().getType().toString().endsWith("BANNER")) {
+                                            return;
+                                        }
 
-										e.setDropItems(false);
-										ItemStack i = new ItemStack(e.getBlock().getType(), 1);
+                                        e.setDropItems(false);
+                                        ItemStack i = new ItemStack(e.getBlock().getType(), 1);
 
-										try {
-											p.getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), i);
-										} catch (Exception exception) {
-											Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.silkTouch"));
-											exception.printStackTrace();
-										}
-									}
+                                        try {
+                                            p.getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), i);
+                                        } catch (Exception exception) {
+                                            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.silkTouch"));
+                                            exception.printStackTrace();
+                                        }
+                                    }
 
-								}
-							}
-						} else {
+                                }
+                            }
+                        } else {
 
-							setActive(p, power.getTag(), false);
-						}
-					}
-				}
-			}
-		}
-	}
+                            setActive(p, power.getTag(), false);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public void run(Player p) {
+    @Override
+    public void run(Player p) {
 
-	}
+    }
 
-	@Override
-	public String getPowerFile() {
-		return "genesis:silk_touch";
-	}
+    @Override
+    public String getPowerFile() {
+        return "genesis:silk_touch";
+    }
 
-	@Override
-	public ArrayList<Player> getPowerArray() {
-		return silk_touch;
-	}
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return silk_touch;
+    }
 }
 

@@ -10,20 +10,20 @@ import java.util.List;
 
 public class WaterProtBook {
 
-	public static ItemStack enchbook;
+    public static ItemStack enchbook;
 
-	public static void init() {
-		createBook();
-	}
+    public static void init() {
+        createBook();
+    }
 
-	public static void createBook() {
-		ItemStack item = new ItemStack(Material.NETHERITE_CHESTPLATE);
-		ItemMeta meta = item.getItemMeta();
-		List<String> lore = new ArrayList<>();
-		lore.add(ChatColor.GRAY + "Water Protection");
-		meta.setLore(lore);
-		item.setItemMeta(meta);
-		enchbook = item;
+    public static void createBook() {
+        ItemStack item = new ItemStack(Material.NETHERITE_CHESTPLATE);
+        ItemMeta meta = item.getItemMeta();
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + "Water Protection");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        enchbook = item;
 
-	}
+    }
 }
