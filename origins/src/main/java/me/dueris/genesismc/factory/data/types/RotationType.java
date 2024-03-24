@@ -40,9 +40,9 @@ public enum RotationType {
 
     public static Vec3 reduceAxes(Vec3 vector, EnumSet<Direction.Axis> axesToKeep) {
         return new Vec3(
-                axesToKeep.contains(Direction.Axis.X) ? vector.x : 0,
-                axesToKeep.contains(Direction.Axis.Y) ? vector.y : 0,
-                axesToKeep.contains(Direction.Axis.Z) ? vector.z : 0
+            axesToKeep.contains(Direction.Axis.X) ? vector.x : 0,
+            axesToKeep.contains(Direction.Axis.Y) ? vector.y : 0,
+            axesToKeep.contains(Direction.Axis.Z) ? vector.z : 0
         );
     }
 

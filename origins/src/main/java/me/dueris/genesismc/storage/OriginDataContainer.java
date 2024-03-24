@@ -18,11 +18,11 @@ public class OriginDataContainer {
 
     public static void loadData(Player player) {
         dataContainer.put(
-                player,
-                player.getPersistentDataContainer().get(
-                        GenesisMC.identifier("originLayer"),
-                        PersistentDataType.STRING
-                )
+            player,
+            player.getPersistentDataContainer().get(
+                GenesisMC.identifier("originLayer"),
+                PersistentDataType.STRING
+            )
         );
     }
 

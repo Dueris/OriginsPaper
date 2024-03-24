@@ -92,12 +92,12 @@ public class BlockConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("attachable"), (condition, block) -> {
             if (block != null && block.getType() != Material.AIR) {
                 Block[] adjBlcs = new Block[]{
-                        block.getRelative(0, 1, 0), // Up
-                        block.getRelative(0, -1, 0), // Down
-                        block.getRelative(0, 0, -1), // North
-                        block.getRelative(0, 0, 1), // South
-                        block.getRelative(-1, 0, 0), // West
-                        block.getRelative(1, 0, 0)  // East
+                    block.getRelative(0, 1, 0), // Up
+                    block.getRelative(0, -1, 0), // Down
+                    block.getRelative(0, 0, -1), // North
+                    block.getRelative(0, 0, 1), // South
+                    block.getRelative(-1, 0, 0), // West
+                    block.getRelative(1, 0, 0)  // East
                 };
 
                 for (Block adj : adjBlcs) {

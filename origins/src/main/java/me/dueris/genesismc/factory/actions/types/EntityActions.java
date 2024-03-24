@@ -143,11 +143,11 @@ public class EntityActions {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
             RaycastUtils.executeCommandAtHit(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), "summon $1 %1 %2 %3 $2"
-                    .replace("$1", action.get("entity_type").toString())
-                    .replace("$2", action.getOrDefault("tag", "{}").toString())
-                    .replace("%1", String.valueOf(entity.getLocation().getX()))
-                    .replace("%2", String.valueOf(entity.getLocation().getY()))
-                    .replace("%3", String.valueOf(entity.getLocation().getZ()))
+                .replace("$1", action.get("entity_type").toString())
+                .replace("$2", action.getOrDefault("tag", "{}").toString())
+                .replace("%1", String.valueOf(entity.getLocation().getX()))
+                .replace("%2", String.valueOf(entity.getLocation().getY()))
+                .replace("%3", String.valueOf(entity.getLocation().getZ()))
             );
         }
         if (type.equals("apoli:spawn_particles")) {
@@ -178,12 +178,12 @@ public class EntityActions {
             int attempts = Integer.valueOf(action.getOrDefault("attempts", "1").toString());
             for (int i = 0; i < attempts; i++) {
                 String cmd = "spreadplayers {xloc} {zloc} 1 {spreadDist} false {name}"
-                        .replace("{xloc}", String.valueOf(entity.getLocation().getX()))
-                        .replace("{zloc}", String.valueOf(entity.getLocation().getZ()))
-                        .replace("{spreadDist}", String.valueOf(spreadDistance))
-                        .replace("{name}", "@e[{data}]"
-                                .replace("{data}", "x=" + entity.getLocation().getX() + ",y=" + entity.getLocation().getY() + ",z=" + entity.getLocation().getZ() + ",type=" + entity.getType().toString().toLowerCase() + ",x_rotation=" + entity.getLocation().getDirection().getX() + ",y_rotation=" + entity.getLocation().getDirection().getY())
-                        );
+                    .replace("{xloc}", String.valueOf(entity.getLocation().getX()))
+                    .replace("{zloc}", String.valueOf(entity.getLocation().getZ()))
+                    .replace("{spreadDist}", String.valueOf(spreadDistance))
+                    .replace("{name}", "@e[{data}]"
+                        .replace("{data}", "x=" + entity.getLocation().getX() + ",y=" + entity.getLocation().getY() + ",z=" + entity.getLocation().getZ() + ",type=" + entity.getType().toString().toLowerCase() + ",x_rotation=" + entity.getLocation().getDirection().getX() + ",y_rotation=" + entity.getLocation().getDirection().getY())
+                    );
                 RaycastUtils.executeCommandAtHit(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), cmd);
             }
         }
@@ -253,19 +253,19 @@ public class EntityActions {
                 create_fire = Boolean.parseBoolean(action.get("create_fire").toString());
 
             Explosion explosion = new Explosion(
-                    level,
-                    ((CraftEntity) entity).getHandle(),
-                    level.damageSources().generic(),
-                    new ExplosionDamageCalculator(),
-                    entity.getLocation().getX(),
-                    entity.getLocation().getY(),
-                    entity.getLocation().getZ(),
-                    explosionPower,
-                    create_fire,
-                    DestructionType.parse(destruction_type).getNMS(),
-                    ParticleTypes.EXPLOSION,
-                    ParticleTypes.EXPLOSION_EMITTER,
-                    SoundEvents.GENERIC_EXPLODE
+                level,
+                ((CraftEntity) entity).getHandle(),
+                level.damageSources().generic(),
+                new ExplosionDamageCalculator(),
+                entity.getLocation().getX(),
+                entity.getLocation().getY(),
+                entity.getLocation().getZ(),
+                explosionPower,
+                create_fire,
+                DestructionType.parse(destruction_type).getNMS(),
+                ParticleTypes.EXPLOSION,
+                ParticleTypes.EXPLOSION_EMITTER,
+                SoundEvents.GENERIC_EXPLODE
             );
             ExplosionMask.getExplosionMask(explosion, level).apply(action, true);
         }

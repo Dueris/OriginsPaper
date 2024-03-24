@@ -119,12 +119,12 @@ public class Layer implements Serializable, FactoryInstance {
     @Override
     public List<FactoryObjectInstance> getValidObjectFactory() {
         return List.of(
-                new FactoryObjectInstance("origins", JSONArray.class, null),
-                new FactoryObjectInstance("enabled", Boolean.class, true),
-                new FactoryObjectInstance("replace", Boolean.class, false),
-                new FactoryObjectInstance("allow_random", Boolean.class, true),
-                new FactoryObjectInstance("name", String.class, "No Name"),
-                new FactoryObjectInstance("hidden", Boolean.class, false)
+            new FactoryObjectInstance("origins", JSONArray.class, null),
+            new FactoryObjectInstance("enabled", Boolean.class, true),
+            new FactoryObjectInstance("replace", Boolean.class, false),
+            new FactoryObjectInstance("allow_random", Boolean.class, true),
+            new FactoryObjectInstance("name", String.class, "No Name"),
+            new FactoryObjectInstance("hidden", Boolean.class, false)
         );
     }
 

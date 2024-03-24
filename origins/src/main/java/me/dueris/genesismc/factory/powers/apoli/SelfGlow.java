@@ -33,7 +33,7 @@ public class SelfGlow extends CraftPower {
                             setActive(p, power.getTag(), true);
                             CraftPlayer craftPlayers = (CraftPlayer) player;
                             craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
-                                    new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
+                                new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
                         } else {
                             setActive(p, power.getTag(), false);
                         }
@@ -41,7 +41,7 @@ public class SelfGlow extends CraftPower {
                 }
                 CraftPlayer craftPlayer = (CraftPlayer) p;
                 craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(craftPlayer.getEntityId(),
-                        new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
+                    new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
             }
         }
     }

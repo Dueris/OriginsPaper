@@ -71,185 +71,185 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
-                literal("origin")
-                        .then(literal("set").requires(source -> source.hasPermission(2))
-                                .then(argument("targets", EntityArgument.players())
-                                        .then(argument("layer", ResourceLocationArgument.id())
-                                                .suggests((context, builder) -> {
-                                                    commandProvidedLayers.forEach((layer) -> {
-                                                        if (context.getInput().split(" ").length == 3 || (layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
-                                                                || layer.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))) {
-                                                            builder.suggest(layer.getTag());
-                                                        }
-                                                    });
-                                                    return builder.buildFuture();
-                                                })
-                                                .then(argument("origin", ResourceLocationArgument.id())
-                                                        .suggests((context, builder) -> {
-                                                            commandProvidedOrigins.forEach((origin) -> {
-                                                                if (context.getInput().split(" ").length == 4 || (origin.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
-                                                                        || origin.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))) {
-                                                                    builder.suggest(origin.getTag());
-                                                                }
-                                                            });
-                                                            return builder.buildFuture();
-                                                        }).executes(context -> {
-                                                            Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-                                                            Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
-                                                            Origin origin = CraftApoli.getOrigin(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "origin")).asString());
-                                                            targets.forEach(player -> {
-                                                                OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, origin);
-                                                                OriginPlayerAccessor.resetOriginData(player.getBukkitEntity(), OriginDataType.IN_PHASING_FORM);
-                                                                OriginChangeEvent originChangeEvent = new OriginChangeEvent(player.getBukkitEntity(), origin, false);
-                                                                getServer().getPluginManager().callEvent(originChangeEvent);
-                                                            });
-                                                            return SINGLE_SUCCESS;
-                                                        })
-                                                )
-                                        ))
-                        ).then(literal("recipe")
-                                .executes(context -> {
-                                    if (context.getSource().isPlayer()) {
-                                        if (!getMainConfig().getBoolean("orb-of-origins")) return 0;
-                                        @NotNull CraftInventoryCustom custommenu = (CraftInventoryCustom) Bukkit.createInventory(context.getSource().getPlayer().getBukkitEntity(), InventoryType.WORKBENCH, "Orb of Origins");
-                                        try {
-                                            CraftPlayer p = context.getSource().getPlayer().getBukkitEntity();
-                                            custommenu.setItem(1, new ItemStack(Material.valueOf(getOrbCon().get("crafting.top.left").toString())));
-                                            custommenu.setItem(2, new ItemStack(Material.valueOf(getOrbCon().get("crafting.top.middle").toString())));
-                                            custommenu.setItem(3, new ItemStack(Material.valueOf(getOrbCon().get("crafting.top.right").toString())));
-                                            custommenu.setItem(4, new ItemStack(Material.valueOf(getOrbCon().get("crafting.middle.left").toString())));
-                                            custommenu.setItem(5, new ItemStack(Material.valueOf(getOrbCon().get("crafting.middle.middle").toString())));
-                                            custommenu.setItem(6, new ItemStack(Material.valueOf(getOrbCon().get("crafting.middle.right").toString())));
-                                            custommenu.setItem(7, new ItemStack(Material.valueOf(getOrbCon().get("crafting.bottom.left").toString())));
-                                            custommenu.setItem(8, new ItemStack(Material.valueOf(getOrbCon().get("crafting.bottom.middle").toString())));
-                                            custommenu.setItem(9, new ItemStack(Material.valueOf(getOrbCon().get("crafting.bottom.right").toString())));
-                                            custommenu.setItem(0, OrbOfOrigins.orb);
-                                            p.openInventory(custommenu);
-                                            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
-                                        } catch (Exception exception) {
-                                            exception.printStackTrace();
-                                        }
-                                        return SINGLE_SUCCESS;
-                                    } else {
-                                        context.getSource().sendFailure(Component.literal("Only players can access this command"));
-                                        return 0;
+            literal("origin")
+                .then(literal("set").requires(source -> source.hasPermission(2))
+                    .then(argument("targets", EntityArgument.players())
+                        .then(argument("layer", ResourceLocationArgument.id())
+                            .suggests((context, builder) -> {
+                                commandProvidedLayers.forEach((layer) -> {
+                                    if (context.getInput().split(" ").length == 3 || (layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+                                        || layer.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))) {
+                                        builder.suggest(layer.getTag());
                                     }
-
-                                })
-                        ).then(literal("get").requires(source -> source.hasPermission(2))
-                                .then(argument("targets", EntityArgument.players())
-                                        .then(argument("layer", ResourceLocationArgument.id())
-                                                .suggests((context, builder) -> {
-                                                    commandProvidedLayers.forEach((layer) -> {
-                                                        if (context.getInput().split(" ").length == 3 || (layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
-                                                                || layer.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))) {
-                                                            builder.suggest(layer.getTag());
-                                                        }
-                                                    });
-                                                    return builder.buildFuture();
-                                                }).executes(context -> {
-                                                    Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-                                                    Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
-                                                    targets.forEach(player -> context.getSource().getBukkitEntity().sendMessage(net.kyori.adventure.text.Component.text(LangConfig.getLocalizedString(player.getBukkitEntity(), "command.origin.get.output").replace("%player%", player.getBukkitEntity().getName()).replace("%layer%", layer.getTag()).replace("%origin%", OriginPlayerAccessor.getOrigin(player.getBukkitEntity(), layer).getTag()))));
-                                                    return SINGLE_SUCCESS;
-                                                })
-                                        )
-                                )
-                        ).then(literal("gui").requires(source -> source.hasPermission(2))
-                                .executes(context -> {
-                                    if (!context.getSource().isPlayer()) return 0;
-                                    OriginPlayerAccessor.unassignPowers(context.getSource().getPlayer().getBukkitEntity());
-                                    OriginPlayerAccessor.setOrigin(context.getSource().getPlayer().getBukkitEntity(), CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.nullOrigin());
+                                });
+                                return builder.buildFuture();
+                            })
+                            .then(argument("origin", ResourceLocationArgument.id())
+                                .suggests((context, builder) -> {
+                                    commandProvidedOrigins.forEach((origin) -> {
+                                        if (context.getInput().split(" ").length == 4 || (origin.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+                                            || origin.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))) {
+                                            builder.suggest(origin.getTag());
+                                        }
+                                    });
+                                    return builder.buildFuture();
+                                }).executes(context -> {
+                                    Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
+                                    Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
+                                    Origin origin = CraftApoli.getOrigin(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "origin")).asString());
+                                    targets.forEach(player -> {
+                                        OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, origin);
+                                        OriginPlayerAccessor.resetOriginData(player.getBukkitEntity(), OriginDataType.IN_PHASING_FORM);
+                                        OriginChangeEvent originChangeEvent = new OriginChangeEvent(player.getBukkitEntity(), origin, false);
+                                        getServer().getPluginManager().callEvent(originChangeEvent);
+                                    });
                                     return SINGLE_SUCCESS;
                                 })
-                                .then(argument("targets", EntityArgument.players())
-                                        .executes(context -> {
-                                            Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-                                            targets.forEach(player -> {
-                                                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                                                    OriginPlayerAccessor.unassignPowers(player.getBukkitEntity());
-                                                    OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.nullOrigin());
-                                                }
-                                            });
-                                            return SINGLE_SUCCESS;
-                                        })
-                                        .then(argument("layer", ResourceLocationArgument.id())
-                                                .suggests((context, builder) -> {
-                                                    commandProvidedLayers.forEach((layer) -> {
-                                                        if (context.getInput().split(" ").length == 3 || (layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
-                                                                || layer.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))) {
-                                                            builder.suggest(layer.getTag());
-                                                        }
-                                                    });
-                                                    return builder.buildFuture();
-                                                }).executes(context -> {
-                                                    Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-                                                    Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
-                                                    targets.forEach(player -> {
-                                                        OriginPlayerAccessor.unassignPowers(player.getBukkitEntity());
-                                                        OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.nullOrigin());
-                                                    });
-                                                    return SINGLE_SUCCESS;
-                                                })
-                                        )
-                                )
-                        ).then(literal("info")
-                                .executes(context -> {
-                                    if (context.getSource().isPlayer()) {
-                                        ServerPlayer p = context.getSource().getPlayer();
-                                        HashMap<Layer, Origin> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(p.getBukkitEntity()));
-                                        assert origins != null;
-                                        playerOrigins.put(p.getBukkitEntity(), new ArrayList<>(origins.values()));
-                                        if (!playerPage.containsKey(p.getBukkitEntity()))
-                                            playerPage.put(p.getBukkitEntity(), 0);
+                            )
+                        ))
+                ).then(literal("recipe")
+                    .executes(context -> {
+                        if (context.getSource().isPlayer()) {
+                            if (!getMainConfig().getBoolean("orb-of-origins")) return 0;
+                            @NotNull CraftInventoryCustom custommenu = (CraftInventoryCustom) Bukkit.createInventory(context.getSource().getPlayer().getBukkitEntity(), InventoryType.WORKBENCH, "Orb of Origins");
+                            try {
+                                CraftPlayer p = context.getSource().getPlayer().getBukkitEntity();
+                                custommenu.setItem(1, new ItemStack(Material.valueOf(getOrbCon().get("crafting.top.left").toString())));
+                                custommenu.setItem(2, new ItemStack(Material.valueOf(getOrbCon().get("crafting.top.middle").toString())));
+                                custommenu.setItem(3, new ItemStack(Material.valueOf(getOrbCon().get("crafting.top.right").toString())));
+                                custommenu.setItem(4, new ItemStack(Material.valueOf(getOrbCon().get("crafting.middle.left").toString())));
+                                custommenu.setItem(5, new ItemStack(Material.valueOf(getOrbCon().get("crafting.middle.middle").toString())));
+                                custommenu.setItem(6, new ItemStack(Material.valueOf(getOrbCon().get("crafting.middle.right").toString())));
+                                custommenu.setItem(7, new ItemStack(Material.valueOf(getOrbCon().get("crafting.bottom.left").toString())));
+                                custommenu.setItem(8, new ItemStack(Material.valueOf(getOrbCon().get("crafting.bottom.middle").toString())));
+                                custommenu.setItem(9, new ItemStack(Material.valueOf(getOrbCon().get("crafting.bottom.right").toString())));
+                                custommenu.setItem(0, OrbOfOrigins.orb);
+                                p.openInventory(custommenu);
+                                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
+                            } catch (Exception exception) {
+                                exception.printStackTrace();
+                            }
+                            return SINGLE_SUCCESS;
+                        } else {
+                            context.getSource().sendFailure(Component.literal("Only players can access this command"));
+                            return 0;
+                        }
 
-                                        @NotNull Inventory help = Bukkit.createInventory(p.getBukkitEntity(), 54, "Info - " + playerOrigins.get(p.getBukkitEntity()).get(playerPage.get(p.getBukkitEntity())).getName());
-                                        help.setContents(infoMenu(p.getBukkitEntity(), playerPage.get(p.getBukkitEntity())));
-                                        p.getBukkitEntity().openInventory(help);
-                                        p.getBukkitEntity().playSound(p.getBukkitEntity().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-                                        return SINGLE_SUCCESS;
-                                    } else {
-                                        context.getSource().sendFailure(Component.literal("Only players can access this command"));
-                                        return 0;
+                    })
+                ).then(literal("get").requires(source -> source.hasPermission(2))
+                    .then(argument("targets", EntityArgument.players())
+                        .then(argument("layer", ResourceLocationArgument.id())
+                            .suggests((context, builder) -> {
+                                commandProvidedLayers.forEach((layer) -> {
+                                    if (context.getInput().split(" ").length == 3 || (layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+                                        || layer.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))) {
+                                        builder.suggest(layer.getTag());
                                     }
-                                })
-                        ).then(literal("give").requires(source -> source.hasPermission(2))
-                                .then(argument("targets", EntityArgument.players())
-                                        .then(argument("namespace", ResourceLocationArgument.id())
-                                                .suggests((context, builder) -> {
-                                                    commandProvidedTaggedRecipies.forEach((key) -> {
-                                                        builder.suggest(key);
-                                                    });
-                                                    return builder.buildFuture();
-                                                })
-                                                .executes(context -> {
-                                                    give(context, 1);
-                                                    return SINGLE_SUCCESS;
-                                                })
-                                                .then(argument("amount", IntegerArgumentType.integer())
-                                                        .executes(context -> {
-                                                            give(context, IntegerArgumentType.getInteger(context, "amount"));
-                                                            return SINGLE_SUCCESS;
-                                                        })
-                                                )
-                                        )
-                                )
-                        ).then(literal("enchant").requires(source -> source.hasPermission(2))
-                                .then(argument("targets", EntityArgument.players())
-                                        .then(literal("origins:water_protection")
-                                                .executes(context -> {
-                                                    enchant(context.getSource(), EntityArgument.getPlayers(context, "targets").stream().toList(), 1);
-                                                    return SINGLE_SUCCESS;
-                                                })
-                                                .then(argument("level", IntegerArgumentType.integer(1, 4))
-                                                        .executes(context -> {
-                                                            enchant(context.getSource(), EntityArgument.getPlayers(context, "targets").stream().toList(), IntegerArgumentType.getInteger(context, "level"));
-                                                            return SINGLE_SUCCESS;
-                                                        })
-                                                )
-                                        )
-                                )
+                                });
+                                return builder.buildFuture();
+                            }).executes(context -> {
+                                Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
+                                Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
+                                targets.forEach(player -> context.getSource().getBukkitEntity().sendMessage(net.kyori.adventure.text.Component.text(LangConfig.getLocalizedString(player.getBukkitEntity(), "command.origin.get.output").replace("%player%", player.getBukkitEntity().getName()).replace("%layer%", layer.getTag()).replace("%origin%", OriginPlayerAccessor.getOrigin(player.getBukkitEntity(), layer).getTag()))));
+                                return SINGLE_SUCCESS;
+                            })
                         )
+                    )
+                ).then(literal("gui").requires(source -> source.hasPermission(2))
+                    .executes(context -> {
+                        if (!context.getSource().isPlayer()) return 0;
+                        OriginPlayerAccessor.unassignPowers(context.getSource().getPlayer().getBukkitEntity());
+                        OriginPlayerAccessor.setOrigin(context.getSource().getPlayer().getBukkitEntity(), CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.nullOrigin());
+                        return SINGLE_SUCCESS;
+                    })
+                    .then(argument("targets", EntityArgument.players())
+                        .executes(context -> {
+                            Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
+                            targets.forEach(player -> {
+                                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                                    OriginPlayerAccessor.unassignPowers(player.getBukkitEntity());
+                                    OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.nullOrigin());
+                                }
+                            });
+                            return SINGLE_SUCCESS;
+                        })
+                        .then(argument("layer", ResourceLocationArgument.id())
+                            .suggests((context, builder) -> {
+                                commandProvidedLayers.forEach((layer) -> {
+                                    if (context.getInput().split(" ").length == 3 || (layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+                                        || layer.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))) {
+                                        builder.suggest(layer.getTag());
+                                    }
+                                });
+                                return builder.buildFuture();
+                            }).executes(context -> {
+                                Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
+                                Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
+                                targets.forEach(player -> {
+                                    OriginPlayerAccessor.unassignPowers(player.getBukkitEntity());
+                                    OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.nullOrigin());
+                                });
+                                return SINGLE_SUCCESS;
+                            })
+                        )
+                    )
+                ).then(literal("info")
+                    .executes(context -> {
+                        if (context.getSource().isPlayer()) {
+                            ServerPlayer p = context.getSource().getPlayer();
+                            HashMap<Layer, Origin> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(p.getBukkitEntity()));
+                            assert origins != null;
+                            playerOrigins.put(p.getBukkitEntity(), new ArrayList<>(origins.values()));
+                            if (!playerPage.containsKey(p.getBukkitEntity()))
+                                playerPage.put(p.getBukkitEntity(), 0);
+
+                            @NotNull Inventory help = Bukkit.createInventory(p.getBukkitEntity(), 54, "Info - " + playerOrigins.get(p.getBukkitEntity()).get(playerPage.get(p.getBukkitEntity())).getName());
+                            help.setContents(infoMenu(p.getBukkitEntity(), playerPage.get(p.getBukkitEntity())));
+                            p.getBukkitEntity().openInventory(help);
+                            p.getBukkitEntity().playSound(p.getBukkitEntity().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+                            return SINGLE_SUCCESS;
+                        } else {
+                            context.getSource().sendFailure(Component.literal("Only players can access this command"));
+                            return 0;
+                        }
+                    })
+                ).then(literal("give").requires(source -> source.hasPermission(2))
+                    .then(argument("targets", EntityArgument.players())
+                        .then(argument("namespace", ResourceLocationArgument.id())
+                            .suggests((context, builder) -> {
+                                commandProvidedTaggedRecipies.forEach((key) -> {
+                                    builder.suggest(key);
+                                });
+                                return builder.buildFuture();
+                            })
+                            .executes(context -> {
+                                give(context, 1);
+                                return SINGLE_SUCCESS;
+                            })
+                            .then(argument("amount", IntegerArgumentType.integer())
+                                .executes(context -> {
+                                    give(context, IntegerArgumentType.getInteger(context, "amount"));
+                                    return SINGLE_SUCCESS;
+                                })
+                            )
+                        )
+                    )
+                ).then(literal("enchant").requires(source -> source.hasPermission(2))
+                    .then(argument("targets", EntityArgument.players())
+                        .then(literal("origins:water_protection")
+                            .executes(context -> {
+                                enchant(context.getSource(), EntityArgument.getPlayers(context, "targets").stream().toList(), 1);
+                                return SINGLE_SUCCESS;
+                            })
+                            .then(argument("level", IntegerArgumentType.integer(1, 4))
+                                .executes(context -> {
+                                    enchant(context.getSource(), EntityArgument.getPlayers(context, "targets").stream().toList(), IntegerArgumentType.getInteger(context, "level"));
+                                    return SINGLE_SUCCESS;
+                                })
+                            )
+                        )
+                    )
+                )
         );
     }
 
@@ -415,8 +415,8 @@ public class OriginCommand extends BukkitRunnable implements Listener {
             p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + romanLevel));
             p.getInventory().getItemInMainHand().addEnchantment(AnvilHandler.bukkitEnchantment, level);
             sender.getBukkitSender().sendMessage("Applied enchantment " +
-                    ChatColor.GRAY + "{water_prot}".replace("{water_prot}", "Water Protection " + AnvilHandler.numberToRomanNum(level)) +
-                    ChatColor.WHITE + " to {target}'s item".replace("{target}", p.getName())
+                ChatColor.GRAY + "{water_prot}".replace("{water_prot}", "Water Protection " + AnvilHandler.numberToRomanNum(level)) +
+                ChatColor.WHITE + " to {target}'s item".replace("{target}", p.getName())
             );
         }
     }

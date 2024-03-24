@@ -175,23 +175,23 @@ public class Phasing extends CraftPower implements Listener {
                     if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
-                                p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
-                                p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
-                                p.getLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
-                                p.getLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
-                                p.getLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
-                                p.getLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
-                                p.getLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid() ||
-                                p.getLocation().add(0, 0.5, 0).getBlock().isSolid() ||
+                            p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
+                            p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
+                            p.getLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(0, 0.5, 0).getBlock().isSolid() ||
 
-                                p.getEyeLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
-                                p.getEyeLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
-                                p.getEyeLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
-                                p.getEyeLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
-                                p.getEyeLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
-                                p.getEyeLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
-                                p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
-                                p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
+                            p.getEyeLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
+                            p.getEyeLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
+                            p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
                         ) {
                             if (!isBedrock(p)) {
                                 setInPhasingBlockForm(p);

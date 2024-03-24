@@ -59,19 +59,19 @@ public class ScareCreepers extends CraftPower implements Listener, PowerProvider
 
     public void applyPatch(Creeper creeper) {
         Bukkit.getMobGoals().addGoal(creeper, 0, new AvoidEntityGoal<>(
-                (PathfinderMob) ((CraftEntity) creeper).getHandle(), net.minecraft.world.entity.player.Player.class, 6, 1, 1.2,
-                livingEntity -> {
-                    if (livingEntity.getBukkitEntity() instanceof Player player) {
-                        if (getPowerArray().contains(player)) {
-                            String data = creeper.getPersistentDataContainer().get(hitByPlayerKey, PersistentDataType.STRING);
-                            if (data == null) {
-                                return true;
-                            }
-                            return !data.equals(player.getName());
+            (PathfinderMob) ((CraftEntity) creeper).getHandle(), net.minecraft.world.entity.player.Player.class, 6, 1, 1.2,
+            livingEntity -> {
+                if (livingEntity.getBukkitEntity() instanceof Player player) {
+                    if (getPowerArray().contains(player)) {
+                        String data = creeper.getPersistentDataContainer().get(hitByPlayerKey, PersistentDataType.STRING);
+                        if (data == null) {
+                            return true;
                         }
+                        return !data.equals(player.getName());
                     }
-                    return false;
                 }
+                return false;
+            }
         ).asPaperVanillaGoal());
     }
 

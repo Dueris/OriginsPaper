@@ -106,9 +106,9 @@ public class ParticlePower extends CraftPower {
 
                             if (pass) {
                                 player.getWorld().spawnParticle(
-                                        particle.builder().source(player).force(false).location(player.getLocation()).count(1).particle(),
-                                        new Location(player.getWorld(), player.getEyeLocation().getX(), player.getEyeLocation().getY() - 0.7, player.getEyeLocation().getZ()),
-                                        power.getIntOrDefault("count", 1), offset_x, offset_y, offset_z, 0, data
+                                    particle.builder().source(player).force(false).location(player.getLocation()).count(1).particle(),
+                                    new Location(player.getWorld(), player.getEyeLocation().getX(), player.getEyeLocation().getY() - 0.7, player.getEyeLocation().getZ()),
+                                    power.getIntOrDefault("count", 1), offset_x, offset_y, offset_z, 0, data
                                 );
                             }
                         } else {

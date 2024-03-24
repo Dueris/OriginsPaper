@@ -61,22 +61,22 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                                 if (Float.valueOf(modifier.get("value").toString()) <= 0) {
                                     // Slower mine
                                     p.addPotionEffect(
-                                            new PotionEffect(
-                                                    PotionEffectType.SLOW_DIGGING,
-                                                    120,
-                                                    (Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
-                                                    false, false, false
-                                            )
+                                        new PotionEffect(
+                                            PotionEffectType.SLOW_DIGGING,
+                                            120,
+                                            (Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
+                                            false, false, false
+                                        )
                                     );
                                 } else {
                                     // Speed up
                                     p.addPotionEffect(
-                                            new PotionEffect(
-                                                    PotionEffectType.FAST_DIGGING,
-                                                    120,
-                                                    (Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
-                                                    false, false, false
-                                            )
+                                        new PotionEffect(
+                                            PotionEffectType.FAST_DIGGING,
+                                            120,
+                                            (Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
+                                            false, false, false
+                                        )
                                     );
                                 }
                                 p.addScoreboardTag("breaking_genesis_block_at_key_holder");

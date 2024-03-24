@@ -55,7 +55,7 @@ public class GravityPower extends CraftPower implements Listener {
     @EventHandler
     public void serverTickEnd(PlayerToggleFlightEvent e) {
         if (creative_flight.contains(e.getPlayer()) || e.getPlayer().getGameMode().equals(GameMode.CREATIVE) || e.getPlayer().getGameMode().equals(GameMode.SPECTATOR)
-                || elytra.contains(e.getPlayer())) return;
+            || elytra.contains(e.getPlayer())) return;
         e.setCancelled(getPowerArray().contains(e.getPlayer()));
     }
 

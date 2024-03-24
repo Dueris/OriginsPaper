@@ -307,7 +307,7 @@ public class Actions {
             Location entityLocation = entity.getLocation();
 
             org.bukkit.entity.AreaEffectCloud effectCloud = entityLocation.getWorld()
-                    .spawn(entityLocation, org.bukkit.entity.AreaEffectCloud.class);
+                .spawn(entityLocation, org.bukkit.entity.AreaEffectCloud.class);
 
             effectCloud.setRadius(radius);
             effectCloud.setDuration(waitTime);

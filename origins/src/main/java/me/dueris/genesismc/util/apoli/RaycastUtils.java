@@ -81,7 +81,7 @@ public class RaycastUtils {
         if (!data.containsKey("entity_distance") && !data.containsKey("distance")) {
             long base = (entity instanceof Player player && player.getAbilities().instabuild) ? 6 : 3;
             return (entity instanceof LivingEntity living && false) ?
-                    null : base;
+                null : base;
         }
         return data.containsKey("entity_distance") ? (long) data.get("entity_distance") : (long) data.get("distance");
     }
@@ -91,7 +91,7 @@ public class RaycastUtils {
         if (!data.containsKey("block_distance") && !data.containsKey("distance")) {
             long base = (entity instanceof Player player && player.getAbilities().instabuild) ? 5 : 4;
             return (entity instanceof LivingEntity living && false) ?
-                    null : base;
+                null : base;
         }
         return data.containsKey("block_distance") ? (long) data.get("block_distance") : (long) data.get("distance");
     }
@@ -105,15 +105,15 @@ public class RaycastUtils {
             for (double current = 0; current < length; current += step) {
                 boolean validOutput = !(entity instanceof ServerPlayer) || ((ServerPlayer) entity).connection != null;
                 CommandSourceStack source = new CommandSourceStack(
-                        false && validOutput ? entity : CommandSource.NULL,
-                        origin.add(direction.scale(current)),
-                        entity.getRotationVector(),
-                        true ? (ServerLevel) entity.level() : null,
-                        4,
-                        entity.getName().getString(),
-                        entity.getDisplayName(),
-                        entity.getServer(),
-                        entity);
+                    false && validOutput ? entity : CommandSource.NULL,
+                    origin.add(direction.scale(current)),
+                    entity.getRotationVector(),
+                    true ? (ServerLevel) entity.level() : null,
+                    4,
+                    entity.getName().getString(),
+                    entity.getDisplayName(),
+                    entity.getServer(),
+                    entity);
                 server.getCommands().performPrefixedCommand(source, command);
             }
         }
@@ -125,15 +125,15 @@ public class RaycastUtils {
         if (server != null) {
             boolean validOutput = !(entity instanceof ServerPlayer) || ((ServerPlayer) entity).connection != null;
             CommandSourceStack source = new CommandSourceStack(
-                    false && validOutput ? entity : CommandSource.NULL,
-                    hitPosition,
-                    entity.getRotationVector(),
-                    entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
-                    4,
-                    entity.getName().getString(),
-                    entity.getDisplayName(),
-                    entity.getServer(),
-                    entity);
+                false && validOutput ? entity : CommandSource.NULL,
+                hitPosition,
+                entity.getRotationVector(),
+                entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
+                4,
+                entity.getName().getString(),
+                entity.getDisplayName(),
+                entity.getServer(),
+                entity);
             try {
                 server.getCommands().performPrefixedCommand(source, command);
             } catch (Exception e) {

@@ -44,8 +44,8 @@ public class OrbOfOrigins {
             if (GenesisConfigs.getMainConfig().getString("orb-of-origins").equalsIgnoreCase("true")) {
                 ShapedRecipe sr = new ShapedRecipe(new NamespacedKey("origins", "orb_of_origins"), item);
                 sr.shape("123",
-                        "456",
-                        "789");
+                    "456",
+                    "789");
                 sr.setIngredient('1', Material.valueOf(getOrbCon().get("crafting.top.left").toString()));
                 sr.setIngredient('2', Material.valueOf(getOrbCon().get("crafting.top.middle").toString()));
                 sr.setIngredient('3', Material.valueOf(getOrbCon().get("crafting.top.right").toString()));

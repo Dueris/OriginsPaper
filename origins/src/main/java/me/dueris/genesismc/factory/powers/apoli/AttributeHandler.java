@@ -213,7 +213,7 @@ public class AttributeHandler extends CraftPower implements Listener {
 
                 // Check if the block can be broken and it's outside of the normal reach
                 if (targetBlock.getType() != Material.AIR && targetBlock.getType().isSolid()
-                        && distance > normalReach) {
+                    && distance > normalReach) {
                     return targetBlock;
                 }
             }

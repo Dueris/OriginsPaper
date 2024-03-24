@@ -29,8 +29,8 @@ public class ItemOnItemPower extends CraftPower implements Listener {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         boolean pass =
-                                ConditionExecutor.testItem(power.get("using_item_condition"), e.getCursor()) &&
-                                        ConditionExecutor.testItem(power.get("on_item_condition"), e.getCurrentItem());
+                            ConditionExecutor.testItem(power.get("using_item_condition"), e.getCursor()) &&
+                                ConditionExecutor.testItem(power.get("on_item_condition"), e.getCurrentItem());
                         if (pass) {
                             ItemStack stack = power.rawAccessor.getItemStack("result");
                             if (stack != null) {

@@ -174,11 +174,11 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
         if (horizontalBlockCheckInterval <= 0) horizontalBlockCheckInterval = 64;
         if (verticalBlockCheckInterval <= 0) verticalBlockCheckInterval = 64;
         Pair<BlockPos, Holder<Biome>> targetBiomePos = targetDimension.findClosestBiome3d((
-                        biome -> biome.value() == targetBiome.get()),
-                originPos,
-                radius,
-                horizontalBlockCheckInterval,
-                verticalBlockCheckInterval
+                biome -> biome.value() == targetBiome.get()),
+            originPos,
+            radius,
+            horizontalBlockCheckInterval,
+            verticalBlockCheckInterval
         );
         if (targetBiomePos != null) return Optional.of(targetBiomePos.getFirst());
         else {
@@ -311,16 +311,16 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
         CENTER((blockPos, center, multiplier) -> new BlockPos(0, center, 0)),
         DEFAULT(
-                (blockPos, center, multiplier) -> {
-                    BlockPos.MutableBlockPos mut = new BlockPos.MutableBlockPos();
+            (blockPos, center, multiplier) -> {
+                BlockPos.MutableBlockPos mut = new BlockPos.MutableBlockPos();
 
-                    if (multiplier != 0)
-                        mut.set(blockPos.getX() * multiplier, blockPos.getY(), blockPos.getZ() * multiplier);
-                    else mut.set(blockPos);
+                if (multiplier != 0)
+                    mut.set(blockPos.getX() * multiplier, blockPos.getY(), blockPos.getZ() * multiplier);
+                else mut.set(blockPos);
 
-                    return mut;
+                return mut;
 
-                }
+            }
         );
 
         final TriFunction<BlockPos, Integer, Float, BlockPos> strategyApplier;

@@ -42,8 +42,8 @@ public class NBTFixerUpper {
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
         System.out.println("Found (x) files in (dir)"
-                .replace("(x)", String.valueOf(filesToFix.length))
-                .replace("(dir)", GenesisMC.server.playerDataStorage.getPlayerDir().toPath().toString()));
+            .replace("(x)", String.valueOf(filesToFix.length))
+            .replace("(dir)", GenesisMC.server.playerDataStorage.getPlayerDir().toPath().toString()));
 
         for (File f : filesToFix) {
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {

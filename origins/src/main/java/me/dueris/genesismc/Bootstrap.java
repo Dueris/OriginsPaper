@@ -48,17 +48,17 @@ public class Bootstrap implements PluginBootstrap {
     public static void deleteDirectory(Path directory, boolean ignoreErrors) throws IOException {
         if (Files.exists(directory)) {
             Files.walk(directory)
-                    .sorted((a, b) -> b.compareTo(a)) // Sort in reverse order for correct deletion
-                    .forEach(path -> {
-                        try {
-                            Files.deleteIfExists(path);
-                            Files.delete(path);
-                        } catch (IOException e) {
-                            if (!ignoreErrors) {
-                                System.err.println("Error deleting: " + path + e);
-                            }
+                .sorted((a, b) -> b.compareTo(a)) // Sort in reverse order for correct deletion
+                .forEach(path -> {
+                    try {
+                        Files.deleteIfExists(path);
+                        Files.delete(path);
+                    } catch (IOException e) {
+                        if (!ignoreErrors) {
+                            System.err.println("Error deleting: " + path + e);
                         }
-                    });
+                    }
+                });
         }
     }
 
@@ -164,7 +164,7 @@ public class Bootstrap implements PluginBootstrap {
             File container;
             container = new File(bukkitConfiguration.getString("settings.world-container", "."));
             String s = Optional.ofNullable(
-                    levelNameProp()
+                levelNameProp()
             ).orElseGet(() -> {
                 return "world";
             });

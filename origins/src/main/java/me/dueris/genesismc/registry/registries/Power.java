@@ -524,10 +524,10 @@ public class Power implements Serializable, FactoryInstance {
     @Override
     public List<FactoryObjectInstance> getValidObjectFactory() {
         return List.of(
-                new FactoryObjectInstance("type", NamespacedKey.class, null),
-                new FactoryObjectInstance("name", String.class, "No Name"),
-                new FactoryObjectInstance("description", String.class, "No Description"),
-                new FactoryObjectInstance("hidden", Boolean.class, false)
+            new FactoryObjectInstance("type", NamespacedKey.class, null),
+            new FactoryObjectInstance("name", String.class, "No Name"),
+            new FactoryObjectInstance("description", String.class, "No Description"),
+            new FactoryObjectInstance("hidden", Boolean.class, false)
         );
     }
 
@@ -547,10 +547,10 @@ public class Power implements Serializable, FactoryInstance {
             registrar.register(newPower);
             if (root.get("type").toString().equalsIgnoreCase("apoli:multiple")) {
                 CraftApoli.processNestedPowers(
-                        newPower,
-                        new ArrayList(),
-                        namespacedTag.getNamespace(),
-                        namespacedTag.getKey());
+                    newPower,
+                    new ArrayList(),
+                    namespacedTag.getNamespace(),
+                    namespacedTag.getKey());
             }
         } catch (Exception e) {
             e.printStackTrace();

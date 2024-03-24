@@ -343,19 +343,19 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             });
 
             calio.getBuilder().addAccessorRoot(
-                    "powers",
-                    Registries.POWER,
-                    new Power(true), 0
+                "powers",
+                Registries.POWER,
+                new Power(true), 0
             );
             calio.getBuilder().addAccessorRoot(
-                    "origins",
-                    Registries.ORIGIN,
-                    new Origin(true), 1
+                "origins",
+                Registries.ORIGIN,
+                new Origin(true), 1
             );
             calio.getBuilder().addAccessorRoot(
-                    "origin_layers",
-                    Registries.LAYER,
-                    new Layer(true), 2
+                "origin_layers",
+                Registries.LAYER,
+                new Layer(true), 2
             );
             calio.start(debugOrigins, this.loaderThreadPool);
             // End calio parsing
@@ -386,9 +386,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         Bukkit.getServer().getConsoleSender().sendMessage("");
         Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "* Loading Version GenesisMC-{minecraftVersion-versionNumber} // CraftApoli-{apoliVersion}"
-                .replace("minecraftVersion", "mc" + version)
-                .replace("versionNumber", pluginVersion)
-                .replace("apoliVersion", apoliVersion)
+            .replace("minecraftVersion", "mc" + version)
+            .replace("versionNumber", pluginVersion)
+            .replace("apoliVersion", apoliVersion)
         );
         VersionControl.pluginVersionCheck();
         Bukkit.getServer().getConsoleSender().sendMessage("");

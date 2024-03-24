@@ -155,11 +155,11 @@ public class ScreenContent {
         randomOrb.setItemMeta(randomOrbMeta);
 
         ItemStack[] mainMenuContents = {avian, arachnid, elytrian, shulk, feline, enderian, merling, blazeborn, phantom,
-                background, background, background, background, human, background, background, background, background,
-                filler, filler, filler, filler, filler, filler, filler, filler, filler,
-                starborne, allay, rabbit, bumblebee, background, sculkling, creep, slimeling, piglin,
-                background, background, background, background, background, background, background, background, background,
-                filler, filler, filler, randomOrb, close, custom_originmenu, filler, filler, filler};
+            background, background, background, background, human, background, background, background, background,
+            filler, filler, filler, filler, filler, filler, filler, filler, filler,
+            starborne, allay, rabbit, bumblebee, background, sculkling, creep, slimeling, piglin,
+            background, background, background, background, background, background, background, background, background,
+            filler, filler, filler, randomOrb, close, custom_originmenu, filler, filler, filler};
 
         return mainMenuContents;
 

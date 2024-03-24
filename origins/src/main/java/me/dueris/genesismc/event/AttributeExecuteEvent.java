@@ -44,11 +44,11 @@ public class AttributeExecuteEvent extends PlayerEvent {
     @Override
     public String toString() {
         return "AttributeExecuteEvent{" +
-                "attribute=" + attribute +
-                ", powerdata='" + powerdata + '\'' +
-                ", power=" + power +
-                ", player=" + player +
-                '}';
+            "attribute=" + attribute +
+            ", powerdata='" + powerdata + '\'' +
+            ", power=" + power +
+            ", player=" + player +
+            '}';
     }
 
     @Override

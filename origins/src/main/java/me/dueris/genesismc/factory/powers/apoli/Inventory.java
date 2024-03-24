@@ -42,7 +42,7 @@ public class Inventory extends CraftPower implements Listener {
                             org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
 
                             vaultItems.stream()
-                                    .forEach(itemStack -> vault.addItem(itemStack));
+                                .forEach(itemStack -> vault.addItem(itemStack));
                             for (ItemStack item : vault.getContents()) {
                                 if (item != null && item.getType() != Material.AIR) {
                                     p.getWorld().dropItemNaturally(p.getLocation(), item);
@@ -52,10 +52,10 @@ public class Inventory extends CraftPower implements Listener {
                             ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
                             Arrays.stream(vault.getContents())
-                                    .filter(itemStack -> {
-                                        return itemStack != null;
-                                    })
-                                    .forEach(itemStack -> prunedItems.add(itemStack));
+                                .filter(itemStack -> {
+                                    return itemStack != null;
+                                })
+                                .forEach(itemStack -> prunedItems.add(itemStack));
 
                             InventoryUtils.storeItems(prunedItems, p);
                             vault.clear();
@@ -79,7 +79,7 @@ public class Inventory extends CraftPower implements Listener {
                             ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
                             org.bukkit.inventory.Inventory vault = ContainerType.getContainerType(power.getString("container_type")).createInventory(e.getPlayer(), Utils.createIfPresent(power.getString("title")));
                             vaultItems.stream()
-                                    .forEach(itemStack -> vault.addItem(itemStack));
+                                .forEach(itemStack -> vault.addItem(itemStack));
                             e.getPlayer().openInventory(vault);
                         }
                     } else {
@@ -101,7 +101,7 @@ public class Inventory extends CraftPower implements Listener {
                         org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
 
                         vaultItems.stream()
-                                .forEach(itemStack -> vault.addItem(itemStack));
+                            .forEach(itemStack -> vault.addItem(itemStack));
                         for (ItemStack item : vault.getContents()) {
                             if (item != null && item.getType() != Material.AIR) {
                                 p.getWorld().dropItemNaturally(p.getLocation(), item);
@@ -111,10 +111,10 @@ public class Inventory extends CraftPower implements Listener {
                         ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
                         Arrays.stream(vault.getContents())
-                                .filter(itemStack -> {
-                                    return itemStack != null;
-                                })
-                                .forEach(itemStack -> prunedItems.add(itemStack));
+                            .filter(itemStack -> {
+                                return itemStack != null;
+                            })
+                            .forEach(itemStack -> prunedItems.add(itemStack));
 
                         InventoryUtils.storeItems(prunedItems, p);
                         vault.clear();

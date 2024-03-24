@@ -43,12 +43,12 @@ public class ConditionExecutor {
 
     private static boolean isMetaCondition(JSONObject condition) {
         return condition.containsKey("type") ?
-                condition.get("type").toString().equals("apoli:and") ||
-                        condition.get("type").toString().equals("apoli:chance") ||
-                        condition.get("type").toString().equals("apoli:constant") ||
-                        condition.get("type").toString().equals("apoli:not") ||
-                        condition.get("type").toString().equals("apoli:or")
-                : false;
+            condition.get("type").toString().equals("apoli:and") ||
+                condition.get("type").toString().equals("apoli:chance") ||
+                condition.get("type").toString().equals("apoli:constant") ||
+                condition.get("type").toString().equals("apoli:not") ||
+                condition.get("type").toString().equals("apoli:or")
+            : false;
     }
 
     private static boolean chance(JSONObject condition) {

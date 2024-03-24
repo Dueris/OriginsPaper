@@ -193,20 +193,20 @@ public class FireProjectile extends CraftPower implements Listener {
                                                     @Override
                                                     public void run() {
                                                         String cmd = "execute at {player} run summon {type} {loc} {nbt}"
-                                                                .replace("{player}", p.getName())
-                                                                .replace("{type}", type.key().asString())
-                                                                .replace("{loc}", "^ ^1 ^")
-                                                                .replace("{nbt}", finalNbtTag[0]);
+                                                            .replace("{player}", p.getName())
+                                                            .replace("{type}", type.key().asString())
+                                                            .replace("{loc}", "^ ^1 ^")
+                                                            .replace("{nbt}", finalNbtTag[0]);
                                                         CommandSourceStack source = new CommandSourceStack(
-                                                                CommandSource.NULL,
-                                                                ((CraftPlayer) p).getHandle().position(),
-                                                                ((CraftPlayer) p).getHandle().getRotationVector(),
-                                                                ((CraftPlayer) p).getHandle().level() instanceof ServerLevel ? (ServerLevel) ((CraftPlayer) p).getHandle().level() : null,
-                                                                4,
-                                                                ((CraftPlayer) p).getHandle().getName().getString(),
-                                                                ((CraftPlayer) p).getHandle().getDisplayName(),
-                                                                ((CraftPlayer) p).getHandle().getServer(),
-                                                                ((CraftPlayer) p).getHandle());
+                                                            CommandSource.NULL,
+                                                            ((CraftPlayer) p).getHandle().position(),
+                                                            ((CraftPlayer) p).getHandle().getRotationVector(),
+                                                            ((CraftPlayer) p).getHandle().level() instanceof ServerLevel ? (ServerLevel) ((CraftPlayer) p).getHandle().level() : null,
+                                                            4,
+                                                            ((CraftPlayer) p).getHandle().getName().getString(),
+                                                            ((CraftPlayer) p).getHandle().getDisplayName(),
+                                                            ((CraftPlayer) p).getHandle().getServer(),
+                                                            ((CraftPlayer) p).getHandle());
                                                         ((CraftPlayer) p).getHandle().getServer().getCommands().performPrefixedCommand(source, cmd);
                                                         setActive(p, power.getTag(), true);
                                                         new BukkitRunnable() {

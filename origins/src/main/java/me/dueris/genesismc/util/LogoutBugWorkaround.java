@@ -39,12 +39,12 @@ public class LogoutBugWorkaround implements Listener {
             String logoutData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "logoutWorkaroundLocation"), PersistentDataType.STRING);
             String[] splitData = logoutData.split("//");
             Location location = new Location(
-                    p.getWorld(),
-                    Double.valueOf(splitData[0]),
-                    Double.valueOf(splitData[1]),
-                    Double.valueOf(splitData[2]),
-                    Float.valueOf(splitData[3]),
-                    Float.valueOf(splitData[4])
+                p.getWorld(),
+                Double.valueOf(splitData[0]),
+                Double.valueOf(splitData[1]),
+                Double.valueOf(splitData[2]),
+                Float.valueOf(splitData[3]),
+                Float.valueOf(splitData[4])
             );
             final int[] i = {0};
             new BukkitRunnable() {

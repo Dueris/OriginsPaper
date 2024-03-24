@@ -44,8 +44,8 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
                 if (power == null) continue;
                 if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer()) &&
-                        ConditionExecutor.testBlock((JSONObject) power.get("block_condition"), (CraftBlock) e.getClickedBlock()) &&
-                        ConditionExecutor.testItem((JSONObject) power.get("item_condition"), e.getItem())) {
+                    ConditionExecutor.testBlock((JSONObject) power.get("block_condition"), (CraftBlock) e.getClickedBlock()) &&
+                    ConditionExecutor.testItem((JSONObject) power.get("item_condition"), e.getItem())) {
                     setActive(e.getPlayer(), power.getTag(), true);
                     Actions.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
                     Actions.EntityActionType(e.getPlayer(), power.getEntityAction());

@@ -26,10 +26,10 @@ public class InventorySerializer implements Listener {
             ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
             Arrays.stream(e.getInventory().getContents())
-                    .filter(itemStack -> {
-                        return itemStack != null;
-                    })
-                    .forEach(itemStack -> prunedItems.add(itemStack));
+                .filter(itemStack -> {
+                    return itemStack != null;
+                })
+                .forEach(itemStack -> prunedItems.add(itemStack));
 
             Player target = (Player) e.getPlayer();
             if (target == null) {

@@ -193,11 +193,11 @@ public class Origin implements Serializable, FactoryInstance {
     @Override
     public List<FactoryObjectInstance> getValidObjectFactory() {
         return List.of(
-                new FactoryObjectInstance("name", String.class, "No Name"),
-                new FactoryObjectInstance("icon", ItemStack.class, new ItemStack(Material.PLAYER_HEAD, 1)),
-                new FactoryObjectInstance("impact", Integer.class, 0),
-                new FactoryObjectInstance("unchooseable", Boolean.class, false),
-                new FactoryObjectInstance("powers", JSONArray.class, new JSONArray())
+            new FactoryObjectInstance("name", String.class, "No Name"),
+            new FactoryObjectInstance("icon", ItemStack.class, new ItemStack(Material.PLAYER_HEAD, 1)),
+            new FactoryObjectInstance("impact", Integer.class, 0),
+            new FactoryObjectInstance("unchooseable", Boolean.class, false),
+            new FactoryObjectInstance("powers", JSONArray.class, new JSONArray())
         );
     }
 

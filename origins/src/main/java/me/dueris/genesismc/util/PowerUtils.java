@@ -40,8 +40,8 @@ public class PowerUtils {
                 }
             }
             executor.sendMessage("Entity %name% was granted the power %power%"
-                    .replace("%power%", power.getName())
-                    .replace("%name%", p.getName())
+                .replace("%power%", power.getName())
+                .replace("%name%", p.getName())
             );
             new PowerUpdateEvent(p, power, false).callEvent();
         } else {
@@ -66,8 +66,8 @@ public class PowerUtils {
                                     Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] to player " + p.getName());
                                 }
                                 executor.sendMessage("Entity %name% had the power %power% removed"
-                                        .replace("%power%", power.getName())
-                                        .replace("%name%", p.getName())
+                                    .replace("%power%", power.getName())
+                                    .replace("%name%", p.getName())
                                 );
                             }
                         }

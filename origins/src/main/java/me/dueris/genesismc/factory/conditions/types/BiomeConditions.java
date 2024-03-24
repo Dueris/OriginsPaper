@@ -60,10 +60,10 @@ public class BiomeConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("precipitation"), (condition, biome) -> {
             return biome.getA().hasPrecipitation() ?
-                    biome.getA().getTemperature(biome.getB()) <= 0.15f ?
-                            condition.get("precipitation").toString().equals("snow")
-                            : condition.get("precipitation").toString().equals("rain")
-                    : condition.get("precipitation").toString().equals("none");
+                biome.getA().getTemperature(biome.getB()) <= 0.15f ?
+                    condition.get("precipitation").toString().equals("snow")
+                    : condition.get("precipitation").toString().equals("rain")
+                : condition.get("precipitation").toString().equals("none");
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("category"), (condition, biome) -> {
             Biome b = CraftBiome.minecraftToBukkit(biome.getA());

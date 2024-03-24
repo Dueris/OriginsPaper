@@ -12,9 +12,9 @@ public class VectorGetter {
         float y = 0.0f;
         float z = 0.0f;
 
-        if (object.containsKey("x")) x = (float) object.get("x");
-        if (object.containsKey("y")) y = (float) object.get("y");
-        if (object.containsKey("z")) z = (float) object.get("z");
+        if (object.containsKey("x")) x = object.get("x") instanceof Float ? (float) object.get("x") : Float.valueOf(String.valueOf(object.get("x")));
+        if (object.containsKey("y")) y = object.get("y") instanceof Float ? (float) object.get("y") : Float.valueOf(String.valueOf(object.get("y")));
+        if (object.containsKey("z")) z = object.get("z") instanceof Float ? (float) object.get("z") : Float.valueOf(String.valueOf(object.get("z")));
 
         return new Vector(x, y, z);
     }

@@ -707,10 +707,10 @@ public class EntityConditions {
                 if (entity != null && StackingStatusEffect.getPotionEffectType(condition.get("effect").toString()) != null) {
                     for (PotionEffect effect : le.getActivePotionEffects()) {
                         return effect.getType().equals(StackingStatusEffect.getPotionEffectType(condition.get("effect").toString()))
-                                && effect.getAmplifier() >= Integer.parseInt(condition.getOrDefault("min_amplifier", 0).toString())
-                                && effect.getAmplifier() <= Integer.parseInt(condition.getOrDefault("max_amplifier", Integer.MAX_VALUE).toString())
-                                && effect.getDuration() >= Integer.parseInt(condition.getOrDefault("min_duration", 0).toString())
-                                && effect.getDuration() <= Integer.parseInt(condition.getOrDefault("max_duration", Integer.MAX_VALUE).toString());
+                            && effect.getAmplifier() >= Integer.parseInt(condition.getOrDefault("min_amplifier", 0).toString())
+                            && effect.getAmplifier() <= Integer.parseInt(condition.getOrDefault("max_amplifier", Integer.MAX_VALUE).toString())
+                            && effect.getDuration() >= Integer.parseInt(condition.getOrDefault("min_duration", 0).toString())
+                            && effect.getDuration() <= Integer.parseInt(condition.getOrDefault("max_duration", Integer.MAX_VALUE).toString());
                     }
                 }
             }
@@ -744,13 +744,13 @@ public class EntityConditions {
             ServerLevel level = (ServerLevel) entity.getHandle().level();
 
             LootItemCondition predicate = server.getLootData().getElement(LootDataType.PREDICATE, CraftNamespacedKey.toMinecraft(
-                    NamespacedKey.fromString(condition.get("predicate").toString())
+                NamespacedKey.fromString(condition.get("predicate").toString())
             ));
 
             LootParams params = new LootParams.Builder(level)
-                    .withParameter(LootContextParams.ORIGIN, entity.getHandle().position())
-                    .withOptionalParameter(LootContextParams.THIS_ENTITY, entity.getHandle())
-                    .create(LootContextParamSets.COMMAND);
+                .withParameter(LootContextParams.ORIGIN, entity.getHandle().position())
+                .withOptionalParameter(LootContextParams.THIS_ENTITY, entity.getHandle())
+                .create(LootContextParamSets.COMMAND);
 
             LootContext context = new LootContext.Builder(params).create(Optional.empty());
 

@@ -90,9 +90,9 @@ public class Utils {
 
     public static boolean hasChangedBlockCoordinates(final Location fromLoc, final Location toLoc) {
         return !(fromLoc.getWorld().equals(toLoc.getWorld())
-                && fromLoc.getBlockX() == toLoc.getBlockX()
-                && fromLoc.getBlockY() == toLoc.getBlockY()
-                && fromLoc.getBlockZ() == toLoc.getBlockZ());
+            && fromLoc.getBlockX() == toLoc.getBlockX()
+            && fromLoc.getBlockY() == toLoc.getBlockY()
+            && fromLoc.getBlockZ() == toLoc.getBlockZ());
     }
 
     public static void downloadFileFromURL(String fileUrl) throws IOException {

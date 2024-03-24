@@ -188,8 +188,8 @@ public class ScreenNavigator implements Listener {
                     contents.add(originIcon);
                 } else if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33) || (i >= 38 && i <= 42)) {
                     while (powerContainers.size() > 0 && (powerContainers.get(0).isHidden()
-                            || (powerContainers.get(0).getName().equalsIgnoreCase("No Name")
-                            && powerContainers.get(0).getDescription().equalsIgnoreCase("No Description")))) {
+                        || (powerContainers.get(0).getName().equalsIgnoreCase("No Name")
+                        && powerContainers.get(0).getDescription().equalsIgnoreCase("No Description")))) {
                         powerContainers.remove(0);
                     }
                     if (powerContainers.size() > 0) {

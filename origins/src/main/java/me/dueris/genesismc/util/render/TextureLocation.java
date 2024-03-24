@@ -40,12 +40,12 @@ public class TextureLocation implements Registerable {
                         for (File file : root.listFiles()) {
                             if (file.getName().equalsIgnoreCase("textures")) {
                                 Files.walk(file.toPath())
-                                        .sorted((a, b) -> b.compareTo(a)) // Sort in reverse order
-                                        .forEach(path -> {
-                                            if (path.toString().endsWith(".png")) {
-                                                GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION).register(new TextureLocation(NamespacedKey.fromString(rootname + ":textures" + path.toAbsolutePath().toString().replace(file.getAbsolutePath(), "").replace("\\", "/"))));
-                                            }
-                                        });
+                                    .sorted((a, b) -> b.compareTo(a)) // Sort in reverse order
+                                    .forEach(path -> {
+                                        if (path.toString().endsWith(".png")) {
+                                            GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION).register(new TextureLocation(NamespacedKey.fromString(rootname + ":textures" + path.toAbsolutePath().toString().replace(file.getAbsolutePath(), "").replace("\\", "/"))));
+                                        }
+                                    });
                             }
                         }
                     }

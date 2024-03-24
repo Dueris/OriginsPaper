@@ -91,19 +91,19 @@ public class BlockActions {
                 create_fire = Boolean.parseBoolean(action.get("create_fire").toString());
 
             Explosion explosion = new Explosion(
-                    level,
-                    null,
-                    level.damageSources().generic(),
-                    new ExplosionDamageCalculator(),
-                    location.getX(),
-                    location.getY(),
-                    location.getZ(),
-                    explosionPower,
-                    create_fire,
-                    DestructionType.parse(destruction_type).getNMS(),
-                    ParticleTypes.EXPLOSION,
-                    ParticleTypes.EXPLOSION_EMITTER,
-                    SoundEvents.GENERIC_EXPLODE
+                level,
+                null,
+                level.damageSources().generic(),
+                new ExplosionDamageCalculator(),
+                location.getX(),
+                location.getY(),
+                location.getZ(),
+                explosionPower,
+                create_fire,
+                DestructionType.parse(destruction_type).getNMS(),
+                ParticleTypes.EXPLOSION,
+                ParticleTypes.EXPLOSION_EMITTER,
+                SoundEvents.GENERIC_EXPLODE
             );
             ExplosionMask.getExplosionMask(explosion, level).apply(action, true);
         }
