@@ -17,10 +17,10 @@ public class ShapeData {
         this.shape = shape;
     }
 
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
     @Override
     public String toString() {

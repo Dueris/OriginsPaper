@@ -347,54 +347,54 @@ public class EntityConditions {
             int lightLevel = entity.getLocation().getBlock().getLightLevel();
             int ambientLight = 0;
 
-			//calculate ambient light
-			if (entity.getWorld() == Bukkit.getServer().getWorlds().get(0)) {
-				ambientLight = 0;
-			} else if (entity.getWorld() == Bukkit.getServer().getWorlds().get(2)) {
-				ambientLight = 1;
-			}
-			brightness = ambientLight + (1 - ambientLight) * lightLevel / (60 - 3 * lightLevel);
-			return Comparison.getFromString(comparison).compare(brightness, compare_to);
-		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("light_level"), (condition, entity) -> {
-			String comparison = condition.get("comparison").toString();
-			double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-			int lightLevel = entity.getLocation().getBlock().getLightLevel();
-			return Comparison.getFromString(comparison).compare(lightLevel, compare_to);
-		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("climbing"), (condition, entity) -> {
-			if (entity instanceof Player player) {
-				Climbing climbing = new Climbing();
-				if (player.isClimbing() || climbing.isActiveClimbing(player)) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-			return false;
-		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("collided_horizontally"), (condition, entity) -> {
-			return ((CraftEntity) entity).getHandle().horizontalCollision;
-		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("creative_flying"), (condition, entity) -> {
-			if (entity instanceof Player player) {
-				return player.isFlying();
-			}
-			return false;
-		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("daytime"), (condition, entity) -> {
-			return entity.getWorld().isDayTime();
-		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("dimension"), (condition, entity) -> {
-			String dim = condition.get("dimension").toString();
-			if (!dim.contains(":")) {
-				dim = "minecraft:" + dim;
-			}
-			return entity.getWorld().getKey().equals(NamespacedKey.fromString(dim));
-		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid_height"), (condition, entity) -> {
-			if (!entity.isInWaterOrBubbleColumn() && !entity.isInLava()) return false;
-			String fluidD = NamespacedKey.fromString(condition.get("fluid").toString()).asString();
+            //calculate ambient light
+            if (entity.getWorld() == Bukkit.getServer().getWorlds().get(0)) {
+                ambientLight = 0;
+            } else if (entity.getWorld() == Bukkit.getServer().getWorlds().get(2)) {
+                ambientLight = 1;
+            }
+            brightness = ambientLight + (1 - ambientLight) * lightLevel / (60 - 3 * lightLevel);
+            return Comparison.getFromString(comparison).compare(brightness, compare_to);
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("light_level"), (condition, entity) -> {
+            String comparison = condition.get("comparison").toString();
+            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+            int lightLevel = entity.getLocation().getBlock().getLightLevel();
+            return Comparison.getFromString(comparison).compare(lightLevel, compare_to);
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("climbing"), (condition, entity) -> {
+            if (entity instanceof Player player) {
+                Climbing climbing = new Climbing();
+                if (player.isClimbing() || climbing.isActiveClimbing(player)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("collided_horizontally"), (condition, entity) -> {
+            return ((CraftEntity) entity).getHandle().horizontalCollision;
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("creative_flying"), (condition, entity) -> {
+            if (entity instanceof Player player) {
+                return player.isFlying();
+            }
+            return false;
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("daytime"), (condition, entity) -> {
+            return entity.getWorld().isDayTime();
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("dimension"), (condition, entity) -> {
+            String dim = condition.get("dimension").toString();
+            if (!dim.contains(":")) {
+                dim = "minecraft:" + dim;
+            }
+            return entity.getWorld().getKey().equals(NamespacedKey.fromString(dim));
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid_height"), (condition, entity) -> {
+            if (!entity.isInWaterOrBubbleColumn() && !entity.isInLava()) return false;
+            String fluidD = NamespacedKey.fromString(condition.get("fluid").toString()).asString();
 
             boolean go = false;
             boolean isLava = fluidD.equalsIgnoreCase("minecraft:lava");

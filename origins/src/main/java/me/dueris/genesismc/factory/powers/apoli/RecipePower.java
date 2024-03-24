@@ -88,14 +88,14 @@ public class RecipePower extends CraftPower implements Listener {
         finishedLoad = true;
     }
 
-	public static ItemStack computeResult(JSONObject object) {
-		long amt = (long) object.getOrDefault("count", 1L);
-		String item = object.get("item").toString();
-		if (item.contains(":")) {
-			item = item.split(":")[1];
-		}
-		return new ItemStack(Material.valueOf(item.toUpperCase()), Math.toIntExact(amt));
-	}
+    public static ItemStack computeResult(JSONObject object) {
+        long amt = (long) object.getOrDefault("count", 1L);
+        String item = object.get("item").toString();
+        if (item.contains(":")) {
+            item = item.split(":")[1];
+        }
+        return new ItemStack(Material.valueOf(item.toUpperCase()), Math.toIntExact(amt));
+    }
 
     public static String computeTag(Recipe recipe) {
         if (recipe instanceof ShapedRecipe ee) {

@@ -29,10 +29,10 @@ public class ChunkManagerWorld {
         this.world = world;
     }
 
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
     @Override
     public boolean equals(Object obj) {

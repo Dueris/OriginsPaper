@@ -62,9 +62,9 @@ public class ChunkManagerPlayer {
         return super.clone();
     }
 
-	public boolean isThing() {
-		return thing;
-	}
+    public boolean isThing() {
+        return thing;
+    }
 
     public void setThing(boolean thing) {
         this.thing = thing;

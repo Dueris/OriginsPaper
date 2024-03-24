@@ -69,21 +69,21 @@ public class BlockActions {
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 1);
 
-		}
-		if (type.equals("apoli:bonemeal")) {
-			Block block = location.getWorld().getBlockAt(location);
-			block.applyBoneMeal(BlockFace.UP);
-		}
-		if (type.equals("apoli:explode")) {
-			long explosionPower = 1L;
-			if (action.get("power") instanceof Long lep) {
-				explosionPower = lep;
-			} else if (action.get("power") instanceof Double dep) {
-				explosionPower = Math.round(dep);
-			}
-			String destruction_type = "break";
-			boolean create_fire = false;
-			ServerLevel level = ((CraftWorld) location.getWorld()).getHandle();
+        }
+        if (type.equals("apoli:bonemeal")) {
+            Block block = location.getWorld().getBlockAt(location);
+            block.applyBoneMeal(BlockFace.UP);
+        }
+        if (type.equals("apoli:explode")) {
+            long explosionPower = 1L;
+            if (action.get("power") instanceof Long lep) {
+                explosionPower = lep;
+            } else if (action.get("power") instanceof Double dep) {
+                explosionPower = Math.round(dep);
+            }
+            String destruction_type = "break";
+            boolean create_fire = false;
+            ServerLevel level = ((CraftWorld) location.getWorld()).getHandle();
 
             if (action.containsKey("destruction_type"))
                 destruction_type = action.get("destruction_type").toString();
