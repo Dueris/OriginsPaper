@@ -307,11 +307,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                     parentDir.mkdirs();
                 }
 
-                Files.writeString(Path.of(file.getAbsolutePath()), new String(zip.readAllBytes()));
-            }
-            zip.close();
-        } catch (Exception e) {
-        }
+				Files.writeString(Path.of(file.getAbsolutePath()), new String(zip.readAllBytes()));
+			}
+			zip.close();
+		} catch (Exception e) {
+			// Say nothing, no need to print.
+		}
 
         this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(GenesisMC.originIdentifier("builtin"), this.getTmpFolder().toPath()));
         this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(GenesisMC.originIdentifier("default"), this.server.getWorldPath(LevelResource.DATAPACK_DIR)));

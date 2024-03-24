@@ -66,13 +66,8 @@ public class AttributeExecuteEvent extends PlayerEvent {
         return super.hashCode();
     }
 
-    @Override
-    public boolean callEvent() {
-        return super.callEvent();
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-    }
+	@Override
+	public boolean callEvent() {
+		return super.callEvent();
+	}
 }

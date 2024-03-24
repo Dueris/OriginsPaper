@@ -167,85 +167,85 @@ public class EntityActions {
                     offset_x = Float.parseFloat(String.valueOf(spread.get("x")));
                 }
 
-                if (spread.get("z") != null) {
-                    offset_z = Float.parseFloat(String.valueOf(spread.get("z")));
-                }
-            }
-            entity.getWorld().spawnParticle(particle, new Location(entity.getWorld(), entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ()), count, offset_x, offset_y, offset_z, 0);
-        }
-        if (type.equals("apoli:random_teleport")) {
-            int spreadDistance = Math.round(Float.valueOf(action.getOrDefault("max_width", "8.0").toString()));
-            int attempts = Integer.valueOf(action.getOrDefault("attempts", "1").toString());
-            for (int i = 0; i < attempts; i++) {
-                String cmd = "spreadplayers {xloc} {zloc} 1 {spreadDist} false {name}"
-                    .replace("{xloc}", String.valueOf(entity.getLocation().getX()))
-                    .replace("{zloc}", String.valueOf(entity.getLocation().getZ()))
-                    .replace("{spreadDist}", String.valueOf(spreadDistance))
-                    .replace("{name}", "@e[{data}]"
-                        .replace("{data}", "x=" + entity.getLocation().getX() + ",y=" + entity.getLocation().getY() + ",z=" + entity.getLocation().getZ() + ",type=" + entity.getType().toString().toLowerCase() + ",x_rotation=" + entity.getLocation().getDirection().getX() + ",y_rotation=" + entity.getLocation().getDirection().getY())
-                    );
-                RaycastUtils.executeCommandAtHit(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), cmd);
-            }
-        }
-        if (type.equals("apoli:remove_power")) {
-            if (entity instanceof Player p) {
-                Power powerContainer = ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(action.get("power").toString()));
-                if (powerContainer != null) {
-                    RaycastUtils.executeCommandAtHit(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.get("action").toString()));
-                }
-            }
-        }
-        if (type.equals("apoli:spawn_effect_cloud")) {
-            spawnEffectCloud(entity, Float.valueOf(action.getOrDefault("radius", 3.0).toString()), Integer.valueOf(action.getOrDefault("wait_time", 10).toString()), new PotionEffect(StackingStatusEffect.getPotionEffectType(action.get("effect").toString()), 1, 1));
-        }
-        if (type.equals("apoli:replace_inventory")) {
-            if (entity instanceof Player player) {
-                if (action.containsKey("slot")) {
-                    try {
-                        if (player.getInventory().getItem(getSlotFromString(action.get("slot").toString())) == null)
-                            return;
-                        JSONObject jsonObject = (JSONObject) action.get("stack");
-                        player.getInventory().getItem(getSlotFromString(action.get("slot").toString())).setType(Material.valueOf(jsonObject.get("item").toString().split(":")[1].toUpperCase()));
-                    } catch (Exception e) {
-                        //silently fail
-                    }
-                }
-            }
-        }
-        if (type.equals("apoli:heal")) {
-            if (entity instanceof LivingEntity li) {
-                double healthFinal = li.getHealth() + Double.parseDouble(action.get("amount").toString());
-                if (li.getHealth() >= 20) return;
-                if (healthFinal > 20) {
-                    li.setHealth(20);
-                } else {
-                    li.setHealth(healthFinal);
-                }
-            }
-        }
-        if (type.equals("apoli:clear_effect")) {
-            PotionEffectType potionEffectType = StackingStatusEffect.getPotionEffectType(action.get("effect").toString());
-            if (entity instanceof Player player) {
-                if (player.hasPotionEffect(potionEffectType)) {
-                    player.removePotionEffect(potionEffectType);
-                }
-            }
-        }
-        if (type.equals("apoli:exhaust")) {
-            if (entity instanceof Player player) {
-                player.setFoodLevel(player.getFoodLevel() - Math.round(Float.valueOf(action.get("amount").toString())));
-            }
-        }
-        if (type.equals("apoli:explode")) {
-            long explosionPower = 1l;
-            if (action.get("power") instanceof Long lep) {
-                explosionPower = lep;
-            } else if (action.get("power") instanceof Double dep) {
-                explosionPower = Math.round(dep);
-            }
-            String destruction_type = "break";
-            boolean create_fire = false;
-            ServerLevel level = ((CraftWorld) entity.getWorld()).getHandle();
+				if (spread.get("z") != null) {
+					offset_z = Float.parseFloat(String.valueOf(spread.get("z")));
+				}
+			}
+			entity.getWorld().spawnParticle(particle, new Location(entity.getWorld(), entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ()), count, offset_x, offset_y, offset_z, 0);
+		}
+		if (type.equals("apoli:random_teleport")) {
+			int spreadDistance = Math.round(Float.valueOf(action.getOrDefault("max_width", "8.0").toString()));
+			int attempts = Integer.valueOf(action.getOrDefault("attempts", "1").toString());
+			for (int i = 0; i < attempts; i++) {
+				String cmd = "spreadplayers {xloc} {zloc} 1 {spreadDist} false {name}"
+					.replace("{xloc}", String.valueOf(entity.getLocation().getX()))
+					.replace("{zloc}", String.valueOf(entity.getLocation().getZ()))
+					.replace("{spreadDist}", String.valueOf(spreadDistance))
+					.replace("{name}", "@e[{data}]"
+						.replace("{data}", "x=" + entity.getLocation().getX() + ",y=" + entity.getLocation().getY() + ",z=" + entity.getLocation().getZ() + ",type=" + entity.getType().toString().toLowerCase() + ",x_rotation=" + entity.getLocation().getDirection().getX() + ",y_rotation=" + entity.getLocation().getDirection().getY())
+					);
+				RaycastUtils.executeCommandAtHit(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), cmd);
+			}
+		}
+		if (type.equals("apoli:remove_power")) {
+			if (entity instanceof Player p) {
+				Power powerContainer = ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(action.get("power").toString()));
+				if (powerContainer != null) {
+					RaycastUtils.executeCommandAtHit(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.get("action").toString()));
+				}
+			}
+		}
+		if (type.equals("apoli:spawn_effect_cloud")) {
+			spawnEffectCloud(entity, Float.valueOf(action.getOrDefault("radius", 3.0).toString()), Integer.valueOf(action.getOrDefault("wait_time", 10).toString()), new PotionEffect(StackingStatusEffect.getPotionEffectType(action.get("effect").toString()), 1, 1));
+		}
+		if (type.equals("apoli:replace_inventory")) {
+			if (entity instanceof Player player) {
+				if (action.containsKey("slot")) {
+					try {
+						if (player.getInventory().getItem(getSlotFromString(action.get("slot").toString())) == null)
+							return;
+						JSONObject jsonObject = (JSONObject) action.get("stack");
+						player.getInventory().getItem(getSlotFromString(action.get("slot").toString())).setType(Material.valueOf(jsonObject.get("item").toString().split(":")[1].toUpperCase()));
+					} catch (Exception e) {
+						//silently fail
+					}
+				}
+			}
+		}
+		if (type.equals("apoli:heal")) {
+			if (entity instanceof LivingEntity li) {
+				double healthFinal = li.getHealth() + Double.parseDouble(action.get("amount").toString());
+				if (li.getHealth() >= 20) return;
+				if (healthFinal > 20) {
+					li.setHealth(20);
+				} else {
+					li.setHealth(healthFinal);
+				}
+			}
+		}
+		if (type.equals("apoli:clear_effect")) {
+			PotionEffectType potionEffectType = StackingStatusEffect.getPotionEffectType(action.get("effect").toString());
+			if (entity instanceof Player player) {
+				if (player.hasPotionEffect(potionEffectType)) {
+					player.removePotionEffect(potionEffectType);
+				}
+			}
+		}
+		if (type.equals("apoli:exhaust")) {
+			if (entity instanceof Player player) {
+				player.setFoodLevel(player.getFoodLevel() - Math.round(Float.valueOf(action.get("amount").toString())));
+			}
+		}
+		if (type.equals("apoli:explode")) {
+			long explosionPower = 1L;
+			if(action.get("power") instanceof Long lep){
+				explosionPower = lep;
+			} else if (action.get("power") instanceof Double dep) {
+				explosionPower = Math.round(dep);
+			}
+			String destruction_type = "break";
+			boolean create_fire = false;
+			ServerLevel level = ((CraftWorld)entity.getWorld()).getHandle();
 
             if (action.containsKey("destruction_type"))
                 destruction_type = action.get("destruction_type").toString();

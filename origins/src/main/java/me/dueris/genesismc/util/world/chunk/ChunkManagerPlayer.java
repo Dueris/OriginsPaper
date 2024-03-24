@@ -62,14 +62,9 @@ public class ChunkManagerPlayer {
         return super.clone();
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-    }
-
-    public boolean isThing() {
-        return thing;
-    }
+	public boolean isThing() {
+		return thing;
+	}
 
     public void setThing(boolean thing) {
         this.thing = thing;
