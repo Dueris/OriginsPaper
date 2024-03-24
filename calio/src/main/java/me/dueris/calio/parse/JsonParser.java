@@ -25,7 +25,7 @@ public class JsonParser {
 		Arrays.stream(directory.listFiles()).toList().forEach(jsonFile -> {
 			try {
 				if(!jsonFile.isDirectory()){
-					NamespacedKey key = new NamespacedKey(namespace, before + jsonFile.getName().replace(".json", ""));
+					NamespacedKey key = new NamespacedKey(namespace.toLowerCase(), (before + jsonFile.getName().replace(".json", "")).toLowerCase());
 					JSONObject remappedJSON = ObjectRemapper.createRemapped(jsonFile, key);
 					FactoryProvider validatedFactory = JsonFactoryValidator.validateFactory(new FactoryProvider(remappedJSON), root.getFactoryInst().getValidObjectFactory(), key);
 					if (validatedFactory != null) {
