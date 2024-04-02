@@ -6,11 +6,15 @@ import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.craftbukkit.v1_20_R3.damage.CraftDamageType;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -66,23 +70,9 @@ public class DamageConditions {
             return CraftDamageType.bukkitToMinecraft(event.getDamageSource().getDamageType()).msgId().equalsIgnoreCase(condition.get("name").toString());
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, event) -> {
-            String tag = condition.get("tag").toString();
-            try {
-                if (TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
-                    if (!damageTagMappings.containsKey(condition.get("tag"))) {
-                        damageTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
-                        for (String mat : TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
-                            damageTagMappings.get(condition.get("tag")).add(Registry.DAMAGE_TYPE.get(NamespacedKey.minecraft(mat.split(":")[1].toLowerCase())));
-                        }
-                    } else {
-                        // mappings exist, now we can start stuff
-                        return damageTagMappings.get(condition.get("tag")).contains(event.getDamageSource().getDamageType().key().asString());
-                    }
-                }
-            } catch (IllegalArgumentException e) {
-                // yeah imma just ignore this one ty
-            }
-            return false;
+            NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
+            TagKey<net.minecraft.world.damagesource.DamageType> key = TagKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE, CraftNamespacedKey.toMinecraft(tag));
+            return key.isFor(net.minecraft.core.registries.Registries.DAMAGE_TYPE.createRegistryKey(CraftNamespacedKey.toMinecraft(event.getDamageSource().getDamageType().getKey())));
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fire"), (condition, event) -> {
             return event.getCause().equals(DamageCause.FIRE);

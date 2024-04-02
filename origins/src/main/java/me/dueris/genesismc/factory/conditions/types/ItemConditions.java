@@ -12,9 +12,12 @@ import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.tags.TagKey;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
@@ -234,21 +237,9 @@ public class ItemConditions {
                         }
                         return itemStack.getType().equals(Material.valueOf(item.toUpperCase()));
                     } else if (ingredientMap.containsKey("tag")) {
-                        try {
-                            if (TagRegistryParser.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString()) != null) {
-                                if (!entityTagMappings.containsKey(ingredientMap.get("tag"))) {
-                                    entityTagMappings.put(ingredientMap.get("tag").toString(), new ArrayList<>());
-                                    for (String mat : TagRegistryParser.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString())) {
-                                        entityTagMappings.get(ingredientMap.get("tag")).add(Material.valueOf(mat.split(":")[1].toUpperCase()));
-                                    }
-                                } else {
-                                    // mappings exist, now we can start stuff
-                                    return entityTagMappings.get(ingredientMap.get("tag")).contains(itemStack.getType());
-                                }
-                            }
-                        } catch (IllegalArgumentException e) {
-                            e.printStackTrace();
-                        }
+                        NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
+                        TagKey key = TagKey.create(net.minecraft.core.registries.Registries.ITEM, CraftNamespacedKey.toMinecraft(tag));
+                        return key.isFor(net.minecraft.core.registries.Registries.ITEM.createRegistryKey(CraftNamespacedKey.toMinecraft(itemStack.getType().getKey())));
                     }
                 }
             }
