@@ -18,7 +18,6 @@ import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
 import me.dueris.genesismc.content.enchantment.generation.StructureGeneration;
 import me.dueris.genesismc.content.enchantment.generation.VillagerTradeHook;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.types.*;
 import me.dueris.genesismc.factory.powers.ApoliPower;
@@ -372,7 +371,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         WaterProtBook.init();
         start();
         patchPowers();
-        TagRegistryParser.runParse();
         try {
             NBTFixerUpper.runFixerUpper();
         } catch (Exception e) {

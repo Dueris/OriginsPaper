@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.conditions.types;
 
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
