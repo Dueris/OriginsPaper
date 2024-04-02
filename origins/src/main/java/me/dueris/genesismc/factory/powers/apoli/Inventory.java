@@ -39,7 +39,7 @@ public class Inventory extends CraftPower implements Listener {
                     @Override
                     public void run() {
                         if (!shulker_inventory.contains(p)) {
-                            ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(p);
+                            ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(p, power.getTag());
                             org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
 
                             vaultItems.stream()
@@ -58,7 +58,7 @@ public class Inventory extends CraftPower implements Listener {
                                 })
                                 .forEach(itemStack -> prunedItems.add(itemStack));
 
-                            InventorySerializer.storeItems(prunedItems, p);
+                            InventorySerializer.storeItems(prunedItems, p, power.getTag());
                             vault.clear();
                             this.cancel();
                         }
@@ -77,7 +77,7 @@ public class Inventory extends CraftPower implements Listener {
                     if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), e.getPlayer())) {
-                            ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(e.getPlayer());
+                            ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(e.getPlayer(), power.getTag());
                             org.bukkit.inventory.Inventory vault = ContainerType.getContainerType(power.getString("container_type")).createInventory(e.getPlayer(), Utils.createIfPresent(power.getString("title")));
                             vaultItems.stream()
                                 .forEach(itemStack -> vault.addItem(itemStack));
@@ -98,7 +98,7 @@ public class Inventory extends CraftPower implements Listener {
                 Player p = e.getPlayer();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power.getBooleanOrDefault("drop_on_death", false)) {
-                        ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(p);
+                        ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(p, power.getTag());
                         org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
 
                         vaultItems.stream()
@@ -117,7 +117,7 @@ public class Inventory extends CraftPower implements Listener {
                             })
                             .forEach(itemStack -> prunedItems.add(itemStack));
 
-                        InventorySerializer.storeItems(prunedItems, p);
+                        InventorySerializer.storeItems(prunedItems, p, power.getTag());
                         vault.clear();
                     }
                 }

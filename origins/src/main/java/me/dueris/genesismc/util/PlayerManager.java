@@ -12,6 +12,7 @@ import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.storage.nbt.NBTFixerUpper;
+import me.dueris.genesismc.util.entity.InventorySerializer;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.util.legacy.LegacyOriginContainer;
 import net.kyori.adventure.text.Component;
@@ -157,8 +158,10 @@ public class PlayerManager implements Listener {
 
         //default playerdata values
         PersistentDataContainer data = p.getPersistentDataContainer();
-        if (!data.has(GenesisMC.identifier("shulker-box"), PersistentDataType.STRING)) {
-            data.set(GenesisMC.identifier("shulker-box"), PersistentDataType.STRING, "");
+        if (data.has(GenesisMC.identifier("shulker-box"), PersistentDataType.STRING)) {
+            String save = data.get(GenesisMC.identifier("shulker-box"), PersistentDataType.STRING);
+            InventorySerializer.saveInNbtIO("origins:inventory", save, p);
+            data.remove(GenesisMC.identifier("shulker-box"));
         }
         if (!p.getPersistentDataContainer().has(GenesisMC.identifier("can-explode"), PersistentDataType.INTEGER)) {
             p.getPersistentDataContainer().set(GenesisMC.identifier("can-explode"), PersistentDataType.INTEGER, 1);
