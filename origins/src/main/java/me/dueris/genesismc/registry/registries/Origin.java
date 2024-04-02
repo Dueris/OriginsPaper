@@ -154,7 +154,7 @@ public class Origin implements Serializable, FactoryInstance {
      * @return The icon as a Material Object.
      */
     public Material getMaterialIcon() {
-        return Material.valueOf(getIcon().split(":")[1].toUpperCase());
+        return me.dueris.calio.util.MiscUtils.getBukkitMaterial(getIcon());
     }
 
     /**
