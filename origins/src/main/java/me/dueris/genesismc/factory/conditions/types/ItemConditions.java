@@ -222,7 +222,7 @@ public class ItemConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("ingredient"), (condition, itemStack) -> {
             if (itemStack != null && itemStack.getType() != null) {
                 if (condition.containsKey("ingredient")) {
-                    Map<String, Object> ingredientMap = (Map<String, Object>) condition.get("ingredient");
+                    JSONObject ingredientMap = (JSONObject) condition.get("ingredient");
                     if (ingredientMap.containsKey("item")) {
                         String itemValue = ingredientMap.get("item").toString();
                         String item = null;
@@ -236,7 +236,7 @@ public class ItemConditions {
                         }
                         return itemStack.getType().equals(Material.valueOf(item.toUpperCase()));
                     } else if (ingredientMap.containsKey("tag")) {
-                        NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
+                        NamespacedKey tag = NamespacedKey.fromString(ingredientMap.get("tag").toString());
                         TagKey key = TagKey.create(net.minecraft.core.registries.Registries.ITEM, CraftNamespacedKey.toMinecraft(tag));
                         return key.isFor(net.minecraft.core.registries.Registries.ITEM.createRegistryKey(CraftNamespacedKey.toMinecraft(itemStack.getType().getKey())));
                     }

@@ -43,7 +43,6 @@ public class PreventEntityRender extends CraftPower {
                         return;
                     } else {
                         for (Entity entity : getEntitiesWithinRender(p)) {
-                            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             if (ConditionExecutor.testEntity(power.get("entity_condition"), (CraftEntity) p)) {
                                 if (ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
                                     if (p.canSee(entity)) {
