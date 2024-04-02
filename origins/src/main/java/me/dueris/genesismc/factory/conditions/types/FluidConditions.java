@@ -4,8 +4,11 @@ import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.registry.Registries;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R3.CraftFluid;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.json.simple.JSONObject;
 
 import java.util.function.BiPredicate;
@@ -32,12 +35,9 @@ public class FluidConditions {
             return fluid.defaultFluidState().isEmpty();
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, fluid) -> {
-            for (String flu : TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
-                if (flu == null) continue;
-                if (fluid == null) continue;
-                return flu.equalsIgnoreCase(fluid.toString());
-            }
-            return false;
+            NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
+            TagKey key = TagKey.create(net.minecraft.core.registries.Registries.FLUID, CraftNamespacedKey.toMinecraft(tag));
+            return key.isFor(net.minecraft.core.registries.Registries.FLUID.createRegistryKey(CraftNamespacedKey.toMinecraft(CraftFluid.minecraftToBukkit(fluid).getKey())));
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("still"), (condition, fluid) -> {
             return fluid.defaultFluidState().isSource();

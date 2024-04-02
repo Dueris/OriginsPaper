@@ -7,9 +7,12 @@ import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.world.BiomeMappings;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.TagKey;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBiome;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.json.simple.JSONObject;
 import oshi.util.tuples.Pair;
 
@@ -39,24 +42,9 @@ public class BiomeConditions {
         }));
         // Meta conditions end
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, biome) -> {
-            if (TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
-                if (!biomeTagMappings.containsKey(condition.get("tag"))) {
-                    biomeTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
-                    for (String mat : TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
-                        try {
-                            biomeTagMappings.get(condition.get("tag")).add(Biome.valueOf(mat.split(":")[1].toUpperCase()));
-                        } catch (IllegalArgumentException e) {
-                            // akjghdfkj
-                        }
-                    }
-                    return false;
-                } else {
-                    // mappings exist, now we can start stuff
-                    return biomeTagMappings.get(condition.get("tag")).contains(CraftBiome.minecraftToBukkit(biome.getA()).getKey().asString().toLowerCase());
-                }
-            } else {
-                return false;
-            }
+            NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
+            TagKey key = TagKey.create(net.minecraft.core.registries.Registries.BIOME, CraftNamespacedKey.toMinecraft(tag));
+            return key.isFor(net.minecraft.core.registries.Registries.BIOME.createRegistryKey(CraftNamespacedKey.toMinecraft(CraftBiome.minecraftToBukkit(biome.getA()).getKey())));
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("precipitation"), (condition, biome) -> {
             return biome.getA().hasPrecipitation() ?

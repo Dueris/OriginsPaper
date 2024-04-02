@@ -10,6 +10,7 @@ import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Power;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -19,6 +20,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.TileState;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -58,20 +60,10 @@ public class BlockConditions {
             }
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, block) -> {
-            if (block == null) return false;
-            if (TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
-                if (!blockTagMappings.containsKey(condition.get("tag"))) {
-                    blockTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
-                    for (String mat : TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
-                        blockTagMappings.get(condition.get("tag")).add(Material.valueOf(mat.split(":")[1].toUpperCase()));
-                    }
-                    return false;
-                } else {
-                    // mappings exist, now we can start stuff
-                    return blockTagMappings.get(condition.get("tag")).contains(block.getType());
-                }
-            }
-            return false;
+            if (block == null || block.getNMS() == null) return false;
+            NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
+            TagKey key = TagKey.create(net.minecraft.core.registries.Registries.BLOCK, CraftNamespacedKey.toMinecraft(tag));
+            return key.isFor(net.minecraft.core.registries.Registries.BLOCK.createRegistryKey(CraftNamespacedKey.toMinecraft(block.getType().getKey())));
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("adjacent"), (condition, block) -> {
             int adj = 0;

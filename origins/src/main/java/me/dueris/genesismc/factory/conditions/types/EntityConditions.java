@@ -22,6 +22,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -573,23 +574,9 @@ public class EntityConditions {
             return false;
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, entity) -> {
-            // Use block in_tag optimization
-            try {
-                if (TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
-                    if (!entityTagMappings.containsKey(condition.get("tag"))) {
-                        entityTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
-                        for (String mat : TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
-                            entityTagMappings.get(condition.get("tag")).add(EntityType.valueOf(mat.split(":")[1].toUpperCase()));
-                        }
-                    } else {
-                        // mappings exist, now we can start stuff
-                        return entityTagMappings.get(condition.get("tag")).contains(entity.getType());
-                    }
-                }
-            } catch (IllegalArgumentException e) {
-                // yeah imma just ignore this one ty
-            }
-            return false;
+            NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
+            TagKey key = TagKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, CraftNamespacedKey.toMinecraft(tag));
+            return key.isFor(net.minecraft.core.registries.Registries.ENTITY_TYPE.createRegistryKey(CraftNamespacedKey.toMinecraft(entity.getType().getKey())));
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("living"), (condition, entity) -> {
             return !entity.isDead();
