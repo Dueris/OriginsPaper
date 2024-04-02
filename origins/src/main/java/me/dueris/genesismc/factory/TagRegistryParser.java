@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@Deprecated(forRemoval = true)
 public class TagRegistryParser {
 
     public static ArrayList<String> available_types = new ArrayList<>();
