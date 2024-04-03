@@ -375,8 +375,8 @@ public class KeybindingUtils implements Listener {
     }
 
     @EventHandler
-    public void preventDrop(PlayerDropItemEvent e){
-        if(e.getItemDrop().getItemStack().getItemMeta().getPersistentDataContainer().has(GenesisMC.identifier("origin_item_data"))){
+    public void preventDrop(PlayerDropItemEvent e) {
+        if (e.getItemDrop().getItemStack().getItemMeta().getPersistentDataContainer().has(GenesisMC.identifier("origin_item_data"))) {
             e.setCancelled(true);
         }
     }

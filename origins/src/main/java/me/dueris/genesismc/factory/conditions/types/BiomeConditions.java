@@ -7,7 +7,6 @@ import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.world.BiomeMappings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.TagKey;
-
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBiome;

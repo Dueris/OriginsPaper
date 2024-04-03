@@ -12,7 +12,6 @@ import me.dueris.genesismc.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.TagKey;
-
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
@@ -24,7 +23,6 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiPredicate;
 
 public class ItemConditions {

@@ -9,7 +9,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -32,49 +31,14 @@ import java.util.List;
 
 public class InventorySerializer implements Listener {
 
-    @EventHandler
-    public void onInventoryClose(InventoryCloseEvent e) {
-        Player p = (Player) e.getPlayer();
-        
-        for(Layer layer : CraftApoli.getLayersFromRegistry()){
-            for(Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, "apoli:inventory", layer)){
-                if (matches(p, e.getView(), power)) {
-                    ArrayList<ItemStack> prunedItems = new ArrayList<>();
-        
-                    Arrays.stream(e.getInventory().getContents())
-                        .filter(itemStack -> {
-                            return itemStack != null;
-                        })
-                        .forEach(itemStack -> prunedItems.add(itemStack));
-        
-                    Player target = (Player) e.getPlayer();
-                    if (target == null) {
-                        p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "errors.inventorySaveFail").replace("%player%", e.getView().getTitle().split(":")[1].substring(1))).color(TextColor.fromHexString(ColorConstants.RED)));
-                        return;
-                    }
-                    storeItems(prunedItems, target, power.getTag());
-                }
-            }
-        }
-
-    }
-
-    private boolean matches(Player player, InventoryView inventory, Power power) {
-        String title = power.getStringOrDefault("title", "container.inventory");
-        if(inventory.getTitle().equalsIgnoreCase(title)){
-            return true;
-        }
-        return false;
-    }
-
-    public static void saveInNbtIO(String tag, String data, Player player){
-        ServerPlayer p = ((CraftPlayer)player).getHandle();
+    public static void saveInNbtIO(String tag, String data, Player player) {
+        ServerPlayer p = ((CraftPlayer) player).getHandle();
         CompoundTag compoundRoot = p.saveWithoutId(new CompoundTag());
-        if(!compoundRoot.contains("OriginData")){
+        if (!compoundRoot.contains("OriginData")) {
             compoundRoot.put("OriginData", new CompoundTag());
         }
         CompoundTag originData = compoundRoot.getCompound("OriginData");
-        if(!originData.contains("InventoryData")){
+        if (!originData.contains("InventoryData")) {
             originData.put("InventoryData", new CompoundTag());
         }
         CompoundTag inventoryData = originData.getCompound("InventoryData");
@@ -83,17 +47,17 @@ public class InventorySerializer implements Listener {
         player.saveData();
     }
 
-    private static String getInNbtIO(String tag, Player player){
-        ServerPlayer p = ((CraftPlayer)player).getHandle();
+    private static String getInNbtIO(String tag, Player player) {
+        ServerPlayer p = ((CraftPlayer) player).getHandle();
         CompoundTag compoundRoot = p.saveWithoutId(new CompoundTag());
-        if(!compoundRoot.contains("OriginData")){
+        if (!compoundRoot.contains("OriginData")) {
             compoundRoot.put("OriginData", new CompoundTag());
         }
         CompoundTag originData = compoundRoot.getCompound("OriginData");
-        if(!originData.contains("InventoryData")){
+        if (!originData.contains("InventoryData")) {
             originData.put("InventoryData", new CompoundTag());
             return "";
-        }else{
+        } else {
             return originData.getCompound("InventoryData").getString(tag);
         }
     }
@@ -164,6 +128,41 @@ public class InventorySerializer implements Listener {
         }
 
         return items;
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent e) {
+        Player p = (Player) e.getPlayer();
+
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, "apoli:inventory", layer)) {
+                if (matches(p, e.getView(), power)) {
+                    ArrayList<ItemStack> prunedItems = new ArrayList<>();
+
+                    Arrays.stream(e.getInventory().getContents())
+                        .filter(itemStack -> {
+                            return itemStack != null;
+                        })
+                        .forEach(itemStack -> prunedItems.add(itemStack));
+
+                    Player target = (Player) e.getPlayer();
+                    if (target == null) {
+                        p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "errors.inventorySaveFail").replace("%player%", e.getView().getTitle().split(":")[1].substring(1))).color(TextColor.fromHexString(ColorConstants.RED)));
+                        return;
+                    }
+                    storeItems(prunedItems, target, power.getTag());
+                }
+            }
+        }
+
+    }
+
+    private boolean matches(Player player, InventoryView inventory, Power power) {
+        String title = power.getStringOrDefault("title", "container.inventory");
+        if (inventory.getTitle().equalsIgnoreCase(title)) {
+            return true;
+        }
+        return false;
     }
 
 }
