@@ -62,7 +62,7 @@ public class BlockConditions {
             if (block == null || block.getNMS() == null) return false;
             NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
             TagKey key = TagKey.create(net.minecraft.core.registries.Registries.BLOCK, CraftNamespacedKey.toMinecraft(tag));
-            return key.isFor(net.minecraft.core.registries.Registries.BLOCK.createRegistryKey(CraftNamespacedKey.toMinecraft(block.getType().getKey())));
+            return block.getHandle().getBlockState(CraftLocation.toBlockPosition(block.getLocation())).is(key);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("adjacent"), (condition, block) -> {
             int adj = 0;

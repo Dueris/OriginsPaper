@@ -5,7 +5,9 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageSource;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.damage.CraftDamageType;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
@@ -68,7 +70,8 @@ public class DamageConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, event) -> {
             NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
             TagKey<net.minecraft.world.damagesource.DamageType> key = TagKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE, CraftNamespacedKey.toMinecraft(tag));
-            return key.isFor(net.minecraft.core.registries.Registries.DAMAGE_TYPE.createRegistryKey(CraftNamespacedKey.toMinecraft(event.getDamageSource().getDamageType().getKey())));
+            Holder<net.minecraft.world.damagesource.DamageType> nmsDamageType = CraftDamageType.bukkitToMinecraftHolder(event.getDamageSource().getDamageType());
+            return nmsDamageType.is(key);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fire"), (condition, event) -> {
             return event.getCause().equals(DamageCause.FIRE);

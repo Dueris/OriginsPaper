@@ -36,7 +36,7 @@ public class FluidConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, fluid) -> {
             NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
             TagKey key = TagKey.create(net.minecraft.core.registries.Registries.FLUID, CraftNamespacedKey.toMinecraft(tag));
-            return key.isFor(net.minecraft.core.registries.Registries.FLUID.createRegistryKey(CraftNamespacedKey.toMinecraft(CraftFluid.minecraftToBukkit(fluid).getKey())));
+            return fluid.is(key);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("still"), (condition, fluid) -> {
             return fluid.defaultFluidState().isSource();

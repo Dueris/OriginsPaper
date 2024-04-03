@@ -236,7 +236,7 @@ public class ItemConditions {
                     } else if (ingredientMap.containsKey("tag")) {
                         NamespacedKey tag = NamespacedKey.fromString(ingredientMap.get("tag").toString());
                         TagKey key = TagKey.create(net.minecraft.core.registries.Registries.ITEM, CraftNamespacedKey.toMinecraft(tag));
-                        return key.isFor(net.minecraft.core.registries.Registries.ITEM.createRegistryKey(CraftNamespacedKey.toMinecraft(itemStack.getType().getKey())));
+                        return CraftItemStack.asCraftCopy(itemStack).handle.is(key);
                     }
                 }
             }

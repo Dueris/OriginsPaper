@@ -40,6 +40,7 @@ import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntityType;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
@@ -575,7 +576,7 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, entity) -> {
             NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
             TagKey key = TagKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, CraftNamespacedKey.toMinecraft(tag));
-            return key.isFor(net.minecraft.core.registries.Registries.ENTITY_TYPE.createRegistryKey(CraftNamespacedKey.toMinecraft(entity.getType().getKey())));
+            return CraftEntityType.bukkitToMinecraft(entity.getType()).is(key);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("living"), (condition, entity) -> {
             return !entity.isDead();

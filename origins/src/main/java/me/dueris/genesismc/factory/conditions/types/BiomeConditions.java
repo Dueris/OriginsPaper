@@ -6,9 +6,14 @@ import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.world.BiomeMappings;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBiome;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.json.simple.JSONObject;
@@ -42,7 +47,7 @@ public class BiomeConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, biome) -> {
             NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
             TagKey key = TagKey.create(net.minecraft.core.registries.Registries.BIOME, CraftNamespacedKey.toMinecraft(tag));
-            return key.isFor(net.minecraft.core.registries.Registries.BIOME.createRegistryKey(CraftNamespacedKey.toMinecraft(CraftBiome.minecraftToBukkit(biome.getA()).getKey())));
+            return ((CraftWorld)Bukkit.getWorlds().get(0)).getHandle().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BIOME).wrapAsHolder(biome.getA()).is(key);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("precipitation"), (condition, biome) -> {
             return biome.getA().hasPrecipitation() ?
