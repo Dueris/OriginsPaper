@@ -6,10 +6,9 @@ import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.world.BiomeMappings;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderSet;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome.Precipitation;
+
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
@@ -35,10 +34,14 @@ public class BiomeConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("precipitation"), (condition, biome) -> {
             return biome.getA().hasPrecipitation() ?
+            /*
                 biome.getA().getTemperature(biome.getB()) <= 0.15f ?
                     condition.get("precipitation").toString().equals("snow")
                     : condition.get("precipitation").toString().equals("rain")
                 : condition.get("precipitation").toString().equals("none");
+                    */
+                biome.getA().getPrecipitationAt(new BlockPos(0, 64, 0)).equals(getPrecipitation(condition)) :
+                    condition.get("precipitation").toString().toLowerCase().equals("none");
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("category"), (condition, biome) -> {
             Biome b = CraftBiome.minecraftToBukkit(biome.getA());
@@ -57,6 +60,24 @@ public class BiomeConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("high_humidity"), (condition, biome) -> {
             return Comparison.getFromString(">=").compare(biome.getA().climateSettings.downfall(), 0.85f);
         }));
+    }
+
+    private net.minecraft.world.level.biome.Biome.Precipitation getPrecipitation(JSONObject condition) {
+        String lowerCase = condition.get("precipitation").toString().toLowerCase();
+        switch(lowerCase) {
+            case "none" -> {
+                return Precipitation.NONE;
+            }
+            case "snow" -> {
+                return Precipitation.SNOW;
+            }
+            case "rain" -> {
+                return Precipitation.RAIN;
+            }
+            default -> {
+                return null;
+            }
+        }
     }
 
     private void register(ConditionFactory factory) {
