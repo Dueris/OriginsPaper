@@ -22,7 +22,7 @@ public enum ConditionTypes {
     public static class ConditionFactory {
         public static void addMetaConditions() {
             List<Class> classes = new ArrayList<>();
-            String[] names = {"and", "or", "chance", "constant"};
+            String[] names = {"and", "or", "chance", "constant", "not"};
             classes.addAll(List.of(BiEntityConditions.class, BiomeConditions.class, BlockConditions.class, DamageConditions.class, EntityConditions.class, FluidConditions.class, ItemConditions.class));
             classes.forEach(c -> {
                 try {
