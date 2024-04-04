@@ -29,22 +29,6 @@ import java.util.function.BiPredicate;
 public class BiEntityConditions implements Listener {
 
     public void prep() {
-        // Meta conditions, shouldnt execute
-        // Meta conditions are added in each file to ensure they dont error and skip them when running
-        // a meta condition inside another meta condition
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("and"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("or"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("chance"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("constant"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        // Meta conditions end
         register(new ConditionFactory(GenesisMC.apoliIdentifier("both"), (condition, pair) -> {
             AtomicBoolean a = new AtomicBoolean(true);
             AtomicBoolean t = new AtomicBoolean(true);
@@ -144,9 +128,7 @@ public class BiEntityConditions implements Listener {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("riding_recursive"), (condition, pair) -> {
-            return pair.first().getPassengers().contains(pair.second());
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("riding_recursive"), (condition, pair) -> pair.first().getPassengers().contains(pair.second())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("riding_root"), (condition, pair) -> {
             for (int i = 0; i < pair.first().getPassengers().toArray().length; i++) {
                 if (pair.first().getPassengers().isEmpty()) return false;
@@ -158,12 +140,8 @@ public class BiEntityConditions implements Listener {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("riding"), (condition, pair) -> {
-            return pair.second().getPassengers().contains(pair.first());
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("equals"), (condition, pair) -> {
-            return pair.first() == pair.second();
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("riding"), (condition, pair) -> pair.second().getPassengers().contains(pair.first())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("equals"), (condition, pair) -> pair.first() == pair.second()));
     }
 
     private void register(ConditionFactory factory) {

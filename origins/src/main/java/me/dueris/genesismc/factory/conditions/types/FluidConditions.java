@@ -14,33 +14,13 @@ import java.util.function.BiPredicate;
 
 public class FluidConditions {
     public void prep() {
-        // Meta conditions, shouldnt execute
-        // Meta conditions are added in each file to ensure they dont error and skip them when running
-        // a meta condition inside another meta condition
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("and"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("or"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("chance"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("constant"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        // Meta conditions end
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("empty"), (condition, fluid) -> {
-            return fluid.defaultFluidState().isEmpty();
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("empty"), (condition, fluid) -> fluid.defaultFluidState().isEmpty()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, fluid) -> {
             NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
             TagKey key = TagKey.create(net.minecraft.core.registries.Registries.FLUID, CraftNamespacedKey.toMinecraft(tag));
             return fluid.is(key);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("still"), (condition, fluid) -> {
-            return fluid.defaultFluidState().isSource();
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("still"), (condition, fluid) -> fluid.defaultFluidState().isSource()));
     }
 
     private void register(ConditionFactory factory) {

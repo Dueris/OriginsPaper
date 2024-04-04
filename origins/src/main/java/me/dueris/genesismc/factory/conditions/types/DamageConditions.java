@@ -30,22 +30,6 @@ public class DamageConditions {
     public static HashMap<String, ArrayList<DamageType>> damageTagMappings = new HashMap<>();
 
     public void prep() {
-        // Meta conditions, shouldnt execute
-        // Meta conditions are added in each file to ensure they dont error and skip them when running
-        // a meta condition inside another meta condition
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("and"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("or"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("chance"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("constant"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        // Meta conditions end
         register(new ConditionFactory(GenesisMC.apoliIdentifier("projectile"), (condition, event) -> {
             if (event.getCause().equals(DamageCause.PROJECTILE)) {
                 boolean projectile = true;
@@ -64,18 +48,14 @@ public class DamageConditions {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("name"), (condition, event) -> {
-            return CraftDamageType.bukkitToMinecraft(event.getDamageSource().getDamageType()).msgId().equalsIgnoreCase(condition.get("name").toString());
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("name"), (condition, event) -> CraftDamageType.bukkitToMinecraft(event.getDamageSource().getDamageType()).msgId().equalsIgnoreCase(condition.get("name").toString())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, event) -> {
             NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
             TagKey<net.minecraft.world.damagesource.DamageType> key = TagKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE, CraftNamespacedKey.toMinecraft(tag));
             Holder<net.minecraft.world.damagesource.DamageType> nmsDamageType = CraftDamageType.bukkitToMinecraftHolder(event.getDamageSource().getDamageType());
             return nmsDamageType.is(key);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("fire"), (condition, event) -> {
-            return event.getCause().equals(DamageCause.FIRE);
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("fire"), (condition, event) -> event.getCause().equals(DamageCause.FIRE)));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("attacker"), (condition, event) -> {
             if (event.getEntity() instanceof LivingEntity li && ((CraftLivingEntity) li).getHandle().getLastAttacker() != null) {
                 boolean rtn = true;

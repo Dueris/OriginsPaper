@@ -136,43 +136,17 @@ public class ItemConditions {
     }
 
     public void prep() {
-        // Meta conditions, shouldnt execute
-        // Meta conditions are added in each file to ensure they dont error and skip them when running
-        // a meta condition inside another meta condition
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("and"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("or"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("chance"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("constant"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        // Meta conditions end
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("food"), (condition, itemStack) -> {
-            return itemStack.getType().isEdible();
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("smeltable"), (condition, itemStack) -> {
-            return itemStack.getType().isFuel();
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("food"), (condition, itemStack) -> itemStack.getType().isEdible()));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("smeltable"), (condition, itemStack) -> itemStack.getType().isFuel()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("relative_durability"), (condition, itemStack) -> {
             String comparison = condition.get("comparison").toString();
             double compareTo = Double.parseDouble(condition.get("compare_to").toString());
             double amt = itemStack.getDurability() / itemStack.getType().getMaxDurability();
             return Comparison.getFromString(comparison).compare(amt, compareTo);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("is_equippable"), (condition, itemStack) -> {
-            return EnchantTableHandler.wearable.contains(itemStack.getType());
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("is_damageable"), (condition, itemStack) -> {
-            return CraftItemStack.asCraftCopy(itemStack).handle.isDamageableItem();
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("fireproof"), (condition, itemStack) -> {
-            return CraftItemStack.asCraftCopy(itemStack).handle.getItem().isFireResistant();
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("is_equippable"), (condition, itemStack) -> EnchantTableHandler.wearable.contains(itemStack.getType())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("is_damageable"), (condition, itemStack) -> CraftItemStack.asCraftCopy(itemStack).handle.isDamageableItem()));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("fireproof"), (condition, itemStack) -> CraftItemStack.asCraftCopy(itemStack).handle.getItem().isFireResistant()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantment"), (condition, itemStack) -> {
             String comparison = condition.get("comparison").toString();
             double compareTo = Double.parseDouble(condition.get("compare_to").toString());
@@ -184,12 +158,8 @@ public class ItemConditions {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantable"), (condition, itemStack) -> {
-            return ENCHANTABLE_MATERIALS.contains(itemStack.getType());
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("empty"), (condition, itemStack) -> {
-            return itemStack.getType().isAir();
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantable"), (condition, itemStack) -> ENCHANTABLE_MATERIALS.contains(itemStack.getType())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("empty"), (condition, itemStack) -> itemStack.getType().isAir()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("durability"), (condition, itemStack) -> {
             String comparison = condition.get("comparison").toString();
             double compareTo = Double.parseDouble(condition.get("compare_to").toString());
@@ -208,15 +178,9 @@ public class ItemConditions {
             int amt = itemStack.getAmount();
             return Comparison.getFromString(comparison).compare(amt, compareTo);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("fuel"), (condition, itemStack) -> {
-            return itemStack.getType().isFuel();
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("meat"), (condition, itemStack) -> {
-            return getMeatMaterials().contains(itemStack.getType());
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, itemStack) -> {
-            return NbtUtils.compareNbt(MiscUtils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.getTag(), true);
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("fuel"), (condition, itemStack) -> itemStack.getType().isFuel()));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("meat"), (condition, itemStack) -> getMeatMaterials().contains(itemStack.getType())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, itemStack) -> NbtUtils.compareNbt(MiscUtils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.getTag(), true)));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("ingredient"), (condition, itemStack) -> {
             if (itemStack != null && itemStack.getType() != null) {
                 if (condition.containsKey("ingredient")) {

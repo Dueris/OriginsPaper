@@ -39,6 +39,8 @@ public class ConditionExecutor {
         entityCondition.prep();
         fluidCondition.prep();
         itemCondition.prep();
+
+        ConditionTypes.ConditionFactory.addMetaConditions();
     }
 
     private static boolean isMetaCondition(JSONObject condition) {

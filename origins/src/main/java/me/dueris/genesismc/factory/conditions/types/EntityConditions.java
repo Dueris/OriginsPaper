@@ -154,22 +154,6 @@ public class EntityConditions {
     }
 
     public void prep() {
-        // Meta conditions, shouldnt execute
-        // Meta conditions are added in each file to ensure they dont error and skip them when running
-        // a meta condition inside another meta condition
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("and"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("or"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("chance"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("constant"), (condition, obj) -> {
-            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-        }));
-        // Meta conditions end
         register(new ConditionFactory(GenesisMC.apoliIdentifier("ability"), (condition, entity) -> {
             if (entity instanceof Player p) {
                 String ability = condition.get("ability").toString().toLowerCase();
@@ -202,9 +186,7 @@ public class EntityConditions {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("origin"), (condition, entity) -> {
-            return entity instanceof Player p && OriginPlayerAccessor.hasOrigin(p, condition.get("origin").toString());
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("origin"), (condition, entity) -> entity instanceof Player p && OriginPlayerAccessor.hasOrigin(p, condition.get("origin").toString())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("power_active"), (condition, entity) -> {
             if (!ApoliPower.powers_active.containsKey(entity)) return false;
             String power = condition.get("power").toString();
@@ -374,18 +356,14 @@ public class EntityConditions {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("collided_horizontally"), (condition, entity) -> {
-            return ((CraftEntity) entity).getHandle().horizontalCollision;
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("collided_horizontally"), (condition, entity) -> ((CraftEntity) entity).getHandle().horizontalCollision));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("creative_flying"), (condition, entity) -> {
             if (entity instanceof Player player) {
                 return player.isFlying();
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("daytime"), (condition, entity) -> {
-            return entity.getWorld().isDayTime();
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("daytime"), (condition, entity) -> entity.getWorld().isDayTime()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("dimension"), (condition, entity) -> {
             String dim = condition.get("dimension").toString();
             if (!dim.contains(":")) {
@@ -427,9 +405,7 @@ public class EntityConditions {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_rain"), (condition, entity) -> {
-            return entity.isInRain();
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_rain"), (condition, entity) -> entity.isInRain()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("exposed_to_sun"), (condition, entity) -> {
             ServerLevel level = ((CraftWorld) entity.getWorld()).getHandle();
             BlockPos blockPos = BlockPos.containing(entity.getX(), entity.getY() + ((CraftEntity) entity).getHandle().getEyeHeight(((CraftEntity) entity).getHandle().getPose()), entity.getZ());
@@ -442,12 +418,8 @@ public class EntityConditions {
 
             return level.canSeeSky(blockPos);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, entity) -> {
-            return NbtUtils.compareNbt(MiscUtils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), ((CraftEntity) entity).getHandle().saveWithoutId(new CompoundTag()), true);
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("sneaking"), (condition, entity) -> {
-            return entity.isSneaking();
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, entity) -> NbtUtils.compareNbt(MiscUtils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), ((CraftEntity) entity).getHandle().saveWithoutId(new CompoundTag()), true)));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("sneaking"), (condition, entity) -> entity.isSneaking()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("resource"), (condition, entity) -> {
             if (CooldownUtils.cooldownMap.containsKey(entity) && CooldownUtils.cooldownMap.get(entity).contains(condition.get("resource").toString())) {
                 return !CooldownUtils.isPlayerInCooldownFromTag((Player) entity, condition.get("resource").toString());
@@ -461,9 +433,7 @@ public class EntityConditions {
                 }
             }
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_flying"), (condition, entity) -> {
-            return entity instanceof LivingEntity le && (((CraftLivingEntity) le).getHandle().isFallFlying() || FlightElytra.getGlidingPlayers().contains(le));
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_flying"), (condition, entity) -> entity instanceof LivingEntity le && (((CraftLivingEntity) le).getHandle().isFallFlying() || FlightElytra.getGlidingPlayers().contains(le))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("submerged_in"), (condition, entity) -> {
             if (condition.get("fluid").equals("minecraft:water")) {
                 return entity.isInWaterOrBubbleColumn();
@@ -502,12 +472,8 @@ public class EntityConditions {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("on_fire"), (condition, entity) -> {
-            return entity.getFireTicks() > 0;
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_type"), (condition, entity) -> {
-            return entity.getType().equals(EntityType.valueOf(condition.get("entity_type").toString().toUpperCase().split(":")[1]));
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("on_fire"), (condition, entity) -> entity.getFireTicks() > 0));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_type"), (condition, entity) -> entity.getType().equals(EntityType.valueOf(condition.get("entity_type").toString().toUpperCase().split(":")[1]))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("equipped_item"), (condition, entity) -> {
             if (entity instanceof InventoryHolder invH) {
                 if (invH instanceof LivingEntity LeInvH) {
@@ -525,9 +491,7 @@ public class EntityConditions {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("exists"), (condition, entity) -> {
-            return entity != null;
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("exists"), (condition, entity) -> entity != null));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("distance_from_spawn"), (condition, entity) -> {
             @NotNull Vector actorVector = entity.getLocation().toVector();
             @NotNull Vector targetVector = entity.getWorld().getSpawnLocation().toVector();
@@ -549,18 +513,14 @@ public class EntityConditions {
             }
             return hasElytraPower || hasElytraEquipment;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_distance"), (condition, entity) -> {
-            return Comparison.getFromString(condition.get("comparison").toString()).compare(entity.getFallDistance(), Double.parseDouble(condition.get("compare_to").toString()));
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_distance"), (condition, entity) -> Comparison.getFromString(condition.get("comparison").toString()).compare(entity.getFallDistance(), Double.parseDouble(condition.get("compare_to").toString()))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("gamemode"), (condition, entity) -> {
             if (entity instanceof Player player) {
                 return player.getGameMode().equals(GameMode.valueOf(condition.get("gamemode").toString().toUpperCase()));
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("glowing"), (condition, entity) -> {
-            return entity.isGlowing();
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("glowing"), (condition, entity) -> entity.isGlowing()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("health"), (condition, entity) -> {
             if (entity instanceof LivingEntity le) {
                 return Comparison.getFromString(condition.get("comparison").toString()).compare(le.getHealth(), Double.parseDouble(condition.get("compare_to").toString()));
@@ -578,12 +538,8 @@ public class EntityConditions {
             TagKey key = TagKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, CraftNamespacedKey.toMinecraft(tag));
             return CraftEntityType.bukkitToMinecraft(entity.getType()).is(key);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("living"), (condition, entity) -> {
-            return !entity.isDead();
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("moving"), (condition, entity) -> {
-            return isEntityMoving(entity);
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("living"), (condition, entity) -> !entity.isDead()));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("moving"), (condition, entity) -> isEntityMoving(entity)));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("on_block"), (condition, entity) -> {
             if (condition.get("block_condition") == null) {
                 return entity.isOnGround();
@@ -779,12 +735,8 @@ public class EntityConditions {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_snow"), (condition, entity) -> {
-            return entity.isInPowderedSnow();
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_thunderstorm"), (condition, entity) -> {
-            return entity.isInRain() && entity.getWorld().isThundering();
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_snow"), (condition, entity) -> entity.isInPowderedSnow()));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_thunderstorm"), (condition, entity) -> entity.isInRain() && entity.getWorld().isThundering()));
     }
 
     private void register(EntityConditions.ConditionFactory factory) {
