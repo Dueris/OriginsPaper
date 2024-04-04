@@ -55,7 +55,7 @@ public class BiomeConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("temperature"), (condition, biome) -> {
             String comparison = condition.get("comparison").toString();
             float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-            return Comparison.getFromString(comparison).compare(biome.getA().getTemperature(biome.getB()), compare_to);
+            return Comparison.getFromString(comparison).compare(biome.getA().getBaseTemperature(), compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("high_humidity"), (condition, biome) -> {
             return Comparison.getFromString(">=").compare(biome.getA().climateSettings.downfall(), 0.85f);
