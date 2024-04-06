@@ -64,16 +64,13 @@ public class JsonTextFormatter {
     }
 
     protected final boolean handleJsonElement(JsonElement jsonElement) {
-        if (jsonElement instanceof JsonArray) {
-            JsonArray jsonArray = (JsonArray) jsonElement;
+        if (jsonElement instanceof JsonArray jsonArray) {
             this.visitArray(jsonArray);
             return true;
-        } else if (jsonElement instanceof JsonObject) {
-            JsonObject jsonObject = (JsonObject) jsonElement;
+        } else if (jsonElement instanceof JsonObject jsonObject) {
             this.visitObject(jsonObject);
             return true;
-        } else if (jsonElement instanceof JsonPrimitive) {
-            JsonPrimitive jsonPrimitive = (JsonPrimitive) jsonElement;
+        } else if (jsonElement instanceof JsonPrimitive jsonPrimitive) {
             this.visitPrimitive(jsonPrimitive);
             return true;
         } else if (jsonElement instanceof JsonNull) {
@@ -129,8 +126,8 @@ public class JsonTextFormatter {
 
             while (iterator.hasNext()) {
                 Entry<String, JsonElement> entry = (Entry) iterator.next();
-                Component name = Component.literal((String) entry.getKey()).withStyle(NAME_COLOR);
-                result.append(Strings.repeat(this.indent, this.indentOffset)).append(name).append(": ").append((new JsonTextFormatter(this.indent, this.indentOffset + 1)).apply((JsonElement) entry.getValue(), false));
+                Component name = Component.literal(entry.getKey()).withStyle(NAME_COLOR);
+                result.append(Strings.repeat(this.indent, this.indentOffset)).append(name).append(": ").append((new JsonTextFormatter(this.indent, this.indentOffset + 1)).apply(entry.getValue(), false));
                 if (iterator.hasNext()) {
                     result.append(!this.indent.isEmpty() ? ",\n" : ", ");
                 }
@@ -165,30 +162,23 @@ public class JsonTextFormatter {
         } else if (jsonPrimitive.isNumber()) {
             Number number = jsonPrimitive.getAsNumber();
             MutableComponent numberText;
-            if (number instanceof Integer) {
-                Integer i = (Integer) number;
+            if (number instanceof Integer i) {
                 numberText = Component.literal(String.valueOf(i)).withStyle(NUMBER_COLOR);
-            } else if (number instanceof Long) {
-                Long l = (Long) number;
+            } else if (number instanceof Long l) {
                 numberText = Component.literal(String.valueOf(l)).withStyle(NUMBER_COLOR).append(Component.literal("L").withStyle(TYPE_SUFFIX_COLOR));
-            } else if (number instanceof Float) {
-                Float f = (Float) number;
+            } else if (number instanceof Float f) {
                 numberText = Component.literal(String.valueOf(f)).withStyle(NUMBER_COLOR).append(Component.literal("F").withStyle(TYPE_SUFFIX_COLOR));
-            } else if (number instanceof Double) {
-                Double d = (Double) number;
+            } else if (number instanceof Double d) {
                 numberText = Component.literal(String.valueOf(d)).withStyle(NUMBER_COLOR).append(Component.literal("D").withStyle(TYPE_SUFFIX_COLOR));
-            } else if (number instanceof Byte) {
-                Byte b = (Byte) number;
+            } else if (number instanceof Byte b) {
                 numberText = Component.literal(String.valueOf(b)).withStyle(NUMBER_COLOR).append(Component.literal("B")).withStyle(TYPE_SUFFIX_COLOR);
-            } else if (number instanceof Short) {
-                Short s = (Short) number;
+            } else if (number instanceof Short s) {
                 numberText = Component.literal(String.valueOf(s)).withStyle(NUMBER_COLOR).append(Component.literal("S")).withStyle(TYPE_SUFFIX_COLOR);
             } else {
-                if (!(number instanceof LazilyParsedNumber)) {
+                if (!(number instanceof LazilyParsedNumber l)) {
                     return false;
                 }
 
-                LazilyParsedNumber l = (LazilyParsedNumber) number;
                 numberText = Component.literal(String.valueOf(l.floatValue())).withStyle(NUMBER_COLOR);
             }
 

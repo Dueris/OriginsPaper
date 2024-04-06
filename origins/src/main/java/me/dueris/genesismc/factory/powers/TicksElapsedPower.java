@@ -6,5 +6,5 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 
 public interface TicksElapsedPower {
-    public void run(Player p, HashMap<Player, HashMap<Power, Integer>> ticksEMap);
+    void run(Player p, HashMap<Player, HashMap<Power, Integer>> ticksEMap);
 }

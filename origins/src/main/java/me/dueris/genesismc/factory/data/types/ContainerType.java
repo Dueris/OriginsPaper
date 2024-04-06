@@ -16,10 +16,10 @@ public enum ContainerType {
     DISPENSER(-1, InventoryType.DISPENSER),
     DOUBLE_CHEST(54, InventoryType.CHEST);
 
-    private int size;
-    private InventoryType bukkit;
+    private final int size;
+    private final InventoryType bukkit;
 
-    private ContainerType(int size, InventoryType type) {
+    ContainerType(int size, InventoryType type) {
         this.size = size == -1 ? type.getDefaultSize() : size;
         this.bukkit = type;
     }

@@ -13,8 +13,8 @@ public class PowerUpdateEvent extends PlayerEvent {
 
     public PowerUpdateEvent(@NotNull Player who, Power power, boolean removed) {
         super(who);
-        this.power = power;
-        this.removed = removed;
+        PowerUpdateEvent.power = power;
+        PowerUpdateEvent.removed = removed;
     }
 
     public static HandlerList getHandlerList() {

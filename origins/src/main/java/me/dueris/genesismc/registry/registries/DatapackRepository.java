@@ -6,8 +6,8 @@ import org.bukkit.NamespacedKey;
 import java.nio.file.Path;
 
 public class DatapackRepository implements Registerable {
-    private NamespacedKey key;
-    private Path path;
+    private final NamespacedKey key;
+    private final Path path;
 
     public DatapackRepository(NamespacedKey key, Path path) {
         this.key = key;

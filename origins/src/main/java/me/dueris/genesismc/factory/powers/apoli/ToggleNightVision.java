@@ -42,7 +42,8 @@ public class ToggleNightVision extends CraftPower implements Listener {
 
             @Override
             public void run() {
-                if ((true /* TNV power always execute continuously */ || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key)) {
+                /* TNV power always execute continuously */
+                if (!in_continuous.get(p).contains(key)) {
                     CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.get("hud_render"));
                     KeybindingUtils.toggleKey(p, key);
                     setActive(p, power.getTag(), false);

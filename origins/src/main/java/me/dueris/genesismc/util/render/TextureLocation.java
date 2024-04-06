@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 public class TextureLocation implements Registerable {
     public static HashMap<String, BarColor> textureMap = new HashMap<>();
-    private NamespacedKey key;
+    private final NamespacedKey key;
 
     public TextureLocation(NamespacedKey key) {
         this.key = key;

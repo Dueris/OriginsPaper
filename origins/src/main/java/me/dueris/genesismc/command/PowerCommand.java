@@ -46,7 +46,7 @@ public class PowerCommand {
                             try {
                                 Power power = ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(ResourceLocationArgument.getId(context, "power").getNamespace() + ":" + ResourceLocationArgument.getId(context, "power").getPath()));
                                 if (power == null) {
-                                    ((CommandSourceStack) context.getSource()).sendFailure(Component.literal("Power not found."));
+                                    context.getSource().sendFailure(Component.literal("Power not found."));
                                     return 1;
                                 }
 

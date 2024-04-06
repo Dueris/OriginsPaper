@@ -10,7 +10,7 @@ public enum Comparison {
 
     String val;
 
-    private Comparison(String raw) {
+    Comparison(String raw) {
         this.val = raw;
     }
 

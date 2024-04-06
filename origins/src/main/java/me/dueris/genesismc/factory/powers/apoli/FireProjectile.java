@@ -125,7 +125,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                 float finalDivergence = divergence;
                                 boolean cont = !Boolean.valueOf(power.get("key").getOrDefault("continuous", "false").toString());
                                 new BukkitRunnable() {
-                                    float finalDivergence1 = finalDivergence;
+                                    final float finalDivergence1 = finalDivergence;
                                     int shotsLeft = -amt;
 
                                     @Override

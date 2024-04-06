@@ -36,10 +36,9 @@ public class PowerLootCondition implements LootItemCondition {
     }
 
     public boolean test(LootContext context) {
-        Entity entity = (Entity) context.getParam(LootContextParams.THIS_ENTITY);
+        Entity entity = context.getParam(LootContextParams.THIS_ENTITY);
         CraftEntity var4 = entity.getBukkitEntity();
-        if (var4 instanceof Player) {
-            Player player = (Player) var4;
+        if (var4 instanceof Player player) {
             NamespacedKey key = CraftNamespacedKey.fromMinecraft(this.powerId);
             Power power = (Power) GenesisMC.getPlugin().registry.retrieve(Registries.POWER).get(key);
             return OriginPlayerAccessor.hasPower(player, power.getTag());

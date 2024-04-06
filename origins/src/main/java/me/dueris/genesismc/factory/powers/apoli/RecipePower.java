@@ -151,7 +151,7 @@ public class RecipePower extends CraftPower implements Listener {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     JSONObject recipe = power.get("recipe");
                     String id = recipe.get("id").toString();
-                    if (taggedRegistry.keySet().contains(id)) {
+                    if (taggedRegistry.containsKey(id)) {
                         if (recipeMapping.containsKey(p)) {
                             recipeMapping.get(p).add(id);
                         } else {

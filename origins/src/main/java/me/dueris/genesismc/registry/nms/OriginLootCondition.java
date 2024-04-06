@@ -36,10 +36,9 @@ public class OriginLootCondition implements LootItemCondition {
     }
 
     public boolean test(LootContext context) {
-        Entity entity = (Entity) context.getParam(LootContextParams.THIS_ENTITY);
+        Entity entity = context.getParam(LootContextParams.THIS_ENTITY);
         CraftEntity var4 = entity.getBukkitEntity();
-        if (var4 instanceof Player) {
-            Player player = (Player) var4;
+        if (var4 instanceof Player player) {
             NamespacedKey key = CraftNamespacedKey.fromMinecraft(this.originId);
             Origin origin = (Origin) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(key);
             return OriginPlayerAccessor.hasOrigin(player, origin.getTag());

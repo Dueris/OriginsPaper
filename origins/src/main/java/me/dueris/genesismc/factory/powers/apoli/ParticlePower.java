@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class ParticlePower extends CraftPower {
 
     public static boolean containsParams(Power power) {
-        return power.getObject("particle") instanceof String ? false : power.getObject("particle") instanceof JSONObject ? power.get("particle").containsKey("params") : false;
+        return !(power.getObject("particle") instanceof String) && power.getObject("particle") instanceof JSONObject && power.get("particle").containsKey("params");
     }
 
     private static int calculateValue(float value) {
@@ -74,7 +74,7 @@ public class ParticlePower extends CraftPower {
                             if (particle == null)
                                 throw new IllegalStateException("Unable to create CraftBukkit particle instance");
                             boolean visible_while_invis = power.getBooleanOrDefault("visible_while_invisible", false);
-                            boolean pass = visible_while_invis ? true : !player.isInvisible();
+                            boolean pass = visible_while_invis || !player.isInvisible();
                             setActive(player, power.getTag(), pass);
 
                             float offset_x = 0.25f;

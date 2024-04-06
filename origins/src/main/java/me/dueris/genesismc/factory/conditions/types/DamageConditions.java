@@ -7,7 +7,6 @@ import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.damagesource.DamageSource;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.damage.CraftDamageType;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;

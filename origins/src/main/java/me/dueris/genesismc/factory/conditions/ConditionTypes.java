@@ -27,7 +27,7 @@ public enum ConditionTypes {
             classes.forEach(c -> {
                 try {
                     Class factoryInstance = Class.forName(c.getName() + "$ConditionFactory");
-                    for(String name : names) {
+                    for (String name : names) {
                         Object inst = factoryInstance.getConstructor(c, NamespacedKey.class, BiPredicate.class).newInstance(c.newInstance(), GenesisMC.apoliIdentifier(name), new BiPredicate() {
                             @Override
                             public boolean test(Object o, Object o2) {

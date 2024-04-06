@@ -8,10 +8,7 @@ import me.dueris.genesismc.util.ColorConstants;
 import me.dueris.genesismc.util.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -65,13 +62,13 @@ public class InventorySerializer implements Listener {
 //            return originData.getCompound("InventoryData").getString(tag);
 //        }
         PersistentDataContainer container = player.getPersistentDataContainer();
-        if(!container.has(GenesisMC.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING)) {
+        if (!container.has(GenesisMC.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING)) {
             return "";
         }
         return container.get(GenesisMC.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING);
     }
 
-    private static String format(String tag){
+    private static String format(String tag) {
         return tag.replace(" ", "_").replace(":", "_").replace("/", "_").replace("\\", "_");
     }
 
@@ -172,10 +169,7 @@ public class InventorySerializer implements Listener {
 
     private boolean matches(Player player, InventoryView inventory, Power power) {
         String title = power.getStringOrDefault("title", "container.inventory");
-        if (inventory.getTitle().equalsIgnoreCase(title)) {
-            return true;
-        }
-        return false;
+        return inventory.getTitle().equalsIgnoreCase(title);
     }
 
 }
