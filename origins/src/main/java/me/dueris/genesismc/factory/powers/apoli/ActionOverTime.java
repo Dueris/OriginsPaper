@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 public class ActionOverTime extends CraftPower {
 
-    private static HashMap<String /*tag*/, Boolean /*allowed*/> taggedAllowedMap = new HashMap<>();
+    private static final HashMap<String /*tag*/, Boolean /*allowed*/> taggedAllowedMap = new HashMap<>();
     private final int ticksE;
     private Long interval;
 
@@ -40,14 +40,14 @@ public class ActionOverTime extends CraftPower {
                         if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                             if (!taggedAllowedMap.get(power.getTag())) {
                                 taggedAllowedMap.put(power.getTag(), true);
-                                Actions.EntityActionType(p, power.getAction("rising_action"));
+                                Actions.executeEntity(p, power.getAction("rising_action"));
                             }
                             setActive(p, power.getTag(), true);
-                            Actions.EntityActionType(p, power.getEntityAction());
+                            Actions.executeEntity(p, power.getEntityAction());
                         } else {
                             if (taggedAllowedMap.get(power.getTag())) {
                                 taggedAllowedMap.put(power.getTag(), false);
-                                Actions.EntityActionType(p, power.getAction("falling_action"));
+                                Actions.executeEntity(p, power.getAction("falling_action"));
                             }
                             setActive(p, power.getTag(), false);
                         }

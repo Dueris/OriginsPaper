@@ -1,15 +1,21 @@
 package me.dueris.genesismc.factory.actions;
 
+import it.unimi.dsi.fastutil.Pair;
+import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.types.BiEntityActions;
 import me.dueris.genesismc.factory.actions.types.BlockActions;
 import me.dueris.genesismc.factory.actions.types.EntityActions;
 import me.dueris.genesismc.factory.actions.types.ItemActions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.registry.Registries;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -21,265 +27,291 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 
 public class Actions {
 
     public static HashMap<Entity, Boolean> resourceChangeTimeout = new HashMap<>();
 
-    public static void BiEntityActionType(Entity actor, Entity target, JSONObject action) {
-        if (!action.containsKey("type")) return;
-        String type = action.get("type").toString();
+    private static void chance(JSONObject action, Consumer<JSONObject> returnAction) {
+        double chance = Double.parseDouble(action.get("chance").toString());
+        double randomValue = new Random().nextDouble(1);
 
-        if (type.equals("apoli:invert")) {
-            BiEntityActionType(target, actor, (JSONObject) action.get("action"));
-        } else if (type.equals("apoli:and")) {
-            JSONArray andActions = (JSONArray) action.get("actions");
-            for (Object actionObj : andActions) {
-                JSONObject actionn = (JSONObject) actionObj;
-                BiEntityActionType(actor, target, actionn);
-            }
-        } else if (type.equals("apoli:chance")) {
-            double chance = Double.parseDouble(action.get("chance").toString());
-            double randomValue = new Random().nextDouble(1);
-
-            if (randomValue <= chance) {
-                JSONObject actionn = (JSONObject) action.get("action");
-                BiEntityActionType(actor, target, actionn);
-            }
-        } else if (type.equals("apoli:choice")) {
-            JSONArray actionsArray = (JSONArray) action.get("actions");
-            List<JSONObject> actionsList = new ArrayList<>();
-
-            for (Object actionObj : actionsArray) {
-                JSONObject actionn = (JSONObject) actionObj;
-                JSONObject element = (JSONObject) actionn.get("element");
-                int weight = Integer.parseInt(actionn.get("weight").toString());
-                for (int i = 0; i < weight; i++) {
-                    actionsList.add(element);
-                }
-            }
-
-            if (!actionsList.isEmpty()) {
-                int randomIndex = (int) new Random().nextInt(actionsList.size());
-                JSONObject chosenAction = actionsList.get(randomIndex);
-                BiEntityActionType(actor, target, chosenAction);
-            }
-        } else if (type.equals("apoli:delay")) {
-            int ticks = Integer.parseInt(action.get("ticks").toString());
-            JSONObject delayedAction = (JSONObject) action.get("action");
-
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                BiEntityActionType(actor, target, delayedAction);
-            }, ticks);
-        } else if (type.equals("apoli:nothing")) {
-            // Literally does nothing
-        } else if (type.equals("apoli:side")) {
-            if (action.get("side").toString().toLowerCase().equals("server")) {
-                JSONObject actionn = (JSONObject) action.get("action");
-                BiEntityActionType(actor, target, actionn);
-            }
-        } else if (type.equals("apoli:if_else")) {
-            boolean bool = ConditionExecutor.testBiEntity((JSONObject) action.get("condition"), (CraftEntity) actor, (CraftEntity) target);
-            if (bool) {
-                BiEntityActionType(actor, target, (JSONObject) action.get("if_action"));
-            } else {
-                BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
-            }
-        } else {
-            BiEntityActions.runbiEntity(actor, target, action);
+        if (randomValue <= chance) {
+            JSONObject actionn = (JSONObject) action.get("action");
+            returnAction.accept(actionn);
         }
     }
 
-    public static void ItemActionType(ItemStack item, JSONObject power) {
-        if (item == null) return;
-        if (power == null || power.isEmpty()) return;
-        String type = power.get("type").toString();
+    private static void delay(JSONObject action, Consumer<JSONObject> returnAction) {
+        int ticks = Integer.parseInt(action.get("ticks").toString());
+        JSONObject delayedAction = (JSONObject) action.get("action");
 
-        if (type.equals("apoli:and")) {
-            JSONArray andActions = (JSONArray) power.get("actions");
-            for (Object actionObj : andActions) {
-                JSONObject action = (JSONObject) actionObj;
-                ItemActionType(item, action);
-            }
-        } else if (type.equals("apoli:chance")) {
-            double chance = Double.parseDouble(power.get("chance").toString());
-            double randomValue = new Random().nextDouble(1);
+        Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+            returnAction.accept(delayedAction);
+        }, ticks);
+    }
 
-            if (randomValue <= chance) {
-                JSONObject action = (JSONObject) power.get("action");
-                ItemActionType(item, action);
-            } else if (power.containsKey("fail_action")) {
-                JSONObject failAction = (JSONObject) power.get("fail_action");
-                ItemActionType(item, failAction);
-            }
-        } else if (type.equals("apoli:choice")) {
-            JSONArray actionsArray = (JSONArray) power.get("actions");
-            List<JSONObject> actionsList = new ArrayList<>();
-
-            for (Object actionObj : actionsArray) {
-                JSONObject action = (JSONObject) actionObj;
-                JSONObject element = (JSONObject) action.get("element");
-                int weight = Integer.parseInt(action.get("weight").toString());
-                for (int i = 0; i < weight; i++) {
-                    actionsList.add(element);
-                }
-            }
-
-            if (!actionsList.isEmpty()) {
-                int randomIndex = (int) (Math.random() * actionsList.size());
-                JSONObject chosenAction = actionsList.get(randomIndex);
-                ItemActionType(item, chosenAction);
-            }
-        } else if (type.equals("apoli:delay")) {
-            int ticks = Integer.parseInt(power.get("ticks").toString());
-            JSONObject delayedAction = (JSONObject) power.get("action");
-
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                ItemActionType(item, delayedAction);
-            }, ticks);
-        } else if (type.equals("apoli:nothing")) {
-            // Literally does nothing
-        } else if (type.equals("apoli:if_else")) {
-            if (ConditionExecutor.testItem((JSONObject) power.get("item_condition"), item)) {
-                ItemActionType(item, (JSONObject) power.get("if_action"));
-            } else {
-                ItemActionType(item, (JSONObject) power.get("else_action"));
-            }
-        } else if (type.equals("apoli:side")) {
-            if (power.get("side").toString().toLowerCase().equals("server")) {
-                JSONObject action = (JSONObject) power.get("action");
-                ItemActionType(item, action);
-            }
-        } else {
-            ItemActions.runItem(item, power);
+    private static void and(JSONObject action, Consumer<JSONObject> returnAction) {
+        JSONArray andActions = (JSONArray) action.get("actions");
+        for (Object actionObj : andActions) {
+            JSONObject actionn = (JSONObject) actionObj;
+            returnAction.accept(actionn);
         }
     }
 
-    public static void EntityActionType(Entity entity, JSONObject action) {
-        if (action == null || action.isEmpty()) return;
-        String type = action.get("type").toString();
+    private static void choice(JSONObject action, Consumer<JSONObject> returnAction) {
+        JSONArray actionsArray = (JSONArray) action.get("actions");
+        List<JSONObject> actionsList = new ArrayList<>();
 
-        if (type.equals("apoli:and")) {
-            JSONArray andActions = (JSONArray) action.get("actions");
-            for (Object actionObj : andActions) {
-                JSONObject actionn = (JSONObject) actionObj;
-                EntityActionType(entity, actionn);
+        for (Object actionObj : actionsArray) {
+            JSONObject actionn = (JSONObject) actionObj;
+            JSONObject element = (JSONObject) actionn.get("element");
+            int weight = Integer.parseInt(actionn.get("weight").toString());
+            for (int i = 0; i < weight; i++) {
+                actionsList.add(element);
             }
-        } else if (type.equals("apoli:chance")) {
-            double chance = Double.parseDouble(action.get("chance").toString());
-            double randomValue = new Random().nextDouble(1);
+        }
 
-            if (randomValue <= chance) {
-                JSONObject actionn = (JSONObject) action.get("action");
-                EntityActionType(entity, actionn);
-            } else if (action.containsKey("fail_action")) {
-                JSONObject failAction = (JSONObject) action.get("fail_action");
-                EntityActionType(entity, failAction);
-            }
-        } else if (type.equals("apoli:choice")) {
-            JSONArray actionsArray = (JSONArray) action.get("actions");
-            List<JSONObject> actionsList = new ArrayList<>();
-
-            for (Object actionObj : actionsArray) {
-                JSONObject actionn = (JSONObject) actionObj;
-                JSONObject element = (JSONObject) actionn.get("element");
-                int weight = Integer.parseInt(actionn.get("weight").toString());
-                for (int i = 0; i < weight; i++) {
-                    actionsList.add(element);
-                }
-            }
-
-            if (!actionsList.isEmpty()) {
-                int randomIndex = (int) (Math.random() * actionsList.size());
-                JSONObject chosenAction = actionsList.get(randomIndex);
-                EntityActionType(entity, chosenAction);
-            }
-        } else if (type.equals("apoli:delay")) {
-            int ticks = Integer.parseInt(action.get("ticks").toString());
-            JSONObject delayedAction = (JSONObject) action.get("action");
-
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                EntityActionType(entity, delayedAction);
-            }, ticks);
-        } else if (type.equals("apoli:nothing")) {
-            //literally does nothin
-        } else if (type.equals("apoli:if_else")) {
-            boolean bool = ConditionExecutor.testEntity((JSONObject) action.get("condition"), (CraftEntity) entity);
-            if (bool) {
-                EntityActionType(entity, (JSONObject) action.get("if_action"));
-            } else {
-                EntityActionType(entity, (JSONObject) action.get("else_action"));
-            }
-        } else if (type.equals("apoli:side")) {
-            if (action.get("side").toString().toLowerCase().equals("server")) {
-                EntityActionType(entity, (JSONObject) action.get("action"));
-            }
-        } else {
-            EntityActions.runEntity(entity, action);
+        if (!actionsList.isEmpty()) {
+            int randomIndex = new Random().nextInt(actionsList.size());
+            JSONObject chosenAction = actionsList.get(randomIndex);
+            returnAction.accept(chosenAction);
         }
     }
 
-    public static void BlockActionType(Location location, JSONObject action) {
-        if (action == null || action.isEmpty() || !action.containsKey("type")) return;
+    private static void side(JSONObject action, Consumer<JSONObject> returnAction) {
+        if (action.get("side").toString().equalsIgnoreCase("server")) {
+            JSONObject actionn = (JSONObject) action.get("action");
+            returnAction.accept(actionn);
+        }
+    }
+
+    private static boolean testMetaAction(JSONObject condition, String[] extras) {
+        if (condition.containsKey("type")) {
+            return condition.get("type").toString().equals("apoli:and") ||
+                condition.get("type").toString().equals("apoli:choice") ||
+                condition.get("type").toString().equals("apoli:chance") ||
+                condition.get("type").toString().equals("apoli:delay") ||
+                condition.get("type").toString().equals("apoli:if_else_list") ||
+                condition.get("type").toString().equals("apoli:if_else") ||
+                condition.get("type").toString().equals("apoli:side") ||
+                condition.get("type").toString().equals("apoli:nothing") ||
+                List.of(extras).contains(condition.get("type").toString());
+        }
+        return false;
+    }
+
+    public static void executeBiEntity(Entity actor, Entity target, JSONObject action) {
+        if (!action.containsKey("type") || action == null || action.isEmpty()) return;
         String type = action.get("type").toString();
+        Pair entityPair = new Pair<CraftEntity, CraftEntity>() {
 
-        if (type.equals("apoli:and")) {
-            JSONArray andActions = (JSONArray) action.get("actions");
-            for (Object actionObj : andActions) {
-                JSONObject actionn = (JSONObject) actionObj;
-                BlockActionType(location, actionn);
+            @Override
+            public CraftEntity left() {
+                return (CraftEntity) actor;
             }
-        } else if (type.equals("apoli:chance")) {
-            double chance = Double.parseDouble(action.get("chance").toString());
-            double randomValue = new Random().nextDouble(1);
 
-            if (randomValue <= chance) {
-                JSONObject actionn = (JSONObject) action.get("action");
-                BlockActionType(location, actionn);
-            } else if (action.containsKey("fail_action")) {
-                JSONObject failAction = (JSONObject) action.get("fail_action");
-                BlockActionType(location, failAction);
+            @Override
+            public CraftEntity right() {
+                return (CraftEntity) target;
             }
-        } else if (type.equals("apoli:choice")) {
-            JSONArray actionsArray = (JSONArray) action.get("actions");
-            List<JSONObject> actionsList = new ArrayList<>();
+        };
+        if (testMetaAction(action, new String[]{"apoli:actor_action", "apoli:invert", "apoli:target_action"})) {
+            switch (type) {
+                case "apoli:invert" -> executeBiEntity(target, actor, (JSONObject) action.get("action"));
 
-            for (Object actionObj : actionsArray) {
-                JSONObject actionn = (JSONObject) actionObj;
-                JSONObject element = (JSONObject) actionn.get("element");
-                int weight = Integer.parseInt(actionn.get("weight").toString());
-                for (int i = 0; i < weight; i++) {
-                    actionsList.add(element);
+                case "apoli:actor_action" -> executeEntity(actor, (JSONObject) action.get("action"));
+
+                case "apoli:target_action" -> executeEntity(target, (JSONObject) action.get("action"));
+
+                case "apoli:and" -> and(action, actionn -> executeBiEntity(actor, target, actionn));
+
+                case "apoli:chance" -> chance(action, actionn -> executeBiEntity(actor, target, actionn));
+
+                case "apoli:choice" -> choice(action, actionn -> executeBiEntity(actor, target, actionn));
+
+                case "apoli:delay" -> delay(action, actionn -> executeBiEntity(actor, target, actionn));
+
+                case "apoli:nothing" -> {
+                } // Literally does nothing
+
+                case "apoli:side" -> side(action, actionn -> executeBiEntity(actor, target, actionn));
+
+                case "if_else" -> {
+                    boolean bool = ConditionExecutor.testBiEntity((JSONObject) action.get("condition"), (CraftEntity) actor, (CraftEntity) target);
+                    if (bool) {
+                        executeBiEntity(actor, target, (JSONObject) action.get("if_action"));
+                    } else {
+                        executeBiEntity(actor, target, (JSONObject) action.get("else_action"));
+                    }
+                }
+                case "if_else_list" -> {
+                    if (action.containsKey("actions") && action.get("actions") instanceof JSONArray) {
+                        for (Object o : (JSONArray) action.get("actions")) {
+                            JSONObject arrayObject = (JSONObject) o;
+                            if (arrayObject.containsKey("condition") && arrayObject.containsKey("action")) {
+                                if (ConditionExecutor.testBiEntity((JSONObject) arrayObject.get("condition"), (CraftEntity) actor, (CraftEntity) target)) {
+                                    executeBiEntity(actor, target, (JSONObject) arrayObject.get("action"));
+                                }
+                            }
+                        }
+                    }
                 }
             }
-
-            if (!actionsList.isEmpty()) {
-                int randomIndex = (int) (Math.random() * actionsList.size());
-                JSONObject chosenAction = actionsList.get(randomIndex);
-                BlockActionType(location, chosenAction);
+        } else {
+            Registrar<BiEntityActions.ActionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.BIENTITY_ACTION);
+            BiEntityActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.get("type").toString()));
+            if (finAction != null) {
+                finAction.test(action, entityPair);
             }
-        } else if (type.equals("apoli:delay")) {
-            int ticks = Integer.parseInt(action.get("ticks").toString());
-            JSONObject delayedAction = (JSONObject) action.get("action");
+        }
+    }
 
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                BlockActionType(location, delayedAction);
-            }, ticks);
-        } else if (type.equals("apoli:nothing")) {
-            // Literally does nothing
-        } else if (type.equals("apoli:if_else")) {
-            if (ConditionExecutor.testBlock((JSONObject) action.get("block_condition"), (CraftBlock) location.getBlock())) {
-                BlockActionType(location, (JSONObject) action.get("if_action"));
-            } else {
-                BlockActionType(location, (JSONObject) action.get("else_action"));
-            }
-        } else if (type.equals("apoli:side")) {
-            if (action.get("side").toString().toLowerCase().equals("server")) {
-                JSONObject actionn = (JSONObject) action.get("action");
-                BlockActionType(location, actionn);
+    public static void executeItem(ItemStack item, JSONObject action) {
+        if (!action.containsKey("type") || action == null || action.isEmpty()) return;
+        String type = action.get("type").toString();
+        if (testMetaAction(action, new String[]{})) {
+            switch (type) {
+                case "apoli:and" -> and(action, actionn -> executeItem(item, actionn));
+
+                case "apoli:chance" -> chance(action, actionn -> executeItem(item, actionn));
+
+                case "apoli:choice" -> choice(action, actionn -> executeItem(item, actionn));
+
+                case "apoli:delay" -> delay(action, actionn -> executeItem(item, actionn));
+
+                case "apoli:nothing" -> {
+                } // Literally does nothing
+
+                case "apoli:side" -> side(action, actionn -> executeItem(item, actionn));
+
+                case "if_else" -> {
+                    boolean bool = ConditionExecutor.testItem((JSONObject) action.get("condition"), item);
+                    if (bool) {
+                        executeItem(item, (JSONObject) action.get("if_action"));
+                    } else {
+                        executeItem(item, (JSONObject) action.get("else_action"));
+                    }
+                }
+                case "if_else_list" -> {
+                    if (action.containsKey("actions") && action.get("actions") instanceof JSONArray) {
+                        for (Object o : (JSONArray) action.get("actions")) {
+                            JSONObject arrayObject = (JSONObject) o;
+                            if (arrayObject.containsKey("condition") && arrayObject.containsKey("action")) {
+                                if (ConditionExecutor.testItem((JSONObject) arrayObject.get("condition"), item)) {
+                                    executeItem(item, (JSONObject) arrayObject.get("action"));
+                                }
+                            }
+                        }
+                    }
+                }
             }
         } else {
-            BlockActions.runBlock(location, action);
+            Registrar<ItemActions.ActionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.ITEM_ACTION);
+            ItemActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.get("type").toString()));
+            if (action != null) {
+                finAction.test(action, item);
+            }
+        }
+    }
+
+    public static void executeEntity(Entity entity, JSONObject action) {
+        if (!action.containsKey("type") || action == null || action.isEmpty()) return;
+        String type = action.get("type").toString();
+        if (testMetaAction(action, new String[]{})) {
+            switch (type) {
+                case "apoli:and" -> and(action, actionn -> executeEntity(entity, actionn));
+
+                case "apoli:chance" -> chance(action, actionn -> executeEntity(entity, actionn));
+
+                case "apoli:choice" -> choice(action, actionn -> executeEntity(entity, actionn));
+
+                case "apoli:delay" -> delay(action, actionn -> executeEntity(entity, actionn));
+
+                case "apoli:nothing" -> {
+                } // Literally does nothing
+
+                case "apoli:side" -> side(action, actionn -> executeEntity(entity, actionn));
+
+                case "if_else" -> {
+                    boolean bool = ConditionExecutor.testEntity((JSONObject) action.get("condition"), (CraftEntity) entity);
+                    if (bool) {
+                        executeEntity(entity, (JSONObject) action.get("if_action"));
+                    } else {
+                        executeEntity(entity, (JSONObject) action.get("else_action"));
+                    }
+                }
+                case "if_else_list" -> {
+                    if (action.containsKey("actions") && action.get("actions") instanceof JSONArray) {
+                        for (Object o : (JSONArray) action.get("actions")) {
+                            JSONObject arrayObject = (JSONObject) o;
+                            if (arrayObject.containsKey("condition") && arrayObject.containsKey("action")) {
+                                if (ConditionExecutor.testEntity((JSONObject) arrayObject.get("condition"), (CraftEntity) entity)) {
+                                    executeEntity(entity, (JSONObject) arrayObject.get("action"));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            Registrar<EntityActions.ActionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.ENTITY_ACTION);
+            EntityActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.get("type").toString()));
+            if (finAction != null) {
+                finAction.test(action, entity);
+            }
+        }
+    }
+
+    public static void executeBlock(Location location, JSONObject action) {
+        if (!action.containsKey("type") || action == null || action.isEmpty()) return;
+        String type = action.get("type").toString();
+        if (testMetaAction(action, new String[]{"apoli:offset"})) {
+            switch (type) {
+                case "apoli:offset" ->
+                    executeBlock(location.add(Double.valueOf(action.getOrDefault("x", "0").toString()), Double.valueOf(action.getOrDefault("y", "0").toString()), Double.valueOf(action.getOrDefault("z", "0").toString())), (JSONObject) action.get("action"));
+
+                case "apoli:and" -> and(action, actionn -> executeBlock(location, actionn));
+
+                case "apoli:chance" -> chance(action, actionn -> executeBlock(location, actionn));
+
+                case "apoli:choice" -> choice(action, actionn -> executeBlock(location, actionn));
+
+                case "apoli:delay" -> delay(action, actionn -> executeBlock(location, actionn));
+
+                case "apoli:nothing" -> {
+                } // Literally does nothing
+
+                case "apoli:side" -> side(action, actionn -> executeBlock(location, actionn));
+
+                case "if_else" -> {
+                    boolean bool = ConditionExecutor.testBlock((JSONObject) action.get("condition"), CraftBlock.at(((CraftWorld) location.getWorld()).getHandle(), CraftLocation.toBlockPosition(location)));
+                    if (bool) {
+                        executeBlock(location, (JSONObject) action.get("if_action"));
+                    } else {
+                        executeBlock(location, (JSONObject) action.get("else_action"));
+                    }
+                }
+                case "if_else_list" -> {
+                    if (action.containsKey("actions") && action.get("actions") instanceof JSONArray) {
+                        for (Object o : (JSONArray) action.get("actions")) {
+                            JSONObject arrayObject = (JSONObject) o;
+                            if (arrayObject.containsKey("condition") && arrayObject.containsKey("action")) {
+                                if (ConditionExecutor.testBlock((JSONObject) arrayObject.get("condition"), CraftBlock.at(((CraftWorld) location.getWorld()).getHandle(), CraftLocation.toBlockPosition(location)))) {
+                                    executeBlock(location, (JSONObject) arrayObject.get("action"));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            Registrar<BlockActions.ActionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.BLOCK_ACTION);
+            BlockActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.get("type").toString()));
+            if (finAction != null) {
+                finAction.test(action, location);
+            }
         }
     }
 
@@ -316,5 +348,12 @@ public class Actions {
                 effectCloud.addCustomEffect(effect, true);
             }
         }
+    }
+
+    public static void registerAll() {
+        new BiEntityActions().register();
+        new BlockActions().register();
+        new EntityActions().register();
+        new ItemActions().register();
     }
 }

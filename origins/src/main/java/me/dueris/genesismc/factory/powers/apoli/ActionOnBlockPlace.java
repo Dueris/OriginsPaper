@@ -31,14 +31,14 @@ public class ActionOnBlockPlace extends CraftPower implements Listener {
         if (action_on_block_place.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (!(ConditionExecutor.testEntity((JSONObject) power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem((JSONObject) power.get("item_condition"), e.getItemInHand()) && ConditionExecutor.testBlock((JSONObject) power.get("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock((JSONObject) power.get("place_on_condition"), (CraftBlock) e.getBlockAgainst())))
+                    if (!(ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem(power.get("item_condition"), e.getItemInHand()) && ConditionExecutor.testBlock(power.get("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock(power.get("place_on_condition"), (CraftBlock) e.getBlockAgainst())))
                         return;
                     e.setCancelled(true);
                     setActive(e.getPlayer(), power.getTag(), true);
-                    Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
-                    Actions.ItemActionType(e.getItemInHand(), power.getAction("held_item_action"));
-                    Actions.BlockActionType(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
-                    Actions.BlockActionType(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
+                    Actions.executeEntity(e.getPlayer(), power.getEntityAction());
+                    Actions.executeItem(e.getItemInHand(), power.getAction("held_item_action"));
+                    Actions.executeBlock(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
+                    Actions.executeBlock(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
                     if (power.get("result_stack") != null) {
                         JSONObject jsonObject = power.get("result_stack");
                         int amt;
@@ -49,7 +49,7 @@ public class ActionOnBlockPlace extends CraftPower implements Listener {
                         }
                         ItemStack itemStack = new ItemStack(Material.valueOf(jsonObject.get("item").toString().toUpperCase().split(":")[jsonObject.get("item").toString().split(":").length]), amt);
                         e.getPlayer().getInventory().addItem(itemStack);
-                        Actions.ItemActionType(itemStack, power.getAction("result_item_action"));
+                        Actions.executeItem(itemStack, power.getAction("result_item_action"));
                     }
                 }
             }

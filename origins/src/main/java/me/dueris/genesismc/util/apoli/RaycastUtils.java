@@ -41,7 +41,7 @@ public class RaycastUtils {
         Location location = CraftLocation.toBukkit(target);
         location.setWorld(entity.getBukkitEntity().getWorld());
 
-        Actions.EntityActionType(entity.getBukkitEntity(), (JSONObject) data.getOrDefault("before_action", null));
+        Actions.executeEntity(entity.getBukkitEntity(), (JSONObject) data.getOrDefault("before_action", null));
 
         float step = Math.round((Double) data.getOrDefault("command_step", 1d));
         if (data.containsKey("command_along_ray")) {
@@ -57,16 +57,16 @@ public class RaycastUtils {
                 boolean hit = false;
                 if (!curLoc.getNearbyEntities(0.3, 0.3, 0.3).isEmpty()) { // entity hit
                     hit = true;
-                    Actions.BiEntityActionType(entity.getBukkitEntity(), (org.bukkit.entity.Entity) curLoc.getNearbyEntities(0.3, 0.3, 0.3).toArray()[0], (JSONObject) data.getOrDefault("bientity_action", new JSONObject()));
+                    Actions.executeBiEntity(entity.getBukkitEntity(), (org.bukkit.entity.Entity) curLoc.getNearbyEntities(0.3, 0.3, 0.3).toArray()[0], (JSONObject) data.getOrDefault("bientity_action", new JSONObject()));
                 }
                 if (curLoc.getBlock().isCollidable()) {
                     hit = true;
-                    Actions.BlockActionType(curLoc, (JSONObject) data.getOrDefault("hit_action", new JSONObject()));
+                    Actions.executeBlock(curLoc, (JSONObject) data.getOrDefault("hit_action", new JSONObject()));
                 }
 
                 if (curLoc.getBlock().isCollidable()) {
                     if (hit) {
-                        Actions.EntityActionType(entity.getBukkitEntity(), (JSONObject) data.getOrDefault("hit_action", new JSONObject()));
+                        Actions.executeEntity(entity.getBukkitEntity(), (JSONObject) data.getOrDefault("hit_action", new JSONObject()));
                     }
                     if (data.containsKey("command_at_hit")) {
                         executeCommandAtHit(entity, CraftLocation.toVec3D(curLoc), data.getOrDefault("command_at_hit", null).toString());
@@ -80,7 +80,8 @@ public class RaycastUtils {
     private static long getEntityReach(JSONObject data, Entity entity) {
         if (!data.containsKey("entity_distance") && !data.containsKey("distance")) {
             long base = (entity instanceof Player player && player.getAbilities().instabuild) ? 6 : 3;
-            return (entity instanceof LivingEntity living && false) ?
+            LivingEntity living = (LivingEntity) entity;
+            return (false) ?
                 null : base;
         }
         return data.containsKey("entity_distance") ? (long) data.get("entity_distance") : (long) data.get("distance");
@@ -90,7 +91,8 @@ public class RaycastUtils {
     private static long getBlockReach(JSONObject data, Entity entity) {
         if (!data.containsKey("block_distance") && !data.containsKey("distance")) {
             long base = (entity instanceof Player player && player.getAbilities().instabuild) ? 5 : 4;
-            return (entity instanceof LivingEntity living && false) ?
+            LivingEntity living = (LivingEntity) entity;
+            return (false) ?
                 null : base;
         }
         return data.containsKey("block_distance") ? (long) data.get("block_distance") : (long) data.get("distance");
@@ -105,10 +107,10 @@ public class RaycastUtils {
             for (double current = 0; current < length; current += step) {
                 boolean validOutput = !(entity instanceof ServerPlayer) || ((ServerPlayer) entity).connection != null;
                 CommandSourceStack source = new CommandSourceStack(
-                    false && validOutput ? entity : CommandSource.NULL,
+                    false ? entity : CommandSource.NULL,
                     origin.add(direction.scale(current)),
                     entity.getRotationVector(),
-                    true ? (ServerLevel) entity.level() : null,
+                    (ServerLevel) entity.level(),
                     4,
                     entity.getName().getString(),
                     entity.getDisplayName(),
@@ -125,7 +127,7 @@ public class RaycastUtils {
         if (server != null) {
             boolean validOutput = !(entity instanceof ServerPlayer) || ((ServerPlayer) entity).connection != null;
             CommandSourceStack source = new CommandSourceStack(
-                false && validOutput ? entity : CommandSource.NULL,
+                false ? entity : CommandSource.NULL,
                 hitPosition,
                 entity.getRotationVector(),
                 entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
@@ -212,7 +214,7 @@ public class RaycastUtils {
                     break;
                 }
             }
-            if (hasHit) return true;
+            return hasHit;
         }
         return false;
     }

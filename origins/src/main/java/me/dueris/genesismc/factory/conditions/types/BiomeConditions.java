@@ -8,7 +8,6 @@ import me.dueris.genesismc.util.world.BiomeMappings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome.Precipitation;
-
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
@@ -30,19 +29,17 @@ public class BiomeConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, biome) -> {
             NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
             TagKey key = TagKey.create(net.minecraft.core.registries.Registries.BIOME, CraftNamespacedKey.toMinecraft(tag));
-            return ((CraftWorld)Bukkit.getWorlds().get(0)).getHandle().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BIOME).wrapAsHolder(biome.getA()).is(key);
+            return ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BIOME).wrapAsHolder(biome.getA()).is(key);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("precipitation"), (condition, biome) -> {
-            return biome.getA().hasPrecipitation() ?
-            /*
-                biome.getA().getTemperature(biome.getB()) <= 0.15f ?
-                    condition.get("precipitation").toString().equals("snow")
-                    : condition.get("precipitation").toString().equals("rain")
-                : condition.get("precipitation").toString().equals("none");
-                    */
-                biome.getA().getPrecipitationAt(new BlockPos(0, 64, 0)).equals(getPrecipitation(condition)) :
-                    condition.get("precipitation").toString().toLowerCase().equals("none");
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("precipitation"), (condition, biome) -> biome.getA().hasPrecipitation() ?
+        /*
+            biome.getA().getTemperature(biome.getB()) <= 0.15f ?
+                condition.get("precipitation").toString().equals("snow")
+                : condition.get("precipitation").toString().equals("rain")
+            : condition.get("precipitation").toString().equals("none");
+                */
+            biome.getA().getPrecipitationAt(new BlockPos(0, 64, 0)).equals(getPrecipitation(condition)) :
+            condition.get("precipitation").toString().equalsIgnoreCase("none")));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("category"), (condition, biome) -> {
             Biome b = CraftBiome.minecraftToBukkit(biome.getA());
             for (String biS : BiomeMappings.getBiomeIDs(condition.get("category").toString())) {
@@ -57,14 +54,12 @@ public class BiomeConditions {
             float compare_to = Float.parseFloat(condition.get("compare_to").toString());
             return Comparison.getFromString(comparison).compare(biome.getA().getBaseTemperature(), compare_to);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("high_humidity"), (condition, biome) -> {
-            return Comparison.getFromString(">=").compare(biome.getA().climateSettings.downfall(), 0.85f);
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("high_humidity"), (condition, biome) -> Comparison.getFromString(">=").compare(biome.getA().climateSettings.downfall(), 0.85f)));
     }
 
     private net.minecraft.world.level.biome.Biome.Precipitation getPrecipitation(JSONObject condition) {
         String lowerCase = condition.get("precipitation").toString().toLowerCase();
-        switch(lowerCase) {
+        switch (lowerCase) {
             case "none" -> {
                 return Precipitation.NONE;
             }

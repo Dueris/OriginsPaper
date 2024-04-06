@@ -25,7 +25,7 @@ public class ActionOnItemPickup extends CraftPower implements Listener {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (!ConditionExecutor.testItem(power.get("item_condition"), e.getItem().getItemStack())) continue;
                     ItemStack clone = e.getItem().getItemStack().clone();
-                    Actions.ItemActionType(clone, power.get("item_action"));
+                    Actions.executeItem(clone, power.get("item_action"));
                     // Needs to update the ItemEntity
                     e.getItem().setItemStack(clone);
                 }

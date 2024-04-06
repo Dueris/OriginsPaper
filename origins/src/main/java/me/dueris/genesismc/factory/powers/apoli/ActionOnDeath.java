@@ -35,9 +35,9 @@ public class ActionOnDeath extends CraftPower implements Listener {
                         if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && !ConditionExecutor.testDamage(power.get("damage_condition"), e.getEntity().getLastDamageCause()))
                             return;
                         setActive(p, power.getTag(), true);
-                        Actions.EntityActionType(p, power.getEntityAction());
+                        Actions.executeEntity(p, power.getEntityAction());
                         if (((CraftPlayer) p).getHandle().getLastHurtByMob() != null) {
-                            Actions.BiEntityActionType(((CraftPlayer) p).getHandle().getLastHurtByMob().getBukkitEntity(), p/* player is target? */, power.getBiEntityAction());
+                            Actions.executeBiEntity(((CraftPlayer) p).getHandle().getLastHurtByMob().getBukkitEntity(), p/* player is target? */, power.getBiEntityAction());
                         }
                         new BukkitRunnable() {
                             @Override

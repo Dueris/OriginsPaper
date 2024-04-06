@@ -32,11 +32,11 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                if (!(ConditionExecutor.testEntity((JSONObject) power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target) && ConditionExecutor.testItem(power.get("item_condition"), actor.getInventory().getItem(e.getHand()))))
+                if (!(ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target) && ConditionExecutor.testItem(power.get("item_condition"), actor.getInventory().getItem(e.getHand()))))
                     return;
 
                 setActive(player, power.getTag(), true);
-                Actions.ItemActionType(actor.getInventory().getItem(e.getHand()), power.getAction("held_item_action"));
+                Actions.executeItem(actor.getInventory().getItem(e.getHand()), power.getAction("held_item_action"));
                 if (power.get("result_stack") != null) {
                     JSONObject jsonObject = power.get("result_stack");
                     int amt;
@@ -47,9 +47,9 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
                     }
                     ItemStack itemStack = new ItemStack(Material.valueOf(jsonObject.get("item").toString().toUpperCase().split(":")[jsonObject.get("item").toString().split(":").length]), amt);
                     actor.getInventory().addItem(itemStack);
-                    Actions.ItemActionType(itemStack, power.getAction("result_item_action"));
+                    Actions.executeItem(itemStack, power.getAction("result_item_action"));
                 }
-                Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
+                Actions.executeBiEntity(actor, target, power.getBiEntityAction());
                 new BukkitRunnable() {
                     @Override
                     public void run() {

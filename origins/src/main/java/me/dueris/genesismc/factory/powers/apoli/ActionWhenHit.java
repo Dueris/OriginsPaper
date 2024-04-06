@@ -39,7 +39,7 @@ public class ActionWhenHit extends CraftPower implements Listener {
                 if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor) || !ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
                     return;
                 setActive(player, power.getTag(), true);
-                Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
+                Actions.executeBiEntity(actor, target, power.getBiEntityAction());
                 new BukkitRunnable() {
                     @Override
                     public void run() {

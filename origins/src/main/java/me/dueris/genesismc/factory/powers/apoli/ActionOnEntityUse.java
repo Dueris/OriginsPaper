@@ -44,9 +44,9 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
                     return;
                 cooldownTick.add(actor);
                 setActive(e.getPlayer(), power.getTag(), true);
-                Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
-                Actions.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
-                Actions.ItemActionType(actor.getActiveItem(), power.getAction("result_item_action"));
+                Actions.executeBiEntity(actor, target, power.getBiEntityAction());
+                Actions.executeItem(actor.getActiveItem(), power.getAction("held_item_action"));
+                Actions.executeItem(actor.getActiveItem(), power.getAction("result_item_action"));
                 new BukkitRunnable() {
                     @Override
                     public void run() {

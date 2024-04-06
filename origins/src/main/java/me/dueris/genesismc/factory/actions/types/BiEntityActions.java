@@ -1,40 +1,47 @@
 package me.dueris.genesismc.factory.actions.types;
 
+import it.unimi.dsi.fastutil.Pair;
+import me.dueris.calio.registry.Registerable;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
+import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
+import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
-import org.bukkit.entity.*;
+import org.bukkit.entity.AnimalTamer;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Tameable;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONObject;
 
-import static me.dueris.genesismc.factory.actions.Actions.EntityActionType;
+import java.util.function.BiConsumer;
 
 public class BiEntityActions {
 
-    public static void runbiEntity(Entity actor, Entity target, JSONObject action) {
-        if (action == null || action.isEmpty()) return;
-        String type = action.get("type").toString();
-        if (type.equals("apoli:add_velocity")) {
-            boolean set = action.containsKey("set") ? (boolean) action.get("set") : false;
+    public void register() {
+        register(new ActionFactory(GenesisMC.apoliIdentifier("add_velocity"), (action, entityPair) -> {
+            boolean set = action.containsKey("set") && (boolean) action.get("set");
             Vector vector = VectorGetter.getVector(action);
 
-            if (set) target.setVelocity(vector);
-            else target.setVelocity(target.getVelocity().add(vector));
-        }
-        if (type.equals("apoli:remove_from_set")) {
-            RemoveFromSetEvent ev = new RemoveFromSetEvent(target, action.get("set").toString());
+            if (set) entityPair.right().setVelocity(vector);
+            else entityPair.right().setVelocity(entityPair.right().getVelocity().add(vector));
+        }));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("remove_from_set"), (action, entityPair) -> {
+            RemoveFromSetEvent ev = new RemoveFromSetEvent(entityPair.right(), action.get("set").toString());
             ev.callEvent();
-        }
-        if (type.equals("apoli:add_to_set")) {
-            AddToSetEvent ev = new AddToSetEvent(target, action.get("set").toString());
+        }));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("add_to_set"), (action, entityPair) -> {
+            AddToSetEvent ev = new AddToSetEvent(entityPair.right(), action.get("set").toString());
             ev.callEvent();
-        }
-        if (type.equals("apoli:damage")) {
-            if (target.isDead() || !(target instanceof LivingEntity)) return;
+        }));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("damage"), (action, entityPair) -> {
+            if (entityPair.right().isDead() || !(entityPair.right() instanceof LivingEntity)) return;
             float amount = 0.0f;
 
             if (action.containsKey("amount"))
@@ -55,27 +62,48 @@ public class BiEntityActions {
                 key = "generic";
             }
             DamageType dmgType = Utils.DAMAGE_REGISTRY.get(new ResourceLocation(namespace, key));
-            net.minecraft.world.entity.LivingEntity serverEn = ((CraftLivingEntity) target).getHandle();
+            net.minecraft.world.entity.LivingEntity serverEn = ((CraftLivingEntity) entityPair.right()).getHandle();
             serverEn.hurt(Utils.getDamageSource(dmgType), amount);
-        }
-        if (type.equals("apoli:mount")) {
-            target.addPassenger(actor);
-        }
-        if (type.equals("apoli:set_in_love")) {
-            if (target instanceof Animals targetAnimal) {
+        }));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("set_in_love"), (action, entityPair) -> {
+            if (entityPair.right() instanceof Animals targetAnimal) {
                 targetAnimal.setLoveModeTicks(600);
             }
-        }
-        if (type.equals("apoli:tame")) {
-            if (target instanceof Tameable targetTameable && actor instanceof AnimalTamer actorTamer) {
+        }));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("mount"), (action, entityPair) -> entityPair.right().addPassenger(entityPair.left())));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("tame"), (action, entityPair) -> {
+            if (entityPair.right() instanceof Tameable targetTameable && entityPair.left() instanceof AnimalTamer actorTamer) {
                 targetTameable.setOwner(actorTamer);
             }
+        }));
+    }
+
+    private void register(BiEntityActions.ActionFactory factory) {
+        GenesisMC.getPlugin().registry.retrieve(Registries.BIENTITY_ACTION).register(factory);
+    }
+
+    public static class ActionFactory implements Registerable {
+        NamespacedKey key;
+        BiConsumer<JSONObject, Pair<CraftEntity, CraftEntity>> test;
+
+        public ActionFactory(NamespacedKey key, BiConsumer<JSONObject, Pair<CraftEntity, CraftEntity>> test) {
+            this.key = key;
+            this.test = test;
         }
-        if (type.equals("apoli:actor_action")) {
-            EntityActionType(actor, (JSONObject) action.get("action"));
+
+        public void test(JSONObject action, Pair<CraftEntity, CraftEntity> tester) {
+            if (action == null || action.isEmpty()) return; // Dont execute empty actions
+            try {
+                test.accept(action, tester);
+            } catch (Exception e) {
+                GenesisMC.getPlugin().getLogger().severe("An Error occurred while running an action: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
-        if (type.equals("apoli:target_action")) {
-            EntityActionType(target, (JSONObject) action.get("action"));
+
+        @Override
+        public NamespacedKey getKey() {
+            return key;
         }
     }
 }

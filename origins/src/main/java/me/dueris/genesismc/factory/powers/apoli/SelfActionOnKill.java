@@ -37,7 +37,7 @@ public class SelfActionOnKill extends CraftPower implements Listener {
                 if (CooldownUtils.isPlayerInCooldownFromTag(player, Utils.getNameOrTag(power))) continue;
                 if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
                     setActive(player, power.getTag(), true);
-                    Actions.EntityActionType(target, power.getEntityAction());
+                    Actions.executeEntity(target, power.getEntityAction());
                     if (power.getObjectOrDefault("cooldown", 1) != null) {
                         CooldownUtils.addCooldown((Player) target, Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), power.get("hud_render"));
                     }

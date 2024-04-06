@@ -36,7 +36,7 @@ public class ActionOnLand extends CraftPower implements Listener {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) return;
                 setActive(player, power.getTag(), true);
-                Actions.EntityActionType(player, power.getEntityAction());
+                Actions.executeEntity(player, power.getEntityAction());
                 new BukkitRunnable() {
                     @Override
                     public void run() {

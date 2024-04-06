@@ -45,9 +45,7 @@ public class BiEntityConditions implements Listener {
 
             return a.get() || t.get();
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("invert"), (condition, pair) -> {
-            return ConditionExecutor.testBiEntity((JSONObject) condition.get("condition"), pair.second(), pair.first());
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("invert"), (condition, pair) -> ConditionExecutor.testBiEntity((JSONObject) condition.get("condition"), pair.second(), pair.first())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("undirected"), (condition, pair) -> {
             AtomicBoolean a = new AtomicBoolean(true); // Not swapped
             AtomicBoolean b = new AtomicBoolean(true); // Swapped
@@ -57,12 +55,8 @@ public class BiEntityConditions implements Listener {
 
             return a.get() || b.get();
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("actor_condition"), (condition, pair) -> {
-            return ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.first());
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("target_condition"), (condition, pair) -> {
-            return ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.second());
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("actor_condition"), (condition, pair) -> ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.first())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("target_condition"), (condition, pair) -> ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.second())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("relative_rotation"), (condition, pair) -> {
             net.minecraft.world.entity.Entity nmsActor = pair.first().getHandle();
             net.minecraft.world.entity.Entity nmsTarget = pair.second().getHandle();
@@ -113,9 +107,7 @@ public class BiEntityConditions implements Listener {
             double compare_to = Double.parseDouble(condition.get("compare_to").toString());
             return Comparison.getFromString(comparison).compare(pair.first().getHandle().position().distanceToSqr(pair.second().getHandle().position()), compare_to);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_set"), (condition, pair) -> {
-            return EntitySetPower.isInEntitySet(pair.second(), condition.get("set").toString());
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_set"), (condition, pair) -> EntitySetPower.isInEntitySet(pair.second(), condition.get("set").toString())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("can_see"), (condition, pair) -> {
             if (pair.first() instanceof Player pl) {
                 return pl.canSee(pair.second());

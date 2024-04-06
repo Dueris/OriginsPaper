@@ -18,6 +18,11 @@ import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
 import me.dueris.genesismc.content.enchantment.generation.StructureGeneration;
 import me.dueris.genesismc.content.enchantment.generation.VillagerTradeHook;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.actions.Actions;
+import me.dueris.genesismc.factory.actions.types.BiEntityActions;
+import me.dueris.genesismc.factory.actions.types.BlockActions;
+import me.dueris.genesismc.factory.actions.types.EntityActions;
+import me.dueris.genesismc.factory.actions.types.ItemActions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.types.*;
 import me.dueris.genesismc.factory.powers.ApoliPower;
@@ -276,6 +281,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         this.registry.create(Registries.BLOCK_CONDITION, new Registrar<BlockConditions.ConditionFactory>());
         this.registry.create(Registries.ITEM_CONDITION, new Registrar<ItemConditions.ConditionFactory>());
         this.registry.create(Registries.DAMAGE_CONDITION, new Registrar<DamageConditions.ConditionFactory>());
+        this.registry.create(Registries.ENTITY_ACTION, new Registrar<EntityActions.ActionFactory>());
+        this.registry.create(Registries.ITEM_ACTION, new Registrar<ItemActions.ActionFactory>());
+        this.registry.create(Registries.BLOCK_ACTION, new Registrar<BlockActions.ActionFactory>());
+        this.registry.create(Registries.BIENTITY_ACTION, new Registrar<BiEntityActions.ActionFactory>());
         this.registry.create(Registries.TEXTURE_LOCATION, new Registrar<TextureLocation>());
         this.registry.create(Registries.PACK_SOURCE, new Registrar<DatapackRepository>());
 
@@ -295,7 +304,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 if (name.equals("datapack/")) continue;
 
                 name = name.substring(9);
-                File file = new File(this.getTmpFolder().getAbsolutePath().replace(".\\", "") + File.separator + name);
+                File file = new File(getTmpFolder().getAbsolutePath().replace(".\\", "") + File.separator + name);
                 if (!file.getName().contains(".")) {
                     Files.createDirectory(Path.of(file.getAbsolutePath()));
                     continue;
@@ -313,8 +322,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             // Say nothing, no need to print.
         }
 
-        this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(GenesisMC.originIdentifier("builtin"), this.getTmpFolder().toPath()));
-        this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(GenesisMC.originIdentifier("default"), this.server.getWorldPath(LevelResource.DATAPACK_DIR)));
+        this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(GenesisMC.originIdentifier("builtin"), getTmpFolder().toPath()));
+        this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(GenesisMC.originIdentifier("default"), server.getWorldPath(LevelResource.DATAPACK_DIR)));
     }
 
     @Override
@@ -333,6 +342,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             }
 
             ConditionExecutor.registerAll();
+            Actions.registerAll();
             if (Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")) {
                 CraftPower.registerNewPower(ModelColor.ModelTransformer.class);
             }
@@ -358,7 +368,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 Registries.LAYER,
                 new Layer(true), 2
             );
-            calio.start(debugOrigins, this.loaderThreadPool);
+            calio.start(debugOrigins, loaderThreadPool);
             // End calio parsing
         } catch (InstantiationException | IllegalAccessException |
                  IOException ee) {

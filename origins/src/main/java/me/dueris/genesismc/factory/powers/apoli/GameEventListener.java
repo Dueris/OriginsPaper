@@ -36,7 +36,7 @@ public class GameEventListener extends CraftPower implements Listener {
                             event = event.toString().split(":")[1];
                         }
                         if (e.getEvent().toString().equals(event.toString())) {
-                            Actions.EntityActionType(e.getEntity(), power.getAction("entity_action"));
+                            Actions.executeEntity(e.getEntity(), power.getAction("entity_action"));
                         }
                     }
                 }

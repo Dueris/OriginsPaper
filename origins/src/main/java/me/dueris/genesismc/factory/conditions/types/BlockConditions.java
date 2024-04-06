@@ -53,7 +53,7 @@ public class BlockConditions {
             for (Direction direction : Direction.values()) {
                 boolean p = true;
                 if (condition.containsKey("adjacent_condition")) {
-                    p = ConditionExecutor.testBlock((JSONObject) condition.get("adjacent_condition"), (CraftBlock) block.getWorld().getBlockAt(CraftLocation.toBukkit(((CraftBlock) block).getPosition().offset(direction.getNormal()))));
+                    p = ConditionExecutor.testBlock((JSONObject) condition.get("adjacent_condition"), (CraftBlock) block.getWorld().getBlockAt(CraftLocation.toBukkit(block.getPosition().offset(direction.getNormal()))));
                 }
                 if (p) {
                     adj++;
@@ -89,12 +89,8 @@ public class BlockConditions {
             float bR = block.getType().getBlastResistance();
             return Comparison.getFromString(comparison).compare(bR, compare_to);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("block_entity"), (condition, block) -> {
-            return block.getState() instanceof TileState;
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("block"), (condition, block) -> {
-            return block.getType().equals(Material.valueOf(condition.get("block").toString().split(":")[1].toUpperCase()));
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("block_entity"), (condition, block) -> block.getState() instanceof TileState));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("block"), (condition, block) -> block.getType().equals(Material.valueOf(condition.get("block").toString().split(":")[1].toUpperCase()))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block_state"), (condition, block) -> {
             BlockState state = block.getNMS();
             Collection<Property<?>> properties = state.getProperties();
@@ -119,12 +115,8 @@ public class BlockConditions {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("exposed_to_sky"), (condition, block) -> {
-            return block.getLightFromSky() > 0;
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid"), (condition, block) -> {
-            return ConditionExecutor.testFluid((JSONObject) condition.get("fluid_condition"), block.getHandle().getFluidState(new BlockPos(block.getX(), block.getY(), block.getZ())).getType());
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("exposed_to_sky"), (condition, block) -> block.getLightFromSky() > 0));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid"), (condition, block) -> ConditionExecutor.testFluid((JSONObject) condition.get("fluid_condition"), block.getHandle().getFluidState(new BlockPos(block.getX(), block.getY(), block.getZ())).getType())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("hardness"), (condition, block) -> {
             String comparison = condition.get("comparison").toString();
             float compare_to = Float.parseFloat(condition.get("compare_to").toString());
@@ -137,12 +129,10 @@ public class BlockConditions {
             float bR = block.getLocation().getBlockY();
             return Comparison.getFromString(comparison).compare(bR, compare_to);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("light_blocking"), (condition, block) -> {
-            return !block.getType().isOccluding();
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("light_blocking"), (condition, block) -> !block.getType().isOccluding()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("light_level"), (condition, block) -> {
             String lightType = condition.get("light_type").toString();
-            CraftBlock bl = (CraftBlock) block;
+            CraftBlock bl = block;
             int level = 0;
             switch (lightType) {
                 case "sky" -> {
@@ -166,15 +156,9 @@ public class BlockConditions {
             float compare_to = Float.parseFloat(condition.get("compare_to").toString());
             return Comparison.getFromString(comparison).compare(block.getBlockData().getMaterial().getSlipperiness(), compare_to);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("movement_blocking"), (condition, block) -> {
-            return block.getType().isCollidable();
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("replacable"), (condition, block) -> {
-            return block.getType().isAir() || block.isReplaceable();
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("water_loggable"), (condition, block) -> {
-            return ((CraftBlock) block).getHandle().getBlockState(((CraftBlock) block).getPosition()).getBlock() instanceof LiquidBlockContainer;
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("movement_blocking"), (condition, block) -> block.getType().isCollidable()));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("replacable"), (condition, block) -> block.getType().isAir() || block.isReplaceable()));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("water_loggable"), (condition, block) -> block.getHandle().getBlockState(block.getPosition()).getBlock() instanceof LiquidBlockContainer));
     }
 
     private void register(ConditionFactory factory) {

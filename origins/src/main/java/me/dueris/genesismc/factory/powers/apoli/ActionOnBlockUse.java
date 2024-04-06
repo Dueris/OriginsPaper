@@ -44,13 +44,13 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
                 if (power == null) continue;
                 if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer()) &&
-                    ConditionExecutor.testBlock((JSONObject) power.get("block_condition"), (CraftBlock) e.getClickedBlock()) &&
-                    ConditionExecutor.testItem((JSONObject) power.get("item_condition"), e.getItem())) {
+                    ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) e.getClickedBlock()) &&
+                    ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
                     setActive(e.getPlayer(), power.getTag(), true);
-                    Actions.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
-                    Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
-                    Actions.ItemActionType(e.getItem(), power.getItemAction());
-                    Actions.ItemActionType(e.getItem(), power.getAction("held_item_action"));
+                    Actions.executeBlock(e.getClickedBlock().getLocation(), power.getBlockAction());
+                    Actions.executeEntity(e.getPlayer(), power.getEntityAction());
+                    Actions.executeItem(e.getItem(), power.getItemAction());
+                    Actions.executeItem(e.getItem(), power.getAction("held_item_action"));
                     if (power.getOrDefault("result_stack", null) != null) {
                         JSONObject jsonObject = power.get("result_stack");
                         int amt;
@@ -61,7 +61,7 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
                         }
                         ItemStack itemStack = new ItemStack(Material.valueOf(jsonObject.get("item").toString().toUpperCase().split(":")[jsonObject.get("item").toString().split(":").length]), amt);
                         e.getPlayer().getInventory().addItem(itemStack);
-                        Actions.ItemActionType(itemStack, power.getAction("result_item_action"));
+                        Actions.executeItem(itemStack, power.getAction("result_item_action"));
                     }
                     tickFix.add(e.getPlayer());
                     new BukkitRunnable() {

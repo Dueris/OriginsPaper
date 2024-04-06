@@ -298,11 +298,11 @@ public class EntityConditions {
                 else name = entity.getUniqueId().toString();
             }
 
-            Scoreboard scoreboard = ((CraftEntity) entity).getHandle().level().getScoreboard();
+            Scoreboard scoreboard = entity.getHandle().level().getScoreboard();
             Objective value = scoreboard.getObjective(condition.get("objective").toString());
 
-            if (value != null && scoreboard.getPlayerScoreInfo(((CraftEntity) entity).getHandle(), value) != null) {
-                int score = scoreboard.getPlayerScoreInfo(((CraftEntity) entity).getHandle(), value).value();
+            if (value != null && scoreboard.getPlayerScoreInfo(entity.getHandle(), value) != null) {
+                int score = scoreboard.getPlayerScoreInfo(entity.getHandle(), value).value();
                 String comparison = condition.get("comparison").toString();
                 int compare_to = Integer.parseInt(condition.get("compare_to").toString());
                 return Comparison.getFromString(comparison).compare(score, compare_to);
@@ -348,15 +348,11 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("climbing"), (condition, entity) -> {
             if (entity instanceof Player player) {
                 Climbing climbing = new Climbing();
-                if (player.isClimbing() || climbing.isActiveClimbing(player)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return player.isClimbing() || climbing.isActiveClimbing(player);
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("collided_horizontally"), (condition, entity) -> ((CraftEntity) entity).getHandle().horizontalCollision));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("collided_horizontally"), (condition, entity) -> entity.getHandle().horizontalCollision));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("creative_flying"), (condition, entity) -> {
             if (entity instanceof Player player) {
                 return player.isFlying();
@@ -394,7 +390,7 @@ public class EntityConditions {
                     height = state.getHeight(((CraftWorld) entity.getWorld()).getHandle(), new BlockPos(entity.getLocation().getBlock().getX(), entity.getLocation().getBlock().getY(), entity.getLocation().getBlock().getZ()));
                 }
                 boolean compare = Comparison.getFromString(comparison).compare(height, compare_to);
-                return isLava ? compare && (state.is(Fluids.FLOWING_LAVA) || state.is(Fluids.LAVA)) : isWater ? compare && (state.is(Fluids.FLOWING_WATER) || state.is(Fluids.WATER)) : false;
+                return isLava ? compare && (state.is(Fluids.FLOWING_LAVA) || state.is(Fluids.LAVA)) : isWater && compare && (state.is(Fluids.FLOWING_WATER) || state.is(Fluids.WATER));
             } else {
                 return false;
             }
@@ -408,17 +404,17 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_rain"), (condition, entity) -> entity.isInRain()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("exposed_to_sun"), (condition, entity) -> {
             ServerLevel level = ((CraftWorld) entity.getWorld()).getHandle();
-            BlockPos blockPos = BlockPos.containing(entity.getX(), entity.getY() + ((CraftEntity) entity).getHandle().getEyeHeight(((CraftEntity) entity).getHandle().getPose()), entity.getZ());
+            BlockPos blockPos = BlockPos.containing(entity.getX(), entity.getY() + entity.getHandle().getEyeHeight(entity.getHandle().getPose()), entity.getZ());
 
             return level.canSeeSky(blockPos) && entity.getWorld().isDayTime();
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("exposed_to_sky"), (condition, entity) -> {
             ServerLevel level = ((CraftWorld) entity.getWorld()).getHandle();
-            BlockPos blockPos = BlockPos.containing(entity.getX(), entity.getY() + ((CraftEntity) entity).getHandle().getEyeHeight(((CraftEntity) entity).getHandle().getPose()), entity.getZ());
+            BlockPos blockPos = BlockPos.containing(entity.getX(), entity.getY() + entity.getHandle().getEyeHeight(entity.getHandle().getPose()), entity.getZ());
 
             return level.canSeeSky(blockPos);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, entity) -> NbtUtils.compareNbt(MiscUtils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), ((CraftEntity) entity).getHandle().saveWithoutId(new CompoundTag()), true)));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, entity) -> NbtUtils.compareNbt(MiscUtils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), entity.getHandle().saveWithoutId(new CompoundTag()), true)));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("sneaking"), (condition, entity) -> entity.isSneaking()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("resource"), (condition, entity) -> {
             if (CooldownUtils.cooldownMap.containsKey(entity) && CooldownUtils.cooldownMap.get(entity).contains(condition.get("resource").toString())) {
@@ -529,7 +525,7 @@ public class EntityConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block"), (condition, entity) -> {
             if (entity.getLocation().getBlock().getType().isCollidable()) {
-                return condition.containsKey("block_condition") ? ConditionExecutor.testBlock((JSONObject) condition.get("block_condition"), (CraftBlock) entity.getLocation().getBlock()) : true;
+                return !condition.containsKey("block_condition") || ConditionExecutor.testBlock((JSONObject) condition.get("block_condition"), (CraftBlock) entity.getLocation().getBlock());
             }
             return false;
         }));
@@ -558,9 +554,7 @@ public class EntityConditions {
                 return entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(key.toUpperCase()));
             }
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("raycast"), (condition, entity) -> {
-            return RaycastUtils.condition(condition, ((CraftEntity) entity).getHandle());
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("raycast"), (condition, entity) -> RaycastUtils.condition(condition, entity.getHandle())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("relative_health"), (condition, entity) -> {
             if (entity instanceof LivingEntity le) {
                 String comparison = condition.get("comparison").toString();
@@ -573,7 +567,7 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("riding"), (condition, entity) -> {
             if (entity.getVehicle() != null) {
                 if (condition.containsKey("bientity_condition")) {
-                    return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) entity, (CraftEntity) entity.getVehicle());
+                    return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), entity, (CraftEntity) entity.getVehicle());
                 }
                 return true;
             }
@@ -582,7 +576,7 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("riding_root"), (condition, entity) -> {
             if (entity.getVehicle() != null) {
                 if (condition.containsKey("bientity_condition")) {
-                    return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) entity, (CraftEntity) entity.getVehicle());
+                    return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), entity, (CraftEntity) entity.getVehicle());
                 }
                 return true;
             }
@@ -592,7 +586,7 @@ public class EntityConditions {
             int count = 0;
             if (entity.getVehicle() != null) {
                 Entity vehicle = entity.getVehicle();
-                boolean pass = ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) entity, (CraftEntity) vehicle);
+                boolean pass = ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), entity, (CraftEntity) vehicle);
                 while (vehicle != null) {
                     if (pass) {
                         count++;
@@ -609,7 +603,7 @@ public class EntityConditions {
             if (entity.getPassengers() != null && !entity.getPassengers().isEmpty()) {
                 if (condition.containsKey("bientity_condition")) {
                     count = (int) entity.getPassengers().stream().filter(ent -> {
-                        return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) ent, (CraftEntity) entity);
+                        return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) ent, entity);
                     }).count();
                 } else {
                     count = entity.getPassengers().size();
@@ -624,7 +618,7 @@ public class EntityConditions {
             if (entity.getPassengers() != null && !entity.getPassengers().isEmpty()) {
                 if (condition.containsKey("bientity_condition")) {
                     count = (int) entity.getPassengers().stream().filter(ent -> {
-                        return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) ent, (CraftEntity) entity);
+                        return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) ent, entity);
                     }).count();
                 } else {
                     count = entity.getPassengers().size();

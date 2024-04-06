@@ -35,8 +35,8 @@ public class ActionWhenDamageTaken extends CraftPower implements Listener {
                 if (power == null) continue;
                 if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
                 if (!ConditionExecutor.testDamage(power.get("damage_condition"), e)) return;
-                Actions.EntityActionType(actor, power.getEntityAction());
-                Actions.EntityActionType(actor, power.getAction("action"));
+                Actions.executeEntity(actor, power.getEntityAction());
+                Actions.executeEntity(actor, power.getAction("action"));
 
                 setActive(player, power.getTag(), true);
                 new BukkitRunnable() {
