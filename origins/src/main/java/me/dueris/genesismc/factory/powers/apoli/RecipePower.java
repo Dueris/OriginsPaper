@@ -16,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -183,7 +184,7 @@ public class RecipePower extends CraftPower implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void craft(PrepareItemCraftEvent e) {
         boolean cancel = true;
         if (e.getRecipe() == null) return;
@@ -196,6 +197,7 @@ public class RecipePower extends CraftPower implements Listener {
         }
         if (cancel && !key.startsWith("minecraft:")) { // Assumed to be a minecraft key if it has that namespace, so allow that to pass.
             if (key.equalsIgnoreCase("origins:orb_of_origins")) return;
+            if (Bukkit.getRecipe(NamespacedKey.fromString(key)) != null) return;
             e.getInventory().setResult(null);
         }
     }
