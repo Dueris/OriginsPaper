@@ -1,5 +1,6 @@
 package me.dueris.genesismc.util.entity;
 
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
@@ -18,6 +19,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
@@ -32,34 +34,45 @@ import java.util.List;
 public class InventorySerializer implements Listener {
 
     public static void saveInNbtIO(String tag, String data, Player player) {
-        ServerPlayer p = ((CraftPlayer) player).getHandle();
-        CompoundTag compoundRoot = p.saveWithoutId(new CompoundTag());
-        if (!compoundRoot.contains("OriginData")) {
-            compoundRoot.put("OriginData", new CompoundTag());
-        }
-        CompoundTag originData = compoundRoot.getCompound("OriginData");
-        if (!originData.contains("InventoryData")) {
-            originData.put("InventoryData", new CompoundTag());
-        }
-        CompoundTag inventoryData = originData.getCompound("InventoryData");
-        inventoryData.putString(tag, data);
-        p.load(compoundRoot);
+//        ServerPlayer p = ((CraftPlayer) player).getHandle();
+//        CompoundTag compoundRoot = p.saveWithoutId(new CompoundTag());
+//        if (!compoundRoot.contains("OriginData")) {
+//            compoundRoot.put("OriginData", new CompoundTag());
+//        }
+//        CompoundTag originData = compoundRoot.getCompound("OriginData");
+//        if (!originData.contains("InventoryData")) {
+//            originData.put("InventoryData", new CompoundTag());
+//        }
+//        CompoundTag inventoryData = originData.getCompound("InventoryData");
+//        inventoryData.putString(tag, data);
+//        p.load(compoundRoot);
+        PersistentDataContainer container = player.getPersistentDataContainer();
+        container.set(GenesisMC.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING, data);
         player.saveData();
     }
 
     private static String getInNbtIO(String tag, Player player) {
-        ServerPlayer p = ((CraftPlayer) player).getHandle();
-        CompoundTag compoundRoot = p.saveWithoutId(new CompoundTag());
-        if (!compoundRoot.contains("OriginData")) {
-            compoundRoot.put("OriginData", new CompoundTag());
-        }
-        CompoundTag originData = compoundRoot.getCompound("OriginData");
-        if (!originData.contains("InventoryData")) {
-            originData.put("InventoryData", new CompoundTag());
+//        ServerPlayer p = ((CraftPlayer) player).getHandle();
+//        CompoundTag compoundRoot = p.saveWithoutId(new CompoundTag());
+//        if (!compoundRoot.contains("OriginData")) {
+//            compoundRoot.put("OriginData", new CompoundTag());
+//        }
+//        CompoundTag originData = compoundRoot.getCompound("OriginData");
+//        if (!originData.contains("InventoryData")) {
+//            originData.put("InventoryData", new CompoundTag());
+//            return "";
+//        } else {
+//            return originData.getCompound("InventoryData").getString(tag);
+//        }
+        PersistentDataContainer container = player.getPersistentDataContainer();
+        if(!container.has(GenesisMC.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING)) {
             return "";
-        } else {
-            return originData.getCompound("InventoryData").getString(tag);
         }
+        return container.get(GenesisMC.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING);
+    }
+
+    private static String format(String tag){
+        return tag.replace(" ", "_").replace(":", "_").replace("/", "_").replace("\\", "_");
     }
 
     public static void storeItems(List<ItemStack> items, Player p, String tag) {
