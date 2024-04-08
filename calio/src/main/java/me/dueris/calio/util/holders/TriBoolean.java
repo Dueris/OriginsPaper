@@ -39,6 +39,6 @@ public class TriBoolean {
     public enum State {
         TRUE,
         FALSE,
-        NOT_SET;
+        NOT_SET
     }
 }

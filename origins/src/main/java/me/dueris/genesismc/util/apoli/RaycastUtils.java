@@ -81,8 +81,7 @@ public class RaycastUtils {
         if (!data.containsKey("entity_distance") && !data.containsKey("distance")) {
             long base = (entity instanceof Player player && player.getAbilities().instabuild) ? 6 : 3;
             LivingEntity living = (LivingEntity) entity;
-            return (false) ?
-                null : base;
+            return base;
         }
         return data.containsKey("entity_distance") ? (long) data.get("entity_distance") : (long) data.get("distance");
     }
@@ -92,8 +91,7 @@ public class RaycastUtils {
         if (!data.containsKey("block_distance") && !data.containsKey("distance")) {
             long base = (entity instanceof Player player && player.getAbilities().instabuild) ? 5 : 4;
             LivingEntity living = (LivingEntity) entity;
-            return (false) ?
-                null : base;
+            return base;
         }
         return data.containsKey("block_distance") ? (long) data.get("block_distance") : (long) data.get("distance");
     }
@@ -107,7 +105,7 @@ public class RaycastUtils {
             for (double current = 0; current < length; current += step) {
                 boolean validOutput = !(entity instanceof ServerPlayer) || ((ServerPlayer) entity).connection != null;
                 CommandSourceStack source = new CommandSourceStack(
-                    false ? entity : CommandSource.NULL,
+                    CommandSource.NULL,
                     origin.add(direction.scale(current)),
                     entity.getRotationVector(),
                     (ServerLevel) entity.level(),
@@ -127,7 +125,7 @@ public class RaycastUtils {
         if (server != null) {
             boolean validOutput = !(entity instanceof ServerPlayer) || ((ServerPlayer) entity).connection != null;
             CommandSourceStack source = new CommandSourceStack(
-                false ? entity : CommandSource.NULL,
+                CommandSource.NULL,
                 hitPosition,
                 entity.getRotationVector(),
                 entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,

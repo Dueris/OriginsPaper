@@ -3,10 +3,10 @@ package me.dueris.calio.builder.inst;
 import org.bukkit.NamespacedKey;
 
 public class AccessorRoot {
-    private String dirPath;
-    private NamespacedKey putRegistry;
-    private FactoryInstance inst;
-    private int priority;
+    private final String dirPath;
+    private final NamespacedKey putRegistry;
+    private final FactoryInstance inst;
+    private final int priority;
 
     public AccessorRoot(String dirPath, NamespacedKey putRegistry, FactoryInstance inst, int priority) {
         this.dirPath = dirPath;

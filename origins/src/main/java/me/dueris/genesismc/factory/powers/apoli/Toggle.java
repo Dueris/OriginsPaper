@@ -75,7 +75,7 @@ public class Toggle extends CraftPower implements Listener {
             public void run() {
                 AtomicBoolean cond = new AtomicBoolean(ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p));
                 /* Toggle power always execute continuously */
-                if (!cond.get() || ((true) && !in_continuous.get(p).contains(key))) {
+                if (!cond.get() || (!in_continuous.get(p).contains(key))) {
                     CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.get("hud_render"));
                     KeybindingUtils.toggleKey(p, key);
                     setActive(p, power.getTag(), false);

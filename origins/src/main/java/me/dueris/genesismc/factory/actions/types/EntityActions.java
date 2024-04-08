@@ -20,7 +20,6 @@ import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.apoli.RaycastUtils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -29,7 +28,6 @@ import net.minecraft.world.level.ExplosionDamageCalculator;
 import org.bukkit.*;
 import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
@@ -466,7 +464,7 @@ public class EntityActions {
 
             boolean hasCondition = action.containsKey("bientity_condition");
 
-            for(net.minecraft.world.entity.Entity target : Shape.getEntities(Shape.getShape(action.getOrDefault("shape", "cube").toString()), ((CraftWorld)entity.getWorld()).getHandle(), ((CraftEntity)entity).getHandle().getPosition(1.0f), radius)) {
+            for (net.minecraft.world.entity.Entity target : Shape.getEntities(Shape.getShape(action.getOrDefault("shape", "cube").toString()), ((CraftWorld) entity.getWorld()).getHandle(), ((CraftEntity) entity).getHandle().getPosition(1.0f), radius)) {
                 if (target == entity && !include_actor) {
                     continue;
                 }

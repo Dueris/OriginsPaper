@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class CalioRegistry implements IRegistry {
     public static CalioRegistry INSTANCE = new CalioRegistry();
-    private HashMap<NamespacedKey, Registrar> registry = new HashMap<>();
+    private final HashMap<NamespacedKey, Registrar> registry = new HashMap<>();
 
     @Override
     public Registrar retrieve(NamespacedKey key) {

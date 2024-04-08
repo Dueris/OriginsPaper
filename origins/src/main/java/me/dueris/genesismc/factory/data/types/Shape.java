@@ -17,10 +17,10 @@ public enum Shape {
 
     public static Collection<BlockPos> getPositions(BlockPos center, Shape shape, int radius) {
         Set<BlockPos> positions = new HashSet<>();
-        for(int i = -radius; i <= radius; i++) {
-            for(int j = -radius; j <= radius; j++) {
-                for(int k = -radius; k <= radius; k++) {
-                    if(shape == Shape.CUBE || shape == Shape.CHEBYSHEV
+        for (int i = -radius; i <= radius; i++) {
+            for (int j = -radius; j <= radius; j++) {
+                for (int k = -radius; k <= radius; k++) {
+                    if (shape == Shape.CUBE || shape == Shape.CHEBYSHEV
                         || (shape == Shape.SPHERE || shape == Shape.EUCLIDEAN)
                         && i * i + j * j + k * k <= radius * radius
                         // The radius can't be negative here (the loops aren't even entered in that case)
@@ -57,8 +57,8 @@ public enum Shape {
 
     }
 
-    public static double getDistance(Shape shape, double xDistance, double yDistance, double zDistance){
-        return switch (shape){
+    public static double getDistance(Shape shape, double xDistance, double yDistance, double zDistance) {
+        return switch (shape) {
             case SPHERE, EUCLIDEAN -> Math.sqrt(xDistance * xDistance + yDistance * yDistance + zDistance * zDistance);
             case STAR, MANHATTAN -> xDistance + yDistance + zDistance;
             case CUBE, CHEBYSHEV -> Math.max(Math.max(xDistance, yDistance), zDistance);
@@ -68,12 +68,18 @@ public enum Shape {
     public static Shape getShape(Object raw) {
         if (raw == null) return CUBE;
         switch (raw.toString().toLowerCase()) {
-            case "star" : return STAR;
-            case "sphere" : return SPHERE;
-            case "chebyshev" : return CHEBYSHEV;
-            case "manhattan" : return MANHATTAN;
-            case "euclidean" : return EUCLIDEAN;
-            default : return CUBE;
+            case "star":
+                return STAR;
+            case "sphere":
+                return SPHERE;
+            case "chebyshev":
+                return CHEBYSHEV;
+            case "manhattan":
+                return MANHATTAN;
+            case "euclidean":
+                return EUCLIDEAN;
+            default:
+                return CUBE;
         }
     }
 }

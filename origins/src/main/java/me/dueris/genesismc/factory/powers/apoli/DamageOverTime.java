@@ -8,22 +8,21 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class DamageOverTime extends CraftPower implements Listener {
 
@@ -79,66 +78,20 @@ public class DamageOverTime extends CraftPower implements Listener {
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
-                        if (p.getWorld().getDifficulty().equals(Difficulty.EASY)) {
-                            if (power.getObjectOrDefault("damage_easy", power.getObjectOrDefault("damage", 1.0f)) == null) {
-                                damage = power.getFloatOrDefault("damage", 1.0f);
-                            } else {
-                                damage = power.getFloatOrDefault("damage_easy", power.getFloatOrDefault("damage", 1f));
-                            }
-                        } else {
-                            damage = power.getFloatOrDefault("damage", 1.0f);
-                        }
+                        damage = p.getWorld().getDifficulty().equals(Difficulty.EASY) ?
+                            power.getObjectOrDefault("damage_easy", power.getObjectOrDefault("damage", 1.0f)) == null ?
+                                power.getFloatOrDefault("damage", 1.0f)
+                                : power.getFloatOrDefault("damage_easy", power.getFloatOrDefault("damage", 1f))
+                            : power.getFloatOrDefault("damage", 1.0f);
 
                         protection_effectiveness = power.getDoubleOrDefault("protection_effectiveness", 1);
-                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
 
                             if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
-                                if (p.getHealth() >= damage && p.getHealth() != 0 && p.getHealth() - damage != 0) {
-                                    String namespace;
-                                    String key;
-                                    if (power.getString("damage_type") != null) {
-                                        if (power.getString("damage_type").contains(":")) {
-                                            namespace = power.getString("damage_type").split(":")[0];
-                                            key = power.getString("damage_type").split(":")[1];
-                                        } else {
-                                            namespace = "minecraft";
-                                            key = power.getString("damage_type");
-                                        }
-                                    } else {
-                                        namespace = "minecraft";
-                                        key = "generic";
-                                    }
-                                    DamageType dmgType = Utils.DAMAGE_REGISTRY.get(new ResourceLocation(namespace, key));
-                                    ServerPlayer serverPlayer = ((CraftPlayer) p).getHandle();
-                                    serverPlayer.hurt(Utils.getDamageSource(dmgType), damage);
-
-                                    Random random = new Random();
-
-                                    int r = random.nextInt(3);
-                                    if (r == 1) {
-                                        if (p.getInventory().getHelmet() != null) {
-                                            int heldur = p.getEquipment().getHelmet().getDurability();
-                                            p.getEquipment().getHelmet().setDurability((short) (heldur + 3));
-                                        }
-                                        if (p.getInventory().getChestplate() != null) {
-                                            int chestdur = p.getEquipment().getChestplate().getDurability();
-                                            p.getEquipment().getChestplate().setDurability((short) (chestdur + 3));
-                                        }
-                                        if (p.getInventory().getLeggings() != null) {
-                                            int legdur = p.getEquipment().getLeggings().getDurability();
-                                            p.getEquipment().getLeggings().setDurability((short) (legdur + 3));
-                                        }
-                                        if (p.getInventory().getBoots() != null) {
-                                            int bootdur = p.getEquipment().getBoots().getDurability();
-                                            p.getEquipment().getBoots().setDurability((short) (bootdur + 3));
-                                        }
-
-                                    }
-                                } else if (p.getHealth() <= damage && p.getHealth() != 0) {
-                                    p.setHealth(0.0f);
-                                }
+                                NamespacedKey key = NamespacedKey.fromString(power.getStringOrDefault("damage_type", "generic"));
+                                DamageType dmgType = Utils.DAMAGE_REGISTRY.get(CraftNamespacedKey.toMinecraft(key));
+                                ((CraftPlayer) p).getHandle().hurt(Utils.getDamageSource(dmgType), damage);
                             }
 
                         } else {

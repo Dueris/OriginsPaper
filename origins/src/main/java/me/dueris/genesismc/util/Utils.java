@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.registries.Power;
 import net.minecraft.core.BlockPos;
@@ -12,6 +13,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
@@ -19,8 +21,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.material.Fluid;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -34,6 +35,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -99,6 +101,56 @@ public class Utils {
                 return biome.getPrecipitationAt(blockPos) == Biome.Precipitation.SNOW
                     && isRainingAndExposed(world, blockPos);
             });
+    }
+
+    public static double apoli$getFluidHeightLoosely(Entity entity, TagKey<Fluid> tag) {
+        if (tag == null) return 0;
+        Optional<Object2DoubleMap<TagKey<Fluid>>> fluidHeightMap = getFluidHeightMap(entity);
+        if (fluidHeightMap.isPresent() && fluidHeightMap.get() != null) {
+            Object2DoubleMap<TagKey<Fluid>> fluidHeight = fluidHeightMap.get();
+            if (fluidHeight.containsKey(tag)) {
+                return fluidHeight.getDouble(tag);
+            }
+
+            for (TagKey<Fluid> ft : fluidHeight.keySet()) {
+                if (areTagsEqual(ft, tag)) {
+                    return fluidHeight.getDouble(ft);
+                }
+            }
+        }
+        return 0;
+    }
+
+    public static <T> boolean areTagsEqual(TagKey<T> tag1, TagKey<T> tag2) {
+        if (tag1 == tag2) {
+            return true;
+        }
+        if (tag1 == null || tag2 == null) {
+            return false;
+        }
+        if (!tag1.registry().equals(tag2.registry())) {
+            return false;
+        }
+        return tag1.location().equals(tag2.location());
+    }
+
+    protected static Optional<Object2DoubleMap<TagKey<Fluid>>> getFluidHeightMap(Entity entity) {
+        try {
+            Field field = Entity.class.getDeclaredField(getFluidHeightFromReobf(1204));
+            if (!field.isAccessible()) field.setAccessible(true);
+            return Optional.of((Object2DoubleMap<TagKey<Fluid>>) field.get(entity));
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+    private static String getFluidHeightFromReobf(int vNumber) {
+        switch (vNumber) {
+            case 1204:
+                return "aj"; // 1.20.4
+        }
+        return "fluidHeight";
     }
 
     public static boolean inThunderstorm(Level world, BlockPos... blockPositions) {

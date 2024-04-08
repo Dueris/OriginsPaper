@@ -8,7 +8,6 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.Util;
-
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -58,7 +57,7 @@ public class MiscUtils {
         return CraftRegistry.SOUNDS.get(NamespacedKey.fromString(sound));
     }
 
-    public static Material getBukkitMaterial(String string){
+    public static Material getBukkitMaterial(String string) {
         NamespacedKey key = NamespacedKey.fromString(string);
         return Material.matchMaterial(key.asString());
     }

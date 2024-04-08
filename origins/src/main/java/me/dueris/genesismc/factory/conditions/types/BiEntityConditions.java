@@ -14,7 +14,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.NamespacedKey;
@@ -116,7 +115,7 @@ public class BiEntityConditions implements Listener {
             Entity nmsActor = pair.first().getHandle();
             Entity nmsTarget = pair.second().getHandle();
 
-            if((nmsActor == null || nmsTarget == null) || nmsActor.level() != nmsTarget.level()) return false;
+            if ((nmsActor == null || nmsTarget == null) || nmsActor.level() != nmsTarget.level()) return false;
 
             ClipContext.Block shapeType = ClipContextUtils.getShapeType(condition.getOrDefault("shape_type", "visual").toString());
             ClipContext.Fluid fluidHandling = ClipContextUtils.getFluidHandling(condition.getOrDefault("fluid_handling", "none").toString());

@@ -94,21 +94,21 @@ public class BlockActions {
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("area_of_effect"), (action, location) -> {
-            ServerLevel level = ((CraftWorld)location.getWorld()).getHandle();
+            ServerLevel level = ((CraftWorld) location.getWorld()).getHandle();
             BlockPos pos = CraftLocation.toBlockPosition(location);
 
             int radius = Math.toIntExact((Long) action.getOrDefault("radius", 15L));
             Shape shape = Shape.getShape(action.getOrDefault("shape", "cube"));
             boolean hasCondition = action.containsKey("block_condition");
 
-            for(BlockPos blockPos : Shape.getPositions(pos, shape, radius)) {
+            for (BlockPos blockPos : Shape.getPositions(pos, shape, radius)) {
                 boolean run = true;
-                if(hasCondition){
-                    if(!ConditionExecutor.testBlock((JSONObject) action.get("block_condition"), CraftBlock.at(level, blockPos))){
+                if (hasCondition) {
+                    if (!ConditionExecutor.testBlock((JSONObject) action.get("block_condition"), CraftBlock.at(level, blockPos))) {
                         run = false;
                     }
                 }
-                if(run){
+                if (run) {
                     Actions.executeBlock(new Location(location.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ()), (JSONObject) action.get("block_action"));
                 }
             }

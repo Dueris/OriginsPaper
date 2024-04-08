@@ -13,6 +13,7 @@ import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.CooldownUtils;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.apoli.RaycastUtils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.BlockPos;
@@ -23,8 +24,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootDataType;
@@ -178,25 +177,28 @@ public class EntityConditions {
             boolean hasCondition = condition.containsKey("block_condition");
             int stopAt = -1;
             Comparison fixedComparison = Comparison.getFromString(comparison);
-            switch(fixedComparison) {
-                case EQUAL: case LESS_THAN_OR_EQUAL: case GREATER_THAN:
+            switch (fixedComparison) {
+                case EQUAL:
+                case LESS_THAN_OR_EQUAL:
+                case GREATER_THAN:
                     stopAt = compare_to + 1;
                     break;
-                case LESS_THAN: case GREATER_THAN_OR_EQUAL:
+                case LESS_THAN:
+                case GREATER_THAN_OR_EQUAL:
                     stopAt = compare_to;
                     break;
             }
             int count = 0;
-            for(BlockPos pos : Shape.getPositions(CraftLocation.toBlockPosition(entity.getLocation()), shape, radius)) {
+            for (BlockPos pos : Shape.getPositions(CraftLocation.toBlockPosition(entity.getLocation()), shape, radius)) {
                 boolean run = true;
-                if(hasCondition){
-                    if(!ConditionExecutor.testBlock((JSONObject) condition.get("block_condition"), CraftBlock.at(((CraftWorld)entity.getWorld()).getHandle(), pos))){
+                if (hasCondition) {
+                    if (!ConditionExecutor.testBlock((JSONObject) condition.get("block_condition"), CraftBlock.at(((CraftWorld) entity.getWorld()).getHandle(), pos))) {
                         run = false;
                     }
                 }
-                if(run){
+                if (run) {
                     count++;
-                    if(count == stopAt) {
+                    if (count == stopAt) {
                         break;
                     }
                 }
@@ -291,32 +293,13 @@ public class EntityConditions {
             return entity.getWorld().getKey().equals(NamespacedKey.fromString(dim));
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid_height"), (condition, entity) -> {
-            if (!entity.isInWaterOrBubbleColumn() && !entity.isInLava()) return false;
-            String fluidD = NamespacedKey.fromString(condition.get("fluid").toString()).asString();
+            String comparison = condition.get("comparison").toString();
+            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
 
-            boolean go = false;
-            boolean isLava = fluidD.equalsIgnoreCase("minecraft:lava");
-            boolean isWater = fluidD.equalsIgnoreCase("minecraft:water");
+            NamespacedKey tag = NamespacedKey.fromString(condition.get("fluid").toString());
+            TagKey key = TagKey.create(net.minecraft.core.registries.Registries.FLUID, CraftNamespacedKey.toMinecraft(tag));
 
-            if (isLava || isWater) {
-                go = true;
-            }
-
-            if (go) {
-                String comparison = condition.get("comparison").toString();
-                double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-                double height = 0.0;
-
-                BlockState nms = ((CraftBlock) entity.getLocation().getBlock()).getNMS();
-                FluidState state = nms.getFluidState();
-                if (!state.is(Fluids.EMPTY)) {
-                    height = state.getHeight(((CraftWorld) entity.getWorld()).getHandle(), new BlockPos(entity.getLocation().getBlock().getX(), entity.getLocation().getBlock().getY(), entity.getLocation().getBlock().getZ()));
-                }
-                boolean compare = Comparison.getFromString(comparison).compare(height, compare_to);
-                return isLava ? compare && (state.is(Fluids.FLOWING_LAVA) || state.is(Fluids.LAVA)) : isWater && compare && (state.is(Fluids.FLOWING_WATER) || state.is(Fluids.WATER));
-            } else {
-                return false;
-            }
+            return Comparison.getFromString(comparison).compare(Utils.apoli$getFluidHeightLoosely(entity.getHandle(), key), compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("invisible"), (condition, entity) -> {
             if (entity instanceof LivingEntity le) {
@@ -354,9 +337,10 @@ public class EntityConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_flying"), (condition, entity) -> entity instanceof LivingEntity le && (((CraftLivingEntity) le).getHandle().isFallFlying() || FlightElytra.getGlidingPlayers().contains(le))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("submerged_in"), (condition, entity) -> {
-            if (condition.get("fluid").equals("minecraft:water")) {
+            String formatted = NamespacedKey.fromString(condition.get("fluid").toString()).asString();
+            if (formatted.equalsIgnoreCase("minecraft:water")) {
                 return entity.isInWaterOrBubbleColumn();
-            } else if (condition.get("fluid").equals("minecraft:lava")) {
+            } else if (formatted.equalsIgnoreCase("minecraft:lava")) {
                 return entity.isInLava();
             } else {
                 return false;

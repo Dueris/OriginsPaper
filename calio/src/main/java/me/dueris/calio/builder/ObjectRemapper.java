@@ -21,7 +21,7 @@ public class ObjectRemapper {
     /**
      * Map<KEY, Pair<CURRENT -> REMAPPED>>
      */
-    private static HashMap<String, ArrayList<Pair<Object, Object>>> objectMappings = new HashMap<>();
+    private static final HashMap<String, ArrayList<Pair<Object, Object>>> objectMappings = new HashMap<>();
 
     /**
      * Creates a remapped JSON object by parsing the contents of the specified file and remapping the keys using the given current namespace.
