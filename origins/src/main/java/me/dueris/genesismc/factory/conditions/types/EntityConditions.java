@@ -43,6 +43,7 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntityType;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
@@ -72,85 +73,6 @@ public class EntityConditions {
 
     public static Enchantment getEnchantmentByNamespace(String namespaceString) {
         return Enchantment.getByName(namespaceString);
-    }
-
-    private static int countBlocksInCube(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, World world, JSONObject condition, Entity entity) {
-        int blockCount = 0;
-
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    Location location = new Location(world, x, y, z);
-                    Block blockw = location.getBlock();
-                    if (blockw.getType() != Material.AIR) {
-                        boolean p = true;
-                        if (condition.containsKey("block_condition")) {
-                            p = ConditionExecutor.testBlock((JSONObject) condition.get("block_condition"), (CraftBlock) blockw);
-                        }
-                        if (p) {
-                            blockCount++;
-                        }
-                    }
-                }
-            }
-        }
-
-        return blockCount;
-    }
-
-    private static int countBlocksInStar(int centerX, int centerY, int centerZ, int radius, World world, JSONObject condition, Entity entity) {
-        int blockCount = 0;
-
-        for (int x = centerX - radius; x <= centerX + radius; x++) {
-            for (int y = centerY - radius; y <= centerY + radius; y++) {
-                for (int z = centerZ - radius; z <= centerZ + radius; z++) {
-                    double distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2) + Math.pow(z - centerZ, 2));
-
-                    if (distance <= radius && distance >= radius / 2) {
-                        Location location = new Location(world, x, y, z);
-                        Block block2 = location.getBlock();
-
-                        if (block2.getType() != Material.AIR) {
-                            boolean p = true;
-                            if (condition.containsKey("block_condition")) {
-                                p = ConditionExecutor.testBlock((JSONObject) condition.get("block_condition"), (CraftBlock) block2);
-                            }
-                            if (p) {
-                                blockCount++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return blockCount;
-    }
-
-    public static int countBlocksInSphere(int centerX, int centerY, int centerZ, int radius, World world, JSONObject condition, Entity entity) {
-        int blockCount = 0;
-        int squaredRadius = radius * radius;
-
-        for (int x = centerX - radius; x <= centerX + radius; x++) {
-            for (int y = centerY - radius; y <= centerY + radius; y++) {
-                for (int z = centerZ - radius; z <= centerZ + radius; z++) {
-                    if ((x - centerX) * (x - centerX) + (y - centerY) * (y - centerY) + (z - centerZ) * (z - centerZ) <= squaredRadius) {
-                        Location location = new Location(world, x, y, z);
-                        if (location.getBlock().getType() != Material.AIR) {
-                            boolean p = true;
-                            if (condition.containsKey("block_condition")) {
-                                p = ConditionExecutor.testBlock((JSONObject) condition.get("block_condition"), (CraftBlock) location.getBlock());
-                            }
-                            if (p) {
-                                blockCount++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return blockCount;
     }
 
     public void prep() {
@@ -248,38 +170,39 @@ public class EntityConditions {
             return false;
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block_in_radius"), (condition, entity) -> {
-            int radius = Math.toIntExact((Long) condition.get("radius"));
-            Shape shape = Shape.getShape(condition.get("shape"));
+            int radius = Math.toIntExact((Long) condition.getOrDefault("radius", 15L));
+            Shape shape = Shape.getShape(condition.getOrDefault("shape", "cube"));
             String comparison = condition.getOrDefault("comparison", ">=").toString();
             int compare_to = Integer.parseInt(condition.getOrDefault("compare_to", 1).toString());
 
-            Location center = entity.getLocation();
-            int centerX = center.getBlockX();
-            int centerY = center.getBlockY();
-            int centerZ = center.getBlockZ();
-            World world = center.getWorld();
-
-            int minX = center.getBlockX() - radius;
-            int minY = center.getBlockY() - radius;
-            int minZ = center.getBlockZ() - radius;
-            int maxX = center.getBlockX() + radius;
-            int maxY = center.getBlockY() + radius;
-            int maxZ = center.getBlockZ() + radius;
-
-            int blockCount = 0;
-            JSONObject ingredientMap = condition;
-            switch (shape) {
-                case SPHERE -> {
-                    blockCount = countBlocksInSphere(centerX, centerY, centerZ, radius, world, ingredientMap, entity);
+            boolean hasCondition = condition.containsKey("block_condition");
+            int stopAt = -1;
+            Comparison fixedComparison = Comparison.getFromString(comparison);
+            switch(fixedComparison) {
+                case EQUAL: case LESS_THAN_OR_EQUAL: case GREATER_THAN:
+                    stopAt = compare_to + 1;
+                    break;
+                case LESS_THAN: case GREATER_THAN_OR_EQUAL:
+                    stopAt = compare_to;
+                    break;
+            }
+            int count = 0;
+            for(BlockPos pos : Shape.getPositions(CraftLocation.toBlockPosition(entity.getLocation()), shape, radius)) {
+                boolean run = true;
+                if(hasCondition){
+                    if(!ConditionExecutor.testBlock((JSONObject) condition.get("block_condition"), CraftBlock.at(((CraftWorld)entity.getWorld()).getHandle(), pos))){
+                        run = false;
+                    }
                 }
-                case STAR -> {
-                    blockCount = countBlocksInStar(centerX, centerY, centerZ, radius, world, ingredientMap, entity);
-                }
-                case CUBE -> {
-                    blockCount = countBlocksInCube(minX, minY, minZ, maxX, maxY, maxZ, world, ingredientMap, entity);
+                if(run){
+                    count++;
+                    if(count == stopAt) {
+                        break;
+                    }
                 }
             }
-            return Comparison.getFromString(comparison).compare(blockCount, compare_to);
+
+            return fixedComparison.compare(count, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("set_size"), (condition, entity) -> {
             String tag = condition.get("set").toString();

@@ -3,9 +3,12 @@ package me.dueris.genesismc.factory.actions.types;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.actions.Actions;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.DestructionType;
 import me.dueris.genesismc.factory.data.types.ExplosionMask;
 import me.dueris.genesismc.factory.data.types.ResourceOperation;
+import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.registry.Registries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -22,6 +25,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.simple.JSONObject;
@@ -87,6 +91,26 @@ public class BlockActions {
             if (action.containsKey("block")) {
                 Material block = MiscUtils.getBukkitMaterial(action.get("block").toString());
                 location.getWorld().getBlockAt(location).setType(block);
+            }
+        }));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("area_of_effect"), (action, location) -> {
+            ServerLevel level = ((CraftWorld)location.getWorld()).getHandle();
+            BlockPos pos = CraftLocation.toBlockPosition(location);
+
+            int radius = Math.toIntExact((Long) action.getOrDefault("radius", 15L));
+            Shape shape = Shape.getShape(action.getOrDefault("shape", "cube"));
+            boolean hasCondition = action.containsKey("block_condition");
+
+            for(BlockPos blockPos : Shape.getPositions(pos, shape, radius)) {
+                boolean run = true;
+                if(hasCondition){
+                    if(!ConditionExecutor.testBlock((JSONObject) action.get("block_condition"), CraftBlock.at(level, blockPos))){
+                        run = false;
+                    }
+                }
+                if(run){
+                    Actions.executeBlock(new Location(location.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ()), (JSONObject) action.get("block_action"));
+                }
             }
         }));
         register(new ActionFactory(GenesisMC.identifier("grow_sculk"), (action, location) -> {

@@ -1,48 +1,41 @@
 package me.dueris.genesismc.factory.data.types;
 
+import java.util.function.BiFunction;
+
 public enum Comparison {
-    LESS_THAN("<"),
-    LESS_THAN_OR_EQUAL_TO("<="),
-    GREATER_THAN(">"),
-    GREATER_THAN_OR_EQUAL_TO(">="),
-    EQUAL_TO("=="),
-    NOT_EQUAL_TO("!=");
+    NONE("", (a, b) -> false),
+    EQUAL("==", Double::equals),
+    LESS_THAN("<", (a, b) -> a < b),
+    GREATER_THAN(">", (a, b) -> a > b),
+    LESS_THAN_OR_EQUAL("<=", (a, b) -> a <= b),
+    GREATER_THAN_OR_EQUAL(">=", (a, b) -> a >= b),
+    NOT_EQUAL("!=", (a, b) -> !a.equals(b));
 
-    String val;
+    private final String comparisonString;
+    private final BiFunction<Double, Double, Boolean> comparison;
 
-    Comparison(String raw) {
-        this.val = raw;
+    private Comparison(String comparisonString, BiFunction<Double, Double, Boolean> comparison) {
+        this.comparisonString = comparisonString;
+        this.comparison = comparison;
     }
 
-    public static Comparison getFromString(String string) {
-        for (Comparison value : Comparison.values()) {
-            if (value.getRaw().equalsIgnoreCase(string)) {
-                return value;
-            }
+    public boolean compare(double a, double b) {
+        return comparison.apply(a, b);
+    }
+
+    public String getComparisonString() {
+        return comparisonString;
+    }
+
+    public static Comparison getFromString(String comparisonString) {
+        switch(comparisonString) {
+            case "==": return EQUAL;
+            case "<": return LESS_THAN;
+            case ">": return GREATER_THAN;
+            case "<=": return LESS_THAN_OR_EQUAL;
+            case ">=": return GREATER_THAN_OR_EQUAL;
+            case "!=": return NOT_EQUAL;
         }
-        return null;
-    }
-
-    public boolean compare(double val, double compare_to) {
-        switch (this) {
-            case LESS_THAN:
-                return val < compare_to;
-            case LESS_THAN_OR_EQUAL_TO:
-                return val <= compare_to;
-            case GREATER_THAN:
-                return val > compare_to;
-            case GREATER_THAN_OR_EQUAL_TO:
-                return val >= compare_to;
-            case EQUAL_TO:
-                return val == compare_to;
-            case NOT_EQUAL_TO:
-                return val != compare_to;
-            default:
-                return false;
-        }
-    }
-
-    public String getRaw() {
-        return val;
+        return NONE;
     }
 }

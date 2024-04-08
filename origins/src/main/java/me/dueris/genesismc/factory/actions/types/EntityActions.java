@@ -7,10 +7,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.data.types.DestructionType;
-import me.dueris.genesismc.factory.data.types.ExplosionMask;
-import me.dueris.genesismc.factory.data.types.Space;
-import me.dueris.genesismc.factory.data.types.VectorGetter;
+import me.dueris.genesismc.factory.data.types.*;
 import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect;
@@ -23,6 +20,7 @@ import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.apoli.RaycastUtils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -31,6 +29,7 @@ import net.minecraft.world.level.ExplosionDamageCalculator;
 import org.bukkit.*;
 import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
@@ -134,7 +133,7 @@ public class EntityActions {
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 1);
         }));
-        register(new ActionFactory(GenesisMC.apoliIdentifier("set_on_fire"), (action, entity) -> entity.setFireTicks(Integer.parseInt(action.get("duration").toString()))));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("set_on_fire"), (action, entity) -> entity.setFireTicks(Integer.parseInt(action.get("duration").toString()) * 20)));
         register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_entity"), (action, entity) -> {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
@@ -461,23 +460,25 @@ public class EntityActions {
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("area_of_effect"), (action, entity) -> {
-            float radius = 15f;
-            JSONObject bientity_action = new JSONObject();
-            boolean include_target = false;
+            float radius = Float.parseFloat(action.getOrDefault("radius", 15F).toString());
+            JSONObject bientity_action = action.containsKey("bientity_action") ? (JSONObject) action.get("bientity_action") : new JSONObject();
+            boolean include_actor = action.containsKey("include_actor") && Boolean.parseBoolean(action.getOrDefault("include_actor", false).toString());
 
-            if (action.containsKey("radius")) radius = Float.parseFloat(action.get("radius").toString());
-            if (action.containsKey("bientity_action"))
-                bientity_action = (JSONObject) action.get("bientity_action");
-            if (action.containsKey("include_target"))
-                include_target = Boolean.parseBoolean(action.get("include_target").toString());
+            boolean hasCondition = action.containsKey("bientity_condition");
 
-            for (Entity nearbyEntity : entity.getNearbyEntities(radius, radius, radius)) {
-                boolean run = ConditionExecutor.testBiEntity((JSONObject) action.get("bientity_condition"), (CraftEntity) entity, (CraftEntity) nearbyEntity);
-                if (run) {
-                    executeBiEntity(entity, nearbyEntity, bientity_action);
+            for(net.minecraft.world.entity.Entity target : Shape.getEntities(Shape.getShape(action.getOrDefault("shape", "cube").toString()), ((CraftWorld)entity.getWorld()).getHandle(), ((CraftEntity)entity).getHandle().getPosition(1.0f), radius)) {
+                if (target == entity && !include_actor) {
+                    continue;
                 }
+
+                boolean run = !hasCondition || ConditionExecutor.testBiEntity((JSONObject) action.get("bientity_condition"), (CraftEntity) entity, target.getBukkitEntity());
+                if (!run) {
+                    continue;
+                }
+
+                Actions.executeBiEntity(entity, target.getBukkitEntity(), bientity_action);
             }
-            if (include_target) executeBiEntity(entity, entity, bientity_action);
+
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("block_action_at"), (action, entity) -> executeBlock(entity.getLocation(), (JSONObject) action.get("block_action"))));
         register(new ActionFactory(GenesisMC.apoliIdentifier("toggle"), (action, entity) -> {

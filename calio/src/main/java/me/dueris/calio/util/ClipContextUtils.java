@@ -14,9 +14,6 @@ public class ClipContextUtils {
      */
     public static ClipContext.Fluid getFluidHandling(String string) {
         switch (string.toLowerCase()) {
-            case "none" -> {
-                return ClipContext.Fluid.NONE;
-            }
             case "any" -> {
                 return ClipContext.Fluid.ANY;
             }
@@ -24,7 +21,7 @@ public class ClipContextUtils {
                 return ClipContext.Fluid.SOURCE_ONLY;
             }
             default -> {
-                return null;
+                return ClipContext.Fluid.NONE;
             }
         }
     }

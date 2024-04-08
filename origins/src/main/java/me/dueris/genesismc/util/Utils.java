@@ -7,13 +7,20 @@ import com.google.gson.JsonParser;
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.registries.Power;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -31,10 +38,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 
@@ -86,6 +90,26 @@ public class Utils {
                 return power.getTag();
             }
         };
+    }
+
+    public static boolean inSnow(Level world, BlockPos... blockPositions) {
+        return Arrays.stream(blockPositions)
+            .anyMatch(blockPos -> {
+                Biome biome = world.getBiome(blockPos).value();
+                return biome.getPrecipitationAt(blockPos) == Biome.Precipitation.SNOW
+                    && isRainingAndExposed(world, blockPos);
+            });
+    }
+
+    public static boolean inThunderstorm(Level world, BlockPos... blockPositions) {
+        return Arrays.stream(blockPositions)
+            .anyMatch(blockPos -> world.isThundering() && isRainingAndExposed(world, blockPos));
+    }
+
+    private static boolean isRainingAndExposed(Level world, BlockPos blockPos) {
+        return world.isRaining()
+            && world.canSeeSky(blockPos)
+            && world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, blockPos).getY() < blockPos.getY();
     }
 
     public static boolean hasChangedBlockCoordinates(final Location fromLoc, final Location toLoc) {

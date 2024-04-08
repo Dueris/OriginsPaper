@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.conditions.types;
 
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.util.ClipContextUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
@@ -9,13 +10,16 @@ import me.dueris.genesismc.factory.data.types.RotationType;
 import me.dueris.genesismc.factory.powers.apoli.EntitySetPower;
 import me.dueris.genesismc.registry.Registries;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Mob;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.Listener;
 import org.json.simple.JSONArray;
@@ -109,10 +113,17 @@ public class BiEntityConditions implements Listener {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_set"), (condition, pair) -> EntitySetPower.isInEntitySet(pair.second(), condition.get("set").toString())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("can_see"), (condition, pair) -> {
-            if (pair.first() instanceof Player pl) {
-                return pl.canSee(pair.second());
-            }
-            return false;
+            Entity nmsActor = pair.first().getHandle();
+            Entity nmsTarget = pair.second().getHandle();
+
+            if((nmsActor == null || nmsTarget == null) || nmsActor.level() != nmsTarget.level()) return false;
+
+            ClipContext.Block shapeType = ClipContextUtils.getShapeType(condition.getOrDefault("shape_type", "visual").toString());
+            ClipContext.Fluid fluidHandling = ClipContextUtils.getFluidHandling(condition.getOrDefault("fluid_handling", "none").toString());
+
+            Vec3 actorEyePos = nmsActor.getEyePosition();
+            Vec3 targetEyePos = nmsTarget.getEyePosition();
+            return nmsActor.level().clip(new ClipContext(actorEyePos, targetEyePos, shapeType, fluidHandling, nmsActor)).getType() == HitResult.Type.MISS;
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("owner"), (condition, pair) -> {
             if (pair.second() instanceof Tameable tameable) {

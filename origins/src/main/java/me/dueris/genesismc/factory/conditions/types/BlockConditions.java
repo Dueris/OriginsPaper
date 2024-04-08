@@ -1,9 +1,9 @@
 package me.dueris.genesismc.factory.conditions.types;
 
 import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.data.DataTypeUtils;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Power;
@@ -34,7 +34,7 @@ public class BlockConditions {
     public void prep() {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("material"), (condition, block) -> {
             try {
-                Material mat = DataTypeUtils.getMaterial(condition.get("material"));
+                Material mat = MiscUtils.getBukkitMaterial(condition.get("material").toString());
                 return block.getType().equals(mat);
             } catch (Exception e) {
                 e.printStackTrace();
