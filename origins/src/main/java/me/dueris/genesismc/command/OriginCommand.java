@@ -18,7 +18,6 @@ import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import me.dueris.genesismc.util.enums.OriginDataType;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -99,7 +98,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                     Origin origin = CraftApoli.getOrigin(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "origin")).asString());
                                     targets.forEach(player -> {
                                         OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, origin);
-                                        OriginPlayerAccessor.resetOriginData(player.getBukkitEntity(), OriginDataType.IN_PHASING_FORM);
+                                        player.getBukkitEntity().getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
                                         OriginChangeEvent originChangeEvent = new OriginChangeEvent(player.getBukkitEntity(), origin, false);
                                         getServer().getPluginManager().callEvent(originChangeEvent);
                                     });

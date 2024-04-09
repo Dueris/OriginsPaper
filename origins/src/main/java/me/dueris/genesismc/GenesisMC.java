@@ -45,7 +45,6 @@ import me.dueris.genesismc.storage.nbt.NBTFixerUpper;
 import me.dueris.genesismc.util.*;
 import me.dueris.genesismc.util.entity.InventorySerializer;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import me.dueris.genesismc.util.render.TextureLocation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.server.MinecraftServer;

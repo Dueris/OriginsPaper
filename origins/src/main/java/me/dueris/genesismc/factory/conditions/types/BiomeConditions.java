@@ -4,7 +4,6 @@ import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.util.world.BiomeMappings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome.Precipitation;
@@ -41,13 +40,9 @@ public class BiomeConditions {
             biome.getA().getPrecipitationAt(new BlockPos(0, 64, 0)).equals(getPrecipitation(condition)) :
             condition.get("precipitation").toString().equalsIgnoreCase("none")));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("category"), (condition, biome) -> {
-            Biome b = CraftBiome.minecraftToBukkit(biome.getA());
-            for (String biS : BiomeMappings.getBiomeIDs(condition.get("category").toString())) {
-                if (Biome.valueOf(biS.split(":")[1].toUpperCase()).equals(b)) {
-                    return true;
-                }
-            }
-            return false;
+            NamespacedKey tag = GenesisMC.apoliIdentifier("category/" + condition.get("category").toString()); // Use category folder
+            TagKey key = TagKey.create(net.minecraft.core.registries.Registries.BIOME, CraftNamespacedKey.toMinecraft(tag));
+            return ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BIOME).wrapAsHolder(biome.getA()).is(key);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("temperature"), (condition, biome) -> {
             String comparison = condition.get("comparison").toString();
