@@ -2,6 +2,8 @@ package me.dueris.genesismc.factory.powers;
 
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
+import me.dueris.genesismc.util.Reflector;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
@@ -90,17 +92,13 @@ public interface ApoliPower extends Registerable {
     default NamespacedKey getKey() {
         try {
             if (this instanceof PowerProvider && this.getClass().getDeclaredField("powerReference") != null) {
-                Field field = this.getClass().getDeclaredField("powerReference");
-                field.setAccessible(true);
-
-                return NamespacedKey.fromString(field.get(this).toString());
+                String refrence = Reflector.accessField("powerReference", this.getClass(), this, String.class);
+                return NamespacedKey.fromString(refrence);
             } else {
                 return NamespacedKey.fromString(getPowerFile());
             }
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("An unhandled exception occurred when retrieving a key from a power");
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
         }
     }
 

@@ -136,13 +136,11 @@ public class Utils {
 
     protected static Optional<Object2DoubleMap<TagKey<Fluid>>> getFluidHeightMap(Entity entity) {
         try {
-            Field field = Entity.class.getDeclaredField(getFluidHeightFromReobf(1204));
-            if (!field.isAccessible()) field.setAccessible(true);
-            return Optional.of((Object2DoubleMap<TagKey<Fluid>>) field.get(entity));
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+            return Optional.of(Reflector.accessField(getFluidHeightFromReobf(1204), Entity.class, entity, Object2DoubleMap.class));
+        } catch (Exception e) {
             e.printStackTrace();
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     private static String getFluidHeightFromReobf(int vNumber) {

@@ -2,6 +2,8 @@ package me.dueris.genesismc.factory.conditions;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.types.*;
+import me.dueris.genesismc.util.Reflector;
+
 import org.bukkit.NamespacedKey;
 
 import java.lang.reflect.InvocationTargetException;
@@ -34,9 +36,10 @@ public enum ConditionTypes {
                                 throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
                             }
                         });
-                        Method registerMethod = c.getDeclaredMethod("register", inst.getClass());
-                        registerMethod.setAccessible(true);
-                        registerMethod.invoke(c.newInstance(), inst);
+                        Reflector.accessMethod$Invoke("register", c, c.newInstance(), new Class[]{inst.getClass()}, inst);
+                        // Method registerMethod = c.getDeclaredMethod("register", inst.getClass());
+                        // registerMethod.setAccessible(true);
+                        // registerMethod.invoke(c.newInstance(), inst);
                     }
                 } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
                          IllegalAccessException | InvocationTargetException e) {

@@ -328,17 +328,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         try {
-            // CraftApoli.loadOrigins(this.registry);
             // Register builtin instances
-            Method registerMethod;
-            try {
-                registerMethod = CraftPower.class.getDeclaredMethod("registerBuiltinPowers");
-                registerMethod.setAccessible(true);
-                registerMethod.invoke(null);
-            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException |
-                     InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            Reflector.accessMethod$Invoke("registerBuiltinPowers", CraftPower.class, null);
 
             ConditionExecutor.registerAll();
             Actions.registerAll();
