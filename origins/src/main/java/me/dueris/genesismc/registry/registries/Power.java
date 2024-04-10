@@ -253,6 +253,12 @@ public class Power implements Serializable, FactoryInstance {
         return obj.toString();
     }
 
+    public String getNamespacedString(String key) {
+        Object obj = powerFile.get(key);
+        if (obj == null) return null;
+        return NamespacedKey.fromString(obj.toString()).asString();
+    }
+
     public JSONObject getOrDefault(String key, Object def) {
         JSONObject jsonObject = (JSONObject) this.powerFile.get(key);
         if (jsonObject == null) return (JSONObject) def;
@@ -305,6 +311,12 @@ public class Power implements Serializable, FactoryInstance {
         Object obj = powerFile.get(key);
         if (obj == null) return def;
         return obj.toString();
+    }
+
+    public String getNamespacedStringOrDefault(String key, String def) {
+        Object obj = powerFile.get(key);
+        if (obj == null) return def;
+        return NamespacedKey.fromString(obj.toString()).asString();
     }
 
     /**

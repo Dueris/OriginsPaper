@@ -112,11 +112,11 @@ public class FireProjectile extends CraftPower implements Listener {
                                 divergence += (float) ((Math.random() - 0.5) * 0.05); // Adjust the 0.05 value to control the randomness level
 
                                 EntityType type;
-                                if (power.getStringOrDefault("entity_type", null).equalsIgnoreCase("origins:enderian_pearl")) {
+                                if (power.getString("entity_type").equalsIgnoreCase("origins:enderian_pearl")) {
                                     type = EntityType.ENDER_PEARL;
                                     enderian_pearl.add(p);
                                 } else {
-                                    type = EntityType.valueOf(power.getStringOrDefault("entity_type", null).split(":")[1].toUpperCase());
+                                    type = EntityType.valueOf(power.getNamespacedString("entity_type").split(":")[1].toUpperCase());
                                     enderian_pearl.remove(p);
                                 }
                                 String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
