@@ -8,7 +8,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.apoli.RaycastUtils;
+import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.Optionull;
 import net.minecraft.network.chat.RemoteChatSession;

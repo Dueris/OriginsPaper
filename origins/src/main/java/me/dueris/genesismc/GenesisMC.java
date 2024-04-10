@@ -45,7 +45,6 @@ import me.dueris.genesismc.storage.nbt.NBTFixerUpper;
 import me.dueris.genesismc.util.*;
 import me.dueris.genesismc.util.entity.InventorySerializer;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import me.dueris.genesismc.util.render.TextureLocation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.server.MinecraftServer;
@@ -329,17 +328,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         try {
-            // CraftApoli.loadOrigins(this.registry);
             // Register builtin instances
-            Method registerMethod;
-            try {
-                registerMethod = CraftPower.class.getDeclaredMethod("registerBuiltinPowers");
-                registerMethod.setAccessible(true);
-                registerMethod.invoke(null);
-            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException |
-                     InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            Reflector.accessMethod$Invoke("registerBuiltinPowers", CraftPower.class, null);
 
             ConditionExecutor.registerAll();
             Actions.registerAll();

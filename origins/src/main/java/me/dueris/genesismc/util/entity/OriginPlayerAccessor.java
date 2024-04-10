@@ -13,7 +13,6 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.util.SendCharts;
-import me.dueris.genesismc.util.enums.OriginDataType;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -252,19 +251,6 @@ public class OriginPlayerAccessor {
             if (origins.get(layer).getTag().equals(origin.getTag())) return layer;
         }
         return null;
-    }
-
-    public static void resetOriginData(Player player, OriginDataType type) {
-        if (type.equals(OriginDataType.CAN_EXPLODE)) {
-            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-        } else if (type.equals(OriginDataType.SHULKER_BOX_DATA)) {
-            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, "");
-        } else if (type.equals(OriginDataType.TOGGLE)) {
-            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
-        } else if (type.equals(OriginDataType.IN_PHASING_FORM)) {
-            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
-        }
-
     }
 
     public static boolean isInPhantomForm(Player player) {

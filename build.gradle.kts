@@ -63,6 +63,11 @@ tasks{
                 targetJarDirectory.resolve("genesis-".plus(subProject.version).plus(".jar")),
                 StandardCopyOption.REPLACE_EXISTING
             )
+            Files.copy(
+                file("origins/build/libs/origins-".plus(subProject.version).plus("-dev-all").plus(".jar")).toPath().toAbsolutePath(),
+                targetJarDirectory.resolve("genesis-".plus(subProject.version).plus("-mojmap").plus(".jar")),
+                StandardCopyOption.REPLACE_EXISTING
+            )
         }
     }
 }

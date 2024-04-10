@@ -9,6 +9,7 @@ import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Power;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.TileState;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
@@ -65,20 +67,11 @@ public class BlockConditions {
             return Comparison.getFromString(comparison).compare(adj, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("attachable"), (condition, block) -> {
-            if (block != null && block.getType() != Material.AIR) {
-                Block[] adjBlcs = new Block[]{
-                    block.getRelative(0, 1, 0), // Up
-                    block.getRelative(0, -1, 0), // Down
-                    block.getRelative(0, 0, -1), // North
-                    block.getRelative(0, 0, 1), // South
-                    block.getRelative(-1, 0, 0), // West
-                    block.getRelative(1, 0, 0)  // East
-                };
-
-                for (Block adj : adjBlcs) {
-                    if (adj != null && adj.getType().isSolid()) {
-                        return true;
-                    }
+            ServerLevel level = ((CraftWorld)block.getWorld()).getHandle();
+            for(Direction d : Direction.values()) {
+                BlockPos adjacent = CraftLocation.toBlockPosition(block.getLocation()).relative(d);
+                if(level.getBlockState(adjacent).isFaceSturdy(level, CraftLocation.toBlockPosition(block.getLocation()), d.getOpposite())) {
+                    return true;
                 }
             }
             return false;

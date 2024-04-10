@@ -12,6 +12,8 @@ import me.dueris.genesismc.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.TieredItem;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
@@ -26,114 +28,6 @@ import java.util.List;
 import java.util.function.BiPredicate;
 
 public class ItemConditions {
-    public static final List<Material> ENCHANTABLE_MATERIALS = new ArrayList<>();
-    public static HashMap<String, ArrayList<Material>> entityTagMappings = new HashMap<>();
-
-    static {
-        // Weapons
-        ENCHANTABLE_MATERIALS.add(Material.WOODEN_SWORD);
-        ENCHANTABLE_MATERIALS.add(Material.STONE_SWORD);
-        ENCHANTABLE_MATERIALS.add(Material.IRON_SWORD);
-        ENCHANTABLE_MATERIALS.add(Material.GOLDEN_SWORD);
-        ENCHANTABLE_MATERIALS.add(Material.DIAMOND_SWORD);
-        ENCHANTABLE_MATERIALS.add(Material.TRIDENT);
-
-        // Tools
-        ENCHANTABLE_MATERIALS.add(Material.WOODEN_PICKAXE);
-        ENCHANTABLE_MATERIALS.add(Material.STONE_PICKAXE);
-        ENCHANTABLE_MATERIALS.add(Material.IRON_PICKAXE);
-        ENCHANTABLE_MATERIALS.add(Material.GOLDEN_PICKAXE);
-        ENCHANTABLE_MATERIALS.add(Material.DIAMOND_PICKAXE);
-
-        ENCHANTABLE_MATERIALS.add(Material.WOODEN_AXE);
-        ENCHANTABLE_MATERIALS.add(Material.STONE_AXE);
-        ENCHANTABLE_MATERIALS.add(Material.IRON_AXE);
-        ENCHANTABLE_MATERIALS.add(Material.GOLDEN_AXE);
-        ENCHANTABLE_MATERIALS.add(Material.DIAMOND_AXE);
-
-        // Armor
-        ENCHANTABLE_MATERIALS.add(Material.LEATHER_HELMET);
-        ENCHANTABLE_MATERIALS.add(Material.LEATHER_CHESTPLATE);
-        ENCHANTABLE_MATERIALS.add(Material.LEATHER_LEGGINGS);
-        ENCHANTABLE_MATERIALS.add(Material.LEATHER_BOOTS);
-
-        ENCHANTABLE_MATERIALS.add(Material.CHAINMAIL_HELMET);
-        ENCHANTABLE_MATERIALS.add(Material.CHAINMAIL_CHESTPLATE);
-        ENCHANTABLE_MATERIALS.add(Material.CHAINMAIL_LEGGINGS);
-        ENCHANTABLE_MATERIALS.add(Material.CHAINMAIL_BOOTS);
-
-        ENCHANTABLE_MATERIALS.add(Material.IRON_HELMET);
-        ENCHANTABLE_MATERIALS.add(Material.IRON_CHESTPLATE);
-        ENCHANTABLE_MATERIALS.add(Material.IRON_LEGGINGS);
-        ENCHANTABLE_MATERIALS.add(Material.IRON_BOOTS);
-
-        ENCHANTABLE_MATERIALS.add(Material.DIAMOND_HELMET);
-        ENCHANTABLE_MATERIALS.add(Material.DIAMOND_CHESTPLATE);
-        ENCHANTABLE_MATERIALS.add(Material.DIAMOND_LEGGINGS);
-        ENCHANTABLE_MATERIALS.add(Material.DIAMOND_BOOTS);
-
-        ENCHANTABLE_MATERIALS.add(Material.NETHERITE_HELMET);
-        ENCHANTABLE_MATERIALS.add(Material.NETHERITE_CHESTPLATE);
-        ENCHANTABLE_MATERIALS.add(Material.NETHERITE_LEGGINGS);
-        ENCHANTABLE_MATERIALS.add(Material.NETHERITE_BOOTS);
-    }
-
-    public static List<Material> getNonMeatMaterials() {
-        List<Material> nonMeatMaterials = new ArrayList<>();
-
-        nonMeatMaterials.add(Material.APPLE);
-        nonMeatMaterials.add(Material.CARROT);
-        nonMeatMaterials.add(Material.POTATO);
-        nonMeatMaterials.add(Material.BEETROOT);
-        nonMeatMaterials.add(Material.WHEAT);
-        nonMeatMaterials.add(Material.MELON_SLICE);
-        nonMeatMaterials.add(Material.PUMPKIN);
-        nonMeatMaterials.add(Material.KELP);
-        nonMeatMaterials.add(Material.DRIED_KELP);
-        nonMeatMaterials.add(Material.SEAGRASS);
-        nonMeatMaterials.add(Material.HONEY_BOTTLE);
-        nonMeatMaterials.add(Material.GLOW_BERRIES);
-        nonMeatMaterials.add(Material.CHORUS_FRUIT);
-        nonMeatMaterials.add(Material.BAKED_POTATO);
-        nonMeatMaterials.add(Material.SWEET_BERRIES);
-        nonMeatMaterials.add(Material.POISONOUS_POTATO);
-        nonMeatMaterials.add(Material.PUMPKIN_PIE);
-        nonMeatMaterials.add(Material.SUSPICIOUS_STEW);
-        nonMeatMaterials.add(Material.MUSHROOM_STEW);
-        nonMeatMaterials.add(Material.BREAD);
-        nonMeatMaterials.add(Material.CAKE);
-        nonMeatMaterials.add(Material.COOKIE);
-
-        return nonMeatMaterials;
-    }
-
-    public static List<Material> getMeatMaterials() {
-        List<Material> meatMaterials = new ArrayList<>();
-
-        meatMaterials.add(Material.BEEF);
-        meatMaterials.add(Material.PORKCHOP);
-        meatMaterials.add(Material.MUTTON);
-        meatMaterials.add(Material.CHICKEN);
-        meatMaterials.add(Material.RABBIT);
-        meatMaterials.add(Material.TROPICAL_FISH);
-        meatMaterials.add(Material.COD);
-        meatMaterials.add(Material.COOKED_COD);
-        meatMaterials.add(Material.COOKED_SALMON);
-        meatMaterials.add(Material.RABBIT_STEW);
-        meatMaterials.add(Material.SPIDER_EYE);
-        meatMaterials.add(Material.SALMON);
-        meatMaterials.add(Material.PUFFERFISH);
-
-        meatMaterials.add(Material.COOKED_BEEF);
-        meatMaterials.add(Material.COOKED_PORKCHOP);
-        meatMaterials.add(Material.COOKED_MUTTON);
-        meatMaterials.add(Material.COOKED_CHICKEN);
-        meatMaterials.add(Material.COOKED_RABBIT);
-
-        meatMaterials.add(Material.ROTTEN_FLESH);
-
-        return meatMaterials;
-    }
 
     public void prep() {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("food"), (condition, itemStack) -> itemStack.getType().isEdible()));
@@ -141,7 +35,7 @@ public class ItemConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("relative_durability"), (condition, itemStack) -> {
             String comparison = condition.get("comparison").toString();
             double compareTo = Double.parseDouble(condition.get("compare_to").toString());
-            double amt = itemStack.getDurability() / itemStack.getType().getMaxDurability();
+            double amt = Math.abs(CraftItemStack.asNMSCopy(itemStack).getMaxDamage() - CraftItemStack.asNMSCopy(itemStack).getDamageValue()) / CraftItemStack.asNMSCopy(itemStack).getMaxDamage();
             return Comparison.getFromString(comparison).compare(amt, compareTo);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("is_equippable"), (condition, itemStack) -> EnchantTableHandler.wearable.contains(itemStack.getType())));
@@ -158,12 +52,12 @@ public class ItemConditions {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantable"), (condition, itemStack) -> ENCHANTABLE_MATERIALS.contains(itemStack.getType())));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("empty"), (condition, itemStack) -> itemStack.getType().isAir()));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantable"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).isEnchantable()));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("empty"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).isEmpty()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("durability"), (condition, itemStack) -> {
             String comparison = condition.get("comparison").toString();
             double compareTo = Double.parseDouble(condition.get("compare_to").toString());
-            double amt = itemStack.getDurability();
+            double amt = CraftItemStack.asNMSCopy(itemStack).getMaxDamage() - CraftItemStack.asNMSCopy(itemStack).getDamageValue();
             return Comparison.getFromString(comparison).compare(amt, compareTo);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("armor_value"), (condition, itemStack) -> {
@@ -179,7 +73,7 @@ public class ItemConditions {
             return Comparison.getFromString(comparison).compare(amt, compareTo);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fuel"), (condition, itemStack) -> itemStack.getType().isFuel()));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("meat"), (condition, itemStack) -> getMeatMaterials().contains(itemStack.getType())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("meat"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).getItem().getFoodProperties() != null ? CraftItemStack.asNMSCopy(itemStack).getItem().getFoodProperties().isMeat() : false));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, itemStack) -> NbtUtils.compareNbt(MiscUtils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.getTag(), true)));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("ingredient"), (condition, itemStack) -> {
             if (itemStack != null && itemStack.getType() != null) {
@@ -205,6 +99,12 @@ public class ItemConditions {
                 }
             }
             return false;
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("harvest_level"), (condition, itemStack) -> {
+            String comparison = condition.get("comparison").toString();
+            double compareTo = Double.parseDouble(condition.get("compare_to").toString());
+            return CraftItemStack.asNMSCopy(itemStack).getItem() instanceof TieredItem toolItem
+                && Comparison.getFromString(comparison).compare(toolItem.getTier().getLevel(), compareTo);
         }));
     }
 
