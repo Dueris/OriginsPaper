@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
@@ -36,15 +38,20 @@ public class TargetActionOnHit extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (CooldownUtils.isPlayerInCooldownFromTag(player, Utils.getNameOrTag(power))) continue;
-                if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
-                    setActive(player, power.getTag(), true);
-                    Actions.executeEntity(target, power.getEntityAction());
-                    if (power.getObjectOrDefault("cooldown", 1) != null) {
-                        CooldownUtils.addCooldown((Player) actor, Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), power.get("hud_render"));
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
+                            setActive(player, power.getTag(), true);
+                            Actions.executeEntity(target, power.getEntityAction());
+                            if (power.getObjectOrDefault("cooldown", 1) != null) {
+                                CooldownUtils.addCooldown((Player) actor, Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), power.get("hud_render"));
+                            }
+                        } else {
+                            setActive(player, power.getTag(), false);
+                        }
                     }
-                } else {
-                    setActive(player, power.getTag(), false);
-                }
+                }.runTaskLater(GenesisMC.getPlugin(), 1);
             }
         }
     }
