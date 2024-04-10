@@ -15,6 +15,7 @@ public interface ApoliPower extends Registerable {
     ArrayList<Player> game_event_listener = new ArrayList<>();
     ArrayList<Player> multiple = new ArrayList<>();
     ArrayList<Player> entity_set = new ArrayList<>();
+    ArrayList<Player> edible_item = new ArrayList<>();
     ArrayList<Player> resource = new ArrayList<>();
     ArrayList<Player> fall_immunity = new ArrayList<>();
     ArrayList<Player> climbing = new ArrayList<>();

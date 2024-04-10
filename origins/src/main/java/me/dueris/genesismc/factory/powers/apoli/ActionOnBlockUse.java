@@ -50,18 +50,9 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
                     Actions.executeBlock(e.getClickedBlock().getLocation(), power.getBlockAction());
                     Actions.executeEntity(e.getPlayer(), power.getEntityAction());
                     Actions.executeItem(e.getItem(), power.getItemAction());
-                    Actions.executeItem(e.getItem(), power.getAction("held_item_action"));
+                    Actions.executeItem(e.getItem(), power.get("held_item_action"));
                     if (power.getOrDefault("result_stack", null) != null) {
-                        JSONObject jsonObject = power.get("result_stack");
-                        int amt;
-                        if (jsonObject.get("amount").toString() != null) {
-                            amt = Integer.parseInt(jsonObject.get("amount").toString());
-                        } else {
-                            amt = 1;
-                        }
-                        ItemStack itemStack = new ItemStack(Material.valueOf(jsonObject.get("item").toString().toUpperCase().split(":")[jsonObject.get("item").toString().split(":").length]), amt);
-                        e.getPlayer().getInventory().addItem(itemStack);
-                        Actions.executeItem(itemStack, power.getAction("result_item_action"));
+                        EdibleItem.runResultStack(power, true, e.getPlayer());
                     }
                     tickFix.add(e.getPlayer());
                     new BukkitRunnable() {

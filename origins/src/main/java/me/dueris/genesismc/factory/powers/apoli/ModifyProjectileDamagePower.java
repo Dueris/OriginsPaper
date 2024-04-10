@@ -46,8 +46,8 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                                         ModifyDamageDealtPower damageDealtPower = new ModifyDamageDealtPower();
                                         damageDealtPower.runSetDMG(e, operation, value);
                                         setActive(pl, power.getTag(), true);
-                                        Actions.executeEntity(e.getEntity(), power.getAction("target_action"));
-                                        Actions.executeEntity(pl, power.getAction("self_action"));
+                                        Actions.executeEntity(e.getEntity(), power.get("target_action"));
+                                        Actions.executeEntity(pl, power.get("self_action"));
                                     }
                                 }
                             } else {

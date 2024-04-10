@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.registries.Power;
 import net.minecraft.core.BlockPos;
@@ -16,7 +17,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -28,7 +31,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R3.potion.CraftPotionEffectType;
+import org.bukkit.craftbukkit.v1_20_R3.potion.CraftPotionUtil;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.json.simple.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -92,6 +98,35 @@ public class Utils {
                 return power.getTag();
             }
         };
+    }
+
+    private static int getToInt(Object value){
+        return value instanceof Long ? Math.toIntExact((long) value) : (int) value;
+    }
+
+    private static double getToDouble(Object value){
+        return value instanceof Float ? ((Float)value).doubleValue() : (double) value;
+    }
+
+    public static FoodProperties parseProperties(JSONObject jsonObject) {
+        FoodProperties.Builder builder = new FoodProperties.Builder();
+        Utils.computeIfObjectPresent("hunger", jsonObject, value -> builder.nutrition(getToInt(value)));
+        Utils.computeIfObjectPresent("saturation", jsonObject, value -> builder.saturationMod(Float.valueOf(Double.toString(getToDouble(value)))));
+        Utils.computeIfObjectPresent("meat", jsonObject, value -> {
+            if((boolean)value) builder.meat();
+        });
+        Utils.computeIfObjectPresent("always_edible", jsonObject, value -> {
+            if((boolean)value) builder.alwaysEat();
+        });
+        Utils.computeIfObjectPresent("snack", jsonObject, value -> {
+            if((boolean)value) builder.fast();
+        });
+        List<PotionEffect> effects = MiscUtils.parseAndReturnPotionEffects(jsonObject);
+        effects.forEach(potionEffect -> {
+            MobEffectInstance instance = CraftPotionUtil.fromBukkit(potionEffect);
+            builder.effect(instance, 1.0F);
+        });
+        return builder.build();
     }
 
     public static boolean inSnow(Level world, BlockPos... blockPositions) {

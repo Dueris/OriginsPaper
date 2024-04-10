@@ -84,9 +84,9 @@ public class EntityActions {
             }
             bossBar.setProgress(newP);
             if (bossBar.getProgress() == 1.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).getAction("max_action"));
+                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).get("max_action"));
             } else if (bossBar.getProgress() == 0.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).getAction("min_action"));
+                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).get("min_action"));
             }
             bossBar.addPlayer((Player) entity);
             bossBar.setVisible(true);
@@ -117,9 +117,9 @@ public class EntityActions {
             }
             bossBar.setProgress(newP);
             if (bossBar.getProgress() == 1.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).getAction("max_action"));
+                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).get("max_action"));
             } else if (bossBar.getProgress() == 0.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).getAction("min_action"));
+                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).get("min_action"));
             }
             bossBar.addPlayer((Player) entity);
             bossBar.setVisible(true);
@@ -454,7 +454,7 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("apply_effect"), (action, entity) -> {
             if (entity instanceof LivingEntity le) {
-                le.addPotionEffect(MiscUtils.parseAndApplyStatusEffectInstance(action));
+                MiscUtils.parseAndReturnPotionEffects(action).forEach(potionEffect -> le.addPotionEffect(potionEffect, true));
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("area_of_effect"), (action, entity) -> {

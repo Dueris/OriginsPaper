@@ -106,7 +106,7 @@ public class EntitySetPower extends CraftPower implements Listener {
                             if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
                             if (power.get("action_on_add") == null) return;
                             if (power.getTag() == e.getTag()) {
-                                Actions.executeBiEntity(p, e.getEntity(), power.getAction("action_on_add"));
+                                Actions.executeBiEntity(p, e.getEntity(), power.get("action_on_add"));
                             }
                         }
                     }
@@ -126,7 +126,7 @@ public class EntitySetPower extends CraftPower implements Listener {
                             if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
                             if (power.get("action_on_add") == null) return;
                             if (power.getTag() == e.getTag()) {
-                                Actions.executeBiEntity(p, e.getEntity(), power.getAction("action_on_remove"));
+                                Actions.executeBiEntity(p, e.getEntity(), power.get("action_on_remove"));
                             }
                         }
                     }

@@ -19,15 +19,18 @@ import org.json.simple.JSONObject;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MiscUtils {
 
     @Nullable
-    public static PotionEffect parseAndApplyStatusEffectInstance(JSONObject power) {
-        JSONObject singleEffect = (JSONObject) power.get("effect");
+    public static List<PotionEffect> parseAndReturnPotionEffects(JSONObject power) {
+        List<PotionEffect> effectList = new ArrayList<>();
+        JSONObject singleEffect = (JSONObject) power.getOrDefault("effect", new JSONObject());
         JSONArray effects = (JSONArray) power.getOrDefault("effects", new JSONArray());
 
-        if (singleEffect != null) {
+        if (singleEffect != null && !singleEffect.isEmpty()) {
             effects.add(singleEffect);
         }
 
@@ -48,9 +51,9 @@ public class MiscUtils {
                 showParticles = Boolean.parseBoolean(effect.get("show_particles").toString());
             if (effect.containsKey("show_icon")) showIcon = Boolean.parseBoolean(effect.get("show_icon").toString());
 
-            return new PotionEffect(PotionEffectType.getByKey(new NamespacedKey(potionEffect.split(":")[0], potionEffect.split(":")[1])), duration, amplifier, isAmbient, showParticles, showIcon);
+            effectList.add(new PotionEffect(PotionEffectType.getByKey(new NamespacedKey(potionEffect.split(":")[0], potionEffect.split(":")[1])), duration, amplifier, isAmbient, showParticles, showIcon));
         }
-        return null;
+        return effectList;
     }
 
     public static Sound parseSound(String sound) {

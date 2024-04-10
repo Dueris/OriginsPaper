@@ -32,13 +32,13 @@ public class ItemOnItemPower extends CraftPower implements Listener {
                         if (pass) {
                             ItemStack stack = power.rawAccessor.getItemStack("result");
                             if (stack != null) {
-                                Actions.executeItem(stack, power.getAction("result_item_action"));
+                                Actions.executeItem(stack, power.get("result_item_action"));
                                 for (int i = 0; i < power.getIntOrDefault("result_from_on_stack", 1); i++) {
                                     p.getInventory().addItem(stack);
                                 }
                             }
-                            Actions.executeItem(e.getCursor(), power.getAction("using_item_action"));
-                            Actions.executeItem(e.getCurrentItem(), power.getAction("on_item_action"));
+                            Actions.executeItem(e.getCursor(), power.get("using_item_action"));
+                            Actions.executeItem(e.getCurrentItem(), power.get("on_item_action"));
                             Actions.executeEntity(e.getWhoClicked(), power.getEntityAction());
                         }
                     }

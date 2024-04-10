@@ -35,9 +35,9 @@ public class PreventBlockPlace extends CraftPower implements Listener {
                     e.setCancelled(true);
                     setActive(e.getPlayer(), power.getTag(), true);
                     Actions.executeEntity(e.getPlayer(), power.getEntityAction());
-                    Actions.executeItem(e.getItemInHand(), power.getAction("held_item_action"));
-                    Actions.executeBlock(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
-                    Actions.executeBlock(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
+                    Actions.executeItem(e.getItemInHand(), power.get("held_item_action"));
+                    Actions.executeBlock(e.getBlockAgainst().getLocation(), power.get("place_on_action"));
+                    Actions.executeBlock(e.getBlockPlaced().getLocation(), power.get("place_to_action"));
                 }
             }
         }

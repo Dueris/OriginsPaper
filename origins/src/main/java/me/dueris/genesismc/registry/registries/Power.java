@@ -489,22 +489,6 @@ public class Power implements Serializable, FactoryInstance {
         return new JSONObject();
     }
 
-    public JSONObject getAction(String string) {
-        Object obj = powerFile.get(string);
-        if (obj instanceof JSONObject modifier) {
-            return modifier;
-        }
-        return new JSONObject();
-    }
-
-    public JSONObject getActionOrNull(String string) {
-        Object obj = powerFile.get(string);
-        if (obj instanceof JSONObject modifier) {
-            return modifier;
-        }
-        return null;
-    }
-
     public JSONObject getEntityAction() {
         Object obj = powerFile.get("entity_action");
         if (obj instanceof JSONObject modifier) {

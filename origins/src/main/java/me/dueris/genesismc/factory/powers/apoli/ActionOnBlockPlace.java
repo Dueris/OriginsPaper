@@ -36,20 +36,11 @@ public class ActionOnBlockPlace extends CraftPower implements Listener {
                     e.setCancelled(true);
                     setActive(e.getPlayer(), power.getTag(), true);
                     Actions.executeEntity(e.getPlayer(), power.getEntityAction());
-                    Actions.executeItem(e.getItemInHand(), power.getAction("held_item_action"));
-                    Actions.executeBlock(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
-                    Actions.executeBlock(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
-                    if (power.get("result_stack") != null) {
-                        JSONObject jsonObject = power.get("result_stack");
-                        int amt;
-                        if (jsonObject.get("amount").toString() != null) {
-                            amt = Integer.parseInt(jsonObject.get("amount").toString());
-                        } else {
-                            amt = 1;
-                        }
-                        ItemStack itemStack = new ItemStack(Material.valueOf(jsonObject.get("item").toString().toUpperCase().split(":")[jsonObject.get("item").toString().split(":").length]), amt);
-                        e.getPlayer().getInventory().addItem(itemStack);
-                        Actions.executeItem(itemStack, power.getAction("result_item_action"));
+                    Actions.executeItem(e.getItemInHand(), power.get("held_item_action"));
+                    Actions.executeBlock(e.getBlockAgainst().getLocation(), power.get("place_on_action"));
+                    Actions.executeBlock(e.getBlockPlaced().getLocation(), power.get("place_to_action"));
+                    if (power.getOrDefault("result_stack", null) != null) {
+                        EdibleItem.runResultStack(power, true, e.getPlayer());
                     }
                 }
             }
