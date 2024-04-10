@@ -83,7 +83,7 @@ public class AttributeHandler extends CraftPower implements Listener {
                         }
 
                         try {
-                            Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+                            Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.get("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
 
                             Object valueObj = modifier.get("value");
 

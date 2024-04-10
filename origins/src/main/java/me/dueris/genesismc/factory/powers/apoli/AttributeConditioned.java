@@ -9,6 +9,7 @@ import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
@@ -46,7 +47,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
         BinaryOperator mathOperator = operationMap.get(operation);
         if (mathOperator != null) {
             int result = (int) mathOperator.apply(base_value, value);
-            p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
+            p.getAttribute(attribute_modifier).setBaseValue(result);
         } else {
             Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
         }
@@ -73,7 +74,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
         BinaryOperator operator = Utils.getOperationMappingsDouble().get(operation);
         if (operator != null) {
             double result = Double.valueOf(String.valueOf(operator.apply(base_value, value)));
-            p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
+            p.getAttribute(attribute_modifier).setBaseValue(result);
         } else {
             Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
         }
@@ -102,14 +103,14 @@ public class AttributeConditioned extends CraftPower implements Listener {
                 if (power == null) continue;
                 for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                     if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
-                    Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.get("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
                     double val = Float.valueOf(modifier.get("value").toString());
-                    double baseVal = p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+                    double baseVal = p.getAttribute(attribute_modifier).getBaseValue();
                     String operation = modifier.get("operation").toString();
                     BinaryOperator operator = Utils.getOperationMappingsDouble().get(operation);
                     if (operator != null) {
                         double result = Double.valueOf(String.valueOf(operator.apply(baseVal, val)));
-                        p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
+                        p.getAttribute(attribute_modifier).setBaseValue(result);
                     } else {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
                     }
@@ -142,15 +143,15 @@ public class AttributeConditioned extends CraftPower implements Listener {
                 if (power == null) continue;
 
                 for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
-                    Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.get("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
                     if (modifier.get("value") instanceof Integer) {
                         int value = Integer.valueOf(modifier.get("value").toString());
-                        int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+                        int base_value = (int) p.getAttribute(attribute_modifier).getBaseValue();
                         String operation = String.valueOf(modifier.get("operation"));
                         executeAttributeModify(operation, attribute_modifier, base_value, p, -value);
                     } else if (modifier.get("value") instanceof Double) {
                         double value = Double.valueOf(modifier.get("value").toString());
-                        double base_value = p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+                        double base_value = p.getAttribute(attribute_modifier).getBaseValue();
                         String operation = String.valueOf(modifier.get("operation"));
                         executeAttributeModify(operation, attribute_modifier, base_value, p, -value);
                     }
