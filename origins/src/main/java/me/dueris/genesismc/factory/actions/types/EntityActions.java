@@ -92,7 +92,6 @@ public class EntityActions {
                 Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).get("min_action"));
             }
             bossBar.addPlayer((Player) entity);
-            bossBar.setVisible(true);
             resourceChangeTimeout.put(entity, true);
             new BukkitRunnable() {
                 @Override
@@ -125,7 +124,6 @@ public class EntityActions {
                 Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).get("min_action"));
             }
             bossBar.addPlayer((Player) entity);
-            bossBar.setVisible(true);
             resourceChangeTimeout.put(entity, true);
             new BukkitRunnable() {
                 @Override

@@ -96,23 +96,20 @@ public class Resource extends CraftPower implements Listener {
                 HashMap<String, Pair<BossBar, Double>> map = new HashMap<>();
                 map.put(tag, pair);
                 registeredBars.put(p, map);
-                final boolean[] shouldRender = {true};
                 if (power.get("hud_render") != null) {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
                             HashMap<String, Object> hud_render = power.get("hud_render");
-                            final boolean[] canRender = {true};
-                            if ((boolean) hud_render.getOrDefault("should_render", false)) {
-                                shouldRender[0] = canRender[0];
-                            }
+                            final boolean[] canRender = {(boolean) hud_render.getOrDefault("should_render", false)};
                             if (hud_render.containsKey("condition")) {
                                 canRender[0] = ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p);
                             }
+
+                            bar.setVisible(canRender[0]);
                         }
                     }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
                 }
-                bar.setVisible(shouldRender[0]);
                 bar.addPlayer(p);
             }
         }
