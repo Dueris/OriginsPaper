@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -7,22 +8,36 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.phys.Vec3;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.bukkit.Material.AIR;
 
-public class Climbing extends CraftPower {
+public class Climbing extends CraftPower implements Listener {
 
     public ArrayList<Player> active_climbing = new ArrayList<>();
-
+    public ArrayList<Player> holdingPlayers = new ArrayList<>();
+    public ArrayList<Player> allowedToClimb = new ArrayList<>();
 
     public boolean isActiveClimbing(Player player) {
         return active_climbing.contains(player);
@@ -35,43 +50,73 @@ public class Climbing extends CraftPower {
     @Override
     public void run(Player p) {
         if (climbing.contains(p)) {
-            if ((p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
-                p.getLocation().getBlock().getRelative(BlockFace.WEST).getType().isSolid() ||
-                p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType().isSolid() ||
-                p.getLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isSolid() ||
-                p.getEyeLocation().add(0, 1, 0).getBlock().getType().isSolid() ||
-                p.getEyeLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
-                p.getEyeLocation().getBlock().getRelative(BlockFace.WEST).getType().isSolid() ||
-                p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType().isSolid() ||
-                p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isSolid()) && (
-
-                p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isCollidable() ||
-                    p.getLocation().getBlock().getRelative(BlockFace.WEST).getType().isCollidable() ||
-                    p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType().isCollidable() ||
-                    p.getLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable() ||
-                    p.getEyeLocation().add(0, 1, 0).getBlock().getType().isCollidable() ||
-                    p.getEyeLocation().getBlock().getRelative(BlockFace.EAST).getType().isCollidable() ||
-                    p.getEyeLocation().getBlock().getRelative(BlockFace.WEST).getType().isCollidable() ||
-                    p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType().isCollidable() ||
-                    p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable()
-            )) {
-                Block block = p.getTargetBlock(null, 2);
+            if (!((CraftWorld)p.getWorld()).getHandle().getBlockStates(((CraftPlayer)p).getHandle().getBoundingBox().inflate(0.1, 0, 0.1)).filter(state -> state.getBukkitMaterial().isCollidable()).toList().isEmpty()) {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                        if(!p.isSneaking() && holdingPlayers.contains(p)) holdingPlayers.remove(p);
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && allowedToClimb.contains(p)) {
                             setActive(p, power.getTag(), true);
-                            if (!p.isSneaking() && block.getType() != AIR) return;
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 5, 2, false, false, false));
                             getActiveClimbingMap().add(p);
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
                                     getActiveClimbingMap().remove(p);
                                 }
-                            }.runTaskLater(GenesisMC.getPlugin(), 1L);
+                            }.runTaskLater(GenesisMC.getPlugin(), 2L);
                         } else {
                             setActive(p, power.getTag(), false);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void jump(PlayerJumpEvent e){
+        if(climbing.contains(e.getPlayer())){
+            Player p = e.getPlayer();
+            allowedToClimb.add(p);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if(p.isOnGround()){
+                        allowedToClimb.remove(p);
+                        cancel();
+                    }
+                }
+            }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+        }
+    }
+
+    @EventHandler
+    public void latch(PlayerToggleSneakEvent e) {
+        Player p = e.getPlayer();
+        if(climbing.contains(p)){
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    if (power.getBooleanOrDefault("allow_holding", true)) {
+                        final Location[] location = {p.getLocation()};
+                        if(e.isSneaking()){
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if(p.isSneaking()){
+                                        if(location[0].getPitch() != p.getPitch() || location[0].getYaw() != p.getYaw()){
+                                            float pitch = p.getPitch();
+                                            float yaw = p.getYaw();
+                                            Location updatedLocation = new Location(location[0].getWorld(), location[0].getX(), location[0].getY(), location[0].getZ(), yaw, pitch);
+                                            location[0] = updatedLocation;
+                                        }
+                                        p.teleportAsync(location[0]);
+                                        holdingPlayers.add(p);
+                                    } else {
+                                        holdingPlayers.remove(p);
+                                        cancel();
+                                    }
+                                }
+                            }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
                         }
                     }
                 }
