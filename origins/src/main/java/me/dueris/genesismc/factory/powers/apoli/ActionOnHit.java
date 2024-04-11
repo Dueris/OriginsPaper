@@ -33,13 +33,13 @@ public class ActionOnHit extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 if (getPowerArray().contains(p)) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (!ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) actor)) return;
+                        if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
                         if (!ConditionExecutor.testDamage(power.get("damage_condition"), e)) return;
-                        if (!ConditionExecutor.testBiEntity(power, power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
+                        if (!ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
                             return;
                         setActive(p, power.getTag(), true);
-                        Actions.executeEntity(power, actor, power.getEntityAction());
-                        Actions.executeBiEntity(power, actor, target, power.getBiEntityAction());
+                        Actions.executeEntity(actor, power.getEntityAction());
+                        Actions.executeBiEntity(actor, target, power.getBiEntityAction());
                         new BukkitRunnable() {
                             @Override
                             public void run() {

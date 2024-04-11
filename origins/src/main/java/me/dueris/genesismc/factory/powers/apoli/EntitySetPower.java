@@ -103,10 +103,10 @@ public class EntitySetPower extends CraftPower implements Listener {
                 if (entity_set.contains(p)) {
                     for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                         for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                            if (!ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) return;
+                            if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
                             if (power.get("action_on_add") == null) return;
                             if (power.getTag() == e.getTag()) {
-                                Actions.executeBiEntity(power, p, e.getEntity(), power.get("action_on_add"));
+                                Actions.executeBiEntity(p, e.getEntity(), power.get("action_on_add"));
                             }
                         }
                     }
@@ -123,10 +123,10 @@ public class EntitySetPower extends CraftPower implements Listener {
                 if (entity_set.contains(p)) {
                     for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                         for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                            if (!ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) return;
+                            if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
                             if (power.get("action_on_add") == null) return;
                             if (power.getTag() == e.getTag()) {
-                                Actions.executeBiEntity(power, p, e.getEntity(), power.get("action_on_remove"));
+                                Actions.executeBiEntity(p, e.getEntity(), power.get("action_on_remove"));
                             }
                         }
                     }
@@ -145,8 +145,7 @@ public class EntitySetPower extends CraftPower implements Listener {
             }
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (!ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) e.getPlayer()))
-                        return;
+                    if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) return;
                     addToEntitySet(e.getPlayer(), power.getTag());
                 }
             }

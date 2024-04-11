@@ -28,7 +28,7 @@ public class ModifyLavaSpeed extends CraftPower {
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                             for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                                 Float value = Float.valueOf(modifier.get("value").toString());
                                 String operation = modifier.get("operation").toString();

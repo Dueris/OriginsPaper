@@ -28,7 +28,7 @@ public class NightVision extends CraftPower {
         if (night_vision.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getFloatOrDefault("strength", 1.0f)), false, false, false));
                     } else {

@@ -40,14 +40,14 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power powerContainer : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
                 if (powerContainer == null) continue;
-                if (!(ConditionExecutor.testBlock(powerContainer.get("block_condition"), (CraftBlock) e.getBlock()) && ConditionExecutor.testEntity(powerContainer, powerContainer.get("condition"), (CraftEntity) e.getPlayer())))
+                if (!(ConditionExecutor.testBlock(powerContainer.get("block_condition"), (CraftBlock) e.getBlock()) && ConditionExecutor.testEntity(powerContainer.get("condition"), (CraftEntity) e.getPlayer())))
                     return;
                 boolean pass = powerContainer.getBooleanOrDefault("only_when_harvested", true) && ((CraftPlayer) actor).getHandle().hasCorrectToolForDrops(((CraftBlock) e.getBlock()).getNMS());
 
                 setActive(actor, powerContainer.getTag(), true);
                 if (pass) {
                     Actions.executeBlock(e.getBlock().getLocation(), powerContainer.getBlockAction());
-                    Actions.executeEntity(powerContainer, e.getPlayer(), powerContainer.getEntityAction());
+                    Actions.executeEntity(e.getPlayer(), powerContainer.getEntityAction());
                 }
                 new BukkitRunnable() {
                     @Override

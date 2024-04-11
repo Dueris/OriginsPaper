@@ -28,7 +28,7 @@ public class GameEventListener extends CraftPower implements Listener {
             if (!this.getPowerArray().contains(p)) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                         Object event = power.getObjectOrDefault("event", null);
                         if (event == null)
                             throw new IllegalArgumentException("Event for game_event_listener must not be null");
@@ -36,7 +36,7 @@ public class GameEventListener extends CraftPower implements Listener {
                             event = event.toString().split(":")[1];
                         }
                         if (e.getEvent().toString().equals(event.toString())) {
-                            Actions.executeEntity(power, e.getEntity(), power.get("entity_action"));
+                            Actions.executeEntity(e.getEntity(), power.get("entity_action"));
                         }
                     }
                 }

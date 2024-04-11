@@ -24,7 +24,7 @@ public class KeepInventory extends CraftPower implements Listener {
             if (keep_inventory.contains(player)) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) player)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
                         ArrayList<Long> slots = new ArrayList<>();
                         setActive(player, power.getTag(), true);
                         if (power.getLongList("slots") != null) {

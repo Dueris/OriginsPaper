@@ -26,7 +26,7 @@ public class WalkOnFluid extends CraftPower {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         if (!p.getLocation().add(0, -1, 0).getBlock().isSolid()) {
                             if (p.getLocation().add(0, -1, 0).getBlock().getType() == Material.WATER || p.getLocation().add(0, -1, 0).getBlock().getType() == Material.LAVA) {

@@ -37,17 +37,17 @@ public class ActionOverTime extends CraftPower {
                         return;
                     } else {
                         taggedAllowedMap.putIfAbsent(power.getTag(), false);
-                        if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                             if (!taggedAllowedMap.get(power.getTag())) {
                                 taggedAllowedMap.put(power.getTag(), true);
-                                Actions.executeEntity(power, p, power.get("rising_action"));
+                                Actions.executeEntity(p, power.get("rising_action"));
                             }
                             setActive(p, power.getTag(), true);
-                            Actions.executeEntity(power, p, power.getEntityAction());
+                            Actions.executeEntity(p, power.getEntityAction());
                         } else {
                             if (taggedAllowedMap.get(power.getTag())) {
                                 taggedAllowedMap.put(power.getTag(), false);
-                                Actions.executeEntity(power, p, power.get("falling_action"));
+                                Actions.executeEntity(p, power.get("falling_action"));
                             }
                             setActive(p, power.getTag(), false);
                         }

@@ -53,7 +53,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                 try {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (e.getBlock() == null || e.getBlock().getState() == null) return;
-                        if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) e.getBlock())) {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) e.getBlock())) {
                             setActive(p, power.getTag(), true);
                             if (p.hasPotionEffect(PotionEffectType.FAST_DIGGING)) return;
                             // if(power.getPossibleModifiers("modifier", "modifiers"))

@@ -16,8 +16,7 @@ public class NamespaceUtils {
      * @return a NamespacedKey object representing the dynamic namespace
      */
     public static NamespacedKey getDynamicNamespace(String currentNamespace, String dynamicNamespace) {
-        if (currentNamespace == null) return NamespacedKey.fromString(dynamicNamespace);
-        if (dynamicNamespace.contains("*") && currentNamespace.contains(":") && dynamicNamespace.contains(":")) {
+        if (dynamicNamespace.contains("*") && currentNamespace.contains(":")) {
             String[] split = dynamicNamespace.split(":");
             String namespace = split[0];
             String path = split[1];

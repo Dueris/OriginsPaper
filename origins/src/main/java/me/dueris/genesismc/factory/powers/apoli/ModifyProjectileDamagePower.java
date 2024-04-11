@@ -37,7 +37,7 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                     try {
                         ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(pl, getPowerFile(), layer)) {
-                            if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power, power.get("target_condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.get("damage_condition"), e)) {
+                            if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.get("target_condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.get("damage_condition"), e)) {
                                 for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                                     Float value = Float.valueOf(modifier.get("value").toString());
                                     String operation = modifier.get("operation").toString();
@@ -46,8 +46,8 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                                         ModifyDamageDealtPower damageDealtPower = new ModifyDamageDealtPower();
                                         damageDealtPower.runSetDMG(e, operation, value);
                                         setActive(pl, power.getTag(), true);
-                                        Actions.executeEntity(power, e.getEntity(), power.get("target_action"));
-                                        Actions.executeEntity(power, pl, power.get("self_action"));
+                                        Actions.executeEntity(e.getEntity(), power.get("target_action"));
+                                        Actions.executeEntity(pl, power.get("self_action"));
                                     }
                                 }
                             } else {

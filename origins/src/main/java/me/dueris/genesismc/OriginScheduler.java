@@ -11,31 +11,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.codehaus.plexus.util.FastMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 
 public class OriginScheduler {
 
-    private static final HashMap<Entity, Power> currentTickingPowers = new HashMap<>();
     public static ArrayList<ApoliPower> activePowerRunners = new ArrayList<>();
     final Plugin plugin;
     ArrayList<BukkitRunnable> runnables = new ArrayList<>();
 
     public OriginScheduler(Plugin plugin) {
         this.plugin = plugin;
-    }
-
-    public static void updateTickingPower(Entity entity, Power power) {
-        if (power == null) return;
-        if (power.isOriginMultipleSubPower()) currentTickingPowers.put(entity, power.getPowerParent());
-        else currentTickingPowers.put(entity, power);
-    }
-
-    public static Optional<Power> getCurrentTickingPower(Entity entity) {
-        return currentTickingPowers.containsKey(entity) ? Optional.of(currentTickingPowers.get(entity)) : Optional.empty();
     }
 
     public BukkitTask runTask(BukkitRunnable runnable) {
@@ -87,9 +74,6 @@ public class OriginScheduler {
                         c.run(p);
                     }
                 }
-            }
-            if(!currentTickingPowers.isEmpty()){
-                currentTickingPowers.clear();
             }
         }
     }

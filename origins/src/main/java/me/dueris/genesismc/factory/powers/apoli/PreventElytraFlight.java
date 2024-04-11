@@ -25,7 +25,7 @@ public class PreventElytraFlight extends CraftPower implements Listener {
             if (prevent_elytra_flight.contains(p)) {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                             e.setCancelled(true);
                             setActive(p, power.getTag(), true);
                         } else {

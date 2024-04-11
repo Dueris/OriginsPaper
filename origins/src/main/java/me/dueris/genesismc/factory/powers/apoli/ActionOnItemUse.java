@@ -37,11 +37,11 @@ public class ActionOnItemUse extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (power == null) continue;
-                if (!ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) player)) return;
+                if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) return;
                 if (!ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) return;
                 setActive(e.getPlayer(), power.getTag(), true);
                 Actions.executeItem(e.getItem(), power.get("item_action"));
-                Actions.executeEntity(power, player, power.get("entity_action"));
+                Actions.executeEntity(player, power.get("entity_action"));
                 new BukkitRunnable() {
                     @Override
                     public void run() {

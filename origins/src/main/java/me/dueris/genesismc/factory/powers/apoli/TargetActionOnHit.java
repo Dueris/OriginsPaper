@@ -41,9 +41,9 @@ public class TargetActionOnHit extends CraftPower implements Listener {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) player)) {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
                             setActive(player, power.getTag(), true);
-                            Actions.executeEntity(power, target, power.getEntityAction());
+                            Actions.executeEntity(target, power.getEntityAction());
                             if (power.getObjectOrDefault("cooldown", 1) != null) {
                                 CooldownUtils.addCooldown((Player) actor, Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), power.get("hud_render"));
                             }

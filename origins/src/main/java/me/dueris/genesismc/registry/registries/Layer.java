@@ -6,7 +6,6 @@ import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.calio.builder.inst.FactoryProvider;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
-import me.dueris.genesismc.OriginScheduler;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import org.bukkit.NamespacedKey;
@@ -54,7 +53,7 @@ public class Layer implements Serializable, FactoryInstance {
         List<Origin> tested = new ArrayList<Origin>();
         for (Origin origin : this.origins) {
             if (origin.getUsesCondition()) {
-                if (ConditionExecutor.testEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), origin.choosingCondition, (CraftEntity) entity)) {
+                if (ConditionExecutor.testEntity(origin.choosingCondition, (CraftEntity) entity)) {
                     tested.add(origin);
                 }
             } else {

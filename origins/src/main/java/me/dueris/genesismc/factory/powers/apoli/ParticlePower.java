@@ -68,7 +68,7 @@ public class ParticlePower extends CraftPower {
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
-                        if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) player)) {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
                             if (!getPowerArray().contains(player)) return;
                             Particle particle = computeParticleArgs(power.getObject("particle"));
                             if (particle == null)

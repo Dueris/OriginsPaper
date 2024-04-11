@@ -107,7 +107,7 @@ public class Resource extends CraftPower implements Listener {
                                 shouldRender[0] = canRender[0];
                             }
                             if (hud_render.containsKey("condition")) {
-                                canRender[0] = ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p);
+                                canRender[0] = ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p);
                             }
                         }
                     }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);

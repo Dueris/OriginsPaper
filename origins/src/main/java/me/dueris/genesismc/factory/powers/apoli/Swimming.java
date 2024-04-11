@@ -19,7 +19,7 @@ public class Swimming extends CraftPower {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (swimming.contains(p)) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (!ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
+                    if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), false);
                         return;
                     } else {

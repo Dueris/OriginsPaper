@@ -29,7 +29,7 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                if (!(ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testBiEntity(power, power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target) && ConditionExecutor.testItem(power.get("item_condition"), actor.getInventory().getItem(e.getHand()))))
+                if (!(ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target) && ConditionExecutor.testItem(power.get("item_condition"), actor.getInventory().getItem(e.getHand()))))
                     return;
 
                 setActive(player, power.getTag(), true);
@@ -37,7 +37,7 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
                 if (power.getOrDefault("result_stack", null) != null) {
                     EdibleItem.runResultStack(power, true, actor);
                 }
-                Actions.executeBiEntity(power, actor, target, power.getBiEntityAction());
+                Actions.executeBiEntity(actor, target, power.getBiEntityAction());
                 new BukkitRunnable() {
                     @Override
                     public void run() {

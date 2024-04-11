@@ -46,7 +46,7 @@ public class ModifyBlockRenderPower extends CraftPower {
                         for (Block block : chunkManagerWorld.getAllBlocksInChunk(chunk)) {
                             if (block.getType() != Material.AIR) {
                                 try {
-                                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) player) && ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) block)) {
+                                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player) && ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) block)) {
                                         conditionMet = true;
                                         setActive(player, power.getTag(), true);
                                         BlockState blockState = block.getState();

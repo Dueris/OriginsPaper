@@ -39,7 +39,7 @@ public class ItemOnItemPower extends CraftPower implements Listener {
                             }
                             Actions.executeItem(e.getCursor(), power.get("using_item_action"));
                             Actions.executeItem(e.getCurrentItem(), power.get("on_item_action"));
-                            Actions.executeEntity(power, e.getWhoClicked(), power.getEntityAction());
+                            Actions.executeEntity(e.getWhoClicked(), power.getEntityAction());
                         }
                     }
                 }

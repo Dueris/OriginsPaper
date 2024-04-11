@@ -33,10 +33,10 @@ public class ActionWhenDamageTaken extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (power == null) continue;
-                if (!ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) actor)) return;
+                if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
                 if (!ConditionExecutor.testDamage(power.get("damage_condition"), e)) return;
-                Actions.executeEntity(power, actor, power.getEntityAction());
-                Actions.executeEntity(power, actor, power.get("action"));
+                Actions.executeEntity(actor, power.getEntityAction());
+                Actions.executeEntity(actor, power.get("action"));
 
                 setActive(player, power.getTag(), true);
                 new BukkitRunnable() {

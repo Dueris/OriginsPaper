@@ -35,7 +35,7 @@ public class RestrictArmor extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                         runPower(p, power);
                     }
                 }
@@ -61,7 +61,7 @@ public class RestrictArmor extends CraftPower implements Listener {
                         return;
                     } else {
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                             runPower(p, power);
                         } else {
                             setActive(p, power.getTag(), false);

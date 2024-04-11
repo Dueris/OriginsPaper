@@ -40,12 +40,12 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
                 if (power == null) continue;
-                if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) e.getPlayer()) &&
+                if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer()) &&
                     ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) e.getClickedBlock()) &&
                     ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
                     setActive(e.getPlayer(), power.getTag(), true);
                     Actions.executeBlock(e.getClickedBlock().getLocation(), power.getBlockAction());
-                    Actions.executeEntity(power, e.getPlayer(), power.getEntityAction());
+                    Actions.executeEntity(e.getPlayer(), power.getEntityAction());
                     Actions.executeItem(e.getItem(), power.getItemAction());
                     Actions.executeItem(e.getItem(), power.get("held_item_action"));
                     if (power.getOrDefault("result_stack", null) != null) {
