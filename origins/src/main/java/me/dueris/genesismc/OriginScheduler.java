@@ -19,7 +19,7 @@ import java.util.Optional;
 
 public class OriginScheduler {
 
-    private static final HashMap<Entity, Power> currentTickingPowers = new HashMap<>(Integer.MAX_VALUE);
+    private static final HashMap<Entity, Power> currentTickingPowers = new HashMap<>();
     public static ArrayList<ApoliPower> activePowerRunners = new ArrayList<>();
     final Plugin plugin;
     ArrayList<BukkitRunnable> runnables = new ArrayList<>();
