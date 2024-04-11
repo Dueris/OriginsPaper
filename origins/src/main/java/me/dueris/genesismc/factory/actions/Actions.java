@@ -9,6 +9,12 @@ import me.dueris.genesismc.factory.actions.types.EntityActions;
 import me.dueris.genesismc.factory.actions.types.ItemActions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.util.Utils;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -331,22 +337,6 @@ public class Actions {
                 return EquipmentSlot.OFF_HAND;
             default:
                 return null;
-        }
-    }
-
-    public static void spawnEffectCloud(Entity entity, float radius, int waitTime, PotionEffect effect) {
-        if (entity != null) {
-            Location entityLocation = entity.getLocation();
-
-            org.bukkit.entity.AreaEffectCloud effectCloud = entityLocation.getWorld()
-                .spawn(entityLocation, org.bukkit.entity.AreaEffectCloud.class);
-
-            effectCloud.setRadius(radius);
-            effectCloud.setDuration(waitTime);
-
-            if (effect != null) {
-                effectCloud.addCustomEffect(effect, true);
-            }
         }
     }
 

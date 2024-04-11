@@ -108,6 +108,12 @@ public class Utils {
         return value instanceof Float ? ((Float)value).doubleValue() : (double) value;
     }
 
+    public static List<MobEffectInstance> toMobEffectList(List<PotionEffect> effects){
+        List<MobEffectInstance> ret = new ArrayList<>();
+        effects.forEach(effect -> ret.add(CraftPotionUtil.fromBukkit(effect)));
+        return ret;
+    }
+
     public static FoodProperties parseProperties(JSONObject jsonObject) {
         FoodProperties.Builder builder = new FoodProperties.Builder();
         Utils.computeIfObjectPresent("hunger", jsonObject, value -> builder.nutrition(getToInt(value)));

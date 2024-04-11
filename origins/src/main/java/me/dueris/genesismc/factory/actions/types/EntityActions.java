@@ -23,6 +23,8 @@ import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import org.bukkit.*;
@@ -45,6 +47,7 @@ import org.joml.Vector3f;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 import static me.dueris.genesismc.factory.actions.Actions.*;
@@ -188,7 +191,28 @@ public class EntityActions {
                 }
             }
         }));
-        register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_effect_cloud"), (action, entity) -> spawnEffectCloud(entity, Float.valueOf(action.getOrDefault("radius", 3.0).toString()), Integer.valueOf(action.getOrDefault("wait_time", 10).toString()), new PotionEffect(StackingStatusEffect.getPotionEffectType(action.get("effect").toString()), 1, 1))));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_effect_cloud"), (action, entity) -> {
+            float radius = Float.valueOf(action.getOrDefault("radius", 3.0F).toString());
+            int waitTime = Integer.valueOf(action.getOrDefault("wait_time", 10).toString());
+            float radiusOnUse = Float.valueOf(action.getOrDefault("radius_on_use", "-0.5F").toString());
+            List<PotionEffect> effects = MiscUtils.parseAndReturnPotionEffects(action);
+
+            net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity)entity).getHandle();
+            ServerLevel level = (ServerLevel) nmsEntity.level();
+            net.minecraft.world.entity.AreaEffectCloud cloud = new net.minecraft.world.entity.AreaEffectCloud(level, entity.getX(), entity.getY(), entity.getZ());
+            if(nmsEntity instanceof net.minecraft.world.entity.LivingEntity livingEntity){
+                cloud.setOwner(livingEntity);
+            }
+            cloud.setRadius(radius);
+            cloud.setRadiusOnUse(radiusOnUse);
+            cloud.setWaitTime(waitTime);
+            cloud.setRadiusPerTick(-cloud.getRadius() / (float) cloud.getDuration());
+            List<MobEffectInstance> nmsEffects = Utils.toMobEffectList(effects);
+            cloud.setFixedColor(PotionUtils.getColor(nmsEffects));
+            nmsEffects.forEach(cloud::addEffect);
+
+            level.addFreshEntity(cloud);
+        }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("replace_inventory"), (action, entity) -> {
             if (entity instanceof Player player) {
                 if (action.containsKey("slot")) {
