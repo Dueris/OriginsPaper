@@ -30,7 +30,8 @@ public class OriginScheduler {
 
     public static void updateTickingPower(Entity entity, Power power) {
         if (power == null) return;
-        currentTickingPowers.put(entity, power);
+        if (power.isOriginMultipleSubPower()) currentTickingPowers.put(entity, power.getPowerParent());
+        else currentTickingPowers.put(entity, power);
     }
 
     public static Optional<Power> getCurrentTickingPower(Entity entity) {

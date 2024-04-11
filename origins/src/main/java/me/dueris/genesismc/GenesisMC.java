@@ -175,11 +175,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         return arg1 ? arg1 : arg2;
     }
 
-    @EventHandler
-    public void sprint(PlayerToggleSprintEvent e) {
-        System.out.println(e.isSprinting());
-    }
-
     @Override
     public void onLoad() {
         // Prepare the plugin

@@ -18,6 +18,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -30,7 +34,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public class OriginPlayerAccessor {
+public class OriginPlayerAccessor implements Listener {
 
     // Power maps of every power based on each layer applied to the player
     public static HashMap<Player, HashMap<Layer, ArrayList<Power>>> playerPowerMapping = new HashMap<>();
@@ -54,6 +58,20 @@ public class OriginPlayerAccessor {
                 player.getInventory().setItem(emptySlot, item);
             }
         }
+    }
+
+    /**
+     * For some reason, a mod on the client breaks the ability to check the
+     * SharedConstant value retrieved and set in Player#isSprinting(), but it still sends
+     * the sprinting state update to the server. This is a workaround to ensure that
+     * the EntityCondition apoli:is_sprinting catches that
+     */
+    public static ArrayList<Player> currentSprintingPlayersFallback = new ArrayList<>();
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void sprint(PlayerToggleSprintEvent e) {
+        if (e.isSprinting()) currentSprintingPlayersFallback.add(e.getPlayer());
+        else if (currentSprintingPlayersFallback.contains(e.getPlayer())) currentSprintingPlayersFallback.remove(e.getPlayer());
     }
 
     public static boolean hasOrigin(Player player, String originTag) {
