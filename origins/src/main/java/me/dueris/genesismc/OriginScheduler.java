@@ -5,7 +5,6 @@ import me.dueris.genesismc.factory.powers.TicksElapsedPower;
 import me.dueris.genesismc.factory.powers.apoli.FlightHandler;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;

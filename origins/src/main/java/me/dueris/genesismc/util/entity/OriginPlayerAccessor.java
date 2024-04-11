@@ -42,6 +42,13 @@ public class OriginPlayerAccessor implements Listener {
     public static HashMap<Player, ArrayList<ApoliPower>> powersAppliedList = new HashMap<>();
     // A list of Players that have powers that should be run
     public static ArrayList<Player> hasPowers = new ArrayList<>();
+    /**
+     * For some reason, a mod on the client breaks the ability to check the
+     * SharedConstant value retrieved and set in Player#isSprinting(), but it still sends
+     * the sprinting state update to the server. This is a workaround to ensure that
+     * the EntityCondition apoli:is_sprinting catches that
+     */
+    public static ArrayList<Player> currentSprintingPlayersFallback = new ArrayList<>();
 
     public static void moveEquipmentInventory(Player player, EquipmentSlot equipmentSlot) {
         ItemStack item = player.getInventory().getItem(equipmentSlot);
@@ -58,20 +65,6 @@ public class OriginPlayerAccessor implements Listener {
                 player.getInventory().setItem(emptySlot, item);
             }
         }
-    }
-
-    /**
-     * For some reason, a mod on the client breaks the ability to check the
-     * SharedConstant value retrieved and set in Player#isSprinting(), but it still sends
-     * the sprinting state update to the server. This is a workaround to ensure that
-     * the EntityCondition apoli:is_sprinting catches that
-     */
-    public static ArrayList<Player> currentSprintingPlayersFallback = new ArrayList<>();
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void sprint(PlayerToggleSprintEvent e) {
-        if (e.isSprinting()) currentSprintingPlayersFallback.add(e.getPlayer());
-        else if (currentSprintingPlayersFallback.contains(e.getPlayer())) currentSprintingPlayersFallback.remove(e.getPlayer());
     }
 
     public static boolean hasOrigin(Player player, String originTag) {
@@ -391,5 +384,12 @@ public class OriginPlayerAccessor implements Listener {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void sprint(PlayerToggleSprintEvent e) {
+        if (e.isSprinting()) currentSprintingPlayersFallback.add(e.getPlayer());
+        else if (currentSprintingPlayersFallback.contains(e.getPlayer()))
+            currentSprintingPlayersFallback.remove(e.getPlayer());
     }
 }
