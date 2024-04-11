@@ -103,7 +103,7 @@ public class Utils {
     }
 
     public static double getToDouble(Object value) {
-        return value instanceof Float ? ((Float) value).doubleValue() : (double) value;
+        return value instanceof Float ? ((Float) value).doubleValue() : value instanceof Long ? Float.valueOf(Long.toString((long)value)).doubleValue() : (double) value;
     }
 
     public static <T> T returnIfPresentOrNull(Optional<T> optional) {
