@@ -21,7 +21,7 @@ public class Invisibility extends CraftPower {
 
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
                         shouldSetInvisible = true;
                         break;
                     }

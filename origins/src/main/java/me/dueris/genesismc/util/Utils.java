@@ -108,6 +108,10 @@ public class Utils {
         return value instanceof Float ? ((Float)value).doubleValue() : (double) value;
     }
 
+    public static <T> T returnIfPresentOrNull(Optional<T> optional){
+        return optional.orElse(null);
+    }
+
     public static List<MobEffectInstance> toMobEffectList(List<PotionEffect> effects){
         List<MobEffectInstance> ret = new ArrayList<>();
         effects.forEach(effect -> ret.add(CraftPotionUtil.fromBukkit(effect)));

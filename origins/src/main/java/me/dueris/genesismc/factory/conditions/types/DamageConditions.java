@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.conditions.types;
 
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.OriginScheduler;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
@@ -34,7 +35,7 @@ public class DamageConditions {
                 boolean projectile = true;
                 boolean projectileCondition = true;
                 if (condition.containsKey("projectile_condition")) {
-                    projectileCondition = ConditionExecutor.testEntity((JSONObject) condition.get("projectile_condition"), ((CraftEntity) ((EntityDamageByEntityEvent) event).getDamager()));
+                    projectileCondition = ConditionExecutor.testEntity(OriginScheduler.getCurrentTickingPower(((EntityDamageByEntityEvent) event).getDamager()).orElse(null), (JSONObject) condition.get("projectile_condition"), ((CraftEntity) ((EntityDamageByEntityEvent) event).getDamager()));
                 }
                 if (condition.containsKey("projectile") && event instanceof EntityDamageByEntityEvent eventT) {
                     String identifier = condition.get("projectile").toString();
@@ -59,7 +60,7 @@ public class DamageConditions {
             if (event.getEntity() instanceof LivingEntity li && ((CraftLivingEntity) li).getHandle().getLastAttacker() != null) {
                 boolean rtn = true;
                 if (condition.containsKey("entity_condition")) {
-                    rtn = ConditionExecutor.testEntity(condition, ((CraftLivingEntity) li).getHandle().getLastAttacker().getBukkitEntity());
+                    rtn = ConditionExecutor.testEntity(OriginScheduler.getCurrentTickingPower(((CraftLivingEntity) li).getHandle().getLastAttacker().getBukkitEntity()).orElse(null), condition, ((CraftLivingEntity) li).getHandle().getLastAttacker().getBukkitEntity());
                 }
                 return rtn;
             }

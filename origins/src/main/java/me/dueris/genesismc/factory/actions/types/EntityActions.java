@@ -4,6 +4,7 @@ import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.OriginScheduler;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -87,9 +88,9 @@ public class EntityActions {
             }
             bossBar.setProgress(newP);
             if (bossBar.getProgress() == 1.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).get("max_action"));
+                Actions.executeEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), entity, CraftApoli.getPowerFromTag(resource).get("max_action"));
             } else if (bossBar.getProgress() == 0.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).get("min_action"));
+                Actions.executeEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), entity, CraftApoli.getPowerFromTag(resource).get("min_action"));
             }
             bossBar.addPlayer((Player) entity);
             bossBar.setVisible(true);
@@ -120,9 +121,9 @@ public class EntityActions {
             }
             bossBar.setProgress(newP);
             if (bossBar.getProgress() == 1.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).get("max_action"));
+                Actions.executeEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), entity, CraftApoli.getPowerFromTag(resource).get("max_action"));
             } else if (bossBar.getProgress() == 0.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).get("min_action"));
+                Actions.executeEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), entity, CraftApoli.getPowerFromTag(resource).get("min_action"));
             }
             bossBar.addPlayer((Player) entity);
             bossBar.setVisible(true);
@@ -355,16 +356,16 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("passanger_action"), (action, entity) -> {
             if (entity.getPassengers() == null || entity.getPassengers().isEmpty()) return;
-            executeEntity(entity.getPassenger(), (JSONObject) action.get("action"));
-            executeBiEntity(entity.getPassenger(), entity, (JSONObject) action.get("bientity_action"));
+            executeEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), entity.getPassenger(), (JSONObject) action.get("action"));
+            executeBiEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), entity.getPassenger(), entity, (JSONObject) action.get("bientity_action"));
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("riding_action"), (action, entity) -> {
             if (entity.getVehicle() == null) return;
             if (action.containsKey("action")) {
-                executeEntity(entity.getVehicle(), (JSONObject) action.get("action"));
+                executeEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), entity.getVehicle(), (JSONObject) action.get("action"));
             }
             if (action.containsKey("bientity_action")) {
-                executeBiEntity(entity.getVehicle(), entity, (JSONObject) action.get("bientity_action"));
+                executeBiEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), entity.getVehicle(), entity, (JSONObject) action.get("bientity_action"));
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("raycast"), (action, entity) -> RaycastUtils.action(action, ((CraftEntity) entity).getHandle())));
@@ -411,7 +412,7 @@ public class EntityActions {
         register(new ActionFactory(GenesisMC.apoliIdentifier("selector_action"), (action, entity) -> {
             if (action.get("bientity_condition") != null) {
                 if (entity instanceof Player player) {
-                    executeBiEntity(entity, player.getTargetEntity(AttributeHandler.Reach.getDefaultReach(player), false), (JSONObject) action.get("bientity_condition"));
+                    executeBiEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), entity, player.getTargetEntity(AttributeHandler.Reach.getDefaultReach(player), false), (JSONObject) action.get("bientity_condition"));
                 }
             }
         }));
@@ -493,12 +494,12 @@ public class EntityActions {
                     continue;
                 }
 
-                boolean run = !hasCondition || ConditionExecutor.testBiEntity((JSONObject) action.get("bientity_condition"), (CraftEntity) entity, target.getBukkitEntity());
+                boolean run = !hasCondition || ConditionExecutor.testBiEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), (JSONObject) action.get("bientity_condition"), (CraftEntity) entity, target.getBukkitEntity());
                 if (!run) {
                     continue;
                 }
 
-                Actions.executeBiEntity(entity, target.getBukkitEntity(), bientity_action);
+                Actions.executeBiEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), entity, target.getBukkitEntity(), bientity_action);
             }
 
         }));

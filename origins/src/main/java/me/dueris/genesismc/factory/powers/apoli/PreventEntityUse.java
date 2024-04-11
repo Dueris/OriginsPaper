@@ -53,7 +53,7 @@ public class PreventEntityUse extends CraftPower implements Listener {
                         if (!entity.isDead()) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                                if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity) && ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
+                                if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power, power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity) && ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
                                     e.setCancelled(true);
                                     setActive(p, power.getTag(), true);
                                 } else {

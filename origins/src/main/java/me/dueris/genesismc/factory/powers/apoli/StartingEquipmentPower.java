@@ -31,7 +31,7 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
         if (starting_equip.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
+                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         runGiveItems(e.getPlayer(), power);
                     } else {
@@ -53,7 +53,7 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
         if (starting_equip.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
+                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         if (power.getObject("recurrent") != null && power.getBoolean("recurrent")) {
                             runGiveItems(e.getPlayer(), power);

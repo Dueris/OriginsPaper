@@ -47,7 +47,7 @@ public class EdibleItem extends CraftPower implements Listener {
                         e.setCancelled(true);
                     }
                     Actions.executeItem(e.getItem(), power.get("item_action"));
-                    Actions.executeEntity(e.getPlayer(), power.get("entity_action"));
+                    Actions.executeEntity(power, e.getPlayer(), power.get("entity_action"));
                 }
             }
         }

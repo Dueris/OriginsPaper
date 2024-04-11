@@ -74,7 +74,7 @@ public class Inventory extends CraftPower implements Listener {
             if (getPowerArray().contains(e.getPlayer())) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (CooldownUtils.isPlayerInCooldownFromTag(e.getPlayer(), Utils.getNameOrTag(power))) continue;
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
+                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), e.getPlayer())) {
                             ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(e.getPlayer(), power.getTag());

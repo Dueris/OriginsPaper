@@ -31,7 +31,7 @@ public class ModifyEnchantmentLevel extends CraftPower {
                     HashSet<ItemStack> items = new HashSet<>(Arrays.stream(p.getInventory().getArmorContents()).toList());
                     items.add(p.getInventory().getItemInMainHand());
                     for (ItemStack item : items) {
-                        if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
+                        if (!ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) return;
                         if (!ConditionExecutor.testItem(power.get("item_condition"), item)) return;
                         for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                             Enchantment enchant = Enchantment.getByKey(NamespacedKey.fromString(power.getString("enchantment")));

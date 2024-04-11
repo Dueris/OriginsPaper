@@ -30,7 +30,7 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
+                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                         applyAttribute(e.getPlayer(), valueModifyingSuperClass.getDefaultValue(power.getString("class")), power.getFloatOrDefault("multiplier", 1.0f), power.getString("attribute").toUpperCase().split(":")[1].replace("\\.", "_"));

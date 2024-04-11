@@ -3,18 +3,14 @@ package me.dueris.genesismc.factory.actions;
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.OriginScheduler;
 import me.dueris.genesismc.factory.actions.types.BiEntityActions;
 import me.dueris.genesismc.factory.actions.types.BlockActions;
 import me.dueris.genesismc.factory.actions.types.EntityActions;
 import me.dueris.genesismc.factory.actions.types.ItemActions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.util.Utils;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import me.dueris.genesismc.registry.registries.Power;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -25,7 +21,6 @@ import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -108,7 +103,8 @@ public class Actions {
         return false;
     }
 
-    public static void executeBiEntity(Entity actor, Entity target, JSONObject action) {
+    public static void executeBiEntity(Power power, Entity actor, Entity target, JSONObject action) {
+        OriginScheduler.updateTickingPower(actor, power);
         if (!action.containsKey("type") || action == null || action.isEmpty()) return;
         String type = action.get("type").toString();
         Pair entityPair = new Pair<CraftEntity, CraftEntity>() {
@@ -125,31 +121,31 @@ public class Actions {
         };
         if (testMetaAction(action, new String[]{"apoli:actor_action", "apoli:invert", "apoli:target_action"})) {
             switch (type) {
-                case "apoli:invert" -> executeBiEntity(target, actor, (JSONObject) action.get("action"));
+                case "apoli:invert" -> executeBiEntity(power, target, actor, (JSONObject) action.get("action"));
 
-                case "apoli:actor_action" -> executeEntity(actor, (JSONObject) action.get("action"));
+                case "apoli:actor_action" -> executeEntity(OriginScheduler.getCurrentTickingPower(actor).orElse(null), actor, (JSONObject) action.get("action"));
 
-                case "apoli:target_action" -> executeEntity(target, (JSONObject) action.get("action"));
+                case "apoli:target_action" -> executeEntity(OriginScheduler.getCurrentTickingPower(actor).orElse(null), target, (JSONObject) action.get("action"));
 
-                case "apoli:and" -> and(action, actionn -> executeBiEntity(actor, target, actionn));
+                case "apoli:and" -> and(action, actionn -> executeBiEntity(power, actor, target, actionn));
 
-                case "apoli:chance" -> chance(action, actionn -> executeBiEntity(actor, target, actionn));
+                case "apoli:chance" -> chance(action, actionn -> executeBiEntity(power, actor, target, actionn));
 
-                case "apoli:choice" -> choice(action, actionn -> executeBiEntity(actor, target, actionn));
+                case "apoli:choice" -> choice(action, actionn -> executeBiEntity(power, actor, target, actionn));
 
-                case "apoli:delay" -> delay(action, actionn -> executeBiEntity(actor, target, actionn));
+                case "apoli:delay" -> delay(action, actionn -> executeBiEntity(power, actor, target, actionn));
 
                 case "apoli:nothing" -> {
                 } // Literally does nothing
 
-                case "apoli:side" -> side(action, actionn -> executeBiEntity(actor, target, actionn));
+                case "apoli:side" -> side(action, actionn -> executeBiEntity(power, actor, target, actionn));
 
                 case "if_else" -> {
-                    boolean bool = ConditionExecutor.testBiEntity((JSONObject) action.get("condition"), (CraftEntity) actor, (CraftEntity) target);
+                    boolean bool = ConditionExecutor.testBiEntity(OriginScheduler.getCurrentTickingPower(actor).orElse(null), (JSONObject) action.get("condition"), (CraftEntity) actor, (CraftEntity) target);
                     if (bool) {
-                        executeBiEntity(actor, target, (JSONObject) action.get("if_action"));
+                        executeBiEntity(power, actor, target, (JSONObject) action.get("if_action"));
                     } else {
-                        executeBiEntity(actor, target, (JSONObject) action.get("else_action"));
+                        executeBiEntity(power, actor, target, (JSONObject) action.get("else_action"));
                     }
                 }
                 case "if_else_list" -> {
@@ -157,8 +153,8 @@ public class Actions {
                         for (Object o : (JSONArray) action.get("actions")) {
                             JSONObject arrayObject = (JSONObject) o;
                             if (arrayObject.containsKey("condition") && arrayObject.containsKey("action")) {
-                                if (ConditionExecutor.testBiEntity((JSONObject) arrayObject.get("condition"), (CraftEntity) actor, (CraftEntity) target)) {
-                                    executeBiEntity(actor, target, (JSONObject) arrayObject.get("action"));
+                                if (ConditionExecutor.testBiEntity(OriginScheduler.getCurrentTickingPower(actor).orElse(null), (JSONObject) arrayObject.get("condition"), (CraftEntity) actor, (CraftEntity) target)) {
+                                    executeBiEntity(power, actor, target, (JSONObject) arrayObject.get("action"));
                                 }
                             }
                         }
@@ -222,30 +218,31 @@ public class Actions {
         }
     }
 
-    public static void executeEntity(Entity entity, JSONObject action) {
+    public static void executeEntity(Power power, Entity entity, JSONObject action) {
+        OriginScheduler.updateTickingPower(entity, power);
         if (!action.containsKey("type") || action == null || action.isEmpty()) return;
         String type = action.get("type").toString();
         if (testMetaAction(action, new String[]{})) {
             switch (type) {
-                case "apoli:and" -> and(action, actionn -> executeEntity(entity, actionn));
+                case "apoli:and" -> and(action, actionn -> executeEntity(power, entity, actionn));
 
-                case "apoli:chance" -> chance(action, actionn -> executeEntity(entity, actionn));
+                case "apoli:chance" -> chance(action, actionn -> executeEntity(power, entity, actionn));
 
-                case "apoli:choice" -> choice(action, actionn -> executeEntity(entity, actionn));
+                case "apoli:choice" -> choice(action, actionn -> executeEntity(power, entity, actionn));
 
-                case "apoli:delay" -> delay(action, actionn -> executeEntity(entity, actionn));
+                case "apoli:delay" -> delay(action, actionn -> executeEntity(power, entity, actionn));
 
                 case "apoli:nothing" -> {
                 } // Literally does nothing
 
-                case "apoli:side" -> side(action, actionn -> executeEntity(entity, actionn));
+                case "apoli:side" -> side(action, actionn -> executeEntity(power, entity, actionn));
 
                 case "if_else" -> {
-                    boolean bool = ConditionExecutor.testEntity((JSONObject) action.get("condition"), (CraftEntity) entity);
+                    boolean bool = ConditionExecutor.testEntity(power, (JSONObject) action.get("condition"), (CraftEntity) entity);
                     if (bool) {
-                        executeEntity(entity, (JSONObject) action.get("if_action"));
+                        executeEntity(power, entity, (JSONObject) action.get("if_action"));
                     } else {
-                        executeEntity(entity, (JSONObject) action.get("else_action"));
+                        executeEntity(power, entity, (JSONObject) action.get("else_action"));
                     }
                 }
                 case "if_else_list" -> {
@@ -253,8 +250,8 @@ public class Actions {
                         for (Object o : (JSONArray) action.get("actions")) {
                             JSONObject arrayObject = (JSONObject) o;
                             if (arrayObject.containsKey("condition") && arrayObject.containsKey("action")) {
-                                if (ConditionExecutor.testEntity((JSONObject) arrayObject.get("condition"), (CraftEntity) entity)) {
-                                    executeEntity(entity, (JSONObject) arrayObject.get("action"));
+                                if (ConditionExecutor.testEntity(power, (JSONObject) arrayObject.get("condition"), (CraftEntity) entity)) {
+                                    executeEntity(power, entity, (JSONObject) arrayObject.get("action"));
                                 }
                             }
                         }

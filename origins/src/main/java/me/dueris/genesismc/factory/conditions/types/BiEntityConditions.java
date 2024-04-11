@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.util.ClipContextUtils;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.OriginScheduler;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.factory.data.types.RotationType;
@@ -35,31 +36,31 @@ public class BiEntityConditions implements Listener {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("both"), (condition, pair) -> {
             AtomicBoolean a = new AtomicBoolean(true);
             AtomicBoolean t = new AtomicBoolean(true);
-            a.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.first())); // actor
-            t.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.second())); // target
+            a.set(ConditionExecutor.testEntity(OriginScheduler.getCurrentTickingPower(pair.first()).orElse(null), (JSONObject) condition.get("condition"), pair.first())); // actor
+            t.set(ConditionExecutor.testEntity(OriginScheduler.getCurrentTickingPower(pair.second()).orElse(null), (JSONObject) condition.get("condition"), pair.second())); // target
 
             return a.get() && t.get();
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("either"), (condition, pair) -> {
             AtomicBoolean a = new AtomicBoolean(true);
             AtomicBoolean t = new AtomicBoolean(true);
-            a.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.first())); // actor
-            t.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.second())); // target
+            a.set(ConditionExecutor.testEntity(OriginScheduler.getCurrentTickingPower(pair.first()).orElse(null), (JSONObject) condition.get("condition"), pair.first())); // actor
+            t.set(ConditionExecutor.testEntity(OriginScheduler.getCurrentTickingPower(pair.second()).orElse(null), (JSONObject) condition.get("condition"), pair.second())); // target
 
             return a.get() || t.get();
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("invert"), (condition, pair) -> ConditionExecutor.testBiEntity((JSONObject) condition.get("condition"), pair.second(), pair.first())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("invert"), (condition, pair) -> ConditionExecutor.testBiEntity(OriginScheduler.getCurrentTickingPower(pair.first()).orElse(null), (JSONObject) condition.get("condition"), pair.second(), pair.first())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("undirected"), (condition, pair) -> {
             AtomicBoolean a = new AtomicBoolean(true); // Not swapped
             AtomicBoolean b = new AtomicBoolean(true); // Swapped
 
-            a.set(ConditionExecutor.testBiEntity((JSONObject) condition.get("condition"), pair.first(), pair.second())); // actor, target
-            b.set(ConditionExecutor.testBiEntity((JSONObject) condition.get("condition"), pair.second(), pair.first())); // target, actor
+            a.set(ConditionExecutor.testBiEntity(OriginScheduler.getCurrentTickingPower(pair.first()).orElse(null), (JSONObject) condition.get("condition"), pair.first(), pair.second())); // actor, target
+            b.set(ConditionExecutor.testBiEntity(OriginScheduler.getCurrentTickingPower(pair.first()).orElse(null), (JSONObject) condition.get("condition"), pair.second(), pair.first())); // target, actor
 
             return a.get() || b.get();
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("actor_condition"), (condition, pair) -> ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.first())));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("target_condition"), (condition, pair) -> ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.second())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("actor_condition"), (condition, pair) -> ConditionExecutor.testEntity(OriginScheduler.getCurrentTickingPower(pair.first()).orElse(null), (JSONObject) condition.get("condition"), pair.first())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("target_condition"), (condition, pair) -> ConditionExecutor.testEntity(OriginScheduler.getCurrentTickingPower(pair.second()).orElse(null), (JSONObject) condition.get("condition"), pair.second())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("relative_rotation"), (condition, pair) -> {
             net.minecraft.world.entity.Entity nmsActor = pair.first().getHandle();
             net.minecraft.world.entity.Entity nmsTarget = pair.second().getHandle();

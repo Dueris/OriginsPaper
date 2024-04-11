@@ -32,7 +32,7 @@ public class ModifySwimSpeedPower extends CraftPower {
             ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
             try {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
                         if (!p.isSwimming()) return;
                         // Change to use dolphins grace for easier
                         // Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));

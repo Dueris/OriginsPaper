@@ -85,7 +85,7 @@ public class DamageOverTime extends CraftPower implements Listener {
                             : power.getFloatOrDefault("damage", 1.0f);
 
                         protection_effectiveness = power.getDoubleOrDefault("protection_effectiveness", 1);
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                        if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
 
                             if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {

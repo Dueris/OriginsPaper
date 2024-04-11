@@ -34,7 +34,7 @@ public class ModifyHealingPower extends CraftPower implements Listener {
                         BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                         if (mathOperator != null) {
                             float result = (float) mathOperator.apply(e.getAmount(), value);
-                            if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                            if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
                                 setActive(p, power.getTag(), true);
                                 e.setAmount(result);
                             } else {

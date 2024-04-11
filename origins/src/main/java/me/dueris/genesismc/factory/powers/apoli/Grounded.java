@@ -26,7 +26,7 @@ public class Grounded extends CraftPower {
                 Location location = player.getLocation();
                 Location current_block_platform_pos = location.add(0, -1, 0);
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
+                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) player)) {
                         setActive(player, power.getTag(), true);
                         if (current_block_platform_pos.getBlock().getType().equals(Material.AIR)) {
                             platform_pos.add(current_block_platform_pos);

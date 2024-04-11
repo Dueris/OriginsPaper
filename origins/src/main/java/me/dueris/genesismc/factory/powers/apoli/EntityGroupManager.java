@@ -113,7 +113,7 @@ public class EntityGroupManager extends CraftPower {
                             ConditionExecutor executor = GenesisMC.getConditionExecutor();
                             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
                                         if (!getPowerArray().contains(p)) return;
                                         setActive(p, power.getTag(), true);
                                         if (entity_group.contains(entity)) {

@@ -35,8 +35,8 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
-                        if (!ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) e.getEntity()))
+                        if (!ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) return;
+                        if (!ConditionExecutor.testBiEntity(power, power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) e.getEntity()))
                             return;
                         if (!ConditionExecutor.testDamage(power.get("damage_condition"), e)) return;
                         for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {

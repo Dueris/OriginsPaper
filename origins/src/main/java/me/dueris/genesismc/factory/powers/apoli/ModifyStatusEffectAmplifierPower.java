@@ -30,7 +30,7 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
             if (!modify_effect_amplifier.contains(p)) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         if (power.getStringOrDefault("status_effect", null) != null) {
                             if (e.getNewEffect().getType().equals(PotionEffectType.getByName(power.getStringOrDefault("status_effect", null)))) {

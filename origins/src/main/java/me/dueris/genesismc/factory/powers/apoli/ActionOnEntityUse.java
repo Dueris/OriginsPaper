@@ -37,14 +37,14 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
-                if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
+                if (!ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) actor)) return;
                 if (!ConditionExecutor.testItem(power.get("item_condition"), actor.getInventory().getItem(e.getHand())))
                     return;
-                if (!ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
+                if (!ConditionExecutor.testBiEntity(power, power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
                     return;
                 cooldownTick.add(actor);
                 setActive(e.getPlayer(), power.getTag(), true);
-                Actions.executeBiEntity(actor, target, power.getBiEntityAction());
+                Actions.executeBiEntity(power, actor, target, power.getBiEntityAction());
                 Actions.executeItem(actor.getActiveItem(), power.get("held_item_action"));
                 Actions.executeItem(actor.getActiveItem(), power.get("result_item_action"));
                 new BukkitRunnable() {

@@ -21,7 +21,7 @@ public class PreventEntityCollision extends CraftPower {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (prevent_entity_collision.contains(p)) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
                         p.setCollidable(false);
                         setActive(p, power.getTag(), false);
                     } else {

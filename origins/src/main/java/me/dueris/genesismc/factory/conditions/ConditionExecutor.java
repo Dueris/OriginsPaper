@@ -3,8 +3,10 @@ package me.dueris.genesismc.factory.conditions;
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.OriginScheduler;
 import me.dueris.genesismc.factory.conditions.types.*;
 import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.registry.registries.Power;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Location;
@@ -59,7 +61,8 @@ public class ConditionExecutor {
         return new Random().nextFloat(1.0f) <= chance;
     }
 
-    public static boolean testBiEntity(JSONObject condition, CraftEntity actor, CraftEntity target) {
+    public static boolean testBiEntity(Power power, JSONObject condition, CraftEntity actor, CraftEntity target) {
+        OriginScheduler.updateTickingPower(actor, power);
         if (condition == null || condition.isEmpty()) return true; // Empty condition, do nothing
         Pair entityPair = new Pair<CraftEntity, CraftEntity>() {
 
@@ -84,7 +87,7 @@ public class ConditionExecutor {
                             Registrar<BiEntityConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION);
                             BiEntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if (con != null) {
-                                cons.add(getPossibleInvert((boolean) condition.getOrDefault("inverted", false), testBiEntity(obj, (CraftEntity) entityPair.first(), (CraftEntity) entityPair.second())));
+                                cons.add(getPossibleInvert((boolean) condition.getOrDefault("inverted", false), testBiEntity(power, obj, (CraftEntity) entityPair.first(), (CraftEntity) entityPair.second())));
                             } else {
                                 cons.add(getPossibleInvert((boolean) condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
@@ -103,7 +106,7 @@ public class ConditionExecutor {
                             Registrar<BiEntityConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION);
                             BiEntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if (con != null) {
-                                cons.add(getPossibleInvert((boolean) condition.getOrDefault("inverted", false), testBiEntity(obj, (CraftEntity) entityPair.first(), (CraftEntity) entityPair.second())));
+                                cons.add(getPossibleInvert((boolean) condition.getOrDefault("inverted", false), testBiEntity(power, obj, (CraftEntity) entityPair.first(), (CraftEntity) entityPair.second())));
                             } else {
                                 cons.add(getPossibleInvert((boolean) condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
@@ -328,7 +331,8 @@ public class ConditionExecutor {
         return false;
     }
 
-    public static boolean testEntity(JSONObject condition, CraftEntity entity) {
+    public static boolean testEntity(Power power, JSONObject condition, CraftEntity entity) {
+        OriginScheduler.updateTickingPower(entity, power);
         if (condition == null || condition.isEmpty()) return true; // Empty condition, do nothing
         if (isMetaCondition(condition)) {
             String type = condition.get("type").toString();
@@ -341,7 +345,7 @@ public class ConditionExecutor {
                             Registrar<EntityConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.ENTITY_CONDITION);
                             EntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if (con != null) {
-                                cons.add(getPossibleInvert((boolean) condition.getOrDefault("inverted", false), testEntity(obj, entity)));
+                                cons.add(getPossibleInvert((boolean) condition.getOrDefault("inverted", false), testEntity(power, obj, entity)));
                             } else {
                                 cons.add(getPossibleInvert((boolean) condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
@@ -360,7 +364,7 @@ public class ConditionExecutor {
                             Registrar<EntityConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.ENTITY_CONDITION);
                             EntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if (con != null) {
-                                cons.add(getPossibleInvert((boolean) condition.getOrDefault("inverted", false), testEntity(obj, entity)));
+                                cons.add(getPossibleInvert((boolean) condition.getOrDefault("inverted", false), testEntity(power, obj, entity)));
                             } else {
                                 cons.add(getPossibleInvert((boolean) condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }

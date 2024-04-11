@@ -1,6 +1,7 @@
 package me.dueris.genesismc.util;
 
 import me.dueris.calio.util.ClipContextUtils;
+import me.dueris.genesismc.OriginScheduler;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.data.types.RotationType;
 import me.dueris.genesismc.factory.data.types.Space;
@@ -41,7 +42,7 @@ public class RaycastUtils {
         Location location = CraftLocation.toBukkit(target);
         location.setWorld(entity.getBukkitEntity().getWorld());
 
-        Actions.executeEntity(entity.getBukkitEntity(), (JSONObject) data.getOrDefault("before_action", null));
+        Actions.executeEntity(OriginScheduler.getCurrentTickingPower(entity.getBukkitEntity()).orElse(null), entity.getBukkitEntity(), (JSONObject) data.getOrDefault("before_action", null));
 
         float step = Math.round((Double) data.getOrDefault("command_step", 1d));
         if (data.containsKey("command_along_ray")) {
@@ -57,7 +58,7 @@ public class RaycastUtils {
                 boolean hit = false;
                 if (!curLoc.getNearbyEntities(0.3, 0.3, 0.3).isEmpty()) { // entity hit
                     hit = true;
-                    Actions.executeBiEntity(entity.getBukkitEntity(), (org.bukkit.entity.Entity) curLoc.getNearbyEntities(0.3, 0.3, 0.3).toArray()[0], (JSONObject) data.getOrDefault("bientity_action", new JSONObject()));
+                    Actions.executeBiEntity(OriginScheduler.getCurrentTickingPower(entity.getBukkitEntity()).orElse(null), entity.getBukkitEntity(), (org.bukkit.entity.Entity) curLoc.getNearbyEntities(0.3, 0.3, 0.3).toArray()[0], (JSONObject) data.getOrDefault("bientity_action", new JSONObject()));
                 }
                 if (curLoc.getBlock().isCollidable()) {
                     hit = true;
@@ -66,7 +67,7 @@ public class RaycastUtils {
 
                 if (curLoc.getBlock().isCollidable()) {
                     if (hit) {
-                        Actions.executeEntity(entity.getBukkitEntity(), (JSONObject) data.getOrDefault("hit_action", new JSONObject()));
+                        Actions.executeEntity(OriginScheduler.getCurrentTickingPower(entity.getBukkitEntity()).orElse(null), entity.getBukkitEntity(), (JSONObject) data.getOrDefault("hit_action", new JSONObject()));
                     }
                     if (data.containsKey("command_at_hit")) {
                         executeCommandAtHit(entity, CraftLocation.toVec3D(curLoc), data.getOrDefault("command_at_hit", null).toString());

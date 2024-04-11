@@ -59,7 +59,7 @@ public class Climbing extends CraftPower {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                        if (ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
                             if (!p.isSneaking() && block.getType() != AIR) return;
                             p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));

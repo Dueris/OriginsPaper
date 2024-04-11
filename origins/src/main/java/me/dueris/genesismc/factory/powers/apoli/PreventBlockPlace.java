@@ -30,11 +30,11 @@ public class PreventBlockPlace extends CraftPower implements Listener {
         if (prevent_block_place.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (!(ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem(power.get("item_condition"), e.getItemInHand()) && ConditionExecutor.testBlock(power.get("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock(power.get("place_on_condition"), (CraftBlock) e.getBlockAgainst())))
+                    if (!(ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem(power.get("item_condition"), e.getItemInHand()) && ConditionExecutor.testBlock(power.get("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock(power.get("place_on_condition"), (CraftBlock) e.getBlockAgainst())))
                         return;
                     e.setCancelled(true);
                     setActive(e.getPlayer(), power.getTag(), true);
-                    Actions.executeEntity(e.getPlayer(), power.getEntityAction());
+                    Actions.executeEntity(power, e.getPlayer(), power.getEntityAction());
                     Actions.executeItem(e.getItemInHand(), power.get("held_item_action"));
                     Actions.executeBlock(e.getBlockAgainst().getLocation(), power.get("place_on_action"));
                     Actions.executeBlock(e.getBlockPlaced().getLocation(), power.get("place_to_action"));

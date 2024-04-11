@@ -4,7 +4,9 @@ import com.mojang.brigadier.StringReader;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.util.MiscUtils;
+import me.dueris.calio.util.NamespaceUtils;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.OriginScheduler;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
@@ -12,6 +14,7 @@ import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Utils;
@@ -111,6 +114,10 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("power_active"), (condition, entity) -> {
             if (!ApoliPower.powers_active.containsKey(entity)) return false;
             String power = condition.get("power").toString();
+            Power currentTickingPower = OriginScheduler.getCurrentTickingPower(entity).orElse(null);
+            if(currentTickingPower != null && power.contains("*")){
+                power = NamespaceUtils.getDynamicNamespace(currentTickingPower.getTag(), power).asString();
+            }
             return ApoliPower.powers_active.get(entity).getOrDefault(power, false);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("advancement"), (condition, entity) -> {
@@ -472,7 +479,7 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("riding"), (condition, entity) -> {
             if (entity.getVehicle() != null) {
                 if (condition.containsKey("bientity_condition")) {
-                    return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), entity, (CraftEntity) entity.getVehicle());
+                    return ConditionExecutor.testBiEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), (JSONObject) condition.get("bientity_condition"), entity, (CraftEntity) entity.getVehicle());
                 }
                 return true;
             }
@@ -481,7 +488,7 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("riding_root"), (condition, entity) -> {
             if (entity.getVehicle() != null) {
                 if (condition.containsKey("bientity_condition")) {
-                    return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), entity, (CraftEntity) entity.getVehicle());
+                    return ConditionExecutor.testBiEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), (JSONObject) condition.get("bientity_condition"), entity, (CraftEntity) entity.getVehicle());
                 }
                 return true;
             }
@@ -491,7 +498,7 @@ public class EntityConditions {
             int count = 0;
             if (entity.getVehicle() != null) {
                 Entity vehicle = entity.getVehicle();
-                boolean pass = ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), entity, (CraftEntity) vehicle);
+                boolean pass = ConditionExecutor.testBiEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), (JSONObject) condition.get("bientity_condition"), entity, (CraftEntity) vehicle);
                 while (vehicle != null) {
                     if (pass) {
                         count++;
@@ -508,7 +515,7 @@ public class EntityConditions {
             if (entity.getPassengers() != null && !entity.getPassengers().isEmpty()) {
                 if (condition.containsKey("bientity_condition")) {
                     count = (int) entity.getPassengers().stream().filter(ent -> {
-                        return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) ent, entity);
+                        return ConditionExecutor.testBiEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), (JSONObject) condition.get("bientity_condition"), (CraftEntity) ent, entity);
                     }).count();
                 } else {
                     count = entity.getPassengers().size();
@@ -523,7 +530,7 @@ public class EntityConditions {
             if (entity.getPassengers() != null && !entity.getPassengers().isEmpty()) {
                 if (condition.containsKey("bientity_condition")) {
                     count = (int) entity.getPassengers().stream().filter(ent -> {
-                        return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) ent, entity);
+                        return ConditionExecutor.testBiEntity(OriginScheduler.getCurrentTickingPower(entity).orElse(null), (JSONObject) condition.get("bientity_condition"), (CraftEntity) ent, entity);
                     }).count();
                 } else {
                     count = entity.getPassengers().size();
