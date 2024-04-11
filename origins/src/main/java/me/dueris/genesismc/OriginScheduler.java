@@ -19,7 +19,7 @@ import java.util.Optional;
 
 public class OriginScheduler {
 
-    private static final FastMap<Entity, Power> currentTickingPowers = new FastMap<>(Integer.MAX_VALUE);
+    private static final HashMap<Entity, Power> currentTickingPowers = new HashMap<>(Integer.MAX_VALUE);
     public static ArrayList<ApoliPower> activePowerRunners = new ArrayList<>();
     final Plugin plugin;
     ArrayList<BukkitRunnable> runnables = new ArrayList<>();
@@ -87,7 +87,9 @@ public class OriginScheduler {
                     }
                 }
             }
-            currentTickingPowers.clear();
+            if(!currentTickingPowers.isEmpty()){
+                currentTickingPowers.clear();
+            }
         }
     }
 
