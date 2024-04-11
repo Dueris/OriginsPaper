@@ -42,12 +42,20 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
                 if (powerContainer == null) continue;
                 if (!(ConditionExecutor.testBlock(powerContainer.get("block_condition"), (CraftBlock) e.getBlock()) && ConditionExecutor.testEntity(powerContainer.get("condition"), (CraftEntity) e.getPlayer())))
                     return;
-                boolean pass = powerContainer.getBooleanOrDefault("only_when_harvested", true) && ((CraftPlayer) actor).getHandle().hasCorrectToolForDrops(((CraftBlock) e.getBlock()).getNMS());
+                boolean pass = true;
+                if(powerContainer.getBooleanOrDefault("only_when_harvested", true)){
+                    pass = ((CraftPlayer) actor).getHandle().hasCorrectToolForDrops(((CraftBlock) e.getBlock()).getNMS());
+                }
 
                 setActive(actor, powerContainer.getTag(), true);
                 if (pass) {
-                    Actions.executeBlock(e.getBlock().getLocation(), powerContainer.getBlockAction());
-                    Actions.executeEntity(e.getPlayer(), powerContainer.getEntityAction());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            Actions.executeBlock(e.getBlock().getLocation(), powerContainer.getBlockAction());
+                            Actions.executeEntity(e.getPlayer(), powerContainer.getEntityAction());
+                        }
+                    }.runTaskLater(GenesisMC.getPlugin(), 1);
                 }
                 new BukkitRunnable() {
                     @Override

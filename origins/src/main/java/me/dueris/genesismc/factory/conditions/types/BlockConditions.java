@@ -82,7 +82,7 @@ public class BlockConditions {
             return Comparison.getFromString(comparison).compare(bR, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block_entity"), (condition, block) -> block.getState() instanceof TileState));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("block"), (condition, block) -> block.getType().equals(Material.valueOf(condition.get("block").toString().split(":")[1].toUpperCase()))));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("block"), (condition, block) -> block.getType().equals(MiscUtils.getBukkitMaterial(condition.get("block").toString()))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block_state"), (condition, block) -> {
             BlockState state = block.getNMS();
             Collection<Property<?>> properties = state.getProperties();
