@@ -28,23 +28,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
     private static final HashMap<Player, Boolean> applied = new HashMap<>();
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, int value) {
-        Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
-        operationMap.put("addition", Integer::sum);
-        operationMap.put("subtraction", (a, b) -> a - b);
-        operationMap.put("multiplication", (a, b) -> a * b);
-        operationMap.put("division", (a, b) -> a / b);
-        operationMap.put("multiply_base", (a, b) -> a + (a * b));
-        operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-        operationMap.put("set_total", (a, b) -> b);
-
-        Random random = new Random();
-
-        operationMap.put("add_random_max", (a, b) -> a + random.nextInt(b));
-        operationMap.put("subtract_random_max", (a, b) -> a - random.nextInt(b));
-        operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
-        operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
-
-        BinaryOperator mathOperator = operationMap.get(operation);
+        BinaryOperator mathOperator = Utils.getOperationMappingsInteger().get(operation);
         if (mathOperator != null) {
             int result = (int) mathOperator.apply(base_value, value);
             p.getAttribute(attribute_modifier).setBaseValue(result);
@@ -55,22 +39,6 @@ public class AttributeConditioned extends CraftPower implements Listener {
     }
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
-        Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
-        operationMap.put("addition", Integer::sum);
-        operationMap.put("subtraction", (a, b) -> a - b);
-        operationMap.put("multiplication", (a, b) -> a * b);
-        operationMap.put("division", (a, b) -> a / b);
-        operationMap.put("multiply_base", (a, b) -> a + (a * b));
-        operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-        operationMap.put("set_total", (a, b) -> b);
-
-        Random random = new Random();
-
-        operationMap.put("add_random_max", (a, b) -> a + random.nextInt(b));
-        operationMap.put("subtract_random_max", (a, b) -> a - random.nextInt(b));
-        operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
-        operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
-
         BinaryOperator operator = Utils.getOperationMappingsDouble().get(operation);
         if (operator != null) {
             double result = Double.valueOf(String.valueOf(operator.apply(base_value, value)));
@@ -82,22 +50,6 @@ public class AttributeConditioned extends CraftPower implements Listener {
     }
 
     public void executeConditionAttribute(Player p) {
-        Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
-        operationMap.put("addition", Integer::sum);
-        operationMap.put("subtraction", (a, b) -> a - b);
-        operationMap.put("multiplication", (a, b) -> a * b);
-        operationMap.put("division", (a, b) -> a / b);
-        operationMap.put("multiply_base", (a, b) -> a + (a * b));
-        operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-        operationMap.put("set_total", (a, b) -> b);
-
-        Random random = new Random();
-
-        operationMap.put("add_random_max", (a, b) -> a + random.nextInt(b));
-        operationMap.put("subtract_random_max", (a, b) -> a - random.nextInt(b));
-        operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
-        operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
-
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
@@ -122,22 +74,6 @@ public class AttributeConditioned extends CraftPower implements Listener {
     }
 
     public void inverseConditionAttribute(Player p) {
-        Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
-        operationMap.put("addition", (a, b) -> a - b);
-        operationMap.put("subtraction", Integer::sum);
-        operationMap.put("multiplication", (a, b) -> a / b);
-        operationMap.put("division", (a, b) -> a * b);
-        operationMap.put("multiply_base", (a, b) -> a / (1 + b));
-        operationMap.put("multiply_total", (a, b) -> a / (1 + b));
-        operationMap.put("set_total", (a, b) -> a);
-
-        Random random = new Random();
-
-        operationMap.put("add_random_max", (a, b) -> a - random.nextInt(b));
-        operationMap.put("subtract_random_max", (a, b) -> a + random.nextInt(b));
-        operationMap.put("multiply_random_max", (a, b) -> a / random.nextInt(b));
-        operationMap.put("divide_random_max", (a, b) -> a * random.nextInt(b));
-
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
