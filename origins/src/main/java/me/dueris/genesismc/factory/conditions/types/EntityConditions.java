@@ -137,9 +137,7 @@ public class EntityConditions {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("sprinting"), (condition, entity) -> {
-            return entity instanceof Player p && p.isSprinting();
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("sprinting"), (condition, entity) -> entity instanceof CraftPlayer player && player.isSprinting()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("food_level"), (condition, entity) -> {
             String comparison = condition.get("comparison").toString();
             int compare_to = Integer.parseInt(condition.get("compare_to").toString());
