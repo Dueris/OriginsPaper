@@ -5,7 +5,6 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.registry.Registries;
-
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
@@ -21,12 +20,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
 
-import static me.dueris.genesismc.util.TextureLocation.textureMap;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static me.dueris.genesismc.util.TextureLocation.textureMap;
 
 public class CooldownUtils implements @NotNull Listener {
 
@@ -173,8 +172,8 @@ public class CooldownUtils implements @NotNull Listener {
             String t = e.getPlayer().getPersistentDataContainer().get(GenesisMC.identifier("saved_cooldowns"), PersistentDataType.STRING);
             if (t != null) {
                 String[] split = t.replace(";", "").split("\\|\\|");
-                for(String cooldown : split){
-                    if(cooldown.toCharArray().length < 10) continue; // Wasnt saved right
+                for (String cooldown : split) {
+                    if (cooldown.toCharArray().length < 10) continue; // Wasnt saved right
                     String[] split2 = cooldown.split(",");
                     String tag = split2[0];
                     String title = split2[1];

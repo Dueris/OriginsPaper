@@ -3,11 +3,9 @@ package me.dueris.genesismc.factory.powers;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
 import me.dueris.genesismc.util.Reflector;
-
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 

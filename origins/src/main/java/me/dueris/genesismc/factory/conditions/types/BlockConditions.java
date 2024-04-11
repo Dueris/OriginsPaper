@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
 import org.bukkit.block.TileState;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
@@ -67,10 +66,10 @@ public class BlockConditions {
             return Comparison.getFromString(comparison).compare(adj, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("attachable"), (condition, block) -> {
-            ServerLevel level = ((CraftWorld)block.getWorld()).getHandle();
-            for(Direction d : Direction.values()) {
+            ServerLevel level = ((CraftWorld) block.getWorld()).getHandle();
+            for (Direction d : Direction.values()) {
                 BlockPos adjacent = CraftLocation.toBlockPosition(block.getLocation()).relative(d);
-                if(level.getBlockState(adjacent).isFaceSturdy(level, CraftLocation.toBlockPosition(block.getLocation()), d.getOpposite())) {
+                if (level.getBlockState(adjacent).isFaceSturdy(level, CraftLocation.toBlockPosition(block.getLocation()), d.getOpposite())) {
                     return true;
                 }
             }

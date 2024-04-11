@@ -7,7 +7,6 @@ import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.chunk.ChunkManagerWorld;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

@@ -145,7 +145,8 @@ public class EntitySetPower extends CraftPower implements Listener {
             }
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (!ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) e.getPlayer())) return;
+                    if (!ConditionExecutor.testEntity(power, power.get("condition"), (CraftEntity) e.getPlayer()))
+                        return;
                     addToEntitySet(e.getPlayer(), power.getTag());
                 }
             }

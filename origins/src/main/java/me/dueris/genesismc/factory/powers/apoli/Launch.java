@@ -13,8 +13,6 @@ import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
-import org.bukkit.Particle;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
@@ -83,9 +81,9 @@ public class Launch extends CraftPower implements Listener {
                                         setActive(p, power.getTag(), true);
                                         p.setVelocity(p.getVelocity().setY(0));
                                         p.setVelocity(p.getVelocity().setY(speed));
-                                        ((CraftWorld) p.getWorld()).getHandle().sendParticles(ParticleTypes.CLOUD, p.getX(), p.getY(), p.getZ(), 8, ((CraftPlayer)p).getHandle().getRandom().nextGaussian(), 0.0D, ((CraftPlayer)p).getHandle().getRandom().nextGaussian(), 0.5);
-                                        if(power.containsInstance("sound")){
-                                            p.getWorld().playSound(p, MiscUtils.parseSound(power.getString("sound")), 0.5F, 0.4F / (((CraftPlayer)p).getHandle().getRandom().nextFloat() * 0.4F + 0.8F));
+                                        ((CraftWorld) p.getWorld()).getHandle().sendParticles(ParticleTypes.CLOUD, p.getX(), p.getY(), p.getZ(), 8, ((CraftPlayer) p).getHandle().getRandom().nextGaussian(), 0.0D, ((CraftPlayer) p).getHandle().getRandom().nextGaussian(), 0.5);
+                                        if (power.containsInstance("sound")) {
+                                            p.getWorld().playSound(p, MiscUtils.parseSound(power.getString("sound")), 0.5F, 0.4F / (((CraftPlayer) p).getHandle().getRandom().nextFloat() * 0.4F + 0.8F));
                                         }
                                         setActive(p, power.getTag(), true);
                                         times[0]++;

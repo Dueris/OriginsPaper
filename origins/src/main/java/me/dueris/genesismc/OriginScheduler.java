@@ -19,23 +19,22 @@ import java.util.Optional;
 
 public class OriginScheduler {
 
-    public static ArrayList<ApoliPower> activePowerRunners = new ArrayList<>();
     private static final FastMap<Entity, Power> currentTickingPowers = new FastMap<>(Integer.MAX_VALUE);
-
-    public static void updateTickingPower(Entity entity, Power power){
-        if(power == null) return;
-        currentTickingPowers.put(entity, power);
-    }
-
-    public static Optional<Power> getCurrentTickingPower(Entity entity){
-        return currentTickingPowers.containsKey(entity) ? Optional.of(currentTickingPowers.get(entity)) : Optional.empty();
-    }
-
+    public static ArrayList<ApoliPower> activePowerRunners = new ArrayList<>();
     final Plugin plugin;
     ArrayList<BukkitRunnable> runnables = new ArrayList<>();
 
     public OriginScheduler(Plugin plugin) {
         this.plugin = plugin;
+    }
+
+    public static void updateTickingPower(Entity entity, Power power) {
+        if (power == null) return;
+        currentTickingPowers.put(entity, power);
+    }
+
+    public static Optional<Power> getCurrentTickingPower(Entity entity) {
+        return currentTickingPowers.containsKey(entity) ? Optional.of(currentTickingPowers.get(entity)) : Optional.empty();
     }
 
     public BukkitTask runTask(BukkitRunnable runnable) {

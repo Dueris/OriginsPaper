@@ -198,10 +198,10 @@ public class EntityActions {
             float radiusOnUse = Float.valueOf(action.getOrDefault("radius_on_use", "-0.5F").toString());
             List<PotionEffect> effects = MiscUtils.parseAndReturnPotionEffects(action);
 
-            net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity)entity).getHandle();
+            net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
             ServerLevel level = (ServerLevel) nmsEntity.level();
             net.minecraft.world.entity.AreaEffectCloud cloud = new net.minecraft.world.entity.AreaEffectCloud(level, entity.getX(), entity.getY(), entity.getZ());
-            if(nmsEntity instanceof net.minecraft.world.entity.LivingEntity livingEntity){
+            if (nmsEntity instanceof net.minecraft.world.entity.LivingEntity livingEntity) {
                 cloud.setOwner(livingEntity);
             }
             cloud.setRadius(radius);

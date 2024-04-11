@@ -17,7 +17,7 @@ public class Reflector {
     public static Method accessMethod(String name, Class sourceClass, Class... paramTypes) {
         try {
             Method method = sourceClass.getDeclaredMethod(name, paramTypes);
-            if(!method.isAccessible()) method.setAccessible(true);
+            if (!method.isAccessible()) method.setAccessible(true);
             return method;
         } catch (NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
@@ -28,7 +28,7 @@ public class Reflector {
     public static Method accessMethod(String name, Class sourceClass) {
         try {
             Method method = sourceClass.getDeclaredMethod(name);
-            if(!method.isAccessible()) method.setAccessible(true);
+            if (!method.isAccessible()) method.setAccessible(true);
             return method;
         } catch (NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
@@ -36,9 +36,9 @@ public class Reflector {
         return null;
     }
 
-    public static void accessMethod$Invoke(String name, Class sourceClass, Object invoker, Class[] paramTypes, Object... args){
+    public static void accessMethod$Invoke(String name, Class sourceClass, Object invoker, Class[] paramTypes, Object... args) {
         try {
-            if(args != null && args.length > 0){
+            if (args != null && args.length > 0) {
                 accessMethod(name, sourceClass, paramTypes).invoke(invoker, args);
                 return;
             }
@@ -50,7 +50,7 @@ public class Reflector {
 
     public static void accessMethod$Invoke(String name, Class sourceClass, Object invoker, Object... args) {
         try {
-            if(args != null && args.length > 0){
+            if (args != null && args.length > 0) {
                 accessMethod(name, sourceClass).invoke(invoker, args);
                 return;
             }
@@ -63,7 +63,7 @@ public class Reflector {
     public static <T> T accessField(String name, Class sourceClass, Object invoker, Class<T> type) {
         try {
             Field field = sourceClass.getDeclaredField(name);
-            if(!field.isAccessible()) field.setAccessible(true);
+            if (!field.isAccessible()) field.setAccessible(true);
             return (T) field.get(invoker);
         } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
             e.printStackTrace();

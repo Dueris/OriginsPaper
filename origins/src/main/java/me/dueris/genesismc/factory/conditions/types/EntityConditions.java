@@ -26,6 +26,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -34,11 +35,11 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Scoreboard;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
@@ -115,7 +116,7 @@ public class EntityConditions {
             if (!ApoliPower.powers_active.containsKey(entity)) return false;
             String power = condition.get("power").toString();
             Power currentTickingPower = OriginScheduler.getCurrentTickingPower(entity).orElse(null);
-            if(currentTickingPower != null && power.contains("*")){
+            if (currentTickingPower != null && power.contains("*")) {
                 power = NamespaceUtils.getDynamicNamespace(currentTickingPower.getTag(), power).asString();
             }
             return ApoliPower.powers_active.get(entity).getOrDefault(power, false);
@@ -157,19 +158,26 @@ public class EntityConditions {
             return false;
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block_collision"), (condition, entity) -> {
-            String offsetX = condition.getOrDefault("offset_x", "0").toString();
-            String offsetY = condition.getOrDefault("offset_y", "0").toString();
-            String offsetZ = condition.getOrDefault("offset_z", "0").toString();
-            if (entity instanceof Player player) {
-                Location playerLocation = player.getEyeLocation();
-                World world = player.getWorld();
+            net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+            AABB boundingBox = nmsEntity.getBoundingBox();
+            double offsetX = Utils.getToDouble(condition.getOrDefault("offset_x", 0));
+            double offsetY = Utils.getToDouble(condition.getOrDefault("offset_y", 0));
+            double offsetZ = Utils.getToDouble(condition.getOrDefault("offset_z", 0));
+            AABB offsetBox = boundingBox.move(offsetX, offsetY, offsetZ);
 
-                int blockX = playerLocation.getBlockX() + Integer.parseInt(offsetX);
-                int blockY = playerLocation.getBlockY() + Integer.parseInt(offsetY);
-                int blockZ = playerLocation.getBlockZ() + Integer.parseInt(offsetZ);
+            ServerLevel level = (ServerLevel) nmsEntity.level();
+            BlockCollisions<BlockPos> spliterator = new BlockCollisions<>(level, nmsEntity, offsetBox, false, (pos, shape) -> pos);
 
-                Block blockAt = world.getBlockAt(blockX, blockY, blockZ);
-                return blockAt.getType().isSolid();
+            while (spliterator.hasNext()) {
+                BlockPos pos = spliterator.next();
+                boolean pass = true;
+
+                if (condition.containsKey("block_condition"))
+                    pass = ConditionExecutor.testBlock((JSONObject) condition.get("block_condition"), CraftBlock.at(level, pos));
+
+                if (pass) {
+                    return true;
+                }
             }
             return false;
         }));

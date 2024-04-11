@@ -5,7 +5,6 @@ import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.Registries;
-
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 

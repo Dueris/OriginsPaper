@@ -3,7 +3,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AttributeExecuteEvent;
-import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -24,7 +23,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -64,8 +62,8 @@ public class AttributeHandler extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void powerUpdate(PowerUpdateEvent e){
-        if(!e.getPower().getType().equalsIgnoreCase(this.getPowerFile())) return;
+    public void powerUpdate(PowerUpdateEvent e) {
+        if (!e.getPower().getType().equalsIgnoreCase(this.getPowerFile())) return;
         Player p = e.getPlayer();
         ScreenConstants.setAttributesToDefault(p);
         if (attribute.contains(p)) {
@@ -82,7 +80,7 @@ public class AttributeHandler extends CraftPower implements Listener {
         }
     }
 
-    protected void runAttributeModifyPower(PlayerEvent e){
+    protected void runAttributeModifyPower(PlayerEvent e) {
         Player p = e.getPlayer();
         if (!attribute.contains(p)) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {

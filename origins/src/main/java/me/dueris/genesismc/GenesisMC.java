@@ -60,6 +60,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -67,8 +68,6 @@ import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -174,6 +173,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     private static boolean getBooleanOrDefault(boolean arg1, boolean arg2) {
         return arg1 ? arg1 : arg2;
+    }
+
+    @EventHandler
+    public void sprint(PlayerToggleSprintEvent e) {
+        System.out.println(e.isSprinting());
     }
 
     @Override

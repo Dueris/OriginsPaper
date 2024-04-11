@@ -14,14 +14,14 @@ import java.util.HashMap;
 
 public class ObjectRemapper {
     /**
+     * Map<KEY, Pair<CURRENT -> REMAPPED>>
+     */
+    private static final HashMap<String, ArrayList<Pair<Object, Object>>> objectMappings = new HashMap<>();
+    /**
      * List<Pair<CURRENT -> REMAPPED>>
      */
     @Deprecated
     public static ArrayList<Pair<String, String>> typeMappings = new ArrayList<>();
-    /**
-     * Map<KEY, Pair<CURRENT -> REMAPPED>>
-     */
-    private static final HashMap<String, ArrayList<Pair<Object, Object>>> objectMappings = new HashMap<>();
 
     /**
      * Creates a remapped JSON object by parsing the contents of the specified file and remapping the keys using the given current namespace.

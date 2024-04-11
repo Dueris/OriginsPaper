@@ -3,11 +3,9 @@ package me.dueris.genesismc.factory.conditions;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.types.*;
 import me.dueris.genesismc.util.Reflector;
-
 import org.bukkit.NamespacedKey;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiPredicate;

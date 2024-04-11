@@ -123,9 +123,11 @@ public class Actions {
             switch (type) {
                 case "apoli:invert" -> executeBiEntity(power, target, actor, (JSONObject) action.get("action"));
 
-                case "apoli:actor_action" -> executeEntity(OriginScheduler.getCurrentTickingPower(actor).orElse(null), actor, (JSONObject) action.get("action"));
+                case "apoli:actor_action" ->
+                    executeEntity(OriginScheduler.getCurrentTickingPower(actor).orElse(null), actor, (JSONObject) action.get("action"));
 
-                case "apoli:target_action" -> executeEntity(OriginScheduler.getCurrentTickingPower(actor).orElse(null), target, (JSONObject) action.get("action"));
+                case "apoli:target_action" ->
+                    executeEntity(OriginScheduler.getCurrentTickingPower(actor).orElse(null), target, (JSONObject) action.get("action"));
 
                 case "apoli:and" -> and(action, actionn -> executeBiEntity(power, actor, target, actionn));
 

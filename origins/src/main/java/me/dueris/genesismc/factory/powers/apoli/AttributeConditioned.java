@@ -19,8 +19,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 import java.util.function.BinaryOperator;
 
 public class AttributeConditioned extends CraftPower implements Listener {

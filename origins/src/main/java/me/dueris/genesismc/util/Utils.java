@@ -31,7 +31,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_20_R3.potion.CraftPotionEffectType;
 import org.bukkit.craftbukkit.v1_20_R3.potion.CraftPotionUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -41,7 +40,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -100,19 +98,19 @@ public class Utils {
         };
     }
 
-    private static int getToInt(Object value){
+    public static int getToInt(Object value) {
         return value instanceof Long ? Math.toIntExact((long) value) : (int) value;
     }
 
-    private static double getToDouble(Object value){
-        return value instanceof Float ? ((Float)value).doubleValue() : (double) value;
+    public static double getToDouble(Object value) {
+        return value instanceof Float ? ((Float) value).doubleValue() : (double) value;
     }
 
-    public static <T> T returnIfPresentOrNull(Optional<T> optional){
+    public static <T> T returnIfPresentOrNull(Optional<T> optional) {
         return optional.orElse(null);
     }
 
-    public static List<MobEffectInstance> toMobEffectList(List<PotionEffect> effects){
+    public static List<MobEffectInstance> toMobEffectList(List<PotionEffect> effects) {
         List<MobEffectInstance> ret = new ArrayList<>();
         effects.forEach(effect -> ret.add(CraftPotionUtil.fromBukkit(effect)));
         return ret;
@@ -123,13 +121,13 @@ public class Utils {
         Utils.computeIfObjectPresent("hunger", jsonObject, value -> builder.nutrition(getToInt(value)));
         Utils.computeIfObjectPresent("saturation", jsonObject, value -> builder.saturationMod(Float.valueOf(Double.toString(getToDouble(value)))));
         Utils.computeIfObjectPresent("meat", jsonObject, value -> {
-            if((boolean)value) builder.meat();
+            if ((boolean) value) builder.meat();
         });
         Utils.computeIfObjectPresent("always_edible", jsonObject, value -> {
-            if((boolean)value) builder.alwaysEat();
+            if ((boolean) value) builder.alwaysEat();
         });
         Utils.computeIfObjectPresent("snack", jsonObject, value -> {
-            if((boolean)value) builder.fast();
+            if ((boolean) value) builder.fast();
         });
         List<PotionEffect> effects = MiscUtils.parseAndReturnPotionEffects(jsonObject);
         effects.forEach(potionEffect -> {
