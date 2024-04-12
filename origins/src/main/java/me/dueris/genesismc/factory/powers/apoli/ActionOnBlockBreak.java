@@ -52,7 +52,7 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            Actions.executeBlock(e.getBlock().getLocation(), powerContainer.getBlockAction());
+                            Actions.executeBlock(e.getBlock().getLocation(), powerContainer.getJsonObjectOrNew("block_action"));
                             Actions.executeEntity(e.getPlayer(), powerContainer.getEntityAction());
                         }
                     }.runTaskLater(GenesisMC.getPlugin(), 1);

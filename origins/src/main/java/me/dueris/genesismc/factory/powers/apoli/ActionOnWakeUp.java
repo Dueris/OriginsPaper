@@ -30,7 +30,7 @@ public class ActionOnWakeUp extends CraftPower implements Listener {
                 if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) return;
                 setActive(e.getPlayer(), power.getTag(), true);
                 Actions.executeEntity(e.getPlayer(), power.getEntityAction());
-                Actions.executeBlock(e.getBed().getLocation(), power.getBlockAction());
+                Actions.executeBlock(e.getBed().getLocation(), power.getJsonObjectOrNew("block_action"));
             }
         }
     }

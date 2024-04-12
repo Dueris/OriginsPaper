@@ -49,7 +49,7 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
                             }
                             Actions.executeEntity(p, power.get("entity_action"));
                             Actions.executeItem(e.getInventory().getResult(), power.getItemAction());
-                            Actions.executeBlock(p.getLocation(), power.getBlockAction());
+                            Actions.executeBlock(p.getLocation(), power.getJsonObjectOrNew("block_action"));
                         }
 //                        } else {
 //                            setActive(p, power.getTag(), false);

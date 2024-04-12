@@ -2,7 +2,7 @@ package me.dueris.genesismc.registry.registries;
 
 import me.dueris.calio.builder.inst.FactoryInstance;
 import me.dueris.calio.builder.inst.FactoryObjectInstance;
-import me.dueris.calio.builder.inst.FactoryProvider;
+import me.dueris.calio.builder.inst.factory.FactoryBuilder;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
@@ -206,7 +206,7 @@ public class Origin implements Serializable, FactoryInstance {
     }
 
     @Override
-    public void createInstance(FactoryProvider obj, File rawFile, Registrar<? extends Registerable> registry, NamespacedKey namespacedTag) {
+    public void createInstance(FactoryBuilder obj, File rawFile, Registrar<? extends Registerable> registry, NamespacedKey namespacedTag) {
         Registrar<Origin> registrar = (Registrar<Origin>) registry;
         try {
             ArrayList<Power> containers = new ArrayList<>();

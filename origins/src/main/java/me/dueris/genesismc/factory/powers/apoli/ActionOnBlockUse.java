@@ -44,7 +44,7 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
                     ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) e.getClickedBlock()) &&
                     ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
                     setActive(e.getPlayer(), power.getTag(), true);
-                    Actions.executeBlock(e.getClickedBlock().getLocation(), power.getBlockAction());
+                    Actions.executeBlock(e.getClickedBlock().getLocation(), power.getJsonObjectOrNew("block_action"));
                     Actions.executeEntity(e.getPlayer(), power.getEntityAction());
                     Actions.executeItem(e.getItem(), power.getItemAction());
                     Actions.executeItem(e.getItem(), power.get("held_item_action"));

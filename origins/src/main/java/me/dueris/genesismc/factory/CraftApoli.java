@@ -1,7 +1,10 @@
 package me.dueris.genesismc.factory;
 
 import com.google.gson.JsonParser;
-import me.dueris.calio.builder.inst.FactoryProvider;
+
+import me.dueris.calio.builder.inst.factory.FactoryBuilder;
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.Registries;
@@ -73,26 +76,12 @@ public class CraftApoli {
         return new Origin(new NamespacedKey("genesis", "origin-null"), new DatapackFile(new ArrayList<>(List.of("hidden", "unchoosable", "name", "description")), new ArrayList<>(List.of(true, true, "Null", "Still Null"))), new ArrayList<>(List.of(new Power(new NamespacedKey("genesis", "null"), new DatapackFile(new ArrayList<>(), new ArrayList<>()), null, false, null))));
     }
 
-    /**
-     * Parses a JSON file into a PowerFIleContainer.
-     **/
-    public static DatapackFile fileToFileContainer(JSONObject JSONFileParser) {
-        ArrayList<String> keys = new ArrayList<>();
-        ArrayList<Object> values = new ArrayList<>();
-        for (Object key : JSONFileParser.keySet()) {
-            keys.add((String) key);
-            values.add(JSONFileParser.get(key));
-        }
-        return new DatapackFile(keys, values);
-    }
-
-    public static void processNestedPowers(Power powerContainer, ArrayList<Power> powerContainers, String powerFolder, String powerFileName) {
-        for (String key : powerContainer.getPowerFile().getKeys()) {
-            Object subPowerValue = powerContainer.getPowerFile().get(key);
-
-            if (subPowerValue instanceof JSONObject subPowerJson) {
-                FactoryProvider accessor = new FactoryProvider(subPowerJson);
-                DatapackFile subPowerFile = fileToFileContainer(subPowerJson);
+    public static void processNestedPowers(Power powerContainer, ArrayList<Power> powerContainers, String powerFolder, String powerFileName, File sourceFile) {
+        for (String key : powerContainer.toJsonObject().keySet()){
+            FactoryElement subPowerValue = powerContainer.toJsonObject().getElement(key);
+            if (subPowerValue.isJsonObject()) {
+                FactoryJsonObject jsonObject = subPowerValue.toJsonObject();
+                FactoryBuilder accessor = new FactoryBuilder(subPowerValue.handle, sourceFile);
 
                 Power newPower = new Power(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), subPowerFile, JsonParser.parseString(subPowerJson.toJSONString()), true, false, powerContainer, accessor);
                 ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(newPower);

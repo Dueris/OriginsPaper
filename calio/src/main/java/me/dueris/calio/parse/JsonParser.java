@@ -2,11 +2,12 @@ package me.dueris.calio.parse;
 
 import me.dueris.calio.builder.ObjectRemapper;
 import me.dueris.calio.builder.inst.AccessorRoot;
-import me.dueris.calio.builder.inst.FactoryProvider;
+import me.dueris.calio.builder.inst.factory.FactoryBuilder;
 import me.dueris.calio.parse.verification.JsonFactoryValidator;
 import me.dueris.calio.registry.impl.CalioRegistry;
 import org.bukkit.NamespacedKey;
-import org.json.simple.JSONObject;
+
+import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.util.Arrays;
@@ -26,8 +27,8 @@ public class JsonParser {
             try {
                 if (!jsonFile.isDirectory()) {
                     NamespacedKey key = new NamespacedKey(namespace.toLowerCase(), (before + jsonFile.getName().replace(".json", "")).toLowerCase());
-                    JSONObject remappedJSON = ObjectRemapper.createRemapped(jsonFile, key);
-                    FactoryProvider validatedFactory = JsonFactoryValidator.validateFactory(new FactoryProvider(remappedJSON), root.getFactoryInst().getValidObjectFactory(), key);
+                    JsonObject remappedJSON = ObjectRemapper.createRemapped(jsonFile, key);
+                    FactoryBuilder validatedFactory = JsonFactoryValidator.validateFactory(new FactoryBuilder(remappedJSON, jsonFile), root.getFactoryInst().getValidObjectFactory(), key);
                     if (validatedFactory != null) {
                         root.getFactoryInst().createInstance(validatedFactory, jsonFile, CalioRegistry.INSTANCE.retrieve(root.getPutRegistry()), key);
                     }

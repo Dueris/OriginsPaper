@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.actions;
 
 import it.unimi.dsi.fastutil.Pair;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.types.BiEntityActions;
@@ -263,13 +264,12 @@ public class Actions {
         }
     }
 
-    public static void executeBlock(Location location, JSONObject action) {
-        if (!action.containsKey("type") || action == null || action.isEmpty()) return;
-        String type = action.get("type").toString();
+    public static void executeBlock(Location location, FactoryJsonObject action) {
+        if (action == null || action.isEmpty() || !action.isPresent("type")) return;
+        String type = action.getString("type");
         if (testMetaAction(action, new String[]{"apoli:offset"})) {
             switch (type) {
-                case "apoli:offset" ->
-                    executeBlock(location.add(Double.valueOf(action.getOrDefault("x", "0").toString()), Double.valueOf(action.getOrDefault("y", "0").toString()), Double.valueOf(action.getOrDefault("z", "0").toString())), (JSONObject) action.get("action"));
+                case "apoli:offset" -> executeBlock(location.add(action.getNumberOrDefault("x", 0).getDouble(), action.getNumberOrDefault("y", 0).getDouble(), action.getNumberOrDefault("z", 0).getDouble()), action.getJsonObject("action"));
 
                 case "apoli:and" -> and(action, actionn -> executeBlock(location, actionn));
 

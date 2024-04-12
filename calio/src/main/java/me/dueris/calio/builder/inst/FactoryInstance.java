@@ -1,5 +1,6 @@
 package me.dueris.calio.builder.inst;
 
+import me.dueris.calio.builder.inst.factory.FactoryBuilder;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
 import org.bukkit.NamespacedKey;
@@ -22,5 +23,5 @@ public interface FactoryInstance extends Registerable {
      * @param registry      the registry to use for creating the instance
      * @param namespacedTag the namespaced tag to use for creating the instance
      */
-    void createInstance(FactoryProvider obj, File rawFile, Registrar<? extends Registerable> registry, NamespacedKey namespacedTag);
+    void createInstance(FactoryBuilder obj, File rawFile, Registrar<? extends Registerable> registry, NamespacedKey namespacedTag);
 }

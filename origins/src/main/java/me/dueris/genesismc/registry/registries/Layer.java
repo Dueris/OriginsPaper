@@ -3,7 +3,8 @@ package me.dueris.genesismc.registry.registries;
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.inst.FactoryInstance;
 import me.dueris.calio.builder.inst.FactoryObjectInstance;
-import me.dueris.calio.builder.inst.FactoryProvider;
+import me.dueris.calio.builder.inst.factory.FactoryBuilder;
+import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -100,6 +101,13 @@ public class Layer implements Serializable, FactoryInstance {
         return replace;
     }
 
+    public void addOrigin(ArrayList<String> originTags) {
+        int index = this.keys.indexOf("origins");
+        JSONArray origins = (JSONArray) this.values.get(index);
+        origins.addAll(originTags);
+        this.values.set(index, origins);
+    }
+
     /**
      * @return An array list of the loaded origins tags
      */
@@ -110,7 +118,7 @@ public class Layer implements Serializable, FactoryInstance {
     @Override
     public List<FactoryObjectInstance> getValidObjectFactory() {
         return List.of(
-            new FactoryObjectInstance("origins", JSONArray.class, null),
+            new FactoryObjectInstance("origins", FactoryJsonArray.class, null),
             new FactoryObjectInstance("enabled", Boolean.class, true),
             new FactoryObjectInstance("replace", Boolean.class, false),
             new FactoryObjectInstance("allow_random", Boolean.class, true),
@@ -120,7 +128,7 @@ public class Layer implements Serializable, FactoryInstance {
     }
 
     @Override
-    public void createInstance(FactoryProvider obj, File rawFile, Registrar<? extends Registerable> registry, NamespacedKey namespacedTag) {
+    public void createInstance(FactoryBuilder obj, File rawFile, Registrar<? extends Registerable> registry, NamespacedKey namespacedTag) {
         Registrar<Layer> registrar = (Registrar<Layer>) registry;
         AtomicBoolean merge = new AtomicBoolean(!(boolean) obj.getOrDefault("replace", false) && registry.rawRegistry.containsKey(namespacedTag));
         if (merge.get()) {

@@ -30,7 +30,7 @@ public class ItemOnItemPower extends CraftPower implements Listener {
                             ConditionExecutor.testItem(power.get("using_item_condition"), e.getCursor()) &&
                                 ConditionExecutor.testItem(power.get("on_item_condition"), e.getCurrentItem());
                         if (pass) {
-                            ItemStack stack = power.rawAccessor.getItemStack("result");
+                            ItemStack stack = power.getItemStack("result");
                             if (stack != null) {
                                 Actions.executeItem(stack, power.get("result_item_action"));
                                 for (int i = 0; i < power.getIntOrDefault("result_from_on_stack", 1); i++) {
