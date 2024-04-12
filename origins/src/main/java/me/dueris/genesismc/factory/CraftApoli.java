@@ -8,7 +8,6 @@ import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.registry.registries.DatapackFile;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
@@ -73,17 +72,23 @@ public class CraftApoli {
      * @return A copy of The null origin.
      **/
     public static Origin nullOrigin() {
-        return new Origin(new NamespacedKey("genesis", "origin-null"), new DatapackFile(new ArrayList<>(List.of("hidden", "unchoosable", "name", "description")), new ArrayList<>(List.of(true, true, "Null", "Still Null"))), new ArrayList<>(List.of(new Power(new NamespacedKey("genesis", "null"), new DatapackFile(new ArrayList<>(), new ArrayList<>()), null, false, null))));
+        return new Origin(
+            GenesisMC.identifier("origin-null"),
+            new ArrayList<>(),
+            new FactoryJsonObject(
+                JsonParser.parseString("{\"icon\":{\"item\":\"minecraft:player_head\"},\"name\":\"Null\",\"description\":\"Still Null\",\"order\":0,\"impact\":0}").getAsJsonObject()
+            )
+        );
     }
 
     public static void processNestedPowers(Power powerContainer, ArrayList<Power> powerContainers, String powerFolder, String powerFileName, File sourceFile) {
-        for (String key : powerContainer.toJsonObject().keySet()){
-            FactoryElement subPowerValue = powerContainer.toJsonObject().getElement(key);
+        for (String key : powerContainer.keySet()){
+            FactoryElement subPowerValue = powerContainer.getElement(key);
             if (subPowerValue.isJsonObject()) {
                 FactoryJsonObject jsonObject = subPowerValue.toJsonObject();
                 FactoryBuilder accessor = new FactoryBuilder(subPowerValue.handle, sourceFile);
 
-                Power newPower = new Power(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), subPowerFile, JsonParser.parseString(subPowerJson.toJSONString()), true, false, powerContainer, accessor);
+                Power newPower = new Power(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), jsonObject, true, false, powerContainer, accessor);
                 ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(newPower);
             }
         }
@@ -95,7 +100,7 @@ public class CraftApoli {
         String powerFolder = power.getTag().split(":")[0].toLowerCase();
         String powerFileName = power.getTag().split(":")[1].toLowerCase();
 
-        for (String key : power.getPowerFile().getKeys()) {
+        for (String key : power.keySet()) {
             if (power.getObject(key) instanceof JSONObject) {
                 if (((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase())) != null) {
                     nested.add(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(powerFolder + ":" + powerFileName + "_" + key.toLowerCase())));
@@ -196,7 +201,7 @@ public class CraftApoli {
         StringBuilder data = new StringBuilder();
         for (Layer layer : origin.keySet()) {
             Origin layerOrigins = origin.get(layer);
-            ArrayList<String> powers = layerOrigins.getPowers();
+            List<String> powers = layerOrigins.getPowers();
             int powerSize = 0;
             if (powers != null) powerSize = powers.size();
             data.append(layer.getTag()).append("|").append(layerOrigins.getTag()).append("|").append(powerSize);

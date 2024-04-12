@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.actions.types;
 
 import it.unimi.dsi.fastutil.Pair;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AddToSetEvent;
@@ -13,6 +14,7 @@ import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.LivingEntity;
@@ -26,42 +28,29 @@ public class BiEntityActions {
 
     public void register() {
         register(new ActionFactory(GenesisMC.apoliIdentifier("add_velocity"), (action, entityPair) -> {
-            boolean set = action.containsKey("set") && (boolean) action.get("set");
+            boolean set = action.isPresent("set") && action.getBoolean("set");
             Vector vector = VectorGetter.getVector(action);
 
             if (set) entityPair.right().setVelocity(vector);
             else entityPair.right().setVelocity(entityPair.right().getVelocity().add(vector));
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("remove_from_set"), (action, entityPair) -> {
-            RemoveFromSetEvent ev = new RemoveFromSetEvent(entityPair.right(), action.get("set").toString());
+            RemoveFromSetEvent ev = new RemoveFromSetEvent(entityPair.right(), action.getString("set"));
             ev.callEvent();
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("add_to_set"), (action, entityPair) -> {
-            AddToSetEvent ev = new AddToSetEvent(entityPair.right(), action.get("set").toString());
+            AddToSetEvent ev = new AddToSetEvent(entityPair.right(), action.getString("set"));
             ev.callEvent();
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("damage"), (action, entityPair) -> {
             if (entityPair.right().isDead() || !(entityPair.right() instanceof LivingEntity)) return;
             float amount = 0.0f;
 
-            if (action.containsKey("amount"))
-                amount = Float.parseFloat(action.get("amount").toString());
+            if (action.isPresent("amount"))
+                amount = action.getNumber("amount").getFloat();
 
-            String namespace;
-            String key;
-            if (action.get("damage_type") != null) {
-                if (action.get("damage_type").toString().contains(":")) {
-                    namespace = action.get("damage_type").toString().split(":")[0];
-                    key = action.get("damage_type").toString().split(":")[1];
-                } else {
-                    namespace = "minecraft";
-                    key = action.get("damage_type").toString();
-                }
-            } else {
-                namespace = "minecraft";
-                key = "generic";
-            }
-            DamageType dmgType = Utils.DAMAGE_REGISTRY.get(new ResourceLocation(namespace, key));
+            NamespacedKey key = NamespacedKey.fromString(action.getStringOrDefault("damage_type", "generic"));
+            DamageType dmgType = Utils.DAMAGE_REGISTRY.get(CraftNamespacedKey.toMinecraft(key));
             net.minecraft.world.entity.LivingEntity serverEn = ((CraftLivingEntity) entityPair.right()).getHandle();
             serverEn.hurt(Utils.getDamageSource(dmgType), amount);
         }));
@@ -84,14 +73,14 @@ public class BiEntityActions {
 
     public static class ActionFactory implements Registerable {
         NamespacedKey key;
-        BiConsumer<JSONObject, Pair<CraftEntity, CraftEntity>> test;
+        BiConsumer<FactoryJsonObject, Pair<CraftEntity, CraftEntity>> test;
 
-        public ActionFactory(NamespacedKey key, BiConsumer<JSONObject, Pair<CraftEntity, CraftEntity>> test) {
+        public ActionFactory(NamespacedKey key, BiConsumer<FactoryJsonObject, Pair<CraftEntity, CraftEntity>> test) {
             this.key = key;
             this.test = test;
         }
 
-        public void test(JSONObject action, Pair<CraftEntity, CraftEntity> tester) {
+        public void test(FactoryJsonObject action, Pair<CraftEntity, CraftEntity> tester) {
             if (action == null || action.isEmpty()) return; // Dont execute empty actions
             try {
                 test.accept(action, tester);

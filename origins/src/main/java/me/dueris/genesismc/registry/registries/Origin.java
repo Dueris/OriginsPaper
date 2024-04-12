@@ -3,6 +3,8 @@ package me.dueris.genesismc.registry.registries;
 import me.dueris.calio.builder.inst.FactoryInstance;
 import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.calio.builder.inst.factory.FactoryBuilder;
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
@@ -20,17 +22,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Origin implements Serializable, FactoryInstance {
+public class Origin extends FactoryJsonObject implements Serializable, FactoryInstance {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     NamespacedKey tag;
-    DatapackFile originFile;
     ArrayList<Power> powerContainer;
-    JSONObject choosingCondition;
+    FactoryJsonObject choosingCondition;
+    FactoryJsonObject factory;
 
     public Origin(boolean toRegistry) {
+        super(null);
         if (!toRegistry) {
             throw new RuntimeException("Invalid constructor used.");
         }
@@ -40,13 +43,13 @@ public class Origin implements Serializable, FactoryInstance {
      * An object that stores an origin and all the details about it.
      *
      * @param tag            The origin tag.
-     * @param originFile     The origin file, parsed into a HashMap.
      * @param powerContainer An array of powers that the origin has.
      */
-    public Origin(NamespacedKey tag, DatapackFile originFile, ArrayList<Power> powerContainer) {
+    public Origin(NamespacedKey tag, ArrayList<Power> powerContainer, FactoryJsonObject factoryJsonObject) {
+        super(factoryJsonObject.handle);
         this.tag = tag;
-        this.originFile = originFile;
         this.powerContainer = powerContainer;
+        this.factory = factoryJsonObject;
     }
 
     /**
@@ -54,14 +57,14 @@ public class Origin implements Serializable, FactoryInstance {
      */
     @Override
     public String toString() {
-        return "Tag: " + this.tag + ", OriginFile: " + this.originFile + ", PowerContainer: " + this.powerContainer.toString();
+        return "Tag: " + this.tag + ", PowerContainer: " + this.powerContainer.toString();
     }
 
     public boolean getUsesCondition() {
         return this.choosingCondition != null;
     }
 
-    public void setUsesCondition(JSONObject condition) {
+    public void setUsesCondition(FactoryJsonObject condition) {
         this.choosingCondition = condition;
     }
 
@@ -78,76 +81,54 @@ public class Origin implements Serializable, FactoryInstance {
     }
 
     /**
-     * @return The origin file parsed into a HashMap.
-     */
-    public DatapackFile getOriginFile() {
-        return this.originFile;
-    }
-
-    /**
      * @return An array containing all the origin powers.
      */
     public ArrayList<Power> getPowerContainers() {
         return new ArrayList<>(this.powerContainer);
     }
 
-
-    //origin file
-
     /**
      * @return The name of the origin.
      */
     public String getName() {
-        String name = (String) this.originFile.get("name");
-        if (name == null) return "No Name";
-        return name;
+        return getStringOrDefault("name", "No Name");
     }
 
     /**
      * @return The description for the origin.
      */
     public String getDescription() {
-        String description = (String) this.originFile.get("description");
-        if (description == null) return "No Description";
-        return description;
+        return getStringOrDefault("name", "No Description");
     }
 
     /**
      * @return An array of powers from the origin.
      */
-    public ArrayList<String> getPowers() {
-        if (this.originFile.get("powers") instanceof String) {
-            ArrayList<String> powers = new ArrayList<>();
-            powers.add(String.valueOf(this.originFile.get("powers")));
-            return powers;
-        } else if (this.originFile.get("powers") instanceof ArrayList<?>) {
-            ArrayList<String> powers = (ArrayList<String>) this.originFile.get("powers");
-            if (powers == null) return new ArrayList<>();
-            return powers;
-        }
-        return new ArrayList<>();
+    public List<String> getPowers() {
+        return isPresent("powers") ? getJsonArray("powers").asList().stream().map(FactoryElement::getString).toList() : new ArrayList<>();
     }
 
     /**
      * @return The icon of the origin.
      */
     public String getIcon() {
-        Object value = this.originFile.get("icon");
-        try {
-            if (((JSONObject) value).get("item") != "minecraft:air") return (String) ((JSONObject) value).get("item");
-            else return "minecraft:player_head";
-        } catch (Exception e) {
-            try {
-                if (!value.toString().equals("minecraft:air")) return value.toString();
-                else return "minecraft:player_head";
-            } catch (Exception ex) {
-                return "minecraft:player_head";
-            }
-        }
+        return getItemStack("icon").getType().getKey().asString();
+//        Object value = this.originFile.get("icon");
+//        try {
+//            if (((JSONObject) value).get("item") != "minecraft:air") return (String) ((JSONObject) value).get("item");
+//            else return "minecraft:player_head";
+//        } catch (Exception e) {
+//            try {
+//                if (!value.toString().equals("minecraft:air")) return value.toString();
+//                else return "minecraft:player_head";
+//            } catch (Exception ex) {
+//                return "minecraft:player_head";
+//            }
+//        }
     }
 
     public int getOrder() {
-        return this.originFile.get("order") == null ? 5 : this.originFile.get("order") instanceof Long ? Math.toIntExact((long) this.originFile.get("order")) : (int) this.originFile.get("order");
+        return !isPresent("order") ? 5 : getNumber("order").getInt();
     }
 
     /**
@@ -160,19 +141,15 @@ public class Origin implements Serializable, FactoryInstance {
     /**
      * @return The impact of the origin.
      */
-    public Long getImpact() {
-        Long impact = Long.valueOf(this.originFile.get("impact").toString());
-        if (impact == null) return 1L;
-        return impact;
+    public long getImpact() {
+        return getNumberOrDefault("impact", 0).getLong();
     }
 
     /**
      * @return If the origin is choose-able from the choose menu.
      */
-    public Boolean getUnchooseable() {
-        Boolean hidden = (Boolean) this.originFile.get("unchooseable");
-        if (hidden == null) return false;
-        return hidden;
+    public boolean getUnchooseable() {
+        return getBooleanOrDefault("unchoosable", false);
     }
 
     /**
@@ -210,18 +187,18 @@ public class Origin implements Serializable, FactoryInstance {
         Registrar<Origin> registrar = (Registrar<Origin>) registry;
         try {
             ArrayList<Power> containers = new ArrayList<>();
-            for (Object object : ((JSONArray) obj.getOrDefault("powers", new JSONArray()))) {
-                String string = object.toString();
-                if (((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).rawRegistry.containsKey(NamespacedKey.fromString(string))) {
-                    containers.add(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(string)));
+            for (String element : obj.getRoot().getJsonArray("powers").asList().stream().map(FactoryElement::getString).toList()) {
+                if (((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).rawRegistry.containsKey(NamespacedKey.fromString(element))) {
+                    containers.add(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(element)));
                 }
-                for (Power power : CraftApoli.getNestedPowers(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(string)))) {
+
+                for (Power power : CraftApoli.getNestedPowers(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(element)))) {
                     if (power != null) {
                         containers.add(power);
                     }
                 }
             }
-            registrar.register(new Origin(namespacedTag, new DatapackFile(obj.keySet().stream().toList(), obj.values().stream().toList()), containers));
+            registrar.register(new Origin(namespacedTag, containers,obj.getRoot()));
         } catch (Exception e) {
             e.printStackTrace();
         }

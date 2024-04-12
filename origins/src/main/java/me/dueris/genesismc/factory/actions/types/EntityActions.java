@@ -1,5 +1,7 @@
 package me.dueris.genesismc.factory.actions.types;
 
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.util.MiscUtils;
@@ -48,6 +50,7 @@ import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import static me.dueris.genesismc.factory.actions.Actions.*;
@@ -58,11 +61,22 @@ public class EntityActions {
     public void register() {
         register(new ActionFactory(GenesisMC.apoliIdentifier("modify_inventory"), (action, entity) -> {
             if (entity instanceof Player player) {
-                if (action.containsKey("slot")) {
+                List<String> slots = new ArrayList<>();
+                if (action.isPresent("slot")) {
+                    slots.add(action.getString("slot"));
+                } else if (action.isPresent("slots")) {
+                    slots.addAll(action.getJsonArray("slots").asList().stream().map(FactoryElement::getString).toList());
+                }
+                int limit = action.getNumberOrDefault("limit", 0).getInt();
+                int count = 0;
+
+                for (String slot : slots) {
                     try {
-                        if (player.getInventory().getItem(getSlotFromString(action.get("slot").toString())) == null)
+                        if (player.getInventory().getItem(getSlotFromString(slot)) == null)
                             return;
-                        executeItem(player.getInventory().getItem(getSlotFromString(action.get("slot").toString())), action);
+                        executeItem(player.getInventory().getItem(Objects.requireNonNull(getSlotFromString(slot))), action.getJsonObject("item_action"));
+                        if(!(limit <= 0) && count >= limit) break;
+                        count++;
                     } catch (Exception e) {
                         // Ignore Exception
                     }
@@ -71,15 +85,15 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("change_resource"), (action, entity) -> {
             if (resourceChangeTimeout.containsKey(entity)) return;
-            String resource = action.get("resource").toString();
+            String resource = action.getString("resource");
             if (Resource.getResource(entity, resource) == null) return;
             if (Resource.getResource(entity, resource).right() == null) return;
             if (Resource.getResource(entity, resource).left() == null) return;
-            int change = Integer.parseInt(action.get("change").toString());
+            int change = action.getNumber("change").getInt();
             double finalChange = 1.0 / Resource.getResource(entity, resource).right();
             BossBar bossBar = Resource.getResource(entity, resource).left();
             double toRemove = finalChange * change;
-            double newP = Utils.getOperationMappingsDouble().get(action.getOrDefault("operation", "add").toString()).apply(bossBar.getProgress(), toRemove);
+            double newP = Utils.getOperationMappingsDouble().get(action.getStringOrDefault("operation", "add")).apply(bossBar.getProgress(), toRemove);
             if (newP > 1.0) {
                 newP = 1.0;
             } else if (newP < 0) {
@@ -87,9 +101,9 @@ public class EntityActions {
             }
             bossBar.setProgress(newP);
             if (bossBar.getProgress() == 1.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).get("max_action"));
+                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).getJsonObject("max_action"));
             } else if (bossBar.getProgress() == 0.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).get("min_action"));
+                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).getJsonObject("min_action"));
             }
             bossBar.addPlayer((Player) entity);
             resourceChangeTimeout.put(entity, true);
@@ -102,16 +116,16 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("modify_resource"), (action, entity) -> {
             if (resourceChangeTimeout.containsKey(entity)) return;
-            String resource = action.get("resource").toString();
+            String resource = action.getString("resource");
             if (Resource.getResource(entity, resource) == null) return;
             if (Resource.getResource(entity, resource).right() == null) return;
             if (Resource.getResource(entity, resource).left() == null) return;
-            JSONObject modifier = (JSONObject) action.get("modifier");
-            int change = Integer.parseInt(modifier.get("value").toString());
+            Modifier modifier = new Modifier(action.getJsonObject("modifier"));
+            float change = modifier.value();
             double finalChange = 1.0 / Resource.getResource(entity, resource).right();
             BossBar bossBar = Resource.getResource(entity, resource).left();
             double toRemove = finalChange * change;
-            double newP = Utils.getOperationMappingsDouble().get(modifier.getOrDefault("operation", "add").toString()).apply(bossBar.getProgress(), toRemove);
+            double newP = Utils.getOperationMappingsDouble().get(modifier.operation()).apply(bossBar.getProgress(), toRemove);
             if (newP > 1.0) {
                 newP = 1.0;
             } else if (newP < 0) {
@@ -119,9 +133,9 @@ public class EntityActions {
             }
             bossBar.setProgress(newP);
             if (bossBar.getProgress() == 1.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).get("max_action"));
+                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).getJsonObject("max_action"));
             } else if (bossBar.getProgress() == 0.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).get("min_action"));
+                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).getJsonObject("min_action"));
             }
             bossBar.addPlayer((Player) entity);
             resourceChangeTimeout.put(entity, true);
@@ -132,44 +146,44 @@ public class EntityActions {
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 1);
         }));
-        register(new ActionFactory(GenesisMC.apoliIdentifier("set_on_fire"), (action, entity) -> entity.setFireTicks(Integer.parseInt(action.get("duration").toString()) * 20)));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("set_on_fire"), (action, entity) -> entity.setFireTicks(action.getNumber("duration").getInt() * 20)));
         register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_entity"), (action, entity) -> {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
             RaycastUtils.executeCommandAtHit(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), "summon $1 %1 %2 %3 $2"
-                .replace("$1", action.get("entity_type").toString())
-                .replace("$2", action.getOrDefault("tag", "{}").toString())
+                .replace("$1", action.getString("entity_type"))
+                .replace("$2", action.getStringOrDefault("tag", "{}"))
                 .replace("%1", String.valueOf(entity.getLocation().getX()))
                 .replace("%2", String.valueOf(entity.getLocation().getY()))
                 .replace("%3", String.valueOf(entity.getLocation().getZ()))
             );
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_particles"), (action, entity) -> {
-            Particle particle = Particle.valueOf(((JSONObject) action.get("particle")).getOrDefault("type", null).toString().split(":")[1].toUpperCase());
-            int count = Integer.parseInt(String.valueOf(action.getOrDefault("count", 1)));
-            float offset_y_no_vector = Float.parseFloat(String.valueOf(action.getOrDefault("offset_y", 1.0)));
+            Particle particle = Particle.valueOf(action.getJsonObject("particle").getStringOrDefault("type", null).split(":")[1].toUpperCase());
+            int count = action.getNumber("count").getInt();
+            float offset_y_no_vector = action.getNumberOrDefault("offset_y", 1f).getFloat();
             float offset_x = 0.25f;
             float offset_y = 0.50f;
             float offset_z = 0.25f;
-            if (action.get("spread") != null) {
-                JSONObject spread = (JSONObject) action.get("spread");
-                if (spread.get("y") != null) {
-                    offset_y = Float.parseFloat(String.valueOf(spread.get("y")));
+            if (action.isPresent("spread")) {
+                FactoryJsonObject spread = action.getJsonObject("spread");
+                if (spread.isPresent("y")) {
+                    offset_y = spread.getNumber("y").getFloat();
                 }
 
-                if (spread.get("x") != null) {
-                    offset_x = Float.parseFloat(String.valueOf(spread.get("x")));
+                if (spread.isPresent("x")) {
+                    offset_x = spread.getNumber("x").getFloat();
                 }
 
-                if (spread.get("z") != null) {
-                    offset_z = Float.parseFloat(String.valueOf(spread.get("z")));
+                if (spread.isPresent("z")) {
+                    offset_z = spread.getNumber("z").getFloat();
                 }
             }
             entity.getWorld().spawnParticle(particle, new Location(entity.getWorld(), entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ()), count, offset_x, offset_y, offset_z, 0);
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("random_teleport"), (action, entity) -> {
-            int spreadDistance = Math.round(Float.valueOf(action.getOrDefault("max_width", "8.0").toString()));
-            int attempts = Integer.valueOf(action.getOrDefault("attempts", "1").toString());
+            int spreadDistance = action.getNumberOrDefault("max_width", 8).getInt();
+            int attempts = action.getNumberOrDefault("attempts", 1).getInt();
             for (int i = 0; i < attempts; i++) {
                 String cmd = "spreadplayers {xloc} {zloc} 1 {spreadDist} false {name}"
                     .replace("{xloc}", String.valueOf(entity.getLocation().getX()))
@@ -183,16 +197,16 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("remove_power"), (action, entity) -> {
             if (entity instanceof Player p) {
-                Power powerContainer = ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(action.get("power").toString()));
+                Power powerContainer = ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(action.getNamespacedKey("power"));
                 if (powerContainer != null) {
-                    RaycastUtils.executeCommandAtHit(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.get("action").toString()));
+                    RaycastUtils.executeCommandAtHit(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("action")));
                 }
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_effect_cloud"), (action, entity) -> {
-            float radius = Float.valueOf(action.getOrDefault("radius", 3.0F).toString());
-            int waitTime = Integer.valueOf(action.getOrDefault("wait_time", 10).toString());
-            float radiusOnUse = Float.valueOf(action.getOrDefault("radius_on_use", "-0.5F").toString());
+            float radius = action.getNumberOrDefault("radius", 3.0F).getFloat();
+            int waitTime = action.getNumberOrDefault("wait_time", 10).getInt();
+            float radiusOnUse = action.getNumberOrDefault("radius_on_use", -0.5F).getFloat();
             List<PotionEffect> effects = MiscUtils.parseAndReturnPotionEffects(action);
 
             net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
@@ -213,7 +227,7 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("replace_inventory"), (action, entity) -> {
             if (entity instanceof Player player) {
-                if (action.containsKey("slot")) {
+                if (action.isPresent("slot")) {
                     try {
                         if (player.getInventory().getItem(getSlotFromString(action.get("slot").toString())) == null)
                             return;
@@ -260,9 +274,9 @@ public class EntityActions {
             boolean create_fire = false;
             ServerLevel level = ((CraftWorld) entity.getWorld()).getHandle();
 
-            if (action.containsKey("destruction_type"))
+            if (action.isPresent("destruction_type"))
                 destruction_type = action.get("destruction_type").toString();
-            if (action.containsKey("create_fire"))
+            if (action.isPresent("create_fire"))
                 create_fire = Boolean.parseBoolean(action.get("create_fire").toString());
 
             Explosion explosion = new Explosion(
@@ -295,7 +309,7 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("equipped_item_action"), (action, entity) -> {
             if (entity instanceof Player player) {
-                if (action.containsKey("equipment_slot")) {
+                if (action.isPresent("equipment_slot")) {
                     try {
                         if (player.getInventory().getItem(getSlotFromString(action.get("equipment_slot").toString())) == null)
                             return;
@@ -358,10 +372,10 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("riding_action"), (action, entity) -> {
             if (entity.getVehicle() == null) return;
-            if (action.containsKey("action")) {
+            if (action.isPresent("action")) {
                 executeEntity(entity.getVehicle(), (JSONObject) action.get("action"));
             }
-            if (action.containsKey("bientity_action")) {
+            if (action.isPresent("bientity_action")) {
                 executeBiEntity(entity.getVehicle(), entity, (JSONObject) action.get("bientity_action"));
             }
         }));
@@ -381,7 +395,7 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("drop_inventory"), (action, entity) -> {
             if (entity instanceof Player player) {
-                if (action.containsKey("slot")) {
+                if (action.isPresent("slot")) {
                     try {
                         if (player.getInventory().getItem(getSlotFromString(action.get("slot").toString())) == null)
                             return;
@@ -409,24 +423,24 @@ public class EntityActions {
         register(new ActionFactory(GenesisMC.apoliIdentifier("selector_action"), (action, entity) -> {
             if (action.get("bientity_condition") != null) {
                 if (entity instanceof Player player) {
-                    executeBiEntity(entity, player.getTargetEntity(AttributeHandler.Reach.getDefaultReach(player), false), (JSONObject) action.get("bientity_condition"));
+                    executeBiEntity(entity, player.getTargetEntity(AttributeHandler.ReachUtils.getDefaultReach(player), false), (JSONObject) action.get("bientity_condition"));
                 }
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("give"), (action, entity) -> {
             int amt = 1;
-            if (action.containsKey("amount")) {
+            if (action.isPresent("amount")) {
                 amt = Integer.parseInt(action.get("amount").toString());
             }
 
-            if (action.containsKey("stack")) {
+            if (action.isPresent("stack")) {
                 JSONObject stackObject = (JSONObject) action.get("stack");
                 String item = stackObject.get("item").toString();
                 int amount = Integer.parseInt(String.valueOf(stackObject.getOrDefault("amount", 1)));
 
                 ItemStack itemStack = new ItemStack(Material.valueOf(item.toUpperCase().split(":")[1]), amount);
 
-                if (action.containsKey("item_action")) {
+                if (action.isPresent("item_action")) {
                     executeItem(itemStack, action);
                 }
                 if (entity instanceof Player player) {
@@ -466,8 +480,8 @@ public class EntityActions {
             int points = 0;
             int levels = 0;
 
-            if (action.containsKey("points")) points = Integer.parseInt(action.get("points").toString());
-            if (action.containsKey("levels")) levels = Integer.parseInt(action.get("levels").toString());
+            if (action.isPresent("points")) points = Integer.parseInt(action.get("points").toString());
+            if (action.isPresent("levels")) levels = Integer.parseInt(action.get("levels").toString());
 
             if (entity instanceof Player player) {
                 player.giveExp(points);
@@ -481,10 +495,10 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("area_of_effect"), (action, entity) -> {
             float radius = Float.parseFloat(action.getOrDefault("radius", 15F).toString());
-            JSONObject bientity_action = action.containsKey("bientity_action") ? (JSONObject) action.get("bientity_action") : new JSONObject();
-            boolean include_actor = action.containsKey("include_actor") && Boolean.parseBoolean(action.getOrDefault("include_actor", false).toString());
+            JSONObject bientity_action = action.isPresent("bientity_action") ? (JSONObject) action.get("bientity_action") : new JSONObject();
+            boolean include_actor = action.isPresent("include_actor") && Boolean.parseBoolean(action.getOrDefault("include_actor", false).toString());
 
-            boolean hasCondition = action.containsKey("bientity_condition");
+            boolean hasCondition = action.isPresent("bientity_condition");
 
             for (net.minecraft.world.entity.Entity target : Shape.getEntities(Shape.getShape(action.getOrDefault("shape", "cube").toString()), ((CraftWorld) entity.getWorld()).getHandle(), ((CraftEntity) entity).getHandle().getPosition(1.0f), radius)) {
                 if (target == entity && !include_actor) {
@@ -521,10 +535,10 @@ public class EntityActions {
                 for (Origin origin : OriginPlayerAccessor.getOrigin((Player) entity).values()) {
                     if (origin.getPowers().contains(action.get("action"))) {
                         for (Power powerContainer : origin.getPowerContainers()) {
-                            if (powerContainer.get("cooldown") != null) {
+                            if (powerContainer.getJsonObject("cooldown") != null) {
                                 String key = "*";
-                                if (powerContainer.get("key").getOrDefault("key", "key.origins.primary_active") != null) {
-                                    key = powerContainer.get("key").getOrDefault("key", "key.origins.primary_active").toString();
+                                if (powerContainer.getJsonObject("key").getOrDefault("key", "key.origins.primary_active") != null) {
+                                    key = powerContainer.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString();
                                     if (powerContainer.getType().equals("apoli:action_on_hit")) {
                                         key = "key.attack";
                                     } else if (powerContainer.getType().equals("apoli:action_when_damage_taken")) {
@@ -545,7 +559,7 @@ public class EntityActions {
                                         key = "key.attack";
                                     }
                                 }
-                                CooldownUtils.addCooldown(player, Utils.getNameOrTag(powerContainer), powerContainer.getType(), powerContainer.getInt("cooldown"), powerContainer.get("key"));
+                                CooldownUtils.addCooldown(player, Utils.getNameOrTag(powerContainer), powerContainer.getType(), powerContainer.getNumber("cooldown").getInt(), powerContainer.getJsonObject("key"));
                             }
                         }
                     }
@@ -560,14 +574,14 @@ public class EntityActions {
 
     public static class ActionFactory implements Registerable {
         NamespacedKey key;
-        BiConsumer<JSONObject, Entity> test;
+        BiConsumer<FactoryJsonObject, Entity> test;
 
-        public ActionFactory(NamespacedKey key, BiConsumer<JSONObject, Entity> test) {
+        public ActionFactory(NamespacedKey key, BiConsumer<FactoryJsonObject, Entity> test) {
             this.key = key;
             this.test = test;
         }
 
-        public void test(JSONObject action, Entity tester) {
+        public void test(FactoryJsonObject action, Entity tester) {
             if (action == null || action.isEmpty()) return; // Dont execute empty actions
             try {
                 test.accept(action, tester);

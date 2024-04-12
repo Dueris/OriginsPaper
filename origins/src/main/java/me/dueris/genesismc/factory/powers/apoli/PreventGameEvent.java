@@ -29,7 +29,7 @@ public class PreventGameEvent extends CraftPower implements Listener {
             if (!this.getPowerArray().contains(p)) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
                         String event = power.getString("event");
                         if (event.contains(":")) {
                             event = event.split(":")[1];

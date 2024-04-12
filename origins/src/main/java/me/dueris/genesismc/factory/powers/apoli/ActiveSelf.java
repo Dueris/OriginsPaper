@@ -32,12 +32,12 @@ public class ActiveSelf extends CraftPower implements Listener {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (CooldownUtils.isPlayerInCooldownFromTag(e.getPlayer(), Utils.getNameOrTag(power))) continue;
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
+                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
-                        if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), e.getPlayer())) {
-                            Actions.executeEntity(e.getPlayer(), power.getEntityAction());
-                            if (power.getObjectOrDefault("cooldown", 1) != null) {
-                                CooldownUtils.addCooldown(e.getPlayer(), Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), power.get("hud_render"));
+                        if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString(), e.getPlayer())) {
+                            Actions.executeEntity(e.getPlayer(), power.getJsonObjectOrNew("entity_action"));
+                            if (power.isPresent("cooldown")) {
+                                CooldownUtils.addCooldown(e.getPlayer(), Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), power.getJsonObject("hud_render"));
                             }
                         }
                     } else {

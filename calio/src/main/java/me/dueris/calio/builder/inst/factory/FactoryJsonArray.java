@@ -28,9 +28,12 @@ public class FactoryJsonArray {
     }
 
     public List<FactoryJsonObject> asJsonObjectList() {
-        return this.handle.asList().stream()
-                .map(FactoryElement::fromJson).map(FactoryElement::toJsonObject)
+        return this.asList().stream().map(FactoryElement::toJsonObject)
             .collect(Collectors.toList());
+    }
+
+    public List<FactoryNumber> asLongList(){
+        return this.asList().stream().map(FactoryElement::getNumber).toList();
     }
 
     public Iterator<FactoryElement> iterator(){

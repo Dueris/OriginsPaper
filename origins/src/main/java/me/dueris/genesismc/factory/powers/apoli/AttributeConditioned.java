@@ -51,8 +51,8 @@ public class AttributeConditioned extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
-                for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
-                    if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
+                for (HashMap<String, Object> modifier : power.getModifiers()) {
+                    if (!ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) return;
                     Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.get("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
                     double val = Float.valueOf(modifier.get("value").toString());
                     double baseVal = p.getAttribute(attribute_modifier).getBaseValue();
@@ -76,7 +76,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
 
-                for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
+                for (HashMap<String, Object> modifier : power.getModifiers()) {
                     Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.get("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
                     if (modifier.get("value") instanceof Integer) {
                         int value = Integer.valueOf(modifier.get("value").toString());
@@ -110,7 +110,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
                         applied.put(p, false);
                     }
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
                         if (!applied.get(p)) {
                             executeConditionAttribute(p);
                             applied.put(p, true);

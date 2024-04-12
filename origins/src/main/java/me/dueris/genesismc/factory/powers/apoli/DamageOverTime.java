@@ -73,19 +73,15 @@ public class DamageOverTime extends CraftPower implements Listener {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
                         return;
                     }
-                    interval = power.getLong("interval");
+                    interval = power.getNumber("interval").getLong();
                     if (interval == 0) interval = 1L;
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
-                        damage = p.getWorld().getDifficulty().equals(Difficulty.EASY) ?
-                            power.getObjectOrDefault("damage_easy", power.getObjectOrDefault("damage", 1.0f)) == null ?
-                                power.getFloatOrDefault("damage", 1.0f)
-                                : power.getFloatOrDefault("damage_easy", power.getFloatOrDefault("damage", 1f))
-                            : power.getFloatOrDefault("damage", 1.0f);
+                        damage = p.getWorld().getDifficulty().equals(Difficulty.EASY) ? power.getNumberOrDefault("damage_easy", power.getNumberOrDefault("damage", 1.0f).getFloat()).getFloat() : power.getNumberOrDefault("damage", 1.0f).getFloat();
 
                         protection_effectiveness = power.getDoubleOrDefault("protection_effectiveness", 1);
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                        if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
 
                             if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {

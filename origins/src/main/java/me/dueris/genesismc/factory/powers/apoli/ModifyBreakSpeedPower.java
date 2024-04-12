@@ -53,7 +53,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                 try {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (e.getBlock() == null || e.getBlock().getState() == null) return;
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) e.getBlock())) {
+                        if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p) && ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) e.getBlock())) {
                             setActive(p, power.getTag(), true);
                             if (p.hasPotionEffect(PotionEffectType.FAST_DIGGING)) return;
                             // if(power.getPossibleModifiers("modifier", "modifiers"))
@@ -106,7 +106,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
         if (modify_break_speed.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
+                    for (HashMap<String, Object> modifier : power.getModifiers()) {
                         Float value = Float.valueOf(modifier.get("value").toString());
                         valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, value); // Why does there need to be a binary operator if the operator does nothing?
                     }

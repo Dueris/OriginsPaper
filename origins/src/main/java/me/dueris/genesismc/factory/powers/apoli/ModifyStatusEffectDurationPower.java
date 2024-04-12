@@ -30,12 +30,12 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
             if (!modify_effect_duration.contains(p)) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         if (power.getStringOrDefault("status_effect", null) != null) {
                             if (e.getNewEffect().getType().equals(PotionEffectType.getByName(power.getStringOrDefault("status_effect", null)))) {
                                 PotionEffect effect = e.getNewEffect();
-                                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                                for (HashMap<String, Object> modifier : power.getModifiers("modifier", "modifiers")) {
                                     Float value = Float.valueOf(modifier.get("value").toString());
                                     String operation = modifier.get("operation").toString();
                                     BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
@@ -48,7 +48,7 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
                             }
                         } else {
                             for (PotionEffect effect : p.getActivePotionEffects()) {
-                                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                                for (HashMap<String, Object> modifier : power.getModifiers("modifier", "modifiers")) {
                                     Float value = Float.valueOf(modifier.get("value").toString());
                                     String operation = modifier.get("operation").toString();
                                     BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);

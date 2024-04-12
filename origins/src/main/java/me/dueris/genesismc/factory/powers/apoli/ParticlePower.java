@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class ParticlePower extends CraftPower {
 
     public static boolean containsParams(Power power) {
-        return !(power.getObject("particle") instanceof String) && power.getObject("particle") instanceof JSONObject && power.get("particle").containsKey("params");
+        return !(power.getObject("particle") instanceof String) && power.getObject("particle") instanceof JSONObject && power.getJsonObject("particle").containsKey("params");
     }
 
     private static int calculateValue(float value) {
@@ -63,12 +63,12 @@ public class ParticlePower extends CraftPower {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    int interval = power.getInt("frequency");
+                    int interval = power.getNumber("frequency").getInt();
 
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
+                        if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) player)) {
                             if (!getPowerArray().contains(player)) return;
                             Particle particle = computeParticleArgs(power.getObject("particle"));
                             if (particle == null)
@@ -81,19 +81,19 @@ public class ParticlePower extends CraftPower {
                             float offset_y = 0.50f;
                             float offset_z = 0.25f;
 
-                            if (power.get("spread").get("y") != null) {
-                                offset_y = Float.parseFloat(String.valueOf(power.get("spread").get("y")));
+                            if (power.getJsonObjectOrNew("spread").isPresent("y")) {
+                                offset_y = power.getJsonObject("spread").getNumber("y").getFloat();
                             }
-                            if (power.get("spread").get("x") != null) {
-                                offset_x = Float.parseFloat(String.valueOf(power.get("spread").get("x")));
+                            if (power.getJsonObjectOrNew("spread").isPresent("x")) {
+                                offset_x = power.getJsonObject("spread").getNumber("x").getFloat();
                             }
-                            if (power.get("spread").get("z") != null) {
-                                offset_z = Float.parseFloat(String.valueOf(power.get("spread").get("z")));
+                            if (power.getJsonObjectOrNew("spread").isPresent("z")) {
+                                offset_z = power.getJsonObject("spread").getNumber("z").getFloat();
                             }
 
                             Particle.DustOptions data = null;
                             if (containsParams(power)) {
-                                String provided = power.get("particle").getOrDefault("params", "").toString();
+                                String provided = power.getJsonObject("particle").getStringOrDefault("params", "");
                                 if (provided.contains(" ")) {
                                     String[] splitArgs = provided.split(" ");
                                     float arg1 = Float.valueOf(splitArgs[0]);

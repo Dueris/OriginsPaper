@@ -37,52 +37,12 @@ public class ModifyFallingPower extends CraftPower implements Listener {
             @NotNull Vector velocity = p.getVelocity();
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                        if (power.getObject("velocity") instanceof Integer) {
-                            if (power.getInt("velocity") < 0) {
-                                //greaterthan
-                                velocity.setY(power.getInt("velocity"));
-                                p.setVelocity(velocity);
-                            } else {
-                                //smallerthan
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
-                            }
-                        } else if (power.getObject("velocity") instanceof Float) {
-                            if (power.getFloat("velocity") < 0) {
-                                //greaterthan
-                                velocity.setY(power.getFloat("velocity"));
-                                p.setVelocity(velocity);
-                            } else {
-                                //smallerthan
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
-                            }
-                        } else if (power.getObject("velocity") instanceof Double) {
-                            if (power.getDouble("velocity") < 0) {
-                                //greaterthan
-                                velocity.setY(power.getDouble("velocity"));
-                                p.setVelocity(velocity);
-                            } else {
-                                //smallerthan
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
-                            }
-                        } else if (power.getObject("velocity") instanceof Long) {
-                            if (power.getLong("velocity") < 0) {
-                                //greaterthan
-                                velocity.setY(power.getLong("velocity"));
-                                p.setVelocity(velocity);
-                            } else {
-                                //smallerthan
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
-                            }
-                        } else if (power.getObject("velocity") instanceof Short) {
-                            if (power.getShort("velocity") < 0) {
-                                //greaterthan
-                                velocity.setY(power.getShort("velocity"));
-                                p.setVelocity(velocity);
-                            } else {
-                                //smallerthan
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
-                            }
+                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
+                        if (power.getFloat("velocity") < 0) {
+                            velocity.setY(power.getFloat("velocity"));
+                            p.setVelocity(velocity);
+                        } else {
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
                         }
                     }
                 }
@@ -97,7 +57,7 @@ public class ModifyFallingPower extends CraftPower implements Listener {
             if (modify_falling.contains(p)) {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                        if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
                             if (!power.getBooleanOrDefault("take_fall_damage", true)) {
                                 if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                                     e.setDamage(0);

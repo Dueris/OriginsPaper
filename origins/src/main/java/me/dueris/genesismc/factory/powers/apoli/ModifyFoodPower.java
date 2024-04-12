@@ -143,9 +143,9 @@ public class ModifyFoodPower extends CraftPower implements Listener {
             if (modify_food.contains(player)) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player) && ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
+                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) player) && ConditionExecutor.testItem(power.getJsonObjectOrNew("item_condition"), e.getItem())) {
                         if (modify_food.contains(player)) {
-                            for (JSONObject jsonObject : power.getJsonListSingularPlural("food_modifier", "food_modifiers")) {
+                            for (JSONObject jsonObject : power.getList$SingularPlural("food_modifier", "food_modifiers")) {
                                 if (jsonObject.containsKey("value")) {
                                     int val = Integer.parseInt(jsonObject.get("value").toString());
                                     String operation = jsonObject.get("operation").toString();
@@ -157,7 +157,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                                     }
                                 }
                             }
-                            for (JSONObject jsonObject : power.getJsonListSingularPlural("saturation_modifier", "saturation_modifiers")) {
+                            for (JSONObject jsonObject : power.getList$SingularPlural("saturation_modifier", "saturation_modifiers")) {
                                 if (jsonObject.containsKey("value")) {
                                     int val = Integer.parseInt(jsonObject.get("value").toString());
                                     String operation = jsonObject.get("operation").toString();

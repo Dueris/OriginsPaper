@@ -41,7 +41,7 @@ public class PlayerManager implements Listener {
         for (Origin origin : OriginPlayerAccessor.getOrigin(player).values()) {
             for (Power power : origin.getMultiPowerFileFromType("apoli:attribute")) {
                 if (power == null) continue;
-                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifier")) {
+                for (HashMap<String, Object> modifier : power.getModifiers("modifier", "modifier")) {
                     if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
                         ApoliPower.extra_reach.add(player);
                         return;
@@ -49,7 +49,7 @@ public class PlayerManager implements Listener {
                         ApoliPower.extra_reach_attack.add(player);
                         return;
                     } else {
-                        AttributeHandler.Reach.setFinalReach(player, AttributeHandler.Reach.getDefaultReach(player));
+                        AttributeHandler.ReachUtils.setFinalReach(player, AttributeHandler.ReachUtils.getDefaultReach(player));
                     }
                 }
             }

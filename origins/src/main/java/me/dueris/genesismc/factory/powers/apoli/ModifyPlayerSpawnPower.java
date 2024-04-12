@@ -212,7 +212,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
     }
 
     private Optional<Vec3> getSpawnPos(ServerLevel targetDimension, BlockPos originPos, int range, Power power, Entity entity) {
-        if (!power.containsInstance("structure")) return getValidSpawn(targetDimension, originPos, range, entity);
+        if (!power.isPresent("structure")) return getValidSpawn(targetDimension, originPos, range, entity);
 
         Optional<Pair<BlockPos, Structure>> targetStructure = getStructurePos(targetDimension, power, entity);
         if (targetStructure.isEmpty()) return Optional.empty();

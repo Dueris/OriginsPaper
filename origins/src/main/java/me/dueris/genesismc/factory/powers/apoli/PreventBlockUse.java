@@ -26,7 +26,7 @@ public class PreventBlockUse extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) e.getBlock()) && ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
+                    if (ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) e.getBlock()) && ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) e.getPlayer())) {
                         e.setCancelled(true);
                     }
                 }

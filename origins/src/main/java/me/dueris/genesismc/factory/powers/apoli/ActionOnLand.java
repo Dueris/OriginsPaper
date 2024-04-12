@@ -34,9 +34,9 @@ public class ActionOnLand extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 //            if (e.getFrom().getY() > e.getTo().getY() && e.getFrom().getY() - e.getTo().getY() >= MIN_FALL_DISTANCE) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) return;
+                if (!ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) player)) return;
                 setActive(player, power.getTag(), true);
-                Actions.executeEntity(player, power.getEntityAction());
+                Actions.executeEntity(player, power.getJsonObjectOrNew("entity_action"));
                 new BukkitRunnable() {
                     @Override
                     public void run() {

@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -13,7 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsFloat;
@@ -28,13 +28,13 @@ public class ModifyHealingPower extends CraftPower implements Listener {
             if (!modify_healing.contains(p)) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                    for (FactoryJsonObject modifier : power.getModifiers()) {
                         Float value = Float.valueOf(modifier.get("value").toString());
                         String operation = modifier.get("operation").toString();
                         BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                         if (mathOperator != null) {
                             float result = (float) mathOperator.apply(e.getAmount(), value);
-                            if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                            if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
                                 setActive(p, power.getTag(), true);
                                 e.setAmount(result);
                             } else {

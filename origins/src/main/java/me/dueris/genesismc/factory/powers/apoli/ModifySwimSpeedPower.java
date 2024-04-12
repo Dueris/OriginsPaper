@@ -32,7 +32,7 @@ public class ModifySwimSpeedPower extends CraftPower {
             ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
             try {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
                         if (!p.isSwimming()) return;
                         // Change to use dolphins grace for easier
                         // Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
@@ -74,7 +74,7 @@ public class ModifySwimSpeedPower extends CraftPower {
         if (modify_swim_speed.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                    for (HashMap<String, Object> modifier : power.getModifiers("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());
                         String operation = modifier.get("operation").toString();
                         BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);

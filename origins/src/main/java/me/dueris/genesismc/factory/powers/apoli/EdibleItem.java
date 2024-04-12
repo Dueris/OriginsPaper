@@ -28,7 +28,7 @@ public class EdibleItem extends CraftPower implements Listener {
     public static HashMap<Power, FoodProperties> cachedFoodProperties = new HashMap<>();
 
     public static ItemStack runResultStack(Power power, boolean runActionUpon, InventoryHolder holder) {
-        JSONObject stack = power.get("result_stack");
+        JSONObject stack = power.getJsonObject("result_stack");
         int amt;
         if (stack.get("amount") != null) {
             amt = Integer.parseInt(stack.get("amount").toString());
@@ -37,7 +37,7 @@ public class EdibleItem extends CraftPower implements Listener {
         }
         ItemStack itemStack = new ItemStack(MiscUtils.getBukkitMaterial(stack.get("item").toString()), amt);
         holder.getInventory().addItem(itemStack);
-        if (runActionUpon) Actions.executeItem(itemStack, power.get("result_item_action"));
+        if (runActionUpon) Actions.executeItem(itemStack, power.getJsonObject("result_item_action"));
         return itemStack;
     }
 
@@ -55,12 +55,12 @@ public class EdibleItem extends CraftPower implements Listener {
 
         if (this.getPowerArray().contains(e.getPlayer())) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile())) {
-                if (ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
+                if (ConditionExecutor.testItem(power.getJsonObjectOrNew("item_condition"), e.getItem())) {
                     if (consume(power, e.getPlayer(), e.getItem())) {
                         e.setCancelled(true);
                     }
-                    Actions.executeItem(e.getItem(), power.get("item_action"));
-                    Actions.executeEntity(e.getPlayer(), power.get("entity_action"));
+                    Actions.executeItem(e.getItem(), power.getJsonObject("item_action"));
+                    Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action"));
                 }
             }
         }
@@ -68,7 +68,7 @@ public class EdibleItem extends CraftPower implements Listener {
 
     private boolean consume(Power power, Player player, ItemStack itemStack) {
         if (!cachedFoodProperties.containsKey(power)) {
-            cachedFoodProperties.put(power, Utils.parseProperties(power.get("food_component")));
+            cachedFoodProperties.put(power, Utils.parseProperties(power.getJsonObject("food_component")));
         }
         FoodProperties properties = cachedFoodProperties.get(power);
         int hunger = properties.getNutrition();

@@ -20,7 +20,7 @@ import org.bukkit.util.RayTraceResult;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
-import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.Reach.getFinalReach;
+import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.ReachUtils.getFinalReach;
 import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_entity_use;
 
 public class PreventEntityUse extends CraftPower implements Listener {
@@ -48,12 +48,12 @@ public class PreventEntityUse extends CraftPower implements Listener {
                     if (entity.isDead() || !(entity instanceof LivingEntity)) return;
                     if (entity.isInvulnerable()) return;
                     LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
-                    if (attacker.getLocation().distance(victim.getLocation()) <= AttributeHandler.Reach.getFinalReach(p)) {
+                    if (attacker.getLocation().distance(victim.getLocation()) <= AttributeHandler.ReachUtils.getFinalReach(p)) {
                         if (entity.getPassengers().contains(p)) return;
                         if (!entity.isDead()) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                                if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity) && ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
+                                if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.getJsonObjectOrNew("bientity_condition"), (CraftEntity) p, (CraftEntity) entity) && ConditionExecutor.testItem(power.getJsonObjectOrNew("item_condition"), e.getItem())) {
                                     e.setCancelled(true);
                                     setActive(p, power.getTag(), true);
                                 } else {

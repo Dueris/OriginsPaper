@@ -24,10 +24,10 @@ public class PreventItemPickup extends CraftPower implements Listener {
         if (this.getPowerArray().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    boolean shouldCancel = ConditionExecutor.testItem(power.get("item_condition"), e.getItem().getItemStack()) && ConditionExecutor.testBiEntity(power.get("bientiy_condition"), (CraftEntity) p, (CraftEntity) e.getItem());
+                    boolean shouldCancel = ConditionExecutor.testItem(power.getJsonObjectOrNew("item_condition"), e.getItem().getItemStack()) && ConditionExecutor.testBiEntity(power.getJsonObject("bientiy_condition"), (CraftEntity) p, (CraftEntity) e.getItem());
                     if (shouldCancel) e.setCancelled(true);
-                    Actions.executeItem(e.getItem().getItemStack(), power.get("item_action"));
-                    Actions.executeBiEntity(p, e.getItem(), power.get("bientiy_action_item"));
+                    Actions.executeItem(e.getItem().getItemStack(), power.getJsonObject("item_action"));
+                    Actions.executeBiEntity(p, e.getItem(), power.getJsonObject("bientiy_action_item"));
                 }
             }
         }

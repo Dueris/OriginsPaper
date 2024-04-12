@@ -41,7 +41,7 @@ public class RecipePower extends CraftPower implements Listener {
 
     public static void parseRecipes() {
         for (Power powerContainer : ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).values().stream().filter(powerContainer -> powerContainer.getType().equalsIgnoreCase("apoli:recipe")).toList()) {
-            JSONObject recipe = powerContainer.get("recipe");
+            JSONObject recipe = powerContainer.getJsonObject("recipe");
             if (recipe == null)
                 throw new IllegalArgumentException("Unable to find recipe data for power: " + powerContainer.getTag());
             NamespacedKey key = new NamespacedKey(recipe.get("id").toString().split(":")[0], recipe.get("id").toString().split(":")[1]);
@@ -149,7 +149,7 @@ public class RecipePower extends CraftPower implements Listener {
         if (getPowerArray().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    JSONObject recipe = power.get("recipe");
+                    JSONObject recipe = power.getJsonObject("recipe");
                     String id = recipe.get("id").toString();
                     if (taggedRegistry.containsKey(id)) {
                         if (recipeMapping.containsKey(p)) {

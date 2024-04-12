@@ -1,6 +1,7 @@
 package me.dueris.genesismc.util;
 
 import it.unimi.dsi.fastutil.Pair;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
@@ -17,8 +18,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
-import org.json.simple.JSONObject;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -27,12 +26,12 @@ import java.util.Map;
 
 import static me.dueris.genesismc.util.TextureLocation.textureMap;
 
-public class CooldownUtils implements @NotNull Listener {
+public class CooldownUtils implements Listener {
 
     public static HashMap<Player, ArrayList<String>> cooldownMap = new HashMap<>();
     public static HashMap<Player, HashMap<String/*PowerTag*/, Integer/*cooldownTicks*/>> cooldownTicksMap = new HashMap<>();
 
-    public static void addCooldown(Player player, Pair<String, String> title, String putNull, int cooldownTicks, JSONObject hudRender) {
+    public static void addCooldown(Player player, Pair<String, String> title, int cooldownTicks, FactoryJsonObject hudRender) {
         // first = name to display
         // second = tag
         if (isPlayerInCooldownFromTag(player, title) || cooldownTicks <= 1) return;
@@ -56,10 +55,10 @@ public class CooldownUtils implements @NotNull Listener {
         startTickingCooldown(bar, player, cooldownTicks, title, 1.0);
     }
 
-    public static BarColor getBarColor(JSONObject hudRender) {
-        if (hudRender.isEmpty() || !hudRender.containsKey("sprite_location")) return BarColor.WHITE;
-        TextureLocation location = (TextureLocation) GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION).get(NamespacedKey.fromString(hudRender.get("sprite_location").toString()));
-        long index = ((long) hudRender.getOrDefault("bar_index", 1)) + 1;
+    public static BarColor getBarColor(FactoryJsonObject hudRender) {
+        if (hudRender.isEmpty() || !hudRender.isPresent("sprite_location")) return BarColor.WHITE;
+        TextureLocation location = (TextureLocation) GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION).get(NamespacedKey.fromString(hudRender.getString("sprite_location")));
+        long index = (hudRender.getNumberOrDefault("bar_index", 1).getLong()) + 1;
         BarColor color = textureMap.get(location.getKey().asString() + "/-/" + index);
         return color != null ? color : BarColor.WHITE;
     }
@@ -94,16 +93,14 @@ public class CooldownUtils implements @NotNull Listener {
             return BarColor.GREEN;
         } else if (blue > red && blue > green) {
             return BarColor.BLUE;
-        } else if (red == green && red == blue && blue == green) {
+        } else if (red == green && red == blue) {
             return BarColor.WHITE;
         } else if (red == green) {
             return BarColor.YELLOW;
         } else if (red == blue) {
             return BarColor.PURPLE;
-        } else if (green == blue) {
-            return BarColor.GREEN;
         } else {
-            return BarColor.WHITE;
+            return BarColor.GREEN;
         }
     }
 
@@ -155,12 +152,12 @@ public class CooldownUtils implements @NotNull Listener {
         cooldownMap.putIfAbsent(e.getPlayer(), new ArrayList<>());
         cooldownTicksMap.putIfAbsent(e.getPlayer(), new HashMap<>());
         HashMap<String, Pair<BossBar, Double>> map = Resource.registeredBars.get(e.getPlayer());
-        String t = ";";
+        StringBuilder t = new StringBuilder(";");
         for (Map.Entry<String, Pair<BossBar, Double>> entry : map.entrySet()) {
-            t += entry.getKey() + "," + entry.getValue().left().getTitle() + "," + entry.getValue().left().getColor() + "," + entry.getValue().right() + "," + cooldownTicksMap.get(e.getPlayer()).get(entry.getKey()) + "||";
+            t.append(entry.getKey()).append(",").append(entry.getValue().left().getTitle()).append(",").append(entry.getValue().left().getColor()).append(",").append(entry.getValue().right()).append(",").append(cooldownTicksMap.get(e.getPlayer()).get(entry.getKey())).append("||");
         }
-        t += ";";
-        e.getPlayer().getPersistentDataContainer().set(GenesisMC.identifier("saved_cooldowns"), PersistentDataType.STRING, t);
+        t.append(";");
+        e.getPlayer().getPersistentDataContainer().set(GenesisMC.identifier("saved_cooldowns"), PersistentDataType.STRING, t.toString());
         cooldownMap.get(e.getPlayer()).clear();
         Resource.registeredBars.get(e.getPlayer()).clear();
     }
@@ -180,7 +177,7 @@ public class CooldownUtils implements @NotNull Listener {
                     BarColor color = BarColor.valueOf(split2[2]);
                     BossBar bar = createCooldownBar(e.getPlayer(), color, BarStyle.SEGMENTED_6, title);
                     bar.setVisible(true);
-                    bar.setProgress(Double.valueOf(split2[3]));
+                    bar.setProgress(Double.parseDouble(split2[3]));
                     cooldownMap.putIfAbsent(e.getPlayer(), new ArrayList<>());
                     cooldownMap.get(e.getPlayer()).add(title);
                     cooldownTicksMap.putIfAbsent(e.getPlayer(), new HashMap<>());
@@ -197,7 +194,7 @@ public class CooldownUtils implements @NotNull Listener {
                             return bar.getProgress();
                         }
                     });
-                    startTickingCooldown(bar, e.getPlayer(), Integer.valueOf(split2[4]), new Pair<>() {
+                    startTickingCooldown(bar, e.getPlayer(), Integer.parseInt(split2[4]), new Pair<>() {
                         @Override
                         public String left() {
                             return title;
@@ -207,7 +204,7 @@ public class CooldownUtils implements @NotNull Listener {
                         public String right() {
                             return tag;
                         }
-                    }, Double.valueOf(split2[3]));
+                    }, Double.parseDouble(split2[3]));
                 }
             }
         }

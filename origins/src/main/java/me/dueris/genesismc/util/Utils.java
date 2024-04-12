@@ -6,6 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.registries.Power;
@@ -291,9 +293,9 @@ public class Utils {
         Bukkit.getLogger().info(values.toString());
     }
 
-    public static void computeIfObjectPresent(String key, JSONObject object, Consumer<Object> function) {
-        if (object.containsKey(key)) {
-            function.accept(object.get(key));
+    public static void computeIfObjectPresent(String key, FactoryJsonObject object, Consumer<FactoryElement> function) {
+        if (object.isPresent(key)) {
+            function.accept(object.getElement(key));
         }
     }
 

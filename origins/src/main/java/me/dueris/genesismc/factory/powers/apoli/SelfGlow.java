@@ -29,7 +29,7 @@ public class SelfGlow extends CraftPower {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()) {
                     if (entity instanceof Player player) {
-                        if (ConditionExecutor.testEntity(power.get("entity_condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.get("entity_condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
+                        if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("entity_condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.getJsonObjectOrNew("entity_condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.getJsonObjectOrNew("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
                             setActive(p, power.getTag(), true);
                             CraftPlayer craftPlayers = (CraftPlayer) player;
                             craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),

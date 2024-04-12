@@ -35,7 +35,7 @@ public class RestrictArmor extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
                         runPower(p, power);
                     }
                 }
@@ -55,13 +55,13 @@ public class RestrictArmor extends CraftPower implements Listener {
                         return;
                     }
 
-                    interval = power.getLong("interval");
+                    interval = power.getNumber("interval").getLong();
                     if (interval == 0) interval = 1L;
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                        if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
                             runPower(p, power);
                         } else {
                             setActive(p, power.getTag(), false);
@@ -82,10 +82,10 @@ public class RestrictArmor extends CraftPower implements Listener {
         boolean passLegs;
         boolean passChest;
         boolean passHead;
-        JSONObject headObj = power.get("head");
-        JSONObject chestObj = power.get("chest");
-        JSONObject legsObj = power.get("legs");
-        JSONObject feetObj = power.get("feet");
+        JSONObject headObj = power.getJsonObject("head");
+        JSONObject chestObj = power.getJsonObject("chest");
+        JSONObject legsObj = power.getJsonObject("legs");
+        JSONObject feetObj = power.getJsonObject("feet");
 
         if (headObj == null) headb = false;
         if (chestObj == null) chestb = false;

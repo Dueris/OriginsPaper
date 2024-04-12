@@ -98,7 +98,7 @@ public class EntityGroupManager extends CraftPower {
                 if (stop) cancel();
                 for (World world : Bukkit.getWorlds()) {
                     for (Entity entity : world.getEntities()) {
-                        //Begin entity cases for removal
+                        // Begin entity cases for removal
                         if (!entity.getType().isAlive()) {
                             continue;
                         }
@@ -109,25 +109,23 @@ public class EntityGroupManager extends CraftPower {
                             continue;
                         }
                         if (entity instanceof Player p) {
-                            //Player case, check for power
-                            ConditionExecutor executor = GenesisMC.getConditionExecutor();
                             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
                                         if (!getPowerArray().contains(p)) return;
                                         setActive(p, power.getTag(), true);
                                         if (entity_group.contains(entity)) {
-                                            if (power.getObjectOrDefault("group", null) == null)
+                                            if (!power.isPresent("group"))
                                                 throw new IllegalArgumentException("Group in entity_group power was not defined.");
-                                            if (power.getStringOrDefault("group", null).equalsIgnoreCase("undead")) {
+                                            if (power.getString("group").equalsIgnoreCase("undead")) {
                                                 undead.put(entity.getEntityId(), entity.getType().name());
-                                            } else if (power.getStringOrDefault("group", null).equalsIgnoreCase("arthropod")) {
+                                            } else if (power.getString("group").equalsIgnoreCase("arthropod")) {
                                                 arthropod.put(entity.getEntityId(), entity.getType().name());
-                                            } else if (power.getStringOrDefault("group", null).equalsIgnoreCase("illager")) {
+                                            } else if (power.getString("group").equalsIgnoreCase("illager")) {
                                                 illager.put(entity.getEntityId(), entity.getType().name());
-                                            } else if (power.getStringOrDefault("group", null).equalsIgnoreCase("aquatic")) {
+                                            } else if (power.getString("group").equalsIgnoreCase("aquatic")) {
                                                 aquatic.put(entity.getEntityId(), entity.getType().name());
-                                            } else if (power.getStringOrDefault("group", null).equalsIgnoreCase("default")) {
+                                            } else if (power.getString("group").equalsIgnoreCase("default")) {
                                                 default_group.put(entity.getEntityId(), entity.getType().name());
                                             }
                                         }
@@ -138,7 +136,8 @@ public class EntityGroupManager extends CraftPower {
                             }
                         }
 
-                        //Sort into array groups
+                        // Sort into array groups
+                        net.minecraft.world.entity.Entity e = ((CraftEntity)entity).getHandle();
                         if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("undead")) {
                             undead.put(entity.getEntityId(), entity.getType().name());
                         } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("arthropod")) {

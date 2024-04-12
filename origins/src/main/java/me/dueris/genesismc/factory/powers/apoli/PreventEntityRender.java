@@ -43,8 +43,8 @@ public class PreventEntityRender extends CraftPower {
                         return;
                     } else {
                         for (Entity entity : getEntitiesWithinRender(p)) {
-                            if (ConditionExecutor.testEntity(power.get("entity_condition"), (CraftEntity) p)) {
-                                if (ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
+                            if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("entity_condition"), (CraftEntity) p)) {
+                                if (ConditionExecutor.testBiEntity(power.getJsonObjectOrNew("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
                                     if (p.canSee(entity)) {
                                         p.hideEntity(GenesisMC.getPlugin(), entity);
                                     }

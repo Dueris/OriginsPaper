@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.data.types;
 
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -8,7 +9,6 @@ import net.minecraft.world.level.Explosion;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,22 +28,22 @@ public class ExplosionMask {
         return new ExplosionMask(explosion, level);
     }
 
-    public ExplosionMask apply(JSONObject getter, boolean destroyAfterMask) {
+    public ExplosionMask apply(FactoryJsonObject getter, boolean destroyAfterMask) {
         this.explosion.explode(); // Setup explosion stuff -- includes iterator for explosions
         this.blocks = createBlockList(this.explosion.getToBlow(), this.level);
         List<Block> finalBlocks = new ArrayList<>(this.blocks);
-        boolean testFilters = getter.containsKey("indestructible") || getter.containsKey("destructible");
+        boolean testFilters = getter.isPresent("indestructible") || getter.isPresent("destructible");
 
         if (testFilters) {
             this.blocks.forEach((block) -> {
                 Utils.computeIfObjectPresent("indestructible", getter, (rawObjCondition) -> {
-                    JSONObject condition = (JSONObject) rawObjCondition;
+                    FactoryJsonObject condition = rawObjCondition.toJsonObject();
                     if (!ConditionExecutor.testBlock(condition, (CraftBlock) block)) {
                         finalBlocks.add(block);
                     }
                 });
                 Utils.computeIfObjectPresent("destructible", getter, (rawObjCondition) -> {
-                    JSONObject condition = (JSONObject) getter.get("destructible");
+                    FactoryJsonObject condition = rawObjCondition.toJsonObject();
                     if (ConditionExecutor.testBlock(condition, (CraftBlock) block)) {
                         finalBlocks.add(block);
                     }

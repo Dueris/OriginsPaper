@@ -35,10 +35,10 @@ public class AttackerActionWhenHit extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (power == null) continue;
-                if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
+                if (!ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) actor)) return;
 
                 setActive(player, power.getTag(), true);
-                Actions.executeBiEntity(actor, actor, power.getBiEntityAction());
+                Actions.executeBiEntity(actor, actor, power.getJsonObjectOrNew("bientity_action"));
                 new BukkitRunnable() {
                     @Override
                     public void run() {
