@@ -20,6 +20,7 @@ public class FluidConditions {
             return fluid.is(key);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("still"), (condition, fluid) -> fluid.defaultFluidState().isSource()));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid"), (condition, fluid) -> fluid.builtInRegistryHolder().key().registry().equals(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(condition.get("fluid").toString())))));
     }
 
     private void register(ConditionFactory factory) {

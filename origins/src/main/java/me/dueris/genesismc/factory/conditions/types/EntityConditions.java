@@ -9,6 +9,7 @@ import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.factory.data.types.Shape;
+import me.dueris.genesismc.factory.data.types.VectorGetter;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.registry.Registries;
@@ -24,7 +25,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockCollisions;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -34,16 +38,20 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Scoreboard;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
+import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntityType;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -55,6 +63,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -62,19 +71,15 @@ import org.json.simple.parser.ParseException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiPredicate;
 
 public class EntityConditions {
     public static HashMap<String, ArrayList<EntityType>> entityTagMappings = new HashMap<>();
     private final Location[] prevLoca = new Location[100000];
-
-    public static Enchantment getEnchantmentByNamespace(String namespaceString) {
-        return Enchantment.getByName(namespaceString);
-    }
 
     public void prep() {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("ability"), (condition, entity) -> {
@@ -346,30 +351,37 @@ public class EntityConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantment"), (condition, entity) -> {
             if (entity instanceof Player player) {
-                String enchantmentNamespace = condition.get("enchantment").toString();
+                NamespacedKey enchantmentNamespace = NamespacedKey.fromString(condition.get("enchantment").toString());
                 String comparison = condition.get("comparison").toString();
-                double compareTo = Double.parseDouble(condition.get("compare_to").toString());
+                Object compareTo = condition.get("compare_to");
+                int value = 1;
 
-                for (ItemStack item : player.getInventory().getArmorContents()) {
-                    if (item == null) continue;
-
-                    Enchantment enchantment = getEnchantmentByNamespace(enchantmentNamespace);
-
-                    if (enchantment != null) {
-                        if (item.containsEnchantment(enchantment)) {
-                            int enchantmentLevel = item.getEnchantmentLevel(enchantment);
-
-                            return Comparison.getFromString(comparison).compare(enchantmentLevel, compareTo);
-                        } else {
-                            if (Double.compare(compareTo, 0.0) == 0 && comparison.equals("==")) {
-                                return !item.containsEnchantment(enchantment);
-                            }
+                Enchantment enchantment = CraftRegistry.ENCHANTMENT.get(enchantmentNamespace);
+                switch(condition.get("calculation").toString()){
+                    case "sum":
+                        for(net.minecraft.world.item.ItemStack stack : CraftEnchantment.bukkitToMinecraft(enchantment).getSlotItems(((CraftPlayer)player).getHandle()).values()){
+                            value += EnchantmentHelper.getItemEnchantmentLevel(CraftEnchantment.bukkitToMinecraft(enchantment), stack);
                         }
-                    } else {
-                        return compareTo == 0 && comparison == "==";
-                        // p.sendMessage("Enchantment not found"); // Spams logs with weird things lol
-                    }
+                        break;
+                    case "max":
+                        int equippedEnchantmentLevel = 0;
+
+                        for (net.minecraft.world.item.ItemStack stack : CraftEnchantment.bukkitToMinecraft(enchantment).getSlotItems(((CraftPlayer)player).getHandle()).values()) {
+
+                            int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(CraftEnchantment.bukkitToMinecraft(enchantment), stack);
+
+                            if (enchantmentLevel > equippedEnchantmentLevel) {
+                                equippedEnchantmentLevel = enchantmentLevel;
+                            }
+
+                        }
+
+                        value = equippedEnchantmentLevel;
+                        break;
+                    default:
+                        break;
                 }
+                return Comparison.getFromString(comparison).compare(value, Utils.getToInt(compareTo));
             }
             return false;
         }));
@@ -393,12 +405,57 @@ public class EntityConditions {
             return false;
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("exists"), (condition, entity) -> entity != null));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("distance_from_spawn"), (condition, entity) -> {
-            @NotNull Vector actorVector = entity.getLocation().toVector();
-            @NotNull Vector targetVector = entity.getWorld().getSpawnLocation().toVector();
-            String comparison = condition.get("comparison").toString();
-            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-            return Comparison.getFromString(comparison).compare(actorVector.distance(targetVector), compare_to);
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("distance_from_coordinates"), (condition, entity) -> {
+            CraftEntity craftEntity = (CraftEntity) entity;
+            boolean scaleReferenceToDimension = (boolean) condition.getOrDefault("scale_reference_to_dimension", true);
+            boolean setResultOnWrongDimension = condition.containsKey("result_on_wrong_dimension"), resultOnWrongDimension = setResultOnWrongDimension && (boolean) condition.get("result_on_wrong_dimension");
+            double x = 0, y = 0, z = 0;
+            Vec3 pos = entity.getHandle().position();
+            ServerLevel level = (ServerLevel) entity.getHandle().level();
+
+            double currentDimensionCoordinateScale = level.dimensionType().coordinateScale();
+            switch (condition.getOrDefault("reference", "world_origin").toString()) {
+                case "player_natural_spawn", "world_spawn", "player_spawn" :
+                    if(setResultOnWrongDimension && level.dimension() != Level.OVERWORLD)
+                        return resultOnWrongDimension;
+                    BlockPos spawnPos = level.getSharedSpawnPos();
+                    x = spawnPos.getX();
+                    y = spawnPos.getY();
+                    z = spawnPos.getZ();
+                    break;
+                case "world_origin":
+                    break;
+            }
+
+            Vec3 coords = VectorGetter.getNMSVector((JSONObject) condition.getOrDefault("coordinates", new JSONObject(Map.of("x", 0, "y", 0, "z", 0))));
+            Vec3 offset = VectorGetter.getNMSVector((JSONObject) condition.getOrDefault("offset", new JSONObject(Map.of("x", 0, "y", 0, "z", 0))));
+            x += coords.x + offset.x;
+            y += coords.y + offset.y;
+            z += coords.z + offset.z;
+            if(scaleReferenceToDimension && (x != 0 || z != 0)){
+                Comparison comparison = Comparison.getFromString(condition.get("comparison").toString());
+                if(currentDimensionCoordinateScale == 0) return comparison == Comparison.NOT_EQUAL || comparison == Comparison.GREATER_THAN || comparison == Comparison.GREATER_THAN_OR_EQUAL;
+
+                x /= currentDimensionCoordinateScale;
+                z /= currentDimensionCoordinateScale;
+            }
+
+            double distance,
+                xDistance = (boolean) condition.getOrDefault("ignore_x", false) ? 0 : Math.abs(pos.x() - x),
+                yDistance = (boolean) condition.getOrDefault("ignore_y", false) ? 0 : Math.abs(pos.y() - y),
+                zDistance = (boolean) condition.getOrDefault("ignore_z", false) ? 0 : Math.abs(pos.z() - z);
+            if((boolean) condition.getOrDefault("scale_distance_to_dimension", false)){
+                xDistance *= currentDimensionCoordinateScale;
+                zDistance *= currentDimensionCoordinateScale;
+            }
+
+            distance = Shape.getDistance(Shape.getShape(condition.getOrDefault("shape", "cube")), xDistance, yDistance, zDistance);
+
+            if(condition.containsKey("round_to_digit")){
+                distance = new BigDecimal(distance).setScale((int) condition.get("round_to_digit"), RoundingMode.HALF_UP).doubleValue();
+            }
+
+            return Comparison.getFromString(condition.get("comparison").toString()).compare(distance, Utils.getToDouble(condition.get("compare_to")));
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("elytra_flight_possible"), (condition, entity) -> {
             boolean hasElytraPower = FlightElytra.elytra.contains(entity);
@@ -433,6 +490,38 @@ public class EntityConditions {
                 return !condition.containsKey("block_condition") || ConditionExecutor.testBlock((JSONObject) condition.get("block_condition"), (CraftBlock) entity.getLocation().getBlock());
             }
             return false;
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block_anywhere"), (condition, entity) -> {
+            int stopAt = -1;
+            Comparison comparison = Comparison.getFromString(condition.get("comparison").toString());
+            int compareTo = Utils.getToInt(condition.get("compare_to"));
+            switch(comparison) {
+                case EQUAL: case LESS_THAN_OR_EQUAL: case GREATER_THAN: case NOT_EQUAL:
+                    stopAt = compareTo + 1;
+                    break;
+                case LESS_THAN: case GREATER_THAN_OR_EQUAL:
+                    stopAt = compareTo;
+                    break;
+            }
+            int count = 0;
+            AABB box = entity.getHandle().getBoundingBox();
+            BlockPos blockPos = BlockPos.containing(box.minX + 0.001D, box.minY + 0.001D, box.minZ + 0.001D);
+            BlockPos blockPos2 = BlockPos.containing(box.maxX - 0.001D, box.maxY - 0.001D, box.maxZ - 0.001D);
+            BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+            for(int i = blockPos.getX(); i <= blockPos2.getX() && count < stopAt; ++i) {
+                for(int j = blockPos.getY(); j <= blockPos2.getY() && count < stopAt; ++j) {
+                    for(int k = blockPos.getZ(); k <= blockPos2.getZ() && count < stopAt; ++k) {
+                        mutable.set(i, j, k);
+                        boolean pass = true;
+                        if(condition.containsKey("block_condition")){
+                            pass = ConditionExecutor.testBlock((JSONObject) condition.get("block_condition"), CraftBlock.at(entity.getHandle().level(), mutable.immutable()));
+                        }
+
+                        if(pass) count++;
+                    }
+                }
+            }
+            return comparison.compare(count, compareTo);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, entity) -> {
             NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
@@ -607,14 +696,14 @@ public class EntityConditions {
             return false;
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("using_item"), (condition, entity) -> {
-            if (entity instanceof LivingEntity le) {
-                if (le.getActiveItem() != null) {
-                    if (condition.get("item_condition") != null) {
-                        return ConditionExecutor.testItem((JSONObject) condition.get("item_condition"), le.getActiveItem());
-                    } else {
-                        return true;
-                    }
+            if (entity instanceof CraftLivingEntity le && le.getHandle().isUsingItem()) {
+                InteractionHand hand = le.getHandle().getUsedItemHand();
+                net.minecraft.world.item.ItemStack stack = le.getHandle().getItemInHand(hand);
+                boolean pass = true;
+                if(condition.containsKey("item_condition")){
+                    pass = ConditionExecutor.testItem((JSONObject) condition.get("item_condition"), stack.getBukkitStack());
                 }
+                return pass;
             }
             return false;
         }));

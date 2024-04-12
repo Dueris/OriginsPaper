@@ -5,27 +5,36 @@ import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
+import me.dueris.genesismc.factory.data.types.Shape;
+import me.dueris.genesismc.factory.data.types.VectorGetter;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.TileState;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.json.simple.JSONObject;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiPredicate;
 
 public class BlockConditions {
@@ -83,6 +92,57 @@ public class BlockConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block_entity"), (condition, block) -> block.getState() instanceof TileState));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block"), (condition, block) -> block.getType().equals(MiscUtils.getBukkitMaterial(condition.get("block").toString()))));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("distance_from_coordinates"), (condition, block) -> {
+            boolean scaleReferenceToDimension = (boolean) condition.getOrDefault("scale_reference_to_dimension", true);
+            boolean setResultOnWrongDimension = condition.containsKey("result_on_wrong_dimension"), resultOnWrongDimension = setResultOnWrongDimension && (boolean) condition.get("result_on_wrong_dimension");
+            double x = 0, y = 0, z = 0;
+            Vec3 pos = CraftLocation.toVec3D(block.getLocation());
+            ServerLevel level = block.getHandle().getMinecraftWorld();
+
+            double currentDimensionCoordinateScale = level.dimensionType().coordinateScale();
+            switch (condition.getOrDefault("reference", "world_origin").toString()) {
+                case "player_natural_spawn", "world_spawn", "player_spawn" :
+                    if(setResultOnWrongDimension && level.dimension() != Level.OVERWORLD)
+                        return resultOnWrongDimension;
+                    BlockPos spawnPos = level.getSharedSpawnPos();
+                    x = spawnPos.getX();
+                    y = spawnPos.getY();
+                    z = spawnPos.getZ();
+                    break;
+                case "world_origin":
+                    break;
+            }
+
+            Vec3 coords = VectorGetter.getNMSVector((JSONObject) condition.getOrDefault("coordinates", new JSONObject(Map.of("x", 0, "y", 0, "z", 0))));
+            Vec3 offset = VectorGetter.getNMSVector((JSONObject) condition.getOrDefault("offset", new JSONObject(Map.of("x", 0, "y", 0, "z", 0))));
+            x += coords.x + offset.x;
+            y += coords.y + offset.y;
+            z += coords.z + offset.z;
+            if(scaleReferenceToDimension && (x != 0 || z != 0)){
+                Comparison comparison = Comparison.getFromString(condition.get("comparison").toString());
+                if(currentDimensionCoordinateScale == 0) return comparison == Comparison.NOT_EQUAL || comparison == Comparison.GREATER_THAN || comparison == Comparison.GREATER_THAN_OR_EQUAL;
+
+                x /= currentDimensionCoordinateScale;
+                z /= currentDimensionCoordinateScale;
+            }
+
+            double distance,
+                xDistance = (boolean) condition.getOrDefault("ignore_x", false) ? 0 : Math.abs(pos.x() - x),
+                yDistance = (boolean) condition.getOrDefault("ignore_y", false) ? 0 : Math.abs(pos.y() - y),
+                zDistance = (boolean) condition.getOrDefault("ignore_z", false) ? 0 : Math.abs(pos.z() - z);
+            if((boolean) condition.getOrDefault("scale_distance_to_dimension", false)){
+                xDistance *= currentDimensionCoordinateScale;
+                zDistance *= currentDimensionCoordinateScale;
+            }
+
+            distance = Shape.getDistance(Shape.getShape(condition.getOrDefault("shape", "cube")), xDistance, yDistance, zDistance);
+
+            if(condition.containsKey("round_to_digit")){
+                distance = new BigDecimal(distance).setScale((int) condition.get("round_to_digit"), RoundingMode.HALF_UP).doubleValue();
+            }
+
+            return Comparison.getFromString(condition.get("comparison").toString()).compare(distance, Utils.getToDouble(condition.get("compare_to")));
+        }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block_state"), (condition, block) -> {
             BlockState state = block.getNMS();
             Collection<Property<?>> properties = state.getProperties();

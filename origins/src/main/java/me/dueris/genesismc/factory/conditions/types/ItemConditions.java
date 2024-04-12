@@ -9,18 +9,27 @@ import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
+import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiPredicate;
 
 public class ItemConditions {
@@ -38,13 +47,21 @@ public class ItemConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("is_damageable"), (condition, itemStack) -> CraftItemStack.asCraftCopy(itemStack).handle.isDamageableItem()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fireproof"), (condition, itemStack) -> CraftItemStack.asCraftCopy(itemStack).handle.getItem().isFireResistant()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantment"), (condition, itemStack) -> {
-            String comparison = condition.get("comparison").toString();
-            double compareTo = Double.parseDouble(condition.get("compare_to").toString());
-            for (Enchantment enchantment : itemStack.getEnchantments().keySet()) {
-                if (enchantment.getName().equalsIgnoreCase(String.valueOf(condition.getOrDefault("enchantment", enchantment.getName())))) {
-                    int amt = itemStack.getEnchantments().get(enchantment);
-                    return Comparison.getFromString(comparison).compare(amt, compareTo);
+            Enchantment enchantment = CraftRegistry.ENCHANTMENT.get(NamespacedKey.fromString(condition.get("enchantment").toString()));
+            if(enchantment != null){
+                net.minecraft.world.item.enchantment.Enchantment nmsEnchantment = CraftEnchantment.bukkitToMinecraft(enchantment);
+                Comparison comparison = Comparison.getFromString(condition.get("comparison").toString());
+                int compare_to = Utils.getToInt(condition.get("compare_to"));
+
+                int level;
+                if(nmsEnchantment != null) {
+                    level = EnchantmentHelper.getItemEnchantmentLevel(nmsEnchantment, CraftItemStack.asNMSCopy(itemStack));
+                }else{
+                    Map<net.minecraft.world.item.enchantment.Enchantment, Integer> enchantmentIntegerMap = EnchantmentHelper.getEnchantments(CraftItemStack.asNMSCopy(itemStack));
+                    level = enchantmentIntegerMap.size();
                 }
+
+                return comparison.compare(level, compare_to);
             }
             return false;
         }));
