@@ -16,6 +16,7 @@ import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -115,26 +116,17 @@ public class EntityConditions {
             return ApoliPower.powers_active.get(entity).getOrDefault(power, false);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("advancement"), (condition, entity) -> {
-            String advancementString = condition.get("advancement").toString();
+            MinecraftServer server = GenesisMC.server;
+            if (entity instanceof CraftPlayer p) {
+                NamespacedKey namespacedKey = NamespacedKey.fromString(condition.get("advancement").toString());
 
-            if (entity instanceof Player player) {
-                File advancementsFolder = new File(GenesisMC.server.getWorldPath(LevelResource.PLAYER_ADVANCEMENTS_DIR).toAbsolutePath().toString());
-                File playerAdvancementFile = new File(advancementsFolder, player.getUniqueId() + ".json");
-
-                if (playerAdvancementFile.exists()) {
-                    try {
-                        JSONParser parser = new JSONParser();
-                        JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(playerAdvancementFile));
-                        JSONObject advancementJson = (JSONObject) jsonObject.get(advancementString);
-
-                        if (advancementJson != null) {
-                            Boolean done = (Boolean) advancementJson.get("done");
-                            Objects.requireNonNullElse(done, false);
-                        }
-                    } catch (IOException | ParseException e) {
-                        e.printStackTrace();
-                    }
+                AdvancementHolder advancementHolder = server.getAdvancements().get(CraftNamespacedKey.toMinecraft(namespacedKey));
+                if(advancementHolder == null){
+                    GenesisMC.getPlugin().getLogger().severe("Advancement \"{}\" did not exist but was referenced in the apoli:advancement entity condition!".replace("{}", namespacedKey.asString()));
+                    return false;
                 }
+
+                return p.getHandle().getAdvancements().getOrStartProgress(advancementHolder).isDone();
             }
             return false;
         }));
