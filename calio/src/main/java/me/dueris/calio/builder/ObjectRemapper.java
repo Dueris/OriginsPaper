@@ -1,6 +1,5 @@
 package me.dueris.calio.builder;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -68,7 +67,8 @@ public class ObjectRemapper {
     private static JsonObject remapJsonObject(JsonObject obj, NamespacedKey currentNamespace) {
         JsonObject objectReturnable = new JsonObject();
         for (String key : obj.keySet()) {
-            if(objectReturnable.has(key)) throw new IllegalStateException("JsonFile has duplicate value: (key=\"{k}\", namespace=\"{n}\"".replace("{k}", key).replace("{n}", currentNamespace.asString()));
+            if (objectReturnable.has(key))
+                throw new IllegalStateException("JsonFile has duplicate value: (key=\"{k}\", namespace=\"{n}\"".replace("{k}", key).replace("{n}", currentNamespace.asString()));
             JsonElement valueInst = obj.get(key);
             // Object mappings
             for (String keyName : objectMappings.keySet()) {
@@ -95,7 +95,7 @@ public class ObjectRemapper {
                         continue;
                     }
                 }
-            }  else if (valueInst.isJsonObject()) {
+            } else if (valueInst.isJsonObject()) {
                 objectReturnable.add(key, remapJsonObject(valueInst.getAsJsonObject(), currentNamespace));
                 continue;
             } else if (valueInst.isJsonArray()) {
@@ -109,7 +109,7 @@ public class ObjectRemapper {
                 continue;
             }
 
-            if(!objectReturnable.has(key)) objectReturnable.add(key, valueInst);
+            if (!objectReturnable.has(key)) objectReturnable.add(key, valueInst);
         }
         return objectReturnable;
     }

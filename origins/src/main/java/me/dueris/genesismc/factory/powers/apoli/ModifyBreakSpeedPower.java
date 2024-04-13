@@ -21,7 +21,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_break_speed;
 

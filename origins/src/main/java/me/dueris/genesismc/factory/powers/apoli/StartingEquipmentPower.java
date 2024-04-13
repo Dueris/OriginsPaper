@@ -18,7 +18,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class StartingEquipmentPower extends CraftPower implements Listener {
 

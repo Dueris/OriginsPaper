@@ -13,7 +13,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsFloat;

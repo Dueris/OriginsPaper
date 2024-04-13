@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import com.google.gson.JsonSyntaxException;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Modifier;
@@ -15,10 +14,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.*;
+import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_damage_dealt;
 
 public class ModifyDamageDealtPower extends CraftPower implements Listener {

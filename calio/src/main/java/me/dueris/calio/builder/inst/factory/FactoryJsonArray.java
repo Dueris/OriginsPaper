@@ -1,7 +1,6 @@
 package me.dueris.calio.builder.inst.factory;
 
 import com.google.gson.JsonArray;
-
 import me.dueris.calio.util.IgnoreFactoryValidationCheck;
 
 import java.util.Iterator;

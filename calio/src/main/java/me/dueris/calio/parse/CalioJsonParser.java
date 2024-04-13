@@ -2,7 +2,6 @@ package me.dueris.calio.parse;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.ObjectRemapper;
 import me.dueris.calio.builder.inst.AccessorRoot;

@@ -2,7 +2,6 @@ package me.dueris.calio.builder.inst.factory;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-
 import me.dueris.calio.util.IgnoreFactoryValidationCheck;
 import me.dueris.calio.util.MiscUtils;
 import net.minecraft.core.Registry;
@@ -16,7 +15,6 @@ import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 

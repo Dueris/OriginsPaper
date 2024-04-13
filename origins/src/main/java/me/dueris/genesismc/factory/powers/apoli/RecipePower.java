@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.builder.inst.factory.FactoryElement;
-import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;

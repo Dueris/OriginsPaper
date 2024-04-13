@@ -1,9 +1,7 @@
 package me.dueris.genesismc.factory.conditions.types;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.util.MiscUtils;
@@ -14,7 +12,6 @@ import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;

@@ -1,8 +1,5 @@
 package me.dueris.calio.builder.inst;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedType;
-
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.util.IgnoreFactoryValidationCheck;
 import me.dueris.calio.util.holders.TriPair;

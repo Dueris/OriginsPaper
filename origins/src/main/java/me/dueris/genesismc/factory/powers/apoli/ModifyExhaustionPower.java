@@ -14,7 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExhaustionEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsFloat;

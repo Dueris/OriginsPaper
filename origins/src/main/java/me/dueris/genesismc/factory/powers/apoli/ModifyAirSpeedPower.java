@@ -14,7 +14,6 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsFloat;

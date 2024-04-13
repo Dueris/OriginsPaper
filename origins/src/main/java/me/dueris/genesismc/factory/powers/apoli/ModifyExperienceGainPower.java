@@ -4,7 +4,6 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
@@ -15,7 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsFloat;

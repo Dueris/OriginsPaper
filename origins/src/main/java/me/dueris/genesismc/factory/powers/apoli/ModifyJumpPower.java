@@ -16,7 +16,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_jump;
 

@@ -1,5 +1,6 @@
 package me.dueris.genesismc.registry.registries;
 
+import com.google.gson.JsonArray;
 import me.dueris.calio.builder.inst.FactoryInstance;
 import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.calio.builder.inst.factory.FactoryBuilder;
@@ -14,8 +15,6 @@ import me.dueris.genesismc.registry.Registries;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-
-import com.google.gson.JsonArray;
 
 import java.io.File;
 import java.io.Serial;
