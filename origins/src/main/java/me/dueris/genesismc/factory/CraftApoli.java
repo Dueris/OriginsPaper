@@ -15,7 +15,6 @@ import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONObject;
 
 import java.io.*;
 import java.util.ArrayList;

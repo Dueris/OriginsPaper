@@ -62,7 +62,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

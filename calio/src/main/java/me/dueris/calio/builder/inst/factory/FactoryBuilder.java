@@ -38,6 +38,11 @@ public class FactoryBuilder {
     public void putDefault(String key, Object value) {
         JsonObject t = this.source.handle.getAsJsonObject();
         Gson gson = new Gson();
-        t.addProperty(key, gson.toJson(value));
+        // Handle JsonElements
+        if (value instanceof JsonElement element) {
+            t.add(key, element);
+        } else {
+            t.addProperty(key, gson.toJson(value));
+        }
     }
 }

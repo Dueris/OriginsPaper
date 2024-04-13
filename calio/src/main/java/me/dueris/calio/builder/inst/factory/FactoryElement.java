@@ -2,6 +2,9 @@ package me.dueris.calio.builder.inst.factory;
 
 import com.google.gson.JsonElement;
 
+import me.dueris.calio.util.IgnoreFactoryValidationCheck;
+
+@IgnoreFactoryValidationCheck
 public class FactoryElement {
     public JsonElement handle;
 
@@ -34,15 +37,15 @@ public class FactoryElement {
     }
 
     public boolean isString() {
-        return this.isString();
+        return isGsonPrimative() && this.handle.getAsJsonPrimitive().isString();
     }
 
     public boolean isBoolean() {
-        return this.isBoolean();
+        return isGsonPrimative() && this.handle.getAsJsonPrimitive().isBoolean();
     }
 
     public boolean isNumber() {
-        return this.isNumber();
+        return isGsonPrimative() && this.handle.getAsJsonPrimitive().isNumber();
     }
 
     public FactoryNumber getNumber() {

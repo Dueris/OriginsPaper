@@ -1,5 +1,6 @@
 package me.dueris.calio.builder;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -75,6 +76,7 @@ public class ObjectRemapper {
                     for (Pair<Object, Object> objectMapping : objectMappings.get(key)) {
                         if (valueInst.equals(objectMapping.left())) {
                             objectReturnable.addProperty(key, objectMapping.right().toString());
+                            continue;
                         }
                     }
                 }
@@ -84,15 +86,18 @@ public class ObjectRemapper {
                 String g = valueInst.getAsJsonPrimitive().getAsString();
                 if (g.contains(":") && g.contains("*")) {
                     objectReturnable.addProperty(key, NamespaceUtils.getDynamicNamespace(currentNamespace.asString(), g).asString());
+                    continue;
                 }
 
                 for (Pair<String, String> pair : typeMappings) {
                     if (key.equalsIgnoreCase("type") && g.startsWith(pair.left())) {
                         objectReturnable.addProperty(key, pair.right() + ":" + g.split(":")[1]);
+                        continue;
                     }
                 }
             }  else if (valueInst.isJsonObject()) {
                 objectReturnable.add(key, remapJsonObject(valueInst.getAsJsonObject(), currentNamespace));
+                continue;
             } else if (valueInst.isJsonArray()) {
                 objectReturnable.add(key, new JsonArray());
                 JsonArray array = objectReturnable.getAsJsonArray(key);
@@ -101,7 +106,10 @@ public class ObjectRemapper {
                         array.add(remapJsonObject(j, currentNamespace));
                     }
                 }
+                continue;
             }
+
+            if(!objectReturnable.has(key)) objectReturnable.add(key, valueInst);
         }
         return objectReturnable;
     }

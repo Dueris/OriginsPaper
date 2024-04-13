@@ -23,8 +23,6 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.Listener;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.EnumSet;

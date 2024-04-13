@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlot;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 

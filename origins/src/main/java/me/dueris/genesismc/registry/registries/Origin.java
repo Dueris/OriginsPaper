@@ -4,6 +4,7 @@ import me.dueris.calio.builder.inst.FactoryInstance;
 import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.calio.builder.inst.factory.FactoryBuilder;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
@@ -13,7 +14,8 @@ import me.dueris.genesismc.registry.Registries;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONArray;
+
+import com.google.gson.JsonArray;
 
 import java.io.File;
 import java.io.Serial;
@@ -177,29 +179,25 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
             new FactoryObjectInstance("icon", ItemStack.class, new ItemStack(Material.PLAYER_HEAD, 1)),
             new FactoryObjectInstance("impact", Integer.class, 0),
             new FactoryObjectInstance("unchooseable", Boolean.class, false),
-            new FactoryObjectInstance("powers", JSONArray.class, new JSONArray())
+            new FactoryObjectInstance("powers", FactoryJsonArray.class, new JsonArray())
         );
     }
 
     @Override
     public void createInstance(FactoryBuilder obj, File rawFile, Registrar<? extends Registerable> registry, NamespacedKey namespacedTag) {
         Registrar<Origin> registrar = (Registrar<Origin>) registry;
-        try {
-            ArrayList<Power> containers = new ArrayList<>();
-            for (String element : obj.getRoot().getJsonArray("powers").asList().stream().map(FactoryElement::getString).toList()) {
-                if (((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).rawRegistry.containsKey(NamespacedKey.fromString(element))) {
-                    containers.add(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(element)));
-                }
+        ArrayList<Power> containers = new ArrayList<>();
+        for (String element : obj.getRoot().getJsonArray("powers").asList().stream().map(FactoryElement::getString).toList()) {
+            if (((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).rawRegistry.containsKey(NamespacedKey.fromString(element))) {
+                containers.add(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(element)));
+            }
 
-                for (Power power : CraftApoli.getNestedPowers(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(element)))) {
-                    if (power != null) {
-                        containers.add(power);
-                    }
+            for (Power power : CraftApoli.getNestedPowers(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(element)))) {
+                if (power != null) {
+                    containers.add(power);
                 }
             }
-            registrar.register(new Origin(namespacedTag, containers, obj.getRoot()));
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        registrar.register(new Origin(namespacedTag, containers, obj.getRoot()));
     }
 }

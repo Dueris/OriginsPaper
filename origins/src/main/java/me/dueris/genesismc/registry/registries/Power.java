@@ -102,7 +102,7 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
     }
 
     public String getJsonData() {
-        return this.jsonData.toString();
+        return this.handle.toString();
     }
 
     // Used for origins:multiple purposes to try and add an "inheritance" feature for cooldowns

@@ -18,7 +18,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -13,7 +13,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
-import org.json.simple.JSONObject;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
