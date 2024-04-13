@@ -12,7 +12,6 @@ import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.registry.Registries;
 import org.bukkit.NamespacedKey;
-import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.Serial;
@@ -71,9 +70,9 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
     /**
      * Constructor with defaults for originMultiple and originMultipleParent.
      *
-     * @param powerTag       The power tag.
-     * @param jsonData       The JSON data.
-     * @param accessor       The FactoryBuilder accessor.
+     * @param powerTag The power tag.
+     * @param jsonData The JSON data.
+     * @param accessor The FactoryBuilder accessor.
      */
     public Power(NamespacedKey powerTag, FactoryJsonObject jsonData, FactoryBuilder accessor) {
         this(powerTag, jsonData, false, false, null, accessor);
@@ -159,77 +158,6 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
      */
     public String getType() {
         return this.getString("type");
-    }
-
-    public int getInt(String key) {
-        Object obj = powerFile.get(key);
-        if (obj == null) return 1;
-        return Integer.parseInt(obj.toString());
-    }
-
-    public float getFloat(String key) {
-        Object obj = powerFile.get(key);
-        if (obj == null) return 1;
-        return Float.parseFloat(obj.toString());
-    }
-
-    public Object getObject(String key) {
-        Object obj = powerFile.get(key);
-        return obj;
-    }
-
-    public String getString(String key) {
-        Object obj = powerFile.get(key);
-        if (obj == null) return null;
-        return obj.toString();
-    }
-
-    public String getNamespacedString(String key) {
-        Object obj = powerFile.get(key);
-        if (obj == null) return null;
-        return NamespacedKey.fromString(obj.toString()).asString();
-    }
-
-    public JSONObject getOrDefault(String key, Object def) {
-        JSONObject jsonObject = (JSONObject) this.powerFile.get(key);
-        if (jsonObject == null) return (JSONObject) def;
-        return jsonObject;
-    }
-
-    public boolean getBooleanOrDefault(String key, boolean def) {
-        Object obj = powerFile.get(key);
-        if (obj == null) return def;
-        return Boolean.parseBoolean(obj.toString());
-    }
-
-    public long getLongOrDefault(String key, long def) {
-        Object obj = powerFile.get(key);
-        if (obj == null) return def;
-        return Long.parseLong(obj.toString());
-    }
-
-    public int getIntOrDefault(String key, int def) {
-        Object obj = powerFile.get(key);
-        if (obj == null) return def;
-        return Integer.parseInt(obj.toString());
-    }
-
-    public float getFloatOrDefault(String key, float def) {
-        Object obj = powerFile.get(key);
-        if (obj == null) return def;
-        return Float.parseFloat(obj.toString());
-    }
-
-    public double getDoubleOrDefault(String key, double def) {
-        Object obj = powerFile.get(key);
-        if (obj == null) return def;
-        return Double.parseDouble(obj.toString());
-    }
-
-    public Object getObjectOrDefault(String key, Object def) {
-        Object obj = powerFile.get(key);
-        if (obj == null) return def;
-        return obj;
     }
 
     /**

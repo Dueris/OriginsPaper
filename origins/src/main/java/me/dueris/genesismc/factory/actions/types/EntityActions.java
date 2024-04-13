@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.actions.types;
 
+import com.google.gson.JsonObject;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
@@ -15,7 +16,6 @@ import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.apoli.Toggle;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.RaycastUtils;
@@ -46,9 +46,9 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.joml.Vector3f;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -73,9 +73,9 @@ public class EntityActions {
                 for (String slot : slots) {
                     try {
                         if (player.getInventory().getItem(getSlotFromString(slot)) == null)
-                            return;
+                            continue;
                         executeItem(player.getInventory().getItem(Objects.requireNonNull(getSlotFromString(slot))), action.getJsonObject("item_action"));
-                        if(!(limit <= 0) && count >= limit) break;
+                        if (!(limit <= 0) && count >= limit) break;
                         count++;
                     } catch (Exception e) {
                         // Ignore Exception
@@ -150,7 +150,7 @@ public class EntityActions {
         register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_entity"), (action, entity) -> {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
-            RaycastUtils.executeCommandAtHit(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), "summon $1 %1 %2 %3 $2"
+            RaycastUtils.executeNMSCommand(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), "summon $1 %1 %2 %3 $2"
                 .replace("$1", action.getString("entity_type"))
                 .replace("$2", action.getStringOrDefault("tag", "{}"))
                 .replace("%1", String.valueOf(entity.getLocation().getX()))
@@ -161,10 +161,9 @@ public class EntityActions {
         register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_particles"), (action, entity) -> {
             Particle particle = Particle.valueOf(action.getJsonObject("particle").getStringOrDefault("type", null).split(":")[1].toUpperCase());
             int count = action.getNumber("count").getInt();
-            float offset_y_no_vector = action.getNumberOrDefault("offset_y", 1f).getFloat();
-            float offset_x = 0.25f;
-            float offset_y = 0.50f;
-            float offset_z = 0.25f;
+            float offset_x = action.getNumberOrDefault("offset_z", 0).getFloat();
+            float offset_y = action.getNumberOrDefault("offset_z", 0.5F).getFloat();
+            float offset_z = action.getNumberOrDefault("offset_z", 0).getFloat();
             if (action.isPresent("spread")) {
                 FactoryJsonObject spread = action.getJsonObject("spread");
                 if (spread.isPresent("y")) {
@@ -192,14 +191,14 @@ public class EntityActions {
                     .replace("{name}", "@e[{data}]"
                         .replace("{data}", "x=" + entity.getLocation().getX() + ",y=" + entity.getLocation().getY() + ",z=" + entity.getLocation().getZ() + ",type=" + entity.getType().toString().toLowerCase() + ",x_rotation=" + entity.getLocation().getDirection().getX() + ",y_rotation=" + entity.getLocation().getDirection().getY())
                     );
-                RaycastUtils.executeCommandAtHit(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), cmd);
+                RaycastUtils.executeNMSCommand(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), cmd);
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("remove_power"), (action, entity) -> {
             if (entity instanceof Player p) {
                 Power powerContainer = ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(action.getNamespacedKey("power"));
                 if (powerContainer != null) {
-                    RaycastUtils.executeCommandAtHit(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("action")));
+                    RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("action")));
                 }
             }
         }));
@@ -227,21 +226,30 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("replace_inventory"), (action, entity) -> {
             if (entity instanceof Player player) {
+                List<String> slots = new ArrayList<>();
                 if (action.isPresent("slot")) {
+                    slots.add(action.getString("slot"));
+                } else if (action.isPresent("slots")) {
+                    slots.addAll(action.getJsonArray("slots").asList().stream().map(FactoryElement::getString).toList());
+                }
+
+                for (String slot : slots) {
                     try {
-                        if (player.getInventory().getItem(getSlotFromString(action.get("slot").toString())) == null)
-                            return;
-                        JSONObject jsonObject = (JSONObject) action.get("stack");
-                        player.getInventory().getItem(getSlotFromString(action.get("slot").toString())).setType(Material.valueOf(jsonObject.get("item").toString().split(":")[1].toUpperCase()));
+                        if (player.getInventory().getItem(getSlotFromString(slot)) == null)
+                            continue;
+                        ItemStack item = player.getInventory().getItem(getSlotFromString(action.getString("slot")));
+                        ItemStack replaceWith = action.getItemStack("stack");
+                        item.setType(replaceWith.getType());
+                        item.setAmount(replaceWith.getAmount());
                     } catch (Exception e) {
-                        //silently fail
+                        // Ignore Exception
                     }
                 }
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("heal"), (action, entity) -> {
             if (entity instanceof LivingEntity li) {
-                double healthFinal = li.getHealth() + Double.parseDouble(action.get("amount").toString());
+                double healthFinal = li.getHealth() + action.getNumber("amount").getFloat();
                 if (li.getHealth() >= 20) return;
                 if (healthFinal > 20) {
                     li.setHealth(20);
@@ -251,7 +259,7 @@ public class EntityActions {
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("clear_effect"), (action, entity) -> {
-            PotionEffectType potionEffectType = StackingStatusEffect.getPotionEffectType(action.get("effect").toString());
+            PotionEffectType potionEffectType = StackingStatusEffect.getPotionEffectType(action.getString("effect"));
             if (entity instanceof Player player) {
                 if (player.hasPotionEffect(potionEffectType)) {
                     player.removePotionEffect(potionEffectType);
@@ -260,24 +268,19 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("exhaust"), (action, entity) -> {
             if (entity instanceof Player player) {
-                player.setFoodLevel(player.getFoodLevel() - Math.round(Float.valueOf(action.get("amount").toString())));
+                player.setFoodLevel(player.getFoodLevel() - Math.round(action.getNumber("amount").getFloat()));
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("explode"), (action, entity) -> {
-            long explosionPower = 1L;
-            if (action.get("power") instanceof Long lep) {
-                explosionPower = lep;
-            } else if (action.get("power") instanceof Double dep) {
-                explosionPower = Math.round(dep);
-            }
+            float explosionPower = action.getNumber("power").getFloat();
             String destruction_type = "break";
             boolean create_fire = false;
             ServerLevel level = ((CraftWorld) entity.getWorld()).getHandle();
 
             if (action.isPresent("destruction_type"))
-                destruction_type = action.get("destruction_type").toString();
+                destruction_type = action.getString("destruction_type");
             if (action.isPresent("create_fire"))
-                create_fire = Boolean.parseBoolean(action.get("create_fire").toString());
+                create_fire = action.getBoolean("create_fire");
 
             Explosion explosion = new Explosion(
                 level,
@@ -311,9 +314,9 @@ public class EntityActions {
             if (entity instanceof Player player) {
                 if (action.isPresent("equipment_slot")) {
                     try {
-                        if (player.getInventory().getItem(getSlotFromString(action.get("equipment_slot").toString())) == null)
+                        if (player.getInventory().getItem(getSlotFromString(action.getString("equipment_slot"))) == null)
                             return;
-                        executeItem(player.getInventory().getItem(getSlotFromString(action.get("equipment_slot").toString())), action);
+                        executeItem(player.getInventory().getItem(getSlotFromString(action.getString("equipment_slot"))), action.getJsonObject("action"));
                     } catch (Exception e) {
                         // Ignore Exception
                     }
@@ -323,28 +326,28 @@ public class EntityActions {
         register(new ActionFactory(GenesisMC.apoliIdentifier("dismount"), (action, entity) -> entity.getVehicle().removePassenger(entity)));
         register(new ActionFactory(GenesisMC.apoliIdentifier("feed"), (action, entity) -> {
             if (entity instanceof Player player) {
-                if (player.getFoodLevel() == 20 || player.getFoodLevel() + Integer.parseInt(action.get("food").toString()) >= 20) {
+                if (player.getFoodLevel() == 20 || player.getFoodLevel() + action.getNumber("food").getInt() >= 20) {
                     player.setFoodLevel(20);
                 } else {
-                    player.setFoodLevel(player.getFoodLevel() + Integer.parseInt(action.get("food").toString()));
+                    player.setFoodLevel(player.getFoodLevel() + action.getNumber("food").getInt());
                 }
 
-                if (player.getSaturation() == 20 || player.getSaturation() + Float.parseFloat(action.get("saturation").toString()) >= 20) {
+                if (player.getSaturation() == 20 || player.getSaturation() + action.getNumber("saturation").getFloat() >= 20) {
                     player.setSaturation(20);
                 } else {
-                    player.setSaturation(player.getSaturation() + Float.parseFloat(action.get("saturation").toString()));
+                    player.setSaturation(player.getSaturation() + action.getNumber("saturation").getFloat());
                 }
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("fire_projectile"), (action, entity) -> {
             if (entity instanceof ProjectileSource) {
-                float finalDivergence1 = Float.parseFloat(action.getOrDefault("divergence", 1.0).toString());
-                float speed = Float.parseFloat(action.getOrDefault("speed", 1).toString());
+                float finalDivergence1 = action.getNumberOrDefault("divergence", 1.0).getFloat();
+                float speed = action.getNumberOrDefault("speed", 1).getFloat();
                 EntityType typeE;
-                if (action.getOrDefault("entity_type", null).toString().equalsIgnoreCase("origins:enderian_pearl")) {
+                if (action.getString("entity_type").equalsIgnoreCase("origins:enderian_pearl")) {
                     typeE = EntityType.ENDER_PEARL;
                 } else {
-                    typeE = EntityType.valueOf(action.getOrDefault("entity_type", null).toString().split(":")[1].toUpperCase());
+                    typeE = EntityType.valueOf(action.getString("entity_type").split(":")[1].toUpperCase());
                 }
                 Projectile projectile = (Projectile) entity.getWorld().spawnEntity(entity.getLocation(), typeE);
                 projectile.setShooter((ProjectileSource) entity);
@@ -367,76 +370,79 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("passanger_action"), (action, entity) -> {
             if (entity.getPassengers() == null || entity.getPassengers().isEmpty()) return;
-            executeEntity(entity.getPassenger(), (JSONObject) action.get("action"));
-            executeBiEntity(entity.getPassenger(), entity, (JSONObject) action.get("bientity_action"));
+            executeEntity(entity.getPassenger(), action.getJsonObject("action"));
+            executeBiEntity(entity.getPassenger(), entity, action.getJsonObject("bientity_action"));
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("riding_action"), (action, entity) -> {
             if (entity.getVehicle() == null) return;
             if (action.isPresent("action")) {
-                executeEntity(entity.getVehicle(), (JSONObject) action.get("action"));
+                executeEntity(entity.getVehicle(), action.getJsonObject("action"));
             }
             if (action.isPresent("bientity_action")) {
-                executeBiEntity(entity.getVehicle(), entity, (JSONObject) action.get("bientity_action"));
+                executeBiEntity(entity.getVehicle(), entity, action.getJsonObject("bientity_action"));
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("raycast"), (action, entity) -> RaycastUtils.action(action, ((CraftEntity) entity).getHandle())));
         register(new ActionFactory(GenesisMC.apoliIdentifier("extinguish"), (action, entity) -> entity.setFireTicks(0)));
         register(new ActionFactory(GenesisMC.apoliIdentifier("play_sound"), (action, entity) -> {
-            Sound sound = MiscUtils.parseSound(action.get("sound").toString());
-            Float volume = Float.parseFloat(action.getOrDefault("volume", 1.0).toString());
-            Float pitch = Float.parseFloat(action.getOrDefault("pitch", 1.0).toString());
+            Sound sound = MiscUtils.parseSound(action.getString("sound"));
+            Float volume = action.getNumberOrDefault("volume", 1.0).getFloat();
+            Float pitch = action.getNumberOrDefault("pitch", 1.0).getFloat();
             entity.getWorld().playSound(entity, sound, volume, pitch);
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("gain_air"), (action, entity) -> {
-            long amt = (long) action.get("value");
+            long amt = action.getNumber("value").getInt();
             if (entity instanceof Player p) {
                 p.setRemainingAir(p.getRemainingAir() + Math.toIntExact(amt));
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("drop_inventory"), (action, entity) -> {
-            if (entity instanceof Player player) {
+            if (entity instanceof HumanEntity player) {
+                List<String> slots = new ArrayList<>();
                 if (action.isPresent("slot")) {
+                    slots.add(action.getString("slot"));
+                } else if (action.isPresent("slots")) {
+                    slots.addAll(action.getJsonArray("slots").asList().stream().map(FactoryElement::getString).toList());
+                }
+                for (String slot : slots) {
                     try {
-                        if (player.getInventory().getItem(getSlotFromString(action.get("slot").toString())) == null)
+                        if (player.getInventory().getItem(getSlotFromString(slot)) == null)
                             return;
-                        executeItem(player.getInventory().getItem(getSlotFromString(action.get("slot").toString())), action);
+                        executeItem(player.getInventory().getItem(getSlotFromString(slot)), action);
                     } catch (Exception e) {
                         //fail noononooo
                     }
-                } else {
-                    ArrayList<String> ke = new ArrayList<>();
-                    ke.add("key.origins.primary_active");
-                    ke.add("key.origins.secondary_active");
-                    for (ItemStack item : player.getInventory().getContents()) {
-                        if (item == null) continue;
-                        if (!item.containsEnchantment(Enchantment.ARROW_INFINITE) && !item.getType().equals(Material.GRAY_DYE)) {
-                            player.getWorld().dropItemNaturally(player.getLocation(), item);
-                        }
-                    }
-                    player.getInventory().clear();
-                    addItems(player);
                 }
+                for (ItemStack item : player.getInventory().getContents()) {
+                    if (item == null) continue;
+                    if (!item.containsEnchantment(Enchantment.ARROW_INFINITE) && !item.getType().equals(Material.GRAY_DYE)) {
+                        player.getWorld().dropItemNaturally(player.getLocation(), item);
+                    }
+                }
+
+                player.getInventory().clear();
+                addItems(player);
             }
         }));
-        register(new ActionFactory(GenesisMC.apoliIdentifier("grant_advancement"), (action, entity) -> RaycastUtils.executeCommandAtHit(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), "advancement grant $1 $2".replace("$1", entity.getName()).replace("$2", action.get("advacnement").toString()))));
-        register(new ActionFactory(GenesisMC.apoliIdentifier("revoke_advancement"), (action, entity) -> RaycastUtils.executeCommandAtHit(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), "advancement revoke $1 $2".replace("$1", entity.getName()).replace("$2", action.get("advacnement").toString()))));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("grant_advancement"), (action, entity) -> RaycastUtils.executeNMSCommand(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), "advancement grant $1 $2".replace("$1", entity.getName()).replace("$2", action.getString("advacnement")))));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("revoke_advancement"), (action, entity) -> RaycastUtils.executeNMSCommand(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), "advancement revoke $1 $2".replace("$1", entity.getName()).replace("$2", action.getString("advacnement")))));
         register(new ActionFactory(GenesisMC.apoliIdentifier("selector_action"), (action, entity) -> {
-            if (action.get("bientity_condition") != null) {
+            if (action.isPresent("bientity_condition")) {
                 if (entity instanceof Player player) {
-                    executeBiEntity(entity, player.getTargetEntity(AttributeHandler.ReachUtils.getDefaultReach(player), false), (JSONObject) action.get("bientity_condition"));
+                    executeBiEntity(entity, player.getTargetEntity(AttributeHandler.ReachUtils.getDefaultReach(player), false), action.getJsonObject("bientity_condition"));
                 }
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("give"), (action, entity) -> {
             int amt = 1;
             if (action.isPresent("amount")) {
-                amt = Integer.parseInt(action.get("amount").toString());
+                amt = action.getNumber("amount").getInt();
             }
 
             if (action.isPresent("stack")) {
-                JSONObject stackObject = (JSONObject) action.get("stack");
-                String item = stackObject.get("item").toString();
-                int amount = Integer.parseInt(String.valueOf(stackObject.getOrDefault("amount", 1)));
+                FactoryJsonObject stackObject = action.getJsonObject("stack");
+                String item = stackObject.getString("item");
+                int amount = stackObject.getNumberOrDefault("amount", 1).getInt();
 
                 ItemStack itemStack = new ItemStack(Material.valueOf(item.toUpperCase().split(":")[1]), amount);
 
@@ -450,16 +456,16 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("damage"), (action, entity) -> {
             if (entity instanceof Player P) {
-                P.damage(Double.valueOf(action.get("amount").toString()));
+                P.damage(action.getNumber("amount").getFloat());
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("add_velocity"), (action, entity) -> {
-            Space space = Space.getSpace(action.getOrDefault("space", "world").toString());
+            Space space = Space.getSpace(action.getStringOrDefault("space", "world"));
 
             Vector3f vec = VectorGetter.getAsVector3f(action);
             net.minecraft.world.entity.Entity en = ((CraftLivingEntity) entity).getHandle();
             space.toGlobal(vec, en);
-            if (Boolean.parseBoolean(action.getOrDefault("set", "false").toString())) {
+            if (action.getBooleanOrDefault("set", false)) {
                 en.getBukkitEntity().getVelocity().add(new Vector(vec.x, vec.y, vec.z));
             } else {
                 en.getBukkitEntity().setVelocity(new Vector(vec.x, vec.y, vec.z));
@@ -467,21 +473,21 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("execute_command"), (action, entity) -> {
             String cmd = null;
-            if (action.get("command").toString().startsWith("action") || action.get("command").toString().startsWith("/action"))
+            if (action.getString("command").startsWith("action") || action.getString("command").startsWith("/action"))
                 return;
-            if (action.get("command").toString().startsWith("/")) {
-                cmd = action.get("command").toString().split("/")[1];
+            if (action.getString("command").startsWith("/")) {
+                cmd = action.getString("command").split("/")[1];
             } else {
-                cmd = action.get("command").toString();
+                cmd = action.getString("command");
             }
-            RaycastUtils.executeCommandAtHit(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), cmd);
+            RaycastUtils.executeNMSCommand(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), cmd);
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("add_xp"), (action, entity) -> {
             int points = 0;
             int levels = 0;
 
-            if (action.isPresent("points")) points = Integer.parseInt(action.get("points").toString());
-            if (action.isPresent("levels")) levels = Integer.parseInt(action.get("levels").toString());
+            if (action.isPresent("points")) points = action.getNumber("points").getInt();
+            if (action.isPresent("levels")) levels = action.getNumber("points").getInt();
 
             if (entity instanceof Player player) {
                 player.giveExp(points);
@@ -494,18 +500,18 @@ public class EntityActions {
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("area_of_effect"), (action, entity) -> {
-            float radius = Float.parseFloat(action.getOrDefault("radius", 15F).toString());
-            JSONObject bientity_action = action.isPresent("bientity_action") ? (JSONObject) action.get("bientity_action") : new JSONObject();
-            boolean include_actor = action.isPresent("include_actor") && Boolean.parseBoolean(action.getOrDefault("include_actor", false).toString());
+            float radius = action.getNumberOrDefault("radius", 15F).getFloat();
+            FactoryJsonObject bientity_action = action.isPresent("bientity_action") ? action.getJsonObject("bientity_action") : new FactoryJsonObject(new JsonObject());
+            boolean include_actor = action.isPresent("include_actor") && action.getBooleanOrDefault("include_actor", false);
 
             boolean hasCondition = action.isPresent("bientity_condition");
 
-            for (net.minecraft.world.entity.Entity target : Shape.getEntities(Shape.getShape(action.getOrDefault("shape", "cube").toString()), ((CraftWorld) entity.getWorld()).getHandle(), ((CraftEntity) entity).getHandle().getPosition(1.0f), radius)) {
+            for (net.minecraft.world.entity.Entity target : Shape.getEntities(Shape.getShape(action.getStringOrDefault("shape", "cube")), ((CraftWorld) entity.getWorld()).getHandle(), ((CraftEntity) entity).getHandle().getPosition(1.0f), radius)) {
                 if (target == entity && !include_actor) {
                     continue;
                 }
 
-                boolean run = !hasCondition || ConditionExecutor.testBiEntity((JSONObject) action.get("bientity_condition"), (CraftEntity) entity, target.getBukkitEntity());
+                boolean run = !hasCondition || ConditionExecutor.testBiEntity(action.getJsonObject("bientity_condition"), (CraftEntity) entity, target.getBukkitEntity());
                 if (!run) {
                     continue;
                 }
@@ -514,56 +520,28 @@ public class EntityActions {
             }
 
         }));
-        register(new ActionFactory(GenesisMC.apoliIdentifier("block_action_at"), (action, entity) -> executeBlock(entity.getLocation(), (JSONObject) action.get("block_action"))));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("block_action_at"), (action, entity) -> executeBlock(entity.getLocation(), action.getJsonObject("block_action"))));
         register(new ActionFactory(GenesisMC.apoliIdentifier("toggle"), (action, entity) -> {
-            if (entity instanceof Player) {
-                for (Origin origin : OriginPlayerAccessor.getOrigin((Player) entity).values()) {
-                    if (origin.getPowers().contains(action.get("action"))) {
-                        for (Power powerContainer : origin.getPowerContainers()) {
-                            if (powerContainer.getType().equals("apoli:toggle")) {
-                                Toggle toggle = new Toggle();
-                                toggle.execute((Player) entity, powerContainer);
-                            }
-                        }
-                    }
+            if (entity instanceof Player p) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, "apoli:toggle")) {
+                    if (!power.getTag().equalsIgnoreCase(action.getString("power"))) continue;
+                    Toggle toggle = new Toggle();
+                    toggle.execute(p, power);
                 }
             }
         }));
-        register(new ActionFactory(GenesisMC.apoliIdentifier("set_fall_distance"), (action, entity) -> entity.setFallDistance(Float.parseFloat(action.get("fall_distance").toString()))));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("set_fall_distance"), (action, entity) -> entity.setFallDistance(action.getNumber("fall_distance").getFloat())));
         register(new ActionFactory(GenesisMC.apoliIdentifier("trigger_cooldown"), (action, entity) -> {
             if (entity instanceof Player player) {
-                for (Origin origin : OriginPlayerAccessor.getOrigin((Player) entity).values()) {
-                    if (origin.getPowers().contains(action.get("action"))) {
-                        for (Power powerContainer : origin.getPowerContainers()) {
-                            if (powerContainer.getJsonObject("cooldown") != null) {
-                                String key = "*";
-                                if (powerContainer.getJsonObject("key").getOrDefault("key", "key.origins.primary_active") != null) {
-                                    key = powerContainer.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString();
-                                    if (powerContainer.getType().equals("apoli:action_on_hit")) {
-                                        key = "key.attack";
-                                    } else if (powerContainer.getType().equals("apoli:action_when_damage_taken")) {
-                                        key = "key.attack";
-                                    } else if (powerContainer.getType().equals("apoli:action_when_hit")) {
-                                        key = "key.attack";
-                                    } else if (powerContainer.getType().equals("apoli:action_self")) {
-                                        key = "key.use";
-                                    } else if (powerContainer.getType().equals("apoli:attacker_action_when_hit")) {
-                                        key = "key.attack";
-                                    } else if (powerContainer.getType().equals("apoli:self_action_on_hit")) {
-                                        key = "key.attack";
-                                    } else if (powerContainer.getType().equals("apoli:self_action_on_kill")) {
-                                        key = "key.attack";
-                                    } else if (powerContainer.getType().equals("apoli:self_action_when_hit")) {
-                                        key = "key.attack";
-                                    } else if (powerContainer.getType().equals("apoli:target_action_on_hit")) {
-                                        key = "key.attack";
-                                    }
-                                }
-                                CooldownUtils.addCooldown(player, Utils.getNameOrTag(powerContainer), powerContainer.getType(), powerContainer.getNumber("cooldown").getInt(), powerContainer.getJsonObject("key"));
-                            }
+                Arrays.stream(new String[]{"apoli:action_on_hit", "apoli:action_when_damage_taken", "apoli:action_when_hit",
+                    "apoli:action_self", "apoli:attacker_action_when_hit", "apoli:self_action_on_hit",
+                    "apoli:self_action_on_kill", "apoli:self_action_when_hit", "apoli:target_action_on_hit"}).forEach(type -> {
+                    for (Power powerContainer : OriginPlayerAccessor.getMultiPowerFileFromType(player, type)) {
+                        if (powerContainer.isPresent("cooldown") && powerContainer.isPresent("key")) {
+                            CooldownUtils.addCooldown(player, Utils.getNameOrTag(powerContainer), powerContainer.getNumber("cooldown").getInt(), powerContainer.getJsonObject("key"));
                         }
                     }
-                }
+                });
             }
         }));
     }

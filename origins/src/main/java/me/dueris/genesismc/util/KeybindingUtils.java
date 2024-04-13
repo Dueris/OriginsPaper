@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,7 +44,7 @@ public class KeybindingUtils implements Listener {
         String key = "[null]";
         if (power.isOriginMultipleParent()) {
             for (Power powerContainer : CraftApoli.getNestedPowers(power)) {
-                for (String object : powerContainer.getPowerFile().getKeys()) {
+                for (String object : powerContainer.keySet()) {
                     if (object.equalsIgnoreCase("key")) {
                         if (powerContainer.getObject(object) instanceof String st) {
                             should = true;
@@ -58,7 +59,7 @@ public class KeybindingUtils implements Listener {
                 }
             }
         } else {
-            for (String object : power.getPowerFile().getKeys()) {
+            for (String object : power.keySet()) {
                 if (object.equalsIgnoreCase("key")) {
                     if (power.getObject(object) instanceof String st) {
                         should = true;
@@ -175,15 +176,15 @@ public class KeybindingUtils implements Listener {
         return itemStack;
     }
 
-    public static void addPrimaryItem(Player p) {
+    public static void addPrimaryItem(HumanEntity p) {
         p.getInventory().addItem(createKeybindItem("Primary", "key.origins.primary_active", 0001));
     }
 
-    public static void addSecondaryItem(Player p) {
+    public static void addSecondaryItem(HumanEntity p) {
         p.getInventory().addItem(createKeybindItem("Secondary", "key.origins.secondary_active", 0002));
     }
 
-    public static void addItems(Player p) {
+    public static void addItems(HumanEntity p) {
         addPrimaryItem(p);
         addSecondaryItem(p);
     }

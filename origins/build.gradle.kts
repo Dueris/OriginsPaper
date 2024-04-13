@@ -26,7 +26,7 @@ tasks {
     jar {
         manifest {
             attributes(
-                    "Main-Class" to "me.dueris.genesismc.util.LaunchWarning"
+                "Main-Class" to "me.dueris.genesismc.util.LaunchWarning"
             )
         }
     }
@@ -41,10 +41,10 @@ tasks {
     processResources {
         filteringCharset = Charsets.UTF_8.name()
         val props = mapOf(
-                "name" to project.name,
-                "version" to project.version,
-                "description" to project.description,
-                "apiVersion" to "1.20"
+            "name" to project.name,
+            "version" to project.version,
+            "description" to project.description,
+            "apiVersion" to "1.20"
         )
         inputs.properties(props)
         filesMatching("paper-plugin.yml") {

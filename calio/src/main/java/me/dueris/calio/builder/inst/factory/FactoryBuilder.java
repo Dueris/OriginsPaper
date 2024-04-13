@@ -1,10 +1,10 @@
 package me.dueris.calio.builder.inst.factory;
 
-import java.io.File;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import java.io.File;
 
 /**
  * This is what is created for the instance, which is provided to the
@@ -13,7 +13,7 @@ import com.google.gson.JsonObject;
 public class FactoryBuilder {
     protected File jsonFile;
     protected FactoryElement source;
-    
+
     public FactoryBuilder(JsonElement source, File jsonFile) {
         this.source = new FactoryElement(source);
         this.jsonFile = jsonFile;
@@ -31,11 +31,11 @@ public class FactoryBuilder {
         return new FactoryBuilder(this.source.handle, this.jsonFile);
     }
 
-    public File getJsonFile(){
+    public File getJsonFile() {
         return this.jsonFile;
     }
 
-    public void putDefault(String key, Object value){
+    public void putDefault(String key, Object value) {
         JsonObject t = this.source.handle.getAsJsonObject();
         Gson gson = new Gson();
         t.addProperty(key, gson.toJson(value));

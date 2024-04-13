@@ -37,14 +37,14 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
-                if (!ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) actor)) return;
-                if (!ConditionExecutor.testItem(power.getJsonObjectOrNew("item_condition"), actor.getInventory().getItem(e.getHand())))
+                if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) actor)) return;
+                if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), actor.getInventory().getItem(e.getHand())))
                     return;
-                if (!ConditionExecutor.testBiEntity(power.getJsonObjectOrNew("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
+                if (!ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
                     return;
                 cooldownTick.add(actor);
                 setActive(e.getPlayer(), power.getTag(), true);
-                Actions.executeBiEntity(actor, target, power.getJsonObjectOrNew("bientity_action"));
+                Actions.executeBiEntity(actor, target, power.getJsonObject("bientity_action"));
                 Actions.executeItem(actor.getActiveItem(), power.getJsonObject("held_item_action"));
                 Actions.executeItem(actor.getActiveItem(), power.getJsonObject("result_item_action"));
                 new BukkitRunnable() {

@@ -4,9 +4,7 @@ import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.calio.builder.inst.factory.FactoryBuilder;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
-import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
-
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 

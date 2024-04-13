@@ -14,7 +14,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.Serial;
@@ -198,7 +197,7 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
                     }
                 }
             }
-            registrar.register(new Origin(namespacedTag, containers,obj.getRoot()));
+            registrar.register(new Origin(namespacedTag, containers, obj.getRoot()));
         } catch (Exception e) {
             e.printStackTrace();
         }

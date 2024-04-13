@@ -1,29 +1,28 @@
 package me.dueris.calio.builder.inst.factory;
 
-import java.util.ArrayList;
+import com.google.gson.JsonArray;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import com.google.gson.JsonArray;
-
 public class FactoryJsonArray {
     protected JsonArray handle;
-    
+
     public FactoryJsonArray(JsonArray array) {
         this.handle = array;
     }
 
     public FactoryElement[] asArray() {
         return this.handle.asList().stream()
-                .map(FactoryElement::fromJson)
+            .map(FactoryElement::fromJson)
             .toArray(FactoryElement[]::new);
     }
-    
+
     public List<FactoryElement> asList() {
         return this.handle.asList().stream()
-                .map(FactoryElement::fromJson)
+            .map(FactoryElement::fromJson)
             .collect(Collectors.toList());
     }
 
@@ -32,15 +31,15 @@ public class FactoryJsonArray {
             .collect(Collectors.toList());
     }
 
-    public List<FactoryNumber> asLongList(){
+    public List<FactoryNumber> asLongList() {
         return this.asList().stream().map(FactoryElement::getNumber).toList();
     }
 
-    public Iterator<FactoryElement> iterator(){
+    public Iterator<FactoryElement> iterator() {
         return this.asList().iterator();
     }
 
-    public void forEach(Consumer<FactoryElement> consumer){
+    public void forEach(Consumer<FactoryElement> consumer) {
         this.asList().forEach(consumer);
     }
 }

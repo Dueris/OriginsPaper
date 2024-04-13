@@ -9,7 +9,6 @@ import me.dueris.genesismc.event.RemoveFromSetEvent;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
@@ -20,7 +19,6 @@ import org.bukkit.entity.Animals;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Tameable;
 import org.bukkit.util.Vector;
-import org.json.simple.JSONObject;
 
 import java.util.function.BiConsumer;
 

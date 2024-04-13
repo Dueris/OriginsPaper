@@ -29,15 +29,15 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                if (!(ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testBiEntity(power.getJsonObjectOrNew("bientity_condition"), (CraftEntity) actor, (CraftEntity) target) && ConditionExecutor.testItem(power.getJsonObjectOrNew("item_condition"), actor.getInventory().getItem(e.getHand()))))
+                if (!(ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) actor, (CraftEntity) target) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), actor.getInventory().getItem(e.getHand()))))
                     return;
 
                 setActive(player, power.getTag(), true);
                 Actions.executeItem(actor.getInventory().getItem(e.getHand()), power.getJsonObject("held_item_action"));
-                if (power.getOrDefault("result_stack", null) != null) {
+                if (power.isPresent("result_stack")) {
                     EdibleItem.runResultStack(power, true, actor);
                 }
-                Actions.executeBiEntity(actor, target, power.getJsonObjectOrNew("bientity_action"));
+                Actions.executeBiEntity(actor, target, power.getJsonObject("bientity_action"));
                 new BukkitRunnable() {
                     @Override
                     public void run() {

@@ -35,10 +35,11 @@ public class ActionOnCallback extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
                 if (power == null) continue;
-                if (!ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) e.getPlayer())) return;
+                if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
+                    return;
                 if (power.getBooleanOrDefault("execute_chosen_when_orb", false) && !e.isFromOrb()) return;
                 setActive(e.getPlayer(), power.getTag(), true);
-                Actions.executeEntity(e.getPlayer(), power.getJsonObjectOrNew("entity_action"));
+                Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action"));
                 Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action_chosen"));
                 new BukkitRunnable() {
                     @Override

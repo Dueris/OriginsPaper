@@ -1,5 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -12,14 +14,13 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
 public class ParticlePower extends CraftPower {
 
     public static boolean containsParams(Power power) {
-        return !(power.getObject("particle") instanceof String) && power.getObject("particle") instanceof JSONObject && power.getJsonObject("particle").containsKey("params");
+        return !(power.getElement("particle").isString()) && power.getElement("particle").isJsonObject() && power.getJsonObject("particle").isPresent("params");
     }
 
     private static int calculateValue(float value) {
@@ -30,11 +31,13 @@ public class ParticlePower extends CraftPower {
         }
     }
 
-    public static Particle computeParticleArgs(Object root) {
-        if (root instanceof String particleSt) {
+    public static Particle computeParticleArgs(FactoryElement root) {
+        if (root.isString()) {
+            String particleSt = root.getString();
             return Particle.valueOf(ensureCorrectNamespace(particleSt).split(":")[1].toUpperCase());
-        } else if (root instanceof JSONObject particle) {
-            return Particle.valueOf(ensureCorrectNamespace(particle.get("type").toString()).split(":")[1].toUpperCase());
+        } else if (root.isJsonObject()) {
+            FactoryJsonObject particle = root.toJsonObject();
+            return Particle.valueOf(ensureCorrectNamespace(particle.getString("type")).split(":")[1].toUpperCase());
         }
         return null;
     }
@@ -68,9 +71,9 @@ public class ParticlePower extends CraftPower {
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
-                        if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) player)) {
+                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
                             if (!getPowerArray().contains(player)) return;
-                            Particle particle = computeParticleArgs(power.getObject("particle"));
+                            Particle particle = computeParticleArgs(power.getElement("particle"));
                             if (particle == null)
                                 throw new IllegalStateException("Unable to create CraftBukkit particle instance");
                             boolean visible_while_invis = power.getBooleanOrDefault("visible_while_invisible", false);
@@ -81,13 +84,14 @@ public class ParticlePower extends CraftPower {
                             float offset_y = 0.50f;
                             float offset_z = 0.25f;
 
-                            if (power.getJsonObjectOrNew("spread").isPresent("y")) {
+
+                            if (power.getJsonObject("spread").isPresent("y")) {
                                 offset_y = power.getJsonObject("spread").getNumber("y").getFloat();
                             }
-                            if (power.getJsonObjectOrNew("spread").isPresent("x")) {
+                            if (power.getJsonObject("spread").isPresent("x")) {
                                 offset_x = power.getJsonObject("spread").getNumber("x").getFloat();
                             }
-                            if (power.getJsonObjectOrNew("spread").isPresent("z")) {
+                            if (power.getJsonObject("spread").isPresent("z")) {
                                 offset_z = power.getJsonObject("spread").getNumber("z").getFloat();
                             }
 
@@ -108,7 +112,7 @@ public class ParticlePower extends CraftPower {
                                 player.getWorld().spawnParticle(
                                     particle.builder().source(player).force(false).location(player.getLocation()).count(1).particle(),
                                     new Location(player.getWorld(), player.getEyeLocation().getX(), player.getEyeLocation().getY() - 0.7, player.getEyeLocation().getZ()),
-                                    power.getIntOrDefault("count", 1), offset_x, offset_y, offset_z, 0, data
+                                    power.getNumberOrDefault("count", 1).getInt(), offset_x, offset_y, offset_z, 0, data
                                 );
                             }
                         } else {

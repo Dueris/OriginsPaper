@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.conditions.types;
 
 import it.unimi.dsi.fastutil.Pair;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.util.ClipContextUtils;
 import me.dueris.genesismc.GenesisMC;
@@ -152,14 +153,14 @@ public class BiEntityConditions implements Listener {
 
     public class ConditionFactory implements Registerable {
         NamespacedKey key;
-        BiPredicate<JSONObject, Pair<CraftEntity, CraftEntity>> test;
+        BiPredicate<FactoryJsonObject, Pair<CraftEntity, CraftEntity>> test;
 
-        public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, Pair<CraftEntity, CraftEntity>> test) {
+        public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, Pair<CraftEntity, CraftEntity>> test) {
             this.key = key;
             this.test = test;
         }
 
-        public boolean test(JSONObject condition, Pair<CraftEntity, CraftEntity> tester) {
+        public boolean test(FactoryJsonObject condition, Pair<CraftEntity, CraftEntity> tester) {
             return test.test(condition, tester);
         }
 

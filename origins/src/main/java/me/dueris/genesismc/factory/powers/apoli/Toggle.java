@@ -52,7 +52,7 @@ public class Toggle extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (getPowerArray().contains(p)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
                             if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
                                 execute(p, power);
@@ -73,7 +73,7 @@ public class Toggle extends CraftPower implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                AtomicBoolean cond = new AtomicBoolean(ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p));
+                AtomicBoolean cond = new AtomicBoolean(ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p));
                 /* Toggle power always execute continuously */
                 if (!cond.get() || (!in_continuous.get(p).contains(key))) {
                     CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.getJsonObject("hud_render"));

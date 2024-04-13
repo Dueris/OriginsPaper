@@ -111,7 +111,7 @@ public class EntityGroupManager extends CraftPower {
                         if (entity instanceof Player p) {
                             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
+                                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                                         if (!getPowerArray().contains(p)) return;
                                         setActive(p, power.getTag(), true);
                                         if (entity_group.contains(entity)) {
@@ -137,7 +137,7 @@ public class EntityGroupManager extends CraftPower {
                         }
 
                         // Sort into array groups
-                        net.minecraft.world.entity.Entity e = ((CraftEntity)entity).getHandle();
+                        net.minecraft.world.entity.Entity e = ((CraftEntity) entity).getHandle();
                         if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("undead")) {
                             undead.put(entity.getEntityId(), entity.getType().name());
                         } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("arthropod")) {

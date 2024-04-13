@@ -36,9 +36,9 @@ public class SelfActionWhenHit extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (CooldownUtils.isPlayerInCooldownFromTag(player, Utils.getNameOrTag(power))) continue;
-                if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) player)) {
+                if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
                     setActive(player, power.getTag(), true);
-                    Actions.executeEntity(player, power.getJsonObjectOrNew("entity_action"));
+                    Actions.executeEntity(player, power.getJsonObject("entity_action"));
                     if (power.getObjectOrDefault("cooldown", 1) != null) {
                         CooldownUtils.addCooldown(player, Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), power.getJsonObject("hud_render"));
                     }

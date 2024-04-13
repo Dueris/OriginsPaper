@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.conditions.types;
 
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -78,14 +79,14 @@ public class DamageConditions {
 
     public class ConditionFactory implements Registerable {
         NamespacedKey key;
-        BiPredicate<JSONObject, EntityDamageEvent> test;
+        BiPredicate<FactoryJsonObject, EntityDamageEvent> test;
 
-        public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, EntityDamageEvent> test) {
+        public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, EntityDamageEvent> test) {
             this.key = key;
             this.test = test;
         }
 
-        public boolean test(JSONObject condition, EntityDamageEvent tester) {
+        public boolean test(FactoryJsonObject condition, EntityDamageEvent tester) {
             return test.test(condition, tester);
         }
 

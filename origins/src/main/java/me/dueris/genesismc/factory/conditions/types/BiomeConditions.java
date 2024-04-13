@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.conditions.types;
 
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.data.types.Comparison;
@@ -75,14 +76,14 @@ public class BiomeConditions {
 
     public class ConditionFactory implements Registerable {
         NamespacedKey key;
-        BiPredicate<JSONObject, Pair<net.minecraft.world.level.biome.Biome, BlockPos>> test;
+        BiPredicate<FactoryJsonObject, Pair<net.minecraft.world.level.biome.Biome, BlockPos>> test;
 
-        public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, Pair<net.minecraft.world.level.biome.Biome, BlockPos>> test) {
+        public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, Pair<net.minecraft.world.level.biome.Biome, BlockPos>> test) {
             this.key = key;
             this.test = test;
         }
 
-        public boolean test(JSONObject condition, Pair<net.minecraft.world.level.biome.Biome, BlockPos> tester) {
+        public boolean test(FactoryJsonObject condition, Pair<net.minecraft.world.level.biome.Biome, BlockPos> tester) {
             return test.test(condition, tester);
         }
 

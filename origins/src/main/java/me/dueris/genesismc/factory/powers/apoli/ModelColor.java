@@ -109,14 +109,14 @@ public class ModelColor { // Left empty due to it needing to be registered on ce
             if (Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")) {
                 if (e.getPower().getType().equalsIgnoreCase(getPowerFile())) { // Power Update for apoli:model_color
                     if (e.isRemoved()) { // Power was removed, clear skin
-                        RaycastUtils.executeCommandAtHit(((CraftEntity) e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "skin clear @s");
+                        RaycastUtils.executeNMSCommand(((CraftEntity) e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "skin clear @s");
                     } else {
                         ModelColorAPI api = ModelColorAPI.create(Bukkit.getPluginsFolder().getAbsolutePath() + File.separator + "GenesisMC" + File.separator + "skins");
                         SkinsRestorer skinsRestorer = SkinsRestorerProvider.get();
                         applyModelTransformer(api, skinsRestorer, e.getPlayer(), e.getPower());
                         String url = e.getPlayer().getPersistentDataContainer().get(GenesisMC.identifier("modified-skin-url"), PersistentDataType.STRING);
                         String SPACE = " ";
-                        RaycastUtils.executeCommandAtHit(((CraftEntity) e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "skin set " + url + SPACE + "@s" + SPACE + getSlim(e.getPlayer()));
+                        RaycastUtils.executeNMSCommand(((CraftEntity) e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "skin set " + url + SPACE + "@s" + SPACE + getSlim(e.getPlayer()));
                     }
                 }
             }

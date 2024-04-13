@@ -4,12 +4,12 @@ import com.google.gson.JsonElement;
 
 public class FactoryElement {
     public JsonElement handle;
-    
+
     public FactoryElement(JsonElement element) {
         this.handle = element;
     }
 
-    public static FactoryElement fromJson(JsonElement element){
+    public static FactoryElement fromJson(JsonElement element) {
         return new FactoryElement(element);
     }
 
@@ -21,39 +21,39 @@ public class FactoryElement {
         return new FactoryJsonArray(this.handle.getAsJsonArray());
     }
 
-    public boolean isJsonObject(){
+    public boolean isJsonObject() {
         return this.handle.isJsonObject();
     }
 
-    public boolean isJsonArray(){
+    public boolean isJsonArray() {
         return this.handle.isJsonArray();
     }
 
-    public boolean isGsonPrimative(){
+    public boolean isGsonPrimative() {
         return this.handle.isJsonPrimitive();
     }
 
-    public boolean isString(){
+    public boolean isString() {
         return this.isString();
     }
 
-    public boolean isBoolean(){
+    public boolean isBoolean() {
         return this.isBoolean();
     }
 
-    public boolean isNumber(){
+    public boolean isNumber() {
         return this.isNumber();
     }
 
-    public FactoryNumber getNumber(){
+    public FactoryNumber getNumber() {
         return new FactoryNumber(this.handle.getAsJsonPrimitive());
     }
 
-    public boolean getBoolean(){
+    public boolean getBoolean() {
         return this.handle.getAsJsonPrimitive().getAsBoolean();
     }
 
-    public String getString(){
+    public String getString() {
         return this.handle.getAsString();
     }
 

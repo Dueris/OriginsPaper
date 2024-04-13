@@ -1,13 +1,12 @@
 package me.dueris.calio.parse;
 
+import com.google.gson.JsonObject;
 import me.dueris.calio.builder.ObjectRemapper;
 import me.dueris.calio.builder.inst.AccessorRoot;
 import me.dueris.calio.builder.inst.factory.FactoryBuilder;
 import me.dueris.calio.parse.verification.JsonFactoryValidator;
 import me.dueris.calio.registry.impl.CalioRegistry;
 import org.bukkit.NamespacedKey;
-
-import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.util.Arrays;

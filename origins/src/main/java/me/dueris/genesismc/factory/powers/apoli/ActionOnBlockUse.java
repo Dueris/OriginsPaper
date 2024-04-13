@@ -40,15 +40,15 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
                 if (power == null) continue;
-                if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) e.getPlayer()) &&
+                if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()) &&
                     ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) e.getClickedBlock()) &&
-                    ConditionExecutor.testItem(power.getJsonObjectOrNew("item_condition"), e.getItem())) {
+                    ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
                     setActive(e.getPlayer(), power.getTag(), true);
-                    Actions.executeBlock(e.getClickedBlock().getLocation(), power.getJsonObjectOrNew("block_action"));
-                    Actions.executeEntity(e.getPlayer(), power.getJsonObjectOrNew("entity_action"));
-                    Actions.executeItem(e.getItem(), power.getJsonObjectOrNew("item_action"));
+                    Actions.executeBlock(e.getClickedBlock().getLocation(), power.getJsonObject("block_action"));
+                    Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action"));
+                    Actions.executeItem(e.getItem(), power.getJsonObject("item_action"));
                     Actions.executeItem(e.getItem(), power.getJsonObject("held_item_action"));
-                    if (power.getOrDefault("result_stack", null) != null) {
+                    if (power.isPresent("result_stack")) {
                         EdibleItem.runResultStack(power, true, e.getPlayer());
                     }
                     tickFix.add(e.getPlayer());

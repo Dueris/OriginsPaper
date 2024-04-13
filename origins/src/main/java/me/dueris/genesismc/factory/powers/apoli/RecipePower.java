@@ -1,5 +1,8 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.content.OrbOfOrigins;
@@ -25,10 +28,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,39 +43,37 @@ public class RecipePower extends CraftPower implements Listener {
 
     public static void parseRecipes() {
         for (Power powerContainer : ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).values().stream().filter(powerContainer -> powerContainer.getType().equalsIgnoreCase("apoli:recipe")).toList()) {
-            JSONObject recipe = powerContainer.getJsonObject("recipe");
+            FactoryJsonObject recipe = powerContainer.getJsonObject("recipe");
             if (recipe == null)
                 throw new IllegalArgumentException("Unable to find recipe data for power: " + powerContainer.getTag());
-            NamespacedKey key = new NamespacedKey(recipe.get("id").toString().split(":")[0], recipe.get("id").toString().split(":")[1]);
-            String type = recipe.get("type").toString();
+            NamespacedKey key = new NamespacedKey(recipe.getString("id").split(":")[0], recipe.getString("id").split(":")[1]);
+            String type = recipe.getString("type");
             if (!type.startsWith("minecraft:")) {
                 type = "minecraft:" + type;
             }
             if (type.equalsIgnoreCase("minecraft:crafting_shapeless")) {
-                ShapelessRecipe rec = new ShapelessRecipe(key, computeResult((JSONObject) recipe.get("result")));
-                for (Object object : ((JSONArray) recipe.get("ingredients"))) {
-                    if (object instanceof JSONObject jsonObject) {
-                        rec.addIngredient(computeResult(jsonObject));
-                    }
+                ShapelessRecipe rec = new ShapelessRecipe(key, computeResult(recipe.getJsonObject("result")));
+                for (FactoryJsonObject jsonObject : recipe.getJsonArray("ingredients").asJsonObjectList()) {
+                    rec.addIngredient(computeResult(jsonObject));
                 }
                 Bukkit.addRecipe(rec);
                 tags.add(rec.key().asString());
                 taggedRegistry.put(rec.key().asString(), rec);
             } else if (type.equalsIgnoreCase("minecraft:crafting_shaped")) {
-                ShapedRecipe rec = new ShapedRecipe(key, computeResult((JSONObject) recipe.get("result")));
-                rec.shape((String[]) ((JSONArray) recipe.get("pattern")).toArray(new String[0]));
-                HashMap<String, JSONObject> map = new HashMap<>();
-                if (recipe.containsKey("key")) {
-                    for (Object keyy : ((JSONObject) recipe.get("key")).keySet()) {
+                ShapedRecipe rec = new ShapedRecipe(key, computeResult(recipe.getJsonObject("result")));
+                rec.shape(Arrays.stream(recipe.getJsonArray("pattern").asArray()).map(FactoryElement::getString).toList().toArray(new String[0]));
+                HashMap<String, FactoryJsonObject> map = new HashMap<>();
+                if (recipe.isPresent("key")) {
+                    for (Object keyy : (recipe.getJsonObject("key")).keySet()) {
                         String keyedObj = keyy.toString();
-                        if (((JSONObject) recipe.get("key")).get(keyedObj) instanceof JSONObject job) {
-                            map.put(keyedObj, job);
+                        if (((recipe.getJsonObject("key")).getElement(keyedObj).isJsonObject())) {
+                            map.put(keyedObj, recipe.getJsonObject("key").getElement(keyedObj).toJsonObject());
                         }
                     }
                 }
 
                 for (String T : map.keySet()) {
-                    JSONObject object = map.get(T);
+                    FactoryJsonObject object = map.get(T);
                     rec.setIngredient(T.charAt(0), computeResult(object));
                 }
 
@@ -89,9 +89,9 @@ public class RecipePower extends CraftPower implements Listener {
         finishedLoad = true;
     }
 
-    public static ItemStack computeResult(JSONObject object) {
-        long amt = (long) object.getOrDefault("count", 1L);
-        String item = object.get("item").toString();
+    public static ItemStack computeResult(FactoryJsonObject object) {
+        long amt = (long) object.getNumberOrDefault("count", 1L).getLong();
+        String item = object.getString("item");
         if (item.contains(":")) {
             item = item.split(":")[1];
         }
@@ -120,27 +120,6 @@ public class RecipePower extends CraftPower implements Listener {
         Bukkit.getOnlinePlayers().forEach((pl) -> applyRecipePower(pl));
     }
 
-    // From PowerContainer
-    public List<JSONObject> getJsonListSingularPlural(String singular, String plural, JSONObject object) {
-        Object obj = object.get(singular);
-        if (obj == null) {
-            obj = object.get(plural);
-        }
-
-        List<JSONObject> result = new ArrayList<>();
-
-        if (obj instanceof JSONArray jsonArray) {
-            for (Object item : jsonArray) {
-                if (item instanceof JSONObject jsonObject) {
-                    result.add(jsonObject);
-                }
-            }
-        } else if (obj instanceof JSONObject jsonObject) {
-            result.add(jsonObject);
-        }
-        return result;
-    }
-
     public void applyRecipePower(Player p) {
         if (!finishedLoad) return;
         if (recipeMapping.containsKey(p)) {
@@ -149,8 +128,8 @@ public class RecipePower extends CraftPower implements Listener {
         if (getPowerArray().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    JSONObject recipe = power.getJsonObject("recipe");
-                    String id = recipe.get("id").toString();
+                    FactoryJsonObject recipe = power.getJsonObject("recipe");
+                    String id = recipe.getString("id");
                     if (taggedRegistry.containsKey(id)) {
                         if (recipeMapping.containsKey(p)) {
                             recipeMapping.get(p).add(id);

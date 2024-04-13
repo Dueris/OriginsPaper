@@ -1,12 +1,11 @@
 package me.dueris.calio.builder;
 
-import it.unimi.dsi.fastutil.Pair;
-import me.dueris.calio.util.NamespaceUtils;
-import org.bukkit.NamespacedKey;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import it.unimi.dsi.fastutil.Pair;
+import me.dueris.calio.util.NamespaceUtils;
+import org.bukkit.NamespacedKey;
 
 import java.io.File;
 import java.io.FileReader;

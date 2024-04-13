@@ -42,7 +42,7 @@ public class Burn extends CraftPower {
                         if (p.isInWaterOrRainOrBubbleColumn()) return;
                         if (p.getGameMode() == GameMode.CREATIVE) return;
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
+                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
 
                             Long burn_duration = power.getLongOrDefault("burn_duration", 100L);

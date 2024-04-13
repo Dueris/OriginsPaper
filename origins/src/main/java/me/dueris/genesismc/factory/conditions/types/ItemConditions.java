@@ -44,15 +44,15 @@ public class ItemConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fireproof"), (condition, itemStack) -> CraftItemStack.asCraftCopy(itemStack).handle.getItem().isFireResistant()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantment"), (condition, itemStack) -> {
             Enchantment enchantment = CraftRegistry.ENCHANTMENT.get(NamespacedKey.fromString(condition.getString("enchantment")));
-            if(enchantment != null){
+            if (enchantment != null) {
                 net.minecraft.world.item.enchantment.Enchantment nmsEnchantment = CraftEnchantment.bukkitToMinecraft(enchantment);
                 Comparison comparison = Comparison.getFromString(condition.getString("comparison"));
                 int compare_to = Utils.getToInt(condition.getString("compare_to"));
 
                 int level;
-                if(nmsEnchantment != null) {
+                if (nmsEnchantment != null) {
                     level = EnchantmentHelper.getItemEnchantmentLevel(nmsEnchantment, CraftItemStack.asNMSCopy(itemStack));
-                }else{
+                } else {
                     Map<net.minecraft.world.item.enchantment.Enchantment, Integer> enchantmentIntegerMap = EnchantmentHelper.getEnchantments(CraftItemStack.asNMSCopy(itemStack));
                     level = enchantmentIntegerMap.size();
                 }

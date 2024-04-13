@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory;
 
 import com.google.gson.JsonParser;
-
 import me.dueris.calio.builder.inst.factory.FactoryBuilder;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
@@ -82,7 +81,7 @@ public class CraftApoli {
     }
 
     public static void processNestedPowers(Power powerContainer, ArrayList<Power> powerContainers, String powerFolder, String powerFileName, File sourceFile) {
-        for (String key : powerContainer.keySet()){
+        for (String key : powerContainer.keySet()) {
             FactoryElement subPowerValue = powerContainer.getElement(key);
             if (subPowerValue.isJsonObject()) {
                 FactoryJsonObject jsonObject = subPowerValue.toJsonObject();

@@ -37,7 +37,7 @@ public class ModifyFallingPower extends CraftPower implements Listener {
             @NotNull Vector velocity = p.getVelocity();
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (power.getFloat("velocity") < 0) {
                             velocity.setY(power.getFloat("velocity"));
                             p.setVelocity(velocity);
@@ -57,7 +57,7 @@ public class ModifyFallingPower extends CraftPower implements Listener {
             if (modify_falling.contains(p)) {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
+                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                             if (!power.getBooleanOrDefault("take_fall_damage", true)) {
                                 if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                                     e.setDamage(0);

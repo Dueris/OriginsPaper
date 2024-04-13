@@ -9,7 +9,7 @@ import java.util.function.BinaryOperator;
 public class Modifier {
     public FactoryJsonObject handle;
 
-    public Modifier(FactoryJsonObject factoryJsonObject){
+    public Modifier(FactoryJsonObject factoryJsonObject) {
         this.handle = factoryJsonObject;
     }
 

@@ -32,18 +32,18 @@ public class ActionOverTime extends CraftPower {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
 
-                    interval = power.getLongOrDefault("interval", 20L);
+                    interval = power.getNumberOrDefault("interval", 20L).getLong();
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
                         taggedAllowedMap.putIfAbsent(power.getTag(), false);
-                        if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
+                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                             if (!taggedAllowedMap.get(power.getTag())) {
                                 taggedAllowedMap.put(power.getTag(), true);
                                 Actions.executeEntity(p, power.getJsonObject("rising_action"));
                             }
                             setActive(p, power.getTag(), true);
-                            Actions.executeEntity(p, power.getJsonObjectOrNew("entity_action"));
+                            Actions.executeEntity(p, power.getJsonObject("entity_action"));
                         } else {
                             if (taggedAllowedMap.get(power.getTag())) {
                                 taggedAllowedMap.put(power.getTag(), false);

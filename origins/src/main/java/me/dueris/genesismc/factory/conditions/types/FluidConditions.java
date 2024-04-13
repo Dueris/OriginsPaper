@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.conditions.types;
 
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.Registries;
@@ -7,7 +8,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
-import org.json.simple.JSONObject;
 
 import java.util.function.BiPredicate;
 
@@ -29,14 +29,14 @@ public class FluidConditions {
 
     public class ConditionFactory implements Registerable {
         NamespacedKey key;
-        BiPredicate<JSONObject, Fluid> test;
+        BiPredicate<FactoryJsonObject, Fluid> test;
 
-        public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, Fluid> test) {
+        public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, Fluid> test) {
             this.key = key;
             this.test = test;
         }
 
-        public boolean test(JSONObject condition, net.minecraft.world.level.material.Fluid tester) {
+        public boolean test(FactoryJsonObject condition, net.minecraft.world.level.material.Fluid tester) {
             return test.test(condition, tester);
         }
 

@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
@@ -51,12 +52,12 @@ public class AttributeConditioned extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
-                for (HashMap<String, Object> modifier : power.getModifiers()) {
-                    if (!ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) return;
-                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.get("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
-                    double val = Float.valueOf(modifier.get("value").toString());
+                for (Modifier modifier : power.getModifiers()) {
+                    if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) return;
+                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.handle.getString("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
+                    double val = modifier.value();
                     double baseVal = p.getAttribute(attribute_modifier).getBaseValue();
-                    String operation = modifier.get("operation").toString();
+                    String operation = modifier.operation();
                     BinaryOperator operator = Utils.getOperationMappingsDouble().get(operation);
                     if (operator != null) {
                         double result = Double.valueOf(String.valueOf(operator.apply(baseVal, val)));
@@ -110,7 +111,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
                         applied.put(p, false);
                     }
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (!applied.get(p)) {
                             executeConditionAttribute(p);
                             applied.put(p, true);

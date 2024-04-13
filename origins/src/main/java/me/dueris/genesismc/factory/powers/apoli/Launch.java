@@ -34,15 +34,8 @@ public class Launch extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (getPowerArray().contains(p)) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
+                    if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
                         in_continuous.putIfAbsent(p, new ArrayList<>());
-                        if (false /* Launch power doesnt execute continuously */) {
-                            if (in_continuous.get(p).contains(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString())) {
-                                in_continuous.get(p).remove(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString());
-                            } else {
-                                in_continuous.get(p).add(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString());
-                            }
-                        }
                     }
                 }
             }
@@ -55,21 +48,21 @@ public class Launch extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (getPowerArray().contains(p)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
-                            if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
-                                String key = power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString();
+                            if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString(), p)) {
+                                String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString();
                                 KeybindingUtils.toggleKey(p, key);
                                 final int[] times = {-1};
-                                boolean cont = !Boolean.valueOf(power.getJsonObject("key").getOrDefault("continuous", "false").toString());
+                                boolean cont = !power.getJsonObject("key").getBooleanOrDefault("continuous", false);
                                 new BukkitRunnable() {
                                     @Override
                                     public void run() {
-                                        int cooldown = power.getIntOrDefault("cooldown", 1);
+                                        int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
                                         if (times[0] >= 0) {
                                             /* Launch power doesnt execute continuously */
                                             if (!in_continuous.get(p).contains(key)) {
-                                                CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.getJsonObject("hud_render"));
+                                                CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), cooldown, power.getJsonObject("hud_render"));
                                                 KeybindingUtils.toggleKey(p, key);
                                                 setActive(p, power.getTag(), false);
                                                 this.cancel();
@@ -77,7 +70,7 @@ public class Launch extends CraftPower implements Listener {
                                             }
                                         }
                                         int speed = Integer.parseInt(power.getStringOrDefault("speed", null)); // used as string so that upon parsing the int it throws if not found
-                                        CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.getJsonObject("hud_render"));
+                                        CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), cooldown, power.getJsonObject("hud_render"));
                                         setActive(p, power.getTag(), true);
                                         p.setVelocity(p.getVelocity().setY(0));
                                         p.setVelocity(p.getVelocity().setY(speed));

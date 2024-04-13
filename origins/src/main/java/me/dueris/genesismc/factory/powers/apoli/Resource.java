@@ -20,7 +20,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,7 +103,7 @@ public class Resource extends CraftPower implements Listener {
                             FactoryJsonObject hud_render = power.getJsonObject("hud_render");
                             final boolean[] canRender = {hud_render.getBooleanOrDefault("should_render", false)};
                             if (hud_render.isPresent("condition")) {
-                                canRender[0] = ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p);
+                                canRender[0] = ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p);
                             }
 
                             bar.setVisible(canRender[0]);

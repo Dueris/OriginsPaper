@@ -29,7 +29,7 @@ public class ModifyJumpPower extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         for (HashMap<String, Object> modifier : power.getModifiers("modifier", "modifiers")) {
                             if (modifier.get("value") instanceof Number) {
                                 double modifierValue = ((Number) modifier.get("value")).doubleValue();

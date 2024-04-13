@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.conditions.types;
 
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
@@ -24,7 +25,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.TileState;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.json.simple.JSONObject;
@@ -101,8 +101,8 @@ public class BlockConditions {
 
             double currentDimensionCoordinateScale = level.dimensionType().coordinateScale();
             switch (condition.getOrDefault("reference", "world_origin").toString()) {
-                case "player_natural_spawn", "world_spawn", "player_spawn" :
-                    if(setResultOnWrongDimension && level.dimension() != Level.OVERWORLD)
+                case "player_natural_spawn", "world_spawn", "player_spawn":
+                    if (setResultOnWrongDimension && level.dimension() != Level.OVERWORLD)
                         return resultOnWrongDimension;
                     BlockPos spawnPos = level.getSharedSpawnPos();
                     x = spawnPos.getX();
@@ -118,9 +118,10 @@ public class BlockConditions {
             x += coords.x + offset.x;
             y += coords.y + offset.y;
             z += coords.z + offset.z;
-            if(scaleReferenceToDimension && (x != 0 || z != 0)){
+            if (scaleReferenceToDimension && (x != 0 || z != 0)) {
                 Comparison comparison = Comparison.getFromString(condition.get("comparison").toString());
-                if(currentDimensionCoordinateScale == 0) return comparison == Comparison.NOT_EQUAL || comparison == Comparison.GREATER_THAN || comparison == Comparison.GREATER_THAN_OR_EQUAL;
+                if (currentDimensionCoordinateScale == 0)
+                    return comparison == Comparison.NOT_EQUAL || comparison == Comparison.GREATER_THAN || comparison == Comparison.GREATER_THAN_OR_EQUAL;
 
                 x /= currentDimensionCoordinateScale;
                 z /= currentDimensionCoordinateScale;
@@ -130,14 +131,14 @@ public class BlockConditions {
                 xDistance = (boolean) condition.getOrDefault("ignore_x", false) ? 0 : Math.abs(pos.x() - x),
                 yDistance = (boolean) condition.getOrDefault("ignore_y", false) ? 0 : Math.abs(pos.y() - y),
                 zDistance = (boolean) condition.getOrDefault("ignore_z", false) ? 0 : Math.abs(pos.z() - z);
-            if((boolean) condition.getOrDefault("scale_distance_to_dimension", false)){
+            if ((boolean) condition.getOrDefault("scale_distance_to_dimension", false)) {
                 xDistance *= currentDimensionCoordinateScale;
                 zDistance *= currentDimensionCoordinateScale;
             }
 
             distance = Shape.getDistance(Shape.getShape(condition.getOrDefault("shape", "cube")), xDistance, yDistance, zDistance);
 
-            if(condition.containsKey("round_to_digit")){
+            if (condition.containsKey("round_to_digit")) {
                 distance = new BigDecimal(distance).setScale((int) condition.get("round_to_digit"), RoundingMode.HALF_UP).doubleValue();
             }
 
@@ -219,14 +220,14 @@ public class BlockConditions {
 
     public class ConditionFactory implements Registerable {
         NamespacedKey key;
-        BiPredicate<JSONObject, CraftBlock> test;
+        BiPredicate<FactoryJsonObject, CraftBlock> test;
 
-        public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, CraftBlock> test) {
+        public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, CraftBlock> test) {
             this.key = key;
             this.test = test;
         }
 
-        public boolean test(JSONObject condition, CraftBlock tester) {
+        public boolean test(FactoryJsonObject condition, CraftBlock tester) {
             return test.test(condition, tester);
         }
 

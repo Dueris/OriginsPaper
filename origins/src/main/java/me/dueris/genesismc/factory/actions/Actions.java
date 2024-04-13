@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.actions;
 
 import it.unimi.dsi.fastutil.Pair;
-import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
@@ -52,22 +52,20 @@ public class Actions {
         }, ticks);
     }
 
-    private static void and(JSONObject action, Consumer<JSONObject> returnAction) {
-        JSONArray andActions = (JSONArray) action.get("actions");
-        for (Object actionObj : andActions) {
-            JSONObject actionn = (JSONObject) actionObj;
-            returnAction.accept(actionn);
+    private static void and(FactoryJsonObject action, Consumer<FactoryJsonObject> returnAction) {
+        FactoryJsonArray andActions = action.getJsonArray("actions");
+        for (FactoryJsonObject actionObj : andActions.asJsonObjectList()) {
+            returnAction.accept(actionObj);
         }
     }
 
-    private static void choice(JSONObject action, Consumer<JSONObject> returnAction) {
-        JSONArray actionsArray = (JSONArray) action.get("actions");
-        List<JSONObject> actionsList = new ArrayList<>();
+    private static void choice(FactoryJsonObject action, Consumer<FactoryJsonObject> returnAction) {
+        FactoryJsonArray actionsArray = action.getJsonArray("actions");
+        List<FactoryJsonObject> actionsList = new ArrayList<>();
 
-        for (Object actionObj : actionsArray) {
-            JSONObject actionn = (JSONObject) actionObj;
-            JSONObject element = (JSONObject) actionn.get("element");
-            int weight = Integer.parseInt(actionn.get("weight").toString());
+        for (FactoryJsonObject actionObj : actionsArray.asJsonObjectList()) {
+            FactoryJsonObject element = actionObj.getJsonObject("element");
+            int weight = actionObj.getNumber("weight").getInt();
             for (int i = 0; i < weight; i++) {
                 actionsList.add(element);
             }
@@ -75,14 +73,14 @@ public class Actions {
 
         if (!actionsList.isEmpty()) {
             int randomIndex = new Random().nextInt(actionsList.size());
-            JSONObject chosenAction = actionsList.get(randomIndex);
+            FactoryJsonObject chosenAction = actionsList.get(randomIndex);
             returnAction.accept(chosenAction);
         }
     }
 
-    private static void side(JSONObject action, Consumer<JSONObject> returnAction) {
-        if (action.get("side").toString().equalsIgnoreCase("server")) {
-            JSONObject actionn = (JSONObject) action.get("action");
+    private static void side(FactoryJsonObject action, Consumer<FactoryJsonObject> returnAction) {
+        if (action.getString("side").equalsIgnoreCase("server")) {
+            FactoryJsonObject actionn = action.getJsonObject("action");
             returnAction.accept(actionn);
         }
     }
@@ -139,7 +137,7 @@ public class Actions {
                 case "apoli:side" -> side(action, actionn -> executeBiEntity(actor, target, actionn));
 
                 case "if_else" -> {
-                    boolean bool = ConditionExecutor.testBiEntity((action.getJsonObject("condition"), (CraftEntity) actor, (CraftEntity) target);
+                    boolean bool = ConditionExecutor.testBiEntity(action.getJsonObject("condition"), (CraftEntity) actor, (CraftEntity) target);
                     if (bool) {
                         executeBiEntity(actor, target, action.getJsonObject("if_action"));
                     } else {
@@ -160,16 +158,16 @@ public class Actions {
             }
         } else {
             Registrar<BiEntityActions.ActionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.BIENTITY_ACTION);
-            BiEntityActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.get("type").toString()));
+            BiEntityActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.getString("type")));
             if (finAction != null) {
                 finAction.test(action, entityPair);
             }
         }
     }
 
-    public static void executeItem(ItemStack item, JSONObject action) {
+    public static void executeItem(ItemStack item, FactoryJsonObject action) {
         if (!action.isPresent("type") || action == null || action.isEmpty()) return;
-        String type = action.get("type").toString();
+        String type = action.getString("type");
         if (testMetaAction(action, new String[]{})) {
             switch (type) {
                 case "apoli:and" -> and(action, actionn -> executeItem(item, actionn));
@@ -186,11 +184,11 @@ public class Actions {
                 case "apoli:side" -> side(action, actionn -> executeItem(item, actionn));
 
                 case "if_else" -> {
-                    boolean bool = ConditionExecutor.testItem((JSONObject) action.get("condition"), item);
+                    boolean bool = ConditionExecutor.testItem(action.getJsonObject("condition"), item);
                     if (bool) {
-                        executeItem(item, (JSONObject) action.get("if_action"));
+                        executeItem(item, action.getJsonObject("if_action"));
                     } else {
-                        executeItem(item, (JSONObject) action.get("else_action"));
+                        executeItem(item, action.getJsonObject("else_action"));
                     }
                 }
                 case "if_else_list" -> {
@@ -215,9 +213,9 @@ public class Actions {
         }
     }
 
-    public static void executeEntity(Entity entity, JSONObject action) {
+    public static void executeEntity(Entity entity, FactoryJsonObject action) {
         if (!action.isPresent("type") || action == null || action.isEmpty()) return;
-        String type = action.get("type").toString();
+        String type = action.getString("type");
         if (testMetaAction(action, new String[]{})) {
             switch (type) {
                 case "apoli:and" -> and(action, actionn -> executeEntity(entity, actionn));
@@ -268,7 +266,8 @@ public class Actions {
         String type = action.getString("type");
         if (testMetaAction(action, new String[]{"apoli:offset"})) {
             switch (type) {
-                case "apoli:offset" -> executeBlock(location.add(action.getNumberOrDefault("x", 0).getDouble(), action.getNumberOrDefault("y", 0).getDouble(), action.getNumberOrDefault("z", 0).getDouble()), action.getJsonObject("action"));
+                case "apoli:offset" ->
+                    executeBlock(location.add(action.getNumberOrDefault("x", 0).getDouble(), action.getNumberOrDefault("y", 0).getDouble(), action.getNumberOrDefault("z", 0).getDouble()), action.getJsonObject("action"));
 
                 case "apoli:and" -> and(action, actionn -> executeBlock(location, actionn));
 

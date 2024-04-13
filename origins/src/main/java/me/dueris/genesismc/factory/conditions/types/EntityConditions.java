@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.conditions.types;
 
 import com.mojang.brigadier.StringReader;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.util.MiscUtils;
@@ -30,7 +31,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootDataType;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -51,7 +51,6 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntityType;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -61,20 +60,14 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiPredicate;
 
 public class EntityConditions {
@@ -126,7 +119,7 @@ public class EntityConditions {
                 NamespacedKey namespacedKey = NamespacedKey.fromString(condition.get("advancement").toString());
 
                 AdvancementHolder advancementHolder = server.getAdvancements().get(CraftNamespacedKey.toMinecraft(namespacedKey));
-                if(advancementHolder == null){
+                if (advancementHolder == null) {
                     GenesisMC.getPlugin().getLogger().severe("Advancement \"{}\" did not exist but was referenced in the apoli:advancement entity condition!".replace("{}", namespacedKey.asString()));
                     return false;
                 }
@@ -357,16 +350,16 @@ public class EntityConditions {
                 int value = 1;
 
                 Enchantment enchantment = CraftRegistry.ENCHANTMENT.get(enchantmentNamespace);
-                switch(condition.get("calculation").toString()){
+                switch (condition.get("calculation").toString()) {
                     case "sum":
-                        for(net.minecraft.world.item.ItemStack stack : CraftEnchantment.bukkitToMinecraft(enchantment).getSlotItems(((CraftPlayer)player).getHandle()).values()){
+                        for (net.minecraft.world.item.ItemStack stack : CraftEnchantment.bukkitToMinecraft(enchantment).getSlotItems(((CraftPlayer) player).getHandle()).values()) {
                             value += EnchantmentHelper.getItemEnchantmentLevel(CraftEnchantment.bukkitToMinecraft(enchantment), stack);
                         }
                         break;
                     case "max":
                         int equippedEnchantmentLevel = 0;
 
-                        for (net.minecraft.world.item.ItemStack stack : CraftEnchantment.bukkitToMinecraft(enchantment).getSlotItems(((CraftPlayer)player).getHandle()).values()) {
+                        for (net.minecraft.world.item.ItemStack stack : CraftEnchantment.bukkitToMinecraft(enchantment).getSlotItems(((CraftPlayer) player).getHandle()).values()) {
 
                             int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(CraftEnchantment.bukkitToMinecraft(enchantment), stack);
 
@@ -415,8 +408,8 @@ public class EntityConditions {
 
             double currentDimensionCoordinateScale = level.dimensionType().coordinateScale();
             switch (condition.getOrDefault("reference", "world_origin").toString()) {
-                case "player_natural_spawn", "world_spawn", "player_spawn" :
-                    if(setResultOnWrongDimension && level.dimension() != Level.OVERWORLD)
+                case "player_natural_spawn", "world_spawn", "player_spawn":
+                    if (setResultOnWrongDimension && level.dimension() != Level.OVERWORLD)
                         return resultOnWrongDimension;
                     BlockPos spawnPos = level.getSharedSpawnPos();
                     x = spawnPos.getX();
@@ -432,9 +425,10 @@ public class EntityConditions {
             x += coords.x + offset.x;
             y += coords.y + offset.y;
             z += coords.z + offset.z;
-            if(scaleReferenceToDimension && (x != 0 || z != 0)){
+            if (scaleReferenceToDimension && (x != 0 || z != 0)) {
                 Comparison comparison = Comparison.getFromString(condition.get("comparison").toString());
-                if(currentDimensionCoordinateScale == 0) return comparison == Comparison.NOT_EQUAL || comparison == Comparison.GREATER_THAN || comparison == Comparison.GREATER_THAN_OR_EQUAL;
+                if (currentDimensionCoordinateScale == 0)
+                    return comparison == Comparison.NOT_EQUAL || comparison == Comparison.GREATER_THAN || comparison == Comparison.GREATER_THAN_OR_EQUAL;
 
                 x /= currentDimensionCoordinateScale;
                 z /= currentDimensionCoordinateScale;
@@ -444,14 +438,14 @@ public class EntityConditions {
                 xDistance = (boolean) condition.getOrDefault("ignore_x", false) ? 0 : Math.abs(pos.x() - x),
                 yDistance = (boolean) condition.getOrDefault("ignore_y", false) ? 0 : Math.abs(pos.y() - y),
                 zDistance = (boolean) condition.getOrDefault("ignore_z", false) ? 0 : Math.abs(pos.z() - z);
-            if((boolean) condition.getOrDefault("scale_distance_to_dimension", false)){
+            if ((boolean) condition.getOrDefault("scale_distance_to_dimension", false)) {
                 xDistance *= currentDimensionCoordinateScale;
                 zDistance *= currentDimensionCoordinateScale;
             }
 
             distance = Shape.getDistance(Shape.getShape(condition.getOrDefault("shape", "cube")), xDistance, yDistance, zDistance);
 
-            if(condition.containsKey("round_to_digit")){
+            if (condition.containsKey("round_to_digit")) {
                 distance = new BigDecimal(distance).setScale((int) condition.get("round_to_digit"), RoundingMode.HALF_UP).doubleValue();
             }
 
@@ -495,11 +489,15 @@ public class EntityConditions {
             int stopAt = -1;
             Comparison comparison = Comparison.getFromString(condition.get("comparison").toString());
             int compareTo = Utils.getToInt(condition.get("compare_to"));
-            switch(comparison) {
-                case EQUAL: case LESS_THAN_OR_EQUAL: case GREATER_THAN: case NOT_EQUAL:
+            switch (comparison) {
+                case EQUAL:
+                case LESS_THAN_OR_EQUAL:
+                case GREATER_THAN:
+                case NOT_EQUAL:
                     stopAt = compareTo + 1;
                     break;
-                case LESS_THAN: case GREATER_THAN_OR_EQUAL:
+                case LESS_THAN:
+                case GREATER_THAN_OR_EQUAL:
                     stopAt = compareTo;
                     break;
             }
@@ -508,16 +506,16 @@ public class EntityConditions {
             BlockPos blockPos = BlockPos.containing(box.minX + 0.001D, box.minY + 0.001D, box.minZ + 0.001D);
             BlockPos blockPos2 = BlockPos.containing(box.maxX - 0.001D, box.maxY - 0.001D, box.maxZ - 0.001D);
             BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
-            for(int i = blockPos.getX(); i <= blockPos2.getX() && count < stopAt; ++i) {
-                for(int j = blockPos.getY(); j <= blockPos2.getY() && count < stopAt; ++j) {
-                    for(int k = blockPos.getZ(); k <= blockPos2.getZ() && count < stopAt; ++k) {
+            for (int i = blockPos.getX(); i <= blockPos2.getX() && count < stopAt; ++i) {
+                for (int j = blockPos.getY(); j <= blockPos2.getY() && count < stopAt; ++j) {
+                    for (int k = blockPos.getZ(); k <= blockPos2.getZ() && count < stopAt; ++k) {
                         mutable.set(i, j, k);
                         boolean pass = true;
-                        if(condition.containsKey("block_condition")){
+                        if (condition.containsKey("block_condition")) {
                             pass = ConditionExecutor.testBlock((JSONObject) condition.get("block_condition"), CraftBlock.at(entity.getHandle().level(), mutable.immutable()));
                         }
 
-                        if(pass) count++;
+                        if (pass) count++;
                     }
                 }
             }
@@ -700,7 +698,7 @@ public class EntityConditions {
                 InteractionHand hand = le.getHandle().getUsedItemHand();
                 net.minecraft.world.item.ItemStack stack = le.getHandle().getItemInHand(hand);
                 boolean pass = true;
-                if(condition.containsKey("item_condition")){
+                if (condition.containsKey("item_condition")) {
                     pass = ConditionExecutor.testItem((JSONObject) condition.get("item_condition"), stack.getBukkitStack());
                 }
                 return pass;
@@ -742,14 +740,14 @@ public class EntityConditions {
 
     public class ConditionFactory implements Registerable {
         NamespacedKey key;
-        BiPredicate<JSONObject, CraftEntity> test;
+        BiPredicate<FactoryJsonObject, CraftEntity> test;
 
-        public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, CraftEntity> test) {
+        public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, CraftEntity> test) {
             this.key = key;
             this.test = test;
         }
 
-        public boolean test(JSONObject condition, CraftEntity tester) {
+        public boolean test(FactoryJsonObject condition, CraftEntity tester) {
             return test.test(condition, tester);
         }
 

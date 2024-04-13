@@ -1,5 +1,6 @@
 package me.dueris.genesismc.util;
 
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.util.ClipContextUtils;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.data.types.RotationType;
@@ -20,18 +21,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.joml.Vector3f;
-import org.json.simple.JSONObject;
 
 import java.util.Optional;
 
 public class RaycastUtils {
 
-    public static void action(JSONObject data, Entity entity) {
+    public static void action(FactoryJsonObject data, Entity entity) {
         Vec3 origin = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
         Vec3 direction = entity.getViewVector(1);
-        if (data.containsKey("direction")) {
-            direction = RotationType.parseDirection((JSONObject) data.get("direction"));
-            Space space = Space.getSpace(data.get("space").toString());
+        if (data.isPresent("direction")) {
+            direction = RotationType.parseDirection(data.getJsonObject("direction"));
+            Space space = data.getEnumValue("shape", Space.class);
             Vector3f vector3f = new Vector3f((float) direction.x, (float) direction.y, (float) direction.z).normalize();
             space.toGlobal(vector3f, entity);
             direction = new Vec3(vector3f);
@@ -41,11 +41,11 @@ public class RaycastUtils {
         Location location = CraftLocation.toBukkit(target);
         location.setWorld(entity.getBukkitEntity().getWorld());
 
-        Actions.executeEntity(entity.getBukkitEntity(), (JSONObject) data.getOrDefault("before_action", null));
+        Actions.executeEntity(entity.getBukkitEntity(), data.getJsonObject("before_action"));
 
-        float step = Math.round((Double) data.getOrDefault("command_step", 1d));
-        if (data.containsKey("command_along_ray")) {
-            executeStepCommands(entity, origin, target, data.getOrDefault("command_along_ray", null).toString(), step);
+        float step = Math.round(data.getNumberOrDefault("command_step", 1d).getDouble());
+        if (data.isPresent("command_along_ray")) {
+            executeStepCommands(entity, origin, target, data.getStringOrDefault("command_along_ray", null), step);
         }
         MinecraftServer server = entity.getServer();
         if (server != null) {
@@ -57,19 +57,19 @@ public class RaycastUtils {
                 boolean hit = false;
                 if (!curLoc.getNearbyEntities(0.3, 0.3, 0.3).isEmpty()) { // entity hit
                     hit = true;
-                    Actions.executeBiEntity(entity.getBukkitEntity(), (org.bukkit.entity.Entity) curLoc.getNearbyEntities(0.3, 0.3, 0.3).toArray()[0], (JSONObject) data.getOrDefault("bientity_action", new JSONObject()));
+                    Actions.executeBiEntity(entity.getBukkitEntity(), (org.bukkit.entity.Entity) curLoc.getNearbyEntities(0.3, 0.3, 0.3).toArray()[0], data.getJsonObject("bientity_action"));
                 }
                 if (curLoc.getBlock().isCollidable()) {
                     hit = true;
-                    Actions.executeBlock(curLoc, (JSONObject) data.getOrDefault("hit_action", new JSONObject()));
+                    Actions.executeBlock(curLoc, data.getJsonObject("hit_action"));
                 }
 
                 if (curLoc.getBlock().isCollidable()) {
                     if (hit) {
-                        Actions.executeEntity(entity.getBukkitEntity(), (JSONObject) data.getOrDefault("hit_action", new JSONObject()));
+                        Actions.executeEntity(entity.getBukkitEntity(), data.getJsonObject("hit_action"));
                     }
-                    if (data.containsKey("command_at_hit")) {
-                        executeCommandAtHit(entity, CraftLocation.toVec3D(curLoc), data.getOrDefault("command_at_hit", null).toString());
+                    if (data.isPresent("command_at_hit")) {
+                        executeNMSCommand(entity, CraftLocation.toVec3D(curLoc), data.getStringOrDefault("command_at_hit", null).toString());
                     }
                     break;
                 }
@@ -77,23 +77,23 @@ public class RaycastUtils {
         }
     }
 
-    private static long getEntityReach(JSONObject data, Entity entity) {
-        if (!data.containsKey("entity_distance") && !data.containsKey("distance")) {
+    private static long getEntityReach(FactoryJsonObject data, Entity entity) {
+        if (!data.isPresent("entity_distance") && !data.isPresent("distance")) {
             long base = (entity instanceof Player player && player.getAbilities().instabuild) ? 6 : 3;
             LivingEntity living = (LivingEntity) entity;
             return base;
         }
-        return data.containsKey("entity_distance") ? (long) data.get("entity_distance") : (long) data.get("distance");
+        return data.isPresent("entity_distance") ? data.getNumber("entity_distance").getLong() : data.getNumber("distance").getLong();
     }
 
 
-    private static long getBlockReach(JSONObject data, Entity entity) {
-        if (!data.containsKey("block_distance") && !data.containsKey("distance")) {
+    private static long getBlockReach(FactoryJsonObject data, Entity entity) {
+        if (!data.isPresent("block_distance") && !data.isPresent("distance")) {
             long base = (entity instanceof Player player && player.getAbilities().instabuild) ? 5 : 4;
             LivingEntity living = (LivingEntity) entity;
             return base;
         }
-        return data.containsKey("block_distance") ? (long) data.get("block_distance") : (long) data.get("distance");
+        return data.isPresent("block_distance") ? data.getNumber("block_distance").getLong() : data.getNumber("distance").getLong();
     }
 
     private static void executeStepCommands(Entity entity, Vec3 origin, Vec3 target, String command, double step) {
@@ -103,7 +103,6 @@ public class RaycastUtils {
             Vec3 direction = target.subtract(origin).normalize();
             double length = origin.distanceTo(target);
             for (double current = 0; current < length; current += step) {
-                boolean validOutput = !(entity instanceof ServerPlayer) || ((ServerPlayer) entity).connection != null;
                 CommandSourceStack source = new CommandSourceStack(
                     CommandSource.NULL,
                     origin.add(direction.scale(current)),
@@ -119,7 +118,7 @@ public class RaycastUtils {
         }
     }
 
-    public static void executeCommandAtHit(Entity entity, Vec3 hitPosition, String command) { // GenesisMC - private -> public
+    public static void executeNMSCommand(Entity entity, Vec3 hitPosition, String command) { // GenesisMC - private -> public
         if (command == null) return;
         MinecraftServer server = entity.getServer();
         if (server != null) {
@@ -161,12 +160,12 @@ public class RaycastUtils {
         return entityHitResult;
     }
 
-    public static boolean condition(JSONObject data, Entity entity) {
+    public static boolean condition(FactoryJsonObject data, Entity entity) {
         Vec3 origin = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
         Vec3 direction = entity.getViewVector(1);
-        if (data.containsKey("direction")) {
-            direction = RotationType.parseDirection((JSONObject) data.get("direction"));
-            Space space = Space.getSpace(data.get("space").toString());
+        if (data.isPresent("direction")) {
+            direction = RotationType.parseDirection(data.getJsonObject("direction"));
+            Space space = data.getEnumValue("space", Space.class);
             Vector3f vector3f = new Vector3f((float) direction.x, (float) direction.y, (float) direction.z).normalize();
             space.toGlobal(vector3f, entity);
             direction = new Vec3(vector3f);
@@ -178,15 +177,15 @@ public class RaycastUtils {
 
         HitResult hitResult = null;
         // Apoli start
-        if (data.get("entity") != null && (boolean) data.get("entity")) {
+        if (data.isPresent("entity") && data.getBoolean("entity")) {
             double distance = getEntityReach(data, entity);
             target = origin.add(direction.scale(distance));
             hitResult = performEntityRaycast(entity, origin, target, Optional.empty());
         }
-        if (data.get("block") != null && (boolean) data.get("block")) {
+        if (data.isPresent("block") && data.getBoolean("block")) {
             double distance = getBlockReach(data, entity);
             target = origin.add(direction.scale(distance));
-            BlockHitResult blockHit = performBlockRaycast(entity, origin, target, ClipContextUtils.getShapeType(data.get("shape_type").toString()), ClipContextUtils.getFluidHandling(data.get("fluid_handling").toString()));
+            BlockHitResult blockHit = performBlockRaycast(entity, origin, target, ClipContextUtils.getShapeType(data.getString("shape_type").toString()), ClipContextUtils.getFluidHandling(data.getString("fluid_handling").toString()));
             if (blockHit.getType() != HitResult.Type.MISS) {
                 if (hitResult == null || hitResult.getType() == HitResult.Type.MISS) {
                     hitResult = blockHit;
@@ -198,7 +197,7 @@ public class RaycastUtils {
             }
         }
         // Apoli end
-        float step = Math.round((Double) data.getOrDefault("command_step", 1d));
+        float step = Math.round(data.getNumberOrDefault("command_step", 1d).getDouble());
         MinecraftServer server = entity.getServer();
         if (server != null) {
             Vec3 dir = target.subtract(origin).normalize();

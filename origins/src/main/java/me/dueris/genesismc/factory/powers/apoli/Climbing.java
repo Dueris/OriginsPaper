@@ -39,11 +39,11 @@ public class Climbing extends CraftPower implements Listener {
     @Override
     public void run(Player p) {
         if (climbing.contains(p)) {
-            if (!((CraftWorld)p.getWorld()).getHandle().getBlockStates(((CraftPlayer)p).getHandle().getBoundingBox().inflate(0.1, 0, 0.1)).filter(state -> state.getBukkitMaterial().isCollidable()).toList().isEmpty()) {
+            if (!((CraftWorld) p.getWorld()).getHandle().getBlockStates(((CraftPlayer) p).getHandle().getBoundingBox().inflate(0.1, 0, 0.1)).filter(state -> state.getBukkitMaterial().isCollidable()).toList().isEmpty()) {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if(!p.isSneaking() && holdingPlayers.contains(p)) holdingPlayers.remove(p);
-                        if (ConditionExecutor.testEntity(power.getJsonObjectOrNew("condition"), (CraftEntity) p) && allowedToClimb.contains(p)) {
+                        if (!p.isSneaking() && holdingPlayers.contains(p)) holdingPlayers.remove(p);
+                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && allowedToClimb.contains(p)) {
                             setActive(p, power.getTag(), true);
                             p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 5, 2, false, false, false));
                             getActiveClimbingMap().add(p);
@@ -63,14 +63,14 @@ public class Climbing extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void jump(PlayerJumpEvent e){
-        if(climbing.contains(e.getPlayer())){
+    public void jump(PlayerJumpEvent e) {
+        if (climbing.contains(e.getPlayer())) {
             Player p = e.getPlayer();
             allowedToClimb.add(p);
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if(p.isOnGround()){
+                    if (p.isOnGround()) {
                         allowedToClimb.remove(p);
                         cancel();
                     }
@@ -82,17 +82,17 @@ public class Climbing extends CraftPower implements Listener {
     @EventHandler
     public void latch(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
-        if(climbing.contains(p)){
+        if (climbing.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power.getBooleanOrDefault("allow_holding", true)) {
                         final Location[] location = {p.getLocation()};
-                        if(e.isSneaking()){
+                        if (e.isSneaking()) {
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
-                                    if(p.isSneaking()){
-                                        if(location[0].getPitch() != p.getPitch() || location[0].getYaw() != p.getYaw()){
+                                    if (p.isSneaking()) {
+                                        if (location[0].getPitch() != p.getPitch() || location[0].getYaw() != p.getYaw()) {
                                             float pitch = p.getPitch();
                                             float yaw = p.getYaw();
                                             Location updatedLocation = new Location(location[0].getWorld(), location[0].getX(), location[0].getY(), location[0].getZ(), yaw, pitch);

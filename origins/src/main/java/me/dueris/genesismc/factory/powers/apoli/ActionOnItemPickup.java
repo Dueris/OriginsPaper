@@ -23,7 +23,8 @@ public class ActionOnItemPickup extends CraftPower implements Listener {
         if (this.getPowerArray().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (!ConditionExecutor.testItem(power.getJsonObjectOrNew("item_condition"), e.getItem().getItemStack())) continue;
+                    if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem().getItemStack()))
+                        continue;
                     ItemStack clone = e.getItem().getItemStack().clone();
                     Actions.executeItem(clone, power.getJsonObject("item_action"));
                     // Needs to update the ItemEntity

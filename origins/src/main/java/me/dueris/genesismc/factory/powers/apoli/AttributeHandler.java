@@ -1,11 +1,11 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AttributeExecuteEvent;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
@@ -82,11 +82,11 @@ public class AttributeHandler extends CraftPower implements Listener {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
 
-                for (FactoryJsonObject modifier : power.getModifiers()) {
-                    if (modifier.getString("attribute").equalsIgnoreCase("reach-entity-attributes:reach")) {
+                for (Modifier modifier : power.getModifiers()) {
+                    if (modifier.handle.getString("attribute").equalsIgnoreCase("reach-entity-attributes:reach")) {
                         extra_reach.add(p);
                         continue;
-                    } else if (modifier.getString("attribute").equalsIgnoreCase("reach-entity-attributes:attack_range")) {
+                    } else if (modifier.handle.getString("attribute").equalsIgnoreCase("reach-entity-attributes:attack_range")) {
                         extra_reach_attack.add(p);
                         continue;
                     } else {
@@ -94,11 +94,11 @@ public class AttributeHandler extends CraftPower implements Listener {
                     }
 
                     try {
-                        Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.getString("attribute")).asString().split(":")[1].replace(".", "_").toUpperCase());
+                        Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.handle.getString("attribute")).asString().split(":")[1].replace(".", "_").toUpperCase());
 
-                        float value = modifier.getNumber("value").getFloat();
+                        float value = modifier.value();
                         double base_value = p.getAttribute(attribute_modifier).getBaseValue();
-                        String operation = modifier.getString("operation");
+                        String operation = modifier.operation();
                         executeAttributeModify(operation, attribute_modifier, base_value, p, value);
                         AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), power);
                         Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
