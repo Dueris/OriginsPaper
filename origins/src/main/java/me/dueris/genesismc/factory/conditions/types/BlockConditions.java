@@ -44,7 +44,7 @@ public class BlockConditions {
     public void prep() {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("material"), (condition, block) -> {
             try {
-                Material mat = MiscUtils.getBukkitMaterial(condition.get("material").toString());
+                Material mat = MiscUtils.getBukkitMaterial(condition.getString("material").toString());
                 return block.getType().equals(mat);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -54,7 +54,7 @@ public class BlockConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, block) -> {
             if (block == null || block.getNMS() == null) return false;
-            NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
+            NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag").toString());
             TagKey key = TagKey.create(net.minecraft.core.registries.Registries.BLOCK, CraftNamespacedKey.toMinecraft(tag));
             return block.getHandle().getBlockState(CraftLocation.toBlockPosition(block.getLocation())).is(key);
         }));
@@ -62,15 +62,15 @@ public class BlockConditions {
             int adj = 0;
             for (Direction direction : Direction.values()) {
                 boolean p = true;
-                if (condition.containsKey("adjacent_condition")) {
-                    p = ConditionExecutor.testBlock((JSONObject) condition.get("adjacent_condition"), (CraftBlock) block.getWorld().getBlockAt(CraftLocation.toBukkit(block.getPosition().offset(direction.getNormal()))));
+                if (condition.isPresent("adjacent_condition")) {
+                    p = ConditionExecutor.testBlock(condition.getJsonObject("adjacent_condition"), (CraftBlock) block.getWorld().getBlockAt(CraftLocation.toBukkit(block.getPosition().offset(direction.getNormal()))));
                 }
                 if (p) {
                     adj++;
                 }
             }
-            String comparison = condition.get("comparison").toString();
-            float compare_to = Float.parseFloat(condition.get("compare_to").toString());
+            String comparison = condition.getString("comparison").toString();
+            float compare_to = condition.getNumber("compare_to").getFloat();
 
             return Comparison.getFromString(comparison).compare(adj, compare_to);
         }));
@@ -85,22 +85,22 @@ public class BlockConditions {
             return false;
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("blast_resistance"), (condition, block) -> {
-            String comparison = condition.get("comparison").toString();
-            float compare_to = Float.parseFloat(condition.get("compare_to").toString());
+            String comparison = condition.getString("comparison").toString();
+            float compare_to = condition.getNumber("compare_to").getFloat();
             float bR = block.getType().getBlastResistance();
             return Comparison.getFromString(comparison).compare(bR, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block_entity"), (condition, block) -> block.getState() instanceof TileState));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block"), (condition, block) -> block.getType().equals(MiscUtils.getBukkitMaterial(condition.get("block").toString()))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("distance_from_coordinates"), (condition, block) -> {
-            boolean scaleReferenceToDimension = (boolean) condition.getOrDefault("scale_reference_to_dimension", true);
-            boolean setResultOnWrongDimension = condition.containsKey("result_on_wrong_dimension"), resultOnWrongDimension = setResultOnWrongDimension && (boolean) condition.get("result_on_wrong_dimension");
+            boolean scaleReferenceToDimension = condition.getBooleanOrDefault("scale_reference_to_dimension", true);
+            boolean setResultOnWrongDimension = condition.isPresent("result_on_wrong_dimension"), resultOnWrongDimension = setResultOnWrongDimension && condition.getBoolean("result_on_wrong_dimension");
             double x = 0, y = 0, z = 0;
             Vec3 pos = CraftLocation.toVec3D(block.getLocation());
             ServerLevel level = block.getHandle().getMinecraftWorld();
 
             double currentDimensionCoordinateScale = level.dimensionType().coordinateScale();
-            switch (condition.getOrDefault("reference", "world_origin").toString()) {
+            switch (condition.getStringOrDefault("reference", "world_origin").toString()) {
                 case "player_natural_spawn", "world_spawn", "player_spawn":
                     if (setResultOnWrongDimension && level.dimension() != Level.OVERWORLD)
                         return resultOnWrongDimension;
@@ -119,7 +119,7 @@ public class BlockConditions {
             y += coords.y + offset.y;
             z += coords.z + offset.z;
             if (scaleReferenceToDimension && (x != 0 || z != 0)) {
-                Comparison comparison = Comparison.getFromString(condition.get("comparison").toString());
+                Comparison comparison = Comparison.getFromString(condition.getString("comparison").toString());
                 if (currentDimensionCoordinateScale == 0)
                     return comparison == Comparison.NOT_EQUAL || comparison == Comparison.GREATER_THAN || comparison == Comparison.GREATER_THAN_OR_EQUAL;
 
