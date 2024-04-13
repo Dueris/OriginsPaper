@@ -2,10 +2,12 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
@@ -15,11 +17,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.function.BinaryOperator;
-
-import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsInteger;
 
 public class ModifyEnchantmentLevel extends CraftPower {
 
@@ -31,17 +30,17 @@ public class ModifyEnchantmentLevel extends CraftPower {
                     HashSet<ItemStack> items = new HashSet<>(Arrays.stream(p.getInventory().getArmorContents()).toList());
                     items.add(p.getInventory().getItemInMainHand());
                     for (ItemStack item : items) {
-                        if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
-                        if (!ConditionExecutor.testItem(power.get("item_condition"), item)) return;
-                        for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                        if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) return;
+                        if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), item)) return;
+                        for (Modifier modifier : power.getModifiers()) {
                             Enchantment enchant = Enchantment.getByKey(NamespacedKey.fromString(power.getString("enchantment")));
                             if (item.containsEnchantment(enchant)) {
                                 item.removeEnchantment(enchant);
                             }
                             int result = 1;
-                            Integer value = Integer.valueOf(modifier.get("value").toString());
-                            String operation = modifier.get("operation").toString();
-                            BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
+                            float value = modifier.value();
+                            String operation = modifier.operation();
+                            BinaryOperator mathOperator = Utils.getOperationMappingsInteger().get(operation);
                             if (mathOperator != null) {
                                 result = Integer.valueOf(String.valueOf(mathOperator.apply(0, value)));
                             }

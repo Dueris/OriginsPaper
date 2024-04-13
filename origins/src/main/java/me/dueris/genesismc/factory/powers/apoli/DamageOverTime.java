@@ -5,10 +5,8 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
@@ -26,18 +24,11 @@ import java.util.ArrayList;
 
 public class DamageOverTime extends CraftPower implements Listener {
 
-    private final String damage_type;
-    private final int ticksE;
     private Long interval;
     private float damage;
-    private DamageSource damage_source;
-    private double protection_effectiveness;
 
     public DamageOverTime() {
         this.interval = 20L;
-        this.ticksE = 0;
-        this.damage_type = "origins:damage_over_time";
-        this.protection_effectiveness = 1.0;
     }
 
 
@@ -69,23 +60,17 @@ public class DamageOverTime extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (power.getObject("interval") == null) {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
-                        return;
+                    if (!power.isPresent("interval")) {
+                        throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
                     }
-                    interval = power.getLong("interval");
+                    interval = power.getNumber("interval").getLong();
                     if (interval == 0) interval = 1L;
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
-                        damage = p.getWorld().getDifficulty().equals(Difficulty.EASY) ?
-                            power.getObjectOrDefault("damage_easy", power.getObjectOrDefault("damage", 1.0f)) == null ?
-                                power.getFloatOrDefault("damage", 1.0f)
-                                : power.getFloatOrDefault("damage_easy", power.getFloatOrDefault("damage", 1f))
-                            : power.getFloatOrDefault("damage", 1.0f);
+                        damage = p.getWorld().getDifficulty().equals(Difficulty.EASY) ? power.getNumberOrDefault("damage_easy", power.getNumberOrDefault("damage", 1.0f).getFloat()).getFloat() : power.getNumberOrDefault("damage", 1.0f).getFloat();
 
-                        protection_effectiveness = power.getDoubleOrDefault("protection_effectiveness", 1);
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
 
                             if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {

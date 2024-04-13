@@ -6,7 +6,6 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -40,7 +39,7 @@ public class SilkTouch extends CraftPower implements Listener {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftPlayer) p)) {
+                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftPlayer) p)) {
                             setActive(p, power.getTag(), true);
                             if (p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
                                 if (!e.getBlock().getType().isItem()) {
@@ -65,7 +64,7 @@ public class SilkTouch extends CraftPower implements Listener {
                                         try {
                                             p.getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), i);
                                         } catch (Exception exception) {
-                                            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.silkTouch"));
+                                            Bukkit.getLogger().warning("Silk-Touched Item couldn't be dropped!");
                                             exception.printStackTrace();
                                         }
                                     }

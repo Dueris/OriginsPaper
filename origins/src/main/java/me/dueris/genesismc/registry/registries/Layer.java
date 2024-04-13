@@ -3,7 +3,10 @@ package me.dueris.genesismc.registry.registries;
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.inst.FactoryInstance;
 import me.dueris.calio.builder.inst.FactoryObjectInstance;
-import me.dueris.calio.builder.inst.FactoryProvider;
+import me.dueris.calio.builder.inst.factory.FactoryBuilder;
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -11,8 +14,6 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.Serial;
@@ -21,24 +22,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Layer implements Serializable, FactoryInstance {
+public class Layer extends FactoryJsonObject implements Serializable, FactoryInstance {
     @Serial
     private static final long serialVersionUID = 4L;
 
     NamespacedKey tag;
-    DatapackFile layerFile;
     List<Origin> origins;
+    FactoryJsonObject factory;
 
     public Layer(boolean toRegistry) {
+        super(null);
         if (!toRegistry) {
             throw new RuntimeException("Invalid constructor used.");
         }
     }
 
-    public Layer(NamespacedKey tag, DatapackFile layerFile, List<Origin> origins) {
+    public Layer(NamespacedKey tag, List<Origin> origins, FactoryJsonObject factoryJsonObject) {
+        super(factoryJsonObject.handle);
         this.tag = tag;
         this.origins = origins;
-        this.layerFile = layerFile;
+        this.factory = factoryJsonObject;
     }
 
     /**
@@ -46,7 +49,7 @@ public class Layer implements Serializable, FactoryInstance {
      */
     @Override
     public String toString() {
-        return "Tag = " + tag + " LayerFile = " + layerFile.toString();
+        return "Tag = " + tag;
     }
 
     public List<Origin> testChoosable(Entity entity) {
@@ -76,28 +79,17 @@ public class Layer implements Serializable, FactoryInstance {
     }
 
     /**
-     * @return The file associated with this layer
-     */
-    public DatapackFile getLayerFile() {
-        return layerFile;
-    }
-
-    /**
      * @return The name of the layer file or tag if null
      */
     public String getName() {
-        String name = (String) this.layerFile.get("name");
-        if (name == null) return tag.asString();
-        return name;
+        return getStringOrDefault("name", "No Name");
     }
 
     /**
      * @return The name of the layer file or tag if null
      */
     public boolean getReplace() {
-        Boolean replace = (Boolean) this.layerFile.get("replace");
-        if (replace == null) return false;
-        return replace;
+        return getBooleanOrDefault("replace", false);
     }
 
     /**
@@ -110,7 +102,7 @@ public class Layer implements Serializable, FactoryInstance {
     @Override
     public List<FactoryObjectInstance> getValidObjectFactory() {
         return List.of(
-            new FactoryObjectInstance("origins", JSONArray.class, null),
+            new FactoryObjectInstance("origins", FactoryJsonArray.class, null),
             new FactoryObjectInstance("enabled", Boolean.class, true),
             new FactoryObjectInstance("replace", Boolean.class, false),
             new FactoryObjectInstance("allow_random", Boolean.class, true),
@@ -120,41 +112,46 @@ public class Layer implements Serializable, FactoryInstance {
     }
 
     @Override
-    public void createInstance(FactoryProvider obj, File rawFile, Registrar<? extends Registerable> registry, NamespacedKey namespacedTag) {
+    public void createInstance(FactoryBuilder obj, File rawFile, Registrar<? extends Registerable> registry, NamespacedKey namespacedTag) {
         Registrar<Layer> registrar = (Registrar<Layer>) registry;
-        AtomicBoolean merge = new AtomicBoolean(!(boolean) obj.getOrDefault("replace", false) && registry.rawRegistry.containsKey(namespacedTag));
+        AtomicBoolean merge = new AtomicBoolean(!obj.getRoot().getBooleanOrDefault("replace", false) && registry.rawRegistry.containsKey(namespacedTag));
         if (merge.get()) {
             List<Origin> originList = new ArrayList<>();
-            for (Object orRaw : ((JSONArray) obj.get("origins"))) {
-                if (CraftApoli.getOrigin(orRaw.toString()) != null) {
-                    originList.add(CraftApoli.getOrigin(orRaw.toString()));
+            for (FactoryElement element : obj.getRoot().getJsonArray("origins").asList()) {
+                Origin origin = CraftApoli.getOrigin(element.getString());
+                if (!origin.equals(CraftApoli.nullOrigin())) {
+                    originList.add(origin);
                 } else {
                     CraftCalio.INSTANCE.getLogger().severe("Origin not found inside layer");
                 }
             }
             registrar.get(namespacedTag).getOrigins().stream().forEach(tag -> originList.add(CraftApoli.getOrigin(tag)));
-            registrar.replaceEntry(namespacedTag, new Layer(namespacedTag, new DatapackFile(obj.keySet().stream().toList(), obj.values().stream().toList()), originList));
+            registrar.replaceEntry(namespacedTag, new Layer(namespacedTag, originList, obj.getRoot()));
         } else {
             List<Origin> list = new ArrayList<>();
-            for (Object orRaw : ((JSONArray) obj.get("origins"))) {
-                if (orRaw instanceof JSONObject jsonObject) {
-                    for (Object string : (JSONArray) jsonObject.get("origins")) {
-                        if (CraftApoli.getOrigin(orRaw.toString()) != null) {
-                            Origin origin = CraftApoli.getOrigin(string.toString());
-                            origin.setUsesCondition((JSONObject) jsonObject.get("condition"));
+            for (FactoryElement element : obj.getRoot().getJsonArray("origins").asList()) {
+                if (element.isJsonObject()) {
+                    FactoryJsonObject jsonObject = element.toJsonObject();
+                    for (String elementString : jsonObject.getJsonArray("origins").asList().stream().map(FactoryElement::getString).toList()) {
+                        Origin origin = CraftApoli.getOrigin(elementString);
+                        if (!origin.equals(CraftApoli.nullOrigin())) {
+                            origin.setUsesCondition(jsonObject.getJsonObject("condition"));
                         } else {
-                            CraftCalio.INSTANCE.getLogger().severe("Origin(%a%) not found inside layer".replace("%a%", string.toString()));
+                            CraftCalio.INSTANCE.getLogger().severe("Origin(%a%) not found inside layer".replace("%a%", elementString));
                         }
                     }
-                } else if (orRaw instanceof String) {
-                    if (CraftApoli.getOrigin(orRaw.toString()) != null) {
-                        list.add(CraftApoli.getOrigin(orRaw.toString()));
+                } else if (element.isString()) {
+                    Origin origin = CraftApoli.getOrigin(element.getString());
+                    if (!origin.equals(CraftApoli.nullOrigin())) {
+                        list.add(origin);
                     } else {
-                        CraftCalio.INSTANCE.getLogger().severe("Origin(%a%) not found inside layer".replace("%a%", orRaw.toString()));
+                        CraftCalio.INSTANCE.getLogger().severe("Origin(%a%) not found inside layer".replace("%a%", element.getString()));
                     }
+                } else {
+                    CraftCalio.INSTANCE.getLogger().severe("Unknown type \"{t}\" was provided in the \"powers\" field for the OriginLayer!".replace("{t}", element.getClass().getSimpleName()));
                 }
             }
-            registrar.register(new Layer(namespacedTag, new DatapackFile(obj.keySet().stream().toList(), obj.values().stream().toList()), list));
+            registrar.register(new Layer(namespacedTag, list, obj.getRoot()));
         }
     }
 }

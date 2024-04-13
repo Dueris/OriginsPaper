@@ -118,7 +118,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
     public Pair<ServerLevel, BlockPos> getSpawn(boolean isSpawnObstructed, Entity entity, Power power) {
         SpawnStrategy spawnStrategy = SpawnStrategy.valueOf(power.getStringOrDefault("spawn_strategy", "default").toUpperCase());
         ResourceKey<Level> dimension = getDimension(power);
-        float dimensionDistanceMultiplier = power.getFloatOrDefault("dimension_distance_multiplier", 1f);
+        float dimensionDistanceMultiplier = power.getNumberOrDefault("dimension_distance_multiplier", 1f).getFloat();
         if (false || !(entity instanceof net.minecraft.world.entity.player.Player playerEntity)) return null;
 
         ServerPlayer ServerPlayer = (ServerPlayer) playerEntity;
@@ -161,7 +161,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     private Optional<BlockPos> getBiomePos(ServerLevel targetDimension, BlockPos originPos, Power power) {
 
-        if (power.getString("biome") == null) return Optional.empty();
+        if (!power.isPresent("biome")) return Optional.empty();
 
         Optional<Biome> targetBiome = CraftRegistry.getMinecraftRegistry().registry(Registries.BIOME).get().getOptional(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(power.getString("biome"))));
         if (targetBiome.isEmpty()) {
@@ -212,7 +212,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
     }
 
     private Optional<Vec3> getSpawnPos(ServerLevel targetDimension, BlockPos originPos, int range, Power power, Entity entity) {
-        if (!power.containsInstance("structure")) return getValidSpawn(targetDimension, originPos, range, entity);
+        if (!power.isPresent("structure")) return getValidSpawn(targetDimension, originPos, range, entity);
 
         Optional<Pair<BlockPos, Structure>> targetStructure = getStructurePos(targetDimension, power, entity);
         if (targetStructure.isEmpty()) return Optional.empty();

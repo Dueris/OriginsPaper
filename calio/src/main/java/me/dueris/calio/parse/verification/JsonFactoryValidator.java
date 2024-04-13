@@ -2,8 +2,11 @@ package me.dueris.calio.parse.verification;
 
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.inst.FactoryObjectInstance;
-import me.dueris.calio.builder.inst.FactoryProvider;
+import me.dueris.calio.builder.inst.factory.FactoryBuilder;
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
@@ -16,11 +19,11 @@ public class JsonFactoryValidator {
      * @param factoryKey the NamespacedKey representing the factory
      * @return a cloned and validated FactoryProvider
      */
-    public static FactoryProvider validateFactory(FactoryProvider provider, List<FactoryObjectInstance> valid, NamespacedKey factoryKey) {
-        FactoryProvider cloned = (FactoryProvider) provider.clone();
+    public static FactoryBuilder validateFactory(FactoryBuilder provider, List<FactoryObjectInstance> valid, NamespacedKey factoryKey) {
+        FactoryBuilder cloned = provider.cloneFactory();
         for (FactoryObjectInstance instance : valid) {
-            if (provider.containsKey(instance.getObjName())) {
-                Object obj = provider.retrive(instance.getObjName(), instance.getType());
+            if (provider.getRoot().isPresent(instance.getObjName())) {
+                Object obj = retriveSpecificType(provider.getRoot(), instance.getObjName(), instance.getType());
                 if (obj == null) {
                     CraftCalio.INSTANCE.getLogger().severe("Instance is null? Bug?? - " + instance.getObjName());
                     return null;
@@ -37,7 +40,7 @@ public class JsonFactoryValidator {
                 }
             } else {
                 if (instance.getDefaultValue() != null) {
-                    cloned.put(instance.getObjName(), instance.getDefaultValue());
+                    cloned.putDefault(instance.getObjName(), instance.getDefaultValue());
                 } else {
                     CraftCalio.INSTANCE.getLogger().severe("Provided FactoryProvider({b}) is missing instance: {a}"
                         .replace("{a}", instance.getObjName())
@@ -48,5 +51,46 @@ public class JsonFactoryValidator {
             }
         }
         return cloned;
+    }
+
+    private static Object retriveSpecificType(FactoryJsonObject element, String type, Class objType) {
+        if (element.isPresent(type)) {
+            if (objType.equals(ItemStack.class)) {
+                return element.getItemStack(type);
+            } else if (objType.equals(NamespacedKey.class)) {
+                return element.getNamespacedKey(type);
+            } else if (objType.equals(FactoryJsonObject.class)) {
+                return element.getJsonObject(type);
+            }
+
+            return getFromGson(element, type);
+        }
+        return null;
+    }
+
+    private static Object getFromGson(FactoryJsonObject element, String type) {
+        if (element.isJsonArray(type)) {
+            return element.getJsonArray(type);
+        }
+        if (element.isPresent(type)) {
+            FactoryElement rawElement = element.getElement(type);
+            if (element.isGsonPrimative(type)) {
+                if (rawElement.isString()) {
+                    return rawElement.getString();
+                }
+                if (rawElement.isBoolean()) {
+                    return rawElement.getBoolean();
+                }
+                if (rawElement.isNumber()) {
+                    Number number = rawElement.getNumber().asNumber();
+                    if (number.toString().contains(".")) {
+                        return rawElement.getNumber().getFloat();
+                    } else {
+                        return rawElement.getNumber().getInt();
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

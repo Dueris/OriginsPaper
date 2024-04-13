@@ -1,5 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -16,7 +18,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class StartingEquipmentPower extends CraftPower implements Listener {
 
@@ -31,7 +32,7 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
         if (starting_equip.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         runGiveItems(e.getPlayer(), power);
                     } else {
@@ -43,8 +44,8 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
     }
 
     public void runGiveItems(Player p, Power power) {
-        for (HashMap<String, Object> stack : power.getJsonListSingularPlural("stack", "stacks")) {
-            p.getInventory().addItem(new ItemStack(Material.valueOf(stack.get("item").toString().toUpperCase().split(":")[1]), power.getIntOrDefault("amount", 1)));
+        for (FactoryJsonObject stack : power.getList$SingularPlural("stack", "stacks").stream().map(FactoryElement::toJsonObject).toList()) {
+            p.getInventory().addItem(new ItemStack(Material.valueOf(stack.getString("item").toUpperCase().split(":")[1]), power.getNumberOrDefault("amount", 1).getInt()));
         }
     }
 
@@ -53,9 +54,9 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
         if (starting_equip.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
-                        if (power.getObject("recurrent") != null && power.getBoolean("recurrent")) {
+                        if (power.isPresent("recurrent") && power.getBoolean("recurrent")) {
                             runGiveItems(e.getPlayer(), power);
                         }
                     } else {

@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass;
 import me.dueris.genesismc.registry.registries.Layer;
@@ -20,7 +21,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_break_speed;
 
@@ -53,12 +53,12 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                 try {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (e.getBlock() == null || e.getBlock().getState() == null) return;
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) e.getBlock())) {
+                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) e.getBlock())) {
                             setActive(p, power.getTag(), true);
                             if (p.hasPotionEffect(PotionEffectType.FAST_DIGGING)) return;
                             // if(power.getPossibleModifiers("modifier", "modifiers"))
-                            for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-                                if (Float.valueOf(modifier.get("value").toString()) <= 0) {
+                            for (Modifier modifier : power.getModifiers()) {
+                                if (modifier.value() <= 0) {
                                     // Slower mine
                                     p.addPotionEffect(
                                         new PotionEffect(
@@ -106,8 +106,8 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
         if (modify_break_speed.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
-                        Float value = Float.valueOf(modifier.get("value").toString());
+                    for (Modifier modifier : power.getModifiers()) {
+                        Float value = modifier.value();
                         valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, value); // Why does there need to be a binary operator if the operator does nothing?
                     }
                 }

@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.conditions.types;
 
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -17,7 +18,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,11 +33,11 @@ public class DamageConditions {
             if (event.getCause().equals(DamageCause.PROJECTILE)) {
                 boolean projectile = true;
                 boolean projectileCondition = true;
-                if (condition.containsKey("projectile_condition")) {
-                    projectileCondition = ConditionExecutor.testEntity((JSONObject) condition.get("projectile_condition"), ((CraftEntity) ((EntityDamageByEntityEvent) event).getDamager()));
+                if (condition.isPresent("projectile_condition")) {
+                    projectileCondition = ConditionExecutor.testEntity(condition.getJsonObject("projectile_condition"), ((CraftEntity) ((EntityDamageByEntityEvent) event).getDamager()));
                 }
-                if (condition.containsKey("projectile") && event instanceof EntityDamageByEntityEvent eventT) {
-                    String identifier = condition.get("projectile").toString();
+                if (condition.isPresent("projectile") && event instanceof EntityDamageByEntityEvent eventT) {
+                    String identifier = condition.getString("projectile");
                     if (identifier.contains(":")) {
                         identifier = identifier.split(":")[1];
                     }
@@ -47,9 +47,9 @@ public class DamageConditions {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("name"), (condition, event) -> CraftDamageType.bukkitToMinecraft(event.getDamageSource().getDamageType()).msgId().equalsIgnoreCase(condition.get("name").toString())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("name"), (condition, event) -> CraftDamageType.bukkitToMinecraft(event.getDamageSource().getDamageType()).msgId().equalsIgnoreCase(condition.getString("name"))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, event) -> {
-            NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
+            NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag"));
             TagKey<net.minecraft.world.damagesource.DamageType> key = TagKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE, CraftNamespacedKey.toMinecraft(tag));
             Holder<net.minecraft.world.damagesource.DamageType> nmsDamageType = CraftDamageType.bukkitToMinecraftHolder(event.getDamageSource().getDamageType());
             return nmsDamageType.is(key);
@@ -58,7 +58,7 @@ public class DamageConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("attacker"), (condition, event) -> {
             if (event.getEntity() instanceof LivingEntity li && ((CraftLivingEntity) li).getHandle().getLastAttacker() != null) {
                 boolean rtn = true;
-                if (condition.containsKey("entity_condition")) {
+                if (condition.isPresent("entity_condition")) {
                     rtn = ConditionExecutor.testEntity(condition, ((CraftLivingEntity) li).getHandle().getLastAttacker().getBukkitEntity());
                 }
                 return rtn;
@@ -66,8 +66,8 @@ public class DamageConditions {
             return false;
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("amount"), (condition, event) -> {
-            String comparison = condition.get("comparison").toString();
-            Long compare_to = (Long) condition.get("compare_to");
+            String comparison = condition.getString("comparison");
+            Long compare_to = condition.getNumber("compare_to").getLong();
             return Comparison.getFromString(comparison).compare(event.getDamage(), compare_to);
         }));
     }
@@ -78,14 +78,14 @@ public class DamageConditions {
 
     public class ConditionFactory implements Registerable {
         NamespacedKey key;
-        BiPredicate<JSONObject, EntityDamageEvent> test;
+        BiPredicate<FactoryJsonObject, EntityDamageEvent> test;
 
-        public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, EntityDamageEvent> test) {
+        public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, EntityDamageEvent> test) {
             this.key = key;
             this.test = test;
         }
 
-        public boolean test(JSONObject condition, EntityDamageEvent tester) {
+        public boolean test(FactoryJsonObject condition, EntityDamageEvent tester) {
             return test.test(condition, tester);
         }
 

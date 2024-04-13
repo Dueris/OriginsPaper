@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
@@ -15,7 +16,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_jump;
 
@@ -27,18 +27,15 @@ public class ModifyJumpPower extends CraftPower implements Listener {
         Player p = e.getPlayer();
         if (modify_jump.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                        for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-                            if (modifier.get("value") instanceof Number) {
-                                double modifierValue = ((Number) modifier.get("value")).doubleValue();
-                                int jumpBoostLevel = (int) /*((modifierValue - 1.0) * 2.0)*/ Math.round(modifierValue * 4);
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+                        for (Modifier modifier : power.getModifiers()) {
+                            float modifierValue = modifier.value();
+                            int jumpBoostLevel = (int) /*((modifierValue - 1.0) * 2.0)*/ Math.round(modifierValue * 4);
 
-                                if (jumpBoostLevel >= 0) {
-                                    p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, jumpBoostLevel, false, false, false));
-                                    setActive(p, power.getTag(), true);
-                                }
+                            if (jumpBoostLevel >= 0) {
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, jumpBoostLevel, false, false, false));
+                                setActive(p, power.getTag(), true);
                             }
                         }
                     }

@@ -1,6 +1,5 @@
 package me.dueris.genesismc.storage;
 
-import me.dueris.genesismc.util.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -56,7 +55,7 @@ public class GenesisConfigs {
             try {
                 mainConfigFile.createNewFile();
             } catch (IOException e) {
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "origin-server.yml"));
+                Bukkit.getLogger().warning("There was an eror creating %fileName%".replace("%fileName%", "origin-server.yml"));
             }
         }
 
@@ -64,7 +63,7 @@ public class GenesisConfigs {
             try {
                 orbConfigFile.createNewFile();
             } catch (IOException e) {
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "orboforigins.yml"));
+                Bukkit.getLogger().warning("There was an eror creating %fileName%".replace("%fileName%", "orboforigins.yml"));
             }
         }
 
@@ -72,7 +71,7 @@ public class GenesisConfigs {
             try {
                 englishLangFile.createNewFile();
             } catch (IOException e) {
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "en_us.yml"));
+                Bukkit.getLogger().warning("There was an eror creating %fileName%".replace("%fileName%", "en_us.yml"));
             }
         }
 
@@ -80,7 +79,7 @@ public class GenesisConfigs {
             try {
                 germanLangFile.createNewFile();
             } catch (IOException e) {
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "de_DE.yml"));
+                Bukkit.getLogger().warning("There was an eror creating %fileName%".replace("%fileName%", "de_DE.yml"));
             }
         }
 
@@ -88,14 +87,14 @@ public class GenesisConfigs {
             try {
                 russianLangFile.createNewFile();
             } catch (IOException e) {
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "ru_RU.yml"));
+                Bukkit.getLogger().warning("There was an eror creating %fileName%".replace("%fileName%", "ru_RU.yml"));
             }
         }
         if (!chineseLangFile.exists()) {
             try {
                 chineseLangFile.createNewFile();
             } catch (IOException e) {
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "zh_TW.yml"));
+                Bukkit.getLogger().warning("There was an eror creating %fileName%".replace("%fileName%", "zh_TW.yml"));
             }
         }
 
@@ -134,7 +133,7 @@ public class GenesisConfigs {
             try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("origin-server.yml")) {
                 Files.copy(inputStream, mainConfigFile.toPath());
             } catch (Exception e) {
-                getLogger().severe(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "origin-server.yml"));
+                getLogger().severe("There was an eror creating %fileName%".replace("%fileName%", "origin-server.yml"));
             }
         }
 
@@ -150,7 +149,7 @@ public class GenesisConfigs {
             try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("orboforigins.yml")) {
                 Files.copy(inputStream, orbConfigFile.toPath());
             } catch (Exception e) {
-                getLogger().severe(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "orboforigins.yml"));
+                getLogger().severe("There was an eror creating %fileName%".replace("%fileName%", "orboforigins.yml"));
             }
         }
 
@@ -168,64 +167,6 @@ public class GenesisConfigs {
         }
 
         return langFile;
-    }
-
-    public static void loadLangConfig() {
-        englishLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "en_us.yml");
-        if (!englishLangFile.exists()) {
-            englishLangFile.getParentFile().mkdirs();
-            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("langFiles/en_us.yml")) {
-                Files.copy(inputStream, englishLangFile.toPath());
-            } catch (Exception e) {
-                getLogger().severe(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "en_us.yml"));
-            }
-        }
-
-        // Load the custom configuration file
-        addMissingLines(englishLangFile, "langFiles/en_us.yml");
-        englishLang = YamlConfiguration.loadConfiguration(englishLangFile);
-
-        russianLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "ru_RU.yml");
-        if (!russianLangFile.exists()) {
-            russianLangFile.getParentFile().mkdirs();
-            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("langFiles/ru_RU.yml")) {
-                Files.copy(inputStream, russianLangFile.toPath());
-            } catch (Exception e) {
-                getLogger().severe(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "ru_RU.yml"));
-            }
-        }
-
-        // Load the custom configuration file
-        addMissingLines(russianLangFile, "langFiles/ru_RU.yml");
-        russianLang = YamlConfiguration.loadConfiguration(russianLangFile);
-
-        germanLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "de_DE.yml");
-        if (!germanLangFile.exists()) {
-            germanLangFile.getParentFile().mkdirs();
-            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("langFiles/de_DE.yml")) {
-                Files.copy(inputStream, germanLangFile.toPath());
-            } catch (Exception e) {
-                getLogger().severe(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "de_DE.yml"));
-            }
-        }
-
-        // Load the custom configuration file
-        addMissingLines(germanLangFile, "langFiles/de_DE.yml");
-        germanLang = YamlConfiguration.loadConfiguration(germanLangFile);
-
-        chineseLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "zh_TW.yml");
-        if (!chineseLangFile.exists()) {
-            chineseLangFile.getParentFile().mkdirs();
-            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("langFiles/zh_TW.yml")) {
-                Files.copy(inputStream, chineseLangFile.toPath());
-            } catch (Exception e) {
-                getLogger().severe(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "zh_TW.yml"));
-            }
-        }
-
-        // Load the custom configuration file
-        addMissingLines(chineseLangFile, "langFiles/zh_TW.yml");
-        chineseLang = YamlConfiguration.loadConfiguration(chineseLangFile);
     }
 
     public static FileConfiguration getMainConfig() {

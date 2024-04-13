@@ -40,10 +40,10 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power powerContainer : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
                 if (powerContainer == null) continue;
-                if (!(ConditionExecutor.testBlock(powerContainer.get("block_condition"), (CraftBlock) e.getBlock()) && ConditionExecutor.testEntity(powerContainer.get("condition"), (CraftEntity) e.getPlayer())))
+                if (!(ConditionExecutor.testBlock(powerContainer.getJsonObject("block_condition"), (CraftBlock) e.getBlock()) && ConditionExecutor.testEntity(powerContainer.getJsonObject("condition"), (CraftEntity) e.getPlayer())))
                     return;
                 boolean pass = true;
-                if(powerContainer.getBooleanOrDefault("only_when_harvested", true)){
+                if (powerContainer.getBooleanOrDefault("only_when_harvested", true)) {
                     pass = ((CraftPlayer) actor).getHandle().hasCorrectToolForDrops(((CraftBlock) e.getBlock()).getNMS());
                 }
 
@@ -52,8 +52,8 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            Actions.executeBlock(e.getBlock().getLocation(), powerContainer.getBlockAction());
-                            Actions.executeEntity(e.getPlayer(), powerContainer.getEntityAction());
+                            Actions.executeBlock(e.getBlock().getLocation(), powerContainer.getJsonObject("block_action"));
+                            Actions.executeEntity(e.getPlayer(), powerContainer.getJsonObject("entity_action"));
                         }
                     }.runTaskLater(GenesisMC.getPlugin(), 1);
                 }

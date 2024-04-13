@@ -6,7 +6,6 @@ import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.ComponentMultiLine;
 import me.dueris.genesismc.util.KeybindingUtils;
-import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -76,7 +75,7 @@ public class ScreenNavigator implements Listener {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
                     if (OriginPlayerAccessor.hasOrigin(p, "genesis:origin-null"))
-                        p.kick(Component.text(LangConfig.getLocalizedString(p, "misc.requiredChoose")));
+                        p.kick(Component.text("You must choose an origin!"));
                     e.getWhoClicked().closeInventory();
                 } else {
                     e.setCancelled(true);
@@ -128,7 +127,7 @@ public class ScreenNavigator implements Listener {
 
             //making the items to display in the menu
             ItemStack close = itemProperties(new ItemStack(Material.BARRIER), RED + "Close", null, null, RED + "Cancel Choosing");
-            ItemStack back = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + LangConfig.getLocalizedString(p, "menu.originSelect.return"), ItemFlag.HIDE_ENCHANTS, null, null);
+            ItemStack back = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
             ItemStack lowImpact = itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact" + ChatColor.GREEN + "Low", null, null, null);
             ItemStack mediumImpact = itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact" + ChatColor.YELLOW + "Medium", null, null, null);
             ItemStack highImpact = itemProperties(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact" + ChatColor.RED + "High", null, null, null);
@@ -273,7 +272,7 @@ public class ScreenNavigator implements Listener {
         if (e.getCurrentItem() != null) {
             if (e.getView().getTitle().startsWith("Custom Origins")) {
                 ItemStack item = e.getCurrentItem();
-                if (item.getType().equals(Material.ARROW) && (e.getCurrentItem().getItemMeta().getDisplayName().equals(LangConfig.getLocalizedString(e.getWhoClicked(), "menu.customChoose.back")) || e.getCurrentItem().getItemMeta().getDisplayName().equals(LangConfig.getLocalizedString(e.getWhoClicked(), "menu.customChoose.next")))) {
+                if (item.getType().equals(Material.ARROW) && (e.getCurrentItem().getItemMeta().getDisplayName().equals("Previous Page") || e.getCurrentItem().getItemMeta().getDisplayName().equals("Next Page"))) {
                     Player p = (Player) e.getWhoClicked();
                     @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins - " + p.getName());
                     NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "page");

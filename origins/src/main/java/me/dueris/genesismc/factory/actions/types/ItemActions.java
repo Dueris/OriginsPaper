@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.actions.types;
 
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
@@ -9,27 +10,26 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONObject;
 
 import java.util.function.BiConsumer;
 
 public class ItemActions {
 
     public void register() {
-        register(new ActionFactory(GenesisMC.apoliIdentifier("damage"), (action, item) -> item.setDurability((short) (item.getDurability() + Short.parseShort(action.get("amount").toString())))));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("damage"), (action, item) -> item.setDurability((short) (item.getDurability() + action.getNumber("amount").getFloat()))));
         register(new ActionFactory(GenesisMC.apoliIdentifier("consume"), (action, item) -> {
-            int amount = action.get("amount") == null ? 1 : action.get("amount") instanceof Long ? Math.toIntExact((long) action.get("amount")) : (int) action.get("amount");
+            int amount = !action.isPresent("amount") ? 1 : action.getNumber("amount").getInt();
             item.setAmount(item.getAmount() - amount);
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("remove_enchantment"), (action, item) -> {
-            Enchantment enchantment = Enchantment.getByKey(new NamespacedKey(action.get("enchantment").toString().split(":")[0], action.get("enchantment").toString().split(":")[1]));
+            Enchantment enchantment = Enchantment.getByKey(new NamespacedKey(action.getString("enchantment").split(":")[0], action.getString("enchantment").split(":")[1]));
             if (item.containsEnchantment(enchantment)) {
                 item.removeEnchantment(enchantment);
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("merge_nbt"), (action, item) -> {
             net.minecraft.world.item.ItemStack stack = CraftItemStack.unwrap(item);
-            stack.getOrCreateTag().merge(MiscUtils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(action.get("nbt").toString()), CompoundTag.CODEC));
+            stack.getOrCreateTag().merge(MiscUtils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(action.getString("nbt").toString()), CompoundTag.CODEC));
         }));
     }
 
@@ -39,14 +39,14 @@ public class ItemActions {
 
     public static class ActionFactory implements Registerable {
         NamespacedKey key;
-        BiConsumer<JSONObject, ItemStack> test;
+        BiConsumer<FactoryJsonObject, ItemStack> test;
 
-        public ActionFactory(NamespacedKey key, BiConsumer<JSONObject, ItemStack> test) {
+        public ActionFactory(NamespacedKey key, BiConsumer<FactoryJsonObject, ItemStack> test) {
             this.key = key;
             this.test = test;
         }
 
-        public void test(JSONObject action, ItemStack tester) {
+        public void test(FactoryJsonObject action, ItemStack tester) {
             if (action == null || action.isEmpty()) return; // Dont execute empty actions
             try {
                 test.accept(action, tester);

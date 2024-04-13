@@ -3,9 +3,11 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
@@ -15,10 +17,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsDouble;
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_projectile_damage;
 
 public class ModifyProjectileDamagePower extends CraftPower implements Listener {
@@ -35,19 +35,18 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
             if (modify_projectile_damage.contains(pl)) {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     try {
-                        ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(pl, getPowerFile(), layer)) {
-                            if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.get("target_condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.get("damage_condition"), e)) {
-                                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-                                    Float value = Float.valueOf(modifier.get("value").toString());
-                                    String operation = modifier.get("operation").toString();
-                                    BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                            if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.getJsonObject("target_condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) {
+                                for (Modifier modifier : power.getModifiers()) {
+                                    Float value = modifier.value();
+                                    String operation = modifier.operation();
+                                    BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
                                         ModifyDamageDealtPower damageDealtPower = new ModifyDamageDealtPower();
                                         damageDealtPower.runSetDMG(e, operation, value);
                                         setActive(pl, power.getTag(), true);
-                                        Actions.executeEntity(e.getEntity(), power.get("target_action"));
-                                        Actions.executeEntity(pl, power.get("self_action"));
+                                        Actions.executeEntity(e.getEntity(), power.getJsonObject("target_action"));
+                                        Actions.executeEntity(pl, power.getJsonObject("self_action"));
                                     }
                                 }
                             } else {

@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -13,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class TooltipPower extends CraftPower {
 
@@ -54,10 +54,10 @@ public class TooltipPower extends CraftPower {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testItem(power.get("item_condition"), p.getItemInHand())) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), p.getItemInHand())) {
                         setActive(p, power.getTag(), true);
-                        for (HashMap<String, Object> text : power.getJsonListSingularPlural("text", "texts")) {
-                            applyTooltip(p, p.getItemInHand(), text.get("text").toString());
+                        for (String text : power.getList$SingularPlural("text", "texts").stream().map(FactoryElement::getString).toList()) {
+                            applyTooltip(p, p.getItemInHand(), text);
                         }
                     } else {
 

@@ -1,12 +1,12 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlot;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
@@ -35,7 +34,7 @@ public class RestrictArmor extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         runPower(p, power);
                     }
                 }
@@ -50,18 +49,15 @@ public class RestrictArmor extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (power.getObjectOrDefault("interval", 1L) == null) {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
-                        return;
-                    }
-
-                    interval = power.getLong("interval");
+//                    if (!power.isPresent("interval")) {
+//                        throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
+//                    }
+                    interval = power.getNumberOrDefault("interval", 1).getLong();
                     if (interval == 0) interval = 1L;
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
-                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                             runPower(p, power);
                         } else {
                             setActive(p, power.getTag(), false);
@@ -82,10 +78,10 @@ public class RestrictArmor extends CraftPower implements Listener {
         boolean passLegs;
         boolean passChest;
         boolean passHead;
-        JSONObject headObj = power.get("head");
-        JSONObject chestObj = power.get("chest");
-        JSONObject legsObj = power.get("legs");
-        JSONObject feetObj = power.get("feet");
+        FactoryJsonObject headObj = power.getJsonObject("head");
+        FactoryJsonObject chestObj = power.getJsonObject("chest");
+        FactoryJsonObject legsObj = power.getJsonObject("legs");
+        FactoryJsonObject feetObj = power.getJsonObject("feet");
 
         if (headObj == null) headb = false;
         if (chestObj == null) chestb = false;

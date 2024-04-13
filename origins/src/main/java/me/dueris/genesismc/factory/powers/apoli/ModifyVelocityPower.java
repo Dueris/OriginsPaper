@@ -1,12 +1,15 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
@@ -17,11 +20,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.BinaryOperator;
-
-import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsFloat;
 
 public class ModifyVelocityPower extends CraftPower implements Listener {
 
@@ -36,18 +36,18 @@ public class ModifyVelocityPower extends CraftPower implements Listener {
             Player p = e.getPlayer();
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                        List<String> identifiers = power.getJsonArray("axes");
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+                        List<String> identifiers = power.getJsonArray("axes").asList().stream().map(FactoryElement::getString).toList();
                         if (identifiers.isEmpty()) {
                             identifiers.add("x");
                             identifiers.add("y");
                             identifiers.add("z");
                         }
                         Vector vel = e.getVelocity();
-                        for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
-                            Float value = Float.valueOf(modifier.get("value").toString());
-                            String operation = modifier.get("operation").toString();
-                            BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                        for (Modifier modifier : power.getModifiers()) {
+                            Float value = modifier.value();
+                            String operation = modifier.operation();
+                            BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
                             for (String axis : identifiers) {
                                 if (axis == "x") {
                                     vel.setX((float) mathOperator.apply(vel.getX(), value));

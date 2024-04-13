@@ -10,12 +10,9 @@ import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.storage.GenesisConfigs;
-import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.SendCharts;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
@@ -38,7 +35,6 @@ import java.util.Random;
 
 import static me.dueris.genesismc.content.OrbOfOrigins.orb;
 import static me.dueris.genesismc.factory.powers.ApoliPower.phasing;
-import static me.dueris.genesismc.util.ColorConstants.AQUA;
 import static org.bukkit.Bukkit.getServer;
 
 public class OriginChoosing implements Listener {
@@ -85,7 +81,6 @@ public class OriginChoosing implements Listener {
             Origin origin = origins.get(random.nextInt(origins.size()));
             for (Layer layer : layers) {
                 OriginPlayerAccessor.setOrigin(p, layer, origin);
-                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.randomOrigins").replace("%layer%", layer.getTag()).replace("%originName%", origin.getName())).color(TextColor.fromHexString(AQUA)));
             }
 
             e.setCancelled(true);

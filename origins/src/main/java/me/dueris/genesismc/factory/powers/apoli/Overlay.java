@@ -29,7 +29,7 @@ public class Overlay extends CraftPower implements Listener {
         if (getPowerArray().contains(player)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
                         setActive(player, power.getTag(), true);
                         Phasing.initializePhantomOverlay(player);
                     } else {

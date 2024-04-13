@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.conditions.types;
 
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.data.types.Comparison;
@@ -12,7 +13,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
-import org.json.simple.JSONObject;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class BiomeConditions {
 
     public void prep() {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, biome) -> {
-            NamespacedKey tag = NamespacedKey.fromString(condition.get("tag").toString());
+            NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag").toString());
             TagKey key = TagKey.create(net.minecraft.core.registries.Registries.BIOME, CraftNamespacedKey.toMinecraft(tag));
             return ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BIOME).wrapAsHolder(biome.getA()).is(key);
         }));
@@ -37,22 +37,22 @@ public class BiomeConditions {
             : condition.get("precipitation").toString().equals("none");
                 */
             biome.getA().getPrecipitationAt(new BlockPos(0, 64, 0)).equals(getPrecipitation(condition)) :
-            condition.get("precipitation").toString().equalsIgnoreCase("none")));
+            condition.getString("precipitation").toString().equalsIgnoreCase("none")));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("category"), (condition, biome) -> {
-            NamespacedKey tag = GenesisMC.apoliIdentifier("category/" + condition.get("category").toString()); // Use category folder
+            NamespacedKey tag = GenesisMC.apoliIdentifier("category/" + condition.getString("category").toString()); // Use category folder
             TagKey key = TagKey.create(net.minecraft.core.registries.Registries.BIOME, CraftNamespacedKey.toMinecraft(tag));
             return ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BIOME).wrapAsHolder(biome.getA()).is(key);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("temperature"), (condition, biome) -> {
-            String comparison = condition.get("comparison").toString();
-            float compare_to = Float.parseFloat(condition.get("compare_to").toString());
+            String comparison = condition.getString("comparison").toString();
+            float compare_to = condition.getNumber("compare_to").getFloat();
             return Comparison.getFromString(comparison).compare(biome.getA().getBaseTemperature(), compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("high_humidity"), (condition, biome) -> Comparison.getFromString(">=").compare(biome.getA().climateSettings.downfall(), 0.85f)));
     }
 
-    private net.minecraft.world.level.biome.Biome.Precipitation getPrecipitation(JSONObject condition) {
-        String lowerCase = condition.get("precipitation").toString().toLowerCase();
+    private net.minecraft.world.level.biome.Biome.Precipitation getPrecipitation(FactoryJsonObject condition) {
+        String lowerCase = condition.getString("precipitation").toString().toLowerCase();
         switch (lowerCase) {
             case "none" -> {
                 return Precipitation.NONE;
@@ -75,14 +75,14 @@ public class BiomeConditions {
 
     public class ConditionFactory implements Registerable {
         NamespacedKey key;
-        BiPredicate<JSONObject, Pair<net.minecraft.world.level.biome.Biome, BlockPos>> test;
+        BiPredicate<FactoryJsonObject, Pair<net.minecraft.world.level.biome.Biome, BlockPos>> test;
 
-        public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, Pair<net.minecraft.world.level.biome.Biome, BlockPos>> test) {
+        public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, Pair<net.minecraft.world.level.biome.Biome, BlockPos>> test) {
             this.key = key;
             this.test = test;
         }
 
-        public boolean test(JSONObject condition, Pair<net.minecraft.world.level.biome.Biome, BlockPos> tester) {
+        public boolean test(FactoryJsonObject condition, Pair<net.minecraft.world.level.biome.Biome, BlockPos> tester) {
             return test.test(condition, tester);
         }
 

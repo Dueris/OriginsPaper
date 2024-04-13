@@ -63,13 +63,13 @@ public class FireProjectile extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (fire_projectile.contains(p)) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
+                    if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
                         in_continuous.putIfAbsent(p, new ArrayList<>());
-                        if (Boolean.valueOf(power.get("key").getOrDefault("continuous", "false").toString())) {
-                            if (in_continuous.get(p).contains(power.get("key").getOrDefault("key", "key.origins.primary_active").toString())) {
-                                in_continuous.get(p).remove(power.get("key").getOrDefault("key", "key.origins.primary_active").toString());
+                        if (power.getJsonObject("key").getBooleanOrDefault("continuous", false)) {
+                            if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"))) {
+                                in_continuous.get(p).remove(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
                             } else {
-                                in_continuous.get(p).add(power.get("key").getOrDefault("key", "key.origins.primary_active").toString());
+                                in_continuous.get(p).add(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
                             }
                         }
                     }
@@ -97,16 +97,16 @@ public class FireProjectile extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (fire_projectile.contains(p)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
-                            if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
-                                int cooldown = power.getIntOrDefault("cooldown", 1);
+                            if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString(), p)) {
+                                int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
                                 String tag = power.getStringOrDefault("tag", "{}");
-                                float divergence = power.getFloatOrDefault("divergence", 1.0f);
-                                float speed = power.getFloatOrDefault("speed", 1);
-                                int amt = power.getIntOrDefault("count", 1);
-                                int start_delay = power.getIntOrDefault("start_delay", 0);
-                                int interval = power.getIntOrDefault("interval", 1);
+                                float divergence = power.getNumberOrDefault("divergence", 1.0f).getFloat();
+                                float speed = power.getNumberOrDefault("speed", 1).getFloat();
+                                int amt = power.getNumberOrDefault("count", 1).getInt();
+                                int start_delay = power.getNumberOrDefault("start_delay", 0).getInt();
+                                int interval = power.getNumberOrDefault("interval", 1).getInt();
 
                                 // Introduce a slight random divergence
                                 divergence += (float) ((Math.random() - 0.5) * 0.05); // Adjust the 0.05 value to control the randomness level
@@ -116,14 +116,14 @@ public class FireProjectile extends CraftPower implements Listener {
                                     type = EntityType.ENDER_PEARL;
                                     enderian_pearl.add(p);
                                 } else {
-                                    type = EntityType.valueOf(power.getNamespacedString("entity_type").split(":")[1].toUpperCase());
+                                    type = EntityType.valueOf(power.getNamespacedKey("entity_type").asString().split(":")[1].toUpperCase());
                                     enderian_pearl.remove(p);
                                 }
-                                String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
+                                String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
                                 KeybindingUtils.toggleKey(p, key);
 
                                 float finalDivergence = divergence;
-                                boolean cont = !Boolean.valueOf(power.get("key").getOrDefault("continuous", "false").toString());
+                                boolean cont = !power.getJsonObject("key").getBooleanOrDefault("continuous", false);
                                 new BukkitRunnable() {
                                     final float finalDivergence1 = finalDivergence;
                                     int shotsLeft = -amt;
@@ -132,7 +132,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                     public void run() {
                                         if (shotsLeft >= 0) {
                                             if ((!cont || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key)) {
-                                                CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.get("hud_render"));
+                                                CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), cooldown, power.getJsonObject("hud_render"));
                                                 KeybindingUtils.toggleKey(p, key);
                                                 setActive(p, power.getTag(), false);
                                                 this.cancel();
@@ -172,7 +172,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                 entityToSpawn.getBukkitEntity().setVelocity(finalVeloc);
                                                 CompoundTag mergedTag = entityToSpawn.saveWithoutId(new CompoundTag());
                                                 String[] finalNbtTag = {""};
-                                                if (power.get("tag") != null) {
+                                                if (power.getJsonObject("tag") != null) {
                                                     finalNbtTag[0] = mergedTag.merge(MiscUtils.ParserUtils.parseJson(new StringReader(tag), CompoundTag.CODEC)).getAsString();
                                                 } else {
                                                     finalNbtTag[0] = mergedTag.getAsString();

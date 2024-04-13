@@ -4,10 +4,6 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.ColorConstants;
-import me.dueris.genesismc.util.LangConfig;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -146,28 +142,20 @@ public class InventorySerializer implements Listener {
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, "apoli:inventory", layer)) {
-                if (matches(p, e.getView(), power)) {
+                if (matches(e.getView(), power)) {
                     ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
                     Arrays.stream(e.getInventory().getContents())
-                        .filter(itemStack -> {
-                            return itemStack != null;
-                        })
+                        .filter(itemStack -> itemStack != null)
                         .forEach(itemStack -> prunedItems.add(itemStack));
-
-                    Player target = (Player) e.getPlayer();
-                    if (target == null) {
-                        p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "errors.inventorySaveFail").replace("%player%", e.getView().getTitle().split(":")[1].substring(1))).color(TextColor.fromHexString(ColorConstants.RED)));
-                        return;
-                    }
-                    storeItems(prunedItems, target, power.getTag());
+                    storeItems(prunedItems, p, power.getTag());
                 }
             }
         }
 
     }
 
-    private boolean matches(Player player, InventoryView inventory, Power power) {
+    private boolean matches(InventoryView inventory, Power power) {
         String title = power.getStringOrDefault("title", "container.inventory");
         return inventory.getTitle().equalsIgnoreCase(title);
     }

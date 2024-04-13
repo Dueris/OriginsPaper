@@ -34,22 +34,22 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
 //                        if (conditionExecutor.check("item_condition", "item_condition", p, power, "apoli:modify_crafting", p, null, p.getLocation().getBlock(), null, e.getInventory().getResult(), null)) {
                         String currKey = RecipePower.computeTag(e.getRecipe());
                         if (currKey == null) return;
                         String provKey = power.getStringOrDefault("recipe", currKey);
                         boolean set = false;
                         if (currKey == provKey) { // Matched on crafting
-                            set = ConditionExecutor.testItem(power.get("item_condition"), e.getInventory().getResult());
+                            set = ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getInventory().getResult());
                         }
                         if (set) {
-                            if (power.getOrDefault("result", null) != null) {
-                                e.getInventory().setResult(RecipePower.computeResult(power.get("result")));
+                            if (power.isPresent("result")) {
+                                e.getInventory().setResult(RecipePower.computeResult(power.getJsonObject("result")));
                             }
-                            Actions.executeEntity(p, power.get("entity_action"));
-                            Actions.executeItem(e.getInventory().getResult(), power.getItemAction());
-                            Actions.executeBlock(p.getLocation(), power.getBlockAction());
+                            Actions.executeEntity(p, power.getJsonObject("entity_action"));
+                            Actions.executeItem(e.getInventory().getResult(), power.getJsonObject("item_action"));
+                            Actions.executeBlock(p.getLocation(), power.getJsonObject("block_action"));
                         }
 //                        } else {
 //                            setActive(p, power.getTag(), false);

@@ -2,10 +2,10 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
@@ -25,24 +25,14 @@ public class AttributeConditioned extends CraftPower implements Listener {
 
     private static final HashMap<Player, Boolean> applied = new HashMap<>();
 
-    public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, int value) {
-        BinaryOperator mathOperator = Utils.getOperationMappingsInteger().get(operation);
-        if (mathOperator != null) {
-            int result = (int) mathOperator.apply(base_value, value);
-            p.getAttribute(attribute_modifier).setBaseValue(result);
-        } else {
-            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
-        }
-        p.sendHealthUpdate();
-    }
-
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
         BinaryOperator operator = Utils.getOperationMappingsDouble().get(operation);
         if (operator != null) {
             double result = Double.valueOf(String.valueOf(operator.apply(base_value, value)));
             p.getAttribute(attribute_modifier).setBaseValue(result);
         } else {
-            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
+            Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
+            new Throwable().printStackTrace();
         }
         p.sendHealthUpdate();
     }
@@ -51,18 +41,19 @@ public class AttributeConditioned extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
-                for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
-                    if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
-                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.get("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
-                    double val = Float.valueOf(modifier.get("value").toString());
+                for (Modifier modifier : power.getModifiers()) {
+                    if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) return;
+                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.handle.getString("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
+                    double val = modifier.value();
                     double baseVal = p.getAttribute(attribute_modifier).getBaseValue();
-                    String operation = modifier.get("operation").toString();
+                    String operation = modifier.operation();
                     BinaryOperator operator = Utils.getOperationMappingsDouble().get(operation);
                     if (operator != null) {
                         double result = Double.valueOf(String.valueOf(operator.apply(baseVal, val)));
                         p.getAttribute(attribute_modifier).setBaseValue(result);
                     } else {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
+                        Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
+                        new Throwable().printStackTrace();
                     }
                     p.sendHealthUpdate();
                 }
@@ -76,19 +67,12 @@ public class AttributeConditioned extends CraftPower implements Listener {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
 
-                for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
-                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.get("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
-                    if (modifier.get("value") instanceof Integer) {
-                        int value = Integer.valueOf(modifier.get("value").toString());
-                        int base_value = (int) p.getAttribute(attribute_modifier).getBaseValue();
-                        String operation = String.valueOf(modifier.get("operation"));
-                        executeAttributeModify(operation, attribute_modifier, base_value, p, -value);
-                    } else if (modifier.get("value") instanceof Double) {
-                        double value = Double.valueOf(modifier.get("value").toString());
-                        double base_value = p.getAttribute(attribute_modifier).getBaseValue();
-                        String operation = String.valueOf(modifier.get("operation"));
-                        executeAttributeModify(operation, attribute_modifier, base_value, p, -value);
-                    }
+                for (Modifier modifier : power.getModifiers()) {
+                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.handle.getString("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
+                    double value = modifier.value();
+                    double base_value = p.getAttribute(attribute_modifier).getBaseValue();
+                    String operation = modifier.operation();
+                    executeAttributeModify(operation, attribute_modifier, base_value, p, -value);
                 }
             }
 
@@ -110,7 +94,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
                         applied.put(p, false);
                     }
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (!applied.get(p)) {
                             executeConditionAttribute(p);
                             applied.put(p, true);

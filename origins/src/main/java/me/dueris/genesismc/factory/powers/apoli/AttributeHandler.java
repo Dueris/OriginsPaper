@@ -5,59 +5,37 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AttributeExecuteEvent;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.ScreenConstants;
-import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.function.BinaryOperator;
-import java.util.function.Predicate;
 
 public class AttributeHandler extends CraftPower implements Listener {
 
-    public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
-        return Utils.getOperationMappingsDouble();
-    }
-
-    public static Map<String, BinaryOperator<Long>> getOperationMappingsLong() {
-        return Utils.getOperationMappingsLong();
-    }
-
-    public static Map<String, BinaryOperator<Integer>> getOperationMappingsInteger() {
-        return Utils.getOperationMappingsInteger();
-    }
-
-    public static Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
-        return Utils.getOperationMappingsFloat();
-    }
-
-    public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
-        BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+    public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, double value) {
+        BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
         if (mathOperator != null) {
-            double result = (Double) mathOperator.apply(base_value, value);
+            double result = (double) mathOperator.apply(base_value, value);
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
         } else {
-            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
+            Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
+            new Throwable().printStackTrace();
         }
     }
 
@@ -87,45 +65,28 @@ public class AttributeHandler extends CraftPower implements Listener {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
 
-                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-                    if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
+                for (Modifier modifier : power.getModifiers()) {
+                    if (modifier.handle.getString("attribute").equalsIgnoreCase("reach-entity-attributes:reach")) {
                         extra_reach.add(p);
                         continue;
-                    } else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
+                    } else if (modifier.handle.getString("attribute").equalsIgnoreCase("reach-entity-attributes:attack_range")) {
                         extra_reach_attack.add(p);
                         continue;
                     } else {
-                        Reach.setFinalReach(p, Reach.getDefaultReach(p));
+                        ReachUtils.setFinalReach(p, ReachUtils.getDefaultReach(p));
                     }
 
                     try {
-                        Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.get("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
+                        Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.handle.getString("attribute")).asString().split(":")[1].replace(".", "_").toUpperCase());
 
-                        Object valueObj = modifier.get("value");
-
-                        if (valueObj instanceof Number) {
-                            double value;
-                            if (valueObj instanceof Integer) {
-                                value = ((Number) valueObj).intValue();
-                            } else if (valueObj instanceof Double) {
-                                value = ((Number) valueObj).doubleValue();
-                            } else if (valueObj instanceof Float) {
-                                value = ((Number) valueObj).floatValue();
-                            } else if (valueObj instanceof Long) {
-                                value = ((Number) valueObj).longValue();
-                            } else {
-                                Objects.requireNonNull(valueObj);
-                                continue;
-                            }
-
-                            double base_value = p.getAttribute(attribute_modifier).getBaseValue();
-                            String operation = String.valueOf(modifier.get("operation"));
-                            executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-                            AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), power);
-                            Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
-                            setActive(p, power.getTag(), true);
-                            p.sendHealthUpdate();
-                        }
+                        float value = modifier.value();
+                        double base_value = p.getAttribute(attribute_modifier).getBaseValue();
+                        String operation = modifier.operation();
+                        executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                        AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), power);
+                        Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
+                        setActive(p, power.getTag(), true);
+                        p.sendHealthUpdate();
                     } catch (Exception ev) {
                         ev.printStackTrace();
                     }
@@ -149,7 +110,7 @@ public class AttributeHandler extends CraftPower implements Listener {
         return attribute;
     }
 
-    public static class Reach implements Listener {
+    public static class ReachUtils implements Listener {
 
         private static Block getClosestBlockInSight(Player player, double maxRange, double normalReach) {
             // Get the player's eye location
@@ -191,76 +152,6 @@ public class AttributeHandler extends CraftPower implements Listener {
                 return p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE);
             } else {
                 return getDefaultReach(p);
-            }
-        }
-
-        @EventHandler
-        public void OnClickREACH(PlayerInteractEvent e) {
-            Player p = e.getPlayer();
-            if (extra_reach_attack.contains(e.getPlayer())) {
-                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, "apoli:attribute", layer)) {
-                        for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-                            if (!e.getAction().isLeftClick()) return;
-                            String operation = String.valueOf(modifier.get("operation"));
-
-                            BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
-
-                            Object valueObj = modifier.get("value");
-
-                            double base = getDefaultReach(p);
-
-                            if (valueObj instanceof Number) {
-                                double value;
-                                if (valueObj instanceof Integer) {
-                                    value = ((Number) valueObj).intValue();
-                                } else if (valueObj instanceof Double) {
-                                    value = ((Number) valueObj).doubleValue();
-                                } else if (valueObj instanceof Float) {
-                                    value = ((Number) valueObj).floatValue();
-                                } else if (valueObj instanceof Long) {
-                                    value = ((Number) valueObj).longValue();
-                                } else {
-                                    Objects.requireNonNull(valueObj);
-                                    continue;
-                                }
-
-                                if (mathOperator != null) {
-                                    double result = (double) mathOperator.apply(base, value);
-                                    setFinalReach(p, result);
-                                } else {
-                                    Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
-                                }
-
-                                Location eyeloc = p.getEyeLocation();
-                                Predicate<Entity> filter = (entity) -> !entity.equals(p);
-
-                                RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), getFinalReach(p), FluidCollisionMode.NEVER, false, 0, filter);
-
-                                if (traceResult4_5F != null) {
-                                    Entity entity = traceResult4_5F.getHitEntity();
-                                    //entity code -- pvp
-                                    if (entity == null) return;
-                                    Player attacker = p;
-                                    if (entity.isDead() || !(entity instanceof LivingEntity)) return;
-                                    if (entity.isInvulnerable()) return;
-                                    LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
-                                    if (attacker.getLocation().distance(victim.getLocation()) <= getFinalReach(p)) {
-                                        if (entity.getPassengers().contains(p)) return;
-                                        if (!entity.isDead()) {
-                                            LivingEntity ent = (LivingEntity) entity;
-                                            p.attack(ent);
-                                        }
-                                    } else {
-                                        e.setCancelled(true);
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-
-                }
             }
         }
     }

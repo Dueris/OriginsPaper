@@ -1,10 +1,10 @@
 package me.dueris.genesismc.factory.data.types;
 
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import org.json.simple.JSONObject;
 
 import java.util.EnumSet;
 import java.util.function.Function;
@@ -64,7 +64,7 @@ public enum RotationType {
 
     }
 
-    public static Vec3 parseDirection(JSONObject jsonObject) {
+    public static Vec3 parseDirection(FactoryJsonObject jsonObject) {
         if (jsonObject == null || jsonObject.isEmpty()) return null;
         return VectorGetter.getNMSVector(jsonObject);
     }

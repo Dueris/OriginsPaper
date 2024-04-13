@@ -8,7 +8,9 @@ import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffects;
 import org.bukkit.*;
@@ -73,7 +75,7 @@ public class WaterBreathe extends CraftPower implements Listener {
             return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                     setActive(p, power.getTag(), true);
                     if (water_breathing.contains(p)) {
                         genesisExecuting.add(p);
@@ -142,9 +144,14 @@ public class WaterBreathe extends CraftPower implements Listener {
 
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
+            ServerPlayer player = ((CraftPlayer) p).getHandle();
             if (outofAIR.contains(p)) {
                 int remainingAir = p.getRemainingAir();
                 if (remainingAir <= 5) {
+                    for (int i = 0; i < 8; ++i) {
+                        p.spawnParticle(Particle.WATER_BUBBLE, player.getRandomX(0.5), player.getEyeY() + player.random.nextGaussian() * 0.08D, player.getRandomZ(0.5), 1);
+                    }
+
                     float finalDmg = 1;
                     if (p.getInventory().getHelmet() != null) {
                         if (p.getInventory().getHelmet().getType() == Material.TURTLE_HELMET) {

@@ -6,6 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.registries.Power;
@@ -37,7 +39,6 @@ import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R3.potion.CraftPotionUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
-import org.json.simple.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -123,7 +124,7 @@ public class Utils {
     }
 
     public static double getToDouble(Object value) {
-        return value instanceof Float ? ((Float) value).doubleValue() : value instanceof Long ? Float.valueOf(Long.toString((long)value)).doubleValue() : (double) value;
+        return value instanceof Float ? ((Float) value).doubleValue() : value instanceof Long ? Float.valueOf(Long.toString((long) value)).doubleValue() : (double) value;
     }
 
     public static <T> T returnIfPresentOrNull(Optional<T> optional) {
@@ -136,18 +137,18 @@ public class Utils {
         return ret;
     }
 
-    public static FoodProperties parseProperties(JSONObject jsonObject) {
+    public static FoodProperties parseProperties(FactoryJsonObject jsonObject) {
         FoodProperties.Builder builder = new FoodProperties.Builder();
-        Utils.computeIfObjectPresent("hunger", jsonObject, value -> builder.nutrition(getToInt(value)));
-        Utils.computeIfObjectPresent("saturation", jsonObject, value -> builder.saturationMod(Float.valueOf(Double.toString(getToDouble(value)))));
+        Utils.computeIfObjectPresent("hunger", jsonObject, value -> builder.nutrition(value.getNumber().getInt()));
+        Utils.computeIfObjectPresent("saturation", jsonObject, value -> builder.saturationMod(value.getNumber().getFloat()));
         Utils.computeIfObjectPresent("meat", jsonObject, value -> {
-            if ((boolean) value) builder.meat();
+            if (value.isBoolean() && value.getBoolean()) builder.meat();
         });
         Utils.computeIfObjectPresent("always_edible", jsonObject, value -> {
-            if ((boolean) value) builder.alwaysEat();
+            if (value.isBoolean() && value.getBoolean()) builder.alwaysEat();
         });
         Utils.computeIfObjectPresent("snack", jsonObject, value -> {
-            if ((boolean) value) builder.fast();
+            if (value.isBoolean() && value.getBoolean()) builder.fast();
         });
         List<PotionEffect> effects = MiscUtils.parseAndReturnPotionEffects(jsonObject);
         effects.forEach(potionEffect -> {
@@ -291,9 +292,9 @@ public class Utils {
         Bukkit.getLogger().info(values.toString());
     }
 
-    public static void computeIfObjectPresent(String key, JSONObject object, Consumer<Object> function) {
-        if (object.containsKey(key)) {
-            function.accept(object.get(key));
+    public static void computeIfObjectPresent(String key, FactoryJsonObject object, Consumer<FactoryElement> function) {
+        if (object.isPresent(key)) {
+            function.accept(object.getElement(key));
         }
     }
 

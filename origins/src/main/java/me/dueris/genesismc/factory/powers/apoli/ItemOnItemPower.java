@@ -27,19 +27,19 @@ public class ItemOnItemPower extends CraftPower implements Listener {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         boolean pass =
-                            ConditionExecutor.testItem(power.get("using_item_condition"), e.getCursor()) &&
-                                ConditionExecutor.testItem(power.get("on_item_condition"), e.getCurrentItem());
+                            ConditionExecutor.testItem(power.getJsonObject("using_item_condition"), e.getCursor()) &&
+                                ConditionExecutor.testItem(power.getJsonObject("on_item_condition"), e.getCurrentItem());
                         if (pass) {
-                            ItemStack stack = power.rawAccessor.getItemStack("result");
+                            ItemStack stack = power.getItemStack("result");
                             if (stack != null) {
-                                Actions.executeItem(stack, power.get("result_item_action"));
-                                for (int i = 0; i < power.getIntOrDefault("result_from_on_stack", 1); i++) {
+                                Actions.executeItem(stack, power.getJsonObject("result_item_action"));
+                                for (int i = 0; i < power.getNumberOrDefault("result_from_on_stack", 1).getInt(); i++) {
                                     p.getInventory().addItem(stack);
                                 }
                             }
-                            Actions.executeItem(e.getCursor(), power.get("using_item_action"));
-                            Actions.executeItem(e.getCurrentItem(), power.get("on_item_action"));
-                            Actions.executeEntity(e.getWhoClicked(), power.getEntityAction());
+                            Actions.executeItem(e.getCursor(), power.getJsonObject("using_item_action"));
+                            Actions.executeItem(e.getCurrentItem(), power.getJsonObject("on_item_action"));
+                            Actions.executeEntity(e.getWhoClicked(), power.getJsonObject("entity_action"));
                         }
                     }
                 }

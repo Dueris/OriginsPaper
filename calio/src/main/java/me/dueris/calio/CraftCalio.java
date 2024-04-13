@@ -2,7 +2,7 @@ package me.dueris.calio;
 
 import me.dueris.calio.builder.CalioBuilder;
 import me.dueris.calio.builder.inst.AccessorRoot;
-import me.dueris.calio.parse.JsonParser;
+import me.dueris.calio.parse.CalioJsonParser;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.NamespacedKey;
 
@@ -65,7 +65,7 @@ public class CraftCalio {
                                 for (File ff : namespacedFile.listFiles()) {
                                     if (!ff.isDirectory()) continue;
                                     if (root.getDirectoryPath().equalsIgnoreCase(ff.getName())) {
-                                        JsonParser.parseDirectory(ff, root, namespace, "");
+                                        CalioJsonParser.parseDirectory(ff, root, namespace, "");
                                     }
                                 }
                             }

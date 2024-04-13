@@ -1,10 +1,13 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
@@ -12,14 +15,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsDouble;
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_food;
 
 public class ModifyFoodPower extends CraftPower implements Listener {
@@ -141,15 +142,14 @@ public class ModifyFoodPower extends CraftPower implements Listener {
         Player player = e.getPlayer();
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (modify_food.contains(player)) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player) && ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
                         if (modify_food.contains(player)) {
-                            for (JSONObject jsonObject : power.getJsonListSingularPlural("food_modifier", "food_modifiers")) {
-                                if (jsonObject.containsKey("value")) {
-                                    int val = Integer.parseInt(jsonObject.get("value").toString());
-                                    String operation = jsonObject.get("operation").toString();
-                                    BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                            for (FactoryJsonObject jsonObject : power.getList$SingularPlural("food_modifier", "food_modifiers").stream().map(FactoryElement::toJsonObject).toList()) {
+                                if (jsonObject.isPresent("value")) {
+                                    int val = jsonObject.getNumber("value").getInt();
+                                    String operation = jsonObject.getString("operation");
+                                    BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
                                         double finalValue = (double) mathOperator.apply(getFoodModifier(e.getItem().getType()), (double) val);
                                         player.setFoodLevel(Integer.parseInt(String.valueOf(Math.round(player.getFoodLevel() + finalValue))));
@@ -157,11 +157,11 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                                     }
                                 }
                             }
-                            for (JSONObject jsonObject : power.getJsonListSingularPlural("saturation_modifier", "saturation_modifiers")) {
-                                if (jsonObject.containsKey("value")) {
-                                    int val = Integer.parseInt(jsonObject.get("value").toString());
-                                    String operation = jsonObject.get("operation").toString();
-                                    BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                            for (FactoryJsonObject jsonObject : power.getList$SingularPlural("saturation_modifier", "saturation_modifiers").stream().map(FactoryElement::toJsonObject).toList()) {
+                                if (jsonObject.isPresent("value")) {
+                                    int val = jsonObject.getNumber("value").getInt();
+                                    String operation = jsonObject.getString("operation");
+                                    BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
                                         double finalValue = (double) mathOperator.apply(getSaturationModifier(e.getItem().getType()), (double) val);
                                         player.setSaturation(Math.round(player.getFoodLevel() + finalValue));

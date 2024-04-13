@@ -153,7 +153,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             PlayerManager.originValidCheck(p);
             OriginPlayerAccessor.assignPowers(p);
             if (p.isOp())
-                p.sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "reloadMessage")).color(TextColor.fromHexString(AQUA)));
+                p.sendMessage(Component.text("Origins Reloaded!").color(TextColor.fromHexString(AQUA)));
         }
     }
 
@@ -182,7 +182,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisMC.server = ((CraftServer) Bukkit.getServer()).getServer();
         world_container = server.options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
         playerDataFolder = server.playerDataStorage.getPlayerDir();
-        GenesisConfigs.loadLangConfig();
         GenesisConfigs.loadMainConfig();
         GenesisConfigs.loadOrbConfig();
         GenesisMC.disableRender = GenesisConfigs.getMainConfig().getBoolean("disable-render-power");
@@ -243,10 +242,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         ThreadFactory threadFactory = new NamedThreadFactory("OriginParsingPool");
         loaderThreadPool = Executors.newFixedThreadPool(CraftApoli.getDynamicThreadCount(), threadFactory);
         debugOrigins = getBooleanOrDefault(GenesisConfigs.getMainConfig().getBoolean("console-startup-debug") /* add arg compat in future version */, false);
-        if (LangConfig.getLangFile() == null) {
-            Bukkit.getLogger().severe("Unable to start GenesisMC due to lang not being loaded properly");
-            Bukkit.getServer().getPluginManager().disablePlugin(this);
-        }
         placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
         if (placeholderapi) {
             new PlaceHolderAPI(this).register();
@@ -388,7 +383,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             .replace("versionNumber", pluginVersion)
             .replace("apoliVersion", apoliVersion)
         );
-        VersionControl.pluginVersionCheck();
         Bukkit.getServer().getConsoleSender().sendMessage("");
         if (debugOrigins) {
             Bukkit.getServer().getConsoleSender().sendMessage("* (-debugOrigins={true}) || BEGINNING DEBUG {");
@@ -472,7 +466,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         scheduler.cancel();
         EntityGroupManager.stop();
 
-        getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "disable")).color(TextColor.fromHexString("#fb5454")));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

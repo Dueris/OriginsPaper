@@ -1,5 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -18,7 +20,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
@@ -61,7 +62,7 @@ public class StackingStatusEffect extends CraftPower implements Listener {
         if (getPowerArray().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.get("entity_condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         applyStackingEffect(p, power);
                     } else {
@@ -73,8 +74,8 @@ public class StackingStatusEffect extends CraftPower implements Listener {
     }
 
     private void applyStackingEffect(Player player, Power power) {
-        for (JSONObject effect : power.getJsonListSingularPlural("effect", "effects")) {
-            PotionEffectType potionEffectType = getPotionEffectType(effect.get("effect").toString());
+        for (FactoryJsonObject effect : power.getList$SingularPlural("effect", "effects").stream().map(FactoryElement::toJsonObject).toList()) {
+            PotionEffectType potionEffectType = getPotionEffectType(effect.getString("effect"));
             if (potionEffectType != null) {
                 try {
                     player.addPotionEffect(new PotionEffect(potionEffectType, 50, 1, false, false, true));
@@ -82,7 +83,7 @@ public class StackingStatusEffect extends CraftPower implements Listener {
                     e.printStackTrace();
                 }
             } else {
-                Bukkit.getLogger().warning("Unknown effect ID: " + effect.get("effect").toString());
+                Bukkit.getLogger().warning("Unknown effect ID: " + effect.getString("effect"));
             }
         }
         player.sendHealthUpdate();

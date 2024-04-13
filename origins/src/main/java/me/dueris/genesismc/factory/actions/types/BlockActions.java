@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.actions.types;
 
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
-import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -28,7 +28,6 @@ import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -88,8 +87,8 @@ public class BlockActions {
 
     public void register() {
         register(new ActionFactory(GenesisMC.apoliIdentifier("add_block"), (action, location) -> {
-            if (action.containsKey("block")) {
-                Material block = MiscUtils.getBukkitMaterial(action.get("block").toString());
+            if (action.isPresent("block")) {
+                Material block = action.getMaterial("block");
                 location.getWorld().getBlockAt(location).setType(block);
             }
         }));
@@ -97,19 +96,19 @@ public class BlockActions {
             ServerLevel level = ((CraftWorld) location.getWorld()).getHandle();
             BlockPos pos = CraftLocation.toBlockPosition(location);
 
-            int radius = Math.toIntExact((Long) action.getOrDefault("radius", 15L));
-            Shape shape = Shape.getShape(action.getOrDefault("shape", "cube"));
-            boolean hasCondition = action.containsKey("block_condition");
+            int radius = action.getNumber("radius").getInt();
+            Shape shape = action.getEnumValue("shape", Shape.class);
+            boolean hasCondition = action.isPresent("block_condition");
 
             for (BlockPos blockPos : Shape.getPositions(pos, shape, radius)) {
                 boolean run = true;
                 if (hasCondition) {
-                    if (!ConditionExecutor.testBlock((JSONObject) action.get("block_condition"), CraftBlock.at(level, blockPos))) {
+                    if (!ConditionExecutor.testBlock(action.getJsonObject("block_condition"), CraftBlock.at(level, blockPos))) {
                         run = false;
                     }
                 }
                 if (run) {
-                    Actions.executeBlock(new Location(location.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ()), (JSONObject) action.get("block_action"));
+                    Actions.executeBlock(new Location(location.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ()), action.getJsonObject("block_action"));
                 }
             }
         }));
@@ -138,20 +137,15 @@ public class BlockActions {
             block.applyBoneMeal(BlockFace.UP);
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("explode"), (action, location) -> {
-            long explosionPower = 1L;
-            if (action.get("power") instanceof Long lep) {
-                explosionPower = lep;
-            } else if (action.get("power") instanceof Double dep) {
-                explosionPower = Math.round(dep);
-            }
+            float explosionPower = action.getNumber("power").getFloat();
             String destruction_type = "break";
             boolean create_fire = false;
             ServerLevel level = ((CraftWorld) location.getWorld()).getHandle();
 
-            if (action.containsKey("destruction_type"))
-                destruction_type = action.get("destruction_type").toString();
-            if (action.containsKey("create_fire"))
-                create_fire = Boolean.parseBoolean(action.get("create_fire").toString());
+            if (action.isPresent("destruction_type"))
+                destruction_type = action.getString("destruction_type");
+            if (action.isPresent("create_fire"))
+                create_fire = action.getBoolean("create_fire");
 
             Explosion explosion = new Explosion(
                 level,
@@ -170,12 +164,12 @@ public class BlockActions {
             );
             ExplosionMask.getExplosionMask(explosion, level).apply(action, true);
         }));
-        register(new ActionFactory(GenesisMC.apoliIdentifier("set_block"), (action, location) -> location.getBlock().setType(MiscUtils.getBukkitMaterial(action.get("block").toString()))));
+        register(new ActionFactory(GenesisMC.apoliIdentifier("set_block"), (action, location) -> location.getBlock().setType(action.getMaterial("block"))));
         register(new ActionFactory(GenesisMC.apoliIdentifier("modify_block_state"), (action, location) -> {
             ServerLevel level = ((CraftWorld) location.getBlock().getWorld()).getHandle();
             BlockState state = level.getBlockState(CraftLocation.toBlockPosition(location));
             Collection<Property<?>> properties = state.getProperties();
-            String desiredPropertyName = action.get("property").toString();
+            String desiredPropertyName = action.getString("property");
             Property<?> property = null;
             for (Property<?> p : properties) {
                 if (p.getName().equals(desiredPropertyName)) {
@@ -184,18 +178,17 @@ public class BlockActions {
                 }
             }
             if (property != null) {
-                if ((boolean) action.getOrDefault("cycle", false)) {
+                if (action.getBooleanOrDefault("cycle", false)) {
                     level.setBlockAndUpdate(CraftLocation.toBlockPosition(location), state.cycle(property));
                 } else {
                     Object value = state.getValue(property);
-                    if (action.containsKey("enum") && value instanceof Enum) {
-                        modifyEnumState(level, CraftLocation.toBlockPosition(location), state, property, action.get("enum").toString());
-                    } else if (action.containsKey("value") && value instanceof Boolean) {
-                        level.setBlockAndUpdate(CraftLocation.toBlockPosition(location), state.setValue((Property<Boolean>) property, (boolean) action.get("value")));
-                    } else if (action.containsKey("operation") && action.containsKey("change") && value instanceof Integer) {
-                        ResourceOperation op = action.get("operation").toString().equalsIgnoreCase("ADD") ? ResourceOperation.ADD : ResourceOperation.SET;
-                        int opValue = (int) action.get("change");
-                        int newValue = (int) value;
+                    if (action.isPresent("enum") && value instanceof Enum) {
+                        modifyEnumState(level, CraftLocation.toBlockPosition(location), state, property, action.getString("enum"));
+                    } else if (action.isPresent("value") && value instanceof Boolean) {
+                        level.setBlockAndUpdate(CraftLocation.toBlockPosition(location), state.setValue((Property<Boolean>) property, action.getBoolean("value")));
+                    } else if (action.isPresent("operation") && action.isPresent("change") && value instanceof Integer newValue) {
+                        ResourceOperation op = action.getString("operation").equalsIgnoreCase("ADD") ? ResourceOperation.ADD : ResourceOperation.SET;
+                        int opValue = action.getNumber("change").getInt();
                         switch (op) {
                             case ADD -> newValue += opValue;
                             case SET -> newValue = opValue;
@@ -216,14 +209,14 @@ public class BlockActions {
 
     public static class ActionFactory implements Registerable {
         NamespacedKey key;
-        BiConsumer<JSONObject, Location> test;
+        BiConsumer<FactoryJsonObject, Location> test;
 
-        public ActionFactory(NamespacedKey key, BiConsumer<JSONObject, Location> test) {
+        public ActionFactory(NamespacedKey key, BiConsumer<FactoryJsonObject, Location> test) {
             this.key = key;
             this.test = test;
         }
 
-        public void test(JSONObject action, Location tester) {
+        public void test(FactoryJsonObject action, Location tester) {
             if (action == null || action.isEmpty()) return; // Dont execute empty actions
             try {
                 test.accept(action, tester);
