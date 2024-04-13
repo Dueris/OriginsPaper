@@ -164,7 +164,7 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
      * @return Modifiers in the power file or null if not found
      */
     public List<Modifier> getModifiers() {
-        return getList$SingularPlural("modifier", "modifiers").stream().map(Modifier::new).toList();
+        return getList$SingularPlural("modifier", "modifiers").stream().map(FactoryElement::toJsonObject).map(Modifier::new).toList();
     }
 
     public List<String> getStringList(String key) {

@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.conditions.types;
 
 import it.unimi.dsi.fastutil.Pair;
+import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.util.ClipContextUtils;
@@ -36,46 +37,44 @@ public class BiEntityConditions implements Listener {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("both"), (condition, pair) -> {
             AtomicBoolean a = new AtomicBoolean(true);
             AtomicBoolean t = new AtomicBoolean(true);
-            a.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.first())); // actor
-            t.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.second())); // target
+            a.set(ConditionExecutor.testEntity(condition.getJsonObject("condition"), pair.first())); // actor
+            t.set(ConditionExecutor.testEntity(condition.getJsonObject("condition"), pair.second())); // target
 
             return a.get() && t.get();
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("either"), (condition, pair) -> {
             AtomicBoolean a = new AtomicBoolean(true);
             AtomicBoolean t = new AtomicBoolean(true);
-            a.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.first())); // actor
-            t.set(ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.second())); // target
+            a.set(ConditionExecutor.testEntity(condition.getJsonObject("condition"), pair.first())); // actor
+            t.set(ConditionExecutor.testEntity(condition.getJsonObject("condition"), pair.second())); // target
 
             return a.get() || t.get();
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("invert"), (condition, pair) -> ConditionExecutor.testBiEntity((JSONObject) condition.get("condition"), pair.second(), pair.first())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("invert"), (condition, pair) -> ConditionExecutor.testBiEntity(condition.getJsonObject("condition"), pair.second(), pair.first())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("undirected"), (condition, pair) -> {
             AtomicBoolean a = new AtomicBoolean(true); // Not swapped
             AtomicBoolean b = new AtomicBoolean(true); // Swapped
 
-            a.set(ConditionExecutor.testBiEntity((JSONObject) condition.get("condition"), pair.first(), pair.second())); // actor, target
-            b.set(ConditionExecutor.testBiEntity((JSONObject) condition.get("condition"), pair.second(), pair.first())); // target, actor
+            a.set(ConditionExecutor.testBiEntity(condition.getJsonObject("condition"), pair.first(), pair.second())); // actor, target
+            b.set(ConditionExecutor.testBiEntity(condition.getJsonObject("condition"), pair.second(), pair.first())); // target, actor
 
             return a.get() || b.get();
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("actor_condition"), (condition, pair) -> ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.first())));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("target_condition"), (condition, pair) -> ConditionExecutor.testEntity((JSONObject) condition.get("condition"), pair.second())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("actor_condition"), (condition, pair) -> ConditionExecutor.testEntity(condition.getJsonObject("condition"), pair.first())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("target_condition"), (condition, pair) -> ConditionExecutor.testEntity(condition.getJsonObject("condition"), pair.second())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("relative_rotation"), (condition, pair) -> {
             net.minecraft.world.entity.Entity nmsActor = pair.first().getHandle();
             net.minecraft.world.entity.Entity nmsTarget = pair.second().getHandle();
 
-            RotationType actorRotationType = RotationType.getRotationType(condition.get("actor_rotation").toString());
-            RotationType targetRotationType = RotationType.getRotationType(condition.get("target_rotation").toString());
+            RotationType actorRotationType = RotationType.getRotationType(condition.getString("actor_rotation").toString());
+            RotationType targetRotationType = RotationType.getRotationType(condition.getString("target_rotation").toString());
 
             Vec3 actorRotation = actorRotationType.getRotation(nmsActor);
             Vec3 targetRotation = targetRotationType.getRotation(nmsTarget);
 
             ArrayList<String> strings = new ArrayList<>();
-            if (condition.containsKey("axes")) {
-                for (Object object : ((JSONArray) condition.get("axes"))) {
-                    strings.add(object.toString());
-                }
+            if (condition.isPresent("axes")) {
+                strings.addAll(condition.getJsonArray("axes").asList().stream().map(FactoryElement::getString).toList());
             } else {
                 ArrayList<String> deSt = new ArrayList<>();
                 deSt.add("x");
@@ -89,8 +88,8 @@ public class BiEntityConditions implements Listener {
 
             actorRotation = RotationType.reduceAxes(actorRotation, axes);
             targetRotation = RotationType.reduceAxes(targetRotation, axes);
-            String comparison = condition.get("comparison").toString();
-            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+            String comparison = condition.getString("comparison").toString();
+            float compare_to = condition.getNumber("compare_to").getFloat();
 
             return Comparison.getFromString(comparison).compare(RotationType.getAngleBetween(actorRotation, targetRotation), compare_to);
         }));
@@ -107,19 +106,19 @@ public class BiEntityConditions implements Listener {
             return craftTarget instanceof LivingEntity livingEntity && craftActor.equals(livingEntity.lastHurtByMob);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("distance"), (condition, pair) -> {
-            String comparison = condition.get("comparison").toString();
-            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+            String comparison = condition.getString("comparison").toString();
+            float compare_to = condition.getNumber("compare_to").getFloat();
             return Comparison.getFromString(comparison).compare(pair.first().getHandle().position().distanceToSqr(pair.second().getHandle().position()), compare_to);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_set"), (condition, pair) -> EntitySetPower.isInEntitySet(pair.second(), condition.get("set").toString())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_set"), (condition, pair) -> EntitySetPower.isInEntitySet(pair.second(), condition.getString("set").toString())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("can_see"), (condition, pair) -> {
             Entity nmsActor = pair.first().getHandle();
             Entity nmsTarget = pair.second().getHandle();
 
             if ((nmsActor == null || nmsTarget == null) || nmsActor.level() != nmsTarget.level()) return false;
 
-            ClipContext.Block shapeType = ClipContextUtils.getShapeType(condition.getOrDefault("shape_type", "visual").toString());
-            ClipContext.Fluid fluidHandling = ClipContextUtils.getFluidHandling(condition.getOrDefault("fluid_handling", "none").toString());
+            ClipContext.Block shapeType = ClipContextUtils.getShapeType(condition.getStringOrDefault("shape_type", "visual").toString());
+            ClipContext.Fluid fluidHandling = ClipContextUtils.getFluidHandling(condition.getStringOrDefault("fluid_handling", "none").toString());
 
             Vec3 actorEyePos = nmsActor.getEyePosition();
             Vec3 targetEyePos = nmsTarget.getEyePosition();

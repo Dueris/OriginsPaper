@@ -14,6 +14,7 @@ import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 

@@ -69,7 +69,7 @@ public class DamageOverTime extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (power.isPresent("interval")) {
+                    if (!power.isPresent("interval")) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
                         return;
                     }

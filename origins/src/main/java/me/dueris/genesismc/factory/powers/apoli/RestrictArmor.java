@@ -51,7 +51,7 @@ public class RestrictArmor extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (power.getObjectOrDefault("interval", 1L) == null) {
+                    if (!power.isPresent("interval")) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
                         return;
                     }
