@@ -125,7 +125,7 @@ public class FactoryJsonObject {
         if (inst == null) return null;
         if (inst.isJsonObject()) {
             FactoryJsonObject obj = inst.toJsonObject();
-            String materialVal = "head";
+            String materialVal = "player_head";
             int amt = 1;
             if (obj.isPresent("item")) {
                 materialVal = obj.getString("item");
@@ -133,9 +133,9 @@ public class FactoryJsonObject {
             if (obj.isPresent("amount")) {
                 amt = obj.getNumber("amount").getInt();
             }
-            return new ItemStack(getMaterial(materialVal), amt);
+            return new ItemStack(Material.valueOf(NamespacedKey.fromString(materialVal).asString().split(":")[1].toUpperCase()), amt);
         } else { // Assuming provided string
-            return new ItemStack(getMaterial(inst.getString()));
+            return new ItemStack(MiscUtils.getBukkitMaterial(inst.getString()));
         }
     }
 }
