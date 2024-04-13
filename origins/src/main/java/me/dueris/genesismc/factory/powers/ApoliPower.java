@@ -91,7 +91,7 @@ public interface ApoliPower extends Registerable {
     default NamespacedKey getKey() {
         try {
             if (this instanceof PowerProvider && this.getClass().getDeclaredField("powerReference") != null) {
-                String refrence = Reflector.accessField("powerReference", this.getClass(), this, String.class);
+                String refrence = Reflector.accessField("powerReference", this.getClass(), this, NamespacedKey.class).asString();
                 return NamespacedKey.fromString(refrence);
             } else {
                 return NamespacedKey.fromString(getPowerFile());

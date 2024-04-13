@@ -7,6 +7,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
@@ -20,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsDouble;
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_food;
 
 public class ModifyFoodPower extends CraftPower implements Listener {
@@ -149,7 +149,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                                 if (jsonObject.isPresent("value")) {
                                     int val = jsonObject.getNumber("value").getInt();
                                     String operation = jsonObject.getString("operation");
-                                    BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                                    BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
                                         double finalValue = (double) mathOperator.apply(getFoodModifier(e.getItem().getType()), (double) val);
                                         player.setFoodLevel(Integer.parseInt(String.valueOf(Math.round(player.getFoodLevel() + finalValue))));
@@ -161,7 +161,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                                 if (jsonObject.isPresent("value")) {
                                     int val = jsonObject.getNumber("value").getInt();
                                     String operation = jsonObject.getString("operation");
-                                    BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                                    BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
                                         double finalValue = (double) mathOperator.apply(getSaturationModifier(e.getItem().getType()), (double) val);
                                         player.setSaturation(Math.round(player.getFoodLevel() + finalValue));

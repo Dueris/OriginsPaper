@@ -6,7 +6,6 @@ import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
@@ -26,24 +25,14 @@ public class AttributeConditioned extends CraftPower implements Listener {
 
     private static final HashMap<Player, Boolean> applied = new HashMap<>();
 
-    public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, int value) {
-        BinaryOperator mathOperator = Utils.getOperationMappingsInteger().get(operation);
-        if (mathOperator != null) {
-            int result = (int) mathOperator.apply(base_value, value);
-            p.getAttribute(attribute_modifier).setBaseValue(result);
-        } else {
-            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
-        }
-        p.sendHealthUpdate();
-    }
-
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
         BinaryOperator operator = Utils.getOperationMappingsDouble().get(operation);
         if (operator != null) {
             double result = Double.valueOf(String.valueOf(operator.apply(base_value, value)));
             p.getAttribute(attribute_modifier).setBaseValue(result);
         } else {
-            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
+            Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
+            new Throwable().printStackTrace();
         }
         p.sendHealthUpdate();
     }
@@ -63,7 +52,8 @@ public class AttributeConditioned extends CraftPower implements Listener {
                         double result = Double.valueOf(String.valueOf(operator.apply(baseVal, val)));
                         p.getAttribute(attribute_modifier).setBaseValue(result);
                     } else {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
+                        Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
+                        new Throwable().printStackTrace();
                     }
                     p.sendHealthUpdate();
                 }

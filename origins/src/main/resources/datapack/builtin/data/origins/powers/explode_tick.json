@@ -39,7 +39,7 @@
     "max": 5,
     "hud_render": {
       "sprite_location": "origins:textures/gui/community/spiderkolo/resource_bar_01.png",
-      "bar_index": 1
+      "bar_index": 0
     },
     "start_value": 0,
     "max_action": {

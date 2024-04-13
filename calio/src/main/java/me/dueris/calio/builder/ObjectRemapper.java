@@ -104,6 +104,8 @@ public class ObjectRemapper {
                 for (Object ob : valueInst.getAsJsonArray()) {
                     if (ob instanceof JsonObject j) {
                         array.add(remapJsonObject(j, currentNamespace));
+                    } else if (ob instanceof JsonElement element) {
+                        array.add(element);
                     }
                 }
                 continue;

@@ -10,7 +10,6 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.ScreenConstants;
-import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.*;
@@ -25,34 +24,18 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.function.BinaryOperator;
 
 public class AttributeHandler extends CraftPower implements Listener {
 
-    public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
-        return Utils.getOperationMappingsDouble();
-    }
-
-    public static Map<String, BinaryOperator<Long>> getOperationMappingsLong() {
-        return Utils.getOperationMappingsLong();
-    }
-
-    public static Map<String, BinaryOperator<Integer>> getOperationMappingsInteger() {
-        return Utils.getOperationMappingsInteger();
-    }
-
-    public static Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
-        return Utils.getOperationMappingsFloat();
-    }
-
-    public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, float value) {
-        BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+    public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, double value) {
+        BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
         if (mathOperator != null) {
-            float result = (float) mathOperator.apply(base_value, value);
+            double result = (double) mathOperator.apply(base_value, value);
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
         } else {
-            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
+            Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
+            new Throwable().printStackTrace();
         }
     }
 

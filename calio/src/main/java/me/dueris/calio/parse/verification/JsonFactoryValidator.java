@@ -20,7 +20,7 @@ public class JsonFactoryValidator {
      * @return a cloned and validated FactoryProvider
      */
     public static FactoryBuilder validateFactory(FactoryBuilder provider, List<FactoryObjectInstance> valid, NamespacedKey factoryKey) {
-        FactoryBuilder cloned = (FactoryBuilder) provider.cloneFactory();
+        FactoryBuilder cloned = provider.cloneFactory();
         for (FactoryObjectInstance instance : valid) {
             if (provider.getRoot().isPresent(instance.getObjName())) {
                 Object obj = retriveSpecificType(provider.getRoot(), instance.getObjName(), instance.getType());

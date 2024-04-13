@@ -5,9 +5,7 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.util.ComponentMultiLine;
-import me.dueris.genesismc.util.LangConfig;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -80,7 +78,7 @@ public class ScreenContent {
         ItemStack filler = applyProperties(new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
         ItemStack close = applyProperties(new ItemStack(Material.BARRIER));
 
-        //makes human icon appear as own playerhead
+        // makes human icon appear as own playerhead
         SkullMeta skull_p = (SkullMeta) human.getItemMeta();
         skull_p.setOwningPlayer(p);
         skull_p.setOwner(p.getName());
@@ -88,8 +86,8 @@ public class ScreenContent {
         skull_p.setOwnerProfile(p.getPlayerProfile());
         human.setItemMeta(skull_p);
 
-        //checks which origins are loaded
-        String notFound = LangConfig.getLocalizedString(p, "menu.mainChoose.originNotFound");
+        // checks which origins are loaded
+        String notFound = "Origin not found!";
 
         if (originDetails.containsKey("origins:human"))
             human = itemPropertiesMultipleLore(human, WHITE + originDetails.get("origins:human"), null, null, cutStringIntoLines(originDescriptions.get("origins:human")));
@@ -168,9 +166,9 @@ public class ScreenContent {
 
     public static @Nullable ItemStack @NotNull [] ChooseMenuContent(int pageNumber, Layer choosingLayer, Entity entity) {
         ItemStack sides = itemProperties(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), "", ItemFlag.HIDE_ENCHANTS, null, null);
-        ItemStack menu = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + me.dueris.genesismc.util.LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "menu.customChoose.return"), ItemFlag.HIDE_ENCHANTS, null, null);
-        ItemStack back = itemProperties(new ItemStack(Material.ARROW), LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "menu.customChoose.back"), ItemFlag.HIDE_ENCHANTS, null, null);
-        ItemStack next = itemProperties(new ItemStack(Material.ARROW), LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "menu.customChoose.next"), ItemFlag.HIDE_ENCHANTS, null, null);
+        ItemStack menu = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
+        ItemStack back = itemProperties(new ItemStack(Material.ARROW), "Previous Page", ItemFlag.HIDE_ENCHANTS, null, null);
+        ItemStack next = itemProperties(new ItemStack(Material.ARROW), "Next Page", ItemFlag.HIDE_ENCHANTS, null, null);
 
         HashMap<Integer/*page number*/, List<Origin>/*origins on that page*/> pagesClone = new HashMap<>();
         for (int pageint : pages.keySet()) {

@@ -193,6 +193,10 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
         return result;
     }
 
+    public String fillStackTrace() {
+        return "NamespacedKey: " + this.powerTag.asString() + ", PowerType: " + this.getType();
+    }
+
     @Override
     public List<FactoryObjectInstance> getValidObjectFactory() {
         return List.of(

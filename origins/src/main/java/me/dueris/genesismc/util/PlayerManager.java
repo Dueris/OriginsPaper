@@ -32,7 +32,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PlayerManager implements Listener {
@@ -58,14 +57,13 @@ public class PlayerManager implements Listener {
 
     public static void originValidCheck(Player p) {
         HashMap<Layer, Origin> origins = OriginPlayerAccessor.getOrigin(p);
-        ArrayList<Layer> deletedLayers = new ArrayList<>();
         for (Layer layer : origins.keySet()) {
             for (String tag : layer.getOrigins()) {
                 NamespacedKey fixedKey = NamespacedKey.fromString(tag);
                 if (GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(fixedKey) == null) {
                     // Layer not in registry, cry.
                     origins.replace(layer, CraftApoli.nullOrigin());
-                    p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.originRemoved").replace("%originName%", fixedKey.asString()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(ColorConstants.RED)));
+                    p.sendMessage(Component.text("Your origin, \"%originName%\" was not found on the registry in the layer, \"%layerName%\".".replace("%originName%", fixedKey.asString()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(ColorConstants.RED)));
                 }
             }
         }
@@ -79,9 +77,6 @@ public class PlayerManager implements Listener {
             origins.put(layer, CraftApoli.nullOrigin());
         }
         p.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
-
-        //removes deleted layer from the players data
-        for (Layer layer : deletedLayers) OriginPlayerAccessor.removeOrigin(p, layer);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

@@ -93,6 +93,20 @@ public class Resource extends CraftPower implements Listener {
                         return countNumbersBetween(power.getNumberOrDefault("start_value", power.getNumber("min").getInt()).getInt(), power.getNumber("max").getInt());
                     }
                 };
+                // Override to use start_value or default min
+                if (power.isPresent("start_value")) {
+                    int startValue = power.getNumber("start_value").getInt();
+                    if (startValue == 0) bar.setProgress(0);
+                    else bar.setProgress(1 / power.getNumber("start_value").getInt());
+                } else {
+                    int min = power.getNumber("min").getInt();
+                    if (min > 1) {
+                        min = 1 / min;
+                    } else if (min < 0) {
+                        throw new IllegalArgumentException("Minimum value cannot be a negative number!");
+                    }
+                    bar.setProgress(min);
+                }
                 HashMap<String, Pair<BossBar, Double>> map = new HashMap<>();
                 map.put(tag, pair);
                 registeredBars.put(p, map);
@@ -101,7 +115,7 @@ public class Resource extends CraftPower implements Listener {
                         @Override
                         public void run() {
                             FactoryJsonObject hud_render = power.getJsonObject("hud_render");
-                            final boolean[] canRender = {hud_render.getBooleanOrDefault("should_render", false)};
+                            final boolean[] canRender = {hud_render.getBooleanOrDefault("should_render", true)};
                             if (hud_render.isPresent("condition")) {
                                 canRender[0] = ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p);
                             }

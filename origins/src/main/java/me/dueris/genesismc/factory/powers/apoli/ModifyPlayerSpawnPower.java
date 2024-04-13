@@ -161,7 +161,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     private Optional<BlockPos> getBiomePos(ServerLevel targetDimension, BlockPos originPos, Power power) {
 
-        if (power.getString("biome") == null) return Optional.empty();
+        if (!power.isPresent("biome")) return Optional.empty();
 
         Optional<Biome> targetBiome = CraftRegistry.getMinecraftRegistry().registry(Registries.BIOME).get().getOptional(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(power.getString("biome"))));
         if (targetBiome.isEmpty()) {

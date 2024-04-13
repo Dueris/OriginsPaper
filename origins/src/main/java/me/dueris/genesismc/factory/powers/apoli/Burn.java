@@ -5,7 +5,6 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -18,11 +17,6 @@ public class Burn extends CraftPower {
 
     private Long interval;
 
-    public Burn() {
-        this.interval = 1L;
-    }
-
-
     @Override
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
@@ -30,8 +24,7 @@ public class Burn extends CraftPower {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
                     if (!power.isPresent("interval")) {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
-                        return;
+                        throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
                     }
 
                     interval = power.getNumber("interval").getLong();

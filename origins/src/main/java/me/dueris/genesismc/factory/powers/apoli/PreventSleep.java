@@ -5,7 +5,6 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,7 +43,6 @@ public class PreventSleep extends CraftPower implements Listener {
         if (beds.contains(e.getClickedBlock().getType())) {
             Player player = e.getPlayer();
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 Block clickedBlock = e.getClickedBlock();
                 Location blockLocation = clickedBlock.getLocation();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
@@ -54,7 +52,12 @@ public class PreventSleep extends CraftPower implements Listener {
                         if (power.getBooleanOrDefault("set_spawn_point", false)) {
                             player.setBedSpawnLocation(blockLocation);
                         }
-                        String message = power.getStringOrDefault("message", LangConfig.getLocalizedString(player, "origins.cant_sleep"));
+                        String message = power.getStringOrDefault("message", "text.apoli.cannot_sleep");
+                        // Origins Mod translation
+                        if (message.equalsIgnoreCase("text.apoli.cannot_sleep")) message = "You cannot sleep";
+                        if (message.equalsIgnoreCase("origins.avian_sleep_fail"))
+                            message = "You need fresh air to sleep";
+
                         player.sendMessage(message);
                         e.setCancelled(true);
                     }

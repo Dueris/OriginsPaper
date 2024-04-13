@@ -6,6 +6,7 @@ import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
@@ -16,7 +17,6 @@ import org.bukkit.event.player.PlayerExpChangeEvent;
 import java.util.ArrayList;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_xp_gain;
 
 public class ModifyExperienceGainPower extends CraftPower implements Listener {
@@ -38,7 +38,7 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
                             for (Modifier modifier : power.getModifiers()) {
                                 Float value = modifier.value();
                                 String operation = modifier.operation();
-                                BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                                BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
                                 if (mathOperator != null) {
                                     float result = (float) mathOperator.apply(e.getAmount(), value);
                                     e.setAmount(Math.toIntExact(Long.valueOf(String.valueOf(result))));

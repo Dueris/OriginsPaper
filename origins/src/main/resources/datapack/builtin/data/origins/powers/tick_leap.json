@@ -42,7 +42,11 @@
     "max": 5,
     "hud_render": {
       "sprite_location": "origins:textures/gui/resource_bar.png",
-      "bar_index": 6
+      "bar_index": 6,
+      "condition": {
+        "type": "origins:power_active",
+        "power": "*:*_toggle"
+      }
     },
     "start_value": 0,
     "max_action": {

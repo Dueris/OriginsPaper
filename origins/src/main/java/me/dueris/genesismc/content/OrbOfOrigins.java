@@ -3,7 +3,6 @@ package me.dueris.genesismc.content;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.apoli.RecipePower;
 import me.dueris.genesismc.storage.GenesisConfigs;
-import me.dueris.genesismc.util.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -33,7 +32,7 @@ public class OrbOfOrigins {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
         meta.setCustomModelData(0003);
-        meta.setDisplayName(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "misc.orbOfOrigins"));
+        meta.setDisplayName("Orb of Origins");
         meta.setUnbreakable(true);
         meta.getCustomTagContainer().setCustomTag(new NamespacedKey(GenesisMC.getPlugin(), "origins"), ItemTagType.STRING, "orb_of_origin");
         meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
@@ -61,7 +60,8 @@ public class OrbOfOrigins {
                 RecipePower.taggedRegistry.put(sr.key().asString(), sr);
             }
         } catch (Exception exception) {
-            Bukkit.getServer().getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.orbLoad"));
+            Bukkit.getServer().getLogger().warning("An unexpected error occured when trying to load the orb of origins! : " + exception.getLocalizedMessage());
+            exception.printStackTrace();
         }
     }
 }

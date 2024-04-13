@@ -71,7 +71,7 @@ public class CraftApoli {
      **/
     public static Origin nullOrigin() {
         return new Origin(
-            GenesisMC.identifier("origin-null"),
+            GenesisMC.originIdentifier("empty"),
             new ArrayList<>(),
             new FactoryJsonObject(
                 JsonParser.parseString("{\"icon\":{\"item\":\"minecraft:player_head\"},\"name\":\"Null\",\"description\":\"Still Null\",\"order\":0,\"impact\":0}").getAsJsonObject()

@@ -16,7 +16,6 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.ScreenConstants;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.util.KeybindingUtils;
-import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.commands.CommandSourceStack;
@@ -149,7 +148,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                             }).executes(context -> {
                                 Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
                                 Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
-                                targets.forEach(player -> context.getSource().getBukkitEntity().sendMessage(net.kyori.adventure.text.Component.text(LangConfig.getLocalizedString(player.getBukkitEntity(), "command.origin.get.output").replace("%player%", player.getBukkitEntity().getName()).replace("%layer%", layer.getTag()).replace("%origin%", OriginPlayerAccessor.getOrigin(player.getBukkitEntity(), layer).getTag()))));
+                                targets.forEach(player -> context.getSource().getBukkitEntity().sendMessage(net.kyori.adventure.text.Component.text("%player% has the following %layer% : %origin%".replace("%player%", player.getBukkitEntity().getName()).replace("%layer%", layer.getTag()).replace("%origin%", OriginPlayerAccessor.getOrigin(player.getBukkitEntity(), layer).getTag()))));
                                 return SINGLE_SUCCESS;
                             })
                         )

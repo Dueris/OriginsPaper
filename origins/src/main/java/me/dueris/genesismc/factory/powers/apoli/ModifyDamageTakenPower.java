@@ -6,6 +6,7 @@ import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
@@ -16,7 +17,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import java.util.ArrayList;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_damage_taken;
 
 public class ModifyDamageTakenPower extends CraftPower implements Listener {
@@ -55,7 +55,7 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
     public void runSetDMG(EntityDamageEvent e, String operation, Object value) {
         double damage = e.getDamage();
 
-        BinaryOperator<Float> floatOperator = getOperationMappingsFloat().get(operation);
+        BinaryOperator<Float> floatOperator = Utils.getOperationMappingsFloat().get(operation);
         if (floatOperator != null) {
             float newDamage = floatOperator.apply((float) damage, (Float) value);
             e.setDamage(newDamage);

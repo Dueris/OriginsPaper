@@ -61,7 +61,7 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
     }
 
     public boolean getUsesCondition() {
-        return this.choosingCondition != null;
+        return this.choosingCondition != null && !this.choosingCondition.isEmpty();
     }
 
     public void setUsesCondition(FactoryJsonObject condition) {
@@ -91,14 +91,14 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
      * @return The name of the origin.
      */
     public String getName() {
-        return getStringOrDefault("name", "No Name");
+        return getString("name");
     }
 
     /**
      * @return The description for the origin.
      */
     public String getDescription() {
-        return getStringOrDefault("name", "No Description");
+        return getString("description");
     }
 
     /**
@@ -175,6 +175,7 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
     public List<FactoryObjectInstance> getValidObjectFactory() {
         return List.of(
             new FactoryObjectInstance("name", String.class, "No Name"),
+            new FactoryObjectInstance("description", String.class, "No Description"),
             new FactoryObjectInstance("icon", ItemStack.class, new ItemStack(Material.PLAYER_HEAD, 1)),
             new FactoryObjectInstance("impact", Integer.class, 0),
             new FactoryObjectInstance("unchooseable", Boolean.class, false),

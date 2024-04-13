@@ -4,9 +4,13 @@ import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Explosion;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_20_R3.CraftParticle;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 
@@ -55,13 +59,27 @@ public class ExplosionMask {
         this.explosion.getToBlow().addAll(createBlockPosList(finalBlocks));
 
         if (destroyAfterMask) {
-            destroyBlocks(true);
+            destroyBlocks();
         }
         return this;
     }
 
-    public void destroyBlocks(boolean particles) {
-        this.explosion.finalizeExplosion(particles);
+    public void destroyBlocks() {
+        this.explosion.finalizeExplosion(false);
+        ParticleOptions particleparam;
+
+        if (this.explosion.radius() >= 2.0F && this.explosion.interactsWithBlocks()) {
+            particleparam = this.explosion.getLargeExplosionParticles();
+        } else {
+            particleparam = this.explosion.getSmallExplosionParticles();
+        }
+
+        double x = this.explosion.center().x;
+        double y = this.explosion.center().y;
+        double z = this.explosion.center().z;
+
+        this.level.getWorld().playSound(new Location(this.level.getWorld(), x, y, z), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
+        this.level.getWorld().spawnParticle(CraftParticle.minecraftToBukkit(particleparam.getType()), new Location(this.level.getWorld(), x, y, z), 4);
     }
 
     private List<Block> createBlockList(List<BlockPos> blockPos, ServerLevel level) {

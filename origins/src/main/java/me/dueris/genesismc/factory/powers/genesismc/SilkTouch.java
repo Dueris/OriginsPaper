@@ -6,7 +6,6 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -65,7 +64,7 @@ public class SilkTouch extends CraftPower implements Listener {
                                         try {
                                             p.getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), i);
                                         } catch (Exception exception) {
-                                            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.silkTouch"));
+                                            Bukkit.getLogger().warning("Silk-Touched Item couldn't be dropped!");
                                             exception.printStackTrace();
                                         }
                                     }

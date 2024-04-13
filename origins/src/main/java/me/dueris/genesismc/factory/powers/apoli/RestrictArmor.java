@@ -7,7 +7,6 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
@@ -50,17 +49,14 @@ public class RestrictArmor extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (!power.isPresent("interval")) {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
-                        return;
-                    }
-
-                    interval = power.getNumber("interval").getLong();
+//                    if (!power.isPresent("interval")) {
+//                        throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
+//                    }
+                    interval = power.getNumberOrDefault("interval", 1).getLong();
                     if (interval == 0) interval = 1L;
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
-                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                             runPower(p, power);
                         } else {

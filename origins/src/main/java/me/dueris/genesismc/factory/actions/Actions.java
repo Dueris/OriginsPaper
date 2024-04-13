@@ -136,7 +136,7 @@ public class Actions {
 
                 case "apoli:side" -> side(action, actionn -> executeBiEntity(actor, target, actionn));
 
-                case "if_else" -> {
+                case "apoli:if_else" -> {
                     boolean bool = ConditionExecutor.testBiEntity(action.getJsonObject("condition"), (CraftEntity) actor, (CraftEntity) target);
                     if (bool) {
                         executeBiEntity(actor, target, action.getJsonObject("if_action"));
@@ -144,7 +144,7 @@ public class Actions {
                         executeBiEntity(actor, target, action.getJsonObject("else_action"));
                     }
                 }
-                case "if_else_list" -> {
+                case "apoli:if_else_list" -> {
                     if (action.isPresent("actions") && action.isJsonArray("actions")) {
                         for (FactoryJsonObject arrayObject : action.getJsonArray("actions").asJsonObjectList()) {
                             if (arrayObject.isPresent("condition") && arrayObject.isPresent("action")) {
@@ -183,7 +183,7 @@ public class Actions {
 
                 case "apoli:side" -> side(action, actionn -> executeItem(item, actionn));
 
-                case "if_else" -> {
+                case "apoli:if_else" -> {
                     boolean bool = ConditionExecutor.testItem(action.getJsonObject("condition"), item);
                     if (bool) {
                         executeItem(item, action.getJsonObject("if_action"));
@@ -191,7 +191,7 @@ public class Actions {
                         executeItem(item, action.getJsonObject("else_action"));
                     }
                 }
-                case "if_else_list" -> {
+                case "apoli:if_else_list" -> {
                     if (action.isPresent("actions") && action.getElement("actions").isJsonArray()) {
                         for (FactoryJsonObject arrayObject : action.getJsonArray("actions").asJsonObjectList()) {
                             if (arrayObject.isPresent("condition") && arrayObject.isPresent("action")) {
@@ -230,7 +230,7 @@ public class Actions {
 
                 case "apoli:side" -> side(action, actionn -> executeEntity(entity, actionn));
 
-                case "if_else" -> {
+                case "apoli:if_else" -> {
                     boolean bool = ConditionExecutor.testEntity(action.getJsonObject("condition"), (CraftEntity) entity);
                     if (bool) {
                         executeEntity(entity, action.getJsonObject("if_action"));
@@ -238,7 +238,7 @@ public class Actions {
                         executeEntity(entity, action.getJsonObject("else_action"));
                     }
                 }
-                case "if_else_list" -> {
+                case "apoli:if_else_list" -> {
                     if (action.isPresent("actions") && action.getElement("actions").isJsonArray()) {
                         for (FactoryJsonObject arrayObject : action.getJsonArray("actions").asJsonObjectList()) {
                             if (arrayObject.isPresent("condition") && arrayObject.isPresent("action")) {
@@ -280,7 +280,7 @@ public class Actions {
 
                 case "apoli:side" -> side(action, actionn -> executeBlock(location, actionn));
 
-                case "if_else" -> {
+                case "apoli:if_else" -> {
                     boolean bool = ConditionExecutor.testBlock(action.getJsonObject("condition"), CraftBlock.at(((CraftWorld) location.getWorld()).getHandle(), CraftLocation.toBlockPosition(location)));
                     if (bool) {
                         executeBlock(location, action.getJsonObject("else_action"));
@@ -288,7 +288,7 @@ public class Actions {
                         executeBlock(location, action.getJsonObject("else_action"));
                     }
                 }
-                case "if_else_list" -> {
+                case "apoli:if_else_list" -> {
                     if (action.isPresent("actions") && action.getElement("actions").isJsonArray()) {
                         for (FactoryJsonObject arrayObject : action.getJsonArray("actions").asJsonObjectList()) {
                             if (arrayObject.isPresent("condition") && arrayObject.isPresent("action")) {

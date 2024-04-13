@@ -7,6 +7,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
@@ -18,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.function.BinaryOperator;
-
-import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.getOperationMappingsInteger;
 
 public class ModifyEnchantmentLevel extends CraftPower {
 
@@ -41,7 +40,7 @@ public class ModifyEnchantmentLevel extends CraftPower {
                             int result = 1;
                             float value = modifier.value();
                             String operation = modifier.operation();
-                            BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
+                            BinaryOperator mathOperator = Utils.getOperationMappingsInteger().get(operation);
                             if (mathOperator != null) {
                                 result = Integer.valueOf(String.valueOf(mathOperator.apply(0, value)));
                             }

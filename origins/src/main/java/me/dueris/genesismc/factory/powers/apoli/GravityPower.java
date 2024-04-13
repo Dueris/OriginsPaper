@@ -28,7 +28,7 @@ public class GravityPower extends CraftPower implements Listener {
     @Override
     public void run(Player p) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (no_gravity.contains(p)) {
+            if (no_gravity.contains(p) && !LikeWater.likeWaterPlayers.contains(p)) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
@@ -43,11 +43,9 @@ public class GravityPower extends CraftPower implements Listener {
                     }
                 }
             } else {
-                if (LikeWater.likeWaterPlayers.contains(p)) {
-                    p.setGravity(!(!p.isSwimming() && p.getEyeLocation().getBlock().getType().equals(Material.WATER) && p.getLocation().getBlock().getType().equals(Material.WATER) && p.isInWaterOrBubbleColumn()));
-                } else {
+                if (!LikeWater.likeWaterPlayers.contains(p)) {
                     p.setGravity(true);
-                }
+                } // Let LikeWater handle its own gravity
             }
         }
     }

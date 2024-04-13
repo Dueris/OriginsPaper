@@ -174,10 +174,12 @@ public class CooldownUtils implements Listener {
                     String[] split2 = cooldown.split(",");
                     String tag = split2[0];
                     String title = split2[1];
+                    double progess = Double.parseDouble(split2[3]);
+                    if(progess > 1 || progess < 0) continue;
                     BarColor color = BarColor.valueOf(split2[2]);
                     BossBar bar = createCooldownBar(e.getPlayer(), color, BarStyle.SEGMENTED_6, title);
                     bar.setVisible(true);
-                    bar.setProgress(Double.parseDouble(split2[3]));
+                    bar.setProgress(progess);
                     cooldownMap.putIfAbsent(e.getPlayer(), new ArrayList<>());
                     cooldownMap.get(e.getPlayer()).add(title);
                     cooldownTicksMap.putIfAbsent(e.getPlayer(), new HashMap<>());

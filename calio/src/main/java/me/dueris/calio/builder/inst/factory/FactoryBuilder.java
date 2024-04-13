@@ -38,10 +38,18 @@ public class FactoryBuilder {
     public void putDefault(String key, Object value) {
         JsonObject t = this.source.handle.getAsJsonObject();
         Gson gson = new Gson();
-        // Handle JsonElements
-        if (value instanceof JsonElement element) {
+        // Handle JsonElements - Handle properties aswell
+        if (value instanceof Number number) {
+            t.addProperty(key, number);
+        } else if (value instanceof String string) {
+            t.addProperty(key, string);
+        } else if (value instanceof Boolean bool) {
+            t.addProperty(key, bool);
+        } else if (value instanceof Character character) {
+            t.addProperty(key, character);
+        } else if (value instanceof JsonElement element) {
             t.add(key, element);
-        } else {
+        } else { // Fallback to make into a string
             t.addProperty(key, gson.toJson(value));
         }
     }

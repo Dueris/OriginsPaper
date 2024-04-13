@@ -147,6 +147,8 @@ public class Layer extends FactoryJsonObject implements Serializable, FactoryIns
                     } else {
                         CraftCalio.INSTANCE.getLogger().severe("Origin(%a%) not found inside layer".replace("%a%", element.getString()));
                     }
+                } else {
+                    CraftCalio.INSTANCE.getLogger().severe("Unknown type \"{t}\" was provided in the \"powers\" field for the OriginLayer!".replace("{t}", element.getClass().getSimpleName()));
                 }
             }
             registrar.register(new Layer(namespacedTag, list, obj.getRoot()));
