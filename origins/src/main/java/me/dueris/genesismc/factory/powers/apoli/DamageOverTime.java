@@ -69,7 +69,7 @@ public class DamageOverTime extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (power.getObject("interval") == null) {
+                    if (power.isPresent("interval")) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
                         return;
                     }
@@ -80,7 +80,7 @@ public class DamageOverTime extends CraftPower implements Listener {
                     } else {
                         damage = p.getWorld().getDifficulty().equals(Difficulty.EASY) ? power.getNumberOrDefault("damage_easy", power.getNumberOrDefault("damage", 1.0f).getFloat()).getFloat() : power.getNumberOrDefault("damage", 1.0f).getFloat();
 
-                        protection_effectiveness = power.getDoubleOrDefault("protection_effectiveness", 1);
+                        protection_effectiveness = power.getNumberOrDefault("protection_effectiveness", 1).getDouble();
                         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
 

@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass;
 import me.dueris.genesismc.registry.registries.Layer;
@@ -33,14 +34,14 @@ public class ModifyEnchantmentLevel extends CraftPower {
                     for (ItemStack item : items) {
                         if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) return;
                         if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), item)) return;
-                        for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                        for (Modifier modifier : power.getModifiers()) {
                             Enchantment enchant = Enchantment.getByKey(NamespacedKey.fromString(power.getString("enchantment")));
                             if (item.containsEnchantment(enchant)) {
                                 item.removeEnchantment(enchant);
                             }
                             int result = 1;
-                            Integer value = Integer.valueOf(modifier.get("value").toString());
-                            String operation = modifier.get("operation").toString();
+                            float value = modifier.value();
+                            String operation = modifier.operation();
                             BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
                             if (mathOperator != null) {
                                 result = Integer.valueOf(String.valueOf(mathOperator.apply(0, value)));

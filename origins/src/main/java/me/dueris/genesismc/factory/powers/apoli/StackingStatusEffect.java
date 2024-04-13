@@ -1,5 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -73,8 +75,8 @@ public class StackingStatusEffect extends CraftPower implements Listener {
     }
 
     private void applyStackingEffect(Player player, Power power) {
-        for (JSONObject effect : power.getList$SingularPlural("effect", "effects")) {
-            PotionEffectType potionEffectType = getPotionEffectType(effect.get("effect").toString());
+        for (FactoryJsonObject effect : power.getList$SingularPlural("effect", "effects").stream().map(FactoryElement::toJsonObject).toList()) {
+            PotionEffectType potionEffectType = getPotionEffectType(effect.getString("effect"));
             if (potionEffectType != null) {
                 try {
                     player.addPotionEffect(new PotionEffect(potionEffectType, 50, 1, false, false, true));
@@ -82,7 +84,7 @@ public class StackingStatusEffect extends CraftPower implements Listener {
                     e.printStackTrace();
                 }
             } else {
-                Bukkit.getLogger().warning("Unknown effect ID: " + effect.get("effect").toString());
+                Bukkit.getLogger().warning("Unknown effect ID: " + effect.getString("effect"));
             }
         }
         player.sendHealthUpdate();

@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
@@ -35,12 +36,11 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
             if (modify_projectile_damage.contains(pl)) {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     try {
-                        ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(pl, getPowerFile(), layer)) {
                             if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.getJsonObject("target_condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) {
-                                for (HashMap<String, Object> modifier : power.getModifiers("modifier", "modifiers")) {
-                                    Float value = Float.valueOf(modifier.get("value").toString());
-                                    String operation = modifier.get("operation").toString();
+                                for (Modifier modifier : power.getModifiers()) {
+                                    Float value = modifier.value();
+                                    String operation = modifier.operation();
                                     BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
                                         ModifyDamageDealtPower damageDealtPower = new ModifyDamageDealtPower();

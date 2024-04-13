@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
@@ -26,20 +27,14 @@ public class ModifyLavaSpeed extends CraftPower {
         if (modify_lava_speed.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 try {
-                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                            for (HashMap<String, Object> modifier : power.getModifiers("modifier", "modifiers")) {
-                                Float value = Float.valueOf(modifier.get("value").toString());
-                                String operation = modifier.get("operation").toString();
+                            for (Modifier modifier : power.getModifiers()) {
+                                Float value = modifier.value();
+                                String operation = modifier.operation();
                                 BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                                 if (mathOperator != null) {
                                     float result = (float) mathOperator.apply(0.02f, value);
-                                    if (power == null) {
-                                        getPowerArray().remove(p);
-                                        return;
-                                    }
-                                    if (!getPowerArray().contains(p)) return;
                                     setActive(p, power.getTag(), true);
                                     p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2, calculateSpeedAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result)))), false, false, false));
                                 }

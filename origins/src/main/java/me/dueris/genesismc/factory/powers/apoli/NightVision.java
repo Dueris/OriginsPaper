@@ -22,15 +22,12 @@ public class NightVision extends CraftPower {
 
     @Override
     public void run(Player p) {
-        // HashMap<LayerContainer, OriginContainer> origins = OriginPlayerUtils.getOrigin(p);
-        // Set<LayerContainer> layers = origins.keySet();
-        // for (LayerContainer layer : layers) {
         if (night_vision.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getFloatOrDefault("strength", 1.0f)), false, false, false));
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getNumberOrDefault("strength", 1.0f).getFloat()), false, false, false));
                     } else {
                         setActive(p, power.getTag(), false);
                     }

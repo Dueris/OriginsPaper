@@ -29,7 +29,7 @@ public class Exhaust extends CraftPower {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (power.getObject("interval") == null) {
+                    if (power.isPresent("interval")) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.exhaust"));
                         return;
                     }
@@ -41,10 +41,10 @@ public class Exhaust extends CraftPower {
                             setActive(p, power.getTag(), true);
                             if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
                                 return;
-                            if (Math.round(p.getFoodLevel() - power.getFloatOrDefault("exhaustion", 1)) <= 0)
+                            if (Math.round(p.getFoodLevel() - power.getNumberOrDefault("exhaustion", 1).getFloat()) <= 0)
                                 p.setFoodLevel(0);
                             else
-                                p.setFoodLevel(Math.round(p.getFoodLevel() - power.getFloatOrDefault("exhaustion", 1)));
+                                p.setFoodLevel(Math.round(p.getFoodLevel() - power.getNumberOrDefault("exhaustion", 1).getFloat()));
                         } else {
                             setActive(p, power.getTag(), false);
                         }

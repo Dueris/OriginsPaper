@@ -118,7 +118,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
     public Pair<ServerLevel, BlockPos> getSpawn(boolean isSpawnObstructed, Entity entity, Power power) {
         SpawnStrategy spawnStrategy = SpawnStrategy.valueOf(power.getStringOrDefault("spawn_strategy", "default").toUpperCase());
         ResourceKey<Level> dimension = getDimension(power);
-        float dimensionDistanceMultiplier = power.getFloatOrDefault("dimension_distance_multiplier", 1f);
+        float dimensionDistanceMultiplier = power.getNumberOrDefault("dimension_distance_multiplier", 1f).getFloat();
         if (false || !(entity instanceof net.minecraft.world.entity.player.Player playerEntity)) return null;
 
         ServerPlayer ServerPlayer = (ServerPlayer) playerEntity;

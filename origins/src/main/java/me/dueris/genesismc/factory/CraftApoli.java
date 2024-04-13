@@ -100,7 +100,7 @@ public class CraftApoli {
         String powerFileName = power.getTag().split(":")[1].toLowerCase();
 
         for (String key : power.keySet()) {
-            if (power.getObject(key) instanceof JSONObject) {
+            if (power.getElement(key).isJsonObject()) {
                 if (((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase())) != null) {
                     nested.add(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(powerFolder + ":" + powerFileName + "_" + key.toLowerCase())));
                 }

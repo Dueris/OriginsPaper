@@ -31,12 +31,12 @@ public class Toggle extends CraftPower implements Listener {
             if (getPowerArray().contains(p)) {
                 in_continuous.putIfAbsent(p, new ArrayList<>());
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
+                    if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString(), p)) {
                         if (true /* Toggle power always execute continuously */) {
-                            if (in_continuous.get(p).contains(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString())) {
-                                in_continuous.get(p).remove(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString());
+                            if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString())) {
+                                in_continuous.get(p).remove(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString());
                             } else {
-                                in_continuous.get(p).add(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString());
+                                in_continuous.get(p).add(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString());
                             }
                         }
                     }
@@ -54,7 +54,7 @@ public class Toggle extends CraftPower implements Listener {
                 if (getPowerArray().contains(p)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
-                            if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
+                            if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString(), p)) {
                                 execute(p, power);
                             }
                         }
@@ -66,8 +66,8 @@ public class Toggle extends CraftPower implements Listener {
 
     public void execute(Player p, Power power) {
         in_continuous.putIfAbsent(p, new ArrayList<>());
-        int cooldown = power.getIntOrDefault("cooldown", 1);
-        String key = (String) power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active");
+        int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
+        String key = (String) power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
         KeybindingUtils.toggleKey(p, key);
 
         new BukkitRunnable() {
@@ -76,7 +76,7 @@ public class Toggle extends CraftPower implements Listener {
                 AtomicBoolean cond = new AtomicBoolean(ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p));
                 /* Toggle power always execute continuously */
                 if (!cond.get() || (!in_continuous.get(p).contains(key))) {
-                    CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.getJsonObject("hud_render"));
+                    CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), cooldown, power.getJsonObject("hud_render"));
                     KeybindingUtils.toggleKey(p, key);
                     setActive(p, power.getTag(), false);
                     this.cancel();

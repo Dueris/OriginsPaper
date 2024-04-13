@@ -77,19 +77,12 @@ public class AttributeConditioned extends CraftPower implements Listener {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
 
-                for (HashMap<String, Object> modifier : power.getModifiers()) {
-                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.get("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
-                    if (modifier.get("value") instanceof Integer) {
-                        int value = Integer.valueOf(modifier.get("value").toString());
-                        int base_value = (int) p.getAttribute(attribute_modifier).getBaseValue();
-                        String operation = String.valueOf(modifier.get("operation"));
-                        executeAttributeModify(operation, attribute_modifier, base_value, p, -value);
-                    } else if (modifier.get("value") instanceof Double) {
-                        double value = Double.valueOf(modifier.get("value").toString());
-                        double base_value = p.getAttribute(attribute_modifier).getBaseValue();
-                        String operation = String.valueOf(modifier.get("operation"));
-                        executeAttributeModify(operation, attribute_modifier, base_value, p, -value);
-                    }
+                for (Modifier modifier : power.getModifiers()) {
+                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.handle.getString("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
+                    double value = modifier.value();
+                    double base_value = p.getAttribute(attribute_modifier).getBaseValue();
+                    String operation = modifier.operation();
+                    executeAttributeModify(operation, attribute_modifier, base_value, p, -value);
                 }
             }
 

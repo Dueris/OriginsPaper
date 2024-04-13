@@ -38,8 +38,8 @@ public class ModifyFallingPower extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        if (power.getFloat("velocity") < 0) {
-                            velocity.setY(power.getFloat("velocity"));
+                        if (power.getNumber("velocity").getFloat() < 0) {
+                            velocity.setY(power.getNumber("velocity").getFloat());
                             p.setVelocity(velocity);
                         } else {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));

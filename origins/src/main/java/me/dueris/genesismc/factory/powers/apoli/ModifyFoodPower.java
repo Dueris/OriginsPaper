@@ -1,5 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -141,14 +143,13 @@ public class ModifyFoodPower extends CraftPower implements Listener {
         Player player = e.getPlayer();
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (modify_food.contains(player)) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
                         if (modify_food.contains(player)) {
-                            for (JSONObject jsonObject : power.getList$SingularPlural("food_modifier", "food_modifiers")) {
-                                if (jsonObject.containsKey("value")) {
-                                    int val = Integer.parseInt(jsonObject.get("value").toString());
-                                    String operation = jsonObject.get("operation").toString();
+                            for (FactoryJsonObject jsonObject : power.getList$SingularPlural("food_modifier", "food_modifiers").stream().map(FactoryElement::toJsonObject).toList()) {
+                                if (jsonObject.isPresent("value")) {
+                                    int val = jsonObject.getNumber("value").getInt();
+                                    String operation = jsonObject.getString("operation");
                                     BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
                                         double finalValue = (double) mathOperator.apply(getFoodModifier(e.getItem().getType()), (double) val);
@@ -157,10 +158,10 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                                     }
                                 }
                             }
-                            for (JSONObject jsonObject : power.getList$SingularPlural("saturation_modifier", "saturation_modifiers")) {
-                                if (jsonObject.containsKey("value")) {
-                                    int val = Integer.parseInt(jsonObject.get("value").toString());
-                                    String operation = jsonObject.get("operation").toString();
+                            for (FactoryJsonObject jsonObject : power.getList$SingularPlural("saturation_modifier", "saturation_modifiers").stream().map(FactoryElement::toJsonObject).toList()) {
+                                if (jsonObject.isPresent("value")) {
+                                    int val = jsonObject.getNumber("value").getInt();
+                                    String operation = jsonObject.getString("operation");
                                     BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
                                         double finalValue = (double) mathOperator.apply(getSaturationModifier(e.getItem().getType()), (double) val);

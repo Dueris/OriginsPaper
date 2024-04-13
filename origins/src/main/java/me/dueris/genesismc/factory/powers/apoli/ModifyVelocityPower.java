@@ -1,8 +1,10 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass;
 import me.dueris.genesismc.registry.registries.Layer;
@@ -37,16 +39,16 @@ public class ModifyVelocityPower extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        List<String> identifiers = power.getJsonArray("axes");
+                        List<String> identifiers = power.getJsonArray("axes").asList().stream().map(FactoryElement::getString).toList();
                         if (identifiers.isEmpty()) {
                             identifiers.add("x");
                             identifiers.add("y");
                             identifiers.add("z");
                         }
                         Vector vel = e.getVelocity();
-                        for (HashMap<String, Object> modifier : power.getModifiers()) {
-                            Float value = Float.valueOf(modifier.get("value").toString());
-                            String operation = modifier.get("operation").toString();
+                        for (Modifier modifier : power.getModifiers()) {
+                            Float value = modifier.value();
+                            String operation = modifier.operation();
                             BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                             for (String axis : identifiers) {
                                 if (axis == "x") {

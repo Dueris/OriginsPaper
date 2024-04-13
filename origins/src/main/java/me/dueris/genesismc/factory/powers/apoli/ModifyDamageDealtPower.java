@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 import com.google.gson.JsonSyntaxException;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
@@ -38,9 +39,9 @@ public class ModifyDamageDealtPower extends CraftPower implements Listener {
                         if (!ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) e.getEntity()))
                             return;
                         if (!ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) return;
-                        for (HashMap<String, Object> modifier : power.getModifiers()) {
-                            Object value = modifier.get("value");
-                            String operation = modifier.get("operation").toString();
+                        for (Modifier modifier : power.getModifiers()) {
+                            float value = modifier.value();
+                            String operation = modifier.operation();
                             runSetDMG(e, operation, value);
                             setActive(p, power.getTag(), true);
                         }
@@ -52,35 +53,12 @@ public class ModifyDamageDealtPower extends CraftPower implements Listener {
         }
     }
 
-    public void runSetDMG(EntityDamageByEntityEvent e, String operation, Object value) {
+    public void runSetDMG(EntityDamageByEntityEvent e, String operation, float value) {
         double damage = e.getDamage();
-
-        if (value instanceof Double) {
-            BinaryOperator<Double> doubleOperator = getOperationMappingsDouble().get(operation);
-            if (doubleOperator != null) {
-                double newDamage = doubleOperator.apply(damage, (Double) value);
-                e.setDamage(newDamage);
-            }
-        } else if (value instanceof Long) {
-            BinaryOperator<Long> longOperator = getOperationMappingsLong().get(operation);
-            if (longOperator != null) {
-                long newDamage = longOperator.apply((long) damage, (Long) value);
-                e.setDamage(newDamage);
-            }
-        } else if (value instanceof Integer) {
-            BinaryOperator<Integer> intOperator = getOperationMappingsInteger().get(operation);
-            if (intOperator != null) {
-                int newDamage = intOperator.apply((int) damage, (Integer) value);
-                e.setDamage(newDamage);
-            }
-        } else if (value instanceof Float) {
-            BinaryOperator<Float> floatOperator = getOperationMappingsFloat().get(operation);
-            if (floatOperator != null) {
-                float newDamage = floatOperator.apply((float) damage, (Float) value);
-                e.setDamage(newDamage);
-            }
-        } else {
-            throw new JsonSyntaxException("Unsupported number type: " + value.getClass());
+        BinaryOperator<Float> floatOperator = getOperationMappingsFloat().get(operation);
+        if (floatOperator != null) {
+            float newDamage = floatOperator.apply((float) damage, (Float) value);
+            e.setDamage(newDamage);
         }
     }
 

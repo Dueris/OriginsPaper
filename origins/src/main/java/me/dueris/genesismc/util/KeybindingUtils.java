@@ -2,6 +2,7 @@ package me.dueris.genesismc.util;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.mojang.datafixers.util.Pair;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
@@ -46,13 +47,14 @@ public class KeybindingUtils implements Listener {
             for (Power powerContainer : CraftApoli.getNestedPowers(power)) {
                 for (String object : powerContainer.keySet()) {
                     if (object.equalsIgnoreCase("key")) {
-                        if (powerContainer.getObject(object) instanceof String st) {
+                        if (powerContainer.getElement(object).isString()) {
                             should = true;
-                            key = "[%%]".replace("%%", st);
-                        } else if (powerContainer.getObject(object) instanceof JSONObject obj) {
-                            should = obj.containsKey("key");
+                            key = "[%%]".replace("%%", powerContainer.getString(object));
+                        } else if (powerContainer.getElement(object).isJsonObject()) {
+                            FactoryJsonObject obj = powerContainer.getJsonObject(object);
+                            should = obj.isPresent("key");
                             if (should) {
-                                key = "[%%]".replace("%%", obj.get("key").toString());
+                                key = "[%%]".replace("%%", obj.getString("key"));
                             }
                         }
                     }
@@ -61,13 +63,14 @@ public class KeybindingUtils implements Listener {
         } else {
             for (String object : power.keySet()) {
                 if (object.equalsIgnoreCase("key")) {
-                    if (power.getObject(object) instanceof String st) {
+                    if (power.getElement(object).isString()) {
                         should = true;
-                        key = "[%%]".replace("%%", st);
-                    } else if (power.getObject(object) instanceof JSONObject obj) {
-                        should = obj.containsKey("key");
+                        key = "[%%]".replace("%%", power.getString(object));
+                    } else if (power.getElement(object).isJsonObject()) {
+                        FactoryJsonObject obj = power.getJsonObject(object);
+                        should = obj.isPresent("key");
                         if (should) {
-                            key = "[%%]".replace("%%", obj.get("key").toString());
+                            key = "[%%]".replace("%%", obj.getString("key"));
                         }
                     }
                 }

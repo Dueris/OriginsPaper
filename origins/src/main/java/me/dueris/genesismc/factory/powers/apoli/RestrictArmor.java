@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -82,10 +83,10 @@ public class RestrictArmor extends CraftPower implements Listener {
         boolean passLegs;
         boolean passChest;
         boolean passHead;
-        JSONObject headObj = power.getJsonObject("head");
-        JSONObject chestObj = power.getJsonObject("chest");
-        JSONObject legsObj = power.getJsonObject("legs");
-        JSONObject feetObj = power.getJsonObject("feet");
+        FactoryJsonObject headObj = power.getJsonObject("head");
+        FactoryJsonObject chestObj = power.getJsonObject("chest");
+        FactoryJsonObject legsObj = power.getJsonObject("legs");
+        FactoryJsonObject feetObj = power.getJsonObject("feet");
 
         if (headObj == null) headb = false;
         if (chestObj == null) chestb = false;

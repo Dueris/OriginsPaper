@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
@@ -35,9 +36,9 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
                         if (power.getStringOrDefault("status_effect", null) != null) {
                             if (e.getNewEffect().getType().equals(PotionEffectType.getByName(power.getStringOrDefault("status_effect", null)))) {
                                 PotionEffect effect = e.getNewEffect();
-                                for (HashMap<String, Object> modifier : power.getModifiers("modifier", "modifiers")) {
-                                    Float value = Float.valueOf(modifier.get("value").toString());
-                                    String operation = modifier.get("operation").toString();
+                                for (Modifier modifier : power.getModifiers()) {
+                                    Float value = modifier.value();
+                                    String operation = modifier.operation();
                                     BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                                     if (mathOperator != null) {
                                         float result = (float) mathOperator.apply(effect.getDuration(), value);
@@ -48,9 +49,9 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
                             }
                         } else {
                             for (PotionEffect effect : p.getActivePotionEffects()) {
-                                for (HashMap<String, Object> modifier : power.getModifiers("modifier", "modifiers")) {
-                                    Float value = Float.valueOf(modifier.get("value").toString());
-                                    String operation = modifier.get("operation").toString();
+                                for (Modifier modifier : power.getModifiers()) {
+                                    Float value = modifier.value();
+                                    String operation = modifier.operation();
                                     BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                                     if (mathOperator != null) {
                                         float result = (float) mathOperator.apply(effect.getDuration(), value);

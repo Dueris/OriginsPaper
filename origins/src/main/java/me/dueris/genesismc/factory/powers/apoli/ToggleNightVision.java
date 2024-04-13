@@ -33,18 +33,18 @@ public class ToggleNightVision extends CraftPower implements Listener {
 
     public void execute(Player p, Power power) {
         in_continuous.putIfAbsent(p, new ArrayList<>());
-        int cooldown = power.getIntOrDefault("cooldown", 1);
-        String key = (String) power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active");
+        int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
+        String key = (String) power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
         KeybindingUtils.toggleKey(p, key);
 
-        boolean cont = !Boolean.valueOf(power.getJsonObject("key").getOrDefault("continuous", "false").toString());
+        boolean cont = !Boolean.valueOf(power.getJsonObject("key").getStringOrDefault("continuous", "false").toString());
         new BukkitRunnable() {
 
             @Override
             public void run() {
                 /* TNV power always execute continuously */
                 if (!in_continuous.get(p).contains(key)) {
-                    CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.getJsonObject("hud_render"));
+                    CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), cooldown, power.getJsonObject("hud_render"));
                     KeybindingUtils.toggleKey(p, key);
                     setActive(p, power.getTag(), false);
                     p.removePotionEffect(PotionEffectType.NIGHT_VISION);
@@ -74,7 +74,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                 if (getPowerArray().contains(p)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
-                            if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
+                            if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
                                 execute(p, power);
                             }
                         }
@@ -90,13 +90,13 @@ public class ToggleNightVision extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (getPowerArray().contains(p)) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
+                    if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString(), p)) {
                         in_continuous.putIfAbsent(p, new ArrayList<>());
                         if (true /* TNV power always execute continuously */) {
-                            if (in_continuous.get(p).contains(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString())) {
-                                in_continuous.get(p).remove(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString());
+                            if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString())) {
+                                in_continuous.get(p).remove(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString());
                             } else {
-                                in_continuous.get(p).add(power.getJsonObject("key").getOrDefault("key", "key.origins.primary_active").toString());
+                                in_continuous.get(p).add(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString());
                             }
                         }
                     }

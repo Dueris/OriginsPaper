@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
@@ -28,9 +29,9 @@ public class ModifyHealingPower extends CraftPower implements Listener {
             if (!modify_healing.contains(p)) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    for (FactoryJsonObject modifier : power.getModifiers()) {
-                        Float value = Float.valueOf(modifier.get("value").toString());
-                        String operation = modifier.get("operation").toString();
+                    for (Modifier modifier : power.getModifiers()) {
+                        Float value = modifier.value();
+                        String operation = modifier.operation();
                         BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                         if (mathOperator != null) {
                             float result = (float) mathOperator.apply(e.getAmount(), value);

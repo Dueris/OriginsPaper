@@ -33,7 +33,7 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
-                        applyAttribute(e.getPlayer(), valueModifyingSuperClass.getDefaultValue(power.getString("class")), power.getFloatOrDefault("multiplier", 1.0f), power.getString("attribute").toUpperCase().split(":")[1].replace("\\.", "_"));
+                        applyAttribute(e.getPlayer(), valueModifyingSuperClass.getDefaultValue(power.getString("class")), power.getNumberOrDefault("multiplier", 1.0f).getFloat(), power.getString("attribute").toUpperCase().split(":")[1].replace("\\.", "_"));
                     } else {
                         setActive(e.getPlayer(), power.getTag(), false);
                     }

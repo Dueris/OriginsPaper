@@ -178,19 +178,17 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
     /**
      * @return The singular or plural of a FactoryJsonObject
      */
-    public List<FactoryJsonObject> getList$SingularPlural(String singular, String plural) {
+    public List<FactoryElement> getList$SingularPlural(String singular, String plural) {
         FactoryElement obj = isPresent(singular) ? getElement(singular) : getElement(plural);
-        List<FactoryJsonObject> result = new ArrayList<>();
+        List<FactoryElement> result = new ArrayList<>();
 
         if (obj.isJsonArray()) {
             FactoryJsonArray jsonArray = obj.toJsonArray();
             for (FactoryElement item : jsonArray.asList()) {
-                if (item.isJsonObject()) {
-                    result.add(item.toJsonObject());
-                }
+                result.add(item);
             }
-        } else if (obj.isJsonObject()) {
-            result.add(obj.toJsonObject());
+        } else {
+            result.add(obj);
         }
         return result;
     }

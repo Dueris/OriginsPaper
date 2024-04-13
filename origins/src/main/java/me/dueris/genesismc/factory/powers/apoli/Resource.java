@@ -90,7 +90,7 @@ public class Resource extends CraftPower implements Listener {
 
                     @Override
                     public Double right() {
-                        return countNumbersBetween(power.getIntOrDefault("start_value", power.getInt("min")), power.getInt("max"));
+                        return countNumbersBetween(power.getNumberOrDefault("start_value", power.getNumber("min").getInt()).getInt(), power.getNumber("max").getInt());
                     }
                 };
                 HashMap<String, Pair<BossBar, Double>> map = new HashMap<>();

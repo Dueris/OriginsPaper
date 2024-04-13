@@ -33,7 +33,7 @@ public class ItemOnItemPower extends CraftPower implements Listener {
                             ItemStack stack = power.getItemStack("result");
                             if (stack != null) {
                                 Actions.executeItem(stack, power.getJsonObject("result_item_action"));
-                                for (int i = 0; i < power.getIntOrDefault("result_from_on_stack", 1); i++) {
+                                for (int i = 0; i < power.getNumberOrDefault("result_from_on_stack", 1).getInt(); i++) {
                                     p.getInventory().addItem(stack);
                                 }
                             }

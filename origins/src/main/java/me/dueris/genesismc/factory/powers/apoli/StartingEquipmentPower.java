@@ -1,5 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -43,8 +45,8 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
     }
 
     public void runGiveItems(Player p, Power power) {
-        for (HashMap<String, Object> stack : power.getList$SingularPlural("stack", "stacks")) {
-            p.getInventory().addItem(new ItemStack(Material.valueOf(stack.get("item").toString().toUpperCase().split(":")[1]), power.getIntOrDefault("amount", 1)));
+        for (FactoryJsonObject stack : power.getList$SingularPlural("stack", "stacks").stream().map(FactoryElement::toJsonObject).toList()) {
+            p.getInventory().addItem(new ItemStack(Material.valueOf(stack.getString("item").toUpperCase().split(":")[1]), power.getNumberOrDefault("amount", 1).getInt()));
         }
     }
 

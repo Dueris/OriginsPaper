@@ -29,7 +29,7 @@ public class Burn extends CraftPower {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (power.getObject("interval") == null) {
+                    if (power.isPresent("interval")) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
                         return;
                     }
@@ -45,7 +45,7 @@ public class Burn extends CraftPower {
                         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
 
-                            Long burn_duration = power.getLongOrDefault("burn_duration", 100L);
+                            Long burn_duration = power.getNumberOrDefault("burn_duration", 100L).getLong();
                             p.setFireTicks(burn_duration.intValue() * 20);
                         } else {
                             setActive(p, power.getTag(), false);

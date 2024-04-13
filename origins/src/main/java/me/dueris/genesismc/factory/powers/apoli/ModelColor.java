@@ -59,9 +59,9 @@ public class ModelColor { // Left empty due to it needing to be registered on ce
                     String uuid = p.getUniqueId().toString();
                     String originalFile = uuid;
                     String modifiedFile = originalFile + "_modified";
-                    double r = power.getFloatOrDefault("red", 0.0f);
-                    double g = power.getFloatOrDefault("green", 0.0f);
-                    double b = power.getFloatOrDefault("blue", 0.0f);
+                    double r = power.getNumberOrDefault("red", 0.0f).getDouble();
+                    double g = power.getNumberOrDefault("green", 0.0f).getDouble();
+                    double b = power.getNumberOrDefault("blue", 0.0f).getDouble();
 
                     CompletableFuture.runAsync(() -> {
                         try {
