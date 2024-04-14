@@ -199,6 +199,28 @@ public class OriginPlayerAccessor implements Listener {
         return powersAppliedList.get(p);
     }
 
+    /**
+     * With how origins runs things, this needs to be in place
+     * because each power already ticks for multiple power instances
+     * and if a duplicate is found, then it needs to remove that power
+     * or the power could execute multiple times if its ticked
+     * inside the scheduler
+     *
+     * @param p
+     */
+    public static void checkForDuplicates(Player p) {
+        List<NamespacedKey> keys = new ArrayList<>();
+        List<ApoliPower> duplicates = new ArrayList<>();
+        for (ApoliPower power : getPowersApplied(p)) {
+            if(keys.contains(power.getKey())) {
+                duplicates.add(power);
+            } else {
+                keys.add(power.getKey());
+            }
+        }
+        duplicates.forEach(power -> getPowersApplied(p).remove(power));
+    }
+
     private static boolean applyPower(Player player, Power power) {
         if (power == null) return false;
         String name = power.getType();
