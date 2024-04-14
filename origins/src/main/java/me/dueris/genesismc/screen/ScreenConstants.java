@@ -54,11 +54,10 @@ public class ScreenConstants {
     }
 
     public static void DefaultChoose(Player p) {
-        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+        p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
 
         //default choose
         p.closeInventory();
-        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 2);
         p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
         p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);
         p.setCustomNameVisible(false);

@@ -2,6 +2,7 @@ package me.dueris.genesismc.screen;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.ComponentMultiLine;
@@ -41,9 +42,14 @@ public class ScreenNavigator implements Listener {
         if (e.getCurrentItem() == null) return;
         if (e.getView().getTitle().startsWith("Choosing Menu")) {
             Player p = (Player) e.getWhoClicked();
-            @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins - " + p.getName());
+            Layer displayingLayer = choosing.get(p);
+            String title = "Custom Origins - " + (choosing.get(p).isPresent("name") ? choosing.get(p).getName() : choosing.get(p).getTag());
+            if (displayingLayer.isPresent("gui_title") && displayingLayer.getJsonObject("gui_title").isPresent("choose_origin")) {
+                title = displayingLayer.getJsonObject("gui_titile").getString("choose_origin");
+            }
+            @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, title);
             if (e.getCurrentItem().getType().equals(Material.TIPPED_ARROW)) {
-                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+                p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
                 custommenu.setContents(ChooseMenuContent(0, choosing.get(p), p));
                 e.getWhoClicked().openInventory(custommenu);
 
@@ -57,8 +63,13 @@ public class ScreenNavigator implements Listener {
             if (e.getView().getTitle().startsWith("Custom Origins")) {
                 if (e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)) {
                     Player p = (Player) e.getWhoClicked();
-                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-                    @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu - " + choosing.get(p).getName());
+                    p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
+                    Layer displayingLayer = choosing.get(p);
+                    String title = "Choosing Menu - " + (choosing.get(p).isPresent("name") ? choosing.get(p).getName() : choosing.get(p).getTag());
+                    if (displayingLayer.isPresent("gui_title") && displayingLayer.getJsonObject("gui_title").isPresent("choose_origin")) {
+                        title = displayingLayer.getJsonObject("gui_titile").getString("choose_origin");
+                    }
+                    @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, title);
                     mainmenu.setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
                     e.getWhoClicked().openInventory(mainmenu);
                 }
@@ -73,7 +84,7 @@ public class ScreenNavigator implements Listener {
             if (e.getView().getTitle().startsWith("Choosing Menu")) {
                 if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
                     Player p = (Player) e.getWhoClicked();
-                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+                    p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
                     if (OriginPlayerAccessor.hasOrigin(p, "genesis:origin-null"))
                         p.kick(Component.text("You must choose an origin!"));
                     e.getWhoClicked().closeInventory();
@@ -105,9 +116,14 @@ public class ScreenNavigator implements Listener {
                 }
             }
 
-            @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Origin - " + origin.getName());
+            Layer displayingLayer = choosing.get(p);
+            String title = "Origins - " + origin.getName();
+            if (displayingLayer.isPresent("gui_title") && displayingLayer.getJsonObject("gui_title").isPresent("view_origin")) {
+                title = displayingLayer.getJsonObject("gui_titile").getString("view_origin");
+            }
+            @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, title);
 
-            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+            p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
 
             ArrayList<Power> powerContainers = new ArrayList<>();
             for (Power powerContainer : origin.getPowerContainers()) {
@@ -232,19 +248,29 @@ public class ScreenNavigator implements Listener {
             if (e.getView().getTitle().startsWith("Origin")) {
                 if (e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)) {
                     Player p = (Player) e.getWhoClicked();
-                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+                    p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
                     NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
 
                     for (Origin origin : CraftApoli.getOriginsFromRegistry().stream().filter(origin -> CraftApoli.isCoreOrigin(origin)).toList()) {
                         if (Objects.equals(e.getClickedInventory().getContents()[13].getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING), origin.getTag())) {
-                            @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu - " + choosing.get(p).getName());
+                            Layer displayingLayer = choosing.get(p);
+                            String title = "Choosing Menu - " + (choosing.get(p).isPresent("name") ? choosing.get(p).getName() : choosing.get(p).getTag());
+                            if (displayingLayer.isPresent("gui_title") && displayingLayer.getJsonObject("gui_title").isPresent("choose_origin")) {
+                                title = displayingLayer.getJsonObject("gui_titile").getString("choose_origin");
+                            }
+                            @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, title);
                             mainmenu.setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
                             e.getWhoClicked().openInventory(mainmenu);
                             return;
                         }
                     }
 
-                    @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins - " + p.getName());
+                    Layer displayingLayer = choosing.get(p);
+                    String title = "Custom Origins - " + (choosing.get(p).isPresent("name") ? choosing.get(p).getName() : choosing.get(p).getTag());
+                    if (displayingLayer.isPresent("gui_title") && displayingLayer.getJsonObject("gui_title").isPresent("choose_origin")) {
+                        title = displayingLayer.getJsonObject("gui_titile").getString("choose_origin");
+                    }
+                    @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, title);
                     custommenu.setContents(ChooseMenuContent(0, choosing.get(p), p));
                     e.getWhoClicked().openInventory(custommenu);
                 } else e.setCancelled(true);
@@ -258,7 +284,7 @@ public class ScreenNavigator implements Listener {
             if (e.getView().getTitle().startsWith("Origin")) {
                 if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
                     Player p = (Player) e.getWhoClicked();
-                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+                    p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
                     e.getWhoClicked().closeInventory();
                 } else {
                     e.setCancelled(true);
@@ -274,10 +300,15 @@ public class ScreenNavigator implements Listener {
                 ItemStack item = e.getCurrentItem();
                 if (item.getType().equals(Material.ARROW) && (e.getCurrentItem().getItemMeta().getDisplayName().equals("Previous Page") || e.getCurrentItem().getItemMeta().getDisplayName().equals("Next Page"))) {
                     Player p = (Player) e.getWhoClicked();
-                    @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins - " + p.getName());
+                    Layer displayingLayer = choosing.get(p);
+                    String title = "Custom Origins - " + (choosing.get(p).isPresent("name") ? choosing.get(p).getName() : choosing.get(p).getTag());
+                    if (displayingLayer.isPresent("gui_title") && displayingLayer.getJsonObject("gui_title").isPresent("choose_origin")) {
+                        title = displayingLayer.getJsonObject("gui_titile").getString("choose_origin");
+                    }
+                    @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, title);
                     NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "page");
                     custommenu.setContents(ChooseMenuContent(item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.INTEGER), choosing.get(p), p));
-                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+                    p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
                     e.getWhoClicked().closeInventory();
                     e.getWhoClicked().openInventory(custommenu);
                 } else {

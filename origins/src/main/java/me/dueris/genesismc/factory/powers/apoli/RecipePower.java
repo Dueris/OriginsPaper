@@ -89,7 +89,7 @@ public class RecipePower extends CraftPower implements Listener {
     }
 
     public static ItemStack computeResult(FactoryJsonObject object) {
-        long amt = (long) object.getNumberOrDefault("count", 1L).getLong();
+        long amt = object.getNumberOrDefault("count", 1L).getLong();
         String item = object.getString("item");
         if (item.contains(":")) {
             item = item.split(":")[1];

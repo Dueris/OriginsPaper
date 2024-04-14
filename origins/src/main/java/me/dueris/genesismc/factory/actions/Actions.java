@@ -252,7 +252,7 @@ public class Actions {
             }
         } else {
             Registrar<EntityActions.ActionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.ENTITY_ACTION);
-            EntityActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.getString("type").toString()));
+            EntityActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.getString("type")));
             if (finAction != null) {
                 finAction.test(action, entity);
             }
@@ -302,7 +302,7 @@ public class Actions {
             }
         } else {
             Registrar<BlockActions.ActionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.BLOCK_ACTION);
-            BlockActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.getString("type").toString()));
+            BlockActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.getString("type")));
             if (finAction != null) {
                 finAction.test(action, location);
             }

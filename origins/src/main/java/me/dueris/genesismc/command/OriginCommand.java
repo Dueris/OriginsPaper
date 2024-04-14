@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import javassist.NotFoundException;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.content.enchantment.AnvilHandler;
@@ -123,7 +124,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                 custommenu.setItem(9, new ItemStack(Material.valueOf(getOrbCon().get("crafting.bottom.right").toString())));
                                 custommenu.setItem(0, OrbOfOrigins.orb);
                                 p.openInventory(custommenu);
-                                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
+                                p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 10, 9);
                             } catch (Exception exception) {
                                 exception.printStackTrace();
                             }
@@ -156,8 +157,15 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                 ).then(literal("gui").requires(source -> source.hasPermission(2))
                     .executes(context -> {
                         if (!context.getSource().isPlayer()) return 0;
-                        OriginPlayerAccessor.unassignPowers(context.getSource().getPlayer().getBukkitEntity());
-                        OriginPlayerAccessor.setOrigin(context.getSource().getPlayer().getBukkitEntity(), CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.nullOrigin());
+                        ServerPlayer player = context.getSource().getPlayer();
+                        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                            try {
+                                OriginPlayerAccessor.unassignPowers(player.getBukkitEntity(), layer);
+                            } catch (NotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
+                            OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.nullOrigin());
+                        }
                         return SINGLE_SUCCESS;
                     })
                     .then(argument("targets", EntityArgument.players())
@@ -165,7 +173,11 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                             Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
                             targets.forEach(player -> {
                                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                                    OriginPlayerAccessor.unassignPowers(player.getBukkitEntity());
+                                    try {
+                                        OriginPlayerAccessor.unassignPowers(player.getBukkitEntity(), layer);
+                                    } catch (NotFoundException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                     OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.nullOrigin());
                                 }
                             });
@@ -184,7 +196,11 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                 Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
                                 Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
                                 targets.forEach(player -> {
-                                    OriginPlayerAccessor.unassignPowers(player.getBukkitEntity());
+                                    try {
+                                        OriginPlayerAccessor.unassignPowers(player.getBukkitEntity(), layer);
+                                    } catch (NotFoundException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                     OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.nullOrigin());
                                 });
                                 return SINGLE_SUCCESS;
@@ -204,7 +220,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                             @NotNull Inventory help = Bukkit.createInventory(p.getBukkitEntity(), 54, "Info - " + playerOrigins.get(p.getBukkitEntity()).get(playerPage.get(p.getBukkitEntity())).getName());
                             help.setContents(infoMenu(p.getBukkitEntity(), playerPage.get(p.getBukkitEntity())));
                             p.getBukkitEntity().openInventory(help);
-                            p.getBukkitEntity().playSound(p.getBukkitEntity().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+                            p.getBukkitEntity().playSound(p.getBukkitEntity().getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
                             return SINGLE_SUCCESS;
                         } else {
                             context.getSource().sendFailure(Component.literal("Only players can access this command"));
@@ -430,7 +446,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
         if (e.getView().getTitle().startsWith("Info")) {
             if (e.getCurrentItem().getType() == Material.BARRIER || e.getCurrentItem().getType() == Material.SPECTRAL_ARROW) {
                 Player p = (Player) e.getWhoClicked();
-                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
+                p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 10, 9);
                 e.getWhoClicked().getInventory().close();
             }
         }
@@ -451,7 +467,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 
             @NotNull Inventory info = Bukkit.createInventory(player, 54, "Info - " + playerOrigins.get(player).get(playerPage.get(player)).getName());
             info.setContents(infoMenu(player, item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "page"), PersistentDataType.INTEGER)));
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
             player.closeInventory();
             player.openInventory(info);
         }
@@ -469,7 +485,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
         if (e.getView().getTitle().equalsIgnoreCase("Orb Recipe")) {
             if (e.getCurrentItem().getType() == Material.BARRIER) {
                 Player p = (Player) e.getWhoClicked();
-                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
+                p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 10, 9);
                 e.getWhoClicked().getInventory().close();
             }
         }

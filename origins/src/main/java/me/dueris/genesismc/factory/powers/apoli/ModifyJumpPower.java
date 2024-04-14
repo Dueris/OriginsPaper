@@ -31,7 +31,8 @@ public class ModifyJumpPower extends CraftPower implements Listener {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         for (Modifier modifier : power.getModifiers()) {
                             float modifierValue = modifier.value();
-                            int jumpBoostLevel = (int) /*((modifierValue - 1.0) * 2.0)*/ Math.round(modifierValue * 4);
+                            /*((modifierValue - 1.0) * 2.0)*/
+                            int jumpBoostLevel = Math.round(modifierValue * 4);
 
                             if (jumpBoostLevel >= 0) {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, jumpBoostLevel, false, false, false));

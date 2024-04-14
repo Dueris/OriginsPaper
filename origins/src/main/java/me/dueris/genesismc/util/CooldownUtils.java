@@ -175,7 +175,7 @@ public class CooldownUtils implements Listener {
                     String tag = split2[0];
                     String title = split2[1];
                     double progess = Double.parseDouble(split2[3]);
-                    if(progess > 1 || progess < 0) continue;
+                    if (progess > 1 || progess < 0) continue;
                     BarColor color = BarColor.valueOf(split2[2]);
                     BossBar bar = createCooldownBar(e.getPlayer(), color, BarStyle.SEGMENTED_6, title);
                     bar.setVisible(true);

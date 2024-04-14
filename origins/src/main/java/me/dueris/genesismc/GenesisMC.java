@@ -30,6 +30,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
 import me.dueris.genesismc.integration.PlaceHolderAPI;
+import me.dueris.genesismc.registry.BuiltinRegistry;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.DatapackRepository;
 import me.dueris.genesismc.registry.registries.Layer;
@@ -352,6 +353,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 new Layer(true), 2
             );
             calio.start(debugOrigins, loaderThreadPool);
+            BuiltinRegistry.bootstrap();
             // End calio parsing
         } catch (InstantiationException | IllegalAccessException |
                  IOException ee) {

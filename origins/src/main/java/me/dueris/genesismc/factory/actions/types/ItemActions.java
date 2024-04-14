@@ -29,7 +29,7 @@ public class ItemActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("merge_nbt"), (action, item) -> {
             net.minecraft.world.item.ItemStack stack = CraftItemStack.unwrap(item);
-            stack.getOrCreateTag().merge(MiscUtils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(action.getString("nbt").toString()), CompoundTag.CODEC));
+            stack.getOrCreateTag().merge(MiscUtils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(action.getString("nbt")), CompoundTag.CODEC));
         }));
     }
 

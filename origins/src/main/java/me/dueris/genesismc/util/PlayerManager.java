@@ -32,9 +32,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PlayerManager implements Listener {
+
+    public static ArrayList<Player> playersLeaving = new ArrayList<>();
 
     public static void ReapplyEntityReachPowers(Player player) {
         for (Origin origin : OriginPlayerAccessor.getOrigin(player).values()) {
@@ -58,6 +61,7 @@ public class PlayerManager implements Listener {
     public static void originValidCheck(Player p) {
         HashMap<Layer, Origin> origins = OriginPlayerAccessor.getOrigin(p);
         for (Layer layer : origins.keySet()) {
+            if (layer == null) continue; // Layer was removed
             for (String tag : layer.getOrigins()) {
                 NamespacedKey fixedKey = NamespacedKey.fromString(tag);
                 if (GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(fixedKey) == null) {
@@ -72,6 +76,7 @@ public class PlayerManager implements Listener {
         layerLoop:
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Layer playerLayer : origins.keySet()) {
+                if (playerLayer == null) continue layerLoop; // Layer was removed
                 if (layer.getTag().equals(playerLayer.getTag())) continue layerLoop;
             }
             origins.put(layer, CraftApoli.nullOrigin());
@@ -151,9 +156,11 @@ public class PlayerManager implements Listener {
 
     @EventHandler
     public void playerQuitHandler(PlayerQuitEvent e) {
+        playersLeaving.add(e.getPlayer());
         e.getPlayer().getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerAccessor.getOrigin(e.getPlayer()), e.getPlayer()));
         OriginPlayerAccessor.unassignPowers(e.getPlayer());
         OriginDataContainer.unloadData(e.getPlayer());
+        playersLeaving.remove(e.getPlayer());
     }
 
     @EventHandler

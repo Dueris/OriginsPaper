@@ -69,7 +69,7 @@ public class RaycastUtils {
                         Actions.executeEntity(entity.getBukkitEntity(), data.getJsonObject("hit_action"));
                     }
                     if (data.isPresent("command_at_hit")) {
-                        executeNMSCommand(entity, CraftLocation.toVec3D(curLoc), data.getStringOrDefault("command_at_hit", null).toString());
+                        executeNMSCommand(entity, CraftLocation.toVec3D(curLoc), data.getStringOrDefault("command_at_hit", null));
                     }
                     break;
                 }
@@ -185,7 +185,7 @@ public class RaycastUtils {
         if (data.isPresent("block") && data.getBoolean("block")) {
             double distance = getBlockReach(data, entity);
             target = origin.add(direction.scale(distance));
-            BlockHitResult blockHit = performBlockRaycast(entity, origin, target, ClipContextUtils.getShapeType(data.getString("shape_type").toString()), ClipContextUtils.getFluidHandling(data.getString("fluid_handling").toString()));
+            BlockHitResult blockHit = performBlockRaycast(entity, origin, target, ClipContextUtils.getShapeType(data.getString("shape_type")), ClipContextUtils.getFluidHandling(data.getString("fluid_handling")));
             if (blockHit.getType() != HitResult.Type.MISS) {
                 if (hitResult == null || hitResult.getType() == HitResult.Type.MISS) {
                     hitResult = blockHit;

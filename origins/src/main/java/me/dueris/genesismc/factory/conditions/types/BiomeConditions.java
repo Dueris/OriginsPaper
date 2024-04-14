@@ -25,7 +25,7 @@ public class BiomeConditions {
 
     public void prep() {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, biome) -> {
-            NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag").toString());
+            NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag"));
             TagKey key = TagKey.create(net.minecraft.core.registries.Registries.BIOME, CraftNamespacedKey.toMinecraft(tag));
             return ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BIOME).wrapAsHolder(biome.getA()).is(key);
         }));
@@ -37,14 +37,14 @@ public class BiomeConditions {
             : condition.get("precipitation").toString().equals("none");
                 */
             biome.getA().getPrecipitationAt(new BlockPos(0, 64, 0)).equals(getPrecipitation(condition)) :
-            condition.getString("precipitation").toString().equalsIgnoreCase("none")));
+            condition.getString("precipitation").equalsIgnoreCase("none")));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("category"), (condition, biome) -> {
-            NamespacedKey tag = GenesisMC.apoliIdentifier("category/" + condition.getString("category").toString()); // Use category folder
+            NamespacedKey tag = GenesisMC.apoliIdentifier("category/" + condition.getString("category")); // Use category folder
             TagKey key = TagKey.create(net.minecraft.core.registries.Registries.BIOME, CraftNamespacedKey.toMinecraft(tag));
             return ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BIOME).wrapAsHolder(biome.getA()).is(key);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("temperature"), (condition, biome) -> {
-            String comparison = condition.getString("comparison").toString();
+            String comparison = condition.getString("comparison");
             float compare_to = condition.getNumber("compare_to").getFloat();
             return Comparison.getFromString(comparison).compare(biome.getA().getBaseTemperature(), compare_to);
         }));
@@ -52,7 +52,7 @@ public class BiomeConditions {
     }
 
     private net.minecraft.world.level.biome.Biome.Precipitation getPrecipitation(FactoryJsonObject condition) {
-        String lowerCase = condition.getString("precipitation").toString().toLowerCase();
+        String lowerCase = condition.getString("precipitation").toLowerCase();
         switch (lowerCase) {
             case "none" -> {
                 return Precipitation.NONE;

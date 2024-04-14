@@ -34,10 +34,10 @@ public class ToggleNightVision extends CraftPower implements Listener {
     public void execute(Player p, Power power) {
         in_continuous.putIfAbsent(p, new ArrayList<>());
         int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
-        String key = (String) power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
+        String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
         KeybindingUtils.toggleKey(p, key);
 
-        boolean cont = !Boolean.valueOf(power.getJsonObject("key").getStringOrDefault("continuous", "false").toString());
+        boolean cont = !Boolean.valueOf(power.getJsonObject("key").getStringOrDefault("continuous", "false"));
         new BukkitRunnable() {
 
             @Override
@@ -90,13 +90,13 @@ public class ToggleNightVision extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (getPowerArray().contains(p)) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString(), p)) {
+                    if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
                         in_continuous.putIfAbsent(p, new ArrayList<>());
                         if (true /* TNV power always execute continuously */) {
-                            if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString())) {
-                                in_continuous.get(p).remove(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString());
+                            if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"))) {
+                                in_continuous.get(p).remove(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
                             } else {
-                                in_continuous.get(p).add(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString());
+                                in_continuous.get(p).add(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
                             }
                         }
                     }

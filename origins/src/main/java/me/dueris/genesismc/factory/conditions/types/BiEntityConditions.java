@@ -64,8 +64,8 @@ public class BiEntityConditions implements Listener {
             net.minecraft.world.entity.Entity nmsActor = pair.first().getHandle();
             net.minecraft.world.entity.Entity nmsTarget = pair.second().getHandle();
 
-            RotationType actorRotationType = RotationType.getRotationType(condition.getString("actor_rotation").toString());
-            RotationType targetRotationType = RotationType.getRotationType(condition.getString("target_rotation").toString());
+            RotationType actorRotationType = RotationType.getRotationType(condition.getString("actor_rotation"));
+            RotationType targetRotationType = RotationType.getRotationType(condition.getString("target_rotation"));
 
             Vec3 actorRotation = actorRotationType.getRotation(nmsActor);
             Vec3 targetRotation = targetRotationType.getRotation(nmsTarget);
@@ -86,7 +86,7 @@ public class BiEntityConditions implements Listener {
 
             actorRotation = RotationType.reduceAxes(actorRotation, axes);
             targetRotation = RotationType.reduceAxes(targetRotation, axes);
-            String comparison = condition.getString("comparison").toString();
+            String comparison = condition.getString("comparison");
             float compare_to = condition.getNumber("compare_to").getFloat();
 
             return Comparison.getFromString(comparison).compare(RotationType.getAngleBetween(actorRotation, targetRotation), compare_to);
@@ -104,19 +104,19 @@ public class BiEntityConditions implements Listener {
             return craftTarget instanceof LivingEntity livingEntity && craftActor.equals(livingEntity.lastHurtByMob);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("distance"), (condition, pair) -> {
-            String comparison = condition.getString("comparison").toString();
+            String comparison = condition.getString("comparison");
             float compare_to = condition.getNumber("compare_to").getFloat();
             return Comparison.getFromString(comparison).compare(pair.first().getHandle().position().distanceToSqr(pair.second().getHandle().position()), compare_to);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_set"), (condition, pair) -> EntitySetPower.isInEntitySet(pair.second(), condition.getString("set").toString())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_set"), (condition, pair) -> EntitySetPower.isInEntitySet(pair.second(), condition.getString("set"))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("can_see"), (condition, pair) -> {
             Entity nmsActor = pair.first().getHandle();
             Entity nmsTarget = pair.second().getHandle();
 
             if ((nmsActor == null || nmsTarget == null) || nmsActor.level() != nmsTarget.level()) return false;
 
-            ClipContext.Block shapeType = ClipContextUtils.getShapeType(condition.getStringOrDefault("shape_type", "visual").toString());
-            ClipContext.Fluid fluidHandling = ClipContextUtils.getFluidHandling(condition.getStringOrDefault("fluid_handling", "none").toString());
+            ClipContext.Block shapeType = ClipContextUtils.getShapeType(condition.getStringOrDefault("shape_type", "visual"));
+            ClipContext.Fluid fluidHandling = ClipContextUtils.getFluidHandling(condition.getStringOrDefault("fluid_handling", "none"));
 
             Vec3 actorEyePos = nmsActor.getEyePosition();
             Vec3 targetEyePos = nmsTarget.getEyePosition();

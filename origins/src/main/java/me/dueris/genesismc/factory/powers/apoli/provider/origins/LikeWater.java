@@ -17,7 +17,8 @@ public class LikeWater extends CraftPower implements Listener, PowerProvider {
 
     @Override
     public void run(Player p) {
-        if(this.getPowerArray().contains(p)) p.setGravity(!p.isInWaterOrBubbleColumn() && !p.isSwimming() && !p.isSneaking());
+        if (this.getPowerArray().contains(p))
+            p.setGravity(!p.isInWaterOrBubbleColumn() && !p.isSwimming() && !p.isSneaking());
     }
 
     @Override

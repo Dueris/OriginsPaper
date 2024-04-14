@@ -11,7 +11,7 @@ dependencies {
     implementation(project(mapOf("path" to ":calio")))
     // Required Dependencies
     implementation("com.github.Dueris:ModelColorAPI:1.0.5-SNAPSHOT")
-    compileOnly("org.mineskin:java-client:1.2.4-SNAPSHOT") // - in DependencyLoader
+    implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
     compileOnly("io.github.classgraph:classgraph:4.8.165") // - in DependencyLoader - shaded in calio
     compileOnly("org.reflections:reflections:0.9.12") // - in DependencyLoader - shaded in calio
     compileOnly("org.mineskin:java-client:1.2.4-SNAPSHOT") // - in DependencyLoader

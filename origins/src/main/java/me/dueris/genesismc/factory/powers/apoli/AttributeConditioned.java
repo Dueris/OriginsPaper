@@ -43,7 +43,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
                 if (power == null) continue;
                 for (Modifier modifier : power.getModifiers()) {
                     if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) return;
-                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.handle.getString("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
+                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.handle.getString("attribute")).asString().split(":")[1].replace(".", "_").toUpperCase());
                     double val = modifier.value();
                     double baseVal = p.getAttribute(attribute_modifier).getBaseValue();
                     String operation = modifier.operation();
@@ -68,7 +68,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
                 if (power == null) continue;
 
                 for (Modifier modifier : power.getModifiers()) {
-                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.handle.getString("attribute").toString()).asString().split(":")[1].replace(".", "_").toUpperCase());
+                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.handle.getString("attribute")).asString().split(":")[1].replace(".", "_").toUpperCase());
                     double value = modifier.value();
                     double base_value = p.getAttribute(attribute_modifier).getBaseValue();
                     String operation = modifier.operation();

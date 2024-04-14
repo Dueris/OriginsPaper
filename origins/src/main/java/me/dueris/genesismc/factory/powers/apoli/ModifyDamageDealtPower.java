@@ -55,7 +55,7 @@ public class ModifyDamageDealtPower extends CraftPower implements Listener {
         double damage = e.getDamage();
         BinaryOperator<Float> floatOperator = Utils.getOperationMappingsFloat().get(operation);
         if (floatOperator != null) {
-            float newDamage = floatOperator.apply((float) damage, (Float) value);
+            float newDamage = floatOperator.apply((float) damage, value);
             e.setDamage(newDamage);
         }
     }

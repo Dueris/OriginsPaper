@@ -50,8 +50,8 @@ public class Launch extends CraftPower implements Listener {
                 if (getPowerArray().contains(p)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
-                            if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString(), p)) {
-                                String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString();
+                            if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
+                                String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
                                 KeybindingUtils.toggleKey(p, key);
                                 final int[] times = {-1};
                                 boolean cont = !power.getJsonObject("key").getBooleanOrDefault("continuous", false);

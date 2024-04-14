@@ -81,10 +81,8 @@ public class PowerCommand {
                                         powersToEdit.addAll(CraftApoli.getNestedPowers(poweR));
                                         for (Power power : powersToEdit) {
                                             try {
-                                                PowerUtils.grant(context.getSource().getBukkitSender(), power, player.getBukkitEntity(), CraftApoli.getLayerFromTag("origins:origin"));
-                                            } catch (InstantiationException ex) {
-                                                throw new RuntimeException(ex);
-                                            } catch (IllegalAccessException ex) {
+                                                PowerUtils.grant(context.getSource().getBukkitSender(), power, player.getBukkitEntity(), CraftApoli.getLayerFromTag("apoli:command"));
+                                            } catch (InstantiationException | IllegalAccessException ex) {
                                                 throw new RuntimeException(ex);
                                             }
                                         }
@@ -102,9 +100,7 @@ public class PowerCommand {
                                             for (Power power : powersToEdit) {
                                                 try {
                                                     PowerUtils.grant(context.getSource().getBukkitSender(), power, player.getBukkitEntity(), CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()));
-                                                } catch (InstantiationException ex) {
-                                                    throw new RuntimeException(ex);
-                                                } catch (IllegalAccessException ex) {
+                                                } catch (InstantiationException | IllegalAccessException ex) {
                                                     throw new RuntimeException(ex);
                                                 }
                                             }
@@ -184,13 +180,11 @@ public class PowerCommand {
                             }).executes(context -> {
                                 EntityArgument.getPlayers(context, "targets").forEach(p -> {
                                     NamespacedKey arg = CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power"));
-                                    String layer = "origins:origin";
+                                    String layer = "apoli:command";
 
                                     try {
                                         PowerUtils.remove(context.getSource().getBukkitSender(), ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(arg), p.getBukkitEntity(), CraftApoli.getLayerFromTag(layer));
-                                    } catch (InstantiationException e) {
-                                        throw new RuntimeException(e);
-                                    } catch (IllegalAccessException e) {
+                                    } catch (InstantiationException | IllegalAccessException e) {
                                         throw new RuntimeException(e);
                                     }
                                 });
@@ -204,9 +198,7 @@ public class PowerCommand {
 
                                         try {
                                             PowerUtils.remove(context.getSource().getBukkitSender(), ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(arg), p.getBukkitEntity(), CraftApoli.getLayerFromTag(layer));
-                                        } catch (InstantiationException e) {
-                                            throw new RuntimeException(e);
-                                        } catch (IllegalAccessException e) {
+                                        } catch (InstantiationException | IllegalAccessException e) {
                                             throw new RuntimeException(e);
                                         }
                                     });

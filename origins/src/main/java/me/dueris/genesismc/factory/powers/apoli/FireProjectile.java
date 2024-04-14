@@ -99,7 +99,7 @@ public class FireProjectile extends CraftPower implements Listener {
                 if (fire_projectile.contains(p)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
-                            if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active").toString(), p)) {
+                            if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
                                 int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
                                 String tag = power.getStringOrDefault("tag", "{}");
                                 float divergence = power.getNumberOrDefault("divergence", 1.0f).getFloat();

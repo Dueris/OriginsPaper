@@ -42,7 +42,7 @@ public class Climbing extends CraftPower implements Listener {
             if (!((CraftWorld) p.getWorld()).getHandle().getBlockStates(((CraftPlayer) p).getHandle().getBoundingBox().inflate(0.1, 0, 0.1)).filter(state -> state.getBukkitMaterial().isCollidable()).toList().isEmpty()) {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (!p.isSneaking() && holdingPlayers.contains(p)) holdingPlayers.remove(p);
+                        if (!p.isSneaking()) holdingPlayers.remove(p);
                         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && allowedToClimb.contains(p)) {
                             setActive(p, power.getTag(), true);
                             p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 5, 2, false, false, false));

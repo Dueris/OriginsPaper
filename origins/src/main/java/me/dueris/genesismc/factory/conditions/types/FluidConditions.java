@@ -15,12 +15,12 @@ public class FluidConditions {
     public void prep() {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("empty"), (condition, fluid) -> fluid.defaultFluidState().isEmpty()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, fluid) -> {
-            NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag").toString());
+            NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag"));
             TagKey key = TagKey.create(net.minecraft.core.registries.Registries.FLUID, CraftNamespacedKey.toMinecraft(tag));
             return fluid.is(key);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("still"), (condition, fluid) -> fluid.defaultFluidState().isSource()));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid"), (condition, fluid) -> fluid.builtInRegistryHolder().key().registry().equals(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(condition.getString("fluid").toString())))));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid"), (condition, fluid) -> fluid.builtInRegistryHolder().key().registry().equals(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(condition.getString("fluid"))))));
     }
 
     private void register(ConditionFactory factory) {

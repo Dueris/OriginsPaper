@@ -177,15 +177,17 @@ public class CraftApoli {
     public static String toSaveFormat(HashMap<Layer, Origin> origin, Player p) {
         StringBuilder data = new StringBuilder();
         for (Layer layer : origin.keySet()) {
+            if (layer == null) continue;
             Origin layerOrigins = origin.get(layer);
             ArrayList<String> powers = new ArrayList<>();
-            for (Power power : OriginPlayerAccessor.playerPowerMapping.get(p).get(layer)) {
-                powers.add(power.getTag());
+            if (OriginPlayerAccessor.playerPowerMapping.get(p).containsKey(layer)) {
+                powers.addAll(OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).stream().map(Power::getTag).toList());
+            } else {
+                powers.addAll(layerOrigins.getPowers());
             }
-            int powerSize = 0;
-            if (powers != null) powerSize = powers.size();
+            int powerSize = powers.size();
             data.append(layer.getTag()).append("|").append(layerOrigins.getTag()).append("|").append(powerSize);
-            if (powers != null) for (String power : powers) data.append("|").append(power);
+            for (String power : powers) data.append("|").append(power);
             data.append("\n");
         }
 //        System.out.println(data.toString());

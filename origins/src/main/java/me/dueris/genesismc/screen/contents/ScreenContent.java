@@ -216,7 +216,7 @@ public class ScreenContent {
                     Origin origin = originList.get(0);
 
                     String minecraftItem = origin.getIcon();
-                    String item = null;
+                    String item;
                     if (minecraftItem.contains(":")) {
                         item = minecraftItem.split(":")[1];
                     } else {

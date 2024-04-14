@@ -82,7 +82,7 @@ public class ItemConditions {
             return Comparison.getFromString(comparison).compare(amt, compareTo);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fuel"), (condition, itemStack) -> itemStack.getType().isFuel()));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("meat"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).getItem().getFoodProperties() != null ? CraftItemStack.asNMSCopy(itemStack).getItem().getFoodProperties().isMeat() : false));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("meat"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).getItem().getFoodProperties() != null && CraftItemStack.asNMSCopy(itemStack).getItem().getFoodProperties().isMeat()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, itemStack) -> NbtUtils.compareNbt(MiscUtils.ParserUtils.parseJson(new StringReader(condition.getString("nbt")), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.getTag(), true)));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("ingredient"), (condition, itemStack) -> {
             if (itemStack != null && itemStack.getType() != null && CraftItemStack.asCraftCopy(itemStack).handle != null) {
