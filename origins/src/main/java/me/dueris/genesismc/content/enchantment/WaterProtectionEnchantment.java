@@ -15,6 +15,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.ProtectionEnchantment;
+import org.jetbrains.annotations.NotNull;
 
 public class WaterProtectionEnchantment extends Enchantment {
     String descriptionID = "water_protection";
@@ -29,12 +30,12 @@ public class WaterProtectionEnchantment extends Enchantment {
     }
 
     @Override
-    public String getDescriptionId() {
+    public @NotNull String getDescriptionId() {
         return this.getOrCreateDescriptionId();
     }
 
     @Override
-    protected String getOrCreateDescriptionId() {
+    protected @NotNull String getOrCreateDescriptionId() {
         if (this.descriptionID == null) {
             this.descriptionID = Util.makeDescriptionId("enchantment", BuiltInRegistries.ENCHANTMENT.getKey(this));
         }
@@ -48,7 +49,7 @@ public class WaterProtectionEnchantment extends Enchantment {
     }
 
     @Override
-    public Component getFullname(int level) {
+    public @NotNull Component getFullname(int level) {
         MutableComponent mutableComponent = Component.literal("Water Protection");
         mutableComponent.withStyle(ChatFormatting.GRAY);
         if (level != 1 || this.getMaxLevel() != 1) {
@@ -65,11 +66,6 @@ public class WaterProtectionEnchantment extends Enchantment {
     @Override
     public int getMaxLevel() {
         return 4;
-    }
-
-    @Override
-    public int getMinLevel() {
-        return 1;
     }
 
     @Override

@@ -31,11 +31,11 @@ public class VillagerTradeHook implements Listener {
                 int lvl;
                 if (chanceOfLevel <= 40) {
                     lvl = 1;
-                } else if (chanceOfLevel <= 65 && chanceOfLevel >= 41) {
+                } else if (chanceOfLevel <= 65) {
                     lvl = 2;
-                } else if (chanceOfLevel <= 85 && chanceOfLevel >= 66) {
+                } else if (chanceOfLevel <= 85) {
                     lvl = 3;
-                } else if (chanceOfLevel <= 100 && chanceOfLevel >= 86) {
+                } else if (chanceOfLevel <= 100) {
                     lvl = 4;
                 } else {
                     lvl = 1;

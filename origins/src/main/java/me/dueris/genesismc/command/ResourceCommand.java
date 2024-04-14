@@ -29,7 +29,7 @@ import static net.minecraft.commands.Commands.literal;
 
 public class ResourceCommand {
 
-    public static HashMap<Player, HashMap<String, Pair<BossBar, Double>>> registeredBars = new HashMap();
+    public static HashMap<Player, HashMap<String, Pair<BossBar, Double>>> registeredBars = new HashMap<>();
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
@@ -114,10 +114,9 @@ public class ResourceCommand {
                                         if (resourceChangeTimeout.containsKey(player.getBukkitEntity()))
                                             return;
                                         String resource = power.getTag();
-                                        int change = value;
                                         double finalChange = 1.0 / Resource.getResource(player.getBukkitEntity(), resource).right();
                                         BossBar bossBar = Resource.getResource(player.getBukkitEntity(), resource).left();
-                                        double toRemove = finalChange * change;
+                                        double toRemove = finalChange * value;
                                         double newP = bossBar.getProgress() + toRemove;
                                         if (newP > 1.0) {
                                             newP = 1.0;

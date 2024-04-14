@@ -155,9 +155,7 @@ public class PowerCommand {
                                     } else {
                                         String msg = "Entity %name% has %size% powers: [%powers%]".replace("%name%", player.getBukkitEntity().getName()).replace("%size%", String.valueOf(powers.size()));
                                         final String[] powerString = {""};
-                                        powers.forEach((power) -> {
-                                            powerString[0] = powerString[0] + power.getTag() + ", ";
-                                        });
+                                        powers.forEach((power) -> powerString[0] = powerString[0] + power.getTag() + ", ");
                                         String finMsg = msg.replace("%powers%", powerString[0]);
                                         context.getSource().sendSystemMessage(Component.literal(finMsg.replace(", ]", "]")));
                                     }

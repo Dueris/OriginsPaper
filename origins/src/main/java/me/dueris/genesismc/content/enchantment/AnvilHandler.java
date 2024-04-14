@@ -51,9 +51,6 @@ public class AnvilHandler implements Listener {
             return null;
         } else {
             switch (lvl) {
-                case 1 -> {
-                    return "I";
-                }
                 case 2 -> {
                     return "II";
                 }
@@ -134,13 +131,13 @@ public class AnvilHandler implements Listener {
                             finl = firstlvl;
                         } else if (firstlvl < secondlvl) {
                             finl = secondlvl;
-                        } else if (firstlvl == secondlvl) {
+                        } else {
                             finl = firstlvl + 1;
                         }
                         resultLvl = finl;
-                    } else if (firstContains && !secondContains) {
+                    } else if (firstContains) {
                         resultLvl = e.getInventory().getFirstItem().getEnchantments().get(bukkitEnchantment);
-                    } else if (!firstContains && secondContains) {
+                    } else if (secondContains) {
                         resultLvl = e.getInventory().getSecondItem().getEnchantments().get(bukkitEnchantment);
                     }
                     if (resultLvl != 0) {

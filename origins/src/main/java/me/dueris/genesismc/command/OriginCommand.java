@@ -231,9 +231,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                     .then(argument("targets", EntityArgument.players())
                         .then(argument("namespace", ResourceLocationArgument.id())
                             .suggests((context, builder) -> {
-                                commandProvidedTaggedRecipies.forEach((key) -> {
-                                    builder.suggest(key);
-                                });
+                                commandProvidedTaggedRecipies.forEach(builder::suggest);
                                 return builder.buildFuture();
                             })
                             .executes(context -> {
@@ -277,7 +275,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
         }
 
         String minecraftItem = origin.getIcon();
-        String item = null;
+        String item;
         if (minecraftItem.contains(":")) {
             item = minecraftItem.split(":")[1];
         } else {
@@ -357,10 +355,10 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                 }
                 contents.add(originIcon);
             } else if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33) || (i >= 38 && i <= 42)) {
-                while (powerContainers.size() > 0 && powerContainers.get(0).isHidden()) {
+                while (!powerContainers.isEmpty() && powerContainers.get(0).isHidden()) {
                     powerContainers.remove(0);
                 }
-                if (powerContainers.size() > 0) {
+                if (!powerContainers.isEmpty()) {
 
                     ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 
@@ -416,7 +414,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
     }
 
     public static void enchant(CommandSourceStack sender, List<ServerPlayer> targets, int level) {
-        targets.removeIf(entity -> !(entity instanceof ServerPlayer));
+        targets.removeIf(Objects::isNull);
         for (ServerPlayer entity : targets) {
             Player p = entity.getBukkitEntity();
             if (!OriginCommand.wearable.contains(p.getInventory().getItemInMainHand().getType())) {

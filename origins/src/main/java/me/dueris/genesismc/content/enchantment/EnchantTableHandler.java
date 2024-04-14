@@ -72,13 +72,13 @@ public class EnchantTableHandler implements Listener {
                     if (boundInt <= 40) {
                         // lvl1
                         AnvilHandler.setWaterProtCustomEnchantLevel(1, e.getItem());
-                    } else if (boundInt <= 65 && boundInt >= 41) {
+                    } else if (boundInt <= 65) {
                         // lvl2
                         AnvilHandler.setWaterProtCustomEnchantLevel(2, e.getItem());
-                    } else if (boundInt <= 85 && boundInt >= 66) {
+                    } else if (boundInt <= 85) {
                         // lvl3
                         AnvilHandler.setWaterProtCustomEnchantLevel(3, e.getItem());
-                    } else if (boundInt <= 100 && boundInt >= 86) {
+                    } else {
                         // lvl4
                         AnvilHandler.setWaterProtCustomEnchantLevel(4, e.getItem());
                     }
