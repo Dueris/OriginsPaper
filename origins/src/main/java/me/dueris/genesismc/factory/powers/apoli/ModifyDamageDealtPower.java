@@ -12,6 +12,7 @@ import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -28,8 +29,9 @@ public class ModifyDamageDealtPower extends CraftPower implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void damageEVENT(EntityDamageByEntityEvent e) {
+        if (e.isCancelled()) return;
         if (e.getDamager() instanceof Player p && modify_damage_dealt.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 try {

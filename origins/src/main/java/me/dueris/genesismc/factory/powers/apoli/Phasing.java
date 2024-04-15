@@ -146,7 +146,6 @@ public class Phasing extends CraftPower implements Listener {
                     if (getPowerArray().contains(e.getPlayer())) {
                         Player p = e.getPlayer();
                         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                                 if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                                     if (ConditionExecutor.testBlock(power.getJsonObject("phase_down_condition"), (CraftBlock) p.getLocation().add(0, -1, 0).getBlock())) {
