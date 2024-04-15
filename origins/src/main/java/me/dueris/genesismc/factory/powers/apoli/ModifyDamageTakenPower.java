@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -12,6 +13,7 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.ArrayList;
@@ -32,16 +34,22 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
         if (e.getEntity() instanceof Player p && modify_damage_taken.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 try {
-                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) return;
-                        if (!ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) e.getEntity()))
-                            return;
-                        if (!ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) return;
+                        if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) continue;
+                        if (e instanceof EntityDamageByEntityEvent ev) {
+                            if (!ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) ev.getDamager(), (CraftEntity) p))
+                                continue;
+                        }
+                        if (!ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) continue;
                         for (Modifier modifier : power.getModifiers()) {
                             float value = modifier.value();
                             String operation = modifier.operation();
                             runSetDMG(e, operation, value);
+                            if (e instanceof EntityDamageByEntityEvent ev) {
+                                Actions.executeBiEntity(ev.getDamager(), p, power.getJsonObject("bientity_action"));
+                                Actions.executeEntity(ev.getDamager(), power.getJsonObject("attacker_action"));
+                            }
+                            Actions.executeEntity(p, power.getJsonObject("self_action"));
                             setActive(p, power.getTag(), true);
                         }
                     }

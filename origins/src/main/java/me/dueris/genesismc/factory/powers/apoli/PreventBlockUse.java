@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
 
@@ -21,12 +22,12 @@ public class PreventBlockUse extends CraftPower implements Listener {
 
 
     @EventHandler
-    public void run(BlockPlaceEvent e) {
+    public void run(PlayerInteractEvent e) {
+        if (e.getClickedBlock() == null) return;
         if (prevent_block_use.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) e.getBlock()) && ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
+                    if (ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) e.getClickedBlock()) && ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
                         e.setCancelled(true);
                     }
                 }
@@ -41,7 +42,7 @@ public class PreventBlockUse extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "apoli:prevent_block_used";
+        return "apoli:prevent_block_use";
     }
 
     @Override

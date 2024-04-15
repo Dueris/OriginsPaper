@@ -32,12 +32,11 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
             if (e.getRecipe() == null) return;
             if (e.getInventory().getResult() == null) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
 //                        if (conditionExecutor.check("item_condition", "item_condition", p, power, "apoli:modify_crafting", p, null, p.getLocation().getBlock(), null, e.getInventory().getResult(), null)) {
                         String currKey = RecipePower.computeTag(e.getRecipe());
-                        if (currKey == null) return;
+                        if (currKey == null) continue;
                         String provKey = power.getStringOrDefault("recipe", currKey);
                         boolean set = false;
                         if (currKey == provKey) { // Matched on crafting

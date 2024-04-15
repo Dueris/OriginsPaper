@@ -283,11 +283,8 @@ public class EntityConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("daytime"), (condition, entity) -> entity.getWorld().isDayTime()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("dimension"), (condition, entity) -> {
-            String dim = condition.getString("dimension");
-            if (!dim.contains(":")) {
-                dim = "minecraft:" + dim;
-            }
-            return entity.getWorld().getKey().equals(NamespacedKey.fromString(dim));
+            System.out.println("s333333333fdlhskudhglkjfd" + entity.getWorld().getKey().equals(condition.getNamespacedKey("dimension")));
+            return entity.getWorld().getKey().equals(condition.getNamespacedKey("dimension"));
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid_height"), (condition, entity) -> {
             String comparison = condition.getString("comparison");
@@ -681,6 +678,7 @@ public class EntityConditions {
                 .create(LootContextParamSets.COMMAND);
 
             LootContext context = new LootContext.Builder(params).create(Optional.empty());
+            System.out.println(predicate.test(context));
 
             return predicate.test(context);
         }));

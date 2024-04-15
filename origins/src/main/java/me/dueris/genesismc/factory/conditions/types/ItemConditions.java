@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 public class ItemConditions {
 
@@ -87,23 +88,40 @@ public class ItemConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("ingredient"), (condition, itemStack) -> {
             if (itemStack != null && itemStack.getType() != null && CraftItemStack.asCraftCopy(itemStack).handle != null) {
                 if (condition.isPresent("ingredient")) {
-                    FactoryJsonObject ingredientMap = condition.getJsonObject("ingredient");
-                    if (ingredientMap.isPresent("item")) {
-                        String itemValue = ingredientMap.getString("item");
-                        String item;
-                        if (itemValue.contains(":")) {
-                            item = itemValue.split(":")[1];
-                        } else {
-                            item = itemValue;
+                    Predicate<FactoryJsonObject> returnPred = new Predicate<>() {
+                        @Override
+                        public boolean test(FactoryJsonObject ingredientMap) {
+                            if (ingredientMap.isPresent("item")) {
+                                String itemValue = ingredientMap.getString("item");
+                                String item;
+                                if (itemValue.contains(":")) {
+                                    item = itemValue.split(":")[1];
+                                } else {
+                                    item = itemValue;
+                                }
+                                if (item.contains("orb_of_origin")) {
+                                    return itemStack.isSimilar(OrbOfOrigins.orb);
+                                }
+                                return itemStack.getType().equals(Material.valueOf(item.toUpperCase()));
+                            } else if (ingredientMap.isPresent("tag")) {
+                                NamespacedKey tag = NamespacedKey.fromString(ingredientMap.getString("tag"));
+                                TagKey<Item> key = TagKey.create(net.minecraft.core.registries.Registries.ITEM, CraftNamespacedKey.toMinecraft(tag));
+                                return CraftItemStack.asCraftCopy(itemStack).handle.is(key);
+                            }
+
+                            return false;
                         }
-                        if (item.contains("orb_of_origin")) {
-                            return itemStack.isSimilar(OrbOfOrigins.orb);
+                    };
+
+                    if (condition.isJsonObject("ingredient")) {
+                        FactoryJsonObject ingredientMap = condition.getJsonObject("ingredient");
+                        return returnPred.test(ingredientMap);
+                    } else if (condition.isJsonArray("ingredient")) {
+                        for (FactoryJsonObject ingredientMap : condition.getJsonArray("ingredient").asJsonObjectList()) {
+                            if (returnPred.test(ingredientMap)) {
+                                return true;
+                            }
                         }
-                        return itemStack.getType().equals(Material.valueOf(item.toUpperCase()));
-                    } else if (ingredientMap.isPresent("tag")) {
-                        NamespacedKey tag = NamespacedKey.fromString(ingredientMap.getString("tag"));
-                        TagKey<Item> key = TagKey.create(net.minecraft.core.registries.Registries.ITEM, CraftNamespacedKey.toMinecraft(tag));
-                        return CraftItemStack.asCraftCopy(itemStack).handle.is(key);
                     }
                 }
             }
