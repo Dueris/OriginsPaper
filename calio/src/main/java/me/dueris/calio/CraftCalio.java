@@ -65,7 +65,7 @@ public class CraftCalio {
                                 for (File ff : namespacedFile.listFiles()) {
                                     if (!ff.isDirectory()) continue;
                                     if (root.getDirectoryPath().equalsIgnoreCase(ff.getName())) {
-                                        CalioJsonParser.parseDirectory(ff, root, namespace, "");
+                                        CalioJsonParser.parseDirectory(ff, root, namespace, "", true);
                                     }
                                 }
                             }
