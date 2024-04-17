@@ -62,7 +62,7 @@ public class PlayerManager implements Listener {
         HashMap<Layer, Origin> origins = OriginPlayerAccessor.getOrigin(p);
         for (Layer layer : origins.keySet()) {
             if (layer == null) continue; // Layer was removed
-            for (String tag : layer.getOrigins()) {
+            for (String tag : layer.getOriginIdentifiers()) {
                 NamespacedKey fixedKey = NamespacedKey.fromString(tag);
                 if (GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(fixedKey) == null) {
                     // Layer not in registry, cry.

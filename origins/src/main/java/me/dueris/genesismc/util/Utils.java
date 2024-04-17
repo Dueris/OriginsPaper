@@ -72,6 +72,12 @@ public class Utils {
         return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
     }
 
+    public static <T> List<T> mergeLists(List<List<T>> lists) {
+        List<T> returnList = new ArrayList<T>();
+        lists.forEach(returnList::addAll);
+        return returnList;
+    }
+
     public static JsonElement readJSONFileAsString(File jsonObj) throws IOException {
         FileReader reader = new FileReader(jsonObj);
         JsonElement jsonElement = JsonParser.parseReader(reader);

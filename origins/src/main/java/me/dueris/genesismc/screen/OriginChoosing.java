@@ -13,6 +13,8 @@ import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.util.SendCharts;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
@@ -28,6 +30,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -46,9 +49,8 @@ public class OriginChoosing implements Listener {
         Player p = e.getPlayer();
         if (GenesisConfigs.getMainConfig().getString("orb-of-origins").equalsIgnoreCase("true")) {
             if (e.getAction().isRightClick()) {
-                ItemStack item = orb;
                 if (e.getItem() != null) {
-                    if (e.getItem().isSimilar(item)) {
+                    if (e.getItem().isSimilar(orb)) {
                         if (!((CraftPlayer) p).getHandle().getAbilities().instabuild) {
                             Utils.consumeItem(e.getItem());
                         }
@@ -63,6 +65,18 @@ public class OriginChoosing implements Listener {
         }
     }
 
+    public static List<Player> orbChoosing = new ArrayList<>();
+
+    @EventHandler
+    public void orbInteractEvent(OrbInteractEvent e) {
+        orbChoosing.add(e.getPlayer());
+    }
+
+    @EventHandler
+    public void finishChoosing(OriginChooseEvent e) {
+        if(orbChoosing.contains(e.getPlayer())) orbChoosing.remove(e.getPlayer());
+    }
+
     @EventHandler
     public void onOrbRandom(InventoryClickEvent e) {
         if (e.getCurrentItem() == null) return;
@@ -73,25 +87,20 @@ public class OriginChoosing implements Listener {
                 return;
             if (!Objects.equals(e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING), "orb"))
                 return;
-
             Player p = (Player) e.getWhoClicked();
-            List<Origin> origins = CraftApoli.getOriginsFromRegistry();
-            List<Layer> layers = CraftApoli.getLayersFromRegistry();
-            Random random = new Random();
-            Origin origin = origins.get(random.nextInt(origins.size()));
-            for (Layer layer : layers) {
-                OriginPlayerAccessor.setOrigin(p, layer, origin);
-            }
-
             e.setCancelled(true);
-            p.closeInventory();
-
             p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
+
+            Layer layer = choosing.get(p);
+            List<Origin> origins = layer.getRandomOrigins();
+            if (origins.isEmpty()) {
+                p.sendMessage(ChatColor.RED + "Random is not allowed on this layer!");
+                return;
+            }
+            Origin origin = origins.get(new Random().nextInt(origins.size()));
+            
+            OriginPlayerAccessor.setOrigin(p, layer, origin);
             p.closeInventory();
-            p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
-            p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);
-            p.setCustomNameVisible(false);
-            p.setHealthScaled(false);
 
             OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
             getServer().getPluginManager().callEvent(chooseEvent);

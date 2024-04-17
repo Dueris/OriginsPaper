@@ -22,6 +22,7 @@ public class GuiTicker extends BukkitRunnable {
                 if (layer.testChoosable(p).isEmpty()) continue;
                 try {
                     if (OriginPlayerAccessor.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
+                        if (layer.testDefaultOrigin(p)) continue;
                         String openInventoryTitle = p.getOpenInventory().getTitle();
                         if (!openInventoryTitle.startsWith("Choosing Menu") && !openInventoryTitle.startsWith("Custom Origins") && !openInventoryTitle.startsWith("Custom Origin") && !openInventoryTitle.startsWith("Origin")) {
                             OriginChoosePromptEvent event = new OriginChoosePromptEvent(p);

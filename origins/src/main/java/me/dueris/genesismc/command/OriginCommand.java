@@ -212,7 +212,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                         if (context.getSource().isPlayer()) {
                             ServerPlayer p = context.getSource().getPlayer();
                             HashMap<Layer, Origin> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(p.getBukkitEntity()));
-                            origins.entrySet().removeIf(entry -> entry.getKey().getTag().equalsIgnoreCase("apoli:command"));
+                            origins.entrySet().removeIf(entry -> entry.getKey().getBooleanOrDefault("hidden", false));
                             playerOrigins.put(p.getBukkitEntity(), new ArrayList<>(origins.values()));
                             if (!playerPage.containsKey(p.getBukkitEntity()))
                                 playerPage.put(p.getBukkitEntity(), 0);
@@ -282,8 +282,6 @@ public class OriginCommand extends BukkitRunnable implements Listener {
             item = minecraftItem;
         }
         ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
-
-        ItemStack close = ScreenConstants.itemProperties(new ItemStack(Material.BARRIER), ChatColor.RED + "Close", null, null, null);
         ItemStack exit = ScreenConstants.itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Close", ItemFlag.HIDE_ENCHANTS, null, null);
         ItemStack lowImpact = ScreenConstants.itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.GREEN + "Low", null, null, null);
         ItemStack mediumImpact = ScreenConstants.itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.YELLOW + "Medium", null, null, null);
@@ -317,7 +315,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 
         for (int i = 0; i <= 53; i++) {
             if (i == 0 || i == 8) {
-                contents.add(close);
+                contents.add(new ItemStack(Material.AIR));
             } else if (i == 1) {
                 if (impact == 1) contents.add(lowImpact);
                 else if (impact == 2) contents.add(mediumImpact);
@@ -439,18 +437,6 @@ public class OriginCommand extends BukkitRunnable implements Listener {
     }
 
     @EventHandler
-    public void onMenuExitInfo(InventoryClickEvent e) {
-        if (e.getCurrentItem() == null) return;
-        if (e.getView().getTitle().startsWith("Info")) {
-            if (e.getCurrentItem().getType() == Material.BARRIER || e.getCurrentItem().getType() == Material.SPECTRAL_ARROW) {
-                Player p = (Player) e.getWhoClicked();
-                p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 10, 9);
-                e.getWhoClicked().getInventory().close();
-            }
-        }
-    }
-
-    @EventHandler
     public void onMenuScroll(InventoryClickEvent e) {
         ItemStack item = e.getCurrentItem();
         Player player = (Player) e.getWhoClicked();
@@ -475,18 +461,6 @@ public class OriginCommand extends BukkitRunnable implements Listener {
     public void stopStealingRecipe(InventoryClickEvent e) {
         if (e.getView().getTitle().equalsIgnoreCase("Orb of Origins") && e.getView().getTopInventory().getType().equals(InventoryType.WORKBENCH))
             e.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onMenuExitRecipe(InventoryClickEvent e) {
-        if (e.getCurrentItem() == null) return;
-        if (e.getView().getTitle().equalsIgnoreCase("Orb Recipe")) {
-            if (e.getCurrentItem().getType() == Material.BARRIER) {
-                Player p = (Player) e.getWhoClicked();
-                p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 10, 9);
-                e.getWhoClicked().getInventory().close();
-            }
-        }
     }
 
     @Override

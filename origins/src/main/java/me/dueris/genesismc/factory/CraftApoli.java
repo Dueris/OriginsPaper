@@ -29,11 +29,6 @@ public class CraftApoli {
      * Size of the buffer to read/write data
      */
     private static final int BUFFER_SIZE = 4096;
-    @SuppressWarnings("FieldMayBeFinal")
-    /**
-     * ArrayList of unzipped files that are scheduled for removal at the end of the parsing process
-     */
-    public static ArrayList<File> unzippedFiles = new ArrayList<>();
     private static int dynamic_thread_count = 0;
 
     public static List<Layer> getLayersFromRegistry() {
@@ -116,10 +111,6 @@ public class CraftApoli {
         return datapackDir().listFiles();
     }
 
-    public static String getWorldContainerName() {
-        return GenesisMC.world_container;
-    }
-
     public static int getDynamicThreadCount() {
         return dynamic_thread_count;
     }
@@ -127,44 +118,6 @@ public class CraftApoli {
     public static void setupDynamicThreadCount() {
         int avalibleJVMThreads = Runtime.getRuntime().availableProcessors() * 2;
         dynamic_thread_count = avalibleJVMThreads < 4 ? avalibleJVMThreads : avalibleJVMThreads >= GenesisConfigs.getMainConfig().getInt("max-loader-threads") ? GenesisConfigs.getMainConfig().getInt("max-loader-threads") : avalibleJVMThreads;
-    }
-
-    public static void unzip(File source, String out) throws IOException {
-        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(source))) {
-            ZipEntry entry = zis.getNextEntry();
-
-            while (entry != null) {
-                File file = new File(out, entry.getName());
-                if (!entry.getName().endsWith(".jar") && !entry.getName().contains("../")) {
-                    if (entry.isDirectory()) {
-                        file.mkdirs();
-                    } else {
-                        File parent = file.getParentFile();
-                        if (!parent.exists()) {
-                            parent.mkdirs();
-                        }
-
-                        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
-                            int bufferSize = Math.toIntExact(entry.getSize());
-                            byte[] buffer = new byte[bufferSize > 0 ? bufferSize : 1];
-                            int location;
-
-                            while ((location = zis.read(buffer)) != -1) {
-                                bos.write(buffer, 0, location);
-                            }
-                        }
-                    }
-                    entry = zis.getNextEntry();
-                }
-            }
-        }
-    }
-
-    public static boolean layerExists(Layer layer) {
-        for (Layer loadedLayers : CraftApoli.getLayersFromRegistry()) {
-            if (loadedLayers.getTag().equals(layer.getTag())) return true;
-        }
-        return false;
     }
 
     public static void unloadData() {

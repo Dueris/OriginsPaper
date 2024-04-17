@@ -78,23 +78,6 @@ public class ScreenNavigator implements Listener {
         }
     }
 
-    @EventHandler
-    public void onMenuClose(InventoryClickEvent e) {
-        if (e.getCurrentItem() != null) {
-            if (e.getView().getTitle().startsWith("Choosing Menu")) {
-                if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
-                    Player p = (Player) e.getWhoClicked();
-                    p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
-                    if (OriginPlayerAccessor.hasOrigin(p, "genesis:origin-null"))
-                        p.kick(Component.text("You must choose an origin!"));
-                    e.getWhoClicked().closeInventory();
-                } else {
-                    e.setCancelled(true);
-                }
-            }
-        }
-    }
-
     @EventHandler(priority = EventPriority.HIGH)
     public void OriginChooseMenu(InventoryClickEvent e) {
         if (e.getCurrentItem() == null) return;
@@ -142,7 +125,6 @@ public class ScreenNavigator implements Listener {
             ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
             //making the items to display in the menu
-            ItemStack close = itemProperties(new ItemStack(Material.BARRIER), RED + "Close", null, null, RED + "Cancel Choosing");
             ItemStack back = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
             ItemStack lowImpact = itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact" + ChatColor.GREEN + "Low", null, null, null);
             ItemStack mediumImpact = itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact" + ChatColor.YELLOW + "Medium", null, null, null);
@@ -164,7 +146,7 @@ public class ScreenNavigator implements Listener {
             //generates menu
             for (int i = 0; i <= 53; i++) {
                 if (i == 0 || i == 8) {
-                    contents.add(close);
+                    contents.add(new ItemStack(Material.AIR));
                 } else if (i == 1) {
                     if (impact == 1) contents.add(lowImpact);
                     else if (impact == 2) contents.add(mediumImpact);
@@ -274,21 +256,6 @@ public class ScreenNavigator implements Listener {
                     custommenu.setContents(ChooseMenuContent(0, choosing.get(p), p));
                     e.getWhoClicked().openInventory(custommenu);
                 } else e.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler
-    public void OriginClose(InventoryClickEvent e) {
-        if (e.getCurrentItem() != null) {
-            if (e.getView().getTitle().startsWith("Origin")) {
-                if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
-                    Player p = (Player) e.getWhoClicked();
-                    p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
-                    e.getWhoClicked().closeInventory();
-                } else {
-                    e.setCancelled(true);
-                }
             }
         }
     }

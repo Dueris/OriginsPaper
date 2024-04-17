@@ -58,10 +58,6 @@ public class ScreenConstants {
 
         //default choose
         p.closeInventory();
-        p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
-        p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);
-        p.setCustomNameVisible(false);
-        p.setHealthScaled(false);
 
         OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
         getServer().getPluginManager().callEvent(chooseEvent);

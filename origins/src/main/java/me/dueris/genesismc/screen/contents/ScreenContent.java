@@ -76,7 +76,6 @@ public class ScreenContent {
         ItemStack custom_originmenu = applyProperties(new ItemStack(Material.TIPPED_ARROW));
         ItemStack background = applyProperties(new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
         ItemStack filler = applyProperties(new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
-        ItemStack close = applyProperties(new ItemStack(Material.BARRIER));
 
         // makes human icon appear as own playerhead
         SkullMeta skull_p = (SkullMeta) human.getItemMeta();
@@ -145,7 +144,6 @@ public class ScreenContent {
         else sculkling = itemProperties(sculkling, RED + notFound, null, null, RED + notFound);
 
         custom_originmenu = itemProperties(custom_originmenu, ChatColor.YELLOW + "Custom Origins", ItemFlag.HIDE_ENCHANTS, null, null);
-        close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
 
         ItemStack randomOrb = itemProperties(orb.clone(), LIGHT_PURPLE + "Random Origin", null, null, null);
         NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "orb");
@@ -158,7 +156,7 @@ public class ScreenContent {
             filler, filler, filler, filler, filler, filler, filler, filler, filler,
             starborne, allay, rabbit, bumblebee, background, sculkling, creep, slimeling, piglin,
             background, background, background, background, background, background, background, background, background,
-            filler, filler, filler, randomOrb, close, custom_originmenu, filler, filler, filler};
+            filler, filler, filler, randomOrb, filler, custom_originmenu, filler, filler, filler};
 
         return mainMenuContents;
 
@@ -173,7 +171,7 @@ public class ScreenContent {
         HashMap<Integer/*page number*/, List<Origin>/*origins on that page*/> pagesClone = new HashMap<>();
         for (int pageint : pages.keySet()) {
             for (Origin originContainer : pages.get(pageint)) {
-                if (!choosingLayer.getOrigins().contains(originContainer.getTag())) continue;
+                if (!choosingLayer.getOriginIdentifiers().contains(originContainer.getTag())) continue;
                 if (choosingLayer.testChoosable(entity).contains(originContainer)) {
                     if (!pagesClone.containsKey(pageNumber)) {
                         pagesClone.put(pageNumber, new ArrayList<>());

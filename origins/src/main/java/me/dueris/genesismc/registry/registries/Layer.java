@@ -9,11 +9,17 @@ import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.screen.OriginChoosing;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.Serial;
@@ -66,6 +72,27 @@ public class Layer extends FactoryJsonObject implements Serializable, FactoryIns
         return tested;
     }
 
+    public boolean testDefaultOrigin(Entity entity) {
+        boolean autoChoose = this.getBooleanOrDefault("auto_choose", false);
+        if (autoChoose) {
+            if (entity instanceof Player p) {
+                OriginPlayerAccessor.setOrigin(p, this, origins.get(0));
+                return true;
+            }
+        }
+        
+        if (OriginChoosing.orbChoosing.contains(entity)) return false; // Default origins dont apply on orb choosings
+        if (this.isPresent("default_origin")) {
+            NamespacedKey identifier = this.getNamespacedKey("default_origin");
+            Origin origin = ((Registrar<Origin>) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).get(identifier);
+            if (origin != null && entity instanceof Player p) {
+                OriginPlayerAccessor.setOrigin(p, this, origin);
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public NamespacedKey getKey() {
         return this.tag;
@@ -95,8 +122,21 @@ public class Layer extends FactoryJsonObject implements Serializable, FactoryIns
     /**
      * @return An array list of the loaded origins tags
      */
-    public List<String> getOrigins() {
+    public List<String> getOriginIdentifiers() {
         return origins.stream().map(Origin::getTag).toList();
+    }
+
+    public List<Origin> getRandomOrigins() {
+        boolean overrideUnchoosable = this.getBooleanOrDefault("allow_random_unchoosable", false);
+        if (!this.getBooleanOrDefault("allow_random", false)) return new ArrayList<>();
+        return origins.stream().filter(origin -> !origin.getUnchooseable() || overrideUnchoosable).filter(origin -> {
+            if (this.isPresent("exclude_random")) {
+                for (String identifier : this.getJsonArray("exclude_random").asList().stream().map(FactoryElement::getString).toList()) {
+                    if (origin.getTag().equalsIgnoreCase(identifier)) return false;
+                }
+            }
+            return true; // It passes
+        }).toList();
     }
 
     @Override
@@ -125,7 +165,7 @@ public class Layer extends FactoryJsonObject implements Serializable, FactoryIns
                     CraftCalio.INSTANCE.getLogger().severe("Origin not found inside layer");
                 }
             }
-            registrar.get(namespacedTag).getOrigins().stream().forEach(tag -> originList.add(CraftApoli.getOrigin(tag)));
+            registrar.get(namespacedTag).getOriginIdentifiers().stream().forEach(tag -> originList.add(CraftApoli.getOrigin(tag)));
             registrar.replaceEntry(namespacedTag, new Layer(namespacedTag, originList, obj.getRoot()));
         } else {
             List<Origin> list = new ArrayList<>();
