@@ -27,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static me.dueris.genesismc.content.OrbOfOrigins.orb;
 import static me.dueris.genesismc.screen.OriginChoosing.choosing;
 import static me.dueris.genesismc.screen.ScreenConstants.cutStringIntoLines;
 import static me.dueris.genesismc.screen.ScreenConstants.itemProperties;

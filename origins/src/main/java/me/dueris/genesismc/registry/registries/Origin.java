@@ -9,9 +9,11 @@ import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.calio.registry.Registrar;
+import me.dueris.calio.util.holders.TriPair;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.util.AsyncUpgradeTracker;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -191,13 +193,22 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
             if (((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).rawRegistry.containsKey(NamespacedKey.fromString(element))) {
                 containers.add(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(element)));
             }
-
             for (Power power : CraftApoli.getNestedPowers(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(element)))) {
                 if (power != null) {
                     containers.add(power);
                 }
             }
         }
-        registrar.register(new Origin(namespacedTag, containers, obj.getRoot()));
+        Origin origin = new Origin(namespacedTag, containers, obj.getRoot());
+        registrar.register(origin);
+
+        if (obj.getRoot().isPresent("upgrades")) {
+            obj.getRoot().getJsonArray("upgrades").asJsonObjectList().forEach(upgrade -> AsyncUpgradeTracker.upgrades.put(
+                origin, new TriPair(
+                    upgrade.getString("condition"),
+                    upgrade.getNamespacedKey("origin"),
+                    upgrade.getStringOrDefault("announcement", AsyncUpgradeTracker.NO_ANNOUNCEMENT)
+                )));
+        }
     }
 }
