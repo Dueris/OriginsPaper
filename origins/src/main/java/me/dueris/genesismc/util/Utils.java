@@ -1,9 +1,5 @@
 package me.dueris.genesismc.util;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
@@ -14,10 +10,7 @@ import me.dueris.genesismc.registry.registries.Power;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
@@ -30,6 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.Fluid;
+import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -40,22 +34,23 @@ import org.bukkit.craftbukkit.v1_20_R3.potion.CraftPotionUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.security.CodeSource;
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 public class Utils {
     public static Registry<DamageType> DAMAGE_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
-    public MinecraftServer server = GenesisMC.server;
-    public CraftServer bukkitServer = server.server;
+    public static MinecraftServer server = GenesisMC.server;
+    public static CraftServer bukkitServer = server.server;
 
     public static DamageSource getDamageSource(DamageType type) {
         DamageSource source = null;
@@ -72,26 +67,6 @@ public class Utils {
         return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
     }
 
-    public static <T> List<T> mergeLists(List<List<T>> lists) {
-        List<T> returnList = new ArrayList<T>();
-        lists.forEach(returnList::addAll);
-        return returnList;
-    }
-
-    public static JsonElement readJSONFileAsString(File jsonObj) throws IOException {
-        FileReader reader = new FileReader(jsonObj);
-        JsonElement jsonElement = JsonParser.parseReader(reader);
-        reader.close();
-        return jsonElement;
-    }
-
-    public static String prettyPrintUsingGson(String uglyJson) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonElement jsonElement = JsonParser.parseString(uglyJson);
-        String prettyJsonString = gson.toJson(jsonElement);
-        return prettyJsonString;
-    }
-
     public static Pair<String, String> getNameOrTag(Power power) {
         String name = power.getName();
         String tag = power.getTag();
@@ -106,35 +81,6 @@ public class Utils {
                 return power.getTag();
             }
         };
-    }
-
-    public static Optional<Integer> findEnchantIndex(ResourceLocation id, ListTag enchantmentsNbt) {
-
-        for (int index = 0; index < enchantmentsNbt.size(); ++index) {
-
-            CompoundTag enchantmentNbt = enchantmentsNbt.getCompound(index);
-            ResourceLocation enchantmentId = ResourceLocation.tryParse(enchantmentNbt.getString("id"));
-
-            if ((enchantmentId != null && id != null) && enchantmentId.equals(id)) {
-                return Optional.of(index);
-            }
-
-        }
-
-        return Optional.empty();
-
-    }
-
-    public static int getToInt(Object value) {
-        return value instanceof Long ? Math.toIntExact((long) value) : (int) value;
-    }
-
-    public static double getToDouble(Object value) {
-        return value instanceof Float ? ((Float) value).doubleValue() : value instanceof Long ? Float.valueOf(Long.toString((long) value)).doubleValue() : (double) value;
-    }
-
-    public static <T> T returnIfPresentOrNull(Optional<T> optional) {
-        return optional.orElse(null);
     }
 
     public static List<MobEffectInstance> toMobEffectList(List<PotionEffect> effects) {
@@ -313,6 +259,83 @@ public class Utils {
         return Optional.empty();
     }
 
+    public static void unzip(String zipFilePath, String destDirectory) {
+        File destDir = new File(destDirectory);
+        if (!destDir.exists()) {
+            destDir.mkdir();
+        }
+
+        String zipFileName = new File(zipFilePath).getName();
+        String zipDirName = zipFileName.substring(0, zipFileName.lastIndexOf('.'));
+        String destDirForZip = destDirectory + File.separator + zipDirName;
+
+        try {
+            ZipFile zipFile = new ZipFile(zipFilePath);
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry zipEntry = entries.nextElement();
+                String entryName = zipEntry.getName();
+                File entryFile = new File(destDirForZip + File.separator + entryName);
+                if (zipEntry.isDirectory()) {
+                    entryFile.mkdirs();
+                } else {
+                    File parent = entryFile.getParentFile();
+                    if (parent != null && !parent.exists()) {
+                        parent.mkdirs();
+                    }
+                    InputStream inputStream = zipFile.getInputStream(zipEntry);
+                    FileOutputStream outputStream = new FileOutputStream(entryFile);
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = inputStream.read(buffer)) > 0) {
+                        outputStream.write(buffer, 0, length);
+                    }
+                    outputStream.close();
+                    inputStream.close();
+                }
+            }
+            zipFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void unpackOriginPack() {
+        try {
+            CodeSource src = Utils.class.getProtectionDomain().getCodeSource();
+            URL jar = src.getLocation();
+            ZipInputStream zip = new ZipInputStream(jar.openStream());
+            while (true) {
+                ZipEntry entry = zip.getNextEntry();
+                if (entry == null)
+                    break;
+                String name = entry.getName();
+
+                if (!name.startsWith("datapack/")) continue;
+                if (!name.startsWith("datapack/builtin")) continue;
+                if (FilenameUtils.getExtension(name).equals("zip")) continue;
+                if (name.equals("datapack/")) continue;
+
+                name = name.substring(9);
+                File file = new File(GenesisMC.getTmpFolder().getAbsolutePath().replace(".\\", "") + File.separator + name);
+                if (!file.getName().contains(".")) {
+                    Files.createDirectory(Path.of(file.getAbsolutePath()));
+                    continue;
+                }
+
+                File parentDir = file.getParentFile();
+                if (!parentDir.exists()) {
+                    parentDir.mkdirs();
+                }
+
+                Files.writeString(Path.of(file.getAbsolutePath()), new String(zip.readAllBytes()));
+            }
+            zip.close();
+        } catch (Exception e) {
+            // Say nothing, no need to print.
+        }
+    }
+
     public static int getArmorValue(ItemStack armorItem) {
         net.minecraft.world.item.Item stack = CraftItemStack.asNMSCopy(armorItem).getItem();
         return stack instanceof ArmorItem item ? item.getDefense() : 0;
@@ -348,35 +371,6 @@ public class Utils {
         operationMap.put("subtract_random_max", (a, b) -> a - random.nextDouble(b));
         operationMap.put("multiply_random_max", (a, b) -> a * random.nextDouble(b));
         operationMap.put("divide_random_max", (a, b) -> a / random.nextDouble(b));
-
-        return operationMap;
-    }
-
-    public static Map<String, BinaryOperator<Long>> getOperationMappingsLong() {
-        Map<String, BinaryOperator<Long>> operationMap = new HashMap<>();
-        operationMap.put("addition", (a, b) -> a + b);
-        operationMap.put("add", (a, b) -> a + b);
-        operationMap.put("subtraction", (a, b) -> a - b);
-        operationMap.put("subtract", (a, b) -> a - b);
-        operationMap.put("multiplication", (a, b) -> a * b);
-        operationMap.put("multiply", (a, b) -> a * b);
-        operationMap.put("division", (a, b) -> a / b);
-        operationMap.put("divide", (a, b) -> a / b);
-        operationMap.put("multiply_base", (a, b) -> a * (b + 1));
-        operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-        operationMap.put("set_total", (a, b) -> b);
-        operationMap.put("set", (a, b) -> b);
-        operationMap.put("add_base_early", (a, b) -> a + b);
-        operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
-        operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
-        operationMap.put("add_base_late", (a, b) -> a + b);
-
-        Random random = new Random();
-
-        operationMap.put("add_random_max", (a, b) -> a + random.nextLong(b));
-        operationMap.put("subtract_random_max", (a, b) -> a - random.nextLong(b));
-        operationMap.put("multiply_random_max", (a, b) -> a * random.nextLong(b));
-        operationMap.put("divide_random_max", (a, b) -> a / random.nextLong(b));
 
         return operationMap;
     }

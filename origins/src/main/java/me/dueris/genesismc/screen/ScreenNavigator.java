@@ -7,7 +7,6 @@ import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.ComponentMultiLine;
 import me.dueris.genesismc.util.KeybindingUtils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
@@ -33,7 +32,6 @@ import static me.dueris.genesismc.screen.ScreenConstants.cutStringIntoLines;
 import static me.dueris.genesismc.screen.ScreenConstants.itemProperties;
 import static me.dueris.genesismc.screen.contents.ScreenContent.ChooseMenuContent;
 import static me.dueris.genesismc.screen.contents.ScreenContent.GenesisMainMenuContents;
-import static org.bukkit.ChatColor.RED;
 
 public class ScreenNavigator implements Listener {
 

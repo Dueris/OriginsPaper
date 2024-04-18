@@ -37,7 +37,8 @@ public class ModifyDamageDealtPower extends CraftPower implements Listener {
                 try {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) continue;
-                        if (!ConditionExecutor.testEntity(power.getJsonObject("target_condition"), (CraftEntity) e.getEntity())) continue;
+                        if (!ConditionExecutor.testEntity(power.getJsonObject("target_condition"), (CraftEntity) e.getEntity()))
+                            continue;
                         if (!ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) e.getEntity()))
                             continue;
                         if (!ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) continue;

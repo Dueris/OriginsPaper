@@ -62,7 +62,7 @@ public class FactoryJsonObject {
         String value = this.handle.get(key).getAsString();
         T[] enumConstants = enumClass.getEnumConstants();
         for (T enumValue : enumConstants) {
-            if (enumValue.toString().toUpperCase().equalsIgnoreCase(value.toUpperCase())) {
+            if (enumValue.toString().equalsIgnoreCase(value)) {
                 return enumValue;
             }
         }

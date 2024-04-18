@@ -11,6 +11,8 @@ import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.screen.GuiTicker;
+import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.storage.nbt.NBTFixerUpper;
 import me.dueris.genesismc.util.entity.InventorySerializer;
@@ -152,6 +154,18 @@ public class PlayerManager implements Listener {
                 ReapplyEntityReachPowers(p);
             }
         }.runTaskLater(GenesisMC.getPlugin(), 5L);
+
+        // Add delay config
+        if (GenesisConfigs.getMainConfig().contains("choosing_delay")) {
+            int delay = (int) GenesisConfigs.getMainConfig().get("choosing_delay");
+            GuiTicker.delayedPlayers.add(p);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    GuiTicker.delayedPlayers.remove(p);
+                }
+            }.runTaskLater(GenesisMC.getPlugin(), delay);
+        }
     }
 
     @EventHandler

@@ -13,11 +13,9 @@ import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.util.SendCharts;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -26,15 +24,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 import static me.dueris.genesismc.content.OrbOfOrigins.orb;
 import static me.dueris.genesismc.factory.powers.ApoliPower.phasing;
@@ -43,6 +36,7 @@ import static org.bukkit.Bukkit.getServer;
 public class OriginChoosing implements Listener {
 
     public static HashMap<Player, Layer> choosing = new HashMap<>();
+    public static List<Player> orbChoosing = new ArrayList<>();
 
     @EventHandler
     public void onOrbClick(PlayerInteractEvent e) {
@@ -65,8 +59,6 @@ public class OriginChoosing implements Listener {
         }
     }
 
-    public static List<Player> orbChoosing = new ArrayList<>();
-
     @EventHandler
     public void orbInteractEvent(OrbInteractEvent e) {
         orbChoosing.add(e.getPlayer());
@@ -74,7 +66,7 @@ public class OriginChoosing implements Listener {
 
     @EventHandler
     public void finishChoosing(OriginChooseEvent e) {
-        if(orbChoosing.contains(e.getPlayer())) orbChoosing.remove(e.getPlayer());
+        orbChoosing.remove(e.getPlayer());
     }
 
     @EventHandler
@@ -98,7 +90,7 @@ public class OriginChoosing implements Listener {
                 return;
             }
             Origin origin = origins.get(new Random().nextInt(origins.size()));
-            
+
             OriginPlayerAccessor.setOrigin(p, layer, origin);
             p.closeInventory();
 

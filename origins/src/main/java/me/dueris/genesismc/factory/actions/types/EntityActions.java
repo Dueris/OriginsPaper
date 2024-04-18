@@ -349,23 +349,23 @@ public class EntityActions {
                 } else {
                     typeE = EntityType.valueOf(action.getString("entity_type").split(":")[1].toUpperCase());
                 }
-                
+
                 for (int i = 0; i < action.getNumberOrDefault("count", 1).getInt(); i++) {
                     Projectile projectile = (Projectile) entity.getWorld().spawnEntity(entity.getLocation(), typeE);
                     projectile.setShooter((ProjectileSource) entity);
-    
+
                     Vector direction = entity.getLocation().getDirection();
-    
+
                     double yawRadians = Math.toRadians(entity.getLocation().getYaw() + finalDivergence1);
-    
+
                     double x = -Math.sin(yawRadians) * Math.cos(Math.toRadians(entity.getLocation().getPitch()));
                     double y = -Math.sin(Math.toRadians(entity.getLocation().getPitch()));
                     double z = Math.cos(yawRadians) * Math.cos(Math.toRadians(entity.getLocation().getPitch()));
-    
+
                     direction.setX(x);
                     direction.setY(y);
                     direction.setZ(z);
-    
+
                     projectile.setVelocity(direction.normalize().multiply(speed));
                     projectile.setGlowing(true);
                 }

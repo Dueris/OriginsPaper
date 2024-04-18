@@ -48,7 +48,7 @@ public class ItemConditions {
             if (enchantment != null) {
                 net.minecraft.world.item.enchantment.Enchantment nmsEnchantment = CraftEnchantment.bukkitToMinecraft(enchantment);
                 Comparison comparison = Comparison.getFromString(condition.getString("comparison"));
-                int compare_to = Utils.getToInt(condition.getString("compare_to"));
+                int compare_to = condition.getNumber("compare_to").getInt();
 
                 int level;
                 if (nmsEnchantment != null) {

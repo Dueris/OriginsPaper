@@ -12,12 +12,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static me.dueris.genesismc.screen.OriginChoosing.choosing;
 
 public class GuiTicker extends BukkitRunnable {
+    public static List<Player> delayedPlayers = new ArrayList<>();
+
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
+            if (delayedPlayers.contains(p)) continue;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 if (layer.testChoosable(p).isEmpty()) continue;
                 try {

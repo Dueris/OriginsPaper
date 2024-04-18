@@ -51,7 +51,6 @@ import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.thread.NamedThreadFactory;
 import net.minecraft.world.level.storage.LevelResource;
-import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -68,18 +67,14 @@ import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.CodeSource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import static me.dueris.genesismc.util.ColorConstants.AQUA;
 
@@ -281,39 +276,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         this.registry.create(Registries.TEXTURE_LOCATION, new Registrar<TextureLocation>());
         this.registry.create(Registries.PACK_SOURCE, new Registrar<DatapackRepository>());
 
-        try {
-            CodeSource src = Utils.class.getProtectionDomain().getCodeSource();
-            URL jar = src.getLocation();
-            ZipInputStream zip = new ZipInputStream(jar.openStream());
-            while (true) {
-                ZipEntry entry = zip.getNextEntry();
-                if (entry == null)
-                    break;
-                String name = entry.getName();
-
-                if (!name.startsWith("datapack/")) continue;
-                if (!name.startsWith("datapack/builtin")) continue;
-                if (FilenameUtils.getExtension(name).equals("zip")) continue;
-                if (name.equals("datapack/")) continue;
-
-                name = name.substring(9);
-                File file = new File(getTmpFolder().getAbsolutePath().replace(".\\", "") + File.separator + name);
-                if (!file.getName().contains(".")) {
-                    Files.createDirectory(Path.of(file.getAbsolutePath()));
-                    continue;
-                }
-
-                File parentDir = file.getParentFile();
-                if (!parentDir.exists()) {
-                    parentDir.mkdirs();
-                }
-
-                Files.writeString(Path.of(file.getAbsolutePath()), new String(zip.readAllBytes()));
+        Utils.unpackOriginPack();
+        Arrays.stream(server.getWorldPath(LevelResource.DATAPACK_DIR).toFile().listFiles()).toList().forEach(datapack -> {
+            if (datapack.isFile() && datapack.getName().endsWith(".zip")) {
+                Utils.unzip(datapack.getPath(), getTmpFolder().getAbsolutePath());
             }
-            zip.close();
-        } catch (Exception e) {
-            // Say nothing, no need to print.
-        }
+        });
 
         this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(GenesisMC.originIdentifier("builtin"), getTmpFolder().toPath()));
         this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(GenesisMC.originIdentifier("default"), server.getWorldPath(LevelResource.DATAPACK_DIR)));

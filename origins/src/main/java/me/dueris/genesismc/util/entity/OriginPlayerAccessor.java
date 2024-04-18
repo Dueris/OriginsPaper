@@ -212,7 +212,7 @@ public class OriginPlayerAccessor implements Listener {
         List<NamespacedKey> keys = new ArrayList<>();
         List<ApoliPower> duplicates = new ArrayList<>();
         for (ApoliPower power : getPowersApplied(p)) {
-            if(keys.contains(power.getKey())) {
+            if (keys.contains(power.getKey())) {
                 duplicates.add(power);
             } else {
                 keys.add(power.getKey());

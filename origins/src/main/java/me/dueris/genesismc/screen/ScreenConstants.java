@@ -7,7 +7,6 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.util.SendCharts;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;

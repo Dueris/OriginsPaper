@@ -16,12 +16,10 @@ import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
-import java.io.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class CraftApoli {
 

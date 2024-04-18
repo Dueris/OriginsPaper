@@ -3,7 +3,6 @@ package me.dueris.genesismc;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.TicksElapsedPower;
 import me.dueris.genesismc.factory.powers.apoli.FlightHandler;
-import me.dueris.genesismc.factory.powers.apoli.ParticlePower;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
@@ -70,11 +69,12 @@ public class OriginScheduler {
                     // Ensures the flight handler can still tick on players because of issues when it doesnt tick
                     flightHandler.run(p);
                 }
-                if(Bukkit.getServer().getCurrentTick() % 20 == 0){
+                if (Bukkit.getServer().getCurrentTick() % 20 == 0) {
                     OriginPlayerAccessor.checkForDuplicates(p);
                 }
                 for (ApoliPower c : OriginPlayerAccessor.getPowersApplied(p)) {
-                    if (tickedPowers.get(p).contains(c)) continue; // CraftPower was already ticked, we are not ticking it again.
+                    if (tickedPowers.get(p).contains(c))
+                        continue; // CraftPower was already ticked, we are not ticking it again.
                     tickedPowers.get(p).add(c);
                     if (c instanceof TicksElapsedPower) {
                         ((TicksElapsedPower) c).run(p, ticksEMap);
