@@ -18,7 +18,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,22 +33,17 @@ public class AsyncUpgradeTracker implements Listener {
     private static final List<Runnable> ticks = new ArrayList<>();
     public static HashMap<Origin, TriPair/*String advancement, NamespacedKey identifier, String announcement*/> upgrades = new HashMap<>();
     public static AsyncUpgradeTracker tracker;
+    public static ExecutorService scheduler;
     public static String NO_ANNOUNCEMENT = "no_announcement_found";
 
     public static AsyncUpgradeTracker startTicking() {
         upgrades.keySet().stream().map(Origin::getTag).forEach(out::println);
-        ExecutorService scheduler = Executors.newFixedThreadPool(1, new NamedTickThreadFactory("OriginAsyncUpgradeTracker"));
-        long delay = 2; // 2 milliseconds
-
-        Timer timer = new Timer("UpgradeTimer");
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                scheduler.submit(() -> ticks.forEach(Runnable::run));
-            }
-        }, 0, delay);
-
+        scheduler = Executors.newFixedThreadPool(1, new NamedTickThreadFactory("OriginAsyncUpgradeTracker"));
         return new AsyncUpgradeTracker();
+    }
+
+    public void stop() {
+        scheduler.shutdown();
     }
 
     public void scheduleTick() {
@@ -82,7 +82,12 @@ public class AsyncUpgradeTracker implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                tracker.scheduleTick();
+                try {
+                    tracker.scheduleTick();
+                    CompletableFuture.runAsync(() -> ticks.forEach(Runnable::run), scheduler).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }.runTaskTimer(GenesisMC.getPlugin(), 0, 2);
     }

@@ -436,6 +436,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         this.registry.clearRegistries();
         scheduler.cancel();
         EntityGroupManager.stop();
+        AsyncUpgradeTracker.tracker.stop();
 
     }
 
