@@ -47,6 +47,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
+import static me.dueris.genesismc.screen.ScreenConstants.itemProperties;
 import static me.dueris.genesismc.storage.GenesisConfigs.getMainConfig;
 import static me.dueris.genesismc.storage.GenesisConfigs.getOrbCon;
 import static net.minecraft.commands.Commands.argument;
@@ -283,9 +284,10 @@ public class OriginCommand extends BukkitRunnable implements Listener {
         }
         ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
         ItemStack exit = ScreenConstants.itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Close", ItemFlag.HIDE_ENCHANTS, null, null);
-        ItemStack lowImpact = ScreenConstants.itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.GREEN + "Low", null, null, null);
-        ItemStack mediumImpact = ScreenConstants.itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.YELLOW + "Medium", null, null, null);
-        ItemStack highImpact = ScreenConstants.itemProperties(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.RED + "High", null, null, null);
+        ItemStack lowImpact = itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.GREEN + "Low", null, null, null);
+        ItemStack mediumImpact = itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.YELLOW + "Medium", null, null, null);
+        ItemStack highImpact = itemProperties(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.RED + "High", null, null, null);
+        ItemStack noImpact = itemProperties(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.GRAY + "None", null, null, null);
         ItemStack back = ScreenConstants.itemProperties(new ItemStack(Material.ARROW), "Back", ItemFlag.HIDE_ENCHANTS, null, null);
         ItemStack next = ScreenConstants.itemProperties(new ItemStack(Material.ARROW), "Next", ItemFlag.HIDE_ENCHANTS, null, null);
 
@@ -315,33 +317,26 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 
         for (int i = 0; i <= 53; i++) {
             if (i == 0 || i == 8) {
-                contents.add(new ItemStack(Material.AIR));
-            } else if (i == 1) {
                 if (impact == 1) contents.add(lowImpact);
                 else if (impact == 2) contents.add(mediumImpact);
                 else if (impact == 3) contents.add(highImpact);
+                else if (impact == 0) contents.add(noImpact);
                 else contents.add(new ItemStack(Material.AIR));
-            } else if (i == 2) {
+            } else if (i == 1 || i == 7) {
                 if (impact == 2) contents.add(mediumImpact);
                 else if (impact == 3) contents.add(highImpact);
+                else if (impact == 0) contents.add(noImpact);
+                else contents.add(new ItemStack(Material.AIR));
+            } else if (i == 2 || i == 6) {
+                if (impact == 3) contents.add(highImpact);
+                else if (impact == 0) contents.add(noImpact);
                 else contents.add(new ItemStack(Material.AIR));
             } else if (i == 3) {
-                if (impact == 3) contents.add(highImpact);
-                else contents.add(new ItemStack(Material.AIR));
+                contents.add(new ItemStack(Material.AIR));
             } else if (i == 4) {
                 contents.add(OrbOfOrigins.orb);
             } else if (i == 5) {
-                if (impact == 3) contents.add(highImpact);
-                else contents.add(new ItemStack(Material.AIR));
-            } else if (i == 6) {
-                if (impact == 2) contents.add(mediumImpact);
-                else if (impact == 3) contents.add(highImpact);
-                else contents.add(new ItemStack(Material.AIR));
-            } else if (i == 7) {
-                if (impact == 1) contents.add(lowImpact);
-                else if (impact == 2) contents.add(mediumImpact);
-                else if (impact == 3) contents.add(highImpact);
-                else contents.add(new ItemStack(Material.AIR));
+                contents.add(new ItemStack(Material.AIR));
             } else if (i == 13) {
                 if (origin.getTag().equals("origins:human")) {
                     SkullMeta skull_p = (SkullMeta) originIcon.getItemMeta();

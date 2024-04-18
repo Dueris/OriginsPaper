@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import static me.dueris.genesismc.screen.OriginChoosing.choosing;
+
 public class OriginPlayerAccessor implements Listener {
 
     // Power maps of every power based on each layer applied to the player
@@ -188,6 +190,7 @@ public class OriginPlayerAccessor implements Listener {
                 }
             }
         }.runTaskLater(GenesisMC.getPlugin(), 3L);
+        choosing.remove(player);
     }
 
     public static boolean isInPhantomForm(Player player) {

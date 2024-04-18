@@ -80,7 +80,6 @@ public class OriginChoosing implements Listener {
             if (!Objects.equals(e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING), "orb"))
                 return;
             Player p = (Player) e.getWhoClicked();
-            e.setCancelled(true);
             p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
 
             Layer layer = choosing.get(p);

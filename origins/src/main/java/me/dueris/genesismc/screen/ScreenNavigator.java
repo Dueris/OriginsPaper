@@ -1,6 +1,7 @@
 package me.dueris.genesismc.screen;
 
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
@@ -71,7 +72,6 @@ public class ScreenNavigator implements Listener {
                     mainmenu.setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
                     e.getWhoClicked().openInventory(mainmenu);
                 }
-                e.setCancelled(true);
             }
         }
     }
@@ -124,9 +124,10 @@ public class ScreenNavigator implements Listener {
 
             //making the items to display in the menu
             ItemStack back = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
-            ItemStack lowImpact = itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact" + ChatColor.GREEN + "Low", null, null, null);
-            ItemStack mediumImpact = itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact" + ChatColor.YELLOW + "Medium", null, null, null);
-            ItemStack highImpact = itemProperties(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact" + ChatColor.RED + "High", null, null, null);
+            ItemStack lowImpact = itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.GREEN + "Low", null, null, null);
+            ItemStack mediumImpact = itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.YELLOW + "Medium", null, null, null);
+            ItemStack highImpact = itemProperties(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.RED + "High", null, null, null);
+            ItemStack noImpact = itemProperties(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.GRAY + "None", null, null, null);
 
             //adds a key to the item that will be used later to get the origin from it
             ItemMeta originIconmeta = originIcon.getItemMeta();
@@ -144,33 +145,26 @@ public class ScreenNavigator implements Listener {
             //generates menu
             for (int i = 0; i <= 53; i++) {
                 if (i == 0 || i == 8) {
-                    contents.add(new ItemStack(Material.AIR));
-                } else if (i == 1) {
                     if (impact == 1) contents.add(lowImpact);
                     else if (impact == 2) contents.add(mediumImpact);
                     else if (impact == 3) contents.add(highImpact);
+                    else if (impact == 0) contents.add(noImpact);
                     else contents.add(new ItemStack(Material.AIR));
-                } else if (i == 2) {
+                } else if (i == 1 || i == 7) {
                     if (impact == 2) contents.add(mediumImpact);
                     else if (impact == 3) contents.add(highImpact);
+                    else if (impact == 0) contents.add(noImpact);
+                    else contents.add(new ItemStack(Material.AIR));
+                } else if (i == 2 || i == 6) {
+                    if (impact == 3) contents.add(highImpact);
+                    else if (impact == 0) contents.add(noImpact);
                     else contents.add(new ItemStack(Material.AIR));
                 } else if (i == 3) {
-                    if (impact == 3) contents.add(highImpact);
-                    else contents.add(new ItemStack(Material.AIR));
+                    contents.add(new ItemStack(Material.AIR));
                 } else if (i == 4) {
-                    contents.add(orb);
+                    contents.add(OrbOfOrigins.orb);
                 } else if (i == 5) {
-                    if (impact == 3) contents.add(highImpact);
-                    else contents.add(new ItemStack(Material.AIR));
-                } else if (i == 6) {
-                    if (impact == 2) contents.add(mediumImpact);
-                    else if (impact == 3) contents.add(highImpact);
-                    else contents.add(new ItemStack(Material.AIR));
-                } else if (i == 7) {
-                    if (impact == 1) contents.add(lowImpact);
-                    else if (impact == 2) contents.add(mediumImpact);
-                    else if (impact == 3) contents.add(highImpact);
-                    else contents.add(new ItemStack(Material.AIR));
+                    contents.add(new ItemStack(Material.AIR));
                 } else if (i == 13) {
                     if (originIcon.getType().equals(Material.PLAYER_HEAD)) {
                         SkullMeta skull_p = (SkullMeta) originIcon.getItemMeta();
@@ -253,7 +247,7 @@ public class ScreenNavigator implements Listener {
                     @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, title);
                     custommenu.setContents(ChooseMenuContent(0, choosing.get(p), p));
                     e.getWhoClicked().openInventory(custommenu);
-                } else e.setCancelled(true);
+                }
             }
         }
     }
@@ -276,10 +270,15 @@ public class ScreenNavigator implements Listener {
                     p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
                     e.getWhoClicked().closeInventory();
                     e.getWhoClicked().openInventory(custommenu);
-                } else {
-                    e.setCancelled(true);
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void click(InventoryClickEvent e) {
+        if (choosing.containsKey(e.getWhoClicked())) {
+            e.setCancelled(true);
         }
     }
 }
