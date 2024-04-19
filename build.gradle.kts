@@ -6,7 +6,7 @@ import kotlin.io.path.isDirectory
 plugins {
     `java-library`
     `maven-publish`
-    id("io.papermc.paperweight.userdev") version "1.5.11" apply true
+    id("io.papermc.paperweight.userdev") version "1.5.15" apply true
     id("xyz.jpenilla.run-paper") version "2.2.3"
     id("com.github.johnrengelman.shadow") version "7.1.2" apply true
 }
@@ -70,6 +70,10 @@ tasks{
             )
         }
     }
+
+    runServer {
+        minecraftVersion("1.20.4")
+    }
 }
 
 tasks.register<Jar>("makePublisher"){
@@ -97,8 +101,6 @@ fun findOriginsFile(path: String): File? {
         error("No matching file found in the specified directory.")
     }
 }
-
-//tasks.getByName("build").dependsOn("buildJar")
 
 publishing {
     publications.create<MavenPublication>("genesismc") {
