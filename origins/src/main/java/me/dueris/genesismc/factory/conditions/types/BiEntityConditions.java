@@ -3,7 +3,7 @@ package me.dueris.genesismc.factory.conditions.types;
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.util.ClipContextUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -148,7 +148,7 @@ public class BiEntityConditions implements Listener {
         GenesisMC.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION).register(factory);
     }
 
-    public class ConditionFactory implements Registerable {
+    public class ConditionFactory implements Registrable {
         NamespacedKey key;
         BiPredicate<FactoryJsonObject, Pair<CraftEntity, CraftEntity>> test;
 

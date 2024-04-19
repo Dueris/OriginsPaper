@@ -7,7 +7,7 @@ import me.dueris.calio.builder.inst.factory.FactoryBuilder;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.util.holders.TriPair;
 import me.dueris.genesismc.GenesisMC;
@@ -186,7 +186,7 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
     }
 
     @Override
-    public void createInstance(FactoryBuilder obj, File rawFile, Registrar<? extends Registerable> registry, NamespacedKey namespacedTag) {
+    public void createInstance(FactoryBuilder obj, File rawFile, Registrar<? extends Registrable> registry, NamespacedKey namespacedTag) {
         Registrar<Origin> registrar = (Registrar<Origin>) registry;
         ArrayList<Power> containers = new ArrayList<>();
         for (String element : obj.getRoot().getJsonArray("powers").asList().stream().map(FactoryElement::getString).toList()) {

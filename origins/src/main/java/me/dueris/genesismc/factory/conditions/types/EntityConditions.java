@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.StringReader;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
@@ -737,7 +737,7 @@ public class EntityConditions {
         return !cuLo.equals(prevLocat);
     }
 
-    public class ConditionFactory implements Registerable {
+    public class ConditionFactory implements Registrable {
         NamespacedKey key;
         BiPredicate<FactoryJsonObject, CraftEntity> test;
 

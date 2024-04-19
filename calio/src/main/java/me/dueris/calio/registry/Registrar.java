@@ -10,9 +10,10 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 
-public class Registrar<T extends Registerable> {
-    public HashMap<NamespacedKey, T> rawRegistry = new HashMap();
+public class Registrar<T extends Registrable> {
+    public HashMap<NamespacedKey, T> rawRegistry = new HashMap<>();
     private boolean frozen = false;
 
     /**
@@ -38,7 +39,7 @@ public class Registrar<T extends Registerable> {
      */
     public void registerOrThrow(T item) {
         checkFrozen();
-        Preconditions.checkArgument(item.getKey() != null, "Registerable key cannot be null");
+        Preconditions.checkArgument(item.getKey() != null, "Registrable key cannot be null");
         this.rawRegistry.put(item.getKey(), item);
     }
 
@@ -49,7 +50,7 @@ public class Registrar<T extends Registerable> {
      * @param newValue   the new value to replace the entry with
      */
     public void replaceEntry(NamespacedKey currentKey, T newValue) {
-        if (this.containsRegisterable(newValue)) return;
+        if (this.containsRegistrable(newValue)) return;
         if (this.rawRegistry.containsKey(currentKey)) {
             this.rawRegistry.remove(currentKey);
             this.rawRegistry.put(currentKey, newValue);
@@ -79,7 +80,7 @@ public class Registrar<T extends Registerable> {
      * @param item the item to be checked in the registry
      * @return true if the registry contains the item, false otherwise
      */
-    public boolean containsRegisterable(T item) {
+    public boolean containsRegistrable(T item) {
         return this.rawRegistry.containsValue(item);
     }
 
@@ -128,9 +129,7 @@ public class Registrar<T extends Registerable> {
         });
 
         T[] array = (T[]) new Object[tL.size()];
-        for (int i = 0; i < tL.size(); i++) {
-            array[i] = tL.get(i);
-        }
+        IntStream.range(0, tL.size()).forEach(i -> array[i] = tL.get(i));
         return array;
     }
 

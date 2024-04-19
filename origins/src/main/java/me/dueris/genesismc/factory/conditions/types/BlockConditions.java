@@ -3,7 +3,7 @@ package me.dueris.genesismc.factory.conditions.types;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -221,7 +221,7 @@ public class BlockConditions {
         GenesisMC.getPlugin().registry.retrieve(Registries.BLOCK_CONDITION).register(factory);
     }
 
-    public class ConditionFactory implements Registerable {
+    public class ConditionFactory implements Registrable {
         NamespacedKey key;
         BiPredicate<FactoryJsonObject, CraftBlock> test;
 

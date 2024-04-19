@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.conditions.types;
 
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.registry.Registrable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
@@ -73,7 +73,7 @@ public class BiomeConditions {
         GenesisMC.getPlugin().registry.retrieve(Registries.BIOME_CONDITION).register(factory);
     }
 
-    public class ConditionFactory implements Registerable {
+    public class ConditionFactory implements Registrable {
         NamespacedKey key;
         BiPredicate<FactoryJsonObject, Pair<net.minecraft.world.level.biome.Biome, BlockPos>> test;
 

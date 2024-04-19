@@ -2,7 +2,7 @@ package me.dueris.calio.registry;
 
 import org.bukkit.NamespacedKey;
 
-public interface Registerable {
+public interface Registrable {
 
     /**
      * Retrieves the namespaced key(or identifier) associated with this object.

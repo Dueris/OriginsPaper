@@ -6,17 +6,8 @@
     "operation": "multiply_base"
   },
   "damage_condition": {
-    "type": "origins:or",
-    "conditions": [
-      {
-        "type": "origins:name",
-        "name": "fall"
-      },
-      {
-        "type": "origins:name",
-        "name": "flyIntoWall"
-      }
-    ]
+    "type": "origins:in_tag",
+    "tag": "*:kinetic"
   },
   "name": "Brittle Bones",
   "description": "You take more damage from falling and flying into blocks",

@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.actions.types;
 
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.Registries;
@@ -37,7 +37,7 @@ public class ItemActions {
         GenesisMC.getPlugin().registry.retrieve(Registries.ITEM_ACTION).register(factory);
     }
 
-    public static class ActionFactory implements Registerable {
+    public static class ActionFactory implements Registrable {
         NamespacedKey key;
         BiConsumer<FactoryJsonObject, ItemStack> test;
 

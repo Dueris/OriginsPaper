@@ -9,7 +9,7 @@ import org.bukkit.NamespacedKey;
 import java.util.HashMap;
 
 public class CalioRegistry implements IRegistry {
-    public static CalioRegistry INSTANCE = new CalioRegistry();
+    public static final CalioRegistry INSTANCE = new CalioRegistry();
     private final HashMap<NamespacedKey, Registrar> registry = new HashMap<>();
 
     @Override
@@ -26,9 +26,7 @@ public class CalioRegistry implements IRegistry {
     }
 
     public void freezeAll() {
-        registry.values().forEach(registrar -> {
-            registrar.freeze();
-        });
+        registry.values().forEach(Registrar::freeze);
     }
 
     @Override

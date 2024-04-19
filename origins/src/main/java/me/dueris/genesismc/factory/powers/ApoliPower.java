@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers;
 
-import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.registry.Registrable;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
 import me.dueris.genesismc.util.Reflector;
 import org.bukkit.NamespacedKey;
@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public interface ApoliPower extends Registerable {
+public interface ApoliPower extends Registrable {
 
     HashMap<Player, HashMap<String, Boolean>> powers_active = new HashMap<>();
     ArrayList<Player> game_event_listener = new ArrayList<>();

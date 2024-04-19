@@ -86,7 +86,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static boolean disableRender = true;
     public static String MODID = "genesismc";
     public static ConditionExecutor conditionExecutor;
-    public static String apoliVersion = "1.12.7";
+    public static String apoliVersion = "1.12.8";
     public static boolean placeholderapi = false;
     public static File playerDataFolder;
     public static boolean debugOrigins = false;
@@ -301,9 +301,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             TextureLocation.parseAll();
             // Start calio parser for data driven instances
             final CraftCalio calio = CraftCalio.INSTANCE;
-            ((Registrar<DatapackRepository>) this.registry.retrieve(Registries.PACK_SOURCE)).values().forEach(repo -> {
-                calio.addDatapackPath(repo.getPath());
-            });
+            ((Registrar<DatapackRepository>) this.registry.retrieve(Registries.PACK_SOURCE)).values().stream()
+                .map(DatapackRepository::getPath).forEach(calio::addDatapackPath);
 
             calio.getBuilder().addAccessorRoot(
                 "powers",

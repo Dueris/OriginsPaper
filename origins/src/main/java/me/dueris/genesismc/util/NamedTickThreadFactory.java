@@ -12,8 +12,8 @@ public class NamedTickThreadFactory implements ThreadFactory { // Extends the fu
     private final ThreadGroup group;
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final String namePrefix;
-    private int priority;
-    private boolean daemon;
+    private final int priority;
+    private final boolean daemon;
 
     public NamedTickThreadFactory(String name) {
         SecurityManager securityManager = System.getSecurityManager();

@@ -1,6 +1,6 @@
 package me.dueris.genesismc.util;
 
-import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -17,7 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 
-public class TextureLocation implements Registerable {
+public class TextureLocation implements Registrable {
     public static HashMap<String, BarColor> textureMap = new HashMap<>();
     private final NamespacedKey key;
 

@@ -3,7 +3,7 @@ package me.dueris.genesismc.factory.actions.types;
 import com.google.gson.JsonObject;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
@@ -553,7 +553,7 @@ public class EntityActions {
         GenesisMC.getPlugin().registry.retrieve(Registries.ENTITY_ACTION).register(factory);
     }
 
-    public static class ActionFactory implements Registerable {
+    public static class ActionFactory implements Registrable {
         NamespacedKey key;
         BiConsumer<FactoryJsonObject, Entity> test;
 

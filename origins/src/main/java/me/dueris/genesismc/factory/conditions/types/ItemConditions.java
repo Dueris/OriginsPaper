@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.conditions.types;
 
 import com.mojang.brigadier.StringReader;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.content.OrbOfOrigins;
@@ -139,7 +139,7 @@ public class ItemConditions {
         GenesisMC.getPlugin().registry.retrieve(Registries.ITEM_CONDITION).register(factory);
     }
 
-    public class ConditionFactory implements Registerable {
+    public class ConditionFactory implements Registrable {
         NamespacedKey key;
         BiPredicate<FactoryJsonObject, ItemStack> test;
 
