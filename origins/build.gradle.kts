@@ -51,6 +51,10 @@ tasks {
             expand(props)
         }
     }
+    shadowJar {
+        relocate("junit", "me.dueris.shaded.libraries.junit")
+        relocate("org", "me.dueris.shaded.libraries.org")
+    }
 }
 
 tasks.register<Jar>("makePublisher") {
