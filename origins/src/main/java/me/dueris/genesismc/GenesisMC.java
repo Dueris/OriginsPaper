@@ -38,6 +38,7 @@ import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.ChoosingPage;
 import me.dueris.genesismc.screen.GuiTicker;
+import me.dueris.genesismc.screen.RandomOriginPage;
 import me.dueris.genesismc.screen.ScreenNavigator;
 import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.storage.OriginDataContainer;
@@ -370,10 +371,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         // Shutdown executor, we dont need it anymore
         loaderThreadPool.shutdown();
-        OriginCommand.commandProvidedTaggedRecipies.addAll(RecipePower.taggedRegistry.keySet());
         OriginCommand.commandProvidedPowers.addAll(((Registrar<Power>) this.registry.retrieve(Registries.POWER)).values().stream().toList());
         OriginCommand.commandProvidedOrigins.addAll(((Registrar<Origin>) this.registry.retrieve(Registries.ORIGIN)).values().stream().toList());
-        OriginCommand.commandProvidedLayers.addAll(((Registrar<Layer>) this.registry.retrieve(Registries.LAYER)).values().stream().toList());
+        OriginCommand.commandProvidedLayers.addAll(((Registrar<Layer>) this.registry.retrieve(Registries.LAYER)).values().stream().filter(Layer::isEnabled).toList());
         ResourceCommand.registeredBars.putAll(Resource.registeredBars);
 
         OriginCommand.register(((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
@@ -428,7 +428,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         OriginCommand.commandProvidedLayers.clear();
         OriginCommand.commandProvidedOrigins.clear();
         OriginCommand.commandProvidedPowers.clear();
-        OriginCommand.commandProvidedTaggedRecipies.clear();
         RecipePower.recipeMapping.clear();
         RecipePower.tags.clear();
         this.registry.clearRegistries();
@@ -464,5 +463,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
      */
     public void loadEvent(ServerLoadEvent e) {
         ChoosingPage.registerInstances();
+        ScreenNavigator.layerPages.values().forEach((pages) -> pages.add(pages.size(), new RandomOriginPage()));
     }
 }

@@ -1,17 +1,16 @@
 package me.dueris.genesismc.screen;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import me.dueris.genesismc.event.OriginChangeEvent;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.ComponentMultiLine;
 import me.dueris.genesismc.util.KeybindingUtils;
-import net.kyori.adventure.text.ComponentBuilder;
-import net.kyori.adventure.text.format.Style;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -21,22 +20,65 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import net.kyori.adventure.text.Component;
-import net.minecraft.world.entity.player.Player;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import static me.dueris.genesismc.screen.ScreenNavigator.currentDisplayingPage;
-import static me.dueris.genesismc.screen.ScreenNavigator.layerPages;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class OriginPage implements ChoosingPage {
-    private Origin origin;
+    private final Origin origin;
 
     public OriginPage(Origin origin) {
         this.origin = origin;
+    }
+
+    public static void setAttributesToDefault(org.bukkit.entity.Player player) {
+        setAttributesToDefault(((CraftPlayer) player).getHandle());
+    }
+
+    public static void setAttributesToDefault(Player p) {
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_LUCK).setBaseValue(0);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.10000000149011612F);
+    }
+
+    public static ItemStack itemProperties(ItemStack item, Component displayName, ItemFlag[] itemFlag, Enchantment enchantment, String lore) {
+        ItemMeta itemMeta = item.getItemMeta();
+        if (displayName != null)
+            itemMeta.displayName(displayName.decorate(TextDecoration.ITALIC.as(false).decoration()));
+        if (itemFlag != null) itemMeta.addItemFlags(itemFlag);
+        if (enchantment != null) itemMeta.addEnchant(enchantment, 1, true);
+        if (lore != null) itemMeta.lore(cutStringIntoLines(lore).stream().map(OriginPage::noItalic).toList());
+        item.setItemMeta(itemMeta);
+        return item;
+    }
+
+    private static Component noItalic(String string) {
+        return Component.text(string).decorate(TextDecoration.ITALIC.as(false).decoration());
+    }
+
+    public static List<String> cutStringIntoLines(String string) {
+        ArrayList<String> strings = new ArrayList<>();
+        int startStringLength = string.length();
+        while (string.length() > 40) {
+            for (int i = 40; i > 1; i--) {
+                if (String.valueOf(string.charAt(i)).matches("[\\s\\n]") || String.valueOf(string.charAt(i)).equals(" ")) {
+                    strings.add(string.substring(0, i));
+                    string = string.substring(i + 1);
+                    break;
+                }
+            }
+            if (startStringLength == string.length()) return List.of(string);
+        }
+        if (strings.isEmpty()) return List.of(string);
+        strings.add(string);
+        return strings.stream().toList();
     }
 
     public Origin getOrigin() {
@@ -92,7 +134,7 @@ public class OriginPage implements ChoosingPage {
                     if (KeybindingUtils.renderKeybind(powerContainers.get(0)).getFirst()) {
                         meta.displayName(Component.text().append(meta.displayName()).append(Component.text(" ")).append(Component.text(KeybindingUtils.translateOriginRawKey(KeybindingUtils.renderKeybind(powerContainers.get(0)).getSecond())).color(TextColor.color(32222))).build());
                     }
-                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    Arrays.stream(ItemFlag.values()).toList().forEach(originPower::addItemFlags);
                     meta.lore(ComponentMultiLine.apply(cutStringIntoLines(powerContainers.get(0).getDescription())));
                     originPower.setItemMeta(meta);
                     Arrays.stream(ItemFlag.values()).toList().forEach(originPower::addItemFlags);
@@ -137,52 +179,5 @@ public class OriginPage implements ChoosingPage {
         OriginChangeEvent e = new OriginChangeEvent((org.bukkit.entity.Player) player.getBukkitEntity(), this.origin, ScreenNavigator.orbChoosing.contains(player));
         Bukkit.getPluginManager().callEvent(e);
         player.getBukkitEntity().getOpenInventory().close();
-    }
-
-    public static void setAttributesToDefault(org.bukkit.entity.Player player) {
-        setAttributesToDefault(((CraftPlayer)player).getHandle());
-    }
-    
-    public static void setAttributesToDefault(Player p) {
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1);
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4);
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0);
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_LUCK).setBaseValue(0);
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.10000000149011612F);
-    }
-
-    public static ItemStack itemProperties(ItemStack item, Component displayName, ItemFlag[] itemFlag, Enchantment enchantment, String lore) {
-        ItemMeta itemMeta = item.getItemMeta();
-        if (displayName != null) itemMeta.displayName(displayName.decorate(TextDecoration.ITALIC.as(false).decoration()));
-        if (itemFlag != null) itemMeta.addItemFlags(itemFlag);
-        if (enchantment != null) itemMeta.addEnchant(enchantment, 1, true);
-        if (lore != null) itemMeta.lore(cutStringIntoLines(lore).stream().map(OriginPage::noItalic).toList());
-        item.setItemMeta(itemMeta);
-        return item;
-    }
-
-    private static Component noItalic(String string) {
-        return Component.text(string).decorate(TextDecoration.ITALIC.as(false).decoration());
-    }
-
-    public static List<String> cutStringIntoLines(String string) {
-        ArrayList<String> strings = new ArrayList<>();
-        int startStringLength = string.length();
-        while (string.length() > 40) {
-            for (int i = 40; i > 1; i--) {
-                if (String.valueOf(string.charAt(i)).matches("[\\s\\n]") || String.valueOf(string.charAt(i)).equals(" ")) {
-                    strings.add(string.substring(0, i));
-                    string = string.substring(i + 1);
-                    break;
-                }
-            }
-            if (startStringLength == string.length()) return List.of(string);
-        }
-        if (strings.isEmpty()) return List.of(string);
-        strings.add(string);
-        return strings.stream().toList();
     }
 }

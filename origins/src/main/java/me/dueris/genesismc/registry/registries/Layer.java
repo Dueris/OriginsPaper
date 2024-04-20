@@ -132,7 +132,7 @@ public class Layer extends FactoryJsonObject implements Serializable, FactoryIns
     public List<Origin> getRandomOrigins() {
         boolean overrideUnchoosable = this.getBooleanOrDefault("allow_random_unchoosable", false);
         if (!this.getBooleanOrDefault("allow_random", false)) return new ArrayList<>();
-        return origins.stream().filter(origin -> !origin.getUnchooseable() || overrideUnchoosable).filter(origin -> {
+        return this.origins.stream().filter(origin -> !origin.getUnchooseable() || overrideUnchoosable).filter(origin -> {
             if (this.isPresent("exclude_random")) {
                 for (String identifier : this.getJsonArray("exclude_random").asList().stream().map(FactoryElement::getString).toList()) {
                     if (origin.getTag().equalsIgnoreCase(identifier)) return false;
@@ -149,7 +149,6 @@ public class Layer extends FactoryJsonObject implements Serializable, FactoryIns
             new FactoryObjectInstance("enabled", Boolean.class, true),
             new FactoryObjectInstance("replace", Boolean.class, false),
             new FactoryObjectInstance("allow_random", Boolean.class, true),
-            new FactoryObjectInstance("name", String.class, "No Name"),
             new FactoryObjectInstance("hidden", Boolean.class, false)
         );
     }

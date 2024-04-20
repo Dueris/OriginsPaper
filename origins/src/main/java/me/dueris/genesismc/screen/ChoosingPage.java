@@ -1,13 +1,5 @@
 package me.dueris.genesismc.screen;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.bukkit.inventory.ItemStack;
-
 import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
@@ -16,12 +8,14 @@ import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import net.minecraft.world.entity.player.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public interface ChoosingPage extends Registrable {
-    ItemStack[] createDisplay(Player player, Layer layer);
-    ItemStack getChoosingStack(Player player);
-    void onChoose(Player player, Layer layer);
-
     static void registerInstances() {
         ((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).values().stream()
             .filter(Layer::isEnabled)
@@ -60,4 +54,10 @@ public interface ChoosingPage extends Registrable {
             }
         });
     }
+
+    ItemStack[] createDisplay(Player player, Layer layer);
+
+    ItemStack getChoosingStack(Player player);
+
+    void onChoose(Player player, Layer layer);
 }

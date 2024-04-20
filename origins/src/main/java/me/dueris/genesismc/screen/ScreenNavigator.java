@@ -1,16 +1,15 @@
 package me.dueris.genesismc.screen;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.BiConsumer;
-
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.registry.registries.Layer;
+import net.kyori.adventure.text.Component;
+import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftInventory;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,22 +18,21 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import me.dueris.genesismc.registry.registries.Layer;
-import net.kyori.adventure.text.Component;
-import net.minecraft.world.entity.player.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.BiConsumer;
+
 public class ScreenNavigator implements Listener {
+    public static final ItemStack NEXT_ITEMSTACK;
+    public static final ItemStack BACK_ITEMSTACK;
     public static HashMap<Player, Layer> inChoosingLayer = new HashMap<>();
     public static ArrayList<Player> orbChoosing = new ArrayList<>();
     public static HashMap<Layer, List<ChoosingPage>> layerPages = new HashMap<>();
     public static Object2IntMap<Player> currentDisplayingPage = new Object2IntOpenHashMap<>();
-    public static final ItemStack NEXT_ITEMSTACK;
-    public static final ItemStack BACK_ITEMSTACK;
     public static HashMap<ItemStack, BiConsumer<Player, Layer>> itemActions = new HashMap<>();
     public static ArrayList<HumanEntity> tickCooldown = new ArrayList<>();
 
@@ -81,11 +79,15 @@ public class ScreenNavigator implements Listener {
 
         @NotNull Inventory gui = Bukkit.createInventory(player.getBukkitEntity(), 54,
             Component.text(layer.isPresent("gui_title") ? layer.getString("gui_title") :
-            "Choosing - " + (layer.isPresent("name") ? layer.getString("name") : layer.getTag()))
+                "Choosing - " + (layer.isPresent("name") ? layer.getString("name") : layer.getTag()))
         );
 
         gui.setContents(layerPages.get(layer).get(currentDisplayingPage.getInt(player)).createDisplay(player, layer));
         player.getBukkitEntity().openInventory(gui);
+    }
+
+    public static void open(org.bukkit.entity.Player player, Layer layer, boolean inOrbChoosing) {
+        open(((CraftPlayer) player).getHandle(), layer, inOrbChoosing);
     }
 
     @EventHandler
@@ -102,7 +104,7 @@ public class ScreenNavigator implements Listener {
     }
 
     private Player getCraftPlayer(HumanEntity p) {
-        return ((CraftPlayer)p).getHandle();
+        return ((CraftPlayer) p).getHandle();
     }
 
     @EventHandler
@@ -114,8 +116,8 @@ public class ScreenNavigator implements Listener {
             if (layerPages.get(inChoosingLayer.get(getCraftPlayer(e.getWhoClicked()))).isEmpty()) return;
             ChoosingPage page = layerPages.get(inChoosingLayer.get(getCraftPlayer(e.getWhoClicked())))
                 .get(currentDisplayingPage.getInt(getCraftPlayer(e.getWhoClicked())));
-            if (e.getCurrentItem().isSimilar(page.getChoosingStack(((CraftPlayer)e.getWhoClicked()).getHandle()))) {
-                page.onChoose(((CraftPlayer)e.getWhoClicked()).getHandle(), inChoosingLayer.get(getCraftPlayer(e.getWhoClicked())));
+            if (e.getCurrentItem().isSimilar(page.getChoosingStack(((CraftPlayer) e.getWhoClicked()).getHandle()))) {
+                page.onChoose(((CraftPlayer) e.getWhoClicked()).getHandle(), inChoosingLayer.get(getCraftPlayer(e.getWhoClicked())));
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -125,7 +127,7 @@ public class ScreenNavigator implements Listener {
                 }.runTaskLater(GenesisMC.getPlugin(), 1);
             } else {
                 if (itemActions.containsKey(e.getCurrentItem())) {
-                    itemActions.get(e.getCurrentItem()).accept(((CraftPlayer)e.getWhoClicked()).getHandle(), inChoosingLayer.get(getCraftPlayer(e.getWhoClicked())));
+                    itemActions.get(e.getCurrentItem()).accept(((CraftPlayer) e.getWhoClicked()).getHandle(), inChoosingLayer.get(getCraftPlayer(e.getWhoClicked())));
                 }
             }
 
@@ -137,9 +139,5 @@ public class ScreenNavigator implements Listener {
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 3);
         }
-    }
-
-    public static void open(org.bukkit.entity.Player player, Layer layer, boolean inOrbChoosing) {
-        open(((CraftPlayer)player).getHandle(), layer, inOrbChoosing);
     }
 }

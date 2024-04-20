@@ -56,8 +56,8 @@ public class RecipePower extends CraftPower implements Listener {
                     rec.addIngredient(computeResult(jsonObject));
                 }
                 Bukkit.addRecipe(rec);
-                tags.add(rec.key().asString());
-                taggedRegistry.put(rec.key().asString(), rec);
+                tags.add(rec.getKey().asString());
+                taggedRegistry.put(rec.getKey().asString(), rec);
             } else if (type.equalsIgnoreCase("minecraft:crafting_shaped")) {
                 ShapedRecipe rec = new ShapedRecipe(key, computeResult(recipe.getJsonObject("result")));
                 rec.shape(Arrays.stream(recipe.getJsonArray("pattern").asArray()).map(FactoryElement::getString).toList().toArray(new String[0]));
@@ -77,8 +77,8 @@ public class RecipePower extends CraftPower implements Listener {
                 }
 
                 Bukkit.addRecipe(rec);
-                tags.add(rec.key().asString());
-                taggedRegistry.put(rec.key().asString(), rec);
+                tags.add(rec.getKey().asString());
+                taggedRegistry.put(rec.getKey().asString(), rec);
             } else {
                 throw new IllegalArgumentException("Unable to get recipe type from power: " + powerContainer.getTag());
             }

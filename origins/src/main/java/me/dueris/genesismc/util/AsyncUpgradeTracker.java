@@ -22,12 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import static java.lang.System.out;
 
 public class AsyncUpgradeTracker implements Listener {
     private static final List<Runnable> ticks = new ArrayList<>();
@@ -36,7 +30,8 @@ public class AsyncUpgradeTracker implements Listener {
     public static String NO_ANNOUNCEMENT = "no_announcement_found";
 
     public static AsyncUpgradeTracker startTicking() {
-        if (!upgrades.keySet().isEmpty()) GenesisMC.getPlugin().getLogger().info("Loaded {} upgradable origins into AsyncUpgradeTracker!".replace("{}", String.valueOf(upgrades.keySet().size())));
+        if (!upgrades.keySet().isEmpty())
+            GenesisMC.getPlugin().getLogger().info("Loaded {} upgradable origins into AsyncUpgradeTracker!".replace("{}", String.valueOf(upgrades.keySet().size())));
         return new AsyncUpgradeTracker();
     }
 

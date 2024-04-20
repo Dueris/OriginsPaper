@@ -58,7 +58,6 @@ public class OriginCommand extends BukkitRunnable implements Listener {
     public static List<Origin> commandProvidedOrigins = new ArrayList<>();
     public static List<Layer> commandProvidedLayers = new ArrayList<>();
     public static List<Power> commandProvidedPowers = new ArrayList<>();
-    public static List<String> commandProvidedTaggedRecipies = new ArrayList<>();
 
     static {
         wearable = EnumSet.of(Material.ENCHANTED_BOOK, Material.BOOK, Material.PUMPKIN, Material.CARVED_PUMPKIN, Material.ELYTRA, Material.TURTLE_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_BOOTS, Material.LEATHER_LEGGINGS, Material.LEATHER_HELMET, Material.CHAINMAIL_BOOTS, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_HELMET, Material.CHAINMAIL_LEGGINGS, Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS, Material.GOLDEN_HELMET, Material.GOLDEN_CHESTPLATE, Material.GOLDEN_LEGGINGS, Material.GOLDEN_BOOTS, Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS, Material.NETHERITE_HELMET, Material.NETHERITE_CHESTPLATE, Material.NETHERITE_LEGGINGS, Material.NETHERITE_BOOTS);
@@ -81,7 +80,8 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                             })
                             .then(argument("origin", ResourceLocationArgument.id())
                                 .suggests((context, builder) -> {
-                                    commandProvidedOrigins.forEach((origin) -> {
+                                    Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
+                                    commandProvidedOrigins.stream().filter(o -> layer.getOriginIdentifiers().contains(o.getTag())).forEach((origin) -> {
                                         if (context.getInput().split(" ").length == 4 || (origin.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
                                             || origin.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))) {
                                             builder.suggest(origin.getTag());
@@ -92,6 +92,12 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                     Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
                                     Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
                                     Origin origin = CraftApoli.getOrigin(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "origin")).asString());
+                                    if (!layer.getOriginIdentifiers().contains(origin.getTag())) {
+                                        context.getSource().sendFailure(Component.literal("Origin \"%e%\" not found on layer: "
+                                            .replace("%e%", origin.getTag())
+                                            + CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()));
+                                        return 0;
+                                    }
                                     targets.forEach(player -> {
                                         OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, origin);
                                         player.getBukkitEntity().getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
@@ -227,7 +233,8 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                     .then(argument("targets", EntityArgument.players())
                         .then(argument("namespace", ResourceLocationArgument.id())
                             .suggests((context, builder) -> {
-                                commandProvidedTaggedRecipies.forEach(builder::suggest);
+                                RecipePower.tags.forEach(builder::suggest);
+                                builder.suggest("origins:orb_of_origins");
                                 return builder.buildFuture();
                             })
                             .executes(context -> {
@@ -316,7 +323,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                 playerPage.put(player, playerPage.get(player) + 1);
 
             @NotNull Inventory info = Bukkit.createInventory(player, 54, "Info - " + playerOrigins.get(player).get(playerPage.get(player)).getName());
-            info.setContents(new OriginPage(playerOrigins.get(player).get(playerPage.get(player))).createDisplay(((CraftPlayer)player).getHandle(), null));
+            info.setContents(new OriginPage(playerOrigins.get(player).get(playerPage.get(player))).createDisplay(((CraftPlayer) player).getHandle(), null));
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
             player.closeInventory();
             player.openInventory(info);

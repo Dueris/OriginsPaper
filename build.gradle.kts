@@ -11,7 +11,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2" apply true
 }
 
-val paperweightVersion : String = "1.20.4-R0.1-SNAPSHOT"
+val paperweightVersion: String = "1.20.4-R0.1-SNAPSHOT"
 
 allprojects {
     apply(plugin = "java")
@@ -41,20 +41,20 @@ allprojects {
     }
 }
 
-tasks{
-    build{
+tasks {
+    build {
         dependsOn(":origins:reobfJar")
-        doLast{
+        doLast {
             val targetJarDirectory: Path = projectDir.toPath().toAbsolutePath().resolve("build/libs")
-            val subProject: Project = project("origins");
+            val subProject: Project = project("origins")
             println("Loading GenesisMC version-build : ".plus(subProject.version))
-            if(!targetJarDirectory.isDirectory()) error("Target path is not a directory?!")
+            if (!targetJarDirectory.isDirectory()) error("Target path is not a directory?!")
 
             Files.createDirectories(targetJarDirectory)
             File(targetJarDirectory.toAbsolutePath().toString()).listFiles().forEach { file ->
-                if(file.isFile){
+                if (file.isFile) {
                     file.delete()
-                }else{
+                } else {
                     println("Directory was found in target dir?")
                 }
             }
@@ -64,19 +64,19 @@ tasks{
                 StandardCopyOption.REPLACE_EXISTING
             )
             Files.copy(
-                file("origins/build/libs/origins-".plus(subProject.version).plus("-dev-all").plus(".jar")).toPath().toAbsolutePath(),
+                file("origins/build/libs/origins-".plus(subProject.version).plus("-dev-all").plus(".jar")).toPath()
+                    .toAbsolutePath(),
                 targetJarDirectory.resolve("genesis-".plus(subProject.version).plus("-mojmap").plus(".jar")),
                 StandardCopyOption.REPLACE_EXISTING
             )
         }
     }
-
     runServer {
         minecraftVersion("1.20.4")
     }
 }
 
-tasks.register<Jar>("makePublisher"){
+tasks.register<Jar>("makePublisher") {
     dependsOn(tasks.shadowJar)
     archiveFileName.set("genesis-v1.0.0-SNAPSHOT.jar")
     from(sourceSets.main.get().output)
@@ -115,8 +115,8 @@ publishing {
             name = "sonatype"
             url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
             credentials {
-                username=System.getenv("OSSRH_USERNAME")
-                password=System.getenv("OSSRH_PASSWORD")
+                username = System.getenv("OSSRH_USERNAME")
+                password = System.getenv("OSSRH_PASSWORD")
             }
         }
     }
