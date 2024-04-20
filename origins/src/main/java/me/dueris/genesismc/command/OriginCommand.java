@@ -308,11 +308,11 @@ public class OriginCommand extends BukkitRunnable implements Listener {
         Player player = (Player) e.getWhoClicked();
         if (item == null) return;
         if (!e.getView().getTitle().startsWith("Info")) return;
-        if (item.getType() == Material.ARROW && (item.getItemMeta().getDisplayName().equals("Back") || item.getItemMeta().getDisplayName().equals("Next"))) {
+        if (item.getType() == Material.ARROW && (item.getItemMeta().getDisplayName().equals("Back Origin") || item.getItemMeta().getDisplayName().equals("Next Origin"))) {
 
-            if (item.getItemMeta().getDisplayName().equals("Back") && playerPage.get(player) > 0)
+            if (item.getItemMeta().getDisplayName().equals("Back Origin") && playerPage.get(player) > 0)
                 playerPage.put(player, playerPage.get(player) - 1);
-            if (item.getItemMeta().getDisplayName().equals("Next") && playerPage.get(player) < playerOrigins.get(player).size() - 1)
+            if (item.getItemMeta().getDisplayName().equals("Next Origin") && playerPage.get(player) < playerOrigins.get(player).size() - 1)
                 playerPage.put(player, playerPage.get(player) + 1);
 
             @NotNull Inventory info = Bukkit.createInventory(player, 54, "Info - " + playerOrigins.get(player).get(playerPage.get(player)).getName());
