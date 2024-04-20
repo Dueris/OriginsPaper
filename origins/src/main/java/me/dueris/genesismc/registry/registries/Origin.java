@@ -1,6 +1,7 @@
 package me.dueris.genesismc.registry.registries;
 
 import com.google.gson.JsonArray;
+import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.inst.FactoryInstance;
 import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.calio.builder.inst.factory.FactoryBuilder;
@@ -13,6 +14,7 @@ import me.dueris.calio.util.holders.TriPair;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.util.AsyncUpgradeTracker;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -22,6 +24,7 @@ import java.io.File;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Origin extends FactoryJsonObject implements Serializable, FactoryInstance {
@@ -33,6 +36,7 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
     ArrayList<Power> powerContainer;
     FactoryJsonObject choosingCondition;
     FactoryJsonObject factory;
+    boolean isDisabled = false;
 
     public Origin(boolean toRegistry) {
         super(null);
@@ -115,18 +119,6 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
      */
     public String getIcon() {
         return getItemStack("icon").getType().getKey().asString();
-//        Object value = this.originFile.get("icon");
-//        try {
-//            if (((JSONObject) value).get("item") != "minecraft:air") return (String) ((JSONObject) value).get("item");
-//            else return "minecraft:player_head";
-//        } catch (Exception e) {
-//            try {
-//                if (!value.toString().equals("minecraft:air")) return value.toString();
-//                else return "minecraft:player_head";
-//            } catch (Exception ex) {
-//                return "minecraft:player_head";
-//            }
-//        }
     }
 
     public int getOrder() {
@@ -143,15 +135,19 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
     /**
      * @return The impact of the origin.
      */
-    public long getImpact() {
-        return getNumberOrDefault("impact", 0).getLong();
+    public int getImpact() {
+        return getNumberOrDefault("impact", 0).getInt();
     }
 
     /**
      * @return If the origin is choose-able from the choose menu.
      */
     public boolean getUnchooseable() {
-        return getBooleanOrDefault("unchoosable", false);
+        return getBooleanOrDefault("unchoosable", false) || isDisabled;
+    }
+
+    private void setDisabled() {
+        isDisabled = true;
     }
 
     /**
@@ -164,13 +160,6 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
             if (power.getType().equals(powerType)) powers.add(power);
         }
         return powers;
-    }
-
-    public Power getSinglePowerFileFromType(String powerType) {
-        for (Power power : getPowerContainers()) {
-            if (power.getType().equals(powerType)) return power;
-        }
-        return null;
     }
 
     @Override
@@ -200,6 +189,12 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
             }
         }
         Origin origin = new Origin(namespacedTag, containers, obj.getRoot());
+        ((ArrayList<String>) GenesisConfigs.getMainConfig().get("disabled-origins")).forEach(d -> {
+            if (origin.getTag().equalsIgnoreCase(d)) {
+                CraftCalio.INSTANCE.getLogger().info("Origin(%e%) was disabled by the config!".replace("%e%", d));
+                origin.setDisabled();
+            }
+        });
         registrar.register(origin);
 
         if (obj.getRoot().isPresent("upgrades")) {

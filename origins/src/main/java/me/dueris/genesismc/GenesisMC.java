@@ -36,9 +36,8 @@ import me.dueris.genesismc.registry.registries.DatapackRepository;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.screen.ChoosingPage;
 import me.dueris.genesismc.screen.GuiTicker;
-import me.dueris.genesismc.screen.OriginChoosing;
-import me.dueris.genesismc.screen.ScreenConstants;
 import me.dueris.genesismc.screen.ScreenNavigator;
 import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.storage.OriginDataContainer;
@@ -60,6 +59,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -275,6 +275,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         this.registry.create(Registries.BIENTITY_ACTION, new Registrar<BiEntityActions.ActionFactory>());
         this.registry.create(Registries.TEXTURE_LOCATION, new Registrar<TextureLocation>());
         this.registry.create(Registries.PACK_SOURCE, new Registrar<DatapackRepository>());
+        this.registry.create(Registries.CHOOSING_PAGE, new Registrar<ChoosingPage>());
 
         Utils.unpackOriginPack();
         Arrays.stream(server.getWorldPath(LevelResource.DATAPACK_DIR).toFile().listFiles()).toList().forEach(datapack -> {
@@ -368,7 +369,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
         Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         // Shutdown executor, we dont need it anymore
-        ScreenConstants.splitPages();
         loaderThreadPool.shutdown();
         OriginCommand.commandProvidedTaggedRecipies.addAll(RecipePower.taggedRegistry.keySet());
         OriginCommand.commandProvidedPowers.addAll(((Registrar<Power>) this.registry.retrieve(Registries.POWER)).values().stream().toList());
@@ -394,7 +394,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new PlayerManager(), this);
         getServer().getPluginManager().registerEvents(new EnchantTableHandler(), this);
         getServer().getPluginManager().registerEvents(new AnvilHandler(), this);
-        getServer().getPluginManager().registerEvents(new OriginChoosing(), this);
         getServer().getPluginManager().registerEvents(new ScreenNavigator(), this);
         getServer().getPluginManager().registerEvents(new OriginCommand(), this);
         getServer().getPluginManager().registerEvents(new ContentTicker(), this);
@@ -435,8 +434,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         this.registry.clearRegistries();
         scheduler.cancel();
         EntityGroupManager.stop();
-        AsyncUpgradeTracker.tracker.stop();
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -458,5 +455,14 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         onDisable();
         onLoad();
         onEnable();
+    }
+
+    @EventHandler
+    /**
+     * Post-Startup of the plugin lifecycle, where registries will be finalized after plugins have loaded
+     * @param e
+     */
+    public void loadEvent(ServerLoadEvent e) {
+        ChoosingPage.registerInstances();
     }
 }

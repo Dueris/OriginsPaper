@@ -41,6 +41,10 @@ tickRate: 12000
 # Allows to set the max number of threads the power/origin loader will use. Default is 6
 max-loader-threads: 6
 
-# Paper configs have some bug fixes in them that prevent Genesis from doing some
-# things correctly, Genesis changes them by default, but can be disabled.
-modify-configs-to-fix-bugs: true
+# Any origin namespacedkey added here will be disabled and will be unchoosable
+# Example:
+# disabled-origins: [
+#   "origins:elytrian",
+#   "origins:avian"
+# ]
+disabled-origins: [ ]

@@ -24,4 +24,5 @@ public class Registries {
 
     public static final NamespacedKey TEXTURE_LOCATION = GenesisMC.apoliIdentifier("texture_location");
     public static final NamespacedKey PACK_SOURCE = GenesisMC.apoliIdentifier("pack_source");
+    public static final NamespacedKey CHOOSING_PAGE = GenesisMC.originIdentifier("choosing_page");
 }

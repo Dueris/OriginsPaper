@@ -9,7 +9,8 @@ import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.screen.ScreenConstants;
+import me.dueris.genesismc.screen.OriginPage;
+import me.dueris.genesismc.screen.ScreenNavigator;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.*;
@@ -43,7 +44,7 @@ public class AttributeHandler extends CraftPower implements Listener {
     public void powerUpdate(PowerUpdateEvent e) {
         if (!e.getPower().getType().equalsIgnoreCase(this.getPowerFile())) return;
         Player p = e.getPlayer();
-        ScreenConstants.setAttributesToDefault(p);
+        OriginPage.setAttributesToDefault(p);
         if (attribute.contains(p)) {
             runAttributeModifyPower(e);
         }
@@ -52,7 +53,7 @@ public class AttributeHandler extends CraftPower implements Listener {
     @EventHandler
     public void respawn(PlayerPostRespawnEvent e) {
         Player p = e.getPlayer();
-        ScreenConstants.setAttributesToDefault(p);
+        OriginPage.setAttributesToDefault(p);
         if (attribute.contains(p)) {
             runAttributeModifyPower(e);
         }

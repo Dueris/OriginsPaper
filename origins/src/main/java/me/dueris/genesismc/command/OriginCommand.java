@@ -14,11 +14,9 @@ import me.dueris.genesismc.factory.powers.apoli.RecipePower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.screen.ScreenConstants;
+import me.dueris.genesismc.screen.OriginPage;
 import me.dueris.genesismc.storage.OriginDataContainer;
-import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
@@ -35,11 +33,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +43,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
-import static me.dueris.genesismc.screen.ScreenConstants.itemProperties;
 import static me.dueris.genesismc.storage.GenesisConfigs.getMainConfig;
 import static me.dueris.genesismc.storage.GenesisConfigs.getOrbCon;
 import static net.minecraft.commands.Commands.argument;
@@ -219,7 +214,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                 playerPage.put(p.getBukkitEntity(), 0);
 
                             @NotNull Inventory help = Bukkit.createInventory(p.getBukkitEntity(), 54, "Info - " + playerOrigins.get(p.getBukkitEntity()).get(playerPage.get(p.getBukkitEntity())).getName());
-                            help.setContents(infoMenu(p.getBukkitEntity(), playerPage.get(p.getBukkitEntity())));
+                            help.setContents(new OriginPage(playerOrigins.get(p.getBukkitEntity()).get(playerPage.get(p.getBukkitEntity()))).createDisplay(p, null));
                             p.getBukkitEntity().openInventory(help);
                             p.getBukkitEntity().playSound(p.getBukkitEntity().getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
                             return SINGLE_SUCCESS;
@@ -264,130 +259,6 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                     )
                 )
         );
-    }
-
-    public static ItemStack[] infoMenu(Player p, Integer page) {
-        Origin origin = playerOrigins.get(p).get(page);
-
-        ArrayList<Power> powerContainers = new ArrayList<>();
-        for (Power powerContainer : origin.getPowerContainers()) {
-            if (powerContainer.isHidden()) continue;
-            powerContainers.add(powerContainer);
-        }
-
-        String minecraftItem = origin.getIcon();
-        String item;
-        if (minecraftItem.contains(":")) {
-            item = minecraftItem.split(":")[1];
-        } else {
-            item = minecraftItem;
-        }
-        ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
-        ItemStack exit = ScreenConstants.itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Close", ItemFlag.HIDE_ENCHANTS, null, null);
-        ItemStack lowImpact = itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.GREEN + "Low", null, null, null);
-        ItemStack mediumImpact = itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.YELLOW + "Medium", null, null, null);
-        ItemStack highImpact = itemProperties(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.RED + "High", null, null, null);
-        ItemStack noImpact = itemProperties(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.GRAY + "None", null, null, null);
-        ItemStack back = ScreenConstants.itemProperties(new ItemStack(Material.ARROW), "Back", ItemFlag.HIDE_ENCHANTS, null, null);
-        ItemStack next = ScreenConstants.itemProperties(new ItemStack(Material.ARROW), "Next", ItemFlag.HIDE_ENCHANTS, null, null);
-
-
-        ItemMeta originIconmeta = originIcon.getItemMeta();
-        originIconmeta.setDisplayName(origin.getName());
-        originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        originIconmeta.setLore(ScreenConstants.cutStringIntoLines(origin.getDescription()));
-        originIcon.setItemMeta(originIconmeta);
-
-        NamespacedKey pageKey = new NamespacedKey(GenesisMC.getPlugin(), "page");
-        ItemMeta backMeta = back.getItemMeta();
-        if (page == 0) backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, 0);
-        else backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page - 1);
-        back.setItemMeta(backMeta);
-
-
-        ItemMeta nextMeta = next.getItemMeta();
-        if (playerOrigins.get(p).size() - 1 == page)
-            nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page);
-        else nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page + 1);
-        next.setItemMeta(nextMeta);
-
-
-        ArrayList<ItemStack> contents = new ArrayList<>();
-        long impact = origin.getImpact();
-
-        for (int i = 0; i <= 53; i++) {
-            if (i == 0 || i == 8) {
-                if (impact == 1) contents.add(lowImpact);
-                else if (impact == 2) contents.add(mediumImpact);
-                else if (impact == 3) contents.add(highImpact);
-                else if (impact == 0) contents.add(noImpact);
-                else contents.add(new ItemStack(Material.AIR));
-            } else if (i == 1 || i == 7) {
-                if (impact == 2) contents.add(mediumImpact);
-                else if (impact == 3) contents.add(highImpact);
-                else if (impact == 0) contents.add(noImpact);
-                else contents.add(new ItemStack(Material.AIR));
-            } else if (i == 2 || i == 6) {
-                if (impact == 3) contents.add(highImpact);
-                else if (impact == 0) contents.add(noImpact);
-                else contents.add(new ItemStack(Material.AIR));
-            } else if (i == 3) {
-                contents.add(new ItemStack(Material.AIR));
-            } else if (i == 4) {
-                contents.add(OrbOfOrigins.orb);
-            } else if (i == 5) {
-                contents.add(new ItemStack(Material.AIR));
-            } else if (i == 13) {
-                if (origin.getTag().equals("origins:human")) {
-                    SkullMeta skull_p = (SkullMeta) originIcon.getItemMeta();
-                    skull_p.setOwningPlayer(p);
-                    skull_p.setOwner(p.getName());
-                    skull_p.setPlayerProfile(p.getPlayerProfile());
-                    skull_p.setOwnerProfile(p.getPlayerProfile());
-                    originIcon.setItemMeta(skull_p);
-                }
-                contents.add(originIcon);
-            } else if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33) || (i >= 38 && i <= 42)) {
-                while (!powerContainers.isEmpty() && powerContainers.get(0).isHidden()) {
-                    powerContainers.remove(0);
-                }
-                if (!powerContainers.isEmpty()) {
-
-                    ItemStack originPower = new ItemStack(Material.FILLED_MAP);
-
-                    ItemMeta meta = originPower.getItemMeta();
-                    meta.setDisplayName(powerContainers.get(0).getName());
-                    if (KeybindingUtils.renderKeybind(powerContainers.get(0)).getFirst()) {
-                        meta.displayName(net.kyori.adventure.text.Component.text().append(meta.displayName()).append(net.kyori.adventure.text.Component.text(" ")).append(net.kyori.adventure.text.Component.text(KeybindingUtils.translateOriginRawKey(KeybindingUtils.renderKeybind(powerContainers.get(0)).getSecond())).color(TextColor.color(32222))).build());
-                    }
-                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    meta.setLore(ScreenConstants.cutStringIntoLines(powerContainers.get(0).getDescription()));
-                    originPower.setItemMeta(meta);
-
-                    contents.add(originPower);
-
-                    powerContainers.remove(0);
-
-                } else {
-                    if (i >= 38) {
-                        contents.add(new ItemStack(Material.AIR));
-                    } else {
-                        contents.add(new ItemStack(Material.PAPER));
-                    }
-                }
-
-
-            } else if (i == 46) {
-                contents.add(back);
-            } else if (i == 49) {
-                contents.add(exit);
-            } else if (i == 52) {
-                contents.add(next);
-            } else {
-                contents.add(new ItemStack(Material.AIR));
-            }
-        }
-        return contents.toArray(new ItemStack[0]);
     }
 
     public static void give(CommandContext<CommandSourceStack> context, int amt) throws CommandSyntaxException {
@@ -445,7 +316,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                 playerPage.put(player, playerPage.get(player) + 1);
 
             @NotNull Inventory info = Bukkit.createInventory(player, 54, "Info - " + playerOrigins.get(player).get(playerPage.get(player)).getName());
-            info.setContents(infoMenu(player, item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "page"), PersistentDataType.INTEGER)));
+            info.setContents(new OriginPage(playerOrigins.get(player).get(playerPage.get(player))).createDisplay(((CraftPlayer)player).getHandle(), null));
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
             player.closeInventory();
             player.openInventory(info);

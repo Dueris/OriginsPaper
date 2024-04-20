@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static me.dueris.genesismc.screen.OriginChoosing.choosing;
+import static me.dueris.genesismc.screen.ScreenNavigator.inChoosingLayer;
 
 public class OriginPlayerAccessor implements Listener {
 
@@ -190,7 +190,7 @@ public class OriginPlayerAccessor implements Listener {
                 }
             }
         }.runTaskLater(GenesisMC.getPlugin(), 3L);
-        choosing.remove(player);
+        inChoosingLayer.remove(player);
     }
 
     public static boolean isInPhantomForm(Player player) {

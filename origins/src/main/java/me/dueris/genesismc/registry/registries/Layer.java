@@ -13,7 +13,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.screen.OriginChoosing;
+import me.dueris.genesismc.screen.ScreenNavigator;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
@@ -80,7 +80,7 @@ public class Layer extends FactoryJsonObject implements Serializable, FactoryIns
             }
         }
 
-        if (OriginChoosing.orbChoosing.contains(entity)) return false; // Default origins dont apply on orb choosings
+        if (ScreenNavigator.orbChoosing.contains(entity)) return false; // Default origins dont apply on orb choosings
         if (this.isPresent("default_origin")) {
             NamespacedKey identifier = this.getNamespacedKey("default_origin");
             Origin origin = ((Registrar<Origin>) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).get(identifier);
@@ -90,6 +90,10 @@ public class Layer extends FactoryJsonObject implements Serializable, FactoryIns
             }
         }
         return false;
+    }
+
+    public boolean isEnabled() {
+        return this.getBooleanOrDefault("enabled", true);
     }
 
     @Override
