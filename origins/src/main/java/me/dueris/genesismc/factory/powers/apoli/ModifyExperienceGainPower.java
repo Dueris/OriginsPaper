@@ -27,7 +27,7 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
         if (modify_xp_gain.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 try {
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                             for (Modifier modifier : power.getModifiers()) {
                                 Float value = modifier.value();
@@ -52,12 +52,12 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:modify_xp_gain";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return modify_xp_gain;
     }
 }

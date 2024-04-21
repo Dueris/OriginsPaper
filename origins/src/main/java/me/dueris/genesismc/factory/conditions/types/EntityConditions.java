@@ -102,8 +102,8 @@ public class EntityConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("power_type"), (condition, entity) -> {
             for (ApoliPower c : ((Registrar<ApoliPower>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).values()) {
-                if (c.getPowerFile().equals(condition.getString("power_type"))) {
-                    return c.getPowerArray().contains(entity);
+                if (c.getType().equals(condition.getString("power_type"))) {
+                    return c.getPlayersWithPower().contains(entity);
                 }
             }
             return false;

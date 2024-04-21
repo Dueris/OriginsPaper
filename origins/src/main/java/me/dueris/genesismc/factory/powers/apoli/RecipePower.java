@@ -117,9 +117,9 @@ public class RecipePower extends CraftPower implements Listener {
         if (recipeMapping.containsKey(p)) {
             recipeMapping.clear();
         }
-        if (getPowerArray().contains(p)) {
+        if (getPlayersWithPower().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     FactoryJsonObject recipe = power.getJsonObject("recipe");
                     String id = recipe.getString("id");
                     if (taggedRegistry.containsKey(id)) {
@@ -150,7 +150,7 @@ public class RecipePower extends CraftPower implements Listener {
 
     @EventHandler
     public void update(PowerUpdateEvent e) {
-        if (e.getPower().getType().equalsIgnoreCase(getPowerFile())) {
+        if (e.getPower().getType().equalsIgnoreCase(getType())) {
             applyRecipePower(e.getPlayer());
         }
     }
@@ -174,12 +174,12 @@ public class RecipePower extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:recipe";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return recipe;
     }
 

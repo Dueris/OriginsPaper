@@ -26,7 +26,7 @@ public class ModifyHealingPower extends CraftPower implements Listener {
         if (e.getEntity() instanceof Player p) {
             if (!modify_healing.contains(p)) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     for (Modifier modifier : power.getModifiers()) {
                         Float value = modifier.value();
                         String operation = modifier.operation();
@@ -47,12 +47,12 @@ public class ModifyHealingPower extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:modify_healing";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return modify_healing;
     }
 }

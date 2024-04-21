@@ -39,7 +39,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
 
     public void executeConditionAttribute(Player p) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                 if (power == null) continue;
                 for (Modifier modifier : power.getModifiers()) {
                     if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) return;
@@ -64,7 +64,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
 
     public void inverseConditionAttribute(Player p) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                 if (power == null) continue;
 
                 for (Modifier modifier : power.getModifiers()) {
@@ -86,38 +86,32 @@ public class AttributeConditioned extends CraftPower implements Listener {
     }
 
     @Override
-    public void run(Player p) {
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                if (conditioned_attribute.contains(p)) {
-                    if (!applied.containsKey(p)) {
-                        applied.put(p, false);
-                    }
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        if (!applied.get(p)) {
-                            executeConditionAttribute(p);
-                            applied.put(p, true);
-                            setActive(p, power.getTag(), true);
-                        }
-                    } else {
-                        if (applied.get(p)) {
-                            inverseConditionAttribute(p);
-                            applied.put(p, false);
-                            setActive(p, power.getTag(), false);
-                        }
-                    }
-                }
+    public void run(Player p, Power power) {
+        if (!applied.containsKey(p)) {
+            applied.put(p, false);
+        }
+        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+            if (!applied.get(p)) {
+                executeConditionAttribute(p);
+                applied.put(p, true);
+                setActive(p, power.getTag(), true);
+            }
+        } else {
+            if (applied.get(p)) {
+                inverseConditionAttribute(p);
+                applied.put(p, false);
+                setActive(p, power.getTag(), false);
             }
         }
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:conditioned_attribute";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return conditioned_attribute;
     }
 }

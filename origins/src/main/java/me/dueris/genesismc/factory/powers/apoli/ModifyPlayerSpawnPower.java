@@ -50,7 +50,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     @EventHandler
     public void powerRemove(PowerUpdateEvent e) {
-        if (e.isRemoved() && e.getPower().getType().equals(getPowerFile())) {
+        if (e.isRemoved() && e.getPower().getType().equals(getType())) {
             // Apoli remap start
             ServerPlayer ServerPlayer = ((CraftPlayer) e.getPlayer()).getHandle();
             if (ServerPlayer.hasDisconnected() || ServerPlayer.getRespawnPosition() == null || !ServerPlayer.isRespawnForced())
@@ -63,12 +63,12 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void runD(PlayerPostRespawnEvent e) {
-        if (!getPowerArray().contains(e.getPlayer())) return;
+        if (!getPlayersWithPower().contains(e.getPlayer())) return;
         if (e.getPlayer().getBedSpawnLocation() != null) {
             e.getPlayer().teleport(e.getPlayer().getBedSpawnLocation());
         } else {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
                     this.teleportToModifiedSpawn(((CraftPlayer) e.getPlayer()).getHandle(), power);
                 }
             }
@@ -81,12 +81,12 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:modify_player_spawn";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return modify_world_spawn;
     }
 

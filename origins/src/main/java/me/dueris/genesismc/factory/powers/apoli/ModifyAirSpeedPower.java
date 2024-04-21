@@ -19,43 +19,34 @@ import java.util.function.BinaryOperator;
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_air_speed;
 
 public class ModifyAirSpeedPower extends CraftPower {
-    String MODIFYING_KEY = "modify_air_speed";
+    private static String MODIFYING_KEY = "modify_air_speed";
+    private static ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
 
     @Override
-    public void run(Player p) {
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
-            try {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        setActive(p, power.getTag(), true);
-                        p.setFlySpeed(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
-                    } else {
-                        setActive(p, power.getTag(), false);
-                        p.setFlySpeed(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    public void run(Player p, Power power) {
+        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+            setActive(p, power.getTag(), true);
+            p.setFlySpeed(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
+        } else {
+            setActive(p, power.getTag(), false);
+            p.setFlySpeed(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
         }
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:modify_air_speed";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return modify_air_speed;
     }
 
     public void apply(Player p) {
-        ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
         if (modify_air_speed.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     for (Modifier modifier : power.getModifiers()) {
                         Float value = modifier.value();
                         String operation = modifier.operation();

@@ -2,13 +2,10 @@ package me.dueris.genesismc.factory.powers.genesismc;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.LikeWater;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
@@ -24,44 +21,42 @@ import java.util.ArrayList;
 public class GravityPower extends CraftPower implements Listener {
 
     @Override
-    public void run(Player p) {
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (no_gravity.contains(p) && !LikeWater.likeWaterPlayers.contains(p)) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        setActive(p, power.getTag(), true);
-                        if (no_gravity.contains(p)) {
-                            p.setGravity(false);
-                            p.setFallDistance(0.1f);
-                        } else {
-                            p.setGravity(true);
-                        }
-                    } else {
-                        setActive(p, power.getTag(), false);
-                    }
+    public void run(Player p, Power power) {
+        if (!LikeWater.likeWaterPlayers.contains(p)) { // Let LikeWater handle its own gravity
+            if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+                setActive(p, power.getTag(), true);
+                if (no_gravity.contains(p)) {
+                    p.setGravity(false);
+                    p.setFallDistance(0.1f);
+                } else {
+                    p.setGravity(true);
                 }
             } else {
-                if (!LikeWater.likeWaterPlayers.contains(p)) {
-                    p.setGravity(true);
-                } // Let LikeWater handle its own gravity
+                setActive(p, power.getTag(), false);
             }
         }
+    }
+
+    @Override
+    public void doesntHavePower(Player p) {
+        if (!LikeWater.likeWaterPlayers.contains(p)) // Let LikeWater handle its own gravity
+            p.setGravity(true);
     }
 
     @EventHandler
     public void serverTickEnd(PlayerToggleFlightEvent e) {
         if (creative_flight.contains(e.getPlayer()) || e.getPlayer().getGameMode().equals(GameMode.CREATIVE) || e.getPlayer().getGameMode().equals(GameMode.SPECTATOR)
             || elytra.contains(e.getPlayer())) return;
-        e.setCancelled(getPowerArray().contains(e.getPlayer()));
+        e.setCancelled(getPlayersWithPower().contains(e.getPlayer()));
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "genesis:no_gravity";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return no_gravity;
     }
 

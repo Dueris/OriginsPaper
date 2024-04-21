@@ -146,8 +146,9 @@ public class PlayerManager implements Listener {
         originValidCheck(p);
         OriginPlayerAccessor.assignPowers(p);
 
-        GravityPower g = new GravityPower();
-        g.run(p);
+        if (!new GravityPower().getPlayersWithPower().contains(p)) {
+            new GravityPower().doesntHavePower(p);
+        }
         new BukkitRunnable() {
             @Override
             public void run() {

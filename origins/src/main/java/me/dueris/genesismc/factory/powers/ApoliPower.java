@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers;
 
 import me.dueris.calio.registry.Registrable;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Reflector;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -58,10 +59,7 @@ public interface ApoliPower extends Registrable {
     ArrayList<Player> swimming = new ArrayList<>();
     ArrayList<Player> toggle_night_vision = new ArrayList<>();
     ArrayList<Player> toggle_power = new ArrayList<>();
-    ArrayList<Player> tooltip = new ArrayList<>();
-    ArrayList<Player> walk_on_fluid = new ArrayList<>();
     ArrayList<Player> damage_over_time = new ArrayList<>();
-    //actions
     ArrayList<Player> action_on_being_used = new ArrayList<>();
     ArrayList<Player> action_on_item_pickup = new ArrayList<>();
     ArrayList<Player> action_on_block_break = new ArrayList<>();
@@ -83,7 +81,6 @@ public interface ApoliPower extends Registrable {
     ArrayList<Player> self_action_on_kill = new ArrayList<>();
     ArrayList<Player> self_action_when_hit = new ArrayList<>();
     ArrayList<Player> target_action_on_hit = new ArrayList<>();
-    ArrayList<Player> silk_touch = new ArrayList<>();
     ArrayList<Player> attribute_modify_transfer = new ArrayList<>();
     ArrayList<Player> no_gravity = new ArrayList<>();
     ArrayList<Player> item_on_item = new ArrayList<>();
@@ -94,20 +91,20 @@ public interface ApoliPower extends Registrable {
                 String refrence = Reflector.accessField("powerReference", this.getClass(), this, NamespacedKey.class).asString();
                 return NamespacedKey.fromString(refrence);
             } else {
-                return NamespacedKey.fromString(getPowerFile());
+                return NamespacedKey.fromString(getType());
             }
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("An unhandled exception occurred when retrieving a key from a power");
         }
     }
 
-    default void run(Player p) {
+    default void run(Player p, Power power) { }
 
-    }
+    default void doesntHavePower(Player p) { }
 
-    String getPowerFile();
+    String getType();
 
-    ArrayList<Player> getPowerArray();
+    ArrayList<Player> getPlayersWithPower();
 
     default void setActive(Player p, String tag, Boolean bool) {
         if (powers_active.containsKey(p)) {

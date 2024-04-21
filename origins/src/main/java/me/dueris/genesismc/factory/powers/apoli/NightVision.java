@@ -16,18 +16,12 @@ import java.util.ArrayList;
 public class NightVision extends CraftPower {
 
     @Override
-    public void run(Player p) {
-        if (night_vision.contains(p)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        setActive(p, power.getTag(), true);
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getNumberOrDefault("strength", 1.0f).getFloat()), false, false, false));
-                    } else {
-                        setActive(p, power.getTag(), false);
-                    }
-                }
-            }
+    public void run(Player p, Power power) {
+        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+            setActive(p, power.getTag(), true);
+            p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getNumberOrDefault("strength", 1.0f).getFloat()), false, false, false));
+        } else {
+            setActive(p, power.getTag(), false);
         }
     }
 
@@ -48,12 +42,12 @@ public class NightVision extends CraftPower {
 
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:night_vision";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return night_vision;
     }
 }

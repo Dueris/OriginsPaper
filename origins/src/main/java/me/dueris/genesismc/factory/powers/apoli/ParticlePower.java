@@ -49,71 +49,64 @@ public class ParticlePower extends CraftPower {
 
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:particle";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return particle;
     }
 
     @Override
-    public void run(Player player) {
-        if (getPowerArray().contains(player)) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile())) {
-                if (power == null) continue;
-                int interval = power.getNumber("frequency").getInt();
+    public void run(Player player, Power power) {
+        int interval = power.getNumber("frequency").getInt();
 
-                if (Bukkit.getServer().getCurrentTick() % interval != 0) {
-                    return;
-                } else {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
-                        Particle particle = computeParticleArgs(power.getElement("particle"));
-                        if (particle == null)
-                            throw new IllegalStateException("Unable to create CraftBukkit particle instance");
-                        boolean visible_while_invis = power.getBooleanOrDefault("visible_while_invisible", false);
-                        boolean pass = visible_while_invis || !player.isInvisible();
-                        setActive(player, power.getTag(), pass);
+        if (Bukkit.getServer().getCurrentTick() % interval == 0) {
+            if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
+                Particle particle = computeParticleArgs(power.getElement("particle"));
+                if (particle == null)
+                    throw new IllegalStateException("Unable to create CraftBukkit particle instance");
+                boolean visible_while_invis = power.getBooleanOrDefault("visible_while_invisible", false);
+                boolean pass = visible_while_invis || !player.isInvisible();
+                setActive(player, power.getTag(), pass);
 
-                        float offset_x = 0.25f;
-                        float offset_y = 0.50f;
-                        float offset_z = 0.25f;
+                float offset_x = 0.25f;
+                float offset_y = 0.50f;
+                float offset_z = 0.25f;
 
-                        if (power.getJsonObject("spread").isPresent("y")) {
-                            offset_y = power.getJsonObject("spread").getNumber("y").getFloat();
-                        }
-                        if (power.getJsonObject("spread").isPresent("x")) {
-                            offset_x = power.getJsonObject("spread").getNumber("x").getFloat();
-                        }
-                        if (power.getJsonObject("spread").isPresent("z")) {
-                            offset_z = power.getJsonObject("spread").getNumber("z").getFloat();
-                        }
+                if (power.getJsonObject("spread").isPresent("y")) {
+                    offset_y = power.getJsonObject("spread").getNumber("y").getFloat();
+                }
+                if (power.getJsonObject("spread").isPresent("x")) {
+                    offset_x = power.getJsonObject("spread").getNumber("x").getFloat();
+                }
+                if (power.getJsonObject("spread").isPresent("z")) {
+                    offset_z = power.getJsonObject("spread").getNumber("z").getFloat();
+                }
 
-                        Particle.DustOptions data = null;
-                        if (containsParams(power)) {
-                            String provided = power.getJsonObject("particle").getStringOrDefault("params", "");
-                            if (provided.contains(" ")) {
-                                String[] splitArgs = provided.split(" ");
-                                float arg1 = Float.parseFloat(splitArgs[0]);
-                                float arg2 = Float.parseFloat(splitArgs[1]);
-                                float arg3 = Float.parseFloat(splitArgs[2]);
-                                float size = Float.parseFloat(splitArgs[3]);
-                                data = new Particle.DustOptions(Color.fromRGB(calculateValue(arg1), calculateValue(arg2), calculateValue(arg3)), size);
-                            }
-                        }
-
-                        if (pass) {
-                            player.getWorld().spawnParticle(
-                                particle.builder().source(player).force(false).location(player.getLocation()).count(1).particle(),
-                                new Location(player.getWorld(), player.getEyeLocation().getX(), player.getEyeLocation().getY() - 0.7, player.getEyeLocation().getZ()),
-                                power.getNumberOrDefault("count", 1).getInt(), offset_x, offset_y, offset_z, 0, data
-                            );
-                        }
-                    } else {
-                        setActive(player, power.getTag(), false);
+                Particle.DustOptions data = null;
+                if (containsParams(power)) {
+                    String provided = power.getJsonObject("particle").getStringOrDefault("params", "");
+                    if (provided.contains(" ")) {
+                        String[] splitArgs = provided.split(" ");
+                        float arg1 = Float.parseFloat(splitArgs[0]);
+                        float arg2 = Float.parseFloat(splitArgs[1]);
+                        float arg3 = Float.parseFloat(splitArgs[2]);
+                        float size = Float.parseFloat(splitArgs[3]);
+                        data = new Particle.DustOptions(Color.fromRGB(calculateValue(arg1), calculateValue(arg2), calculateValue(arg3)), size);
                     }
                 }
+
+                if (pass) {
+                    player.getWorld().spawnParticle(
+                        particle.builder().source(player).force(false).location(player.getLocation()).count(1).particle(),
+                        new Location(player.getWorld(), player.getEyeLocation().getX(), player.getEyeLocation().getY() - 0.7, player.getEyeLocation().getZ()),
+                        power.getNumberOrDefault("count", 1).getInt(), offset_x, offset_y, offset_z, 0, data
+                    );
+                }
+            } else {
+                setActive(player, power.getTag(), false);
             }
         }
     }

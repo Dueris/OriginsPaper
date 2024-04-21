@@ -16,26 +16,21 @@ public class NoCobWebSlowdown extends CraftPower implements Listener, PowerProvi
     public static ArrayList<Player> cobwebBypassers = new ArrayList<>();
     protected static NamespacedKey powerReference = GenesisMC.originIdentifier("master_of_webs_no_slowdown");
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void insideBlock(EntityInsideBlockEvent e) {
-        if (!getPowerArray().contains(e.getEntity())) return;
+        if (!getPlayersWithPower().contains(e.getEntity())) return;
         if (e.getBlock().getType().equals(Material.COBWEB)) {
             e.setCancelled(true);
         }
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return null;
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return cobwebBypassers;
     }
 

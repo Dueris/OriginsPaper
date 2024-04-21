@@ -46,45 +46,36 @@ public class DamageOverTime extends CraftPower implements Listener {
     }
 
     @Override
-    public void run(Player p) {
-        if (getPowerArray().contains(p)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (power == null) continue;
-                    if (!power.isPresent("interval")) {
-                        throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
-                    }
-                    long interval = power.getNumberOrDefault("interval", 20L).getLong();
-                    if (Bukkit.getServer().getCurrentTick() % interval != 0) {
-                        return;
-                    } else {
-                        float damage = p.getWorld().getDifficulty().equals(Difficulty.EASY) ? power.getNumberOrDefault("damage_easy", power.getNumberOrDefault("damage", 1.0f).getFloat()).getFloat() : power.getNumberOrDefault("damage", 1.0f).getFloat();
+    public void run(Player p, Power power) {
+        if (!power.isPresent("interval")) {
+            throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
+        }
+        long interval = power.getNumberOrDefault("interval", 20L).getLong();
+        if (Bukkit.getServer().getCurrentTick() % interval == 0) {
+            float damage = p.getWorld().getDifficulty().equals(Difficulty.EASY) ? power.getNumberOrDefault("damage_easy", power.getNumberOrDefault("damage", 1.0f).getFloat()).getFloat() : power.getNumberOrDefault("damage", 1.0f).getFloat();
 
-                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                            setActive(p, power.getTag(), true);
+            if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+                setActive(p, power.getTag(), true);
 
-                            if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
-                                NamespacedKey key = NamespacedKey.fromString(power.getStringOrDefault("damage_type", "generic"));
-                                DamageType dmgType = Utils.DAMAGE_REGISTRY.get(CraftNamespacedKey.toMinecraft(key));
-                                ((CraftPlayer) p).getHandle().hurt(Utils.getDamageSource(dmgType), damage);
-                            }
-
-                        } else {
-                            setActive(p, power.getTag(), false);
-                        }
-                    }
+                if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
+                    NamespacedKey key = NamespacedKey.fromString(power.getStringOrDefault("damage_type", "generic"));
+                    DamageType dmgType = Utils.DAMAGE_REGISTRY.get(CraftNamespacedKey.toMinecraft(key));
+                    ((CraftPlayer) p).getHandle().hurt(Utils.getDamageSource(dmgType), damage);
                 }
+
+            } else {
+                setActive(p, power.getTag(), false);
             }
         }
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:damage_over_time";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return damage_over_time;
     }
 }

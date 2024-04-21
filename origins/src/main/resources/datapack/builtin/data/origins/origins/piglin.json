@@ -10,7 +10,7 @@
     "origins:dash"
   ],
   "icon": {
-    "item": "minecraft:gold_ingot"
+    "item": "minecraft:piglin_head"
   },
   "name": "Piglin",
   "description": "Born in the nether and trained by the ancient ancestors of the pigs, you love shiny things and are extremely skilled with a crossbow",

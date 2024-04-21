@@ -3,7 +3,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
-import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -30,9 +29,9 @@ public class Toggle extends CraftPower implements Listener {
     public void inContinuousFix(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (getPowerArray().contains(p)) {
+            if (getPlayersWithPower().contains(p)) {
                 in_continuous.putIfAbsent(p, new ArrayList<>());
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
                         if (true /* Toggle power always execute continuously */) {
                             if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"))) {
@@ -50,7 +49,7 @@ public class Toggle extends CraftPower implements Listener {
     @EventHandler
     public void activeByDefault(OriginChangeEvent e) {
         e.getOrigin().getPowerContainers().forEach(power -> {
-            if (power.getType().equalsIgnoreCase(getPowerFile()) && power.getBooleanOrDefault("active_by_default", true)) {
+            if (power.getType().equalsIgnoreCase(getType()) && power.getBooleanOrDefault("active_by_default", true)) {
                 in_continuous.putIfAbsent(e.getPlayer(), new ArrayList<>());
                 if (in_continuous.get(e.getPlayer()).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active")))
                     return;
@@ -64,8 +63,8 @@ public class Toggle extends CraftPower implements Listener {
     public void keybindPress(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                if (getPowerArray().contains(p)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                if (getPlayersWithPower().contains(p)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
                             if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
@@ -103,12 +102,12 @@ public class Toggle extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:toggle";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return toggle_power;
     }
 }

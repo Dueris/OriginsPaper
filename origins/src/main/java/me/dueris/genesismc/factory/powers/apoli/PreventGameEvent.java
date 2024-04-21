@@ -22,9 +22,9 @@ public class PreventGameEvent extends CraftPower implements Listener {
     public void event(GenericGameEvent e) {
         if (e.getEntity() == null) return;
         if (e.getEntity() instanceof Player p) {
-            if (!this.getPowerArray().contains(p)) return;
+            if (!this.getPlayersWithPower().contains(p)) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         String event = power.getString("event");
                         if (event.contains(":")) {
@@ -40,12 +40,12 @@ public class PreventGameEvent extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:prevent_game_event";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return prevent_game_event;
     }
 

@@ -23,8 +23,8 @@ public class ActiveSelf extends CraftPower implements Listener {
     @EventHandler
     public void k(KeybindTriggerEvent e) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (getPowerArray().contains(e.getPlayer())) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+            if (getPlayersWithPower().contains(e.getPlayer())) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
                     if (CooldownUtils.isPlayerInCooldownFromTag(e.getPlayer(), Utils.getNameOrTag(power))) continue;
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
@@ -45,12 +45,12 @@ public class ActiveSelf extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:active_self";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return active_self;
     }
 

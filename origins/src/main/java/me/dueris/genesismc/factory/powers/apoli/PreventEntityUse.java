@@ -43,7 +43,7 @@ public class PreventEntityUse extends CraftPower implements Listener {
                     if (p.getLocation().distance(victim.getLocation()) <= AttributeHandler.ReachUtils.getFinalReach(p)) {
                         if (entity.getPassengers().contains(p)) return;
                         if (!entity.isDead()) {
-                            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                                 if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) entity) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
                                     e.setCancelled(true);
                                     setActive(p, power.getTag(), true);
@@ -61,12 +61,12 @@ public class PreventEntityUse extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:prevent_entity_use";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return prevent_entity_use;
     }
 }

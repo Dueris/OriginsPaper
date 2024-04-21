@@ -16,31 +16,28 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 public class PreventEntityCollision extends CraftPower {
 
     @Override
-    public void run(Player p) {
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (prevent_entity_collision.contains(p)) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        p.setCollidable(false);
-                        setActive(p, power.getTag(), false);
-                    } else {
-                        setActive(p, power.getTag(), false);
-                        p.setCollidable(true);
-                    }
-                }
-            } else {
-                p.setCollidable(true);
-            }
+    public void run(Player p, Power power) {
+        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+            p.setCollidable(false);
+            setActive(p, power.getTag(), false);
+        } else {
+            setActive(p, power.getTag(), false);
+            p.setCollidable(true);
         }
     }
 
     @Override
-    public String getPowerFile() {
+    public void doesntHavePower(Player p) {
+        p.setCollidable(true);
+    }
+
+    @Override
+    public String getType() {
         return "apoli:prevent_entity_collision";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return prevent_entity_collision;
     }
 }

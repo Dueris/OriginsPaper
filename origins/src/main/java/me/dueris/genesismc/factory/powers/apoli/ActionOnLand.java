@@ -24,9 +24,9 @@ public class ActionOnLand extends CraftPower implements Listener {
     public void e(GenericGameEvent e) {
         if (e.getEvent() != GameEvent.HIT_GROUND) return;
         if (!(e.getEntity() instanceof Player player)) return;
-        if (!getPowerArray().contains(player)) return;
+        if (!getPlayersWithPower().contains(player)) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
                 if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) return;
                 setActive(player, power.getTag(), true);
                 Actions.executeEntity(player, power.getJsonObject("entity_action"));
@@ -41,12 +41,12 @@ public class ActionOnLand extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:action_on_land";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return action_on_land;
     }
 

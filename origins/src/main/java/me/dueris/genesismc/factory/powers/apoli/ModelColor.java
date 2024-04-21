@@ -94,7 +94,7 @@ public class ModelColor { // Left empty due to it needing to be registered on ce
         @EventHandler
         public void update(PowerUpdateEvent e) {
             if (Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")) {
-                if (e.getPower().getType().equalsIgnoreCase(getPowerFile())) { // Power Update for apoli:model_color
+                if (e.getPower().getType().equalsIgnoreCase(getType())) { // Power Update for apoli:model_color
                     if (e.isRemoved()) { // Power was removed, clear skin
                         RaycastUtils.executeNMSCommand(((CraftEntity) e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "skin clear @s");
                     } else {
@@ -110,12 +110,12 @@ public class ModelColor { // Left empty due to it needing to be registered on ce
         }
 
         @Override
-        public String getPowerFile() {
+        public String getType() {
             return "apoli:model_color";
         }
 
         @Override
-        public ArrayList<Player> getPowerArray() {
+        public ArrayList<Player> getPlayersWithPower() {
             return model_color;
         }
 

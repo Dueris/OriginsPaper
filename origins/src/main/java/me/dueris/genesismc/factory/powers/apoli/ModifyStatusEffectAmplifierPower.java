@@ -28,7 +28,7 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
         if (e.getEntity() instanceof Player p) {
             if (!modify_effect_amplifier.contains(p)) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         if (power.getStringOrDefault("status_effect", null) != null) {
@@ -68,12 +68,12 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:modify_status_effect_amplifier";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return modify_effect_amplifier;
     }
 }

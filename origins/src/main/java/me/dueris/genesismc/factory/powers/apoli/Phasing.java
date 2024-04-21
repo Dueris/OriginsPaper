@@ -19,7 +19,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorldBorder;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
@@ -73,18 +72,6 @@ public class Phasing extends CraftPower implements Listener {
         player.connection.send(packet);
     }
 
-    public static void initializePhantomOverlay(Player player) {
-        CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
-        border.setCenter(player.getWorld().getWorldBorder().getCenter());
-        border.setSize(player.getWorld().getWorldBorder().getSize());
-        border.setWarningDistance(999999999);
-        player.setWorldBorder(border);
-    }
-
-    public static void deactivatePhantomOverlay(Player player) {
-        player.setWorldBorder(player.getWorld().getWorldBorder());
-    }
-
     public static float getGameModeFloat(GameMode gameMode) {
         switch (gameMode) {
             case CREATIVE:
@@ -122,7 +109,7 @@ public class Phasing extends CraftPower implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (isBedrock(e.getPlayer()) && getPowerArray().contains(e.getPlayer())) {
+                if (isBedrock(e.getPlayer()) && getPlayersWithPower().contains(e.getPlayer())) {
                     e.getPlayer().sendMessage(ChatColor.YELLOW + "Warning! You are using a power(Phasing) that is highly experimental/breakable on bedrock! If you get stuck in a \"spectator like\" mode, type \"./origins-fixMe\" in chat to be fixed.");
                 }
             }
@@ -143,10 +130,10 @@ public class Phasing extends CraftPower implements Listener {
             @Override
             public void run() {
                 if (e.isSneaking()) {
-                    if (getPowerArray().contains(e.getPlayer())) {
+                    if (getPlayersWithPower().contains(e.getPlayer())) {
                         Player p = e.getPlayer();
                         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                                 if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                                     if (ConditionExecutor.testBlock(power.getJsonObject("phase_down_condition"), (CraftBlock) p.getLocation().add(0, -1, 0).getBlock())) {
                                         p.teleportAsync(p.getLocation().add(0, -0.1, 0));
@@ -166,79 +153,73 @@ public class Phasing extends CraftPower implements Listener {
     }
 
     @Override
-    public void run(Player p) {
-        if (getPowerArray().contains(p)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        setActive(p, power.getTag(), true);
-                        if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
-                            p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
-                            p.getLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(0, 0.5, 0).getBlock().isSolid() ||
+    public void run(Player p, Power power) {
+        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+            setActive(p, power.getTag(), true);
+            if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
+                p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
+                p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
+                p.getLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
+                p.getLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
+                p.getLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
+                p.getLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
+                p.getLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid() ||
+                p.getLocation().add(0, 0.5, 0).getBlock().isSolid() ||
 
-                            p.getEyeLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
-                        ) {
-                            if (!isBedrock(p)) {
-                                setInPhasingBlockForm(p);
-                            } else {
-                                if (p.getGameMode() != GameMode.SPECTATOR) {
-                                    p.setGameMode(GameMode.SPECTATOR);
-                                }
-                            }
-
-                            p.setFlySpeed(0.03F);
-                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
-
-                        } else {
-                            if (!isBedrock(p)) {
-                                resyncJavaPlayer(((CraftPlayer) p).getHandle());
-                            } else {
-                                if (p.getGameMode() == GameMode.SPECTATOR) {
-                                    GameMode gameMode = p.getPreviousGameMode();
-                                    if (gameMode.equals(GameMode.SPECTATOR)) {
-                                        gameMode = GameMode.SURVIVAL;
-                                    }
-                                    p.setGameMode(gameMode);
-                                }
-                            }
-                            p.setFlySpeed(0.1F);
-                            inPhantomFormBlocks.remove(p);
-                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
-                        }
-                    } else {
-                        setActive(p, power.getTag(), false);
-                        inPhantomFormBlocks.remove(p);
-                        if (test.get(p) == null) {
-                            test.put(p, false);
-                        } else if (test.get(p)) {
-                            if (!isBedrock(p)) {
-                                resyncJavaPlayer(((CraftPlayer) p).getHandle());
-                            } else {
-                                GameMode gameMode = p.getPreviousGameMode();
-                                if (gameMode.equals(GameMode.SPECTATOR)) {
-                                    gameMode = GameMode.SURVIVAL;
-                                }
-                                p.setGameMode(gameMode);
-                            }
-                            p.setFlySpeed(0.1F);
-                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
-                            test.put(p, false);
-                        }
+                p.getEyeLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
+                p.getEyeLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
+                p.getEyeLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
+                p.getEyeLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
+                p.getEyeLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
+                p.getEyeLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
+                p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
+                p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
+            ) {
+                if (!isBedrock(p)) {
+                    setInPhasingBlockForm(p);
+                } else {
+                    if (p.getGameMode() != GameMode.SPECTATOR) {
+                        p.setGameMode(GameMode.SPECTATOR);
                     }
                 }
+
+                p.setFlySpeed(0.03F);
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
+
+            } else {
+                if (!isBedrock(p)) {
+                    resyncJavaPlayer(((CraftPlayer) p).getHandle());
+                } else {
+                    if (p.getGameMode() == GameMode.SPECTATOR) {
+                        GameMode gameMode = p.getPreviousGameMode();
+                        if (gameMode.equals(GameMode.SPECTATOR)) {
+                            gameMode = GameMode.SURVIVAL;
+                        }
+                        p.setGameMode(gameMode);
+                    }
+                }
+                p.setFlySpeed(0.1F);
+                inPhantomFormBlocks.remove(p);
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
+            }
+        } else {
+            setActive(p, power.getTag(), false);
+            inPhantomFormBlocks.remove(p);
+            if (test.get(p) == null) {
+                test.put(p, false);
+            } else if (test.get(p)) {
+                if (!isBedrock(p)) {
+                    resyncJavaPlayer(((CraftPlayer) p).getHandle());
+                } else {
+                    GameMode gameMode = p.getPreviousGameMode();
+                    if (gameMode.equals(GameMode.SPECTATOR)) {
+                        gameMode = GameMode.SURVIVAL;
+                    }
+                    p.setGameMode(gameMode);
+                }
+                p.setFlySpeed(0.1F);
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
+                test.put(p, false);
             }
         }
     }
@@ -272,12 +253,12 @@ public class Phasing extends CraftPower implements Listener {
 
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:phasing";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return phasing;
     }
 

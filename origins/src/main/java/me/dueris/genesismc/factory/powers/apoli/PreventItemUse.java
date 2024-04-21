@@ -23,9 +23,9 @@ public class PreventItemUse extends CraftPower implements Listener {
             if (e.getItem() == null) return;
 
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
                     if (power == null) {
-                        getPowerArray().remove(e.getPlayer());
+                        getPlayersWithPower().remove(e.getPlayer());
                         return;
                     } else {
                         boolean shouldCancel = ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem());
@@ -37,12 +37,12 @@ public class PreventItemUse extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:prevent_item_use";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return prevent_item_use;
     }
 }

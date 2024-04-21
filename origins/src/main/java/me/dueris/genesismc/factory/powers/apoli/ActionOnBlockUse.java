@@ -30,10 +30,10 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
         if (tickFix.contains(e.getPlayer())) return;
         Player actor = e.getPlayer();
 
-        if (!getPowerArray().contains(actor)) return;
+        if (!getPlayersWithPower().contains(actor)) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getType(), layer)) {
                 if (power == null) continue;
                 if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()) &&
                     ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) e.getClickedBlock()) &&
@@ -60,12 +60,12 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:action_on_block_use";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return action_on_block_use;
     }
 

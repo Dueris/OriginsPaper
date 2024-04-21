@@ -1,49 +1,53 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 
-public class Invisibility extends CraftPower {
+public class Invisibility extends CraftPower implements Listener {
 
     @Override
-    public void run(Player p) {
-        if (getPowerArray().contains(p)) {
-            boolean shouldSetInvisible = false;
-
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        shouldSetInvisible = true;
-                        break;
-                    }
-                }
-            }
-
-            p.setInvisible(shouldSetInvisible || p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY));
-        } else {
-            if (p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY)) {
-                return;
-            }
-            p.setInvisible(false);
+    public void run(Player p, Power power) {
+        boolean shouldSetInvisible = false;
+        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+            shouldSetInvisible = true;
         }
+
+        p.setInvisible(shouldSetInvisible || p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY));
     }
 
     @Override
-    public String getPowerFile() {
+    public void doesntHavePower(Player p) {
+        if (p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY)) {
+            return;
+        }
+        p.setInvisible(false);
+    }
+
+    @EventHandler
+    public void powerUpdate(PowerUpdateEvent e) {
+        if (!getPlayersWithPower().contains(e.getPlayer())) {
+            doesntHavePower(e.getPlayer());
+            return;
+        }
+        run(e.getPlayer(), e.getPower());
+    }
+
+    @Override
+    public String getType() {
         return "apoli:invisibility";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return invisibility;
     }
 

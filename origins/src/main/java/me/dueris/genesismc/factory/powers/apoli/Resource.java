@@ -73,7 +73,7 @@ public class Resource extends CraftPower implements Listener {
 
     private void execute(Player p) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                 final String tag = power.getTag();
                 FactoryJsonObject hudRender = power.getJsonObject("hud_render");
                 BossBar bar = createCooldownBar(p, getBarColor(hudRender), BarStyle.SEGMENTED_6, Utils.getNameOrTag(power).first());
@@ -125,12 +125,12 @@ public class Resource extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:resource";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return resource;
     }
 

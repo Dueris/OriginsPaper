@@ -44,7 +44,7 @@ public class FlightElytra extends CraftPower implements Listener {
 
     @EventHandler
     public void fixChangeConstantFlight(PowerUpdateEvent e) {
-        if (!(e.getPower().getType().equalsIgnoreCase(getPowerFile()) && e.isRemoved())) return;
+        if (!(e.getPower().getType().equalsIgnoreCase(getType()) && e.isRemoved())) return;
         if (glidingPlayers.contains(e.getPlayer())) {
             glidingPlayers.remove(e.getPlayer());
             e.getPlayer().setGliding(false);
@@ -59,9 +59,8 @@ public class FlightElytra extends CraftPower implements Listener {
         if (elytra.contains(e.getPlayer())) {
             e.setCancelled(true);
             p.setFlying(false);
-            ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         if (!p.isGliding() && !p.getLocation().add(0, 1, 0).getBlock().isCollidable()) {
@@ -150,12 +149,12 @@ public class FlightElytra extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:elytra_flight";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return elytra;
     }
 }

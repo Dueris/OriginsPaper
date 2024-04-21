@@ -23,52 +23,42 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 public class ModifySwimSpeedPower extends CraftPower {
 
     String MODIFYING_KEY = "modify_swim_speed";
+    private static final ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
 
     @Override
-    public void run(Player p) {
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
-            try {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        if (!p.isSwimming()) return;
-                        int ampl = Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
-                        if (ampl < 1) {
-                            ampl = 1;
-                        }
-                        if (ampl > 10) {
-                            ampl = 10;
-                        }
-                        p.addPotionEffect(
-                            new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 100, ampl, false, false, false)
-                        );
-                        setActive(p, power.getTag(), true);
-                    } else {
-                        setActive(p, power.getTag(), false);
-                    }
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
+    public void run(Player p, Power power) {
+        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+            if (!p.isSwimming()) return;
+            int ampl = Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
+            if (ampl < 1) {
+                ampl = 1;
             }
+            if (ampl > 10) {
+                ampl = 10;
+            }
+            p.addPotionEffect(
+                new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 100, ampl, false, false, false)
+            );
+            setActive(p, power.getTag(), true);
+        } else {
+            setActive(p, power.getTag(), false);
         }
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:modify_swim_speed";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return modify_swim_speed;
     }
 
     public void apply(Player p) {
-        ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
         if (modify_swim_speed.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     for (Modifier modifier : power.getModifiers()) {
                         Float value = modifier.value();
                         String operation = modifier.operation();

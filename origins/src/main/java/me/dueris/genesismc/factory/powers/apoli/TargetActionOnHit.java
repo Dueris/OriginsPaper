@@ -28,10 +28,10 @@ public class TargetActionOnHit extends CraftPower implements Listener {
         Entity target = e.getEntity();
 
         if (!(actor instanceof Player player)) return;
-        if (!getPowerArray().contains(actor)) return;
+        if (!getPlayersWithPower().contains(actor)) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
                 if (CooldownUtils.isPlayerInCooldownFromTag(player, Utils.getNameOrTag(power))) continue;
                 new BukkitRunnable() {
                     @Override
@@ -52,12 +52,12 @@ public class TargetActionOnHit extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:target_action_on_hit";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return target_action_on_hit;
     }
 

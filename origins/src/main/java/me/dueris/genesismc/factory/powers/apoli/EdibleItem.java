@@ -47,8 +47,8 @@ public class EdibleItem extends CraftPower implements Listener {
             return; // Offhand causes lots of issues
         if (e.getItem().getItemMeta() == null) return;
 
-        if (this.getPowerArray().contains(e.getPlayer())) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile())) {
+        if (this.getPlayersWithPower().contains(e.getPlayer())) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType())) {
                 if (ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
                     if (consume(power, e.getPlayer(), e.getItem())) {
                         e.setCancelled(true);
@@ -86,12 +86,12 @@ public class EdibleItem extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:edible_item";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return edible_item;
     }
 }

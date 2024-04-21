@@ -70,71 +70,65 @@ public class WaterBreathe extends CraftPower implements Listener {
     }
 
     @Override
-    public void run(Player p) {
-        if (!getPowerArray().contains(p)) return;
+    public void run(Player p, Power power) {
         if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
             return;
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                    setActive(p, power.getTag(), true);
-                    if (water_breathing.contains(p)) {
-                        genesisExecuting.add(p);
-                        int addonAir = 4;
-                        int lowestAir = -10;
-                        int tickDownAir = 1;
-                        boolean shouldDamage = true;
-                        if (((CraftPlayer) (p)).getHandle().hasEffect(MobEffects.WATER_BREATHING)
-                            || p.isInRain()
-                            || ((CraftPlayer) p).getHandle().hasEffect(MobEffects.CONDUIT_POWER)
-                            || p.getGameMode().equals(GameMode.SPECTATOR)
-                            || p.getGameMode().equals(GameMode.CREATIVE)
-                        ) {
-                            addonAir = 0;
-                            tickDownAir = 0;
-                            shouldDamage = false;
-                        }
-                        if (isInBreathableWater(p)) {
-                            if (p.getRemainingAir() < 290) {
-                                p.setRemainingAir(p.getRemainingAir() + addonAir);
-                            } else {
-                                p.setRemainingAir(310);
-                            }
-                            outofAIR.remove(p);
-                        } else {
-                            int remainingAir = p.getRemainingAir();
-                            if (remainingAir <= 5) {
-                                p.setRemainingAir(lowestAir);
-                                outofAIR.add(p);
-                            } else {
-                                p.setRemainingAir(remainingAir - tickDownAir);
-                                outofAIR.remove(p);
-                            }
-                        }
-                        if (!shouldDamage) {
-                            outofAIR.remove(p);
-                        } else if (outofAIR.contains(p)) {
-                            if (p.getRemainingAir() > 20) {
-                                outofAIR.remove(p);
-                            }
-                        }
-                        genesisExecuting.remove(p);
-                    }
-                } else {
-                    setActive(p, power.getTag(), false);
+        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+            setActive(p, power.getTag(), true);
+            if (water_breathing.contains(p)) {
+                genesisExecuting.add(p);
+                int addonAir = 4;
+                int lowestAir = -10;
+                int tickDownAir = 1;
+                boolean shouldDamage = true;
+                if (((CraftPlayer) (p)).getHandle().hasEffect(MobEffects.WATER_BREATHING)
+                    || p.isInRain()
+                    || ((CraftPlayer) p).getHandle().hasEffect(MobEffects.CONDUIT_POWER)
+                    || p.getGameMode().equals(GameMode.SPECTATOR)
+                    || p.getGameMode().equals(GameMode.CREATIVE)
+                ) {
+                    addonAir = 0;
+                    tickDownAir = 0;
+                    shouldDamage = false;
                 }
+                if (isInBreathableWater(p)) {
+                    if (p.getRemainingAir() < 290) {
+                        p.setRemainingAir(p.getRemainingAir() + addonAir);
+                    } else {
+                        p.setRemainingAir(310);
+                    }
+                    outofAIR.remove(p);
+                } else {
+                    int remainingAir = p.getRemainingAir();
+                    if (remainingAir <= 5) {
+                        p.setRemainingAir(lowestAir);
+                        outofAIR.add(p);
+                    } else {
+                        p.setRemainingAir(remainingAir - tickDownAir);
+                        outofAIR.remove(p);
+                    }
+                }
+                if (!shouldDamage) {
+                    outofAIR.remove(p);
+                } else if (outofAIR.contains(p)) {
+                    if (p.getRemainingAir() > 20) {
+                        outofAIR.remove(p);
+                    }
+                }
+                genesisExecuting.remove(p);
             }
-
+        } else {
+            setActive(p, power.getTag(), false);
         }
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:water_breathing";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return water_breathing;
     }
 

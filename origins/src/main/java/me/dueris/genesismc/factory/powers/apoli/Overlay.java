@@ -1,12 +1,11 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.event.PowerUpdateEvent;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorldBorder;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,37 +17,46 @@ public class Overlay extends CraftPower implements Listener {
 
     @EventHandler
     public void remove(PowerUpdateEvent e) {
-        if (e.isRemoved() && e.getPower().getType().equals(getPowerFile())) {
-            Phasing.deactivatePhantomOverlay(e.getPlayer());
+        if (e.isRemoved() && e.getPower().getType().equals(getType())) {
+            deactivateOverlay(e.getPlayer());
         }
     }
 
     @Override
-    public void run(Player player) {
-        if (getPowerArray().contains(player)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
-                        setActive(player, power.getTag(), true);
-                        Phasing.initializePhantomOverlay(player);
-                    } else {
-                        setActive(player, power.getTag(), false);
-                        Phasing.deactivatePhantomOverlay(player);
-                    }
-                }
-            }
+    public void run(Player player, Power power) {
+        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
+            setActive(player, power.getTag(), true);
+            initializeOverlay(player);
         } else {
-            Phasing.deactivatePhantomOverlay(player);
+            setActive(player, power.getTag(), false);
+            deactivateOverlay(player);
         }
     }
 
     @Override
-    public String getPowerFile() {
+    public void doesntHavePower(Player p) {
+        deactivateOverlay(p);
+    }
+
+    public static void initializeOverlay(Player player) {
+        CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
+        border.setCenter(player.getWorld().getWorldBorder().getCenter());
+        border.setSize(player.getWorld().getWorldBorder().getSize());
+        border.setWarningDistance(999999999);
+        player.setWorldBorder(border);
+    }
+
+    public static void deactivateOverlay(Player player) {
+        player.setWorldBorder(player.getWorld().getWorldBorder());
+    }
+
+    @Override
+    public String getType() {
         return "apoli:overlay";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return overlay;
     }
 }

@@ -20,9 +20,9 @@ public class ActionOnItemPickup extends CraftPower implements Listener {
     @EventHandler
     public void pickup(PlayerAttemptPickupItemEvent e) {
         Player p = e.getPlayer();
-        if (this.getPowerArray().contains(p)) {
+        if (this.getPlayersWithPower().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem().getItemStack()))
                         continue;
                     ItemStack clone = e.getItem().getItemStack().clone();
@@ -35,12 +35,12 @@ public class ActionOnItemPickup extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:action_on_item_pickup";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return action_on_item_pickup;
     }
 }

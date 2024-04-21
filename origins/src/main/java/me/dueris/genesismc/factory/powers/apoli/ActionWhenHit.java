@@ -26,10 +26,10 @@ public class ActionWhenHit extends CraftPower implements Listener {
         Entity target = e.getDamager();
 
         if (!(actor instanceof Player player)) return;
-        if (!getPowerArray().contains(actor)) return;
+        if (!getPlayersWithPower().contains(actor)) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
                 if (power == null) continue;
                 if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) actor) || !ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
                     return;
@@ -38,7 +38,7 @@ public class ActionWhenHit extends CraftPower implements Listener {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        if (!getPowerArray().contains(target)) return;
+                        if (!getPlayersWithPower().contains(target)) return;
                         setActive(player, power.getTag(), false);
                     }
                 }.runTaskLater(GenesisMC.getPlugin(), 2L);
@@ -47,12 +47,12 @@ public class ActionWhenHit extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:action_when_hit";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return action_when_hit;
     }
 

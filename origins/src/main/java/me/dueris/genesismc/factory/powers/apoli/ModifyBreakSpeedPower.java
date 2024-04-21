@@ -37,7 +37,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                         if (e.getBlock() == null || e.getBlock().getState() == null) return;
                         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) e.getBlock())) {
                             setActive(p, power.getTag(), true);
@@ -91,7 +91,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
         if (modify_break_speed.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     for (Modifier modifier : power.getModifiers()) {
                         Float value = modifier.value();
                         valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, value); // Why does there need to be a binary operator if the operator does nothing?
@@ -104,17 +104,12 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
     }
 
     @Override
-    public void run(Player p) {
-
-    }
-
-    @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:modify_break_speed";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return modify_break_speed;
     }
 }

@@ -21,41 +21,31 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 public class ModifyLavaSpeed extends CraftPower {
 
     @Override
-    public void run(Player p) {
-        if (modify_lava_speed.contains(p)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                try {
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                            for (Modifier modifier : power.getModifiers()) {
-                                Float value = modifier.value();
-                                String operation = modifier.operation();
-                                BinaryOperator<Float> mathOperator = Utils.getOperationMappingsFloat().get(operation);
-                                if (mathOperator != null) {
-                                    float result = mathOperator.apply(0.02f, value);
-                                    setActive(p, power.getTag(), true);
-                                    p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2, calculateSpeedAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result)))), false, false, false));
-                                }
-                            }
-
-                        } else {
-                            setActive(p, power.getTag(), false);
-                        }
-                    }
-                } catch (Exception ev) {
-                    ev.printStackTrace();
+    public void run(Player p, Power power) {
+        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+            for (Modifier modifier : power.getModifiers()) {
+                Float value = modifier.value();
+                String operation = modifier.operation();
+                BinaryOperator<Float> mathOperator = Utils.getOperationMappingsFloat().get(operation);
+                if (mathOperator != null) {
+                    float result = mathOperator.apply(0.02f, value);
+                    setActive(p, power.getTag(), true);
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2, calculateSpeedAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result)))), false, false, false));
                 }
             }
+
+        } else {
+            setActive(p, power.getTag(), false);
         }
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:modify_lava_speed";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return modify_lava_speed;
     }
 

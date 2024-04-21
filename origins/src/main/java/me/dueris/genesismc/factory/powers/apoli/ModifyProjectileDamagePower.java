@@ -29,7 +29,7 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
             if (modify_projectile_damage.contains(pl)) {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     try {
-                        for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(pl, getPowerFile(), layer)) {
+                        for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(pl, getType(), layer)) {
                             if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.getJsonObject("target_condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) {
                                 for (Modifier modifier : power.getModifiers()) {
                                     float value = modifier.value();
@@ -57,12 +57,12 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:modify_projectile_damage";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return modify_projectile_damage;
     }
 }

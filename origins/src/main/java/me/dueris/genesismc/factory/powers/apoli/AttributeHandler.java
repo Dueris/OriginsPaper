@@ -41,7 +41,7 @@ public class AttributeHandler extends CraftPower implements Listener {
 
     @EventHandler
     public void powerUpdate(PowerUpdateEvent e) {
-        if (!e.getPower().getType().equalsIgnoreCase(this.getPowerFile())) return;
+        if (!e.getPower().getType().equalsIgnoreCase(this.getType())) return;
         Player p = e.getPlayer();
         OriginPage.setAttributesToDefault(p);
         if (attribute.contains(p)) {
@@ -62,7 +62,7 @@ public class AttributeHandler extends CraftPower implements Listener {
         Player p = e.getPlayer();
         if (!attribute.contains(p)) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                 if (power == null) continue;
 
                 for (Modifier modifier : power.getModifiers()) {
@@ -96,12 +96,12 @@ public class AttributeHandler extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:attribute";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return attribute;
     }
 

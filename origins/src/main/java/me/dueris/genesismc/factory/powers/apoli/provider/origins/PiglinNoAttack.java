@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
+import me.dueris.genesismc.registry.registries.Power;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -29,7 +30,7 @@ public class PiglinNoAttack extends CraftPower implements Listener, PowerProvide
     private final HashMap<Player, HashMap<Entity, Integer>> cooldowns = new HashMap<>();
 
     @Override
-    public void run(Player p) {
+    public void run(Player p, Power power) {
         if (cooldowns.containsKey(p)) {
             for (Entity en : cooldowns.get(p).keySet()) {
                 if (cooldowns.get(p).get(en) <= 1) {
@@ -70,12 +71,12 @@ public class PiglinNoAttack extends CraftPower implements Listener, PowerProvide
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return null;
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return piglinPlayers;
     }
 

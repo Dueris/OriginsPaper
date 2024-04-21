@@ -14,28 +14,22 @@ import java.util.ArrayList;
 public class Freeze extends CraftPower {
 
     @Override
-    public void run(Player p) {
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (freeze.contains(p)) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        setActive(p, power.getTag(), true);
-                        p.setFreezeTicks(300);
-                    } else {
-                        setActive(p, power.getTag(), false);
-                    }
-                }
-            }
+    public void run(Player p, Power power) {
+        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+            setActive(p, power.getTag(), true);
+            p.setFreezeTicks(300);
+        } else {
+            setActive(p, power.getTag(), false);
         }
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:freeze";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return freeze;
     }
 }

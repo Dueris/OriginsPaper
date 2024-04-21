@@ -105,9 +105,9 @@ public class EntityGroupManager extends CraftPower {
                         }
                         if (entity instanceof Player p) {
                             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                                        if (!getPowerArray().contains(p)) return;
+                                        if (!getPlayersWithPower().contains(p)) return;
                                         setActive(p, power.getTag(), true);
                                         if (entity_group.contains(entity)) {
                                             if (!power.isPresent("group"))
@@ -151,12 +151,12 @@ public class EntityGroupManager extends CraftPower {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:entity_group";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return entity_group;
     }
 

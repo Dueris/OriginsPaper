@@ -22,11 +22,11 @@ public class ActionOnItemUse extends CraftPower implements Listener {
     @EventHandler
     public void entityRightClick(PlayerInteractEvent e) {
         Player player = e.getPlayer(); // aka "actor"
-        if (!getPowerArray().contains(player)) return;
+        if (!getPlayersWithPower().contains(player)) return;
         if (!e.getAction().isRightClick()) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
                 if (power == null) continue;
                 if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) return;
                 if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) return;
@@ -44,12 +44,12 @@ public class ActionOnItemUse extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:action_on_item_use";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return action_on_item_use;
     }
 

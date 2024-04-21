@@ -25,10 +25,10 @@ public class SelfActionOnKill extends CraftPower implements Listener {
         Entity target = e.getEntity();
 
         if (!(target instanceof Player player)) return;
-        if (!getPowerArray().contains(target)) return;
+        if (!getPlayersWithPower().contains(target)) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
                 if (CooldownUtils.isPlayerInCooldownFromTag(player, Utils.getNameOrTag(power))) continue;
                 if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
                     setActive(player, power.getTag(), true);
@@ -44,12 +44,12 @@ public class SelfActionOnKill extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:self_action_on_kill";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return self_action_on_kill;
     }
 

@@ -22,9 +22,9 @@ public class RestrictArmor extends CraftPower implements Listener {
     @EventHandler
     public void tick(PlayerArmorChangeEvent e) {
         Player p = e.getPlayer();
-        if (getPowerArray().contains(p)) {
+        if (getPlayersWithPower().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     if (power == null) continue;
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         runPower(p, power);
@@ -36,23 +36,14 @@ public class RestrictArmor extends CraftPower implements Listener {
 
 
     @Override
-    public void run(Player p) {
-        if (getPowerArray().contains(p)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (power == null) continue;
-                    long interval = power.getNumberOrDefault("interval", 1L).getLong();
-                    if (interval == 0) interval = 1L;
-                    if (Bukkit.getServer().getCurrentTick() % interval != 0) {
-                        return;
-                    } else {
-                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                            runPower(p, power);
-                        } else {
-                            setActive(p, power.getTag(), false);
-                        }
-                    }
-                }
+    public void run(Player p, Power power) {
+        long interval = power.getNumberOrDefault("interval", 1L).getLong();
+        if (interval == 0) interval = 1L;
+        if (Bukkit.getServer().getCurrentTick() % interval == 0) {
+            if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+                runPower(p, power);
+            } else {
+                setActive(p, power.getTag(), false);
             }
         }
     }
@@ -97,12 +88,12 @@ public class RestrictArmor extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:restrict_armor";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return restrict_armor;
     }
 }

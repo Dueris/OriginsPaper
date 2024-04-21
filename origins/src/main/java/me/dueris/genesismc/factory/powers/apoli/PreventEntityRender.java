@@ -24,35 +24,26 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 public class PreventEntityRender extends CraftPower {
 
     @Override
-    public void run(Player p) {
+    public void run(Player p, Power power) {
         if (GenesisMC.disableRender) return;
-        if (getPowerArray().contains(p)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    long interval = 20L;
-                    if (Bukkit.getServer().getCurrentTick() % interval != 0) {
-                        return;
-                    } else {
-                        for (Entity entity : getEntitiesWithinRender(p)) {
-                            if (ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), (CraftEntity) p)) {
-                                if (ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
-                                    if (p.canSee(entity)) {
-                                        p.hideEntity(GenesisMC.getPlugin(), entity);
-                                    }
-                                    setActive(p, power.getTag(), true);
-                                } else {
-                                    setActive(p, power.getTag(), false);
-                                    if (!p.canSee(entity)) {
-                                        p.showEntity(GenesisMC.getPlugin(), entity);
-                                    }
-                                }
-                            } else {
-                                setActive(p, power.getTag(), false);
-                                if (!p.canSee(entity)) {
-                                    p.showEntity(GenesisMC.getPlugin(), entity);
-                                }
-                            }
+        if (Bukkit.getServer().getCurrentTick() % 20L == 0) {
+            for (Entity entity : getEntitiesWithinRender(p)) {
+                if (ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), (CraftEntity) p)) {
+                    if (ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
+                        if (p.canSee(entity)) {
+                            p.hideEntity(GenesisMC.getPlugin(), entity);
                         }
+                        setActive(p, power.getTag(), true);
+                    } else {
+                        setActive(p, power.getTag(), false);
+                        if (!p.canSee(entity)) {
+                            p.showEntity(GenesisMC.getPlugin(), entity);
+                        }
+                    }
+                } else {
+                    setActive(p, power.getTag(), false);
+                    if (!p.canSee(entity)) {
+                        p.showEntity(GenesisMC.getPlugin(), entity);
                     }
                 }
             }
@@ -85,12 +76,12 @@ public class PreventEntityRender extends CraftPower {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:prevent_entity_render";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return prevent_entity_render;
     }
 }

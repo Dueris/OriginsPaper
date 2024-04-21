@@ -20,9 +20,9 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
 
     @EventHandler
     public void runChange(OriginChangeEvent e) {
-        if (getPowerArray().contains(e.getPlayer())) {
+        if (getPlayersWithPower().contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
@@ -40,12 +40,12 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:attribute_modify_transfer";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return attribute_modify_transfer;
     }
 }

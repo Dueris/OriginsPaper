@@ -14,17 +14,12 @@ public class Bioluminescent extends CraftPower implements Listener, PowerProvide
     protected static NamespacedKey powerReference = GenesisMC.originIdentifier("allay_sparkle_light");
 
     @Override
-    public void run(Player p) {
-        // WE ARE ALIVE
-    }
-
-    @Override
-    public String getPowerFile() {
+    public String getType() {
         return null;
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return players;
     }
 

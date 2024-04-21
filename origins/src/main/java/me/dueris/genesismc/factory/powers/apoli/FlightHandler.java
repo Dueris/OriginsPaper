@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 public class FlightHandler extends CraftPower implements Listener {
 
     @Override
-    public void run(Player p) {
+    public void run(Player p, Power power) {
         if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN) != null && Boolean.TRUE.equals(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN))) {
             if (p.getAllowFlight()) {
                 p.setFlying(true);
@@ -33,7 +34,7 @@ public class FlightHandler extends CraftPower implements Listener {
                         p.setFlying(true);
                     }
                 } else {
-                    p.setAllowFlight(p.getGameMode().equals(GameMode.SPECTATOR) || FlightElytra.elytra.contains(p) || no_gravity.contains(p));
+                    p.setAllowFlight(p.getGameMode().equals(GameMode.SPECTATOR) || FlightElytra.elytra.contains(p) || no_gravity.contains(p) || grounded.contains(p));
                     if (FlightElytra.elytra.contains(p)) {
                         p.setFlying(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR));
                     }
@@ -51,7 +52,7 @@ public class FlightHandler extends CraftPower implements Listener {
 
     @EventHandler
     public void join(PlayerJoinEvent e) {
-        run(e.getPlayer());
+        run(e.getPlayer(), null);
     }
 
     @EventHandler
@@ -61,19 +62,19 @@ public class FlightHandler extends CraftPower implements Listener {
             @Override
             public void run() {
                 FlightHandler fl = new FlightHandler();
-                fl.run(e.getPlayer());
+                fl.run(e.getPlayer(), null);
             }
 
         }.runTaskLater(GenesisMC.getPlugin(), 10L);
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:creative_flight";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return creative_flight;
     }
 

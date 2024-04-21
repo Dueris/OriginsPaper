@@ -35,7 +35,7 @@ public class Inventory extends CraftPower implements Listener {
     public void MoveBackChange(OriginChangeEvent e) {
         Player p = e.getPlayer();
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -69,8 +69,8 @@ public class Inventory extends CraftPower implements Listener {
     @EventHandler
     public void keytrigger(KeybindTriggerEvent e) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (getPowerArray().contains(e.getPlayer())) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+            if (getPlayersWithPower().contains(e.getPlayer())) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
                     if (CooldownUtils.isPlayerInCooldownFromTag(e.getPlayer(), Utils.getNameOrTag(power))) continue;
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
@@ -93,7 +93,7 @@ public class Inventory extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (shulker_inventory.contains(e.getPlayer())) {
                 Player p = e.getPlayer();
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     if (power.getBooleanOrDefault("drop_on_death", false)) {
                         ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(p, power.getTag());
                         org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
@@ -120,12 +120,12 @@ public class Inventory extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:inventory";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return shulker_inventory;
     }
 }

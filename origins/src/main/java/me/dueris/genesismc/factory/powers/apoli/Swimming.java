@@ -14,29 +14,22 @@ import java.util.ArrayList;
 public class Swimming extends CraftPower {
 
     @Override
-    public void run(Player p) {
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (swimming.contains(p)) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        setActive(p, power.getTag(), false);
-                        return;
-                    } else {
-                        p.setSwimming(true);
-                        setActive(p, power.getTag(), true);
-                    }
-                }
-            }
+    public void run(Player p, Power power) {
+        if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+            setActive(p, power.getTag(), false);
+            return;
         }
+        p.setSwimming(true);
+        setActive(p, power.getTag(), true);
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:swimming";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return swimming;
     }
 }

@@ -19,9 +19,9 @@ public class ActionOnWakeUp extends CraftPower implements Listener {
 
     @EventHandler
     public void w(PlayerBedLeaveEvent e) {
-        if (!getPowerArray().contains(e.getPlayer())) return;
+        if (!getPlayersWithPower().contains(e.getPlayer())) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
                 if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
                     return;
                 setActive(e.getPlayer(), power.getTag(), true);
@@ -32,12 +32,12 @@ public class ActionOnWakeUp extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:action_on_wake_up";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return action_on_wake_up;
     }
 

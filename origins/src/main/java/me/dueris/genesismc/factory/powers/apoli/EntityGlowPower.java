@@ -27,39 +27,33 @@ public class EntityGlowPower extends CraftPower {
     }
 
     @Override
-    public void run(Player p) {
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (entity_glow.contains(p)) {
-                Collection<Entity> entitiesWithinRadius = getEntitiesInRadius(p, 10);
-                for (Entity entity : entitiesWithinRadius) {
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) &&
-                            ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) entity) &&
-                            ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), (CraftEntity) entity)
-                        ) {
-                            if (!entity.isGlowing()) {
-                                entity.setGlowing(true);
-                            }
-                            setActive(p, power.getTag(), true);
-                        } else {
-                            if (entity.isGlowing()) {
-                                entity.setGlowing(false);
-                            }
-                            setActive(p, power.getTag(), false);
-                        }
-                    }
+    public void run(Player p, Power power) {
+        Collection<Entity> entitiesWithinRadius = getEntitiesInRadius(p, 10);
+        for (Entity entity : entitiesWithinRadius) {
+            if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) &&
+                ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) entity) &&
+                ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), (CraftEntity) entity)
+            ) {
+                if (!entity.isGlowing()) {
+                    entity.setGlowing(true);
                 }
+                setActive(p, power.getTag(), true);
+            } else {
+                if (entity.isGlowing()) {
+                    entity.setGlowing(false);
+                }
+                setActive(p, power.getTag(), false);
             }
         }
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:entity_glow";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return entity_glow;
     }
 }

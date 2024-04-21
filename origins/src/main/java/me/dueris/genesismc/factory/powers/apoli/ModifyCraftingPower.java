@@ -26,7 +26,7 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
             if (e.getRecipe() == null) return;
             if (e.getInventory().getResult() == null) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         String currKey = RecipePower.computeTag(e.getRecipe());
                         if (currKey == null) continue;
@@ -52,12 +52,12 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:modify_crafting";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return modify_crafting;
     }
 }

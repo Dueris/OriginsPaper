@@ -24,11 +24,6 @@ public class BounceSlimeBlock extends CraftPower implements Listener, PowerProvi
     public static HashMap<Player, Location> lastLoc = new HashMap<>();
     protected static NamespacedKey powerReference = GenesisMC.originIdentifier("slime_block_bounce");
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void gameEvent(GenericGameEvent event) {
         if (event.getEvent().equals(GameEvent.HIT_GROUND)) {
@@ -63,12 +58,12 @@ public class BounceSlimeBlock extends CraftPower implements Listener, PowerProvi
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return null;
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return bouncePlayers;
     }
 

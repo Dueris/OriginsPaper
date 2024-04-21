@@ -9,9 +9,7 @@ import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,28 +35,20 @@ public class Climbing extends CraftPower implements Listener {
     }
 
     @Override
-    public void run(Player p) {
-        if (climbing.contains(p)) {
-            if (!((CraftWorld) p.getWorld()).getHandle().getBlockStates(((CraftPlayer) p).getHandle().getBoundingBox().inflate(0.1, 0, 0.1)).filter(state -> state.getBukkitMaterial().isCollidable()).toList().isEmpty()) {
-                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (!p.isSneaking()) holdingPlayers.remove(p);
-                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && allowedToClimb.contains(p)) {
-                            setActive(p, power.getTag(), true);
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 5, 2, false, false, false));
-                            getActiveClimbingMap().add(p);
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    getActiveClimbingMap().remove(p);
-                                }
-                            }.runTaskLater(GenesisMC.getPlugin(), 2L);
-                        } else {
-                            setActive(p, power.getTag(), false);
-                        }
-                    }
+    public void run(Player p, Power power) {
+        if (!p.isSneaking()) holdingPlayers.remove(p);
+        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && allowedToClimb.contains(p)) {
+            setActive(p, power.getTag(), true);
+            p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 5, 2, false, false, false));
+            getActiveClimbingMap().add(p);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    getActiveClimbingMap().remove(p);
                 }
-            }
+            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+        } else {
+            setActive(p, power.getTag(), false);
         }
     }
 
@@ -84,7 +74,7 @@ public class Climbing extends CraftPower implements Listener {
         Player p = e.getPlayer();
         if (climbing.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     if (power.getBooleanOrDefault("allow_holding", true)) {
                         final Location[] location = {p.getLocation()};
                         if (e.isSneaking()) {
@@ -114,12 +104,12 @@ public class Climbing extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:climbing";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return climbing;
     }
 }

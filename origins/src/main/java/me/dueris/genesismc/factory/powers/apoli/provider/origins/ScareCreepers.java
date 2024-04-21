@@ -26,17 +26,12 @@ public class ScareCreepers extends CraftPower implements Listener, PowerProvider
     private final NamespacedKey hitByPlayerKey = new NamespacedKey(GenesisMC.getPlugin(), "hit-by-player");
 
     @Override
-    public void run(Player p) {
-
-    }
-
-    @Override
-    public String getPowerFile() {
+    public String getType() {
         return null;
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return scaryPlayers;
     }
 
@@ -62,7 +57,7 @@ public class ScareCreepers extends CraftPower implements Listener, PowerProvider
             (PathfinderMob) ((CraftEntity) creeper).getHandle(), net.minecraft.world.entity.player.Player.class, 6, 1, 1.2,
             livingEntity -> {
                 if (livingEntity.getBukkitEntity() instanceof Player player) {
-                    if (getPowerArray().contains(player)) {
+                    if (getPlayersWithPower().contains(player)) {
                         String data = creeper.getPersistentDataContainer().get(hitByPlayerKey, PersistentDataType.STRING);
                         if (data == null) {
                             return true;

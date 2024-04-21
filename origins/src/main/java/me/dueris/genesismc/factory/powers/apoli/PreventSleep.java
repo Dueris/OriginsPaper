@@ -38,7 +38,7 @@ public class PreventSleep extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 Block clickedBlock = e.getClickedBlock();
                 Location blockLocation = clickedBlock.getLocation();
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
                     boolean meetsCondition = ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) player.getLocation().getBlock());
 
                     if (meetsCondition) {
@@ -60,12 +60,12 @@ public class PreventSleep extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:prevent_sleep";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return prevent_sleep;
     }
 }

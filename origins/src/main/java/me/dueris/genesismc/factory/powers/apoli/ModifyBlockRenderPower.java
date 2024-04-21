@@ -21,58 +21,49 @@ import java.util.List;
 
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_block_render;
 
+// TODO: Make better
 public class ModifyBlockRenderPower extends CraftPower {
 
     @Override
-    public void run(Player player) {
+    public void run(Player player, Power power) {
         ChunkManagerWorld chunkManagerWorld = new ChunkManagerWorld(player.getWorld());
         CraftPlayer craftPlayer = (CraftPlayer) player;
+        List<BlockState> blockChanges = new ArrayList<>();
+        boolean conditionMet = false;
+        Material targetMaterial = Material.AIR;
 
-        if (modify_block_render.contains(player)) {
-            List<BlockState> blockChanges = new ArrayList<>();
-            boolean conditionMet = false;
-
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    Material targetMaterial = Material.AIR;
-                    if (conditionMet) {
-                        targetMaterial = Material.getMaterial(power.getStringOrDefault("block", null).toUpperCase());
-                    }
-
-                    for (Chunk chunk : chunkManagerWorld.getChunksInPlayerViewDistance(craftPlayer)) {
-                        for (Block block : chunkManagerWorld.getAllBlocksInChunk(chunk)) {
-                            if (block.getType() != Material.AIR) {
-                                try {
-                                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player) && ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) block)) {
-                                        conditionMet = true;
-                                        setActive(player, power.getTag(), true);
-                                        BlockState blockState = block.getState();
-                                        blockState.setType(targetMaterial);
-                                        blockChanges.add(blockState);
-                                        break;
-                                    } else {
-                                        setActive(player, power.getTag(), false);
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
+        for (Chunk chunk : chunkManagerWorld.getChunksInPlayerViewDistance(craftPlayer)) {
+            for (Block block : chunkManagerWorld.getAllBlocksInChunk(chunk)) {
+                if (block.getType() != Material.AIR) {
+                    try {
+                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player) && ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) block)) {
+                            conditionMet = true;
+                            targetMaterial = Material.getMaterial(power.getStringOrDefault("block", null).toUpperCase());
+                            setActive(player, power.getTag(), true);
+                            BlockState blockState = block.getState();
+                            blockState.setType(targetMaterial);
+                            blockChanges.add(blockState);
+                            break;
+                        } else {
+                            setActive(player, power.getTag(), false);
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
-                    craftPlayer.sendBlockChanges(blockChanges);
                 }
             }
         }
+
+        craftPlayer.sendBlockChanges(blockChanges);
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:modify_block_render";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return modify_block_render;
     }
 }

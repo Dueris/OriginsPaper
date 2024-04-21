@@ -5,7 +5,8 @@
     "origins:fragile",
     "origins:slow_falling",
     "origins:slower_nighttime",
-    "origins:weakness_when_wet"
+    "origins:weakness_when_wet",
+    "origins:bee_flight"
   ],
   "icon": {
     "item": "minecraft:honeycomb"

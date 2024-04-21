@@ -28,7 +28,7 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
         if (e.getEntity() instanceof Player p) {
             if (!modify_effect_duration.contains(p)) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         if (power.getStringOrDefault("status_effect", null) != null) {
@@ -68,12 +68,12 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:modify_status_effect_duration";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return modify_effect_duration;
     }
 }

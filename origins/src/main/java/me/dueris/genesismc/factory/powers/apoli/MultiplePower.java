@@ -9,12 +9,12 @@ import java.util.ArrayList;
 public class MultiplePower extends CraftPower {
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:multiple";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return multiple;
     }
 }

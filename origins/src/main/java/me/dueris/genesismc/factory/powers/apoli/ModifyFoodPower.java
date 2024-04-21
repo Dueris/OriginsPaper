@@ -34,7 +34,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
         Player player = e.getPlayer();
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (modify_food.contains(player)) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
                         if (power.isPresent("food_modifier")) {
                             for (FactoryJsonObject jsonObject : power.getList$SingularPlural("food_modifier", "food_modifiers").stream().map(FactoryElement::toJsonObject).toList()) {
@@ -43,7 +43,6 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                                     String operation = jsonObject.getString("operation");
                                     BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null && CraftItemStack.asNMSCopy(e.getItem()).getItem().getFoodProperties() != null) {
-
                                         double finalValue = (double) mathOperator.apply(CraftItemStack.asNMSCopy(e.getItem()).getItem().getFoodProperties().getNutrition(), (double) val);
                                         player.setFoodLevel(Integer.parseInt(String.valueOf(Math.round(player.getFoodLevel() + finalValue))));
                                         setActive(player, power.getTag(), true);
@@ -98,12 +97,12 @@ public class ModifyFoodPower extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:modify_food";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return modify_food;
     }
 }

@@ -21,7 +21,7 @@ public class KeepInventory extends CraftPower implements Listener {
         Player player = e.getEntity();
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (keep_inventory.contains(player)) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
                         ArrayList<Long> slots = new ArrayList<>();
                         setActive(player, power.getTag(), true);
@@ -47,12 +47,12 @@ public class KeepInventory extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:keep_inventory";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return keep_inventory;
     }
 }

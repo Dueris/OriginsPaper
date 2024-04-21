@@ -184,8 +184,9 @@ public class OriginPlayerAccessor implements Listener {
                 try {
                     assignPowers(player, layer);
                     // Extra precaution due to gravity messing up on origin switch
-                    GravityPower g = new GravityPower();
-                    g.run(player);
+                    if (!new GravityPower().getPlayersWithPower().contains(player)) {
+                        new GravityPower().doesntHavePower(player);
+                    }
                 } catch (InstantiationException | NotFoundException | SecurityException | NoSuchFieldException |
                          IllegalArgumentException | IllegalAccessException e) {
                     throw new RuntimeException(e);
@@ -231,7 +232,7 @@ public class OriginPlayerAccessor implements Listener {
         String name = power.getType().equalsIgnoreCase("apoli:simple") ? power.getTag() : power.getType();
         ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
         if (c != null) {
-            c.getPowerArray().add(player);
+            c.getPlayersWithPower().add(player);
             if (!powersAppliedList.containsKey(player))
                 powersAppliedList.put(player, new ConcurrentLinkedQueue<ApoliPower>(List.of(c)));
             else powersAppliedList.get(player).add(c);
@@ -249,7 +250,7 @@ public class OriginPlayerAccessor implements Listener {
         ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
         if (c != null) {
             powersAppliedList.get(player).remove(c);
-            c.getPowerArray().remove(player);
+            c.getPlayersWithPower().remove(player);
             new PowerUpdateEvent(player, power, true).callEvent();
             if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true"))
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());

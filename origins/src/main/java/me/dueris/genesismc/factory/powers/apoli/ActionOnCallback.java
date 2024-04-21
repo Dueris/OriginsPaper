@@ -25,10 +25,10 @@ public class ActionOnCallback extends CraftPower implements Listener {
     public void choose(OriginChangeEvent e) {
         Player actor = e.getPlayer();
 
-        if (!getPowerArray().contains(actor)) return;
+        if (!getPlayersWithPower().contains(actor)) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getType(), layer)) {
                 if (power == null) continue;
                 if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
                     return;
@@ -49,9 +49,9 @@ public class ActionOnCallback extends CraftPower implements Listener {
     @EventHandler
     public void powerUpdate(PowerUpdateEvent e) {
         Player player = e.getPlayer();
-        if (!getPowerArray().contains(player)) return;
+        if (!getPlayersWithPower().contains(player)) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
                 if (e.isRemoved()) {
                     Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action_removed"));
                 } else {
@@ -64,21 +64,21 @@ public class ActionOnCallback extends CraftPower implements Listener {
     @EventHandler
     public void respawn(PlayerPostRespawnEvent e) {
         Player player = e.getPlayer();
-        if (!getPowerArray().contains(player)) return;
+        if (!getPlayersWithPower().contains(player)) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
                 Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action_respawned"));
             }
         }
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:action_on_callback";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return action_on_callback;
     }
 

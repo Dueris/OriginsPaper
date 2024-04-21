@@ -25,10 +25,10 @@ public class SelfActionWhenHit extends CraftPower implements Listener {
         Entity actor = e.getEntity();
 
         if (!(actor instanceof Player player)) return;
-        if (!getPowerArray().contains(player)) return;
+        if (!getPlayersWithPower().contains(player)) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
                 if (CooldownUtils.isPlayerInCooldownFromTag(player, Utils.getNameOrTag(power))) continue;
                 if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
                     setActive(player, power.getTag(), true);
@@ -44,12 +44,12 @@ public class SelfActionWhenHit extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:self_action_when_hit";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return self_action_when_hit;
     }
 

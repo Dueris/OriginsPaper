@@ -26,7 +26,7 @@ public class ModifyJumpPower extends CraftPower implements Listener {
         Player p = e.getPlayer();
         if (modify_jump.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         for (Modifier modifier : power.getModifiers()) {
                             float modifierValue = modifier.value();
@@ -45,12 +45,12 @@ public class ModifyJumpPower extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:modify_jump";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return modify_jump;
     }
 }

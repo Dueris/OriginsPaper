@@ -25,8 +25,8 @@ public class ActionOnHit extends CraftPower implements Listener {
         if (e.getDamager() instanceof Player p) {
             Entity target = e.getEntity();
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                if (getPowerArray().contains(p)) {
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                if (getPlayersWithPower().contains(p)) {
+                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                         if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p))
                             return;
                         if (!ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) return;
@@ -48,12 +48,12 @@ public class ActionOnHit extends CraftPower implements Listener {
     }
 
     @Override
-    public String getPowerFile() {
+    public String getType() {
         return "apoli:action_on_hit";
     }
 
     @Override
-    public ArrayList<Player> getPowerArray() {
+    public ArrayList<Player> getPlayersWithPower() {
         return action_on_hit;
     }
 
