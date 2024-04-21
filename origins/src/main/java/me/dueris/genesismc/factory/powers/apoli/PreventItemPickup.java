@@ -34,11 +34,6 @@ public class PreventItemPickup extends CraftPower implements Listener {
     }
 
     @Override
-    public void run(Player p) {
-
-    }
-
-    @Override
     public String getPowerFile() {
         return "apoli:prevent_item_pickup";
     }

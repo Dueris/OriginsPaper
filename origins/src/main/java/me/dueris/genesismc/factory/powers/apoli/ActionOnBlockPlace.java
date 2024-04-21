@@ -18,11 +18,6 @@ import java.util.ArrayList;
 
 public class ActionOnBlockPlace extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void blockBreak(BlockPlaceEvent e) {
         if (action_on_block_place.contains(e.getPlayer())) {

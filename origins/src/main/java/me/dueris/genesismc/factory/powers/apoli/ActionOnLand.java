@@ -19,12 +19,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionOnLand extends CraftPower implements Listener {
-    private final double MIN_FALL_DISTANCE = 0.5;
-
-    @Override
-    public void run(Player p) {
-
-    }
 
     @EventHandler
     public void e(GenericGameEvent e) {
@@ -32,7 +26,6 @@ public class ActionOnLand extends CraftPower implements Listener {
         if (!(e.getEntity() instanceof Player player)) return;
         if (!getPowerArray().contains(player)) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-//            if (e.getFrom().getY() > e.getTo().getY() && e.getFrom().getY() - e.getTo().getY() >= MIN_FALL_DISTANCE) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) return;
                 setActive(player, power.getTag(), true);
@@ -44,8 +37,6 @@ public class ActionOnLand extends CraftPower implements Listener {
                     }
                 }.runTaskLater(GenesisMC.getPlugin(), 2L);
             }
-
-//            }
         }
     }
 

@@ -26,11 +26,6 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
     public static HashMap<Player, Boolean> playersMining = new HashMap<>();
     public static HashMap<Player, BlockPos> playersMiningBlockPos = new HashMap<>();
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void brek(BlockBreakEvent e) {
         Player actor = e.getPlayer();

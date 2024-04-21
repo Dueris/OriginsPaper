@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.event.OriginChangeEvent;
+import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -10,7 +10,6 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
@@ -43,14 +42,9 @@ public class FlightElytra extends CraftPower implements Listener {
         return glidingPlayers;
     }
 
-
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
-    public void fixChangeConstantFlight(OriginChangeEvent e) {
+    public void fixChangeConstantFlight(PowerUpdateEvent e) {
+        if (!(e.getPower().getType().equalsIgnoreCase(getPowerFile()) && e.isRemoved())) return;
         if (glidingPlayers.contains(e.getPlayer())) {
             glidingPlayers.remove(e.getPlayer());
             e.getPlayer().setGliding(false);
@@ -59,7 +53,7 @@ public class FlightElytra extends CraftPower implements Listener {
 
     @EventHandler
     @SuppressWarnings({"unchecked", "Not scheduled yet"})
-    public void ExecuteFlight(PlayerToggleFlightEvent e) {
+    public void executeFlight(PlayerToggleFlightEvent e) {
         Player p = e.getPlayer();
         if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
         if (elytra.contains(e.getPlayer())) {
@@ -120,34 +114,26 @@ public class FlightElytra extends CraftPower implements Listener {
                         pl.awardStat(Stats.FALL_ONE_CM, (int) Math.round((double) fallDistance * 100.0D));
                     }
 
-                    int i = this.calculateFallDamage(p, fallDistance, 1);
+                    int distance = this.calculateFallDamage(p, fallDistance, 1);
 
-                    if (i > 0) {
-                        pl.hurt(pl.level().damageSources().fall(), (float) i);
+                    if (distance > 0) {
+                        pl.hurt(pl.level().damageSources().fall(), (float) distance);
 
-                        p.playSound(p.getLocation(), CraftSound.minecraftToBukkit(this.getFallDamageSound(pl, i)), 1f, 1f);
-                        this.playBlockFallSound(pl);
+                        p.playSound(p.getLocation(), CraftSound.minecraftToBukkit(distance > 4 ? pl.getFallSounds().big() : pl.getFallSounds().small()), 1f, 1f);
+                        if (!pl.isSilent()) {
+                            int a = Mth.floor(pl.getX());
+                            int b = Mth.floor(pl.getY() - 0.20000000298023274d);
+                            int c = Mth.floor(pl.getZ());
+                            BlockState blockData = pl.level().getBlockState(new BlockPos(a, b, c));
+
+                            if (!blockData.isAir()) {
+                                SoundType soundEffectType = blockData.getSoundType();
+
+                                pl.playSound(soundEffectType.getFallSound(), soundEffectType.getVolume() * 0.5F, soundEffectType.getPitch() * 0.75F);
+                            }
+                        }
                     }
                 }
-            }
-        }
-    }
-
-    private SoundEvent getFallDamageSound(ServerPlayer pl, int distance) {
-        return distance > 4 ? pl.getFallSounds().big() : pl.getFallSounds().small();
-    }
-
-    private void playBlockFallSound(ServerPlayer pl) {
-        if (!pl.isSilent()) {
-            int a = Mth.floor(pl.getX());
-            int b = Mth.floor(pl.getY() - 0.20000000298023274d);
-            int c = Mth.floor(pl.getZ());
-            BlockState blockdata = pl.level().getBlockState(new BlockPos(a, b, c));
-
-            if (!blockdata.isAir()) {
-                SoundType soundeffecttype = blockdata.getSoundType();
-
-                pl.playSound(soundeffecttype.getFallSound(), soundeffecttype.getVolume() * 0.5F, soundeffecttype.getPitch() * 0.75F);
             }
         }
     }

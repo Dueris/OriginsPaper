@@ -27,20 +27,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 public class ModifyBreakSpeedPower extends CraftPower implements Listener {
 
     String MODIFYING_KEY = "modify_break_speed";
-
-
-    public int calculateHasteAmplifier(float value) {
-        float maxValue = 10000.0f;
-        float minValue = 0.1f;
-        int maxAmplifier = 10;
-        int minAmplifier = 0;
-
-        float normalizedValue = Math.max(minValue, Math.min(value, maxValue));
-        float percentage = (normalizedValue - minValue) / (maxValue - minValue);
-        int amplifier = (int) (percentage * (maxAmplifier - minAmplifier)) + minAmplifier;
-
-        return amplifier + 1;
-    }
     // TODO: use 1.20.5 attributes instead of effects
 
     @EventHandler

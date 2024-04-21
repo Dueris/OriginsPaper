@@ -18,17 +18,10 @@ import java.util.ArrayList;
 
 public class AttributeModifyTransfer extends CraftPower implements Listener {
 
-
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void runChange(OriginChangeEvent e) {
         if (getPowerArray().contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);

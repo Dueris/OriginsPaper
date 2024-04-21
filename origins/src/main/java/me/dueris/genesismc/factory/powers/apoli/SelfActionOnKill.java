@@ -20,11 +20,6 @@ import java.util.ArrayList;
 
 public class SelfActionOnKill extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void k(EntityDeathEvent e) {
         Entity target = e.getEntity();

@@ -22,11 +22,6 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
 
     private static final ArrayList<Player> cooldownTick = new ArrayList<>();
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void entityRightClickEntity(PlayerInteractEntityEvent e) {
         Player actor = e.getPlayer();

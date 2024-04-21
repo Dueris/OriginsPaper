@@ -27,7 +27,7 @@ import static net.minecraft.world.level.GameType.CREATIVE;
 public class EdibleItem extends CraftPower implements Listener {
     public static HashMap<Power, FoodProperties> cachedFoodProperties = new HashMap<>();
 
-    public static ItemStack runResultStack(Power power, boolean runActionUpon, InventoryHolder holder) {
+    public static void runResultStack(Power power, boolean runActionUpon, InventoryHolder holder) {
         FactoryJsonObject stack = power.getJsonObject("result_stack");
         int amt;
         if (stack.isPresent("amount")) {
@@ -38,12 +38,6 @@ public class EdibleItem extends CraftPower implements Listener {
         ItemStack itemStack = new ItemStack(MiscUtils.getBukkitMaterial(stack.getString("item")), amt);
         holder.getInventory().addItem(itemStack);
         if (runActionUpon) Actions.executeItem(itemStack, power.getJsonObject("result_item_action"));
-        return itemStack;
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @EventHandler

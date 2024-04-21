@@ -85,7 +85,7 @@ public class Phasing extends CraftPower implements Listener {
         player.setWorldBorder(player.getWorld().getWorldBorder());
     }
 
-    public static float getGamemodeFloat(GameMode gameMode) {
+    public static float getGameModeFloat(GameMode gameMode) {
         switch (gameMode) {
             case CREATIVE:
                 return 1.0f;
@@ -169,7 +169,6 @@ public class Phasing extends CraftPower implements Listener {
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);

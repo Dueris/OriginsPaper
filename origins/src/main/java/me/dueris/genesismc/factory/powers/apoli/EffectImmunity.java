@@ -17,15 +17,10 @@ import static me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect.getP
 
 public class EffectImmunity extends CraftPower {
 
-    public EffectImmunity() {
-
-    }
-
     @Override
     public void run(Player p) {
         if (effect_immunity.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);

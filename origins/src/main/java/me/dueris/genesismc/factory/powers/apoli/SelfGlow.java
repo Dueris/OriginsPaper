@@ -20,13 +20,11 @@ import java.util.ArrayList;
 
 public class SelfGlow extends CraftPower {
 
-
     @Override
     public void run(Player p) {
         if (!getPowerArray().contains(p)) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()) {
                     if (entity instanceof Player player) {
                         if (ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {

@@ -31,17 +31,11 @@ public class StackingStatusEffect extends CraftPower implements Listener {
         return PotionEffectType.getByKey(NamespacedKey.fromString(effectString));
     }
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void join(PlayerJoinEvent e) {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (e.getPlayer() == null) cancel();
                 runExecution(e.getPlayer());
             }
         }.runTaskTimer(GenesisMC.getPlugin(), 0, 40);
@@ -52,7 +46,6 @@ public class StackingStatusEffect extends CraftPower implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (e.getPlayer() == null) cancel();
                 runExecution(e.getPlayer());
             }
         }.runTaskTimer(GenesisMC.getPlugin(), 0, 40);

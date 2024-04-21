@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class RecipePower extends CraftPower implements Listener {
-
     public static HashMap<Player, List<String>> recipeMapping = new HashMap<>();
     public static HashMap<String, Recipe> taggedRegistry = new HashMap<>();
     public static List<String> tags = new ArrayList<>();
@@ -105,12 +104,6 @@ public class RecipePower extends CraftPower implements Listener {
         }
         return null;
     }
-
-    @Override
-    public void run(Player p) {
-
-    }
-    // End
 
     @EventHandler
     public void load(ServerLoadEvent e) {

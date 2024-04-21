@@ -21,12 +21,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyExhaustionPower extends CraftPower implements Listener {
 
-
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void run(EntityExhaustionEvent e) {
         Player p = (Player) e.getEntity();
@@ -45,9 +39,7 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
                                 setActive(p, power.getTag(), true);
                             }
                         }
-
                     } else {
-
                         setActive(p, power.getTag(), false);
                     }
                 }

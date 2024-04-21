@@ -15,7 +15,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 
 public class PreventEntityCollision extends CraftPower {
 
-
     @Override
     public void run(Player p) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {

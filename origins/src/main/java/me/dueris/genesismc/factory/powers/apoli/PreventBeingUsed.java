@@ -18,7 +18,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 
 public class PreventBeingUsed extends CraftPower implements Listener {
 
-
     @EventHandler
     public void run(PlayerInteractEvent e) {
         if (prevent_being_used.contains(e.getPlayer())) {
@@ -29,17 +28,11 @@ public class PreventBeingUsed extends CraftPower implements Listener {
                         setActive(p, power.getTag(), true);
                         e.setCancelled(true);
                     } else {
-
                         setActive(p, power.getTag(), false);
                     }
                 }
             }
         }
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override

@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,40 +20,28 @@ public class OriginScheduler {
     public static ArrayList<ApoliPower> activePowerRunners = new ArrayList<>();
     public static HashMap<Player, List<ApoliPower>> tickedPowers = new HashMap<>();
     final Plugin plugin;
-    ArrayList<BukkitRunnable> runnables = new ArrayList<>();
 
     public OriginScheduler(Plugin plugin) {
         this.plugin = plugin;
     }
 
-    public BukkitTask runTask(BukkitRunnable runnable) {
-        runnables.add(runnable);
-        return runnable.runTask(plugin);
+    public void onMain(Runnable runnable) {
+        plugin.getServer().getScheduler().runTask(plugin, runnable);
     }
 
-    private long getOneIfNotPositive(long x) {
-        return x <= 0 ? 1L : x;
-    }
-
-    public BukkitTask runTaskLater(BukkitRunnable runnable, long delay) {
-        runnables.add(runnable);
-        delay = getOneIfNotPositive(delay);
-        if (delay <= 0) {
-            return runTask(runnable);
-        }
-        return runnable.runTaskLater(plugin, delay);
-    }
-
-    public BukkitTask runTaskTimer(BukkitRunnable runnable, long delay, long period) {
-        runnables.add(runnable);
-        delay = getOneIfNotPositive(delay);
-        return runnable.runTaskTimer(GenesisMC.getPlugin(), delay, period);
+    public void offMain(Runnable runnable) {
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
     }
 
     public static class OriginSchedulerTree extends BukkitRunnable implements Listener {
 
         public static FlightHandler flightHandler = new FlightHandler();
         private final HashMap<Player, HashMap<Power, Integer>> ticksEMap = new HashMap<>();
+        public OriginScheduler parent = new OriginScheduler(GenesisMC.getPlugin());
+
+        private static void accept(Player p) {
+            tickedPowers.get(p).clear();
+        }
 
         @Override
         public String toString() {
@@ -85,7 +72,7 @@ public class OriginScheduler {
                 }
             }
 
-            tickedPowers.keySet().forEach(p -> tickedPowers.get(p).clear());
+            tickedPowers.keySet().forEach(OriginSchedulerTree::accept);
         }
     }
 

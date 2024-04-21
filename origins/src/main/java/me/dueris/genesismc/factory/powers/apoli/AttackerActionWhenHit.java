@@ -20,11 +20,6 @@ import java.util.ArrayList;
 
 public class AttackerActionWhenHit extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void a(EntityDamageByEntityEvent e) {
         Entity actor = e.getEntity();

@@ -19,7 +19,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 
 public class PreventBlockUse extends CraftPower implements Listener {
 
-
     @EventHandler
     public void run(PlayerInteractEvent e) {
         if (e.getClickedBlock() == null) return;
@@ -32,11 +31,6 @@ public class PreventBlockUse extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override

@@ -18,12 +18,10 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 
 public class PreventDeath extends CraftPower implements Listener {
 
-
     @EventHandler
     public void run(PlayerDeathEvent e) {
         if (prevent_death.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e.getEntity().getLastDamageCause())) {
                         e.setCancelled(true);
@@ -36,11 +34,6 @@ public class PreventDeath extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override

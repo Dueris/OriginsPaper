@@ -24,19 +24,10 @@ import java.util.ArrayList;
 
 public class DamageOverTime extends CraftPower implements Listener {
 
-    private Long interval;
-    private float damage;
-
-    public DamageOverTime() {
-        this.interval = 20L;
-    }
-
-
-    // Death msg look funny lol. "death.attack.hurt_by_water" LMFAO
     @EventHandler
     public void erk(PlayerDeathEvent e) {
         if (e.getDeathMessage().equals("death.attack.hurt_by_water")) {
-            if (e.getPlayer().getName().equals("Optima1")) { // for context, he helped test this a lot for hours so im givin him a lil easter egg
+            if (e.getPlayer().getName().equals("Optima1")) {
                 e.setDeathMessage("Optima1 got too thirsty");
             } else {
                 e.setDeathMessage("{p} took a bath for too long."
@@ -63,12 +54,11 @@ public class DamageOverTime extends CraftPower implements Listener {
                     if (!power.isPresent("interval")) {
                         throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
                     }
-                    interval = power.getNumber("interval").getLong();
-                    if (interval == 0) interval = 1L;
+                    long interval = power.getNumberOrDefault("interval", 20L).getLong();
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
-                        damage = p.getWorld().getDifficulty().equals(Difficulty.EASY) ? power.getNumberOrDefault("damage_easy", power.getNumberOrDefault("damage", 1.0f).getFloat()).getFloat() : power.getNumberOrDefault("damage", 1.0f).getFloat();
+                        float damage = p.getWorld().getDifficulty().equals(Difficulty.EASY) ? power.getNumberOrDefault("damage_easy", power.getNumberOrDefault("damage", 1.0f).getFloat()).getFloat() : power.getNumberOrDefault("damage", 1.0f).getFloat();
 
                         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);

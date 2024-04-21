@@ -23,9 +23,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyBlockRenderPower extends CraftPower {
 
-    String MODIFYING_KEY = "modify_block_render";
-
-
     @Override
     public void run(Player player) {
         ChunkManagerWorld chunkManagerWorld = new ChunkManagerWorld(player.getWorld());

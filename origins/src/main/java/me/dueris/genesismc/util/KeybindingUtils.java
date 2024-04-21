@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class KeybindingUtils implements Listener {
-    public static KeybindingUtils INSTANCE = new KeybindingUtils();
     public static HashMap<Player, ArrayList<String>> activeKeys = new HashMap<>();
 
     public static Pair<Boolean, String> renderKeybind(Power power) {

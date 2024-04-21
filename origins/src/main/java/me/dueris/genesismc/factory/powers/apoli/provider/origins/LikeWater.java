@@ -2,8 +2,8 @@ package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.apoli.GravityPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
+import me.dueris.genesismc.factory.powers.genesismc.GravityPower;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;

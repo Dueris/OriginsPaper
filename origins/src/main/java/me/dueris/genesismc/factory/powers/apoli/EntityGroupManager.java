@@ -86,11 +86,6 @@ public class EntityGroupManager extends CraftPower {
     }
 
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     public void startTick() {
         new BukkitRunnable() {
             @Override

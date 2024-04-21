@@ -20,7 +20,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyLavaSpeed extends CraftPower {
 
-
     @Override
     public void run(Player p) {
         if (modify_lava_speed.contains(p)) {
@@ -31,9 +30,9 @@ public class ModifyLavaSpeed extends CraftPower {
                             for (Modifier modifier : power.getModifiers()) {
                                 Float value = modifier.value();
                                 String operation = modifier.operation();
-                                BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
+                                BinaryOperator<Float> mathOperator = Utils.getOperationMappingsFloat().get(operation);
                                 if (mathOperator != null) {
-                                    float result = (float) mathOperator.apply(0.02f, value);
+                                    float result = mathOperator.apply(0.02f, value);
                                     setActive(p, power.getTag(), true);
                                     p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2, calculateSpeedAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result)))), false, false, false));
                                 }

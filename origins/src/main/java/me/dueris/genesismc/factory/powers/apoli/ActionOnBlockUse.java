@@ -23,11 +23,6 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
 
     public static ArrayList<Player> tickFix = new ArrayList<>();
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void execute(PlayerInteractEvent e) {
         if (e.getClickedBlock() == null) return;

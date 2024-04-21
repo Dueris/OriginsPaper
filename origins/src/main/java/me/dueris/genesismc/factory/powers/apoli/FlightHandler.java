@@ -8,13 +8,14 @@ import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
-public class FlightHandler extends CraftPower {
+public class FlightHandler extends CraftPower implements Listener {
 
     @Override
     public void run(Player p) {

@@ -21,7 +21,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyJumpPower extends CraftPower implements Listener {
 
-
     @EventHandler
     public void ruDn(PlayerJumpEvent e) {
         Player p = e.getPlayer();
@@ -43,11 +42,6 @@ public class ModifyJumpPower extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override

@@ -24,7 +24,6 @@ public class ModifySwimSpeedPower extends CraftPower {
 
     String MODIFYING_KEY = "modify_swim_speed";
 
-
     @Override
     public void run(Player p) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
@@ -33,9 +32,6 @@ public class ModifySwimSpeedPower extends CraftPower {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (!p.isSwimming()) return;
-                        // Change to use dolphins grace for easier
-                        // Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
-                        // p.setVelocity(swimVelocity);
                         int ampl = Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
                         if (ampl < 1) {
                             ampl = 1;

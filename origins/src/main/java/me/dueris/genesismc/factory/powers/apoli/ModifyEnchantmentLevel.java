@@ -69,5 +69,4 @@ public class ModifyEnchantmentLevel extends CraftPower {
         return ValueModifyingSuperClass.modify_enchantment_level;
     }
 
-
 }

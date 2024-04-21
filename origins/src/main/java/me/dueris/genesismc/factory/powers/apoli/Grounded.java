@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 public class Grounded extends CraftPower {
 
-
     @Override
     public void run(Player player) {
         ArrayList<Location> platform_pos = new ArrayList<>();

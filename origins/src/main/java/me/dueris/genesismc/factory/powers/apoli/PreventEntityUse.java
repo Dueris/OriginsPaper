@@ -25,18 +25,11 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 
 public class PreventEntityUse extends CraftPower implements Listener {
 
-
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void OnClickREACH(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (prevent_entity_use.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-
                 Location eyeloc = p.getEyeLocation();
                 Predicate<Entity> filter = (entity) -> !entity.equals(p);
                 RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), getFinalReach(p), FluidCollisionMode.NEVER, false, 0, filter);
@@ -44,14 +37,12 @@ public class PreventEntityUse extends CraftPower implements Listener {
                 if (traceResult4_5F != null) {
                     Entity entity = traceResult4_5F.getHitEntity();
                     if (entity == null) return;
-                    Player attacker = p;
                     if (entity.isDead() || !(entity instanceof LivingEntity)) return;
                     if (entity.isInvulnerable()) return;
                     LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
-                    if (attacker.getLocation().distance(victim.getLocation()) <= AttributeHandler.ReachUtils.getFinalReach(p)) {
+                    if (p.getLocation().distance(victim.getLocation()) <= AttributeHandler.ReachUtils.getFinalReach(p)) {
                         if (entity.getPassengers().contains(p)) return;
                         if (!entity.isDead()) {
-                            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                                 if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) entity) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
                                     e.setCancelled(true);

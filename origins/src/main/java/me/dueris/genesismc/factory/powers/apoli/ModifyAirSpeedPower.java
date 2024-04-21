@@ -19,31 +19,18 @@ import java.util.function.BinaryOperator;
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_air_speed;
 
 public class ModifyAirSpeedPower extends CraftPower {
-
     String MODIFYING_KEY = "modify_air_speed";
-
 
     @Override
     public void run(Player p) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
             try {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        if (power == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
                         setActive(p, power.getTag(), true);
                         p.setFlySpeed(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
                     } else {
-                        if (power == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
                         setActive(p, power.getTag(), false);
                         p.setFlySpeed(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
                     }
@@ -72,9 +59,9 @@ public class ModifyAirSpeedPower extends CraftPower {
                     for (Modifier modifier : power.getModifiers()) {
                         Float value = modifier.value();
                         String operation = modifier.operation();
-                        BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
+                        BinaryOperator<Float> mathOperator = Utils.getOperationMappingsFloat().get(operation);
                         if (mathOperator != null) {
-                            float result = (float) mathOperator.apply(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY), value);
+                            float result = mathOperator.apply(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY), value);
                             valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
                         } else {
                             Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for modify_air_speed!");

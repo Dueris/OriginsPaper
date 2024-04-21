@@ -48,11 +48,6 @@ public class ItemOnItemPower extends CraftPower implements Listener {
     }
 
     @Override
-    public void run(Player p) {
-
-    }
-
-    @Override
     public String getPowerFile() {
         return "apoli:item_on_item";
     }

@@ -101,7 +101,9 @@ public interface ApoliPower extends Registrable {
         }
     }
 
-    void run(Player p);
+    default void run(Player p) {
+
+    }
 
     String getPowerFile();
 

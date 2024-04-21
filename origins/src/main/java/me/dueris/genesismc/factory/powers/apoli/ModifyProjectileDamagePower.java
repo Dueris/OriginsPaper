@@ -23,12 +23,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyProjectileDamagePower extends CraftPower implements Listener {
 
-
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void runD(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Projectile p && p.getShooter() instanceof Player pl) {
@@ -38,9 +32,9 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                         for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(pl, getPowerFile(), layer)) {
                             if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.getJsonObject("target_condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) {
                                 for (Modifier modifier : power.getModifiers()) {
-                                    Float value = modifier.value();
+                                    float value = modifier.value();
                                     String operation = modifier.operation();
-                                    BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
+                                    BinaryOperator<Double> mathOperator = Utils.getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
                                         ModifyDamageDealtPower damageDealtPower = new ModifyDamageDealtPower();
                                         damageDealtPower.runSetDMG(e, operation, value);

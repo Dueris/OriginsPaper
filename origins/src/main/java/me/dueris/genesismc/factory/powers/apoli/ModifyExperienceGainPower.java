@@ -21,12 +21,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyExperienceGainPower extends CraftPower implements Listener {
 
-
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void run(PlayerExpChangeEvent e) {
         Player p = e.getPlayer();

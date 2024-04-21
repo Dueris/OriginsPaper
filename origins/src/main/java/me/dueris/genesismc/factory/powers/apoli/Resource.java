@@ -51,11 +51,6 @@ public class Resource extends CraftPower implements Listener {
         return null;
     }
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void start(PlayerJoinEvent e) {
         new BukkitRunnable() {
@@ -97,7 +92,7 @@ public class Resource extends CraftPower implements Listener {
                 if (power.isPresent("start_value")) {
                     int startValue = power.getNumber("start_value").getInt();
                     if (startValue == 0) bar.setProgress(0);
-                    else bar.setProgress(1 / power.getNumber("start_value").getInt());
+                    else bar.setProgress((double) 1 / power.getNumber("start_value").getInt());
                 } else {
                     int min = power.getNumber("min").getInt();
                     if (min > 1) {

@@ -17,11 +17,6 @@ import java.util.ArrayList;
 
 public class ActionOnWakeUp extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void w(PlayerBedLeaveEvent e) {
         if (!getPowerArray().contains(e.getPlayer())) return;

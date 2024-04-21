@@ -21,12 +21,6 @@ import java.util.ArrayList;
 
 public class StartingEquipmentPower extends CraftPower implements Listener {
 
-
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void runGive(OriginChangeEvent e) {
         if (starting_equip.contains(e.getPlayer())) {

@@ -17,10 +17,6 @@ import java.util.ArrayList;
 import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_game_event;
 
 public class PreventGameEvent extends CraftPower implements Listener {
-    @Override
-    public void run(Player p) {
-
-    }
 
     @EventHandler
     public void event(GenericGameEvent e) {
@@ -52,6 +48,5 @@ public class PreventGameEvent extends CraftPower implements Listener {
     public ArrayList<Player> getPowerArray() {
         return prevent_game_event;
     }
-
 
 }

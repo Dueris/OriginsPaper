@@ -16,20 +16,12 @@ import java.util.ArrayList;
 
 public class FireImmunity extends CraftPower implements Listener {
 
-
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void OnDamageFire(EntityDamageEvent e) {
         if (e.getEntity().isDead()) return;
-        if (e.getEntity() == null) return;
         if (e.getEntity() instanceof Player p) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 if (fire_immunity.contains(p)) {
-                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);

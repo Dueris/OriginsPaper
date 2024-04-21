@@ -23,12 +23,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyFallingPower extends CraftPower implements Listener {
 
-
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void runE(PlayerMoveEvent e) {
         Player p = e.getPlayer();

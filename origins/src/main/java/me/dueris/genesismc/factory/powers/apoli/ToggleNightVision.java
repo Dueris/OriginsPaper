@@ -23,13 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ToggleNightVision extends CraftPower implements Listener {
-
     public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
-
-    @Override
-    public void run(Player p) {
-
-    }
 
     public void execute(Player p, Power power) {
         in_continuous.putIfAbsent(p, new ArrayList<>());

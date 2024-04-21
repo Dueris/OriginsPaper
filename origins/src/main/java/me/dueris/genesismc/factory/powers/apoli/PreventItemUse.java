@@ -17,12 +17,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 
 public class PreventItemUse extends CraftPower implements Listener {
 
-
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void runD(PlayerInteractEvent e) {
         if (prevent_item_use.contains(e.getPlayer())) {

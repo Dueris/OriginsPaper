@@ -19,14 +19,6 @@ import java.util.ArrayList;
 
 public class RestrictArmor extends CraftPower implements Listener {
 
-    private final int ticksE;
-    private Long interval;
-
-    public RestrictArmor() {
-        this.interval = 1L;
-        this.ticksE = 0;
-    }
-
     @EventHandler
     public void tick(PlayerArmorChangeEvent e) {
         Player p = e.getPlayer();
@@ -49,10 +41,7 @@ public class RestrictArmor extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-//                    if (!power.isPresent("interval")) {
-//                        throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
-//                    }
-                    interval = power.getNumberOrDefault("interval", 1).getLong();
+                    long interval = power.getNumberOrDefault("interval", 1L).getLong();
                     if (interval == 0) interval = 1L;
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
@@ -88,29 +77,10 @@ public class RestrictArmor extends CraftPower implements Listener {
         if (legsObj == null) legsb = false;
         if (feetObj == null) feetb = false;
 
-        if (headb) {
-            passHead = ConditionExecutor.testItem(headObj, p.getInventory().getItem(EquipmentSlot.HEAD));
-        } else {
-            passHead = true;
-        }
-
-        if (chestb) {
-            passChest = ConditionExecutor.testItem(chestObj, p.getInventory().getItem(EquipmentSlot.CHEST));
-        } else {
-            passChest = true;
-        }
-
-        if (legsb) {
-            passLegs = ConditionExecutor.testItem(legsObj, p.getInventory().getItem(EquipmentSlot.LEGS));
-        } else {
-            passLegs = true;
-        }
-
-        if (feetb) {
-            passFeet = ConditionExecutor.testItem(feetObj, p.getInventory().getItem(EquipmentSlot.FEET));
-        } else {
-            passFeet = true;
-        }
+        passHead = !headb || ConditionExecutor.testItem(headObj, p.getInventory().getItem(EquipmentSlot.HEAD));
+        passChest = !chestb || ConditionExecutor.testItem(chestObj, p.getInventory().getItem(EquipmentSlot.CHEST));
+        passLegs = !legsb || ConditionExecutor.testItem(legsObj, p.getInventory().getItem(EquipmentSlot.LEGS));
+        passFeet = !feetb || ConditionExecutor.testItem(feetObj, p.getInventory().getItem(EquipmentSlot.FEET));
 
         if (passFeet) {
             OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.FEET);

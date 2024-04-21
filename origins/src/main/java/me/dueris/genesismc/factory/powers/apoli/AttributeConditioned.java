@@ -26,9 +26,9 @@ public class AttributeConditioned extends CraftPower implements Listener {
     private static final HashMap<Player, Boolean> applied = new HashMap<>();
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
-        BinaryOperator operator = Utils.getOperationMappingsDouble().get(operation);
+        BinaryOperator<Double> operator = Utils.getOperationMappingsDouble().get(operation);
         if (operator != null) {
-            double result = Double.valueOf(String.valueOf(operator.apply(base_value, value)));
+            double result = Double.parseDouble(String.valueOf(operator.apply(base_value, value)));
             p.getAttribute(attribute_modifier).setBaseValue(result);
         } else {
             Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
@@ -47,9 +47,9 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     double val = modifier.value();
                     double baseVal = p.getAttribute(attribute_modifier).getBaseValue();
                     String operation = modifier.operation();
-                    BinaryOperator operator = Utils.getOperationMappingsDouble().get(operation);
+                    BinaryOperator<Double> operator = Utils.getOperationMappingsDouble().get(operation);
                     if (operator != null) {
-                        double result = Double.valueOf(String.valueOf(operator.apply(baseVal, val)));
+                        double result = Double.parseDouble(String.valueOf(operator.apply(baseVal, val)));
                         p.getAttribute(attribute_modifier).setBaseValue(result);
                     } else {
                         Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
@@ -93,7 +93,6 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     if (!applied.containsKey(p)) {
                         applied.put(p, false);
                     }
-                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (!applied.get(p)) {
                             executeConditionAttribute(p);

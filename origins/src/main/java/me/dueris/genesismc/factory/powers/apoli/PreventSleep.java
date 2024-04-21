@@ -22,18 +22,11 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 import static org.bukkit.Material.*;
 
 public class PreventSleep extends CraftPower implements Listener {
-
     public static EnumSet<Material> beds;
 
     static {
         beds = EnumSet.of(WHITE_BED, LIGHT_GRAY_BED, GRAY_BED, BLACK_BED, BROWN_BED, RED_BED, ORANGE_BED, YELLOW_BED, LIME_BED, GREEN_BED,
             CYAN_BED, LIGHT_BLUE_BED, BLUE_BED, PURPLE_BED, MAGENTA_BED, PINK_BED);
-    }
-
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @EventHandler

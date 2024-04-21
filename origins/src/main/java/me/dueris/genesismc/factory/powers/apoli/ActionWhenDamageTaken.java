@@ -20,11 +20,6 @@ import java.util.ArrayList;
 
 public class ActionWhenDamageTaken extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void d(EntityDamageEvent e) {
         if (e.getDamage() == 0 || e.isCancelled()) return;

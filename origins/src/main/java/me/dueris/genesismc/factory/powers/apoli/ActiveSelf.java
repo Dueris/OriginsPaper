@@ -20,16 +20,10 @@ import java.util.ArrayList;
 
 public class ActiveSelf extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void k(KeybindTriggerEvent e) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (getPowerArray().contains(e.getPlayer())) {
-                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (CooldownUtils.isPlayerInCooldownFromTag(e.getPlayer(), Utils.getNameOrTag(power))) continue;
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {

@@ -25,19 +25,14 @@ import java.util.function.BinaryOperator;
 
 public class ModifyVelocityPower extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
-        // do nothing
-    }
-
     @EventHandler
-    public void velcotiyWEEEEEEEE(PlayerVelocityEvent e) {
+    public void velocityModify(PlayerVelocityEvent e) {
         if (getPowerArray().contains(e.getPlayer())) {
             Player p = e.getPlayer();
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        List<String> identifiers = power.getJsonArray("axes").asList().stream().map(FactoryElement::getString).toList();
+                        List<String> identifiers = new ArrayList<>(power.getJsonArray("axes").asList().stream().map(FactoryElement::getString).toList());
                         if (identifiers.isEmpty()) {
                             identifiers.add("x");
                             identifiers.add("y");
@@ -49,13 +44,13 @@ public class ModifyVelocityPower extends CraftPower implements Listener {
                             String operation = modifier.operation();
                             BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
                             for (String axis : identifiers) {
-                                if (axis == "x") {
+                                if (axis.equals("x")) {
                                     vel.setX((float) mathOperator.apply(vel.getX(), value));
                                 }
-                                if (axis == "y") {
+                                if (axis.equals("y")) {
                                     vel.setY((float) mathOperator.apply(vel.getY(), value));
                                 }
-                                if (axis == "z") {
+                                if (axis.equals("z")) {
                                     vel.setZ((float) mathOperator.apply(vel.getZ(), value));
                                 }
                             }

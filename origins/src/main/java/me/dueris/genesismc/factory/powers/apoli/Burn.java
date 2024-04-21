@@ -15,8 +15,6 @@ import java.util.ArrayList;
 
 public class Burn extends CraftPower {
 
-    private Long interval;
-
     @Override
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
@@ -27,19 +25,18 @@ public class Burn extends CraftPower {
                         throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
                     }
 
-                    interval = power.getNumber("interval").getLong();
+                    long interval = power.getNumber("interval").getLong();
                     if (interval == 0) interval = 1L;
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
                         if (p.isInWaterOrRainOrBubbleColumn()) return;
                         if (p.getGameMode() == GameMode.CREATIVE) return;
-                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
 
-                            Long burn_duration = power.getNumberOrDefault("burn_duration", 100L).getLong();
-                            p.setFireTicks(burn_duration.intValue() * 20);
+                            long burn_duration = power.getNumberOrDefault("burn_duration", 100L).getLong();
+                            p.setFireTicks((int) burn_duration * 20);
                         } else {
                             setActive(p, power.getTag(), false);
                         }

@@ -23,22 +23,13 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 
 public class PreventEntityRender extends CraftPower {
 
-    private final int ticksE;
-    private Long interval;
-
-    public PreventEntityRender() {
-        this.interval = 12L;
-        this.ticksE = 0;
-    }
-
-
     @Override
     public void run(Player p) {
         if (GenesisMC.disableRender) return;
         if (getPowerArray().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    interval = 20L;
+                    long interval = 20L;
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {

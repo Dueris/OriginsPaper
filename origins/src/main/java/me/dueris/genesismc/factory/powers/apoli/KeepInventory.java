@@ -16,13 +16,11 @@ import java.util.ArrayList;
 
 public class KeepInventory extends CraftPower implements Listener {
 
-
     @EventHandler
     public void keepinv(PlayerDeathEvent e) {
         Player player = e.getEntity();
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (keep_inventory.contains(player)) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
                         ArrayList<Long> slots = new ArrayList<>();
@@ -46,11 +44,6 @@ public class KeepInventory extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override

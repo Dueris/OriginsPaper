@@ -15,7 +15,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 
 public class PreventSprinting extends CraftPower {
 
-
     @Override
     public void run(Player p) {
         if (prevent_sprinting.contains(p)) {

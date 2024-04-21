@@ -20,11 +20,6 @@ import java.util.ArrayList;
 
 public class ActionOnDeath extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void d(EntityDeathEvent e) {
         if (e.getEntity() instanceof Player p) {

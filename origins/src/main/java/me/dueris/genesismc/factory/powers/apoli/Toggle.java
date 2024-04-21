@@ -2,6 +2,8 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
+import me.dueris.genesismc.event.OriginChangeEvent;
+import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -45,6 +47,18 @@ public class Toggle extends CraftPower implements Listener {
         }
     }
 
+    @EventHandler
+    public void activeByDefault(OriginChangeEvent e) {
+        e.getOrigin().getPowerContainers().forEach(power -> {
+            if (power.getType().equalsIgnoreCase(getPowerFile()) && power.getBooleanOrDefault("active_by_default", true)) {
+                in_continuous.putIfAbsent(e.getPlayer(), new ArrayList<>());
+                if (in_continuous.get(e.getPlayer()).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active")))
+                    return;
+                in_continuous.get(e.getPlayer()).add(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
+                execute(e.getPlayer(), power);
+            }
+        });
+    }
 
     @EventHandler
     public void keybindPress(KeybindTriggerEvent e) {
@@ -86,11 +100,6 @@ public class Toggle extends CraftPower implements Listener {
                 setActive(p, power.getTag(), true);
             }
         }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override

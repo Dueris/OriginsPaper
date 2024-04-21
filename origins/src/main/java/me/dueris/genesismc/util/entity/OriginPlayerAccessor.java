@@ -5,7 +5,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.ApoliPower;
-import me.dueris.genesismc.factory.powers.apoli.GravityPower;
+import me.dueris.genesismc.factory.powers.genesismc.GravityPower;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 
 import static me.dueris.genesismc.screen.ScreenNavigator.inChoosingLayer;
@@ -39,9 +41,9 @@ import static me.dueris.genesismc.screen.ScreenNavigator.inChoosingLayer;
 public class OriginPlayerAccessor implements Listener {
 
     // Power maps of every power based on each layer applied to the player
-    public static HashMap<Player, HashMap<Layer, ArrayList<Power>>> playerPowerMapping = new HashMap<>();
+    public static ConcurrentHashMap<Player, HashMap<Layer, ConcurrentLinkedQueue<Power>>> playerPowerMapping = new ConcurrentHashMap<>();
     // A list of CraftPowers to be ran on the player
-    public static HashMap<Player, ArrayList<ApoliPower>> powersAppliedList = new HashMap<>();
+    public static ConcurrentHashMap<Player, ConcurrentLinkedQueue<ApoliPower>> powersAppliedList = new ConcurrentHashMap<>();
     // A list of Players that have powers that should be run
     public static ArrayList<Player> hasPowers = new ArrayList<>();
     /**
@@ -94,11 +96,11 @@ public class OriginPlayerAccessor implements Listener {
     public static void setupPowers(Player p) {
         OriginDataContainer.loadData(p);
         String[] layers = OriginDataContainer.getLayer(p).split("\n");
-        HashMap<Layer, ArrayList<Power>> map = new HashMap<>();
+        HashMap<Layer, ConcurrentLinkedQueue<Power>> map = new HashMap<>();
         for (String layer : layers) {
             String[] layerData = layer.split("\\|");
             Layer layerContainer = CraftApoli.getLayerFromTag(layerData[0]);
-            ArrayList<Power> powers = new ArrayList<>();
+            ConcurrentLinkedQueue<Power> powers = new ConcurrentLinkedQueue<Power>();
             // setup powers
             for (String dataPiece : layerData) {
                 if (layerData.length == 1) continue;
@@ -197,8 +199,8 @@ public class OriginPlayerAccessor implements Listener {
         return player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN);
     }
 
-    public static List<ApoliPower> getPowersApplied(Player p) {
-        if (!powersAppliedList.containsKey(p)) powersAppliedList.put(p, new ArrayList<>());
+    public static ConcurrentLinkedQueue<ApoliPower> getPowersApplied(Player p) {
+        if (!powersAppliedList.containsKey(p)) powersAppliedList.put(p, new ConcurrentLinkedQueue<ApoliPower>());
         return powersAppliedList.get(p);
     }
 
@@ -224,37 +226,33 @@ public class OriginPlayerAccessor implements Listener {
         duplicates.forEach(power -> getPowersApplied(p).remove(power));
     }
 
-    private static boolean applyPower(Player player, Power power) {
+    public static boolean applyPower(Player player, Power power) {
         if (power == null) return false;
-        String name = power.getType();
-        if (name.equalsIgnoreCase("apoli:simple")) {
-            name = power.getTag();
-        }
+        String name = power.getType().equalsIgnoreCase("apoli:simple") ? power.getTag() : power.getType();
         ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
         if (c != null) {
             c.getPowerArray().add(player);
-            if (!powersAppliedList.containsKey(player)) {
-                ArrayList lst = new ArrayList<>();
-                lst.add(c);
-                powersAppliedList.put(player, lst);
-            } else {
-                powersAppliedList.get(player).add(c);
-            }
+            if (!powersAppliedList.containsKey(player))
+                powersAppliedList.put(player, new ConcurrentLinkedQueue<ApoliPower>(List.of(c)));
+            else powersAppliedList.get(player).add(c);
+            if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true"))
+                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
+            new PowerUpdateEvent(player, power, false).callEvent();
             return true;
         }
         return false;
     }
 
-    private static boolean removePower(Player player, Power power) {
+    public static boolean removePower(Player player, Power power) {
         if (power == null) return false;
-        String name = power.getType();
-        if (name.equalsIgnoreCase("apoli:simple")) {
-            name = power.getTag();
-        }
+        String name = power.getType().equalsIgnoreCase("apoli:simple") ? power.getTag() : power.getType();
         ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
         if (c != null) {
             powersAppliedList.get(player).remove(c);
             c.getPowerArray().remove(player);
+            new PowerUpdateEvent(player, power, true).callEvent();
+            if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true"))
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
             return true;
         }
         return false;
@@ -286,23 +284,17 @@ public class OriginPlayerAccessor implements Listener {
 
     public static void unassignPowers(@NotNull Player player, Layer layer) throws NotFoundException {
         try {
-            List<Power> powersToExecute = new ArrayList<>();
             CompletableFuture.runAsync(() -> {
+                if (layer == null) {
+                    GenesisMC.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
+                    return;
+                }
                 for (Power power : playerPowerMapping.get(player).get(layer)) {
-                    if (removePower(player, power)) {
-                        if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
-                        }
-                        powersToExecute.add(power);
-                    }
+                    removePower(player, power);
                 }
             }).thenRun(() -> {
                 OriginDataContainer.unloadData(player);
             }).get();
-
-            powersToExecute.forEach((power) -> {
-                new PowerUpdateEvent(player, power, true).callEvent();
-            });
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -310,29 +302,19 @@ public class OriginPlayerAccessor implements Listener {
 
     public static void assignPowers(@NotNull Player player, Layer layer) throws InstantiationException, IllegalAccessException, NotFoundException, IllegalArgumentException, NoSuchFieldException, SecurityException {
         try {
-            List<Power> powersToExecute = new ArrayList<>();
             CompletableFuture.runAsync(() -> {
                 if (layer == null) {
                     GenesisMC.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
                     return;
                 }
                 for (Power power : playerPowerMapping.get(player).get(layer)) {
-                    if (applyPower(player, power)) {
-                        if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                            Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
-                        }
-                        powersToExecute.add(power);
-                    }
+                    applyPower(player, power);
                 }
             }).thenRun(() -> {
                 OriginDataContainer.loadData(player);
                 setupPowers(player);
                 hasPowers.add(player);
             }).get();
-
-            powersToExecute.forEach((power) -> {
-                new PowerUpdateEvent(player, power, false).callEvent();
-            });
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }

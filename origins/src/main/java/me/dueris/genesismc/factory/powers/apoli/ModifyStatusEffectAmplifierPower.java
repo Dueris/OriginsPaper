@@ -23,7 +23,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyStatusEffectAmplifierPower extends CraftPower implements Listener {
 
-
     @EventHandler
     public void runD(EntityPotionEffectEvent e) {
         if (e.getEntity() instanceof Player p) {
@@ -41,7 +40,7 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
                                     BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
                                     if (mathOperator != null) {
                                         float result = (float) mathOperator.apply(effect.getAmplifier(), value);
-                                        effect.withAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result))));
+                                        effect.withAmplifier(Math.toIntExact(Long.parseLong(String.valueOf(result))));
                                     }
                                 }
 
@@ -54,7 +53,7 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
                                     BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
                                     if (mathOperator != null) {
                                         float result = (float) mathOperator.apply(effect.getAmplifier(), value);
-                                        effect.withAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result))));
+                                        effect.withAmplifier(Math.toIntExact(Long.parseLong(String.valueOf(result))));
                                     }
                                 }
                             }
@@ -66,11 +65,6 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
 
             }
         }
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override

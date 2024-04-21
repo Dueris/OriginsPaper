@@ -24,12 +24,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyDamageTakenPower extends CraftPower implements Listener {
 
-
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler(priority = EventPriority.HIGHEST)
     public void damageEVENT(EntityDamageEvent e) {
         if (e.isCancelled()) return;
@@ -56,7 +50,7 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
                         }
                     }
                 } catch (Exception ev) {
-//                    throw new RuntimeException();
+                    ev.printStackTrace();
                 }
             }
         }

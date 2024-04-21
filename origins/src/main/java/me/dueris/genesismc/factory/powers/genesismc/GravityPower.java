@@ -1,4 +1,4 @@
-package me.dueris.genesismc.factory.powers.apoli;
+package me.dueris.genesismc.factory.powers.genesismc;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.dueris.genesismc.GenesisMC;
@@ -22,7 +22,6 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 
 public class GravityPower extends CraftPower implements Listener {
-
 
     @Override
     public void run(Player p) {

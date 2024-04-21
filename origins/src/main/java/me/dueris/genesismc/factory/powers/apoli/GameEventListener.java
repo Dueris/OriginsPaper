@@ -16,10 +16,6 @@ import org.bukkit.event.world.GenericGameEvent;
 import java.util.ArrayList;
 
 public class GameEventListener extends CraftPower implements Listener {
-    @Override
-    public void run(Player p) {
-
-    }
 
     @EventHandler
     public void event(GenericGameEvent e) {

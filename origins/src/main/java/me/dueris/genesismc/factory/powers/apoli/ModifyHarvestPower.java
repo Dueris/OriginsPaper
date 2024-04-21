@@ -45,11 +45,6 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
     }
 
     @Override
-    public void run(Player p) {
-
-    }
-
-    @Override
     public String getPowerFile() {
         return "apoli:modify_harvest";
     }

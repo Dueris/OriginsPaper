@@ -29,9 +29,9 @@ import java.util.function.BinaryOperator;
 public class AttributeHandler extends CraftPower implements Listener {
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, double value) {
-        BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
+        BinaryOperator<Double> mathOperator = Utils.getOperationMappingsDouble().get(operation);
         if (mathOperator != null) {
-            double result = (double) mathOperator.apply(base_value, value);
+            double result = mathOperator.apply(base_value, value);
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
         } else {
             Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
@@ -83,7 +83,7 @@ public class AttributeHandler extends CraftPower implements Listener {
                         double base_value = p.getAttribute(attribute_modifier).getBaseValue();
                         String operation = modifier.operation();
                         executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-                        AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), power);
+                        AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power, e.isAsynchronous());
                         Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
                         setActive(p, power.getTag(), true);
                         p.sendHealthUpdate();
@@ -93,11 +93,6 @@ public class AttributeHandler extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override

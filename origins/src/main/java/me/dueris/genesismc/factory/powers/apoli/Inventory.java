@@ -27,6 +27,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Inventory extends CraftPower implements Listener {
 
@@ -42,8 +43,7 @@ public class Inventory extends CraftPower implements Listener {
                             ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(p, power.getTag());
                             org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
 
-                            vaultItems.stream()
-                                .forEach(itemStack -> vault.addItem(itemStack));
+                            vaultItems.forEach(vault::addItem);
                             for (ItemStack item : vault.getContents()) {
                                 if (item != null && item.getType() != Material.AIR) {
                                     p.getWorld().dropItemNaturally(p.getLocation(), item);
@@ -53,10 +53,8 @@ public class Inventory extends CraftPower implements Listener {
                             ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
                             Arrays.stream(vault.getContents())
-                                .filter(itemStack -> {
-                                    return itemStack != null;
-                                })
-                                .forEach(itemStack -> prunedItems.add(itemStack));
+                                .filter(Objects::nonNull)
+                                .forEach(prunedItems::add);
 
                             InventorySerializer.storeItems(prunedItems, p, power.getTag());
                             vault.clear();
@@ -79,8 +77,7 @@ public class Inventory extends CraftPower implements Listener {
                         if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), e.getPlayer())) {
                             ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(e.getPlayer(), power.getTag());
                             org.bukkit.inventory.Inventory vault = ContainerType.getContainerType(power.getString("container_type")).createInventory(e.getPlayer(), Utils.createIfPresent(power.getString("title")));
-                            vaultItems.stream()
-                                .forEach(itemStack -> vault.addItem(itemStack));
+                            vaultItems.forEach(vault::addItem);
                             e.getPlayer().openInventory(vault);
                         }
                     } else {
@@ -101,8 +98,7 @@ public class Inventory extends CraftPower implements Listener {
                         ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(p, power.getTag());
                         org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
 
-                        vaultItems.stream()
-                            .forEach(itemStack -> vault.addItem(itemStack));
+                        vaultItems.forEach(vault::addItem);
                         for (ItemStack item : vault.getContents()) {
                             if (item != null && item.getType() != Material.AIR) {
                                 p.getWorld().dropItemNaturally(p.getLocation(), item);
@@ -112,10 +108,8 @@ public class Inventory extends CraftPower implements Listener {
                         ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
                         Arrays.stream(vault.getContents())
-                            .filter(itemStack -> {
-                                return itemStack != null;
-                            })
-                            .forEach(itemStack -> prunedItems.add(itemStack));
+                            .filter(Objects::nonNull)
+                            .forEach(prunedItems::add);
 
                         InventorySerializer.storeItems(prunedItems, p, power.getTag());
                         vault.clear();
@@ -123,11 +117,6 @@ public class Inventory extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override

@@ -21,11 +21,6 @@ import java.util.ArrayList;
 
 public class ActionOnCallback extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void choose(OriginChangeEvent e) {
         Player actor = e.getPlayer();

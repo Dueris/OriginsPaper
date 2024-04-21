@@ -19,15 +19,6 @@ import java.util.ArrayList;
 
 public class ActionOnItemUse extends CraftPower implements Listener {
 
-    public ActionOnItemUse() {
-
-    }
-
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void entityRightClick(PlayerInteractEvent e) {
         Player player = e.getPlayer(); // aka "actor"

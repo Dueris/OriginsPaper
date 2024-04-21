@@ -13,10 +13,10 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 
 public class Invisibility extends CraftPower {
+
     @Override
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
-            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
             boolean shouldSetInvisible = false;
 
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {

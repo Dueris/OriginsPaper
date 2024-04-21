@@ -36,19 +36,7 @@ import java.util.concurrent.ExecutionException;
 
 public class ModelColor { // Left empty due to it needing to be registered on certain circumstances
 
-    public ModelColor() {
-
-    }
-
     public static class ModelTransformer extends CraftPower implements Listener, DontRegister {
-        public ModelTransformer() {
-
-        }
-
-        @Override
-        public void run(Player p) {
-
-        }
 
         public void applyModelTransformer(ModelColorAPI api, SkinsRestorer skinsRestorer, Player p, Power power) {
             PlayerStorage storage = skinsRestorer.getPlayerStorage();
@@ -57,8 +45,7 @@ public class ModelColor { // Left empty due to it needing to be registered on ce
                 if (property.isPresent()) {
                     String currentSkinURL = PropertyUtils.getSkinTextureUrl(property.get());
                     String uuid = p.getUniqueId().toString();
-                    String originalFile = uuid;
-                    String modifiedFile = originalFile + "_modified";
+                    String modifiedFile = uuid + "_modified";
                     double r = power.getNumberOrDefault("red", 0.0f).getDouble();
                     double g = power.getNumberOrDefault("green", 0.0f).getDouble();
                     double b = power.getNumberOrDefault("blue", 0.0f).getDouble();
@@ -66,7 +53,7 @@ public class ModelColor { // Left empty due to it needing to be registered on ce
                     CompletableFuture.runAsync(() -> {
                         try {
                             // Generate skin files
-                            BufferedImage currentSkin = api.createSourceFile(currentSkinURL, originalFile);
+                            BufferedImage currentSkin = api.createSourceFile(currentSkinURL, uuid);
                             File modifiedSkin = api.createTransformed(currentSkin, new OriginsTransformer(), modifiedFile, r, g, b);
 
                             MineskinClient client = new MineskinClient();
@@ -141,7 +128,7 @@ public class ModelColor { // Left empty due to it needing to be registered on ce
                     powers_active.get(p).put(tag, bool);
                 }
             } else {
-                powers_active.put(p, new HashMap());
+                powers_active.put(p, new HashMap<>());
                 setActive(p, tag, bool);
             }
         }

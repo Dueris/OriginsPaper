@@ -409,7 +409,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         BukkitRunnable[] independentTickers = {new GuiTicker(), new ContentTicker(), new OriginCommand()};
         WaterBreathe.start();
         for (BukkitRunnable runnable : independentTickers) {
-            runnable.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+            runnable.runTaskTimerAsynchronously(GenesisMC.getPlugin(), 0, 1);
         }
 
         EntityGroupManager.INSTANCE.startTick();

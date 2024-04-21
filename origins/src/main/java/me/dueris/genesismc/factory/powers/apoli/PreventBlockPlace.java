@@ -20,11 +20,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 
 public class PreventBlockPlace extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void blockBreak(BlockPlaceEvent e) {
         if (prevent_block_place.contains(e.getPlayer())) {

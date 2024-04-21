@@ -48,11 +48,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
  */
 public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void powerRemove(PowerUpdateEvent e) {
         if (e.isRemoved() && e.getPower().getType().equals(getPowerFile())) {
@@ -100,7 +95,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
         if (false || !(entity instanceof net.minecraft.world.entity.player.Player playerEntity)) return;
 
         ServerPlayer serverPlayer = (ServerPlayer) playerEntity;
-        Pair<ServerLevel, BlockPos> newSpawn = getSpawn(false, entity, power);
+        Pair<ServerLevel, BlockPos> newSpawn = getSpawn(entity, power);
 
         if (newSpawn == null) return;
         ServerLevel newSpawnDimension = newSpawn.getFirst();
@@ -115,7 +110,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     }
 
-    public Pair<ServerLevel, BlockPos> getSpawn(boolean isSpawnObstructed, Entity entity, Power power) {
+    public Pair<ServerLevel, BlockPos> getSpawn(Entity entity, Power power) {
         SpawnStrategy spawnStrategy = SpawnStrategy.valueOf(power.getStringOrDefault("spawn_strategy", "default").toUpperCase());
         ResourceKey<Level> dimension = getDimension(power);
         float dimensionDistanceMultiplier = power.getNumberOrDefault("dimension_distance_multiplier", 1f).getFloat();
@@ -186,7 +181,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
         }
     }
 
-    private Optional<Pair<BlockPos, Structure>> getStructurePos(ServerLevel world, Power power, Entity entity) {
+    private Optional<Pair<BlockPos, Structure>> getStructurePos(ServerLevel world, Power power) {
         NamespacedKey key = NamespacedKey.fromString(power.getString("structure"));
         Registry<Structure> structureRegistry = CraftRegistry.getMinecraftRegistry().registry(Registries.STRUCTURE).get();
         ResourceKey<Structure> stRk = GenesisMC.server.registryAccess().registry(Registries.STRUCTURE).get().getResourceKey(structureRegistry.get(CraftNamespacedKey.toMinecraft(key))).get();
@@ -214,7 +209,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
     private Optional<Vec3> getSpawnPos(ServerLevel targetDimension, BlockPos originPos, int range, Power power, Entity entity) {
         if (!power.isPresent("structure")) return getValidSpawn(targetDimension, originPos, range, entity);
 
-        Optional<Pair<BlockPos, Structure>> targetStructure = getStructurePos(targetDimension, power, entity);
+        Optional<Pair<BlockPos, Structure>> targetStructure = getStructurePos(targetDimension, power);
         if (targetStructure.isEmpty()) return Optional.empty();
 
         BlockPos targetStructurePos = targetStructure.get().getFirst();

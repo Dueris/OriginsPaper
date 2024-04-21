@@ -49,11 +49,6 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
     }
 
     @Override
-    public void run(Player p) {
-
-    }
-
-    @Override
     public String getPowerFile() {
         return "apoli:action_on_being_used";
     }

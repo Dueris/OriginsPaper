@@ -15,11 +15,6 @@ import java.util.ArrayList;
 
 public class NightVision extends CraftPower {
 
-    public NightVision() {
-
-    }
-
-
     @Override
     public void run(Player p) {
         if (night_vision.contains(p)) {
@@ -34,8 +29,6 @@ public class NightVision extends CraftPower {
                 }
             }
         }
-
-        // }
     }
 
     public int roundNumber(double num) {

@@ -12,7 +12,7 @@ public class PowerUpdateEvent extends PlayerEvent {
     private static boolean removed;
 
     public PowerUpdateEvent(@NotNull Player who, Power power, boolean removed) {
-        super(who);
+        super(who, true);
         PowerUpdateEvent.power = power;
         PowerUpdateEvent.removed = removed;
     }

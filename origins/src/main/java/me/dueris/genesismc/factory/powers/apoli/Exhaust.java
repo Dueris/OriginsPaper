@@ -15,13 +15,6 @@ import java.util.ArrayList;
 
 public class Exhaust extends CraftPower {
 
-    private Long interval;
-
-    public Exhaust() {
-        this.interval = 1L;
-    }
-
-
     @Override
     public void run(Player p) {
         if (more_exhaustion.contains(p)) {
@@ -31,7 +24,7 @@ public class Exhaust extends CraftPower {
                     if (!power.isPresent("interval")) {
                         throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
                     }
-                    interval = power.getNumber("interval").getLong();
+                    long interval = power.getNumberOrDefault("interval", 20L).getLong();
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {

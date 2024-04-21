@@ -27,7 +27,6 @@ import static me.dueris.genesismc.factory.powers.apoli.FireProjectile.in_continu
 
 public class Launch extends CraftPower implements Listener {
 
-
     @EventHandler
     public void inContinuousFix(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
@@ -54,7 +53,6 @@ public class Launch extends CraftPower implements Listener {
                                 String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
                                 KeybindingUtils.toggleKey(p, key);
                                 final int[] times = {-1};
-                                boolean cont = !power.getJsonObject("key").getBooleanOrDefault("continuous", false);
                                 new BukkitRunnable() {
                                     @Override
                                     public void run() {
@@ -88,11 +86,6 @@ public class Launch extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override

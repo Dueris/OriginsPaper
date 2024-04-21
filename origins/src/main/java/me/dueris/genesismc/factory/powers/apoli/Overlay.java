@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class Overlay extends CraftPower implements Listener {
 
-
     @EventHandler
     public void remove(PowerUpdateEvent e) {
         if (e.isRemoved() && e.getPower().getType().equals(getPowerFile())) {

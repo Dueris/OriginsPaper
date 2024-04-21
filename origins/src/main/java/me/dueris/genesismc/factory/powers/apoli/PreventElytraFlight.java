@@ -18,7 +18,6 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 
 public class PreventElytraFlight extends CraftPower implements Listener {
 
-
     @EventHandler
     public void run(EntityToggleGlideEvent e) {
         if (e.getEntity() instanceof Player p) {
@@ -35,11 +34,6 @@ public class PreventElytraFlight extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override

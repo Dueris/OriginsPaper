@@ -20,27 +20,21 @@ import java.util.ArrayList;
 
 public class ActionOnHit extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void action(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Player p) {
-            Player actor = p;
             Entity target = e.getEntity();
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 if (getPowerArray().contains(p)) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) actor))
+                        if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p))
                             return;
                         if (!ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) return;
-                        if (!ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
+                        if (!ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) target))
                             return;
                         setActive(p, power.getTag(), true);
-                        Actions.executeEntity(actor, power.getJsonObject("entity_action"));
-                        Actions.executeBiEntity(actor, target, power.getJsonObject("bientity_action"));
+                        Actions.executeEntity(p, power.getJsonObject("entity_action"));
+                        Actions.executeBiEntity(p, target, power.getJsonObject("bientity_action"));
                         new BukkitRunnable() {
                             @Override
                             public void run() {

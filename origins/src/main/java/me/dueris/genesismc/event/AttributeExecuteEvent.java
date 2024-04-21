@@ -10,13 +10,11 @@ import org.jetbrains.annotations.NotNull;
 public class AttributeExecuteEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
     Attribute attribute;
-    String powerdata;
     Power power;
 
-    public AttributeExecuteEvent(@NotNull Player who, Attribute attribute, String powerdata, Power power) {
-        super(who);
+    public AttributeExecuteEvent(@NotNull Player who, Attribute attribute, Power power, boolean async) {
+        super(who, async);
         this.attribute = attribute;
-        this.powerdata = powerdata;
         this.power = power;
     }
 
@@ -33,10 +31,6 @@ public class AttributeExecuteEvent extends PlayerEvent {
         return attribute;
     }
 
-    public String getPowerData() {
-        return powerdata;
-    }
-
     public Power getPower() {
         return power;
     }
@@ -45,7 +39,6 @@ public class AttributeExecuteEvent extends PlayerEvent {
     public String toString() {
         return "AttributeExecuteEvent{" +
             "attribute=" + attribute +
-            ", powerdata='" + powerdata + '\'' +
             ", power=" + power +
             ", player=" + player +
             '}';

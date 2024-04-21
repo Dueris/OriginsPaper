@@ -16,13 +16,11 @@ import java.util.ArrayList;
 
 public class DisableRegeneration extends CraftPower implements Listener {
 
-
     @EventHandler
     public void disable(EntityRegainHealthEvent e) {
         if (e.getEntity() instanceof Player p) {
             if (disable_regen.contains(p)) {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                    ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
@@ -37,11 +35,6 @@ public class DisableRegeneration extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override

@@ -7,7 +7,6 @@ import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -33,15 +32,11 @@ public class EntityGlowPower extends CraftPower {
             if (entity_glow.contains(p)) {
                 Collection<Entity> entitiesWithinRadius = getEntitiesInRadius(p, 10);
                 for (Entity entity : entitiesWithinRadius) {
-                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) &&
                             ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) entity) &&
                             ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), (CraftEntity) entity)
                         ) {
-                            CraftPlayer craftPlayer = (CraftPlayer) p;
-//                                MobEffect effect = MobEffects.GLOWING;
-//                                craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(entity.getEntityId(), new MobEffectInstance(effect, 60, 2, false, false, false)));
                             if (!entity.isGlowing()) {
                                 entity.setGlowing(true);
                             }

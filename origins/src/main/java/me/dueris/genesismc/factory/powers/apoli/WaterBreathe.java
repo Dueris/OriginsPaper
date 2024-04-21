@@ -12,7 +12,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffects;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
@@ -24,7 +27,6 @@ import org.bukkit.event.entity.EntityAirChangeEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class WaterBreathe extends CraftPower implements Listener {
     private static final ArrayList<Player> genesisExecuting = new ArrayList<>();
@@ -124,11 +126,6 @@ public class WaterBreathe extends CraftPower implements Listener {
             }
 
         }
-    }
-
-    private void spawnBubbleLooseParticle(Location location) {
-        Random r = new Random();
-        location.getWorld().spawnParticle(Particle.WATER_BUBBLE, location, r.nextInt(7));
     }
 
     @Override

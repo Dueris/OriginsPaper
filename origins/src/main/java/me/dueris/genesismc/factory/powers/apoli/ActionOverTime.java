@@ -17,13 +17,6 @@ import java.util.HashMap;
 public class ActionOverTime extends CraftPower {
 
     private static final HashMap<String /*tag*/, Boolean /*allowed*/> taggedAllowedMap = new HashMap<>();
-    private final int ticksE;
-    private Long interval;
-
-    public ActionOverTime() {
-        this.interval = 1L;
-        this.ticksE = 0;
-    }
 
     @Override
     public void run(Player p) {
@@ -32,7 +25,7 @@ public class ActionOverTime extends CraftPower {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
 
-                    interval = power.getNumberOrDefault("interval", 20L).getLong();
+                    long interval = power.getNumberOrDefault("interval", 20L).getLong();
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {

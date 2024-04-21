@@ -10,7 +10,7 @@ public class OriginChoosePromptEvent extends PlayerEvent {
     private boolean canceled = false;
 
     public OriginChoosePromptEvent(@NotNull Player who) {
-        super(who);
+        super(who, true);
     }
 
     public static HandlerList getHandlerList() {

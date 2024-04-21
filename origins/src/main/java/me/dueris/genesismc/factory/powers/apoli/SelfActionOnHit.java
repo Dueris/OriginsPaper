@@ -20,14 +20,8 @@ import java.util.ArrayList;
 
 public class SelfActionOnHit extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void s(EntityDamageByEntityEvent e) {
-        Entity actor = e.getEntity();
         Entity target = e.getDamager();
 
         if (!(target instanceof Player player)) return;

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 public class Swimming extends CraftPower {
 
-
     @Override
     public void run(Player p) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {

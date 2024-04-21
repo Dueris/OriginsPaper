@@ -35,11 +35,6 @@ public class ActionOnItemPickup extends CraftPower implements Listener {
     }
 
     @Override
-    public void run(Player p) {
-
-    }
-
-    @Override
     public String getPowerFile() {
         return "apoli:action_on_item_pickup";
     }

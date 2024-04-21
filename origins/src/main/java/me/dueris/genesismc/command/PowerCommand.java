@@ -21,6 +21,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
@@ -76,9 +77,8 @@ public class PowerCommand {
                                 EntityArgument.getPlayers(context, "targets").forEach(player -> {
                                     if (OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()) != null) {
                                         Power poweR = ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
-                                        ArrayList<Power> powersToEdit = new ArrayList<>();
+                                        ArrayList<Power> powersToEdit = new ArrayList<>(CraftApoli.getNestedPowers(poweR));
                                         powersToEdit.add(poweR);
-                                        powersToEdit.addAll(CraftApoli.getNestedPowers(poweR));
                                         for (Power power : powersToEdit) {
                                             try {
                                                 PowerUtils.grant(context.getSource().getBukkitSender(), power, player.getBukkitEntity(), CraftApoli.getLayerFromTag("apoli:command"));
@@ -94,9 +94,8 @@ public class PowerCommand {
                                     EntityArgument.getPlayers(context, "targets").forEach(player -> {
                                         if (OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()) != null) {
                                             Power poweR = ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
-                                            ArrayList<Power> powersToEdit = new ArrayList<>();
+                                            ArrayList<Power> powersToEdit = new ArrayList<>(CraftApoli.getNestedPowers(poweR));
                                             powersToEdit.add(poweR);
-                                            powersToEdit.addAll(CraftApoli.getNestedPowers(poweR));
                                             for (Power power : powersToEdit) {
                                                 try {
                                                     PowerUtils.grant(context.getSource().getBukkitSender(), power, player.getBukkitEntity(), CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()));
@@ -149,7 +148,7 @@ public class PowerCommand {
                         .executes(context -> {
                             for (ServerPlayer player : EntityArgument.getPlayers(context, "targets")) {
                                 for (Layer layerContainer : OriginCommand.commandProvidedLayers) {
-                                    java.util.List<Power> powers = OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()).get(layerContainer);
+                                    ConcurrentLinkedQueue<Power> powers = OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()).get(layerContainer);
                                     if (powers == null || powers.isEmpty()) {
                                         context.getSource().sendFailure(Component.literal("Entity %name% does not have any powers".replace("%name%", player.getBukkitEntity().getName())));
                                     } else {

@@ -22,11 +22,6 @@ import java.util.ArrayList;
 
 public class TargetActionOnHit extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
-
-    }
-
     @EventHandler
     public void s(EntityDamageByEntityEvent e) {
         Entity actor = e.getDamager();
