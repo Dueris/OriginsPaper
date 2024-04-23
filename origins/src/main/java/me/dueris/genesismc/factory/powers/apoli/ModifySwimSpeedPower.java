@@ -22,8 +22,8 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifySwimSpeedPower extends CraftPower {
 
-    String MODIFYING_KEY = "modify_swim_speed";
     private static final ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
+    String MODIFYING_KEY = "modify_swim_speed";
 
     @Override
     public void run(Player p, Power power) {

@@ -44,11 +44,9 @@ public class ConditionExecutor {
     }
 
     private static boolean isMetaCondition(FactoryJsonObject condition) {
-        return condition.isPresent("type") && (condition.getString("type").equals("apoli:and") ||
-            condition.getString("type").equals("apoli:chance") ||
-            condition.getString("type").equals("apoli:constant") ||
-            condition.getString("type").equals("apoli:not") ||
-            condition.getString("type").equals("apoli:or"));
+        String c = condition.getString("type");
+        return (c.equals("apoli:and") || c.equals("apoli:chance") || c.equals("apoli:constant")
+            || c.equals("apoli:not") || c.equals("apoli:or"));
     }
 
     private static boolean chance(FactoryJsonObject condition) {

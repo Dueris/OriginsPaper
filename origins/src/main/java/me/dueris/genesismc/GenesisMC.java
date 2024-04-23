@@ -49,7 +49,6 @@ import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.thread.NamedThreadFactory;
 import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -233,7 +232,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 return new JSONObject(Map.of("key", "key.origins.secondary_active"));
             }
         });
-        ThreadFactory threadFactory = new NamedThreadFactory("OriginParsingPool");
+        ThreadFactory threadFactory = new NamedTickThreadFactory("OriginParsingPool");
+        CraftPower.tryPreloadClass(AsyncTaskWorker.class); // Preload worker
         loaderThreadPool = Executors.newFixedThreadPool(CraftApoli.getDynamicThreadCount(), threadFactory);
         debugOrigins = getBooleanOrDefault(GenesisConfigs.getMainConfig().getBoolean("console-startup-debug") /* add arg compat in future version */, false);
         placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
@@ -430,6 +430,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         this.registry.clearRegistries();
         scheduler.cancel();
         EntityGroupManager.stop();
+        AsyncTaskWorker.shutdown();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

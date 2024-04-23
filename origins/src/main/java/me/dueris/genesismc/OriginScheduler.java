@@ -82,7 +82,7 @@ public class OriginScheduler {
                                     .replace("{a}", p.getName())
                                     .replace("{b}", power.getTag())
                                     .replace("{c}", c.getType())
-                                    .replace("{d}", throwable.getMessage()) + stacktrace[0]
+                                    .replace("{d}", throwable.getMessage() == null ? throwable.getClass().getSimpleName() : throwable.getMessage()) + stacktrace[0]
                             );
                         }
                     }

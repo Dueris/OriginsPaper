@@ -98,9 +98,11 @@ public interface ApoliPower extends Registrable {
         }
     }
 
-    default void run(Player p, Power power) { }
+    default void run(Player p, Power power) {
+    }
 
-    default void doesntHavePower(Player p) { }
+    default void doesntHavePower(Player p) {
+    }
 
     String getType();
 

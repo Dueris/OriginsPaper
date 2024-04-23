@@ -15,6 +15,18 @@ import java.util.ArrayList;
 
 public class Overlay extends CraftPower implements Listener {
 
+    public static void initializeOverlay(Player player) {
+        CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
+        border.setCenter(player.getWorld().getWorldBorder().getCenter());
+        border.setSize(player.getWorld().getWorldBorder().getSize());
+        border.setWarningDistance(999999999);
+        player.setWorldBorder(border);
+    }
+
+    public static void deactivateOverlay(Player player) {
+        player.setWorldBorder(player.getWorld().getWorldBorder());
+    }
+
     @EventHandler
     public void remove(PowerUpdateEvent e) {
         if (e.isRemoved() && e.getPower().getType().equals(getType())) {
@@ -36,18 +48,6 @@ public class Overlay extends CraftPower implements Listener {
     @Override
     public void doesntHavePower(Player p) {
         deactivateOverlay(p);
-    }
-
-    public static void initializeOverlay(Player player) {
-        CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
-        border.setCenter(player.getWorld().getWorldBorder().getCenter());
-        border.setSize(player.getWorld().getWorldBorder().getSize());
-        border.setWarningDistance(999999999);
-        player.setWorldBorder(border);
-    }
-
-    public static void deactivateOverlay(Player player) {
-        player.setWorldBorder(player.getWorld().getWorldBorder());
     }
 
     @Override

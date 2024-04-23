@@ -133,6 +133,7 @@ public class ChunkManagerWorld {
                 for (int z = 0; z < 16; z++) {
                     Location blockLocation = new Location(world, chunkX * 16 + x, y, chunkZ * 16 + z);
                     Block block = blockLocation.getBlock();
+                    if (block == null || block.getType().isAir()) continue;
                     blocks[index++] = block;
                 }
             }
@@ -183,7 +184,7 @@ public class ChunkManagerWorld {
                 for (int z = 0; z < 16; z++) {
                     Block block = chunk.getBlock(x, y, z);
                     // Reset the block to its default state (air for most blocks)
-                    block.setType(org.bukkit.Material.AIR);
+                    block.setType(Material.AIR);
                 }
             }
         }

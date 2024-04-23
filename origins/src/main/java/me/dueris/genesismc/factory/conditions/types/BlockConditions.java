@@ -12,6 +12,7 @@ import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -91,7 +92,10 @@ public class BlockConditions {
             return Comparison.getFromString(comparison).compare(bR, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block_entity"), (condition, block) -> block.getState() instanceof TileState));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("block"), (condition, block) -> block.getType().equals(condition.getMaterial("block"))));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("block"), (condition, block) -> {
+            String r = condition.getString("block");
+            return Utils.KNOWN_MATERIALS.containsKey(r) && block.getType().equals(Utils.KNOWN_MATERIALS.get(r));
+        }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("distance_from_coordinates"), (condition, block) -> {
             boolean scaleReferenceToDimension = condition.getBooleanOrDefault("scale_reference_to_dimension", true);
             boolean setResultOnWrongDimension = condition.isPresent("result_on_wrong_dimension"), resultOnWrongDimension = setResultOnWrongDimension && condition.getBoolean("result_on_wrong_dimension");

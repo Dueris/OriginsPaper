@@ -24,7 +24,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 
@@ -48,7 +47,7 @@ public class Grounded extends CraftPower implements Listener {
             if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                 e.setCancelled(true);
                 p.setFlying(false);
-                ServerPlayer player = ((CraftPlayer)p).getHandle();
+                ServerPlayer player = ((CraftPlayer) p).getHandle();
                 Vec3 vec3d = player.getDeltaMovement();
 
                 new BukkitRunnable() {
@@ -82,13 +81,15 @@ public class Grounded extends CraftPower implements Listener {
 
                 return ((double) offset > 0.5D || !bs.is(BlockTags.FENCES)) && !bs.is(BlockTags.WALLS) && !(bs.getBlock() instanceof FenceGateBlock) ? bp.atY(Mth.floor(entity.position().y - (double) offset)) : bp;
             }
-        } else return new BlockPos(Mth.floor(entity.position().x), Mth.floor(entity.position().y - (double) offset), Mth.floor(entity.position().z));
+        } else
+            return new BlockPos(Mth.floor(entity.position().x), Mth.floor(entity.position().y - (double) offset), Mth.floor(entity.position().z));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void negateFallDamage(EntityDamageEvent e) {
         if (!(e.getEntity() instanceof Player p)) return;
-        if (!getPlayersWithPower().contains(p) || !(e.getCause().equals(EntityDamageEvent.DamageCause.FALL) && !e.isCancelled())) return;
+        if (!getPlayersWithPower().contains(p) || !(e.getCause().equals(EntityDamageEvent.DamageCause.FALL) && !e.isCancelled()))
+            return;
         for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType())) {
             if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                 e.setCancelled(true);

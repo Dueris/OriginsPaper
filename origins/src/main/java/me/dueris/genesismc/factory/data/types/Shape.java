@@ -9,6 +9,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public enum Shape {
     CUBE, CHEBYSHEV,
@@ -32,6 +33,21 @@ public enum Shape {
             }
         }
         return positions;
+    }
+
+    public static void executeAtPositions(BlockPos center, Shape shape, int radius, Consumer<BlockPos> consumer) {
+        for (int i = -radius; i <= radius; i++) {
+            for (int j = -radius; j <= radius; j++) {
+                for (int k = -radius; k <= radius; k++) {
+                    if (shape == Shape.CUBE || shape == Shape.CHEBYSHEV
+                        || (shape == Shape.SPHERE || shape == Shape.EUCLIDEAN)
+                        && i * i + j * j + k * k <= radius * radius
+                        || (Math.abs(i) + Math.abs(j) + Math.abs(k)) <= radius) {
+                        consumer.accept(new BlockPos(center.offset(i, j, k)));
+                    }
+                }
+            }
+        }
     }
 
     public static Set<Entity> getEntities(Shape shape, Level world, Vec3 center, double radius) {

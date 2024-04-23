@@ -9,6 +9,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.registries.Power;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -26,9 +27,11 @@ import net.minecraft.world.level.material.Fluid;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlockType;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R3.potion.CraftPotionUtil;
 import org.bukkit.inventory.ItemStack;
@@ -51,6 +54,18 @@ public class Utils {
     public static Registry<DamageType> DAMAGE_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
     public static MinecraftServer server = GenesisMC.server;
     public static CraftServer bukkitServer = server.server;
+    public static HashMap<String, Material> KNOWN_MATERIALS = new HashMap<>();
+
+    static {
+        BuiltInRegistries.BLOCK.forEach(block -> {
+            String k = CraftBlockType.minecraftToBukkit(block).getKey().asString();
+            if (k.contains(":")) {
+                KNOWN_MATERIALS.put(k, block.defaultBlockState().getBukkitMaterial()); // With minecraft: namespace
+                k = k.split(":")[1];
+            }
+            KNOWN_MATERIALS.put(k, block.defaultBlockState().getBukkitMaterial()); // Without minecraft: namespace
+        });
+    }
 
     public static DamageSource getDamageSource(DamageType type) {
         DamageSource source = null;
