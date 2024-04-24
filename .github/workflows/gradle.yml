@@ -16,7 +16,7 @@ jobs:
     - name: Set up Java
       uses: actions/setup-java@v2
       with:
-        java-version: 17
+        java-version: 21
         distribution: 'adopt'
 
     - name: Build and Publish

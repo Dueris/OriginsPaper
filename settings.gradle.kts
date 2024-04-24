@@ -1,6 +1,6 @@
 import java.util.*
 
-rootProject.name = "genesis"
+"genesis".also { rootProject.name = it }
 for (name in listOf("origins", "calio")) {
     val projName = name.lowercase(Locale.ENGLISH)
     include(projName)
@@ -13,4 +13,3 @@ pluginManagement {
         maven("https://repo.papermc.io/repository/maven-public/")
     }
 }
-

@@ -4,7 +4,6 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.apoli.ModifyAirSpeedPower;
 import me.dueris.genesismc.factory.powers.apoli.ModifyBreakSpeedPower;
-import me.dueris.genesismc.factory.powers.apoli.ModifySwimSpeedPower;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,7 +42,6 @@ public class ValueModifyingSuperClass extends BukkitRunnable implements Listener
     public void runModifierChanges(Player p) {
         ModifyAirSpeedPower modifyAirSpeedPower = new ModifyAirSpeedPower();
         ModifyBreakSpeedPower modifyBreakSpeedPower = new ModifyBreakSpeedPower();
-        ModifySwimSpeedPower modifySwimSpeedPower = new ModifySwimSpeedPower();
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -51,8 +49,6 @@ public class ValueModifyingSuperClass extends BukkitRunnable implements Listener
                     modifyAirSpeedPower.apply(p);
                 } else if (modify_break_speed.contains(p)) {
                     modifyBreakSpeedPower.apply(p);
-                } else if (modify_swim_speed.contains(p)) {
-                    modifySwimSpeedPower.apply(p);
                 } else {
                     saveValueInPDC(p, "modify_air_speed", 0.1f);
                     saveValueInPDC(p, "modify_break_speed", 0.1f);

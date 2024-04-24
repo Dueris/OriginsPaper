@@ -11,7 +11,6 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.chunk.ChunkManagerWorld;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.server.level.ServerLevel;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -58,7 +57,6 @@ public class ModifyBlockRenderPower extends CraftPower implements Listener {
     @Override
     public void run(Player p, Power power) {
         Map<Position, BlockData> updates = new ConcurrentHashMap<>();
-        Chunk chunk = p.getChunk();
         BlockData toSend = power.getMaterial("block").createBlockData();
         FactoryJsonObject bc = power.getJsonObject("block_condition");
         ServerLevel level = ((CraftWorld) p.getWorld()).getHandle();

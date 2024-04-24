@@ -440,9 +440,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    /**
-     * This action is purely for development reasons, which is why there is a broadcast saying that its not supported.
-     * Its NOT intended for normal gameplay, its just a fast way to reload parsing to test new data
+    /*
+      This action is purely for development reasons, which is why there is a broadcast saying that its not supported.
+      Its NOT intended for normal gameplay, its just a fast way to reload parsing to test new data
      */
     public void reload(ServerResourcesReloadedEvent e) {
         if (!(e.getCause().equals(ServerResourcesReloadedEvent.Cause.COMMAND) || e.getCause().equals(ServerResourcesReloadedEvent.Cause.PLUGIN)))
@@ -455,9 +455,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    /**
-     * Post-Startup of the plugin lifecycle, where registries will be finalized after plugins have loaded
-     * @param e
+    /*
+      Post-Startup of the plugin lifecycle, where registries will be finalized after plugins have loaded
+      @param e
      */
     public void loadEvent(ServerLoadEvent e) {
         ChoosingPage.registerInstances();

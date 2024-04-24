@@ -1,40 +1,26 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import net.minecraft.world.level.material.FluidState;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_lava_speed;
 
-public class ModifyLavaSpeed extends CraftPower {
-
-    @Override
-    public void run(Player p, Power power) {
-        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-            for (Modifier modifier : power.getModifiers()) {
-                Float value = modifier.value();
-                String operation = modifier.operation();
-                BinaryOperator<Float> mathOperator = Utils.getOperationMappingsFloat().get(operation);
-                if (mathOperator != null) {
-                    float result = mathOperator.apply(0.02f, value);
-                    setActive(p, power.getTag(), true);
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2, calculateSpeedAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result)))), false, false, false));
-                }
-            }
-
-        } else {
-            setActive(p, power.getTag(), false);
-        }
-    }
+public class ModifyLavaSpeed extends CraftPower implements Listener {
 
     @Override
     public String getType() {
@@ -46,16 +32,22 @@ public class ModifyLavaSpeed extends CraftPower {
         return modify_lava_speed;
     }
 
-    public int calculateSpeedAmplifier(float value) {
-        float maxValue = 255.0f;
-        float minValue = 0.1f;
-        int maxAmplifier = 10;
-        int minAmplifier = 0;
-
-        float normalizedValue = Math.max(minValue, Math.min(value, maxValue));
-        float percentage = (normalizedValue - minValue) / (maxValue - minValue);
-        int amplifier = (int) (percentage * (maxAmplifier - minAmplifier)) + minAmplifier;
-
-        return amplifier;
+    @Override
+    public void run(Player p, Power power) {
+        Block be = p.getLocation().getBlock();
+        if (!getPlayersWithPower().contains(p) || p.isFlying() || be == null ||
+            !p.getLocation().getBlock().isLiquid() || !p.isSprinting()) return;
+        CraftBlock nmsBlockAccessor = CraftBlock.at(((CraftWorld) p.getWorld()).getHandle(), CraftLocation.toBlockPosition(p.getLocation()));
+        if (nmsBlockAccessor.getNMS().getFluidState() != null) {
+            FluidState state = nmsBlockAccessor.getNMSFluid();
+            if (state.getType().builtInRegistryHolder().key().location().equals(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString("minecraft:lava")))) {
+                float multiplyBy = 0.1F;
+                for (Modifier modifier : power.getModifiers()) {
+                    Map<String, BinaryOperator<Float>> floatBinaryOperator = Utils.getOperationMappingsFloat();
+                    floatBinaryOperator.get(modifier.operation()).apply(multiplyBy, modifier.value() * 10);
+                }
+                p.setVelocity(p.getLocation().getDirection().multiply(multiplyBy));
+            }
+        }
     }
 }

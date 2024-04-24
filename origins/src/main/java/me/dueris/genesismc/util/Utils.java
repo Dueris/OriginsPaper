@@ -7,6 +7,7 @@ import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.registries.Power;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -50,7 +51,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-public class Utils {
+public class Utils extends Util { // Extend MC Utils for easy access to them
     public static Registry<DamageType> DAMAGE_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
     public static MinecraftServer server = GenesisMC.server;
     public static CraftServer bukkitServer = server.server;

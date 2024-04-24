@@ -21,7 +21,7 @@ allprojects {
 
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(17)
+            languageVersion = JavaLanguageVersion.of(21)
         }
     }
 
@@ -51,7 +51,7 @@ tasks {
             if (!targetJarDirectory.isDirectory()) error("Target path is not a directory?!")
 
             Files.createDirectories(targetJarDirectory)
-            File(targetJarDirectory.toAbsolutePath().toString()).listFiles().forEach { file ->
+            File(targetJarDirectory.toAbsolutePath().toString()).listFiles()?.forEach { file ->
                 if (file.isFile) {
                     file.delete()
                 } else {
