@@ -19,14 +19,12 @@ import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MiscUtils {
 
-    @Nullable
     public static List<PotionEffect> parseAndReturnPotionEffects(FactoryJsonObject power) {
         List<PotionEffect> effectList = new ArrayList<>();
         FactoryJsonObject singleEffect = power.isPresent("effect") ? power.getJsonObject("effect") : new FactoryJsonObject(new JsonObject());

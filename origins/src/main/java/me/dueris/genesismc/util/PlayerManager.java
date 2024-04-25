@@ -93,7 +93,7 @@ public class PlayerManager implements Listener {
         if (
             !p.getPersistentDataContainer().has(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) ||
                 p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) == null ||
-                p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) == ""
+                p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING).equalsIgnoreCase("")
         ) {
             HashMap<Layer, Origin> origins = new HashMap<>();
             for (Layer layer : CraftApoli.getLayersFromRegistry()) origins.put(layer, CraftApoli.nullOrigin());

@@ -160,14 +160,14 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                     .executes(context -> {
                         if (!context.getSource().isPlayer()) return 0;
                         ServerPlayer player = context.getSource().getPlayer();
-                        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                        CraftApoli.getLayersFromRegistry().forEach(layer -> {
                             try {
                                 OriginPlayerAccessor.unassignPowers(player.getBukkitEntity(), layer);
                             } catch (NotFoundException e) {
                                 throw new RuntimeException(e);
                             }
                             OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.nullOrigin());
-                        }
+                        });
                         return SINGLE_SUCCESS;
                     })
                     .then(argument("targets", EntityArgument.players())

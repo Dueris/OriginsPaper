@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 
 /**
  * Original code by Apace100 in the repository of apace100/apoli
- * https://github.com/apace100/apoli/blob/1.20/src/main/java/io/github/apace100/apoli/util/JsonTextFormatter.java
+ * <a href="https://github.com/apace100/apoli/blob/1.20/src/main/java/io/github/apace100/apoli/util/JsonTextFormatter.java">...</a>
  * <p>
  * This code has been modified from its original form to support the Paper-provided mappings for Mojang.
  */
@@ -90,10 +90,10 @@ public class JsonTextFormatter {
                 result.append("\n");
             }
 
-            Iterator iterator = jsonArray.iterator();
+            Iterator<JsonElement> iterator = jsonArray.iterator();
 
             while (iterator.hasNext()) {
-                JsonElement jsonElement = (JsonElement) iterator.next();
+                JsonElement jsonElement = iterator.next();
                 result.append(Strings.repeat(this.indent, this.indentOffset)).append((new JsonTextFormatter(this.indent, this.indentOffset + 1)).apply(jsonElement, false));
                 if (iterator.hasNext()) {
                     result.append(!this.indent.isEmpty() ? ",\n" : ", ");
@@ -122,10 +122,10 @@ public class JsonTextFormatter {
                 result.append("\n");
             }
 
-            Iterator iterator = jsonObject.entrySet().iterator();
+            Iterator<Entry<String, JsonElement>> iterator = jsonObject.entrySet().iterator();
 
             while (iterator.hasNext()) {
-                Entry<String, JsonElement> entry = (Entry) iterator.next();
+                Entry<String, JsonElement> entry = iterator.next();
                 Component name = Component.literal(entry.getKey()).withStyle(NAME_COLOR);
                 result.append(Strings.repeat(this.indent, this.indentOffset)).append(name).append(": ").append((new JsonTextFormatter(this.indent, this.indentOffset + 1)).apply(entry.getValue(), false));
                 if (iterator.hasNext()) {

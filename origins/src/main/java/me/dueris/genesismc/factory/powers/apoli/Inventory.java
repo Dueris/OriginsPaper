@@ -76,7 +76,7 @@ public class Inventory extends CraftPower implements Listener {
                         setActive(e.getPlayer(), power.getTag(), true);
                         if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), e.getPlayer())) {
                             ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(e.getPlayer(), power.getTag());
-                            org.bukkit.inventory.Inventory vault = ContainerType.getContainerType(power.getString("container_type")).createInventory(e.getPlayer(), Utils.createIfPresent(power.getString("title")));
+                            org.bukkit.inventory.Inventory vault = power.getEnumValue("container_type", ContainerType.class).createInventory(e.getPlayer(), Utils.createIfPresent(power.getString("title")));
                             vaultItems.forEach(vault::addItem);
                             e.getPlayer().openInventory(vault);
                         }

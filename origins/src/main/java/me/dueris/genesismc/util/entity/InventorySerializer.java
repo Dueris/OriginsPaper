@@ -19,10 +19,7 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 
 public class InventorySerializer implements Listener {
 
@@ -80,8 +77,7 @@ public class InventorySerializer implements Listener {
 
                 os.writeInt(items.size());
 
-                for (int i = 0; i < items.size(); i++) {
-                    ItemStack item = items.get(i);
+                for (ItemStack item : items) {
                     if (item != null) {
                         os.writeObject(item.clone()); // Clone the item to keep the original item intact
                     } else {
@@ -120,11 +116,8 @@ public class InventorySerializer implements Listener {
 
                 for (int i = 0; i < itemsCount; i++) {
                     ItemStack item = (ItemStack) in.readObject();
-                    if (item != null) {
-                        items.add(item);
-                    } else {
-                        items.add(new ItemStack(Material.AIR)); // Add AIR for empty slots
-                    }
+                    // Add AIR for empty slots
+                    items.add(Objects.requireNonNullElseGet(item, () -> new ItemStack(Material.AIR)));
                 }
 
                 in.close();
@@ -146,8 +139,8 @@ public class InventorySerializer implements Listener {
                     ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
                     Arrays.stream(e.getInventory().getContents())
-                        .filter(itemStack -> itemStack != null)
-                        .forEach(itemStack -> prunedItems.add(itemStack));
+                        .filter(Objects::nonNull)
+                        .forEach(prunedItems::add);
                     storeItems(prunedItems, p, power.getTag());
                 }
             }

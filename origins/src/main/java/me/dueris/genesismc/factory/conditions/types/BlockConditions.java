@@ -143,7 +143,7 @@ public class BlockConditions {
                 zDistance *= currentDimensionCoordinateScale;
             }
 
-            distance = Shape.getDistance(Shape.getShape(condition.getStringOrDefault("shape", "cube")), xDistance, yDistance, zDistance);
+            distance = Shape.getDistance(condition.getEnumValueOrDefault("shape", Shape.class, Shape.CUBE), xDistance, yDistance, zDistance);
 
             if (condition.isPresent("round_to_digit")) {
                 distance = new BigDecimal(distance).setScale(condition.getNumber("round_to_digit").getInt(), RoundingMode.HALF_UP).doubleValue();

@@ -30,11 +30,6 @@ public class ChunkManagerWorld {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
@@ -42,11 +37,6 @@ public class ChunkManagerWorld {
     @Override
     public String toString() {
         return super.toString();
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
     }
 
     public Chunk getChunkAt(Location location) {

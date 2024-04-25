@@ -16,13 +16,12 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
 public class OriginLootCondition implements LootItemCondition {
-    public static final Codec<OriginLootCondition> CODEC = RecordCodecBuilder.create((instance) -> {
-        return instance.group(ResourceLocation.CODEC.fieldOf("origin").forGetter(OriginLootCondition::getOriginId), ResourceLocation.CODEC.optionalFieldOf("source").forGetter(OriginLootCondition::getOriginSourceId)).apply(instance, OriginLootCondition::new);
-    });
+    public static final Codec<OriginLootCondition> CODEC = RecordCodecBuilder.create((instance) -> instance.group(ResourceLocation.CODEC.fieldOf("origin").forGetter(OriginLootCondition::getOriginId), ResourceLocation.CODEC.optionalFieldOf("source").forGetter(OriginLootCondition::getOriginSourceId)).apply(instance, OriginLootCondition::new));
     public static final LootItemConditionType TYPE;
 
     static {
@@ -33,6 +32,8 @@ public class OriginLootCondition implements LootItemCondition {
     private ResourceLocation originSourceId;
 
     private OriginLootCondition(ResourceLocation originId, Optional<ResourceLocation> originSourceId) {
+        this.originId = originId;
+        this.originSourceId = originSourceId.orElseGet(null);
     }
 
     public boolean test(LootContext context) {
@@ -47,7 +48,7 @@ public class OriginLootCondition implements LootItemCondition {
         }
     }
 
-    public LootItemConditionType getType() {
+    public @NotNull LootItemConditionType getType() {
         return OriginLootCondition.TYPE;
     }
 

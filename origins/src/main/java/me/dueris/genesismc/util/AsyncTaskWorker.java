@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 public class AsyncTaskWorker {
-    private static ExecutorService service = Executors.newFixedThreadPool(2, new NamedTickThreadFactory("GenesisTaskWorker"));
+    private static final ExecutorService service = Executors.newFixedThreadPool(2, new NamedTickThreadFactory("GenesisTaskWorker"));
 
     public static void submitTask(Runnable runnable) {
         service.submit(runnable);

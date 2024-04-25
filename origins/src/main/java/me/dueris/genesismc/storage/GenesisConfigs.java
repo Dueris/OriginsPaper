@@ -18,26 +18,12 @@ public class GenesisConfigs {
     public static File mainConfigFile;
     public static FileConfiguration orbconfig;
     public static File orbConfigFile;
-    public static File lang;
-    public static FileConfiguration englishLang;
-    public static File englishLangFile;
-    public static FileConfiguration germanLang;
-    public static File germanLangFile;
-    public static FileConfiguration russianLang;
-    public static File russianLangFile;
-    public static FileConfiguration chineseLang;
-    public static File chineseLangFile;
-    public static File tempFolder;
 
     public static void setup() {
         File lang = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "lang");
         File skins = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "skins");
         orbConfigFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "orboforigins.yml");
         mainConfigFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "origin-server.yml");
-        englishLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "en_us.yml");
-        germanLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "de_DE.yml");
-        russianLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "ru_RU.yml");
-        chineseLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "zh_TW.yml");
 
         new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "english.yml").delete();
         new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "german.yml").delete();
@@ -64,37 +50,6 @@ public class GenesisConfigs {
                 orbConfigFile.createNewFile();
             } catch (IOException e) {
                 Bukkit.getLogger().warning("There was an eror creating %fileName%".replace("%fileName%", "orboforigins.yml"));
-            }
-        }
-
-        if (!englishLangFile.exists()) {
-            try {
-                englishLangFile.createNewFile();
-            } catch (IOException e) {
-                Bukkit.getLogger().warning("There was an eror creating %fileName%".replace("%fileName%", "en_us.yml"));
-            }
-        }
-
-        if (!germanLangFile.exists()) {
-            try {
-                germanLangFile.createNewFile();
-            } catch (IOException e) {
-                Bukkit.getLogger().warning("There was an eror creating %fileName%".replace("%fileName%", "de_DE.yml"));
-            }
-        }
-
-        if (!russianLangFile.exists()) {
-            try {
-                russianLangFile.createNewFile();
-            } catch (IOException e) {
-                Bukkit.getLogger().warning("There was an eror creating %fileName%".replace("%fileName%", "ru_RU.yml"));
-            }
-        }
-        if (!chineseLangFile.exists()) {
-            try {
-                chineseLangFile.createNewFile();
-            } catch (IOException e) {
-                Bukkit.getLogger().warning("There was an eror creating %fileName%".replace("%fileName%", "zh_TW.yml"));
             }
         }
 
@@ -175,22 +130,6 @@ public class GenesisConfigs {
 
     public static FileConfiguration getOrbCon() {
         return orbconfig;
-    }
-
-    public static FileConfiguration getEnglishLang() {
-        return englishLang;
-    }
-
-    public static FileConfiguration getGermanLang() {
-        return germanLang;
-    }
-
-    public static FileConfiguration getRussianLang() {
-        return russianLang;
-    }
-
-    public static FileConfiguration getChineseLang() {
-        return chineseLang;
     }
 
 }

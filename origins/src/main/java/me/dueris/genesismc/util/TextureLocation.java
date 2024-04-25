@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class TextureLocation implements Registrable {
@@ -39,7 +40,7 @@ public class TextureLocation implements Registrable {
                         for (File file : root.listFiles()) {
                             if (file.getName().equalsIgnoreCase("textures")) {
                                 Files.walk(file.toPath())
-                                    .sorted((a, b) -> b.compareTo(a)) // Sort in reverse order
+                                    .sorted(Comparator.reverseOrder()) // Sort in reverse order
                                     .forEach(path -> {
                                         if (path.toString().endsWith(".png")) {
                                             GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION).register(new TextureLocation(NamespacedKey.fromString(rootname + ":textures" + path.toAbsolutePath().toString().replace(file.getAbsolutePath(), "").replace("\\", "/"))));

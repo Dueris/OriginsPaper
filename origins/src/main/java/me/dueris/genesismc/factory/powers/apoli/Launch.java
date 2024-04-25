@@ -51,7 +51,6 @@ public class Launch extends CraftPower implements Listener {
                         if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
                             if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
                                 String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
-                                KeybindingUtils.toggleKey(p, key);
                                 final int[] times = {-1};
                                 new BukkitRunnable() {
                                     @Override
@@ -61,7 +60,6 @@ public class Launch extends CraftPower implements Listener {
                                             /* Launch power doesnt execute continuously */
                                             if (!in_continuous.get(p).contains(key)) {
                                                 CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), cooldown, power.getJsonObject("hud_render"));
-                                                KeybindingUtils.toggleKey(p, key);
                                                 setActive(p, power.getTag(), false);
                                                 this.cancel();
                                                 return;

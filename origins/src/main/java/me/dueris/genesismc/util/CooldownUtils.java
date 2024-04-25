@@ -41,7 +41,7 @@ public class CooldownUtils implements Listener {
         cooldownTicksMap.putIfAbsent(player, new HashMap<>());
         cooldownTicksMap.get(player).put(title.second(), cooldownTicks);
         Resource.registeredBars.putIfAbsent(player, new HashMap<>());
-        Resource.registeredBars.get(player).put(title.second(), new Pair<BossBar, Double>() {
+        Resource.registeredBars.get(player).put(title.second(), new Pair<>() {
             @Override
             public BossBar left() {
                 return bar;
@@ -127,7 +127,7 @@ public class CooldownUtils implements Listener {
 
                     bar.setProgress(progress);
 
-                    Resource.registeredBars.get(player).put(pair.right(), new Pair<BossBar, Double>() {
+                    Resource.registeredBars.get(player).put(pair.right(), new Pair<>() {
                         @Override
                         public BossBar left() {
                             return bar;

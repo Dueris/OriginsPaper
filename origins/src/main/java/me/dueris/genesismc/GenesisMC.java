@@ -51,7 +51,6 @@ import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
@@ -66,12 +65,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.json.simple.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -84,7 +79,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static EnumSet<Material> tool;
     public static Metrics metrics;
     public static boolean disableRender = true;
-    public static String MODID = "genesismc";
     public static ConditionExecutor conditionExecutor;
     public static String apoliVersion = "1.12.8";
     public static boolean placeholderapi = false;
@@ -125,10 +119,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         return new NamespacedKey("apoli", path);
     }
 
-    public static ConditionExecutor getConditionExecutor() {
-        return conditionExecutor;
-    }
-
     public static File getTmpFolder() {
         return Path.of(GenesisMC.getPlugin().getDataFolder().getAbsolutePath() + File.separator + ".tmp" + File.separator).toFile();
     }
@@ -163,10 +153,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
     }
 
-    private static boolean getBooleanOrDefault(boolean arg1, boolean arg2) {
-        return arg1 ? arg1 : arg2;
-    }
-
     @Override
     public void onLoad() {
         // Prepare the plugin
@@ -181,12 +167,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         isCompatible = (!isFolia && (isExpandedScheduler));
         if (!isCompatible) {
             if (forceUseCurrentVersion) return;
-            Bukkit.getLogger().severe("Unable to start GenesisMC due to it not being compatible with this server type");
+            this.getLogger().severe("Unable to start GenesisMC due to it not being compatible with this server type");
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
         boolean isCorrectVersion = false;
         for (String vers : versions) {
-            if (isCorrectVersion) break;
             if (vers.equalsIgnoreCase(String.valueOf(version))) {
                 isCorrectVersion = true;
                 break;
@@ -195,7 +180,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         if (!isCorrectVersion) {
             if (forceUseCurrentVersion) return;
-            Bukkit.getLogger().severe("Unable to start GenesisMC due to it not being compatible with this server version");
+            this.getLogger().severe("Unable to start GenesisMC due to it not being compatible with this server version");
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
         CraftApoli.setupDynamicThreadCount();
@@ -235,16 +220,14 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         ThreadFactory threadFactory = new NamedTickThreadFactory("OriginParsingPool");
         CraftPower.tryPreloadClass(AsyncTaskWorker.class); // Preload worker
         loaderThreadPool = Executors.newFixedThreadPool(CraftApoli.getDynamicThreadCount(), threadFactory);
-        debugOrigins = getBooleanOrDefault(GenesisConfigs.getMainConfig().getBoolean("console-startup-debug") /* add arg compat in future version */, false);
+        debugOrigins = GenesisConfigs.getMainConfig().getBoolean("console-startup-debug");
         placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
-        if (placeholderapi) {
-            new PlaceHolderAPI(this).register();
-        }
+        if (placeholderapi) new PlaceHolderAPI(this).register();
 
         try {
             Bootstrap.deleteDirectory(GenesisMC.getTmpFolder().toPath(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+            throwable(e, false);
         }
 
         if (!getTmpFolder().exists()) {
@@ -276,9 +259,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         this.registry.create(Registries.CHOOSING_PAGE, new Registrar<ChoosingPage>());
 
         Utils.unpackOriginPack();
-        Arrays.stream(server.getWorldPath(LevelResource.DATAPACK_DIR).toFile().listFiles()).toList().forEach(datapack -> {
-            if (datapack.isFile() && datapack.getName().endsWith(".zip")) {
-                Utils.unzip(datapack.getPath(), getTmpFolder().getAbsolutePath());
+        List<File> list = new ArrayList<>(Arrays.asList(server.getWorldPath(LevelResource.DATAPACK_DIR).toFile().listFiles()));
+        list.forEach(pack -> {
+            if (pack.isFile() && pack.getName().endsWith(".zip")) {
+                Utils.unzip(pack.getPath(), getTmpFolder().getAbsolutePath());
             }
         });
 
@@ -321,9 +305,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             calio.start(debugOrigins, loaderThreadPool);
             BuiltinRegistry.bootstrap();
             // End calio parsing
-        } catch (InstantiationException | IllegalAccessException |
-                 IOException ee) {
-            ee.printStackTrace();
+        } catch (Throwable e) {
+            throwable(e, true);
         }
 
         GenesisMC.scheduler = new OriginScheduler.OriginSchedulerTree();
@@ -334,39 +317,36 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         patchPowers();
         try {
             NBTFixerUpper.runFixerUpper();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+            throwable(e, false);
         }
 
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   ____                          _       __  __   ____").color(TextColor.fromHexString("#b9362f")));
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  / ___|  ___  _ __    ___  ___ (_) ___ |  \\/  | / ___|").color(TextColor.fromHexString("#bebe42")));
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] | |  _  / _ \\| '_ \\  / _ \\/ __|| |/ __|| |\\/| || |").color(TextColor.fromHexString("#4fec4f")));
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] | |_| ||  __/| | | ||  __/\\__ \\| |\\__ \\| |  | || |___").color(TextColor.fromHexString("#4de4e4")));
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  \\____| \\___||_| |_| \\___||___/|_||___/|_|  |_| \\____|").color(TextColor.fromHexString("#333fb7")));
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]                     ~ Made by Dueris ~        ").color(TextColor.fromHexString("#dd50ff")));
+        printComponent(Component.text("[GenesisMC]   ____                          _       __  __   ____").color(TextColor.fromHexString("#b9362f")));
+        printComponent(Component.text("[GenesisMC]  / ___|  ___  _ __    ___  ___ (_) ___ |  \\/  | / ___|").color(TextColor.fromHexString("#bebe42")));
+        printComponent(Component.text("[GenesisMC] | |  _  / _ \\| '_ \\  / _ \\/ __|| |/ __|| |\\/| || |").color(TextColor.fromHexString("#4fec4f")));
+        printComponent(Component.text("[GenesisMC] | |_| ||  __/| | | ||  __/\\__ \\| |\\__ \\| |  | || |___").color(TextColor.fromHexString("#4de4e4")));
+        printComponent(Component.text("[GenesisMC]  \\____| \\___||_| |_| \\___||___/|_||___/|_|  |_| \\____|").color(TextColor.fromHexString("#333fb7")));
+        printComponent(Component.text("[GenesisMC]                     ~ Made by Dueris ~        ").color(TextColor.fromHexString("#dd50ff")));
         Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        Bukkit.getServer().getConsoleSender().sendMessage("");
-        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "* Loading Version GenesisMC-{minecraftVersion-versionNumber} // CraftApoli-{apoliVersion}"
+        System.out.println(); // Split new line
+        printComponent(Component.text("* Loading Version GenesisMC-{minecraftVersion-versionNumber} // CraftApoli-{apoliVersion}"
             .replace("minecraftVersion", "mc" + version)
             .replace("versionNumber", pluginVersion)
-            .replace("apoliVersion", apoliVersion)
-        );
-        Bukkit.getServer().getConsoleSender().sendMessage("");
+            .replace("apoliVersion", apoliVersion)).color(TextColor.fromHexString("#4fec4f")));
+        System.out.println(); // Split new line
         if (debugOrigins) {
-            Bukkit.getServer().getConsoleSender().sendMessage("* (-debugOrigins={true}) || BEGINNING DEBUG {");
-            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @1 powers".replace("@1", String.valueOf(this.registry.retrieve(Registries.POWER).registrySize())));
-            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @4 layers".replace("@4", String.valueOf(this.registry.retrieve(Registries.LAYER).registrySize())));
-            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @2 origins = [".replace("@2", String.valueOf(this.registry.retrieve(Registries.ORIGIN).registrySize())));
-            ((Registrar<Origin>) this.registry.retrieve(Registries.ORIGIN)).forEach((k, o) -> {
-                Bukkit.getServer().getConsoleSender().sendMessage("     () -> {@3}".replace("@3", o.getTag()));
-            });
-            Bukkit.getServer().getConsoleSender().sendMessage("  ]");
-            Bukkit.getServer().getConsoleSender().sendMessage("  - Power thread starting with {originScheduler}".replace("originScheduler", GenesisMC.scheduler.toString()));
-            Bukkit.getServer().getConsoleSender().sendMessage("  - Lang testing = {true}");
-            Bukkit.getServer().getConsoleSender().sendMessage("}");
+            printComponent(Component.text("* (-debugOrigins={true}) || BEGINNING DEBUG {"));
+            printComponent(Component.text("  - Loaded @1 powers".replace("@1", String.valueOf(this.registry.retrieve(Registries.POWER).registrySize()))));
+            printComponent(Component.text("  - Loaded @4 layers".replace("@4", String.valueOf(this.registry.retrieve(Registries.LAYER).registrySize()))));
+            printComponent(Component.text("  - Loaded @2 origins = [".replace("@2", String.valueOf(this.registry.retrieve(Registries.ORIGIN).registrySize()))));
+            ((Registrar<Origin>) this.registry.retrieve(Registries.ORIGIN)).forEach((u, o) -> printComponent(Component.text("     () -> {@3}".replace("@3", o.getTag()))));
+            printComponent(Component.text("  ]"));
+            printComponent(Component.text("  - Power thread starting with {originScheduler}".replace("originScheduler", GenesisMC.scheduler.toString())));
+            printComponent(Component.text("  - Lang testing = {true}"));
+            printComponent(Component.text("}"));
         }
         Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        // Shutdown executor, we dont need it anymore
+        // Shutdown executor, we don't need it anymore
         loaderThreadPool.shutdown();
         OriginCommand.commandProvidedPowers.addAll(((Registrar<Power>) this.registry.retrieve(Registries.POWER)).values().stream().toList());
         OriginCommand.commandProvidedOrigins.addAll(((Registrar<Origin>) this.registry.retrieve(Registries.ORIGIN)).values().stream().toList());
@@ -378,11 +358,22 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         PowerCommand.register(((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
         try {
             Bootstrap.deleteDirectory(GenesisMC.getTmpFolder().toPath(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+            throwable(e, false);
         }
     }
 
+    public void throwable(Throwable throwable, boolean kill) {
+        String[] stacktrace = {"\n"};
+        Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
+        this.getLogger().severe("An unhandled exception occurred when starting Genesis!");
+        this.getLogger().severe(stacktrace[0]);
+        if (kill) Bukkit.getPluginManager().disablePlugin(this);
+    }
+
+    public void printComponent(Component component) {
+        Bukkit.getServer().getConsoleSender().sendMessage(component);
+    }
 
     private void start() {
         getServer().getPluginManager().registerEvents(new InventorySerializer(), this);
@@ -408,8 +399,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         for (BukkitRunnable runnable : independentTickers) {
             runnable.runTaskTimerAsynchronously(GenesisMC.getPlugin(), 0, 1);
         }
-
-        EntityGroupManager.INSTANCE.startTick();
     }
 
     @Override
@@ -429,7 +418,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         RecipePower.tags.clear();
         this.registry.clearRegistries();
         scheduler.cancel();
-        EntityGroupManager.stop();
         AsyncTaskWorker.shutdown();
     }
 

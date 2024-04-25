@@ -4,12 +4,18 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.AABB;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,18 +43,20 @@ public class Climbing extends CraftPower implements Listener {
     @Override
     public void run(Player p, Power power) {
         if (!p.isSneaking()) holdingPlayers.remove(p);
-        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && allowedToClimb.contains(p)) {
-            setActive(p, power.getTag(), true);
-            p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 5, 2, false, false, false));
-            getActiveClimbingMap().add(p);
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    getActiveClimbingMap().remove(p);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
-        } else {
-            setActive(p, power.getTag(), false);
+        if (!((CraftWorld)p.getWorld()).getHandle().getBlockStates(((CraftPlayer)p).getHandle().getBoundingBox().inflate(0.1, 0, 0.1)).filter(state -> state.getBukkitMaterial().isCollidable()).toList().isEmpty()) {
+            if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && allowedToClimb.contains(p)) {
+                setActive(p, power.getTag(), true);
+                p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 4, 2, false, false, false));
+                getActiveClimbingMap().add(p);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        getActiveClimbingMap().remove(p);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            } else {
+                setActive(p, power.getTag(), false);
+            }
         }
     }
 

@@ -24,26 +24,6 @@ public enum ContainerType {
         this.bukkit = type;
     }
 
-    public static ContainerType getContainerType(String raw) {
-        switch (raw.toLowerCase()) {
-            case "hopper" -> {
-                return HOPPER;
-            }
-            case "dropper" -> {
-                return DROPPER;
-            }
-            case "dispenser" -> {
-                return DISPENSER;
-            }
-            case "double_chest" -> {
-                return DOUBLE_CHEST;
-            }
-            default -> {
-                return CHEST;
-            }
-        }
-    }
-
     public InventoryType getBukkit() {
         return this.bukkit;
     }

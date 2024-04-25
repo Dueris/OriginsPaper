@@ -81,7 +81,6 @@ public class Toggle extends CraftPower implements Listener {
         in_continuous.putIfAbsent(p, new ArrayList<>());
         int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
         String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
-        KeybindingUtils.toggleKey(p, key);
 
         new BukkitRunnable() {
             @Override
@@ -90,7 +89,6 @@ public class Toggle extends CraftPower implements Listener {
                 /* Toggle power always execute continuously */
                 if (!cond.get() || (!in_continuous.get(p).contains(key))) {
                     CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), cooldown, power.getJsonObject("hud_render"));
-                    KeybindingUtils.toggleKey(p, key);
                     setActive(p, power.getTag(), false);
                     this.cancel();
                     return;

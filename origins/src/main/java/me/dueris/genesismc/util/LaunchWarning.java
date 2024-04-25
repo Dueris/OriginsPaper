@@ -24,7 +24,6 @@ public class LaunchWarning {
     }
 
     private static String getMessage() {
-        String msg = "You have tried to launch GenesisMC(a Minecraft plugin) directly, but its not an executable program or installer.\nInstead, please install Paper or a fork of it and place the jar in the plugins folder.";
-        return msg;
+        return "You have tried to launch GenesisMC(a Minecraft plugin) directly, but its not an executable program or installer.\nInstead, please install Paper or a fork of it and place the jar in the plugins folder.";
     }
 }

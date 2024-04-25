@@ -16,10 +16,7 @@ public class Invisibility extends CraftPower implements Listener {
 
     @Override
     public void run(Player p, Power power) {
-        boolean shouldSetInvisible = false;
-        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-            shouldSetInvisible = true;
-        }
+        boolean shouldSetInvisible = ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p);
 
         p.setInvisible(shouldSetInvisible || p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY));
     }

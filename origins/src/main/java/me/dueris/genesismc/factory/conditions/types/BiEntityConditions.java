@@ -64,8 +64,8 @@ public class BiEntityConditions implements Listener {
             net.minecraft.world.entity.Entity nmsActor = pair.first().getHandle();
             net.minecraft.world.entity.Entity nmsTarget = pair.second().getHandle();
 
-            RotationType actorRotationType = RotationType.getRotationType(condition.getString("actor_rotation"));
-            RotationType targetRotationType = RotationType.getRotationType(condition.getString("target_rotation"));
+            RotationType actorRotationType = condition.getEnumValue("actor_rotation", RotationType.class);
+            RotationType targetRotationType = condition.getEnumValue("target_rotation", RotationType.class);
 
             Vec3 actorRotation = actorRotationType.getRotation(nmsActor);
             Vec3 targetRotation = targetRotationType.getRotation(nmsTarget);

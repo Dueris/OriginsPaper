@@ -1,10 +1,13 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Power;
+import net.minecraft.world.entity.Entity;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
-import org.bukkit.entity.Entity;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -13,23 +16,12 @@ import java.util.HashSet;
 
 public class EntityGlowPower extends CraftPower {
 
-    public Collection<Entity> getEntitiesInRadius(Player player, int radius) {
-        Collection<Entity> entitiesInRadius = new HashSet<>();
-        for (Entity entity : player.getLocation().getWorld().getEntities()) {
-            if (entity.getLocation().distance(player.getLocation()) <= radius) {
-                entitiesInRadius.add(entity);
-            }
-        }
-        return entitiesInRadius;
-    }
-
     @Override
     public void run(Player p, Power power) {
-        Collection<Entity> entitiesWithinRadius = getEntitiesInRadius(p, 10);
-        for (Entity entity : entitiesWithinRadius) {
+        for (CraftEntity entity : Shape.getEntities(Shape.SPHERE, ((CraftWorld)p.getWorld()).getHandle(), CraftLocation.toVec3D(p.getLocation()), 10).stream().map(Entity::getBukkitEntity).toList()) {
             if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) &&
-                ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) entity) &&
-                ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), (CraftEntity) entity)
+                ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, entity) &&
+                ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), entity)
             ) {
                 if (!entity.isGlowing()) {
                     entity.setGlowing(true);

@@ -11,6 +11,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
+import me.dueris.genesismc.factory.data.types.EntityGroup;
 import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
 import me.dueris.genesismc.factory.powers.ApoliPower;
@@ -167,7 +168,7 @@ public class EntityConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block_in_radius"), (condition, entity) -> {
             int radius = condition.getNumberOrDefault("radius", 15L).getInt();
-            Shape shape = Shape.getShape(condition.getStringOrDefault("shape", "cube"));
+            Shape shape = condition.getEnumValueOrDefault("shape", Shape.class, Shape.CUBE);
             String comparison = condition.getStringOrDefault("comparison", ">=");
             float compare_to = condition.getNumber("compare_to").getFloat();
 
@@ -443,7 +444,7 @@ public class EntityConditions {
                 zDistance *= currentDimensionCoordinateScale;
             }
 
-            distance = Shape.getDistance(Shape.getShape(condition.getStringOrDefault("shape", "cube")), xDistance, yDistance, zDistance);
+            distance = Shape.getDistance(condition.getEnumValueOrDefault("shape", Shape.class, Shape.CUBE), xDistance, yDistance, zDistance);
 
             if (condition.isPresent("round_to_digit")) {
                 distance = new BigDecimal(distance).setScale(condition.getNumber("round_to_digit").getInt(), RoundingMode.HALF_UP).doubleValue();
@@ -451,6 +452,7 @@ public class EntityConditions {
 
             return Comparison.getFromString(condition.getString("comparison")).compare(distance, condition.getNumber("compare_to").getFloat());
         }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_group"), (condition, entity) -> (EntityGroupManager.modifiedEntityGroups.containsKey(entity) && EntityGroupManager.modifiedEntityGroups.get(entity).equals(condition.getEnumValue("group", EntityGroup.class))) || (entity.getHandle() instanceof net.minecraft.world.entity.LivingEntity le && condition.getEnumValue("group", EntityGroup.class).nms().equals(le.getMobType()))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("elytra_flight_possible"), (condition, entity) -> {
             boolean hasElytraPower = FlightElytra.elytra.contains(entity);
             boolean hasElytraEquipment = false;

@@ -19,20 +19,6 @@ public enum RotationType {
         this.function = function;
     }
 
-    public static RotationType getRotationType(String string) {
-        switch (string.toLowerCase()) {
-            case "head" -> {
-                return RotationType.HEAD;
-            }
-            case "body" -> {
-                return RotationType.BODY;
-            }
-            default -> {
-                return RotationType.BODY;
-            }
-        }
-    }
-
     public static double getAngleBetween(Vec3 a, Vec3 b) {
         double dot = a.dot(b);
         return dot / (a.length() * b.length());

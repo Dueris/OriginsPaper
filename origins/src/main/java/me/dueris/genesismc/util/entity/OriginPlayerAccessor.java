@@ -12,7 +12,7 @@ import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.storage.OriginDataContainer;
-import me.dueris.genesismc.util.SendCharts;
+import me.dueris.genesismc.util.Metrics;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -177,7 +177,7 @@ public class OriginPlayerAccessor implements Listener {
         setupPowers(player);
 
         String originTag = origin.getTag();
-        if (!originTag.equals(CraftApoli.nullOrigin().getTag())) SendCharts.originPopularity(player);
+        if (!originTag.equals(CraftApoli.nullOrigin().getTag())) Metrics.originPopularity(player);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -197,7 +197,7 @@ public class OriginPlayerAccessor implements Listener {
     }
 
     public static boolean isInPhantomForm(Player player) {
-        return player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN);
+        return player.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform")) ? player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN) : false;
     }
 
     public static ConcurrentLinkedQueue<ApoliPower> getPowersApplied(Player p) {

@@ -59,14 +59,25 @@ public class FactoryJsonObject {
     }
 
     public <T extends Enum<T>> T getEnumValue(String key, Class<T> enumClass) {
-        String value = this.handle.get(key).getAsString();
+        String value = this.handle.get(key).getAsString().toLowerCase();
         T[] enumConstants = enumClass.getEnumConstants();
         for (T enumValue : enumConstants) {
-            if (enumValue.toString().equalsIgnoreCase(value)) {
+            if (enumValue.toString().toLowerCase().equalsIgnoreCase(value)) {
                 return enumValue;
             }
         }
         throw new IllegalArgumentException("Provided JsonValue from key \"{key}\" was not an instanceof enum \"{enum}\"");
+    }
+
+    public <T extends Enum<T>> T getEnumValueOrDefault(String key, Class<T> enumClass, T def) {
+        String value = this.handle.get(key).getAsString().toLowerCase();
+        T[] enumConstants = enumClass.getEnumConstants();
+        for (T enumValue : enumConstants) {
+            if (enumValue.toString().toLowerCase().equalsIgnoreCase(value)) {
+                return enumValue;
+            }
+        }
+        return def;
     }
 
     public boolean getBoolean(String key) {

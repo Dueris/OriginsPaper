@@ -224,7 +224,7 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
             if (root.getRoot().getString("type").equalsIgnoreCase("apoli:multiple")) {
                 CraftApoli.processNestedPowers(
                     newPower,
-                    new ArrayList(),
+                    new ArrayList<>(),
                     namespacedTag.getNamespace(),
                     namespacedTag.getKey(),
                     rawFile);

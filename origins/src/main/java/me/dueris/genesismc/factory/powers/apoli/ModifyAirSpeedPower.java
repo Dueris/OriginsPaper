@@ -19,8 +19,8 @@ import java.util.function.BinaryOperator;
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_air_speed;
 
 public class ModifyAirSpeedPower extends CraftPower {
-    private static String MODIFYING_KEY = "modify_air_speed";
-    private static ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
+    private static final String MODIFYING_KEY = "modify_air_speed";
+    private static final ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
 
     @Override
     public void run(Player p, Power power) {

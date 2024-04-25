@@ -89,7 +89,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
         return new Pair<String, String>() {
             @Override
             public String left() {
-                return name != "No Name" ? name : power.getPowerParent() != null ? getNameOrTag(power.getPowerParent()).first() : tag;
+                return !name.equals("No Name") ? name : power.getPowerParent() != null ? getNameOrTag(power.getPowerParent()).first() : tag;
             }
 
             @Override
@@ -267,7 +267,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
     }
 
     public static <T> T getOrAbsent(Optional<T> optional, T absent) {
-        return optional.isPresent() ? optional.get() : absent;
+        return optional.orElse(absent);
     }
 
     public static <T> Optional<T> createIfPresent(T instance) {

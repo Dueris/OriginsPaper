@@ -40,11 +40,11 @@ public class LogoutBugWorkaround implements Listener {
             String[] splitData = logoutData.split("//");
             Location location = new Location(
                 p.getWorld(),
-                Double.valueOf(splitData[0]),
-                Double.valueOf(splitData[1]),
-                Double.valueOf(splitData[2]),
-                Float.valueOf(splitData[3]),
-                Float.valueOf(splitData[4])
+                Double.parseDouble(splitData[0]),
+                Double.parseDouble(splitData[1]),
+                Double.parseDouble(splitData[2]),
+                Float.parseFloat(splitData[3]),
+                Float.parseFloat(splitData[4])
             );
             final int[] i = {0};
             new BukkitRunnable() {

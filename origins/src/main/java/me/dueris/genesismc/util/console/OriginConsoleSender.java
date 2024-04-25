@@ -4,6 +4,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.craftbukkit.v1_20_R3.conversations.ConversationTracker;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -33,7 +34,7 @@ public class OriginConsoleSender extends OriginServerCommandSender implements Co
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "ORIGINS";
     }
 

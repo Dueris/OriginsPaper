@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
@@ -41,14 +42,14 @@ public class Bootstrap implements PluginBootstrap {
         oldDV.add("Origins-GenesisMC[0_2_6]");
     }
 
-    public static Enchantment registerEnchantment(String name, Enchantment enchantment) {
-        return Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation("origins", name), enchantment);
+    public static void registerEnchantment(String name, Enchantment enchantment) {
+        Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation("origins", name), enchantment);
     }
 
     public static void deleteDirectory(Path directory, boolean ignoreErrors) throws IOException {
         if (Files.exists(directory)) {
             Files.walk(directory)
-                .sorted((a, b) -> b.compareTo(a)) // Sort in reverse order for correct deletion
+                .sorted(Comparator.reverseOrder()) // Sort in reverse order for correct deletion
                 .forEach(path -> {
                     try {
                         Files.deleteIfExists(path);
@@ -144,8 +145,8 @@ public class Bootstrap implements PluginBootstrap {
     @Override
     public void bootstrap(@NotNull BootstrapContext context) {
         try {
-            File datapackDir = new File(this.parseDatapackPath(context));
-            copyOriginDatapack(datapackDir.toPath());
+            File packDir = new File(this.parseDatapackPath());
+            copyOriginDatapack(packDir.toPath());
         } catch (Exception e) {
             // ignore
         }
@@ -158,16 +159,14 @@ public class Bootstrap implements PluginBootstrap {
         Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, new ResourceLocation("origins", "origin"), OriginLootCondition.TYPE);
     }
 
-    public String parseDatapackPath(BootstrapContext context) {
+    public String parseDatapackPath() {
         try {
             org.bukkit.configuration.file.YamlConfiguration bukkitConfiguration = YamlConfiguration.loadConfiguration(Paths.get("bukkit.yml").toFile());
             File container;
             container = new File(bukkitConfiguration.getString("settings.world-container", "."));
             String s = Optional.ofNullable(
                 levelNameProp()
-            ).orElseGet(() -> {
-                return "world";
-            });
+            ).orElse("world");
             Path datapackFolder = Paths.get(container.getAbsolutePath() + File.separator + s + File.separator + "datapacks");
             return datapackFolder.toString();
         } catch (Exception e) {

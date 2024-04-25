@@ -33,6 +33,8 @@ public class PowerLootCondition implements LootItemCondition {
     private ResourceLocation powerSourceId;
 
     private PowerLootCondition(ResourceLocation powerId, Optional<ResourceLocation> powerSourceId) {
+        this.powerId = powerId;
+        this.powerSourceId = powerSourceId.orElse(null);
     }
 
     public boolean test(LootContext context) {

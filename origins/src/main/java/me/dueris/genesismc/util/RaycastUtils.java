@@ -10,7 +10,6 @@ import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -79,9 +78,7 @@ public class RaycastUtils {
 
     private static long getEntityReach(FactoryJsonObject data, Entity entity) {
         if (!data.isPresent("entity_distance") && !data.isPresent("distance")) {
-            long base = (entity instanceof Player player && player.getAbilities().instabuild) ? 6 : 3;
-            LivingEntity living = (LivingEntity) entity;
-            return base;
+            return (entity instanceof Player player && player.getAbilities().instabuild) ? 6 : 3;
         }
         return data.isPresent("entity_distance") ? data.getNumber("entity_distance").getLong() : data.getNumber("distance").getLong();
     }
@@ -89,9 +86,7 @@ public class RaycastUtils {
 
     private static long getBlockReach(FactoryJsonObject data, Entity entity) {
         if (!data.isPresent("block_distance") && !data.isPresent("distance")) {
-            long base = (entity instanceof Player player && player.getAbilities().instabuild) ? 5 : 4;
-            LivingEntity living = (LivingEntity) entity;
-            return base;
+            return (entity instanceof Player player && player.getAbilities().instabuild) ? 5 : 4;
         }
         return data.isPresent("block_distance") ? data.getNumber("block_distance").getLong() : data.getNumber("distance").getLong();
     }
@@ -122,7 +117,6 @@ public class RaycastUtils {
         if (command == null) return;
         MinecraftServer server = entity.getServer();
         if (server != null) {
-            boolean validOutput = !(entity instanceof ServerPlayer) || ((ServerPlayer) entity).connection != null;
             CommandSourceStack source = new CommandSourceStack(
                 CommandSource.NULL,
                 hitPosition,
@@ -154,9 +148,7 @@ public class RaycastUtils {
     private static EntityHitResult performEntityRaycast(Entity source, Vec3 origin, Vec3 target, Optional<Boolean> biEntityCondition) {
         Vec3 ray = target.subtract(origin);
         AABB box = source.getBoundingBox().expandTowards(ray).inflate(1.0D, 1.0D, 1.0D);
-        EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(source, origin, target, box, (entityx) -> {
-            return !entityx.isSpectator() && (!biEntityCondition.isPresent() || (biEntityCondition.isPresent() && biEntityCondition.get()));
-        }, ray.lengthSqr());
+        EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(source, origin, target, box, (entityx) -> !entityx.isSpectator() && (!biEntityCondition.isPresent() || (biEntityCondition.isPresent() && biEntityCondition.get())), ray.lengthSqr());
         return entityHitResult;
     }
 

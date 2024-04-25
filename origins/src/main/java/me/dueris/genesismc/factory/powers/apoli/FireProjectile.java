@@ -120,7 +120,6 @@ public class FireProjectile extends CraftPower implements Listener {
                                     enderian_pearl.remove(p);
                                 }
                                 String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
-                                KeybindingUtils.toggleKey(p, key);
 
                                 float finalDivergence = divergence;
                                 boolean cont = !power.getJsonObject("key").getBooleanOrDefault("continuous", false);
@@ -133,7 +132,6 @@ public class FireProjectile extends CraftPower implements Listener {
                                         if (shotsLeft >= 0) {
                                             if ((!cont || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key)) {
                                                 CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), cooldown, power.getJsonObject("hud_render"));
-                                                KeybindingUtils.toggleKey(p, key);
                                                 setActive(p, power.getTag(), false);
                                                 this.cancel();
                                                 return;

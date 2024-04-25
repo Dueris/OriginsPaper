@@ -14,8 +14,7 @@ public class ChunkManagerPlayer {
         this.player = player;
         this.shape = shape;
         //generateShapeData
-        ShapeData shapedat = new ShapeData(shape, true);
-        this.shapeData = shapedat;
+        this.shapeData = new ShapeData(shape, true);
     }
 
     public Player getPlayer() {
@@ -43,11 +42,6 @@ public class ChunkManagerPlayer {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
@@ -55,11 +49,6 @@ public class ChunkManagerPlayer {
     @Override
     public String toString() {
         return super.toString();
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 
     public boolean isThing() {
@@ -116,7 +105,6 @@ public class ChunkManagerPlayer {
         } else if (shapeData.getShape().equalsIgnoreCase("world_chunk")) {
             Location centerLocation = player.getLocation();
             int centerX = centerLocation.getBlockX();
-            int centerY = centerLocation.getBlockY();
             int centerZ = centerLocation.getBlockZ();
             int diameter = radius * 2 + 1;
             int totalHeight = player.getWorld().getMaxHeight() - player.getWorld().getMinHeight() + 1;

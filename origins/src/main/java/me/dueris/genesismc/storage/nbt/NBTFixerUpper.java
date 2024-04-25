@@ -36,7 +36,7 @@ public class NBTFixerUpper {
         }
     }
 
-    public static void runFixerUpper() throws IOException {
+    public static void runFixerUpper() {
         Stopwatch stopwatch = Stopwatch.createStarted();
         File[] filesToFix = GenesisMC.server.playerDataStorage.getPlayerDir().listFiles();
         List<CompletableFuture<Void>> futures = new ArrayList<>();

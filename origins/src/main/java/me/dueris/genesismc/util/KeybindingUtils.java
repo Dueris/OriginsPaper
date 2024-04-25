@@ -112,10 +112,6 @@ public class KeybindingUtils implements Listener {
         return null;
     }
 
-    public static boolean isExecutableTrue(String neededKey, KeybindTriggerEvent triggerEvent) {
-        return triggerEvent.getKey().equalsIgnoreCase(neededKey);
-    }
-
     public static void triggerExecution(String key, Player player) {
         triggerActiveKey(player, key);
         Bukkit.getPluginManager().callEvent(new KeybindTriggerEvent(player, key));
@@ -133,31 +129,6 @@ public class KeybindingUtils implements Listener {
     }
 
     // Keybind triggers end
-
-    public static void toggleKey(Player player, String key) {
-//        if(key.startsWith("key.origins")){
-//            ItemStack item = getKeybindItem(key, player.getInventory());
-//            if (item == null) return;
-//            if(item.getType().equals(Material.LIME_DYE)){ // currently active, turn off
-//                item.setType(Material.GRAY_DYE);
-//            }else{ // currently off, turn on
-//                item.setType(Material.LIME_DYE);
-//            }
-//        }
-    }
-
-    public static ItemStack getKeybindItem(String type, Inventory inventory) {
-        for (ItemStack item : inventory.getContents()) {
-            if (item != null) {
-                if (item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"))) {
-                    if (item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase(type)) {
-                        return item;
-                    }
-                }
-            }
-        }
-        return null;
-    }
 
     public static boolean isKeyActive(String key, Player player) {
         activeKeys.putIfAbsent(player, new ArrayList<>());
@@ -189,11 +160,6 @@ public class KeybindingUtils implements Listener {
         addPrimaryItem(p);
         addSecondaryItem(p);
     }
-
-    // @EventHandler
-    // public void test(KeybindTriggerEvent e){
-    //     System.out.println(e.getKey());
-    // }
 
     public static boolean hasOriginDataTriggerPrimary(Inventory inventory) {
         for (ItemStack item : inventory.getContents()) {
@@ -227,7 +193,7 @@ public class KeybindingUtils implements Listener {
     }
 
     @EventHandler
-    public void clickc(PlayerInteractEvent e) {
+    public void click(PlayerInteractEvent e) {
         if (e.getHand() == EquipmentSlot.OFF_HAND) return;
         if (e.getAction().isRightClick()) {
             triggerExecution("key.use", e.getPlayer());
@@ -338,15 +304,11 @@ public class KeybindingUtils implements Listener {
 
     @EventHandler
     public void jointhing(PlayerJoinEvent e) {
-        if (e.getPlayer().getInventory().getContents() == null) {
-            addItems(e.getPlayer());
-        } else {
-            if (!hasOriginDataTriggerPrimary(e.getPlayer().getInventory())) {
-                addPrimaryItem(e.getPlayer());
-            }
-            if (!hasOriginDataTriggerSecondary(e.getPlayer().getInventory())) {
-                addSecondaryItem(e.getPlayer());
-            }
+        if (!hasOriginDataTriggerPrimary(e.getPlayer().getInventory())) {
+            addPrimaryItem(e.getPlayer());
+        }
+        if (!hasOriginDataTriggerSecondary(e.getPlayer().getInventory())) {
+            addSecondaryItem(e.getPlayer());
         }
     }
 
@@ -357,15 +319,11 @@ public class KeybindingUtils implements Listener {
 
     @EventHandler
     public void respawnGIVE(PlayerRespawnEvent e) {
-        if (e.getPlayer().getInventory().getContents() == null) {
-            addItems(e.getPlayer());
-        } else {
-            if (!hasOriginDataTriggerPrimary(e.getPlayer().getInventory())) {
-                addPrimaryItem(e.getPlayer());
-            }
-            if (!hasOriginDataTriggerSecondary(e.getPlayer().getInventory())) {
-                addSecondaryItem(e.getPlayer());
-            }
+        if (!hasOriginDataTriggerPrimary(e.getPlayer().getInventory())) {
+            addPrimaryItem(e.getPlayer());
+        }
+        if (!hasOriginDataTriggerSecondary(e.getPlayer().getInventory())) {
+            addSecondaryItem(e.getPlayer());
         }
     }
 

@@ -463,7 +463,7 @@ public class EntityActions {
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("add_velocity"), (action, entity) -> {
-            Space space = Space.getSpace(action.getStringOrDefault("space", "world"));
+            Space space = action.getEnumValueOrDefault("space", Space.class, Space.WORLD);
 
             Vector3f vec = VectorGetter.getAsVector3f(action);
             net.minecraft.world.entity.Entity en = ((CraftLivingEntity) entity).getHandle();
@@ -505,11 +505,11 @@ public class EntityActions {
         register(new ActionFactory(GenesisMC.apoliIdentifier("area_of_effect"), (action, entity) -> {
             float radius = action.getNumberOrDefault("radius", 15F).getFloat();
             FactoryJsonObject bientity_action = action.isPresent("bientity_action") ? action.getJsonObject("bientity_action") : new FactoryJsonObject(new JsonObject());
-            boolean include_actor = action.isPresent("include_actor") && action.getBooleanOrDefault("include_actor", false);
+            boolean include_actor = action.getBooleanOrDefault("include_actor", false);
 
             boolean hasCondition = action.isPresent("bientity_condition");
 
-            for (net.minecraft.world.entity.Entity target : Shape.getEntities(Shape.getShape(action.getStringOrDefault("shape", "cube")), ((CraftWorld) entity.getWorld()).getHandle(), ((CraftEntity) entity).getHandle().getPosition(1.0f), radius)) {
+            for (net.minecraft.world.entity.Entity target : Shape.getEntities(action.getEnumValueOrDefault("shape", Shape.class, Shape.CUBE), ((CraftWorld) entity.getWorld()).getHandle(), ((CraftEntity) entity).getHandle().getPosition(1.0f), radius)) {
                 if (target == entity && !include_actor) {
                     continue;
                 }

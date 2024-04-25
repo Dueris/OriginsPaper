@@ -80,22 +80,4 @@ public enum Shape {
             case CUBE, CHEBYSHEV -> Math.max(Math.max(xDistance, yDistance), zDistance);
         };
     }
-
-    public static Shape getShape(Object raw) {
-        if (raw == null) return CUBE;
-        switch (raw.toString().toLowerCase()) {
-            case "star":
-                return STAR;
-            case "sphere":
-                return SPHERE;
-            case "chebyshev":
-                return CHEBYSHEV;
-            case "manhattan":
-                return MANHATTAN;
-            case "euclidean":
-                return EUCLIDEAN;
-            default:
-                return CUBE;
-        }
-    }
 }
