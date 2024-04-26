@@ -63,7 +63,7 @@ public class PowerCommand {
                         })
                     )
                 ).then(literal("grant")
-                    .then(argument("targets", EntityArgument.players())
+                    .then(argument("targets", EntityArgument.entities())
                         .then(argument("power", ResourceLocationArgument.id())
                             .suggests((context, builder) -> {
                                 OriginCommand.commandProvidedPowers.forEach((power) -> {
@@ -111,7 +111,7 @@ public class PowerCommand {
                         )
                     )
                 ).then(literal("has")
-                    .then(argument("targets", EntityArgument.players())
+                    .then(argument("targets", EntityArgument.entities())
                         .then(argument("power", ResourceLocationArgument.id())
                             .suggests((context, builder) -> {
                                 OriginCommand.commandProvidedPowers.forEach((power) -> {
@@ -144,7 +144,7 @@ public class PowerCommand {
                         )
                     )
                 ).then(literal("list")
-                    .then(argument("targets", EntityArgument.players())
+                    .then(argument("targets", EntityArgument.entities())
                         .executes(context -> {
                             for (ServerPlayer player : EntityArgument.getPlayers(context, "targets")) {
                                 for (Layer layerContainer : OriginCommand.commandProvidedLayers) {
@@ -164,7 +164,7 @@ public class PowerCommand {
                         })
                     )
                 ).then(literal("remove")
-                    .then(argument("targets", EntityArgument.players())
+                    .then(argument("targets", EntityArgument.entities())
                         .then(argument("power", ResourceLocationArgument.id())
                             .suggests((context, builder) -> {
                                 OriginCommand.commandProvidedPowers.forEach((power) -> {
