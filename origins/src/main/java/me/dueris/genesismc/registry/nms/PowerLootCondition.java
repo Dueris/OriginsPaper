@@ -29,8 +29,8 @@ public class PowerLootCondition implements LootItemCondition {
         TYPE = new LootItemConditionType(CODEC);
     }
 
-    private ResourceLocation powerId;
-    private ResourceLocation powerSourceId;
+    private final ResourceLocation powerId;
+    private final ResourceLocation powerSourceId;
 
     private PowerLootCondition(ResourceLocation powerId, Optional<ResourceLocation> powerSourceId) {
         this.powerId = powerId;

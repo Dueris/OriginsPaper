@@ -11,7 +11,6 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.*;
-import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.apoli.Toggle;
@@ -432,7 +431,7 @@ public class EntityActions {
         register(new ActionFactory(GenesisMC.apoliIdentifier("selector_action"), (action, entity) -> {
             if (action.isPresent("bientity_condition")) {
                 if (entity instanceof Player player) {
-                    executeBiEntity(entity, player.getTargetEntity(AttributeHandler.ReachUtils.getDefaultReach(player), false), action.getJsonObject("bientity_condition"));
+                    executeBiEntity(entity, player.getTargetEntity(4, false), action.getJsonObject("bientity_condition"));
                 }
             }
         }));

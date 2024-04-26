@@ -27,7 +27,10 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.types.*;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.apoli.*;
+import me.dueris.genesismc.factory.powers.apoli.ModelColor;
+import me.dueris.genesismc.factory.powers.apoli.RecipePower;
+import me.dueris.genesismc.factory.powers.apoli.Resource;
+import me.dueris.genesismc.factory.powers.apoli.WaterBreathe;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
 import me.dueris.genesismc.integration.PlaceHolderAPI;
 import me.dueris.genesismc.registry.BuiltinRegistry;
@@ -125,12 +128,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     private static void patchPowers() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    PlayerManager.ReapplyEntityReachPowers(p);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 5L);
             OriginDataContainer.loadData();
             OriginPlayerAccessor.setupPowers(p);
             PlayerManager.originValidCheck(p);

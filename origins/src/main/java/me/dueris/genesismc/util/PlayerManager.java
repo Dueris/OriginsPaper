@@ -3,14 +3,10 @@ package me.dueris.genesismc.util;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.data.types.Modifier;
-import me.dueris.genesismc.factory.powers.ApoliPower;
-import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
 import me.dueris.genesismc.factory.powers.genesismc.GravityPower;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.GuiTicker;
 import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.storage.OriginDataContainer;
@@ -40,25 +36,6 @@ import java.util.HashMap;
 public class PlayerManager implements Listener {
 
     public static ArrayList<Player> playersLeaving = new ArrayList<>();
-
-    public static void ReapplyEntityReachPowers(Player player) {
-        for (Origin origin : OriginPlayerAccessor.getOrigin(player).values()) {
-            for (Power power : origin.getMultiPowerFileFromType("apoli:attribute")) {
-                if (power == null) continue;
-                for (Modifier modifier : power.getModifiers()) {
-                    if (modifier.handle.getString("attribute").equalsIgnoreCase("reach-entity-attributes:reach")) {
-                        ApoliPower.extra_reach.add(player);
-                        return;
-                    } else if (modifier.handle.getString("attribute").equalsIgnoreCase("reach-entity-attributes:attack_range")) {
-                        ApoliPower.extra_reach_attack.add(player);
-                        return;
-                    } else {
-                        AttributeHandler.ReachUtils.setFinalReach(player, AttributeHandler.ReachUtils.getDefaultReach(player));
-                    }
-                }
-            }
-        }
-    }
 
     public static void originValidCheck(Player p) {
         HashMap<Layer, Origin> origins = OriginPlayerAccessor.getOrigin(p);
@@ -149,12 +126,6 @@ public class PlayerManager implements Listener {
         if (!new GravityPower().getPlayersWithPower().contains(p)) {
             new GravityPower().doesntHavePower(p);
         }
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                ReapplyEntityReachPowers(p);
-            }
-        }.runTaskLater(GenesisMC.getPlugin(), 5L);
 
         // Add delay config
         if (GenesisConfigs.getMainConfig().contains("choosing_delay")) {

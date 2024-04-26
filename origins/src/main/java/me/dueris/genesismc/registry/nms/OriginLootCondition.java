@@ -28,8 +28,8 @@ public class OriginLootCondition implements LootItemCondition {
         TYPE = new LootItemConditionType(CODEC);
     }
 
-    private ResourceLocation originId;
-    private ResourceLocation originSourceId;
+    private final ResourceLocation originId;
+    private final ResourceLocation originSourceId;
 
     private OriginLootCondition(ResourceLocation originId, Optional<ResourceLocation> originSourceId) {
         this.originId = originId;

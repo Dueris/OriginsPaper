@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
-import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AttributeExecuteEvent;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -12,16 +11,13 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.OriginPage;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.function.BinaryOperator;
@@ -66,16 +62,6 @@ public class AttributeHandler extends CraftPower implements Listener {
                 if (power == null) continue;
 
                 for (Modifier modifier : power.getModifiers()) {
-                    if (modifier.handle.getString("attribute").equalsIgnoreCase("reach-entity-attributes:reach")) {
-                        extra_reach.add(p);
-                        continue;
-                    } else if (modifier.handle.getString("attribute").equalsIgnoreCase("reach-entity-attributes:attack_range")) {
-                        extra_reach_attack.add(p);
-                        continue;
-                    } else {
-                        ReachUtils.setFinalReach(p, ReachUtils.getDefaultReach(p));
-                    }
-
                     try {
                         Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.handle.getString("attribute")).asString().split(":")[1].replace(".", "_").toUpperCase());
 
@@ -103,51 +89,5 @@ public class AttributeHandler extends CraftPower implements Listener {
     @Override
     public ArrayList<Player> getPlayersWithPower() {
         return attribute;
-    }
-
-    public static class ReachUtils implements Listener {
-
-        private static Block getClosestBlockInSight(Player player, double maxRange, double normalReach) {
-            // Get the player's eye location
-            Location eyeLocation = player.getEyeLocation();
-
-            // Get the direction the player is looking at
-            Vector direction = eyeLocation.getDirection();
-
-            // Iterate through the blocks in the line of sight
-            for (double distance = 0.0; distance <= maxRange; distance += 0.1) {
-                Location targetLocation = eyeLocation.clone().add(direction.clone().multiply(distance));
-                Block targetBlock = targetLocation.getBlock();
-
-                // Check if the block can be broken and it's outside of the normal reach
-                if (targetBlock.getType() != Material.AIR && targetBlock.getType().isSolid()
-                    && distance > normalReach) {
-                    return targetBlock;
-                }
-            }
-
-            return null; // No block in sight within the range
-        }
-
-        public static int getDefaultReach(Entity entity) {
-            if (entity instanceof Player p) {
-                if (p.getGameMode().equals(GameMode.CREATIVE)) {
-                    return 5;
-                }
-            }
-            return 3;
-        }
-
-        public static void setFinalReach(Entity p, double value) {
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE, value);
-        }
-
-        public static double getFinalReach(Entity p) {
-            if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE)) {
-                return p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE);
-            } else {
-                return getDefaultReach(p);
-            }
-        }
     }
 }

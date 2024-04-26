@@ -11,14 +11,12 @@ import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 
 public class EntityGlowPower extends CraftPower {
 
     @Override
     public void run(Player p, Power power) {
-        for (CraftEntity entity : Shape.getEntities(Shape.SPHERE, ((CraftWorld)p.getWorld()).getHandle(), CraftLocation.toVec3D(p.getLocation()), 10).stream().map(Entity::getBukkitEntity).toList()) {
+        for (CraftEntity entity : Shape.getEntities(Shape.SPHERE, ((CraftWorld) p.getWorld()).getHandle(), CraftLocation.toVec3D(p.getLocation()), 10).stream().map(Entity::getBukkitEntity).toList()) {
             if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) &&
                 ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, entity) &&
                 ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), entity)

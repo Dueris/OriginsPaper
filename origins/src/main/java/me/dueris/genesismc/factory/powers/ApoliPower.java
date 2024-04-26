@@ -28,8 +28,7 @@ public interface ApoliPower extends Registrable {
     ArrayList<Player> more_exhaustion = new ArrayList<>();
     ArrayList<Player> phasing = new ArrayList<>();
     ArrayList<Player> pumpkin_hate = new ArrayList<>();
-    ArrayList<Player> extra_reach = new ArrayList<>();
-    ArrayList<Player> extra_reach_attack = new ArrayList<>();
+    ArrayList<Player> replace_loot_table = new ArrayList<>();
     ArrayList<Player> translucent = new ArrayList<>();
     ArrayList<Player> water_vision = new ArrayList<>();
     ArrayList<Player> elytra = new ArrayList<>();

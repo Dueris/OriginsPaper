@@ -20,7 +20,6 @@ import org.bukkit.util.RayTraceResult;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
-import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.ReachUtils.getFinalReach;
 import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_entity_use;
 
 public class PreventEntityUse extends CraftPower implements Listener {
@@ -32,7 +31,7 @@ public class PreventEntityUse extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 Location eyeloc = p.getEyeLocation();
                 Predicate<Entity> filter = (entity) -> !entity.equals(p);
-                RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), getFinalReach(p), FluidCollisionMode.NEVER, false, 0, filter);
+                RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), 5, FluidCollisionMode.NEVER, false, 0, filter);
 
                 if (traceResult4_5F != null) {
                     Entity entity = traceResult4_5F.getHitEntity();
@@ -40,7 +39,7 @@ public class PreventEntityUse extends CraftPower implements Listener {
                     if (entity.isDead() || !(entity instanceof LivingEntity)) return;
                     if (entity.isInvulnerable()) return;
                     LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
-                    if (p.getLocation().distance(victim.getLocation()) <= AttributeHandler.ReachUtils.getFinalReach(p)) {
+                    if (p.getLocation().distance(victim.getLocation()) <= 5) {
                         if (entity.getPassengers().contains(p)) return;
                         if (!entity.isDead()) {
                             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
