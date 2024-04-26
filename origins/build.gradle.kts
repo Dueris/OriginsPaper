@@ -34,6 +34,7 @@ tasks {
         options.encoding = Charsets.UTF_8.name()
 
         options.release.set(21)
+        options.isWarnings = false
     }
     javadoc {
         options.encoding = Charsets.UTF_8.name()
