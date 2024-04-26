@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-public class Freeze extends CraftPower {
+public class FreezePower extends CraftPower {
 
     @Override
     public void run(Player p, Power power) {

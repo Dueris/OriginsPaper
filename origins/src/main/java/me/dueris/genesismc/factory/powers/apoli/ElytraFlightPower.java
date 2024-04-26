@@ -35,7 +35,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class FlightElytra extends CraftPower implements Listener {
+public class ElytraFlightPower extends CraftPower implements Listener {
     public static ArrayList<UUID> glidingPlayers = new ArrayList<>();
 
     public static ArrayList<UUID> getGlidingPlayers() {

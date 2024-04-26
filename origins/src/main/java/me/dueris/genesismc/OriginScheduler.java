@@ -2,7 +2,7 @@ package me.dueris.genesismc;
 
 import me.dueris.calio.CraftCalio;
 import me.dueris.genesismc.factory.powers.ApoliPower;
-import me.dueris.genesismc.factory.powers.apoli.FlightHandler;
+import me.dueris.genesismc.factory.powers.apoli.CreativeFlight;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
@@ -36,7 +36,7 @@ public class OriginScheduler {
 
     public static class OriginSchedulerTree extends BukkitRunnable implements Listener {
 
-        public static FlightHandler flightHandler = new FlightHandler();
+        public static CreativeFlight flightHandler = new CreativeFlight();
         private final HashMap<Player, HashMap<Power, Integer>> ticksEMap = new HashMap<>();
         public OriginScheduler parent = new OriginScheduler(GenesisMC.getPlugin());
 
@@ -53,7 +53,7 @@ public class OriginScheduler {
         public void run() {
             for (Player p : OriginPlayerAccessor.hasPowers) {
                 tickedPowers.putIfAbsent(p, new ArrayList<>());
-                if (!OriginPlayerAccessor.getPowersApplied(p).contains(FlightHandler.class)) {
+                if (!OriginPlayerAccessor.getPowersApplied(p).contains(CreativeFlight.class)) {
                     // Ensures the flight handler can still tick on players because of issues when it doesn't tick
                     flightHandler.run(p, null);
                 }

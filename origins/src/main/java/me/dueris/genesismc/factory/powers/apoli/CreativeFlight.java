@@ -16,7 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
-public class FlightHandler extends CraftPower implements Listener {
+public class CreativeFlight extends CraftPower implements Listener {
 
     @Override
     public void run(Player p, Power power) {
@@ -34,8 +34,8 @@ public class FlightHandler extends CraftPower implements Listener {
                         p.setFlying(true);
                     }
                 } else {
-                    p.setAllowFlight(p.getGameMode().equals(GameMode.SPECTATOR) || FlightElytra.elytra.contains(p) || no_gravity.contains(p) || grounded.contains(p));
-                    if (FlightElytra.elytra.contains(p)) {
+                    p.setAllowFlight(p.getGameMode().equals(GameMode.SPECTATOR) || ElytraFlightPower.elytra.contains(p) || no_gravity.contains(p) || grounded.contains(p));
+                    if (ElytraFlightPower.elytra.contains(p)) {
                         p.setFlying(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR));
                     }
                 }
@@ -61,7 +61,7 @@ public class FlightHandler extends CraftPower implements Listener {
 
             @Override
             public void run() {
-                FlightHandler fl = new FlightHandler();
+                CreativeFlight fl = new CreativeFlight();
                 fl.run(e.getPlayer(), null);
             }
 

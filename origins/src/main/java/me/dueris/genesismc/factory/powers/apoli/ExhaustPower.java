@@ -10,38 +10,36 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-public class Burn extends CraftPower {
+public class ExhaustPower extends CraftPower {
 
     @Override
     public void run(Player p, Power power) {
         if (!power.isPresent("interval")) {
             throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
         }
-
-        long interval = power.getNumber("interval").getLong();
-        if (interval == 0) interval = 1L;
+        long interval = power.getNumberOrDefault("interval", 20L).getLong();
         if (Bukkit.getServer().getCurrentTick() % interval == 0) {
-            if (p.isInWaterOrRainOrBubbleColumn()) return;
-            if (p.getGameMode() == GameMode.CREATIVE) return;
             if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                 setActive(p, power.getTag(), true);
-
-                long burn_duration = power.getNumberOrDefault("burn_duration", 100L).getLong();
-                p.setFireTicks((int) burn_duration * 20);
+                if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
+                    return;
+                if (Math.round(p.getFoodLevel() - power.getNumberOrDefault("exhaustion", 1).getFloat()) <= 0)
+                    p.setFoodLevel(0);
+                else
+                    p.setFoodLevel(Math.round(p.getFoodLevel() - power.getNumberOrDefault("exhaustion", 1).getFloat()));
             } else {
                 setActive(p, power.getTag(), false);
             }
-
         }
     }
 
     @Override
     public String getType() {
-        return "apoli:burn";
+        return "apoli:exhaust";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return burn;
+        return more_exhaustion;
     }
 }

@@ -270,7 +270,7 @@ public class EntityConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("climbing"), (condition, entity) -> {
             if (entity instanceof Player player) {
-                Climbing climbing = new Climbing();
+                ClimbingPower climbing = new ClimbingPower();
                 return player.isClimbing() || climbing.isActiveClimbing(player);
             }
             return false;
@@ -330,7 +330,7 @@ public class EntityConditions {
                 }
             }
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_flying"), (condition, entity) -> entity instanceof LivingEntity le && (((CraftLivingEntity) le).getHandle().isFallFlying() || FlightElytra.getGlidingPlayers().contains(le))));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_flying"), (condition, entity) -> entity instanceof LivingEntity le && (((CraftLivingEntity) le).getHandle().isFallFlying() || ElytraFlightPower.getGlidingPlayers().contains(le))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("submerged_in"), (condition, entity) -> {
             String formatted = NamespacedKey.fromString(condition.getString("fluid")).asString();
             if (formatted.equalsIgnoreCase("minecraft:water")) {
@@ -454,7 +454,7 @@ public class EntityConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_group"), (condition, entity) -> (EntityGroupManager.modifiedEntityGroups.containsKey(entity) && EntityGroupManager.modifiedEntityGroups.get(entity).equals(condition.getEnumValue("group", EntityGroup.class))) || (entity.getHandle() instanceof net.minecraft.world.entity.LivingEntity le && condition.getEnumValue("group", EntityGroup.class).nms().equals(le.getMobType()))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("elytra_flight_possible"), (condition, entity) -> {
-            boolean hasElytraPower = FlightElytra.elytra.contains(entity);
+            boolean hasElytraPower = ElytraFlightPower.elytra.contains(entity);
             boolean hasElytraEquipment = false;
             if (entity instanceof LivingEntity li) {
                 for (ItemStack item : li.getEquipment().getArmorContents()) {
