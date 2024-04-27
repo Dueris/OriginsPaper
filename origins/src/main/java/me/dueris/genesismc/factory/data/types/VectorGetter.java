@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.data.types;
 
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftVector;
+import org.bukkit.craftbukkit.util.CraftVector;
 import org.bukkit.util.Vector;
 import org.joml.Vector3f;
 

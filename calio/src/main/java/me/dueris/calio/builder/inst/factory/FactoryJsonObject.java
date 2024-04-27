@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -60,24 +60,32 @@ public class FactoryJsonObject {
 
     public <T extends Enum<T>> T getEnumValue(String key, Class<T> enumClass) {
         String value = this.handle.get(key).getAsString().toLowerCase();
-        T[] enumConstants = enumClass.getEnumConstants();
-        for (T enumValue : enumConstants) {
-            if (enumValue.toString().toLowerCase().equalsIgnoreCase(value)) {
-                return enumValue;
-            }
-        }
-        throw new IllegalArgumentException("Provided JsonValue from key \"{key}\" was not an instanceof enum \"{enum}\"");
+        return getEV(enumClass, value, null);
     }
 
     public <T extends Enum<T>> T getEnumValueOrDefault(String key, Class<T> enumClass, T def) {
         String value = this.handle.get(key).getAsString().toLowerCase();
+        return getEV(enumClass, value, def);
+    }
+
+    public <T extends Enum<T>> T getEnumValue(String key, Class<T> enumClass, boolean checkNamespace) {
+        String value = this.handle.get(key).getAsString().toLowerCase();
+        if (checkNamespace && value.contains(":")) {
+            value = value.split(":")[1];
+        }
+        return getEV(enumClass, value, null);
+    }
+
+    private <T extends Enum<T>> T getEV(Class<T> enumClass, String value, T def) {
         T[] enumConstants = enumClass.getEnumConstants();
         for (T enumValue : enumConstants) {
             if (enumValue.toString().toLowerCase().equalsIgnoreCase(value)) {
                 return enumValue;
             }
         }
-        return def;
+        if (def == null) {
+            throw new IllegalArgumentException("Provided JsonValue from key \"{key}\" was not an instanceof enum \"{enum}\"");
+        } else return def;
     }
 
     public boolean getBoolean(String key) {

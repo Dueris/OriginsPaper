@@ -16,7 +16,7 @@ import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.screen.ScreenNavigator;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 

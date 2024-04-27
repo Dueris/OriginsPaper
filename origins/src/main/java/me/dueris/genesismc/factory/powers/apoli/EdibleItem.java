@@ -10,7 +10,7 @@ import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.food.FoodProperties;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -65,8 +65,8 @@ public class EdibleItem extends CraftPower implements Listener {
             cachedFoodProperties.put(power, Utils.parseProperties(power.getJsonObject("food_component")));
         }
         FoodProperties properties = cachedFoodProperties.get(power);
-        int hunger = properties.getNutrition();
-        float saturation = properties.getSaturationModifier();
+        int hunger = properties.nutrition();
+        float saturation = properties.saturation();
         boolean alwaysEdible = properties.canAlwaysEat();
 
         if (player.getFoodLevel() >= 20 && !alwaysEdible) return false;
@@ -77,8 +77,8 @@ public class EdibleItem extends CraftPower implements Listener {
         player.playSound(player.getEyeLocation(), MiscUtils.parseSound(power.getStringOrDefault("consume_sound", "minecraft:entity.generic.eat")), 1, 1);
 
         ServerPlayer p = ((CraftPlayer) player).getHandle();
-        properties.getEffects().forEach(effectPair -> {
-            p.addEffect(effectPair.getFirst());
+        properties.effects().forEach(effectPair -> {
+            p.addEffect(effectPair.effect());
         });
 
         runResultStack(power, true, player);

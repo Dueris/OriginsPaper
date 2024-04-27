@@ -3,7 +3,7 @@ package me.dueris.genesismc.util.console;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.craftbukkit.v1_20_R3.conversations.ConversationTracker;
+import org.bukkit.craftbukkit.conversations.ConversationTracker;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -76,11 +76,6 @@ public class OriginConsoleSender extends OriginServerCommandSender implements Co
     @Override
     public boolean isConversing() {
         return this.conversationTracker.isConversing();
-    }
-
-    @Override
-    public void sendMessage(final net.kyori.adventure.identity.Identity identity, final net.kyori.adventure.text.Component message, final net.kyori.adventure.audience.MessageType type) {
-
     }
 
     @Override

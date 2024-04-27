@@ -35,7 +35,7 @@ public class OrbOfOrigins {
         meta.setDisplayName("Orb of Origins");
         meta.setUnbreakable(true);
         meta.getCustomTagContainer().setCustomTag(new NamespacedKey(GenesisMC.getPlugin(), "origins"), ItemTagType.STRING, "orb_of_origin");
-        meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        meta.addEnchant(Enchantment.INFINITY, 1, true);
         item.setItemMeta(meta);
 
         try {

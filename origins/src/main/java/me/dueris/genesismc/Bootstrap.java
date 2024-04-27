@@ -8,12 +8,15 @@ import me.dueris.genesismc.registry.nms.PowerLootCondition;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import org.apache.commons.io.FilenameUtils;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -152,7 +155,11 @@ public class Bootstrap implements PluginBootstrap {
         }
         // hurt by water damage type
         EquipmentSlot[] slots = {EquipmentSlot.CHEST, EquipmentSlot.FEET, EquipmentSlot.HEAD, EquipmentSlot.LEGS};
-        WaterProtectionEnchantment waterProtection = new WaterProtectionEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.ARMOR, slots);
+        WaterProtectionEnchantment waterProtection = new WaterProtectionEnchantment(
+            Enchantment.definition(
+                TagKey.create(Registries.ITEM, CraftNamespacedKey.toMinecraft(NamespacedKey.fromString("trimmable_armor"))),
+                1, 4, Enchantment.dynamicCost(1, 1), Enchantment.dynamicCost(1, 4), 4, slots
+            ));
         registerEnchantment("water_protection", waterProtection);
         Bootstrap.waterProtection = waterProtection;
         Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, new ResourceLocation("apoli", "power"), PowerLootCondition.TYPE);

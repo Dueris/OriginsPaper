@@ -6,18 +6,19 @@ import kotlin.io.path.isDirectory
 plugins {
     `java-library`
     `maven-publish`
-    id("io.papermc.paperweight.userdev") version "1.5.15" apply true
+    id("io.papermc.paperweight.userdev") version "1.6.0" apply true
     id("xyz.jpenilla.run-paper") version "2.2.3"
     id("com.github.johnrengelman.shadow") version "7.1.2" apply true
 }
 
-val paperweightVersion: String = "1.20.4-R0.1-SNAPSHOT"
+val paperweightVersion: String = "1.20.5-R0.1-SNAPSHOT"
 
 allprojects {
     apply(plugin = "java")
     apply(plugin = "maven-publish")
     apply(plugin = "io.papermc.paperweight.userdev")
     apply(plugin = "com.github.johnrengelman.shadow")
+    paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
     java {
         toolchain {
@@ -45,7 +46,7 @@ allprojects {
 
 tasks {
     build {
-        dependsOn(":origins:reobfJar")
+        dependsOn(":origins:shadowJar")
         doLast {
             val targetJarDirectory: Path = projectDir.toPath().toAbsolutePath().resolve("build/libs")
             val subProject: Project = project("origins")
@@ -61,20 +62,15 @@ tasks {
                 }
             }
             Files.copy(
-                file("origins/build/libs/origins-".plus(subProject.version).plus(".jar")).toPath().toAbsolutePath(),
-                targetJarDirectory.resolve("genesis-".plus(subProject.version).plus(".jar")),
-                StandardCopyOption.REPLACE_EXISTING
-            )
-            Files.copy(
-                file("origins/build/libs/origins-".plus(subProject.version).plus("-dev-all").plus(".jar")).toPath()
+                file("origins/build/libs/origins-".plus(subProject.version).plus("-all").plus(".jar")).toPath()
                     .toAbsolutePath(),
-                targetJarDirectory.resolve("genesis-".plus(subProject.version).plus("-mojmap").plus(".jar")),
+                targetJarDirectory.resolve("genesis-".plus(subProject.version).plus(".jar")),
                 StandardCopyOption.REPLACE_EXISTING
             )
         }
     }
     runServer {
-        minecraftVersion("1.20.4")
+        minecraftVersion("1.20.5")
     }
 }
 

@@ -1,6 +1,7 @@
 package me.dueris.genesismc.registry.nms;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.Registries;
@@ -13,20 +14,18 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
 
 public class PowerLootCondition implements LootItemCondition {
-    public static final Codec<PowerLootCondition> CODEC = RecordCodecBuilder.create((instance) -> {
-        return instance.group(ResourceLocation.CODEC.fieldOf("power").forGetter(PowerLootCondition::getPowerId), ResourceLocation.CODEC.optionalFieldOf("source").forGetter(PowerLootCondition::getPowerSourceId)).apply(instance, PowerLootCondition::new);
-    });
+    public static final Codec<PowerLootCondition> CODEC = RecordCodecBuilder.create((instance) -> instance.group(ResourceLocation.CODEC.fieldOf("power").forGetter(PowerLootCondition::getPowerId), ResourceLocation.CODEC.optionalFieldOf("source").forGetter(PowerLootCondition::getPowerSourceId)).apply(instance, PowerLootCondition::new));
     public static final LootItemConditionType TYPE;
 
     static {
-        TYPE = new LootItemConditionType(CODEC);
+        TYPE = new LootItemConditionType(MapCodec.assumeMapUnsafe(CODEC));
     }
 
     private final ResourceLocation powerId;

@@ -10,8 +10,8 @@ import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.block.CraftBlock;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -41,14 +41,14 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                         if (e.getBlock() == null || e.getBlock().getState() == null) return;
                         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) e.getBlock())) {
                             setActive(p, power.getTag(), true);
-                            if (p.hasPotionEffect(PotionEffectType.FAST_DIGGING)) return;
+                            if (p.hasPotionEffect(PotionEffectType.HASTE)) return;
                             // if(power.getPossibleModifiers("modifier", "modifiers"))
                             for (Modifier modifier : power.getModifiers()) {
                                 if (modifier.value() <= 0) {
                                     // Slower mine
                                     p.addPotionEffect(
                                         new PotionEffect(
-                                            PotionEffectType.SLOW_DIGGING,
+                                            PotionEffectType.HASTE,
                                             120,
                                             (Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
                                             false, false, false
@@ -58,7 +58,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                                     // Speed up
                                     p.addPotionEffect(
                                         new PotionEffect(
-                                            PotionEffectType.FAST_DIGGING,
+                                            PotionEffectType.HASTE,
                                             120,
                                             (Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
                                             false, false, false
@@ -75,7 +75,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                             }
                         } else {
                             if (p.getScoreboardTags().contains("breaking_genesis_block_at_key_holder")) {
-                                p.removePotionEffect(PotionEffectType.FAST_DIGGING);
+                                p.removePotionEffect(PotionEffectType.HASTE);
                             }
                             setActive(p, power.getTag(), false);
                         }

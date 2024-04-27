@@ -17,7 +17,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
+import org.bukkit.craftbukkit.util.CraftLocation;
 import org.joml.Vector3f;
 
 import java.util.Optional;

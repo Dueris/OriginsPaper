@@ -24,16 +24,14 @@ import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import org.bukkit.*;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
@@ -217,9 +215,8 @@ public class EntityActions {
             cloud.setRadiusOnUse(radiusOnUse);
             cloud.setWaitTime(waitTime);
             cloud.setRadiusPerTick(-cloud.getRadius() / (float) cloud.getDuration());
-            List<MobEffectInstance> nmsEffects = Utils.toMobEffectList(effects);
-            cloud.setFixedColor(PotionUtils.getColor(nmsEffects));
-            nmsEffects.forEach(cloud::addEffect);
+            Utils.toMobEffectList(effects).forEach(cloud::addEffect);
+            // Color should be set automatically when the effects are added
 
             level.addFreshEntity(cloud);
         }));
@@ -417,7 +414,7 @@ public class EntityActions {
                 }
                 for (ItemStack item : player.getInventory().getContents()) {
                     if (item == null) continue;
-                    if (!item.containsEnchantment(Enchantment.ARROW_INFINITE) && !item.getType().equals(Material.GRAY_DYE)) {
+                    if (!item.containsEnchantment(Enchantment.INFINITY) && !item.getType().equals(Material.GRAY_DYE)) {
                         player.getWorld().dropItemNaturally(player.getLocation(), item);
                     }
                 }

@@ -6,8 +6,9 @@ import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.ItemTags;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,10 +28,11 @@ public class ItemActions {
                 item.removeEnchantment(enchantment);
             }
         }));
-        register(new ActionFactory(GenesisMC.apoliIdentifier("merge_nbt"), (action, item) -> {
+        // Doesn't work since 1.20.5 - cant directly merge CompoundTags because they decided to use DataComponents :(
+        /* register(new ActionFactory(GenesisMC.apoliIdentifier("merge_nbt"), (action, item) -> {
             net.minecraft.world.item.ItemStack stack = CraftItemStack.unwrap(item);
             stack.getOrCreateTag().merge(MiscUtils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(action.getString("nbt")), CompoundTag.CODEC));
-        }));
+        })); */
     }
 
     private void register(ItemActions.ActionFactory factory) {

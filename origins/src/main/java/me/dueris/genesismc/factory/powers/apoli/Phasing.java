@@ -19,10 +19,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
+import org.bukkit.craftbukkit.block.CraftBlock;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -245,8 +245,8 @@ public class Phasing extends CraftPower implements Listener {
     @EventHandler
     public void fixMineSpeed(ServerTickEndEvent e) {
         for (Player p : inPhantomFormBlocks) {
-            if (!p.getActivePotionEffects().contains(new PotionEffect(PotionEffectType.FAST_DIGGING, 5, 3, false, false, false))) {
-                p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 5, 3, false, false, false));
+            if (!p.getActivePotionEffects().contains(new PotionEffect(PotionEffectType.HASTE, 5, 3, false, false, false))) {
+                p.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 5, 3, false, false, false));
             }
         }
     }

@@ -8,7 +8,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,7 +34,7 @@ public class ModifyJumpPower extends CraftPower implements Listener {
                             int jumpBoostLevel = Math.round(modifierValue * 4);
 
                             if (jumpBoostLevel >= 0) {
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, jumpBoostLevel, false, false, false));
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, 20, jumpBoostLevel, false, false, false));
                                 setActive(p, power.getTag(), true);
                             }
                         }

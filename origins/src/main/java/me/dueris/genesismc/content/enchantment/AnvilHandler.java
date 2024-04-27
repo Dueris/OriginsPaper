@@ -4,9 +4,9 @@ import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
-import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.CraftRegistry;
+import org.bukkit.craftbukkit.enchantments.CraftEnchantment;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,11 +25,11 @@ public class AnvilHandler implements Listener {
     public static ArrayList<Enchantment> conflictenchantments = new ArrayList<>();
 
     static {
-        conflictenchantments.add(Enchantment.PROTECTION_FIRE);
-        conflictenchantments.add(Enchantment.PROTECTION_ENVIRONMENTAL);
-        conflictenchantments.add(Enchantment.PROTECTION_EXPLOSIONS);
-        conflictenchantments.add(Enchantment.PROTECTION_FALL);
-        conflictenchantments.add(Enchantment.PROTECTION_PROJECTILE);
+        conflictenchantments.add(Enchantment.FIRE_PROTECTION);
+        conflictenchantments.add(Enchantment.PROTECTION);
+        conflictenchantments.add(Enchantment.BLAST_PROTECTION);
+        conflictenchantments.add(Enchantment.FEATHER_FALLING);
+        conflictenchantments.add(Enchantment.PROJECTILE_PROTECTION);
     }
 
     public static ItemStack setWaterProtCustomEnchantLevel(int lvl, ItemStack item) {

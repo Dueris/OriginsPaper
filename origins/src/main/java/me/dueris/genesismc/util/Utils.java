@@ -30,11 +30,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
-import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlockType;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_20_R3.potion.CraftPotionUtil;
+import org.bukkit.craftbukkit.CraftRegistry;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.block.CraftBlockType;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.potion.CraftPotionUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
@@ -108,12 +108,13 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
     public static FoodProperties parseProperties(FactoryJsonObject jsonObject) {
         FoodProperties.Builder builder = new FoodProperties.Builder();
         Utils.computeIfObjectPresent("hunger", jsonObject, value -> builder.nutrition(value.getNumber().getInt()));
-        Utils.computeIfObjectPresent("saturation", jsonObject, value -> builder.saturationMod(value.getNumber().getFloat()));
-        Utils.computeIfObjectPresent("meat", jsonObject, value -> {
+        Utils.computeIfObjectPresent("saturation", jsonObject, value -> builder.saturationModifier(value.getNumber().getFloat()));
+        // Value removed in 1.20.5
+        /* Utils.computeIfObjectPresent("meat", jsonObject, value -> {
             if (value.isBoolean() && value.getBoolean()) builder.meat();
-        });
+        }); */
         Utils.computeIfObjectPresent("always_edible", jsonObject, value -> {
-            if (value.isBoolean() && value.getBoolean()) builder.alwaysEat();
+            if (value.isBoolean() && value.getBoolean()) builder.alwaysEdible();
         });
         Utils.computeIfObjectPresent("snack", jsonObject, value -> {
             if (value.isBoolean() && value.getBoolean()) builder.fast();

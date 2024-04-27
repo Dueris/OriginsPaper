@@ -14,8 +14,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -136,14 +136,14 @@ public class WaterBreathe extends CraftPower implements Listener {
                 int remainingAir = p.getRemainingAir();
                 if (remainingAir <= 5) {
                     for (int i = 0; i < 8; ++i) {
-                        p.spawnParticle(Particle.WATER_BUBBLE, player.getRandomX(0.5), player.getEyeY() + player.random.nextGaussian() * 0.08D, player.getRandomZ(0.5), 1);
+                        p.spawnParticle(Particle.BUBBLE, player.getRandomX(0.5), player.getEyeY() + player.random.nextGaussian() * 0.08D, player.getRandomZ(0.5), 1);
                     }
 
                     float finalDmg = 1;
                     if (p.getInventory().getHelmet() != null) {
                         if (p.getInventory().getHelmet().getType() == Material.TURTLE_HELMET) {
                             finalDmg = 0.5f;
-                        } else if (p.getInventory().getHelmet().containsEnchantment(Enchantment.OXYGEN)) {
+                        } else if (p.getInventory().getHelmet().containsEnchantment(Enchantment.RESPIRATION)) {
                             finalDmg = 0.5f;
                         }
                     }

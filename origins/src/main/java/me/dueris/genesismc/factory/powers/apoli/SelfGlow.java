@@ -6,9 +6,9 @@ import me.dueris.genesismc.registry.registries.Power;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.world.effect.MobEffectInstance;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R3.potion.CraftPotionEffectType;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.potion.CraftPotionEffectType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
@@ -25,7 +25,7 @@ public class SelfGlow extends CraftPower {
                     setActive(p, power.getTag(), true);
                     CraftPlayer craftPlayers = (CraftPlayer) player;
                     craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
-                        new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
+                        new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraftHolder(PotionEffectType.GLOWING), 5, 1, false, false, false), false));
                 } else {
                     setActive(p, power.getTag(), false);
                 }
@@ -33,7 +33,7 @@ public class SelfGlow extends CraftPower {
         }
         CraftPlayer craftPlayer = (CraftPlayer) p;
         craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(craftPlayer.getEntityId(),
-            new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
+            new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraftHolder(PotionEffectType.GLOWING), 5, 1, false, false, false), false));
     }
 
     @Override

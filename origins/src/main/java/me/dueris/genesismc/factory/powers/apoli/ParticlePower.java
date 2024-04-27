@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -30,19 +30,19 @@ public class ParticlePower extends CraftPower {
 
     public static Particle computeParticleArgs(FactoryElement root) {
         if (root.isString()) {
-            String particleSt = root.getString();
-            return Particle.valueOf(ensureCorrectNamespace(particleSt).split(":")[1].toUpperCase());
+            return Particle.valueOf(ensureCorrectNamespace(root.getString()).split(":")[1].toUpperCase()); // Directly parse it
         } else if (root.isJsonObject()) {
             FactoryJsonObject particle = root.toJsonObject();
-            return Particle.valueOf(ensureCorrectNamespace(particle.getString("type")).split(":")[1].toUpperCase());
+            return particle.getEnumValue("type", Particle.class, true);
         }
         return null;
     }
 
     private static String ensureCorrectNamespace(String string) {
-        if (string.endsWith("dust")) {
+        // No longer needed in 1.20.5
+        /* if (string.endsWith("dust")) {
             string = string.replace("dust", "redstone");
-        }
+        } */
         return string.contains(":") ? string : "minecraft:" + string;
     }
 

@@ -7,7 +7,7 @@ import me.dueris.genesismc.registry.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 
 import java.util.function.BiPredicate;
 

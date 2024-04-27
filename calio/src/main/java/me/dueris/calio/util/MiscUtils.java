@@ -8,6 +8,7 @@ import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
@@ -15,13 +16,15 @@ import net.minecraft.Util;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
+import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 public class MiscUtils {
 
@@ -98,7 +101,7 @@ public class MiscUtils {
             Object var4;
             try {
                 JsonElement jsonElement = Streams.parse(jsonReader);
-                var4 = Util.getOrThrow(codec.parse(JsonOps.INSTANCE, jsonElement), JsonParseException::new);
+                var4 = getOrThrow(codec.parse(JsonOps.INSTANCE, jsonElement), JsonParseException::new);
             } catch (StackOverflowError var8) {
                 throw new JsonParseException(var8);
             } finally {
@@ -106,6 +109,15 @@ public class MiscUtils {
             }
 
             return (T) var4;
+        }
+
+        public static <T, E extends Throwable> T getOrThrow(DataResult<T> result, Function<String, E> exceptionGetter) throws E {
+            Optional<DataResult.Error<T>> optional = result.error();
+            if (optional.isPresent()) {
+                throw exceptionGetter.apply(optional.get().message());
+            } else {
+                return result.result().orElseThrow();
+            }
         }
     }
 }

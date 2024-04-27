@@ -139,7 +139,7 @@ public class KeybindingUtils implements Listener {
         ItemStack itemStack = new ItemStack(Material.GRAY_DYE);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        itemMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        itemMeta.addEnchant(Enchantment.INFINITY, 1, true);
         itemMeta.setCustomModelData(id);
         itemMeta.setDisplayName(ChatColor.GRAY + "Keybind : " + keybindType);
         itemMeta.getPersistentDataContainer().set(GenesisMC.identifier("origin_item_data"), PersistentDataType.STRING, valueKEY);

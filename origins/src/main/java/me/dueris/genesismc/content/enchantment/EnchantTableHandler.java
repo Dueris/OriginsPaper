@@ -3,7 +3,7 @@ package me.dueris.genesismc.content.enchantment;
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
+import org.bukkit.craftbukkit.enchantments.CraftEnchantment;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -109,7 +109,7 @@ public class EnchantTableHandler implements Listener {
         pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
         ArrayList<String> pearl_lore = new ArrayList<>();
         pearl_meta.setUnbreakable(true);
-        pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        pearl_meta.addEnchant(Enchantment.INFINITY, 1, true);
         pearl_meta.setLore(pearl_lore);
         infinpearl.setItemMeta(pearl_meta);
         if (e.getInventory().contains(infinpearl)) {

@@ -76,8 +76,8 @@ public class OriginScheduler {
                         } catch (Throwable throwable) {
                             String[] stacktrace = {"\n"};
                             Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
-                            CraftCalio.INSTANCE.getLogger().severe("An unhandled exception occurred when ticking a Power!");
-                            CraftCalio.INSTANCE.getLogger().severe(
+                            GenesisMC.getPlugin().getLogger().severe("An unhandled exception occurred when ticking a Power!");
+                            GenesisMC.getPlugin().getLogger().severe(
                                 "Player: {a} | Power: {b} | CraftPower: {c} | Throwable: {d}"
                                     .replace("{a}", p.getName())
                                     .replace("{b}", power.getTag())

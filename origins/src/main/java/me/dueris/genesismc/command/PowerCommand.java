@@ -18,7 +18,7 @@ import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -147,17 +147,22 @@ public class PowerCommand {
                     .then(argument("targets", EntityArgument.entities())
                         .executes(context -> {
                             for (ServerPlayer player : EntityArgument.getPlayers(context, "targets")) {
+                                ConcurrentLinkedQueue<Power> allPowers = new ConcurrentLinkedQueue<>();
                                 for (Layer layerContainer : OriginCommand.commandProvidedLayers) {
                                     ConcurrentLinkedQueue<Power> powers = OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()).get(layerContainer);
-                                    if (powers == null || powers.isEmpty()) {
-                                        context.getSource().sendFailure(Component.literal("Entity %name% does not have any powers".replace("%name%", player.getBukkitEntity().getName())));
-                                    } else {
-                                        String msg = "Entity %name% has %size% powers: [%powers%]".replace("%name%", player.getBukkitEntity().getName()).replace("%size%", String.valueOf(powers.size()));
-                                        final String[] powerString = {""};
-                                        powers.forEach((power) -> powerString[0] = powerString[0] + power.getTag() + ", ");
-                                        String finMsg = msg.replace("%powers%", powerString[0]);
-                                        context.getSource().sendSystemMessage(Component.literal(finMsg.replace(", ]", "]")));
+                                    if (!(powers == null || powers.isEmpty())) {
+                                        allPowers.addAll(powers);
                                     }
+                                }
+
+                                if (allPowers.isEmpty()) {
+                                    context.getSource().sendFailure(Component.literal("Entity %name% does not have any powers".replace("%name%", player.getBukkitEntity().getName())));
+                                } else {
+                                    String msg = "Entity %name% has %size% powers: [%powers%]".replace("%name%", player.getBukkitEntity().getName()).replace("%size%", String.valueOf(allPowers.size()));
+                                    final String[] powerString = {""};
+                                    allPowers.forEach((power) -> powerString[0] = powerString[0] + power.getTag() + ", ");
+                                    String finMsg = msg.replace("%powers%", powerString[0]);
+                                    context.getSource().sendSystemMessage(Component.literal(finMsg.replace(", ]", "]")));
                                 }
                             }
                             return SINGLE_SUCCESS;

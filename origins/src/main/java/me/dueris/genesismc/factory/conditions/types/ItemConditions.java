@@ -10,18 +10,20 @@ import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
-import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.CraftRegistry;
+import org.bukkit.craftbukkit.enchantments.CraftEnchantment;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
@@ -42,7 +44,7 @@ public class ItemConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("is_equippable"), (condition, itemStack) -> EnchantTableHandler.wearable.contains(itemStack.getType())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("is_damageable"), (condition, itemStack) -> CraftItemStack.asCraftCopy(itemStack).handle.isDamageableItem()));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("fireproof"), (condition, itemStack) -> CraftItemStack.asCraftCopy(itemStack).handle.getItem().isFireResistant()));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("fireproof"), (condition, itemStack) -> CraftItemStack.asCraftCopy(itemStack).handle.has(DataComponents.FIRE_RESISTANT)));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantment"), (condition, itemStack) -> {
             Enchantment enchantment = CraftRegistry.ENCHANTMENT.get(NamespacedKey.fromString(condition.getString("enchantment")));
             if (enchantment != null) {
@@ -54,8 +56,8 @@ public class ItemConditions {
                 if (nmsEnchantment != null) {
                     level = EnchantmentHelper.getItemEnchantmentLevel(nmsEnchantment, CraftItemStack.asNMSCopy(itemStack));
                 } else {
-                    Map<net.minecraft.world.item.enchantment.Enchantment, Integer> enchantmentIntegerMap = EnchantmentHelper.getEnchantments(CraftItemStack.asNMSCopy(itemStack));
-                    level = enchantmentIntegerMap.size();
+                    // Get amount of enchantments on the item
+                    level = CraftItemStack.asNMSCopy(itemStack).getEnchantments().size();
                 }
 
                 return comparison.compare(level, compare_to);
@@ -83,8 +85,8 @@ public class ItemConditions {
             return Comparison.getFromString(comparison).compare(amt, compareTo);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fuel"), (condition, itemStack) -> itemStack.getType().isFuel()));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("meat"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).getItem().getFoodProperties() != null && CraftItemStack.asNMSCopy(itemStack).getItem().getFoodProperties().isMeat()));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, itemStack) -> NbtUtils.compareNbt(MiscUtils.ParserUtils.parseJson(new StringReader(condition.getString("nbt")), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.getTag(), true)));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("meat"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).is(ItemTags.MEAT)));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, itemStack) -> NbtUtils.compareNbt(MiscUtils.ParserUtils.parseJson(new StringReader(condition.getString("nbt")), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.saveOptional(GenesisMC.server.registryAccess()), true)));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("ingredient"), (condition, itemStack) -> {
             if (itemStack != null && itemStack.getType() != null && CraftItemStack.asCraftCopy(itemStack).handle != null) {
                 if (condition.isPresent("ingredient")) {
@@ -127,12 +129,13 @@ public class ItemConditions {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("harvest_level"), (condition, itemStack) -> {
+        // Doesn't work since 1.20.5 - no more tier level
+        /* register(new ConditionFactory(GenesisMC.apoliIdentifier("harvest_level"), (condition, itemStack) -> {
             String comparison = condition.getString("comparison");
             double compareTo = condition.getNumber("compare_to").getDouble();
             return CraftItemStack.asNMSCopy(itemStack).getItem() instanceof TieredItem toolItem
                 && Comparison.getFromString(comparison).compare(toolItem.getTier().getLevel(), compareTo);
-        }));
+        })); */
     }
 
     private void register(ConditionFactory factory) {
