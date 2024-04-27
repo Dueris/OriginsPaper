@@ -18,6 +18,7 @@ import net.minecraft.world.phys.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.util.CraftLocation;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.Optional;
@@ -112,20 +113,20 @@ public class RaycastUtils {
         }
     }
 
-    public static void executeNMSCommand(Entity entity, Vec3 hitPosition, String command) { // GenesisMC - private -> public
+    public static void executeNMSCommand(@Nullable Entity entity, Vec3 hitPosition, String command) { // GenesisMC - private -> public
         if (command == null) return;
         MinecraftServer server = entity.getServer();
         if (server != null) {
             CommandSourceStack source = new CommandSourceStack(
-                CommandSource.NULL,
+                entity == null ? CommandSource.NULL : entity,
                 hitPosition,
                 entity.getRotationVector(),
                 entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
                 4,
                 entity.getName().getString(),
-                entity.getDisplayName(),
+                entity.getName(),
                 entity.getServer(),
-                entity);
+                entity).withSuppressedOutput();
             try {
                 server.getCommands().performPrefixedCommand(source, command);
             } catch (Exception e) {

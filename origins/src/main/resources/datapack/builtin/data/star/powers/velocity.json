@@ -4,6 +4,11 @@
     "type": "origins:and",
     "actions": [
       {
+        "type": "origins:execute_command",
+        "command": "tag @s add ignore_star_fling",
+        "permission_level": 4
+      },
+      {
         "type": "origins:apply_effect",
         "effect": {
           "effect": "minecraft:resistance",
@@ -30,12 +35,17 @@
       },
       {
         "type": "origins:execute_command",
-        "command": "power grant @e[distance=..3] star:fling",
+        "command": "power grant @e[distance=..3,tag=!ignore_star_fling] star:fling",
         "permission_level": 4
       },
       {
         "type": "origins:execute_command",
         "command": "power revoke @s star:fling",
+        "permission_level": 4
+      },
+      {
+        "type": "origins:execute_command",
+        "command": "tag @s remove ignore_star_fling",
         "permission_level": 4
       }
     ]

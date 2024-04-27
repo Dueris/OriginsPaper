@@ -227,8 +227,8 @@ public class OriginPlayerAccessor implements Listener {
         duplicates.forEach(power -> getPowersApplied(p).remove(power));
     }
 
-    public static boolean applyPower(Player player, Power power) {
-        if (power == null) return false;
+    public static void applyPower(Player player, Power power, boolean suppress) {
+        if (power == null) return;
         String name = power.getType().equalsIgnoreCase("apoli:simple") ? power.getTag() : power.getType();
         ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
         if (c != null) {
@@ -236,27 +236,27 @@ public class OriginPlayerAccessor implements Listener {
             if (!powersAppliedList.containsKey(player))
                 powersAppliedList.put(player, new ConcurrentLinkedQueue<ApoliPower>(List.of(c)));
             else powersAppliedList.get(player).add(c);
-            if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true"))
-                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
+            if (!suppress) {
+                if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true"))
+                    Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
+            }
             new PowerUpdateEvent(player, power, false).callEvent();
-            return true;
         }
-        return false;
     }
 
-    public static boolean removePower(Player player, Power power) {
-        if (power == null) return false;
+    public static void removePower(Player player, Power power, boolean suppress) {
+        if (power == null) return;
         String name = power.getType().equalsIgnoreCase("apoli:simple") ? power.getTag() : power.getType();
         ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
         if (c != null) {
             powersAppliedList.get(player).remove(c);
             c.getPlayersWithPower().remove(player);
+            if (!suppress) {
+                if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true"))
+                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
+            }
             new PowerUpdateEvent(player, power, true).callEvent();
-            if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true"))
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
-            return true;
         }
-        return false;
     }
 
     public static void unassignPowers(@NotNull Player player) {
@@ -291,7 +291,7 @@ public class OriginPlayerAccessor implements Listener {
                     return;
                 }
                 for (Power power : playerPowerMapping.get(player).get(layer)) {
-                    removePower(player, power);
+                    removePower(player, power, false);
                 }
             }).thenRun(() -> {
                 OriginDataContainer.unloadData(player);
@@ -309,7 +309,7 @@ public class OriginPlayerAccessor implements Listener {
                     return;
                 }
                 for (Power power : playerPowerMapping.get(player).get(layer)) {
-                    applyPower(player, power);
+                    applyPower(player, power, false);
                 }
             }).thenRun(() -> {
                 OriginDataContainer.loadData(player);

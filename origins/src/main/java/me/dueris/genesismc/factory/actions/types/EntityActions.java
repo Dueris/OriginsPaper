@@ -471,7 +471,7 @@ public class EntityActions {
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("execute_command"), (action, entity) -> {
-            String cmd = null;
+            String cmd;
             if (action.getString("command").startsWith("action") || action.getString("command").startsWith("/action"))
                 return;
             if (action.getString("command").startsWith("/")) {
