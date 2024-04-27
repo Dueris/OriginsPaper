@@ -30,6 +30,7 @@ public class CooldownUtils implements Listener {
 
     public static HashMap<Player, ArrayList<String>> cooldownMap = new HashMap<>();
     public static HashMap<Player, HashMap<String/*PowerTag*/, Integer/*cooldownTicks*/>> cooldownTicksMap = new HashMap<>();
+    public static ArrayList<BossBar> runningBars = new ArrayList<>();
 
     public static void addCooldown(Player player, Pair<String, String> title, int cooldownTicks, FactoryJsonObject hudRender) {
         // first = name to display
@@ -77,6 +78,7 @@ public class CooldownUtils implements Listener {
         BossBar bossBar = Bukkit.createBossBar(title, color, style);
         bossBar.setProgress(1.0);
         bossBar.addPlayer(player);
+        runningBars.add(bossBar);
         return bossBar;
     }
 

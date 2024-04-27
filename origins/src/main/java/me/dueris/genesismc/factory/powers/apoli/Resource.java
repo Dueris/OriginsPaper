@@ -4,15 +4,19 @@ import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
+import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.Bukkit;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -20,9 +24,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import static me.dueris.genesismc.util.CooldownUtils.createCooldownBar;
 import static me.dueris.genesismc.util.CooldownUtils.getBarColor;
@@ -52,7 +58,7 @@ public class Resource extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void start(PlayerJoinEvent e) {
+    public void join(PlayerJoinEvent e) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -62,13 +68,25 @@ public class Resource extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void start(OriginChangeEvent e) {
+    public void originChange(OriginChangeEvent e) {
         new BukkitRunnable() {
             @Override
             public void run() {
                 execute(e.getPlayer());
             }
         }.runTaskLater(GenesisMC.getPlugin(), 5);
+    }
+
+    @EventHandler
+    public void powerUpdate(PowerUpdateEvent e) {
+        // Refresh everything
+        if (e.getPower().getType().equalsIgnoreCase(getType())) {
+            for (BossBar bar : CooldownUtils.runningBars) {
+                if (bar.getPlayers().contains(e.getPlayer())) {
+                    bar.removePlayer(e.getPlayer());
+                }
+            }
+        }
     }
 
     private void execute(Player p) {
