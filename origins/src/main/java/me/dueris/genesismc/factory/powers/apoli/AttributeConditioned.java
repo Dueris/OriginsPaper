@@ -6,6 +6,7 @@ import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.DataConverter;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
@@ -43,14 +44,14 @@ public class AttributeConditioned extends CraftPower implements Listener {
                 if (power == null) continue;
                 for (Modifier modifier : power.getModifiers()) {
                     if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) return;
-                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.handle.getString("attribute")).asString().split(":")[1].replace(".", "_").toUpperCase());
+                    Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
                     double val = modifier.value();
-                    double baseVal = p.getAttribute(attribute_modifier).getBaseValue();
+                    double baseVal = p.getAttribute(attributeModifier).getBaseValue();
                     String operation = modifier.operation();
                     BinaryOperator<Double> operator = Utils.getOperationMappingsDouble().get(operation);
                     if (operator != null) {
                         double result = Double.parseDouble(String.valueOf(operator.apply(baseVal, val)));
-                        p.getAttribute(attribute_modifier).setBaseValue(result);
+                        p.getAttribute(attributeModifier).setBaseValue(result);
                     } else {
                         Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
                         new Throwable().printStackTrace();

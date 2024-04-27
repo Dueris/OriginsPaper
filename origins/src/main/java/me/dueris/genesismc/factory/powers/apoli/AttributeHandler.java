@@ -9,6 +9,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.OriginPage;
+import me.dueris.genesismc.util.DataConverter;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
@@ -63,13 +64,12 @@ public class AttributeHandler extends CraftPower implements Listener {
 
                 for (Modifier modifier : power.getModifiers()) {
                     try {
-                        Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.handle.getString("attribute")).asString().split(":")[1].replace(".", "_").toUpperCase());
-
+                        Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
                         float value = modifier.value();
-                        double base_value = p.getAttribute(attribute_modifier).getBaseValue();
+                        double base_value = p.getAttribute(attributeModifier).getBaseValue();
                         String operation = modifier.operation();
-                        executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-                        AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power, e.isAsynchronous());
+                        executeAttributeModify(operation, attributeModifier, base_value, p, value);
+                        AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attributeModifier, power, e.isAsynchronous());
                         Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
                         setActive(p, power.getTag(), true);
                         p.sendHealthUpdate();

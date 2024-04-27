@@ -169,19 +169,11 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 
     protected static Optional<Object2DoubleMap<TagKey<Fluid>>> getFluidHeightMap(Entity entity) {
         try {
-            return Optional.of(Reflector.accessField(getFluidHeightFromReobf(1204), Entity.class, entity, Object2DoubleMap.class));
+            return Optional.of(Reflector.accessField("fluidHeight", Entity.class, entity, Object2DoubleMap.class));
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();
         }
-    }
-
-    private static String getFluidHeightFromReobf(int vNumber) {
-        switch (vNumber) {
-            case 1204:
-                return "aj"; // 1.20.4
-        }
-        return "fluidHeight";
     }
 
     public static boolean inThunderstorm(Level world, BlockPos... blockPositions) {
