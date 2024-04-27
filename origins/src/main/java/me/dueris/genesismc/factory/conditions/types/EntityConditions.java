@@ -285,10 +285,7 @@ public class EntityConditions {
             return false;
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("daytime"), (condition, entity) -> entity.getWorld().isDayTime()));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("dimension"), (condition, entity) -> {
-            System.out.println("s333333333fdlhskudhglkjfd" + entity.getWorld().getKey().equals(condition.getNamespacedKey("dimension")));
-            return entity.getWorld().getKey().equals(condition.getNamespacedKey("dimension"));
-        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("dimension"), (condition, entity) -> entity.getWorld().getKey().equals(condition.getNamespacedKey("dimension"))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid_height"), (condition, entity) -> {
             String comparison = condition.getString("comparison");
             double compare_to = condition.getNumber("compare_to").getFloat();

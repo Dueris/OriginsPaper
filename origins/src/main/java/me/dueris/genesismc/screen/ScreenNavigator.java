@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -98,6 +99,7 @@ public class ScreenNavigator implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
+                    if (e.getInventory().getType().equals(InventoryType.CRAFTING)) return; // Fixes IllegalArgumentException on player leave
                     if (!inChoosingLayer.containsKey(getCraftPlayer(e.getPlayer()))) return; // Check again just in case
                     e.getPlayer().openInventory(e.getInventory());
                 }
@@ -118,7 +120,7 @@ public class ScreenNavigator implements Listener {
             if (layerPages.get(inChoosingLayer.get(getCraftPlayer(e.getWhoClicked()))).isEmpty()) return;
             ChoosingPage page = layerPages.get(inChoosingLayer.get(getCraftPlayer(e.getWhoClicked())))
                 .get(currentDisplayingPage.getInt(getCraftPlayer(e.getWhoClicked())));
-            if (e.getCurrentItem().isSimilar(page.getChoosingStack(((CraftPlayer) e.getWhoClicked()).getHandle()))) {
+            if (isSimilarEnough(e.getCurrentItem(), page.getChoosingStack(((CraftPlayer) e.getWhoClicked()).getHandle()))) { // 1.20.5 bug with ItemFlags
                 page.onChoose(((CraftPlayer) e.getWhoClicked()).getHandle(), inChoosingLayer.get(getCraftPlayer(e.getWhoClicked())));
                 new BukkitRunnable() {
                     @Override
@@ -141,5 +143,9 @@ public class ScreenNavigator implements Listener {
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 3);
         }
+    }
+
+    private static boolean isSimilarEnough(ItemStack a, ItemStack b) {
+        return a.getType().equals(b.getType()) && a.getItemMeta().displayName().equals(b.getItemMeta().displayName());
     }
 }

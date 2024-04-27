@@ -166,7 +166,7 @@ public class OriginPlayerAccessor implements Listener {
             try {
                 unassignPowers(player, layer);
             } catch (NotFoundException e) {
-                e.printStackTrace();
+                throw new RuntimeException();
             }
         }
         for (Layer layers : origins.keySet()) {
