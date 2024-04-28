@@ -2,13 +2,9 @@ package me.dueris.genesismc.factory.actions.types;
 
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
-import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tags.ItemTags;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 

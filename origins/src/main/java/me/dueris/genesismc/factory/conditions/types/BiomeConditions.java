@@ -46,9 +46,9 @@ public class BiomeConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("temperature"), (condition, biome) -> {
             String comparison = condition.getString("comparison");
             float compare_to = condition.getNumber("compare_to").getFloat();
-            return Comparison.getFromString(comparison).compare(biome.getA().getBaseTemperature(), compare_to);
+            return Comparison.fromString(comparison).compare(biome.getA().getBaseTemperature(), compare_to);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("high_humidity"), (condition, biome) -> Comparison.getFromString(">=").compare(biome.getA().climateSettings.downfall(), 0.85f)));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("high_humidity"), (condition, biome) -> Comparison.fromString(">=").compare(biome.getA().climateSettings.downfall(), 0.85f)));
     }
 
     private net.minecraft.world.level.biome.Biome.Precipitation getPrecipitation(FactoryJsonObject condition) {

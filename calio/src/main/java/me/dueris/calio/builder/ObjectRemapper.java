@@ -18,10 +18,10 @@ public class ObjectRemapper {
      * Map<KEY, Pair<CURRENT -> REMAPPED>>
      */
     private static final HashMap<String, ArrayList<Pair<Object, Object>>> objectMappings = new HashMap<>();
+
     /**
      * List<Pair<CURRENT -> REMAPPED>>
      */
-    @Deprecated
     public static ArrayList<Pair<String, String>> typeMappings = new ArrayList<>();
 
     /**

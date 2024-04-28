@@ -8,6 +8,7 @@ import me.dueris.genesismc.factory.powers.apoli.provider.origins.*;
 import me.dueris.genesismc.registry.Registries;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public abstract class CraftPower implements ApoliPower {
+public abstract class CraftPower extends BukkitRunnable implements ApoliPower {
 
     protected static List<Class<CraftPower>> findCraftPowerClasses() throws IOException {
         CompletableFuture<List<Class<CraftPower>>> future = CompletableFuture.supplyAsync(() -> {
@@ -77,5 +78,10 @@ public abstract class CraftPower implements ApoliPower {
                 Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
             }
         }
+    }
+
+    @Override
+    public void run() {
+        // Do nothing, powers can override
     }
 }

@@ -2,6 +2,7 @@
   "type": "origins:resource",
   "min": 0,
   "max": 1200,
+  "start_value": 1200,
   "hud_render": {
     "should_render": true,
     "sprite_location": "origins:textures/gui/community/huang/resource_bar_01.png",

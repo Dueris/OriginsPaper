@@ -89,7 +89,7 @@ public class BiEntityConditions implements Listener {
             String comparison = condition.getString("comparison");
             float compare_to = condition.getNumber("compare_to").getFloat();
 
-            return Comparison.getFromString(comparison).compare(RotationType.getAngleBetween(actorRotation, targetRotation), compare_to);
+            return Comparison.fromString(comparison).compare(RotationType.getAngleBetween(actorRotation, targetRotation), compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("attack_target"), (condition, pair) -> {
             net.minecraft.world.entity.Entity craftActor = pair.first().getHandle();
@@ -106,7 +106,7 @@ public class BiEntityConditions implements Listener {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("distance"), (condition, pair) -> {
             String comparison = condition.getString("comparison");
             float compare_to = condition.getNumber("compare_to").getFloat();
-            return Comparison.getFromString(comparison).compare(pair.first().getHandle().position().distanceToSqr(pair.second().getHandle().position()), compare_to);
+            return Comparison.fromString(comparison).compare(pair.first().getHandle().position().distanceToSqr(pair.second().getHandle().position()), compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_set"), (condition, pair) -> EntitySetPower.isInEntitySet(pair.second(), condition.getString("set"))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("can_see"), (condition, pair) -> {

@@ -8,9 +8,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.KeybindingUtils;
-import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.particles.ParticleTypes;
 import org.bukkit.craftbukkit.CraftWorld;
@@ -48,7 +46,7 @@ public class Launch extends CraftPower implements Listener {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                 if (getPlayersWithPower().contains(p)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
+                        if (!Cooldown.isInCooldown(p, power)) {
                             if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
                                 String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
                                 final int[] times = {-1};
@@ -59,14 +57,14 @@ public class Launch extends CraftPower implements Listener {
                                         if (times[0] >= 0) {
                                             /* Launch power doesnt execute continuously */
                                             if (!in_continuous.get(p).contains(key)) {
-                                                CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), cooldown, power.getJsonObject("hud_render"));
+                                                Cooldown.addCooldown(p, cooldown, power);
                                                 setActive(p, power.getTag(), false);
                                                 this.cancel();
                                                 return;
                                             }
                                         }
                                         int speed = Integer.parseInt(power.getStringOrDefault("speed", null)); // used as string so that upon parsing the int it throws if not found
-                                        CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), cooldown, power.getJsonObject("hud_render"));
+                                        Cooldown.addCooldown(p, cooldown, power);
                                         setActive(p, power.getTag(), true);
                                         p.setVelocity(p.getVelocity().setY(0));
                                         p.setVelocity(p.getVelocity().setY(speed));

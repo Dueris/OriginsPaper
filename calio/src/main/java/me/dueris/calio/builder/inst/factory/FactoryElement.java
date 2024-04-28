@@ -24,15 +24,15 @@ public class FactoryElement {
     }
 
     public boolean isJsonObject() {
-        return this.handle.isJsonObject();
+        return this.handle != null && this.handle.isJsonObject();
     }
 
     public boolean isJsonArray() {
-        return this.handle.isJsonArray();
+        return this.handle != null && this.handle.isJsonArray();
     }
 
     public boolean isGsonPrimative() {
-        return this.handle.isJsonPrimitive();
+        return this.handle != null && this.handle.isJsonPrimitive();
     }
 
     public boolean isString() {

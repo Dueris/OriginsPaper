@@ -10,9 +10,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.KeybindingUtils;
-import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
@@ -98,7 +96,7 @@ public class FireProjectile extends CraftPower implements Listener {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                 if (fire_projectile.contains(p)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
+                        if (!Cooldown.isInCooldown(p, power)) {
                             if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
                                 int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
                                 String tag = power.getStringOrDefault("tag", "{}");
@@ -131,7 +129,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                     public void run() {
                                         if (shotsLeft >= 0) {
                                             if ((!cont || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key)) {
-                                                CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), cooldown, power.getJsonObject("hud_render"));
+                                                Cooldown.addCooldown(p, cooldown, power);
                                                 setActive(p, power.getTag(), false);
                                                 this.cancel();
                                                 return;

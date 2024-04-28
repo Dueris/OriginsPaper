@@ -228,6 +228,12 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
         }
     }
 
+    public static <T> List<T> collectValues(Collection<List<T>> collection) {
+        List<T> lC = new ArrayList<>();
+        collection.forEach(lC::addAll);
+        return lC;
+    }
+
     private static String getFileNameFromUrl(String fileUrl) {
         String[] segments = fileUrl.split("/");
         return segments[segments.length - 1];

@@ -7,16 +7,15 @@ import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.*;
+import me.dueris.genesismc.factory.powers.apoli.Cooldown;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.apoli.Toggle;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
@@ -27,7 +26,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import org.bukkit.*;
-import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
@@ -40,14 +38,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 import static me.dueris.genesismc.factory.actions.Actions.*;
@@ -81,67 +75,46 @@ public class EntityActions {
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("change_resource"), (action, entity) -> {
-            if (resourceChangeTimeout.containsKey(entity)) return;
-            String resource = action.getString("resource");
-            if (Resource.getResource(entity, resource) == null) return;
-            if (Resource.getResource(entity, resource).right() == null) return;
-            if (Resource.getResource(entity, resource).left() == null) return;
-            int change = action.getNumber("change").getInt();
-            double finalChange = 1.0 / Resource.getResource(entity, resource).right();
-            BossBar bossBar = Resource.getResource(entity, resource).left();
-            double toRemove = finalChange * change;
-            double newP = Utils.getOperationMappingsDouble().get(action.getStringOrDefault("operation", "add")).apply(bossBar.getProgress(), toRemove);
-            if (newP > 1.0) {
-                newP = 1.0;
-            } else if (newP < 0) {
-                newP = 0.0;
-            }
-            bossBar.setProgress(newP);
-            if (bossBar.getProgress() == 1.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).getJsonObject("max_action"));
-            } else if (bossBar.getProgress() == 0.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).getJsonObject("min_action"));
-            }
-            bossBar.addPlayer((Player) entity);
-            resourceChangeTimeout.put(entity, true);
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    resourceChangeTimeout.remove(entity);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 1);
+            Optional<Resource.Bar> resourceBar = Resource.getDisplayedBar(entity, action.getString("resource"));
+            resourceBar.ifPresent((bar) -> {
+                int change = action.getNumber("change").getInt();
+                String operation = action.getStringOrDefault("operation", "add");
+                bar.change(change, operation);
+            });
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("modify_resource"), (action, entity) -> {
-            if (resourceChangeTimeout.containsKey(entity)) return;
-            String resource = action.getString("resource");
-            if (Resource.getResource(entity, resource) == null) return;
-            if (Resource.getResource(entity, resource).right() == null) return;
-            if (Resource.getResource(entity, resource).left() == null) return;
-            Modifier modifier = new Modifier(action.getJsonObject("modifier"));
-            float change = modifier.value();
-            double finalChange = 1.0 / Resource.getResource(entity, resource).right();
-            BossBar bossBar = Resource.getResource(entity, resource).left();
-            double toRemove = finalChange * change;
-            double newP = Utils.getOperationMappingsDouble().get(modifier.operation()).apply(bossBar.getProgress(), toRemove);
-            if (newP > 1.0) {
-                newP = 1.0;
-            } else if (newP < 0) {
-                newP = 0.0;
-            }
-            bossBar.setProgress(newP);
-            if (bossBar.getProgress() == 1.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).getJsonObject("max_action"));
-            } else if (bossBar.getProgress() == 0.0) {
-                Actions.executeEntity(entity, CraftApoli.getPowerFromTag(resource).getJsonObject("min_action"));
-            }
-            bossBar.addPlayer((Player) entity);
-            resourceChangeTimeout.put(entity, true);
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    resourceChangeTimeout.remove(entity);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 1);
+//            if (resourceChangeTimeout.containsKey(entity)) return;
+//            String resource = action.getString("resource");
+//            if (Resource.getResource(entity, resource) == null) return;
+//            if (Resource.getResource(entity, resource).right() == null) return;
+//            if (Resource.getResource(entity, resource).left() == null) return;
+//            Modifier modifier = new Modifier(action.getJsonObject("modifier"));
+//            Power cooldownPower = CraftApoli.getPowerFromTag(resource);
+//            Float change = modifier.value();
+//            double perClick = 1.0 / (cooldownPower.getNumber("max").getInt());
+//            BossBar bossBar = Resource.getResource(entity, resource).left();
+//            if (!Resource.mapppedCustomOriginBarTicks.containsKey(bossBar)) {
+//                Resource.mapppedCustomOriginBarTicks.put(bossBar, cooldownPower.isPresent("start_value") ? cooldownPower.getNumber("start_value").getInt() : cooldownPower.getNumber("min").getInt());
+//            }
+//            Resource.mapppedCustomOriginBarTicks.put(bossBar, Utils.getOperationMappingsInteger().get(action.getStringOrDefault("operation", "add")).apply(Resource.mapppedCustomOriginBarTicks.get(bossBar), change.intValue()));
+//            System.out.println(bossBar.getProgress());
+//            bossBar.setProgress(Utils.getOperationMappingsDouble().get(action.getStringOrDefault("operation", "add")).apply(
+//                bossBar.getProgress(), perClick * change
+//            ));
+//            System.out.println(bossBar.getProgress());
+//            if (bossBar.getProgress() == 1.0) {
+//                Actions.executeEntity(entity, cooldownPower.getJsonObject("max_action"));
+//            } else if (bossBar.getProgress() == 0.0) {
+//                Actions.executeEntity(entity, cooldownPower.getJsonObject("min_action"));
+//            }
+//            bossBar.addPlayer((Player) entity);
+//            resourceChangeTimeout.put(entity, true);
+//            new BukkitRunnable() {
+//                @Override
+//                public void run() {
+//                    resourceChangeTimeout.remove(entity);
+//                }
+//            }.runTaskLater(GenesisMC.getPlugin(), 1);
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("set_on_fire"), (action, entity) -> entity.setFireTicks(action.getNumber("duration").getInt() * 20)));
         register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_entity"), (action, entity) -> {
@@ -537,7 +510,7 @@ public class EntityActions {
                     "apoli:self_action_on_kill", "apoli:self_action_when_hit", "apoli:target_action_on_hit"}).forEach(type -> {
                     for (Power powerContainer : OriginPlayerAccessor.getMultiPowerFileFromType(player, type)) {
                         if (powerContainer.isPresent("cooldown") && powerContainer.isPresent("key")) {
-                            CooldownUtils.addCooldown(player, Utils.getNameOrTag(powerContainer), powerContainer.getNumber("cooldown").getInt(), powerContainer.getJsonObject("key"));
+                            Cooldown.addCooldown(player, powerContainer.getNumber("cooldown").getInt(), powerContainer);
                         }
                     }
                 });

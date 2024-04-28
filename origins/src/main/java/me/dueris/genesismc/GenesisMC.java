@@ -10,7 +10,6 @@ import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.registry.impl.CalioRegistry;
 import me.dueris.genesismc.command.OriginCommand;
 import me.dueris.genesismc.command.PowerCommand;
-import me.dueris.genesismc.command.ResourceCommand;
 import me.dueris.genesismc.content.ContentTicker;
 import me.dueris.genesismc.content.WaterProtBook;
 import me.dueris.genesismc.content.enchantment.AnvilHandler;
@@ -27,9 +26,9 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.types.*;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.apoli.Cooldown;
 import me.dueris.genesismc.factory.powers.apoli.ModelColor;
 import me.dueris.genesismc.factory.powers.apoli.RecipePower;
-import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.factory.powers.apoli.WaterBreathe;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
 import me.dueris.genesismc.integration.PlaceHolderAPI;
@@ -79,6 +78,7 @@ import static me.dueris.genesismc.util.ColorConstants.AQUA;
 public final class GenesisMC extends JavaPlugin implements Listener {
     public static final boolean isFolia = classExists("io.papermc.paper.threadedregions.RegionizedServer");
     public static final boolean isExpandedScheduler = classExists("io.papermc.paper.threadedregions.scheduler.ScheduledTask");
+    public static List<Runnable> preShutdownTasks = new ArrayList<>();
     public static EnumSet<Material> tool;
     public static Metrics metrics;
     public static boolean disableRender = true;
@@ -347,10 +347,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         OriginCommand.commandProvidedPowers.addAll(((Registrar<Power>) this.registry.retrieve(Registries.POWER)).values().stream().toList());
         OriginCommand.commandProvidedOrigins.addAll(((Registrar<Origin>) this.registry.retrieve(Registries.ORIGIN)).values().stream().toList());
         OriginCommand.commandProvidedLayers.addAll(((Registrar<Layer>) this.registry.retrieve(Registries.LAYER)).values().stream().filter(Layer::isEnabled).toList());
-        ResourceCommand.registeredBars.putAll(Resource.registeredBars);
 
         OriginCommand.register(((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
-        ResourceCommand.register(((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
         PowerCommand.register(((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
         try {
             Bootstrap.deleteDirectory(GenesisMC.getTmpFolder().toPath(), true);
@@ -374,7 +372,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     private void start() {
         getServer().getPluginManager().registerEvents(new InventorySerializer(), this);
         getServer().getPluginManager().registerEvents(this, this);
-        getServer().getPluginManager().registerEvents(new CooldownUtils(), this);
         getServer().getPluginManager().registerEvents(new PlayerManager(), this);
         getServer().getPluginManager().registerEvents(new EnchantTableHandler(), this);
         getServer().getPluginManager().registerEvents(new AnvilHandler(), this);
@@ -390,7 +387,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new KeybindingUtils(), this);
         getServer().getPluginManager().registerEvents(new AsyncUpgradeTracker(), this);
 
-        BukkitRunnable[] independentTickers = {new GuiTicker(), new ContentTicker(), new OriginCommand()};
+        BukkitRunnable[] independentTickers = {new GuiTicker(), new ContentTicker(), new OriginCommand(), new Cooldown()};
         WaterBreathe.start();
         for (BukkitRunnable runnable : independentTickers) {
             runnable.runTaskTimerAsynchronously(GenesisMC.getPlugin(), 0, 1);
@@ -404,6 +401,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             OriginPlayerAccessor.unassignPowers(player);
             OriginDataContainer.unloadData(player);
         }
+        preShutdownTasks.forEach(Runnable::run);
         CraftApoli.unloadData();
         OriginPlayerAccessor.playerPowerMapping.clear();
         OriginPlayerAccessor.powersAppliedList.clear();

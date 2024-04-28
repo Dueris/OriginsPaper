@@ -7,9 +7,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.KeybindingUtils;
-import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
@@ -37,7 +35,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
             public void run() {
                 /* TNV power always execute continuously */
                 if (!in_continuous.get(p).contains(key)) {
-                    CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), cooldown, power.getJsonObject("hud_render"));
+                    Cooldown.addCooldown(p, cooldown, power);
                     setActive(p, power.getTag(), false);
                     p.removePotionEffect(PotionEffectType.NIGHT_VISION);
                     this.cancel();
@@ -65,7 +63,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                 if (getPlayersWithPower().contains(p)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
+                        if (!Cooldown.isInCooldown(p, power)) {
                             if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
                                 execute(p, power);
                             }

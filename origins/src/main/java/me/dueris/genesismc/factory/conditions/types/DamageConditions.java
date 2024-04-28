@@ -68,7 +68,7 @@ public class DamageConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("amount"), (condition, event) -> {
             String comparison = condition.getString("comparison");
             Long compare_to = condition.getNumber("compare_to").getLong();
-            return Comparison.getFromString(comparison).compare(event.getDamage(), compare_to);
+            return Comparison.fromString(comparison).compare(event.getDamage(), compare_to);
         }));
     }
 

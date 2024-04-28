@@ -18,13 +18,6 @@
           "duration": 160,
           "show_icon": true,
           "show_particles": false
-        },
-        {
-          "effect": "minecraft:jump_boost",
-          "amplifier": 250,
-          "duration": 160,
-          "show_icon": false,
-          "show_particles": false
         }
       ]
     },

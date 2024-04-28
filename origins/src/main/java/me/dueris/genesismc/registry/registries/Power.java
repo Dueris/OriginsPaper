@@ -26,9 +26,7 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
     public static List<NamespacedKey> notPossibleTypes = new ArrayList<>();
 
     static {
-        allowedSkips.add(new NamespacedKey("apoli", "simple"));
         allowedSkips.add(new NamespacedKey("apoli", "model_color"));
-        allowedSkips.add(new NamespacedKey("apoli", "cooldown"));
         notPossibleTypes.add(new NamespacedKey("apoli", "lava_vision")); // Not possible
         notPossibleTypes.add(new NamespacedKey("apoli", "shader")); // Not possible
         allowedSkips.add(new NamespacedKey("apoli", "modify_attribute")); // Not planned, use origins:attribute

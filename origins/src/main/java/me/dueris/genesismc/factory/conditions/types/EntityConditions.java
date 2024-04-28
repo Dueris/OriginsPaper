@@ -17,13 +17,11 @@ import me.dueris.genesismc.factory.data.types.VectorGetter;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -37,7 +35,6 @@ import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.LootDataType;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -136,11 +133,11 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("food_level"), (condition, entity) -> {
             String comparison = condition.getString("comparison");
             float compare_to = condition.getNumber("compare_to").getFloat();
-            return entity instanceof Player p && Comparison.getFromString(comparison).compare(p.getFoodLevel(), compare_to);
+            return entity instanceof Player p && Comparison.fromString(comparison).compare(p.getFoodLevel(), compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("air"), (condition, entity) -> {
             if (entity instanceof Player p) {
-                return Comparison.getFromString(condition.getString("comparison")).compare(p.getRemainingAir(), condition.getNumber("compare_to").getFloat());
+                return Comparison.fromString(condition.getString("comparison")).compare(p.getRemainingAir(), condition.getNumber("compare_to").getFloat());
             }
             return false;
         }));
@@ -176,7 +173,7 @@ public class EntityConditions {
 
             boolean hasCondition = condition.isPresent("block_condition");
             float stopAt = -1;
-            Comparison fixedComparison = Comparison.getFromString(comparison);
+            Comparison fixedComparison = Comparison.fromString(comparison);
             switch (fixedComparison) {
                 case EQUAL:
                 case LESS_THAN_OR_EQUAL:
@@ -212,7 +209,7 @@ public class EntityConditions {
             if (entities.contains(entity)) {
                 String comparison = condition.getString("comparison");
                 int compare_to = condition.getNumber("compare_to").getInt();
-                return Comparison.getFromString(comparison).compare(entities.size(), compare_to);
+                return Comparison.fromString(comparison).compare(entities.size(), compare_to);
             }
             return false;
         }));
@@ -230,7 +227,7 @@ public class EntityConditions {
                 int score = scoreboard.getPlayerScoreInfo(entity.getHandle(), value).value();
                 String comparison = condition.getString("comparison");
                 int compare_to = condition.getNumber("compare_to").getInt();
-                return Comparison.getFromString(comparison).compare(score, compare_to);
+                return Comparison.fromString(comparison).compare(score, compare_to);
             }
             return false;
         }));
@@ -262,13 +259,13 @@ public class EntityConditions {
                 ambientLight = 1;
             }
             brightness = ambientLight + (1 - ambientLight) * lightLevel / (60 - 3 * lightLevel);
-            return Comparison.getFromString(comparison).compare(brightness, compare_to);
+            return Comparison.fromString(comparison).compare(brightness, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("light_level"), (condition, entity) -> {
             String comparison = condition.getString("comparison");
             double compare_to = condition.getNumber("compare_to").getFloat();
             int lightLevel = entity.getLocation().getBlock().getLightLevel();
-            return Comparison.getFromString(comparison).compare(lightLevel, compare_to);
+            return Comparison.fromString(comparison).compare(lightLevel, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("climbing"), (condition, entity) -> {
             if (entity instanceof Player player) {
@@ -293,7 +290,7 @@ public class EntityConditions {
             NamespacedKey tag = condition.getNamespacedKey("fluid");
             TagKey key = TagKey.create(net.minecraft.core.registries.Registries.FLUID, CraftNamespacedKey.toMinecraft(tag));
 
-            return Comparison.getFromString(comparison).compare(Utils.apoli$getFluidHeightLoosely(entity.getHandle(), key), compare_to);
+            return Comparison.fromString(comparison).compare(Utils.apoli$getFluidHeightLoosely(entity.getHandle(), key), compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("invisible"), (condition, entity) -> {
             if (entity instanceof LivingEntity le) {
@@ -317,17 +314,11 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, entity) -> NbtUtils.compareNbt(MiscUtils.ParserUtils.parseJson(new StringReader(condition.getString("nbt")), CompoundTag.CODEC), entity.getHandle().saveWithoutId(new CompoundTag()), true)));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("sneaking"), (condition, entity) -> entity.isSneaking()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("resource"), (condition, entity) -> {
-            if (CooldownUtils.cooldownMap.containsKey(entity) && CooldownUtils.cooldownMap.get(entity).contains(condition.getString("resource"))) {
-                return !CooldownUtils.isPlayerInCooldownFromTag((Player) entity, condition.getString("resource"));
-            } else {
-                if (Resource.registeredBars.containsKey(entity) && Resource.registeredBars.get(entity).containsKey(condition.getString("resource"))) {
-                    String comparison = condition.getString("comparison");
-                    double compare_to = condition.getNumber("compare_to").getFloat();
-                    return Comparison.getFromString(comparison).compare(Resource.getResource(entity, condition.getString("resource")).left().getProgress(), compare_to);
-                } else {
-                    return false;
-                }
+            Optional<Resource.Bar> bar = Resource.getDisplayedBar(entity, condition.getString("resource"));
+            if (bar.isPresent()) {
+                return bar.get().meetsComparison(Comparison.fromString(condition.getString("comparison")), condition.getNumber("compare_to").getInt());
             }
+            return false;
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_flying"), (condition, entity) -> entity instanceof LivingEntity le && (((CraftLivingEntity) le).getHandle().isFallFlying() || ElytraFlightPower.getGlidingPlayers().contains(le))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("submerged_in"), (condition, entity) -> {
@@ -372,7 +363,7 @@ public class EntityConditions {
                     default:
                         break;
                 }
-                return Comparison.getFromString(comparison).compare(value, compareTo);
+                return Comparison.fromString(comparison).compare(value, compareTo);
             }
             return false;
         }));
@@ -426,7 +417,7 @@ public class EntityConditions {
             y += coords.y + offset.y;
             z += coords.z + offset.z;
             if (scaleReferenceToDimension && (x != 0 || z != 0)) {
-                Comparison comparison = Comparison.getFromString(condition.getString("comparison"));
+                Comparison comparison = Comparison.fromString(condition.getString("comparison"));
                 if (currentDimensionCoordinateScale == 0)
                     return comparison == Comparison.NOT_EQUAL || comparison == Comparison.GREATER_THAN || comparison == Comparison.GREATER_THAN_OR_EQUAL;
 
@@ -449,7 +440,7 @@ public class EntityConditions {
                 distance = new BigDecimal(distance).setScale(condition.getNumber("round_to_digit").getInt(), RoundingMode.HALF_UP).doubleValue();
             }
 
-            return Comparison.getFromString(condition.getString("comparison")).compare(distance, condition.getNumber("compare_to").getFloat());
+            return Comparison.fromString(condition.getString("comparison")).compare(distance, condition.getNumber("compare_to").getFloat());
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_group"), (condition, entity) -> (EntityGroupManager.modifiedEntityGroups.containsKey(entity) && EntityGroupManager.modifiedEntityGroups.get(entity).equals(condition.getEnumValue("group", EntityGroup.class))) || (entity.getHandle() instanceof net.minecraft.world.entity.LivingEntity le && EntityGroup.getMobType(le).equals(condition.getEnumValue("group", EntityGroup.class)))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("elytra_flight_possible"), (condition, entity) -> {
@@ -466,7 +457,7 @@ public class EntityConditions {
             }
             return hasElytraPower || hasElytraEquipment;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_distance"), (condition, entity) -> Comparison.getFromString(condition.getString("comparison")).compare(entity.getFallDistance(), condition.getNumber("compare_to").getFloat())));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_distance"), (condition, entity) -> Comparison.fromString(condition.getString("comparison")).compare(entity.getFallDistance(), condition.getNumber("compare_to").getFloat())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("gamemode"), (condition, entity) -> {
             if (entity instanceof Player player) {
                 return player.getGameMode().equals(GameMode.valueOf(condition.getString("gamemode").toUpperCase()));
@@ -476,7 +467,7 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("glowing"), (condition, entity) -> entity.isGlowing()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("health"), (condition, entity) -> {
             if (entity instanceof LivingEntity le) {
-                return Comparison.getFromString(condition.getString("comparison")).compare(le.getHealth(), condition.getNumber("compare_to").getFloat());
+                return Comparison.fromString(condition.getString("comparison")).compare(le.getHealth(), condition.getNumber("compare_to").getFloat());
             }
             return false;
         }));
@@ -488,7 +479,7 @@ public class EntityConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block_anywhere"), (condition, entity) -> {
             int stopAt = -1;
-            Comparison comparison = Comparison.getFromString(condition.getStringOrDefault("comparison", ">="));
+            Comparison comparison = Comparison.fromString(condition.getStringOrDefault("comparison", ">="));
             int compareTo = condition.getNumberOrDefault("compare_to", 1).getInt();
             switch (comparison) {
                 case EQUAL:
@@ -553,7 +544,7 @@ public class EntityConditions {
                 String comparison = condition.getString("comparison");
                 double compare_to = condition.getNumber("compare_to").getFloat();
                 double fin = le.getHealth() / le.getMaxHealth();
-                return Comparison.getFromString(comparison).compare(fin, compare_to);
+                return Comparison.fromString(comparison).compare(fin, compare_to);
             }
             return false;
         }));
@@ -589,7 +580,7 @@ public class EntityConditions {
             }
             String comparison = condition.getString("comparison");
             double compare_to = condition.getNumber("compare_to").getFloat();
-            return Comparison.getFromString(comparison).compare(count, compare_to);
+            return Comparison.fromString(comparison).compare(count, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("passenger_recursive"), (condition, entity) -> {
             int count = 0;
@@ -602,7 +593,7 @@ public class EntityConditions {
             }
             String comparison = condition.getStringOrDefault("comparison", ">=");
             int compare_to = condition.getNumber("compare_to").getInt();
-            return Comparison.getFromString(comparison).compare(count, compare_to);
+            return Comparison.fromString(comparison).compare(count, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("passenger"), (condition, entity) -> {
             int count = 0;
@@ -617,14 +608,14 @@ public class EntityConditions {
             }
             String comparison = condition.getStringOrDefault("comparison", ">=");
             int compare_to = condition.getNumber("compare_to").getInt();
-            return Comparison.getFromString(comparison).compare(count, compare_to);
+            return Comparison.fromString(comparison).compare(count, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("saturation_level"), (condition, entity) -> {
             if (entity instanceof Player le) {
                 String comparison = condition.getString("comparison");
                 double compare_to = condition.getNumber("compare_to").getFloat();
                 double fin = le.getSaturation();
-                return Comparison.getFromString(comparison).compare(fin, compare_to);
+                return Comparison.fromString(comparison).compare(fin, compare_to);
             }
             return false;
         }));
@@ -657,13 +648,13 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("time_of_day"), (condition, entity) -> {
             String comparison = condition.getString("comparison");
             double compare_to = condition.getNumber("compare_to").getFloat();
-            return Comparison.getFromString(comparison).compare(entity.getWorld().getTime(), compare_to);
+            return Comparison.fromString(comparison).compare(entity.getWorld().getTime(), compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("set_size"), (condition, entity) -> {
             NamespacedKey key = condition.getNamespacedKey("set");
             String comparison = condition.getString("comparison");
             int compare_to = condition.getNumber("compare_to").getInt();
-            return Comparison.getFromString(comparison).compare(EntitySetPower.entity_sets.getOrDefault(key.toString(), new ArrayList<>()).size(), compare_to);
+            return Comparison.fromString(comparison).compare(EntitySetPower.entity_sets.getOrDefault(key.toString(), new ArrayList<>()).size(), compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("predicate"), (condition, entity) -> {
             ServerLevel level = (ServerLevel) entity.getHandle().level();
@@ -708,7 +699,7 @@ public class EntityConditions {
             if (entity instanceof Player p) {
                 String comparison = condition.getString("comparison");
                 double compare_to = condition.getNumber("compare_to").getFloat();
-                return Comparison.getFromString(comparison).compare(p.getExpToLevel(), compare_to);
+                return Comparison.fromString(comparison).compare(p.getExpToLevel(), compare_to);
             }
             return false;
         }));
@@ -716,7 +707,7 @@ public class EntityConditions {
             if (entity instanceof Player p) {
                 String comparison = condition.getString("comparison");
                 double compare_to = condition.getNumber("compare_to").getFloat();
-                return Comparison.getFromString(comparison).compare(p.getTotalExperience(), compare_to);
+                return Comparison.fromString(comparison).compare(p.getTotalExperience(), compare_to);
             }
             return false;
         }));

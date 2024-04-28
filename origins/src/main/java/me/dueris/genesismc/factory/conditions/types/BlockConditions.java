@@ -73,7 +73,7 @@ public class BlockConditions {
             String comparison = condition.getString("comparison");
             float compare_to = condition.getNumber("compare_to").getFloat();
 
-            return Comparison.getFromString(comparison).compare(adj, compare_to);
+            return Comparison.fromString(comparison).compare(adj, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("attachable"), (condition, block) -> {
             ServerLevel level = ((CraftWorld) block.getWorld()).getHandle();
@@ -89,7 +89,7 @@ public class BlockConditions {
             String comparison = condition.getString("comparison");
             float compare_to = condition.getNumber("compare_to").getFloat();
             float bR = block.getType().getBlastResistance();
-            return Comparison.getFromString(comparison).compare(bR, compare_to);
+            return Comparison.fromString(comparison).compare(bR, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block_entity"), (condition, block) -> block.getState() instanceof TileState));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block"), (condition, block) -> {
@@ -126,7 +126,7 @@ public class BlockConditions {
             y += coords.y + offset.y;
             z += coords.z + offset.z;
             if (scaleReferenceToDimension && (x != 0 || z != 0)) {
-                Comparison comparison = Comparison.getFromString(condition.getString("comparison"));
+                Comparison comparison = Comparison.fromString(condition.getString("comparison"));
                 if (currentDimensionCoordinateScale == 0)
                     return comparison == Comparison.NOT_EQUAL || comparison == Comparison.GREATER_THAN || comparison == Comparison.GREATER_THAN_OR_EQUAL;
 
@@ -149,7 +149,7 @@ public class BlockConditions {
                 distance = new BigDecimal(distance).setScale(condition.getNumber("round_to_digit").getInt(), RoundingMode.HALF_UP).doubleValue();
             }
 
-            return Comparison.getFromString(condition.getString("comparison")).compare(distance, condition.getNumber("compare_to").getFloat());
+            return Comparison.fromString(condition.getString("comparison")).compare(distance, condition.getNumber("compare_to").getFloat());
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("block_state"), (condition, block) -> {
             BlockState state = block.getNMS();
@@ -169,7 +169,7 @@ public class BlockConditions {
                 } else if (condition.isPresent("value") && value instanceof Boolean) {
                     return ((boolean) value) == condition.getElement("value").getBoolean();
                 } else if (condition.isPresent("comparison") && condition.isPresent("compare_to") && value instanceof Integer valInt) {
-                    return Comparison.getFromString(condition.getString("comparison")).compare(valInt, condition.getNumber("compare_to").getInt());
+                    return Comparison.fromString(condition.getString("comparison")).compare(valInt, condition.getNumber("compare_to").getInt());
                 }
                 return true;
             }
@@ -181,13 +181,13 @@ public class BlockConditions {
             String comparison = condition.getString("comparison");
             float compare_to = condition.getNumber("compare_to").getFloat();
             float bR = block.getType().getHardness();
-            return Comparison.getFromString(comparison).compare(bR, compare_to);
+            return Comparison.fromString(comparison).compare(bR, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("height"), (condition, block) -> {
             String comparison = condition.getString("comparison");
             float compare_to = condition.getNumber("compare_to").getFloat();
             float bR = block.getLocation().getBlockY();
-            return Comparison.getFromString(comparison).compare(bR, compare_to);
+            return Comparison.fromString(comparison).compare(bR, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("light_blocking"), (condition, block) -> !block.getType().isOccluding()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("light_level"), (condition, block) -> {
@@ -209,12 +209,12 @@ public class BlockConditions {
             String comparison = condition.getString("comparison");
             float compare_to = condition.getNumber("compare_to").getFloat();
             float bR = level;
-            return Comparison.getFromString(comparison).compare(bR, compare_to);
+            return Comparison.fromString(comparison).compare(bR, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("slipperiness"), (condition, block) -> {
             String comparison = condition.getString("comparison");
             float compare_to = condition.getNumber("compare_to").getFloat();
-            return Comparison.getFromString(comparison).compare(block.getBlockData().getMaterial().getSlipperiness(), compare_to);
+            return Comparison.fromString(comparison).compare(block.getBlockData().getMaterial().getSlipperiness(), compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("movement_blocking"), (condition, block) -> block.getType().isCollidable()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("replacable"), (condition, block) -> block.getType().isAir() || block.isReplaceable()));

@@ -7,8 +7,6 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.CooldownUtils;
-import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
@@ -32,7 +30,7 @@ public class TargetActionOnHit extends CraftPower implements Listener {
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
-                if (CooldownUtils.isPlayerInCooldownFromTag(player, Utils.getNameOrTag(power))) continue;
+                if (Cooldown.isInCooldown(player, power)) continue;
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -40,7 +38,7 @@ public class TargetActionOnHit extends CraftPower implements Listener {
                             setActive(player, power.getTag(), true);
                             Actions.executeEntity(target, power.getJsonObject("entity_action"));
                             if (power.isPresent("cooldown")) {
-                                CooldownUtils.addCooldown((Player) actor, Utils.getNameOrTag(power), power.getNumberOrDefault("cooldown", power.getNumberOrDefault("max", 1).getInt()).getInt(), power.getJsonObject("hud_render"));
+                                Cooldown.addCooldown(player, power.getNumber("cooldown").getInt(), power);
                             }
                         } else {
                             setActive(player, power.getTag(), false);

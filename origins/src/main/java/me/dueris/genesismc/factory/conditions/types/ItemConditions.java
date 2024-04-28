@@ -16,7 +16,6 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -27,7 +26,6 @@ import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -40,7 +38,7 @@ public class ItemConditions {
             String comparison = condition.getString("comparison");
             double compareTo = condition.getNumber("compare_to").getDouble();
             double amt = Math.abs(CraftItemStack.asNMSCopy(itemStack).getMaxDamage() - CraftItemStack.asNMSCopy(itemStack).getDamageValue()) / CraftItemStack.asNMSCopy(itemStack).getMaxDamage();
-            return Comparison.getFromString(comparison).compare(amt, compareTo);
+            return Comparison.fromString(comparison).compare(amt, compareTo);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("is_equippable"), (condition, itemStack) -> EnchantTableHandler.wearable.contains(itemStack.getType())));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("is_damageable"), (condition, itemStack) -> CraftItemStack.asCraftCopy(itemStack).handle.isDamageableItem()));
@@ -49,7 +47,7 @@ public class ItemConditions {
             Enchantment enchantment = CraftRegistry.ENCHANTMENT.get(NamespacedKey.fromString(condition.getString("enchantment")));
             if (enchantment != null) {
                 net.minecraft.world.item.enchantment.Enchantment nmsEnchantment = CraftEnchantment.bukkitToMinecraft(enchantment);
-                Comparison comparison = Comparison.getFromString(condition.getString("comparison"));
+                Comparison comparison = Comparison.fromString(condition.getString("comparison"));
                 int compare_to = condition.getNumber("compare_to").getInt();
 
                 int level;
@@ -70,19 +68,19 @@ public class ItemConditions {
             String comparison = condition.getString("comparison");
             double compareTo = condition.getNumber("compare_to").getDouble();
             double amt = CraftItemStack.asNMSCopy(itemStack).getMaxDamage() - CraftItemStack.asNMSCopy(itemStack).getDamageValue();
-            return Comparison.getFromString(comparison).compare(amt, compareTo);
+            return Comparison.fromString(comparison).compare(amt, compareTo);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("armor_value"), (condition, itemStack) -> {
             String comparison = condition.getString("comparison");
             double compareTo = condition.getNumber("compare_to").getDouble();
             double amt = Utils.getArmorValue(itemStack);
-            return Comparison.getFromString(comparison).compare(amt, compareTo);
+            return Comparison.fromString(comparison).compare(amt, compareTo);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("amount"), (condition, itemStack) -> {
             String comparison = condition.getString("comparison");
             double compareTo = condition.getNumber("compare_to").getDouble();
             int amt = itemStack.getAmount();
-            return Comparison.getFromString(comparison).compare(amt, compareTo);
+            return Comparison.fromString(comparison).compare(amt, compareTo);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fuel"), (condition, itemStack) -> itemStack.getType().isFuel()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("meat"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).is(ItemTags.MEAT)));

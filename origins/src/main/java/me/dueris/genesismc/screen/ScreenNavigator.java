@@ -93,13 +93,18 @@ public class ScreenNavigator implements Listener {
         open(((CraftPlayer) player).getHandle(), layer, inOrbChoosing);
     }
 
+    private static boolean isSimilarEnough(ItemStack a, ItemStack b) {
+        return a.getType().equals(b.getType()) && a.getItemMeta().displayName().equals(b.getItemMeta().displayName());
+    }
+
     @EventHandler
     public void inventoryClose(InventoryCloseEvent e) {
         if (inChoosingLayer.containsKey(getCraftPlayer(e.getPlayer()))) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (e.getInventory().getType().equals(InventoryType.CRAFTING)) return; // Fixes IllegalArgumentException on player leave
+                    if (e.getInventory().getType().equals(InventoryType.CRAFTING))
+                        return; // Fixes IllegalArgumentException on player leave
                     if (!inChoosingLayer.containsKey(getCraftPlayer(e.getPlayer()))) return; // Check again just in case
                     e.getPlayer().openInventory(e.getInventory());
                 }
@@ -143,9 +148,5 @@ public class ScreenNavigator implements Listener {
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 3);
         }
-    }
-
-    private static boolean isSimilarEnough(ItemStack a, ItemStack b) {
-        return a.getType().equals(b.getType()) && a.getItemMeta().displayName().equals(b.getItemMeta().displayName());
     }
 }

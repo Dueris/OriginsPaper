@@ -96,7 +96,7 @@ public class TextureLocation implements Registrable {
                                 int index = 0;
                                 for (Color color : modifiedPixels) {
                                     if (color == null) continue;
-                                    textureMap.put(location.getKey().asString() + "/-/" + index, CooldownUtils.convertToBarColor(color));
+                                    textureMap.put(location.getKey().asString() + "/-/" + index, convertToBarColor(color));
                                     index++;
                                 }
 
@@ -118,6 +118,30 @@ public class TextureLocation implements Registrable {
             }
         }
         return -1;
+    }
+
+    public static BarColor convertToBarColor(Color color) {
+        int rgb = color.getRGB();
+        int red = (rgb >> 16) & 0xFF;
+        int green = (rgb >> 8) & 0xFF;
+        int blue = rgb & 0xFF;
+
+        if (red > green && red > blue) {
+            if (red - green < 30) return BarColor.YELLOW;
+            return BarColor.RED;
+        } else if (green > red && green > blue) {
+            return BarColor.GREEN;
+        } else if (blue > red && blue > green) {
+            return BarColor.BLUE;
+        } else if (red == green && red == blue) {
+            return BarColor.WHITE;
+        } else if (red == green) {
+            return BarColor.YELLOW;
+        } else if (red == blue) {
+            return BarColor.PURPLE;
+        } else {
+            return BarColor.GREEN;
+        }
     }
 
     @Override

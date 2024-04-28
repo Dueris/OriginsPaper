@@ -1,6 +1,5 @@
 package me.dueris.genesismc;
 
-import me.dueris.calio.CraftCalio;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.CreativeFlight;
 import me.dueris.genesismc.registry.registries.Power;
