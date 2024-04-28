@@ -45,7 +45,7 @@ public class PlayerManager implements Listener {
                 NamespacedKey fixedKey = NamespacedKey.fromString(tag);
                 if (GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(fixedKey) == null) {
                     // Layer not in registry, cry.
-                    origins.replace(layer, CraftApoli.nullOrigin());
+                    origins.replace(layer, CraftApoli.emptyOrigin());
                     p.sendMessage(Component.text("Your origin, \"%originName%\" was not found on the registry in the layer, \"%layerName%\".".replace("%originName%", fixedKey.asString()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(ColorConstants.RED)));
                 }
             }
@@ -58,7 +58,7 @@ public class PlayerManager implements Listener {
                 if (playerLayer == null) continue layerLoop; // Layer was removed
                 if (layer.getTag().equals(playerLayer.getTag())) continue layerLoop;
             }
-            origins.put(layer, CraftApoli.nullOrigin());
+            origins.put(layer, CraftApoli.emptyOrigin());
         }
         p.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
     }
@@ -73,7 +73,7 @@ public class PlayerManager implements Listener {
                 p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING).equalsIgnoreCase("")
         ) {
             HashMap<Layer, Origin> origins = new HashMap<>();
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) origins.put(layer, CraftApoli.nullOrigin());
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) origins.put(layer, CraftApoli.emptyOrigin());
             p.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(origins));
         }
 
@@ -137,6 +137,12 @@ public class PlayerManager implements Listener {
                     GuiTicker.delayedPlayers.remove(p);
                 }
             }.runTaskLater(GenesisMC.getPlugin(), delay);
+        }
+
+        // Update powers for 1.0.0 update
+        if (!p.getPersistentDataContainer().has(GenesisMC.identifier("updated")) && !OriginPlayerAccessor.getOrigin(p, CraftApoli.getLayerFromTag("origins:origin")).equals(CraftApoli.emptyOrigin())) {
+            OriginPlayerAccessor.setOrigin(p, CraftApoli.getLayerFromTag("origins:origin"), OriginPlayerAccessor.getOrigin(p, CraftApoli.getLayerFromTag("origins:origin")));
+            p.getPersistentDataContainer().set(GenesisMC.identifier("updated"), PersistentDataType.BOOLEAN, true);
         }
     }
 

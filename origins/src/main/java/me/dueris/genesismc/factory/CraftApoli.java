@@ -44,7 +44,7 @@ public class CraftApoli {
     public static Origin getOrigin(String originTag) {
         for (Origin o : ((Registrar<Origin>) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).values())
             if (o.getTag().equals(originTag)) return o;
-        return nullOrigin();
+        return emptyOrigin();
     }
 
     public static Layer getLayerFromTag(String layerTag) {
@@ -62,7 +62,7 @@ public class CraftApoli {
     /**
      * @return A copy of The null origin.
      **/
-    public static Origin nullOrigin() {
+    public static Origin emptyOrigin() {
         return new Origin(
             GenesisMC.originIdentifier("empty"),
             new ArrayList<>(),
@@ -178,10 +178,10 @@ public class CraftApoli {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                return CraftApoli.nullOrigin();
+                return CraftApoli.emptyOrigin();
             }
         }
-        return CraftApoli.nullOrigin();
+        return CraftApoli.emptyOrigin();
     }
 
     /**
@@ -191,7 +191,7 @@ public class CraftApoli {
         HashMap<Layer, Origin> containedOrigins = new HashMap<>();
         if (originData == null) {
             ((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).forEach((key, layer) -> {
-                containedOrigins.put(layer, CraftApoli.nullOrigin());
+                containedOrigins.put(layer, CraftApoli.emptyOrigin());
             });
         } else {
             try {
@@ -205,7 +205,7 @@ public class CraftApoli {
             } catch (Exception e) {
                 e.printStackTrace();
                 ((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).forEach((key, layer) -> {
-                    containedOrigins.put(layer, CraftApoli.nullOrigin());
+                    containedOrigins.put(layer, CraftApoli.emptyOrigin());
                 });
                 return containedOrigins;
             }

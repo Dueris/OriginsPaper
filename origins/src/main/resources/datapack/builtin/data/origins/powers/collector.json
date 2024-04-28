@@ -1,0 +1,13 @@
+{
+  "name": "Collector",
+  "description": "Dropped items glow for you.",
+  "type": "origins:entity_glow",
+  "entity_condition": {
+    "type": "origins:entity_type",
+    "entity_type": "minecraft:item"
+  },
+  "use_teams": false,
+  "red": 0.0,
+  "green": 1.0,
+  "blue": 1.0
+}

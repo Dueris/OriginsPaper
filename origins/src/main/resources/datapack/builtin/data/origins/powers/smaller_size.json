@@ -1,0 +1,25 @@
+{
+  "type": "origins:action_over_time",
+  "entity_action": {
+    "type": "origins:and",
+    "actions": [
+      {
+        "type": "origins:execute_command",
+        "command": "scale set 0.6",
+        "permission_level": 4
+      },
+      {
+        "type": "origins:execute_command",
+        "command": "scale set motion 1.4",
+        "permission_level": 4
+      },
+      {
+        "type": "origins:execute_command",
+        "command": "scale set pehkui:jump_height 1.4",
+        "permission_level": 4
+      }
+    ]
+  },
+  "interval": 1,
+  "hidden": true
+}

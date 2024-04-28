@@ -161,7 +161,7 @@ public class Layer extends FactoryJsonObject implements Serializable, FactoryIns
             List<Origin> originList = new ArrayList<>();
             for (FactoryElement element : obj.getRoot().getJsonArray("origins").asList()) {
                 Origin origin = CraftApoli.getOrigin(element.getString());
-                if (!origin.equals(CraftApoli.nullOrigin())) {
+                if (!origin.equals(CraftApoli.emptyOrigin())) {
                     originList.add(origin);
                 } else {
                     CraftCalio.INSTANCE.getLogger().severe("Origin not found inside layer");
@@ -176,7 +176,7 @@ public class Layer extends FactoryJsonObject implements Serializable, FactoryIns
                     FactoryJsonObject jsonObject = element.toJsonObject();
                     for (String elementString : jsonObject.getJsonArray("origins").asList().stream().map(FactoryElement::getString).toList()) {
                         Origin origin = CraftApoli.getOrigin(elementString);
-                        if (!origin.equals(CraftApoli.nullOrigin())) {
+                        if (!origin.equals(CraftApoli.emptyOrigin())) {
                             origin.setUsesCondition(jsonObject.getJsonObject("condition"));
                         } else {
                             CraftCalio.INSTANCE.getLogger().severe("Origin(%a%) not found inside layer".replace("%a%", elementString));
@@ -184,7 +184,7 @@ public class Layer extends FactoryJsonObject implements Serializable, FactoryIns
                     }
                 } else if (element.isString()) {
                     Origin origin = CraftApoli.getOrigin(element.getString());
-                    if (!origin.equals(CraftApoli.nullOrigin())) {
+                    if (!origin.equals(CraftApoli.emptyOrigin())) {
                         list.add(origin);
                     } else {
                         CraftCalio.INSTANCE.getLogger().severe("Origin(%a%) not found inside layer".replace("%a%", element.getString()));

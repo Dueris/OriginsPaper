@@ -82,8 +82,8 @@ public class OriginPlayerAccessor implements Listener {
     public static Origin getOrigin(Player player, Layer layer) {
         if (!OriginDataContainer.getDataMap().containsKey(player)) {
             if (OriginDataContainer.getLayer(player) == null) {
-                setOrigin(player, layer, CraftApoli.nullOrigin());
-                return CraftApoli.nullOrigin();
+                setOrigin(player, layer, CraftApoli.emptyOrigin());
+                return CraftApoli.emptyOrigin();
             }
         }
         return CraftApoli.toOrigin(OriginDataContainer.getLayer(player), layer);
@@ -162,7 +162,7 @@ public class OriginPlayerAccessor implements Listener {
             return;
         }
 
-        if (!origin.getTag().equals(CraftApoli.nullOrigin().getTag())) {
+        if (!origin.getTag().equals(CraftApoli.emptyOrigin().getTag())) {
             try {
                 unassignPowers(player, layer);
             } catch (NotFoundException e) {
@@ -177,7 +177,7 @@ public class OriginPlayerAccessor implements Listener {
         setupPowers(player);
 
         String originTag = origin.getTag();
-        if (!originTag.equals(CraftApoli.nullOrigin().getTag())) Metrics.originPopularity(player);
+        if (!originTag.equals(CraftApoli.emptyOrigin().getTag())) Metrics.originPopularity(player);
         new BukkitRunnable() {
             @Override
             public void run() {

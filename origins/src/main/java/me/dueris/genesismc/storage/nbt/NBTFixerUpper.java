@@ -27,7 +27,7 @@ public class NBTFixerUpper {
                     if (bukkitVals.getString("genesismc:originlayer") == null || bukkitVals.getString("genesismc:originlayer") == "") {
                         HashMap<Layer, Origin> origins = new HashMap<>();
                         for (Layer layer : CraftApoli.getLayersFromRegistry())
-                            origins.put(layer, CraftApoli.nullOrigin());
+                            origins.put(layer, CraftApoli.emptyOrigin());
                         bukkitVals.putString("genesismc:originlayer", CraftApoli.toOriginSetSaveFormat(origins));
                     }
                 }

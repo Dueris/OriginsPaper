@@ -1,15 +1,19 @@
 {
   "powers": [
     "origins:no_gravity",
-    "origins:sound_of_music",
     "origins:luck",
-    "origins:half_health",
+    "origins:fragile",
     "origins:cookie_saturation",
     "origins:vegetarian",
     "origins:allay_sparkle",
-    "star:fire",
     "origins:firework_launch",
-    "origins:faster_mining_during_flight"
+    "origins:faster_mining_during_flight",
+    "origins:smaller_size",
+    "origins:jukebox_enderchest",
+    "origins:illagers_hurt_more",
+    "origins:no_totem",
+    "origins:no_shield",
+    "origins:collector"
   ],
   "icon": {
     "item": "minecraft:cookie"
@@ -17,5 +21,5 @@
   "name": "Allay",
   "description": "These friendly fairies love the sweet sounds of music, and a yummy cookie :).",
   "order": 0,
-  "impact": 2
+  "impact": 3
 }

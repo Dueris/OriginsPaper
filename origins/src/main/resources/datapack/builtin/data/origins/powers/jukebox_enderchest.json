@@ -1,0 +1,20 @@
+{
+  "type": "origins:inventory",
+  "title": "Jukebox",
+  "drop_on_death": false,
+  "container_type": "dropper",
+  "key": {
+    "key": "key.origins.primary_active",
+    "continuous": false
+  },
+  "condition": {
+    "type": "origins:on_block",
+    "block_condition": {
+      "type": "origins:block",
+      "block": "minecraft:jukebox"
+    }
+  },
+  "name": "Jukebox Stash",
+  "description": "Stand on a Jukebox to open a personal stash inside the jukebox",
+  "hidden": false
+}

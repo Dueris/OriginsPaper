@@ -1,8 +1,8 @@
 {
   "type": "origins:modify_break_speed",
   "modifier": {
-    "operation": "set_total",
-    "value": 2
+    "value": 0.06,
+    "operation": "addition"
   },
   "hidden": true,
   "entity_condition": {

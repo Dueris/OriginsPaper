@@ -166,7 +166,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                             } catch (NotFoundException e) {
                                 throw new RuntimeException(e);
                             }
-                            OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.nullOrigin());
+                            OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.emptyOrigin());
                         });
                         return SINGLE_SUCCESS;
                     })
@@ -180,7 +180,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                     } catch (NotFoundException e) {
                                         throw new RuntimeException(e);
                                     }
-                                    OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.nullOrigin());
+                                    OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.emptyOrigin());
                                 }
                             });
                             return SINGLE_SUCCESS;
@@ -203,7 +203,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                     } catch (NotFoundException e) {
                                         throw new RuntimeException(e);
                                     }
-                                    OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.nullOrigin());
+                                    OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.emptyOrigin());
                                 });
                                 return SINGLE_SUCCESS;
                             })

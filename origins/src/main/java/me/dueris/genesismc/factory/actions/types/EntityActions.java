@@ -374,14 +374,16 @@ public class EntityActions {
                         //fail noononooo
                     }
                 }
+                List<ItemStack> stacks = new ArrayList<>();
                 for (ItemStack item : player.getInventory().getContents()) {
                     if (item == null) continue;
-                    if (!item.containsEnchantment(Enchantment.INFINITY) && !item.getType().equals(Material.GRAY_DYE)) {
+                    if (ConditionExecutor.testItem(action.getJsonObject("item_condition"), item)) {
                         player.getWorld().dropItemNaturally(player.getLocation(), item);
+                        stacks.add(item);
                     }
                 }
 
-                player.getInventory().clear();
+                stacks.forEach(stack -> player.getInventory().remove(stack));
                 addItems(player);
             }
         }));

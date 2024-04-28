@@ -38,20 +38,15 @@ public class OriginPage implements ChoosingPage {
     }
 
     public static void setAttributesToDefault(Player p) {
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1);
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4);
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0);
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_LUCK).setBaseValue(0);
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-        p.getBukkitEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.10000000149011612F);
+        for (Attribute att : Attribute.values()) {
+            p.getBukkitEntity().getAttribute(att).setBaseValue(p.getBukkitEntity().getAttribute(att).getDefaultValue());
+        }
     }
 
     public static ItemStack itemProperties(ItemStack item, Component displayName, ItemFlag[] itemFlag, Enchantment enchantment, String lore) {
         ItemMeta itemMeta = item.getItemMeta();
         if (displayName != null)
-            itemMeta.displayName(displayName.decorate(TextDecoration.ITALIC.as(false).decoration()));
+            itemMeta.displayName(displayName.decorate(TextDecoration.ITALIC.withState(false).decoration()));
         if (itemFlag != null) itemMeta.addItemFlags(itemFlag);
         if (enchantment != null) itemMeta.addEnchant(enchantment, 1, true);
         if (lore != null) itemMeta.lore(cutStringIntoLines(lore).stream().map(OriginPage::noItalic).toList());
@@ -60,7 +55,7 @@ public class OriginPage implements ChoosingPage {
     }
 
     private static Component noItalic(String string) {
-        return Component.text(string).decorate(TextDecoration.ITALIC.as(false).decoration());
+        return Component.text(string).decorate(TextDecoration.ITALIC.withState(false).decoration());
     }
 
     public static List<String> cutStringIntoLines(String string) {

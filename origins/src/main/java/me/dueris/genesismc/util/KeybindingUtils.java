@@ -157,8 +157,10 @@ public class KeybindingUtils implements Listener {
     }
 
     public static void addItems(HumanEntity p) {
-        addPrimaryItem(p);
-        addSecondaryItem(p);
+        if (!hasOriginDataTriggerPrimary(p.getInventory()))
+            addPrimaryItem(p);
+        if (!hasOriginDataTriggerSecondary(p.getInventory()))
+            addSecondaryItem(p);
     }
 
     public static boolean hasOriginDataTriggerPrimary(Inventory inventory) {
