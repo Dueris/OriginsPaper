@@ -407,6 +407,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         for (Player player : Bukkit.getOnlinePlayers()) {
+            player.closeInventory(); // Ensure that all choosing players have closed inventories during reload
             player.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerAccessor.getOrigin(player), player));
             OriginPlayerAccessor.unassignPowers(player);
             OriginDataContainer.unloadData(player);
