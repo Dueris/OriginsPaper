@@ -6,6 +6,7 @@ import me.dueris.genesismc.registry.registries.Power;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -14,19 +15,13 @@ public class ExhaustPower extends CraftPower {
 
     @Override
     public void run(Player p, Power power) {
-        if (!power.isPresent("interval")) {
-            throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
-        }
         long interval = power.getNumberOrDefault("interval", 20L).getLong();
-        if (Bukkit.getServer().getCurrentTick() % interval == 0) {
+        if (p.getTicksLived() % interval == 0) {
             if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                 setActive(p, power.getTag(), true);
                 if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
                     return;
-                if (Math.round(p.getFoodLevel() - power.getNumberOrDefault("exhaustion", 1).getFloat()) <= 0)
-                    p.setFoodLevel(0);
-                else
-                    p.setFoodLevel(Math.round(p.getFoodLevel() - power.getNumberOrDefault("exhaustion", 1).getFloat()));
+                ((CraftPlayer)p).getHandle().causeFoodExhaustion(power.getNumber("exhaustion").getFloat());
             } else {
                 setActive(p, power.getTag(), false);
             }
