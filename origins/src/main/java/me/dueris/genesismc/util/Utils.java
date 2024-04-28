@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.util.MiscUtils;
+import me.dueris.calio.util.holders.TriPair;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.registries.Power;
 import net.minecraft.Util;
@@ -34,8 +35,10 @@ import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.block.CraftBlockType;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.inventory.components.CraftFoodComponent;
 import org.bukkit.craftbukkit.potion.CraftPotionUtil;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.components.FoodComponent;
 import org.bukkit.potion.PotionEffect;
 
 import java.io.*;
@@ -105,7 +108,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
         return ret;
     }
 
-    public static FoodProperties parseProperties(FactoryJsonObject jsonObject) {
+    public static FoodComponent parseProperties(FactoryJsonObject jsonObject) {
         FoodProperties.Builder builder = new FoodProperties.Builder();
         Utils.computeIfObjectPresent("hunger", jsonObject, value -> builder.nutrition(value.getNumber().getInt()));
         Utils.computeIfObjectPresent("saturation", jsonObject, value -> builder.saturationModifier(value.getNumber().getFloat()));
@@ -124,7 +127,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
             MobEffectInstance instance = CraftPotionUtil.fromBukkit(potionEffect);
             builder.effect(instance, 1.0F);
         });
-        return builder.build();
+        return new CraftFoodComponent(builder.build());
     }
 
     public static boolean inSnow(Level world, BlockPos... blockPositions) {
@@ -363,8 +366,8 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
     // Math
     public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
         Map<String, BinaryOperator<Double>> operationMap = new HashMap<>();
-        operationMap.put("addition", (a, b) -> a + b);
-        operationMap.put("add", (a, b) -> a + b);
+        operationMap.put("addition", Double::sum);
+        operationMap.put("add", Double::sum);
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("subtract", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
@@ -375,10 +378,10 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
         operationMap.put("multiply_total", (a, b) -> a * (1 + b));
         operationMap.put("set_total", (a, b) -> b);
         operationMap.put("set", (a, b) -> b);
-        operationMap.put("add_base_early", (a, b) -> a + b);
+        operationMap.put("add_base_early", Double::sum);
         operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
         operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
-        operationMap.put("add_base_late", (a, b) -> a + b);
+        operationMap.put("add_base_late", Double::sum);
 
         Random random = new Random();
 
@@ -392,8 +395,8 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 
     public static Map<String, BinaryOperator<Integer>> getOperationMappingsInteger() {
         Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
-        operationMap.put("addition", (a, b) -> a + b);
-        operationMap.put("add", (a, b) -> a + b);
+        operationMap.put("addition", Integer::sum);
+        operationMap.put("add", Integer::sum);
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("subtract", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
@@ -404,10 +407,10 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
         operationMap.put("multiply_total", (a, b) -> a * (1 + b));
         operationMap.put("set_total", (a, b) -> b);
         operationMap.put("set", (a, b) -> b);
-        operationMap.put("add_base_early", (a, b) -> a + b);
+        operationMap.put("add_base_early", Integer::sum);
         operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
         operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
-        operationMap.put("add_base_late", (a, b) -> a + b);
+        operationMap.put("add_base_late", Integer::sum);
 
         Random random = new Random();
 
@@ -422,8 +425,8 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 
     public static Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
         Map<String, BinaryOperator<Float>> operationMap = new HashMap<>();
-        operationMap.put("addition", (a, b) -> a + b);
-        operationMap.put("add", (a, b) -> a + b);
+        operationMap.put("addition", Float::sum);
+        operationMap.put("add", Float::sum);
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("subtract", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
@@ -434,10 +437,12 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
         operationMap.put("multiply_total", (a, b) -> a * (1 + b));
         operationMap.put("set_total", (a, b) -> b);
         operationMap.put("set", (a, b) -> b);
-        operationMap.put("add_base_early", (a, b) -> a + b);
+        operationMap.put("add_base_early", Float::sum);
         operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
+        operationMap.put("multiply_total_additive", (a, b) -> a + (a * b));
         operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
-        operationMap.put("add_base_late", (a, b) -> a + b);
+        operationMap.put("multiply_total_multiplicative", (a, b) -> a * (1 + b));
+        operationMap.put("add_base_late", Float::sum);
 
         Random random = new Random();
 

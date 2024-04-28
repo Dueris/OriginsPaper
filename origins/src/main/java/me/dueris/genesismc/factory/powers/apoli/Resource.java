@@ -99,6 +99,7 @@ public class Resource extends CraftPower implements Listener {
         Player p = e.getPlayer();
         StringBuilder cooldownBuilder = new StringBuilder();
         cooldownBuilder.append("[");
+        Cooldown.cooldowns.putIfAbsent(p, new ArrayList<>());
         for (Pair<KeyedBossBar, Power> barPair : Cooldown.cooldowns.get(p)) {
             cooldownBuilder.append(barPair.left().getKey().asString() + "<::>" + Double.toString(barPair.left().getProgress()));
             cooldownBuilder.append(",");
@@ -121,6 +122,7 @@ public class Resource extends CraftPower implements Listener {
         if (p.getPersistentDataContainer().has(GenesisMC.apoliIdentifier("current_cooldowns"))) {
             String encoded = p.getPersistentDataContainer().get(GenesisMC.apoliIdentifier("current_cooldowns"), PersistentDataType.STRING);
             encoded = encoded.replace("[", "").replace("]", "");
+            if (encoded.equalsIgnoreCase("")) return;
             Arrays.stream(encoded.split(",")).forEach(key -> {
                 String a = key.split("<::>")[0];
                 double b = Double.parseDouble(key.split("<::>")[1]);

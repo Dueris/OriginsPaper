@@ -1,32 +1,46 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.mojang.datafixers.util.Pair;
+import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.util.MiscUtils;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.food.FoodProperties;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.FoodComponent;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static net.minecraft.world.level.GameType.CREATIVE;
 
 public class EdibleItem extends CraftPower implements Listener {
-    public static HashMap<Power, FoodProperties> cachedFoodProperties = new HashMap<>();
-
     public static void runResultStack(Power power, boolean runActionUpon, InventoryHolder holder) {
         FactoryJsonObject stack = power.getJsonObject("result_stack");
         int amt;
@@ -41,48 +55,41 @@ public class EdibleItem extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void tryConsume(PlayerInteractEvent e) {
-        if (e.getItem() == null) return;
-        if (e.getAction().isLeftClick() || !e.getHand().isHand() || !e.getHand().equals(EquipmentSlot.HAND))
-            return; // Offhand causes lots of issues
-        if (e.getItem().getItemMeta() == null) return;
-
-        if (this.getPlayersWithPower().contains(e.getPlayer())) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType())) {
-                if (ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
-                    if (consume(power, e.getPlayer(), e.getItem())) {
-                        e.setCancelled(true);
+    public void setFoodable(PlayerItemHeldEvent e) {
+        ItemStack stack = e.getPlayer().getInventory().getItem(e.getNewSlot());
+        if (stack != null) {
+            if (getPlayersWithPower().contains(e.getPlayer()) && !stack.getItemMeta().getPersistentDataContainer().has(GenesisMC.apoliIdentifier("edible_item_modified"))) {
+                Player p = e.getPlayer();
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType())) {
+                    if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), stack)) continue;
+                    if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) continue;
+                    FoodComponent food = Utils.parseProperties(power.getJsonObject("food_component"));
+                    float s = food.getEatSeconds();
+                    power.getList$SingularPlural("consuming_time_modifier", "consuming_time_modifiers").forEach(jO -> {
+                        Modifier modifier = new Modifier(jO.toJsonObject());
+                        Utils.getOperationMappingsFloat().get(modifier.operation()).apply(s, modifier.value());
+                    });
+                    food.setEatSeconds(s);
+                    ItemMeta meta = stack.getItemMeta();
+                    meta.getPersistentDataContainer().set(GenesisMC.apoliIdentifier("edible_item_modified"), PersistentDataType.BOOLEAN, true);
+                    meta.setFood(food);
+                    stack.setItemMeta(meta);
+                    Actions.executeEntity(p, power.getJsonObject("entity_action"));
+                    Actions.executeItem(stack, power.getJsonObject("item_action"));
+                    if (power.isPresent("result_stack")) {
+                        runResultStack(power, power.isPresent("result_item_action"), p);
                     }
-                    Actions.executeItem(e.getItem(), power.getJsonObject("item_action"));
-                    Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action"));
                 }
+                return;
+            }
+
+            if (stack.getItemMeta().getPersistentDataContainer().has(GenesisMC.apoliIdentifier("edible_item_modified"))) {
+                ItemMeta meta = stack.getItemMeta();
+                meta.setFood(null);
+                meta.getPersistentDataContainer().remove(GenesisMC.apoliIdentifier("edible_item_modified"));
+                stack.setItemMeta(meta);
             }
         }
-    }
-
-    private boolean consume(Power power, Player player, ItemStack itemStack) {
-        if (!cachedFoodProperties.containsKey(power)) {
-            cachedFoodProperties.put(power, Utils.parseProperties(power.getJsonObject("food_component")));
-        }
-        FoodProperties properties = cachedFoodProperties.get(power);
-        int hunger = properties.nutrition();
-        float saturation = properties.saturation();
-        boolean alwaysEdible = properties.canAlwaysEat();
-
-        if (player.getFoodLevel() >= 20 && !alwaysEdible) return false;
-
-        player.setSaturation(player.getSaturation() + (hunger * saturation * 2));
-        player.setFoodLevel(player.getFoodLevel() + hunger >= 20 ? 20 : player.getFoodLevel() + hunger);
-        if (!player.getGameMode().equals(CREATIVE)) Utils.consumeItem(itemStack);
-        player.playSound(player.getEyeLocation(), MiscUtils.parseSound(power.getStringOrDefault("consume_sound", "minecraft:entity.generic.eat")), 1, 1);
-
-        ServerPlayer p = ((CraftPlayer) player).getHandle();
-        properties.effects().forEach(effectPair -> {
-            p.addEffect(effectPair.effect());
-        });
-
-        runResultStack(power, true, player);
-        return true;
     }
 
     @Override
