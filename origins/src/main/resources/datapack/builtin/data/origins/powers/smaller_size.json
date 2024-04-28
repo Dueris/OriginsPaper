@@ -10,11 +10,6 @@
       },
       {
         "type": "origins:execute_command",
-        "command": "scale set motion 1.4",
-        "permission_level": 4
-      },
-      {
-        "type": "origins:execute_command",
         "command": "scale set pehkui:jump_height 1.4",
         "permission_level": 4
       }

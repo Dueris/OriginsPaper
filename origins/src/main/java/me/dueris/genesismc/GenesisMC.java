@@ -32,6 +32,7 @@ import me.dueris.genesismc.factory.powers.apoli.RecipePower;
 import me.dueris.genesismc.factory.powers.apoli.WaterBreathe;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
 import me.dueris.genesismc.integration.PlaceHolderAPI;
+import me.dueris.genesismc.integration.pehuki.CraftPehuki;
 import me.dueris.genesismc.registry.BuiltinRegistry;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.DatapackRepository;
@@ -350,6 +351,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         OriginCommand.register(((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
         PowerCommand.register(((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
+        // Load addons
+        CraftPehuki.onLoad();
+
         try {
             Bootstrap.deleteDirectory(GenesisMC.getTmpFolder().toPath(), true);
         } catch (Throwable e) {
