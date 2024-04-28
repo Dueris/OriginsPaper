@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.actions.types;
 
 import com.google.gson.JsonObject;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.registry.Registrar;
@@ -83,38 +84,26 @@ public class EntityActions {
             });
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("modify_resource"), (action, entity) -> {
-//            if (resourceChangeTimeout.containsKey(entity)) return;
-//            String resource = action.getString("resource");
-//            if (Resource.getResource(entity, resource) == null) return;
-//            if (Resource.getResource(entity, resource).right() == null) return;
-//            if (Resource.getResource(entity, resource).left() == null) return;
-//            Modifier modifier = new Modifier(action.getJsonObject("modifier"));
-//            Power cooldownPower = CraftApoli.getPowerFromTag(resource);
-//            Float change = modifier.value();
-//            double perClick = 1.0 / (cooldownPower.getNumber("max").getInt());
-//            BossBar bossBar = Resource.getResource(entity, resource).left();
-//            if (!Resource.mapppedCustomOriginBarTicks.containsKey(bossBar)) {
-//                Resource.mapppedCustomOriginBarTicks.put(bossBar, cooldownPower.isPresent("start_value") ? cooldownPower.getNumber("start_value").getInt() : cooldownPower.getNumber("min").getInt());
-//            }
-//            Resource.mapppedCustomOriginBarTicks.put(bossBar, Utils.getOperationMappingsInteger().get(action.getStringOrDefault("operation", "add")).apply(Resource.mapppedCustomOriginBarTicks.get(bossBar), change.intValue()));
-//            System.out.println(bossBar.getProgress());
-//            bossBar.setProgress(Utils.getOperationMappingsDouble().get(action.getStringOrDefault("operation", "add")).apply(
-//                bossBar.getProgress(), perClick * change
-//            ));
-//            System.out.println(bossBar.getProgress());
-//            if (bossBar.getProgress() == 1.0) {
-//                Actions.executeEntity(entity, cooldownPower.getJsonObject("max_action"));
-//            } else if (bossBar.getProgress() == 0.0) {
-//                Actions.executeEntity(entity, cooldownPower.getJsonObject("min_action"));
-//            }
-//            bossBar.addPlayer((Player) entity);
-//            resourceChangeTimeout.put(entity, true);
-//            new BukkitRunnable() {
-//                @Override
-//                public void run() {
-//                    resourceChangeTimeout.remove(entity);
-//                }
-//            }.runTaskLater(GenesisMC.getPlugin(), 1);
+            Optional<Resource.Bar> resourceBar = Resource.getDisplayedBar(entity, action.getString("resource"));
+            resourceBar.ifPresent((bar) -> {
+                FactoryElement obj = action.isPresent("modifier") ? action.getElement("modifier") : action.getElement("modifiers");
+                List<FactoryElement> result = new ArrayList<>();
+
+                if (obj.isJsonArray()) {
+                    FactoryJsonArray jsonArray = obj.toJsonArray();
+                    for (FactoryElement item : jsonArray.asList()) {
+                        result.add(item);
+                    }
+                } else {
+                    result.add(obj);
+                }
+
+                result.stream().filter(FactoryElement::isJsonObject).map(FactoryElement::toJsonObject).map(Modifier::new).toList().forEach(modifier -> {
+                    float change = modifier.value();
+                    String operation = modifier.operation();
+                    bar.change(Math.round(change), operation);
+                });
+            });
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("set_on_fire"), (action, entity) -> entity.setFireTicks(action.getNumber("duration").getInt() * 20)));
         register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_entity"), (action, entity) -> {
