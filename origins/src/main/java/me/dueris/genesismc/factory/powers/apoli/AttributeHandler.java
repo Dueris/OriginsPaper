@@ -21,15 +21,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.function.BinaryOperator;
 
 public class AttributeHandler extends CraftPower implements Listener {
+    protected static HashMap<Player, List<Power>> appliedAttributes = new HashMap<>();
 
     @EventHandler
     public void powerUpdate(PowerUpdateEvent e) {
         if (!e.getPower().getType().equalsIgnoreCase(this.getType())) return;
         Player p = e.getPlayer();
         OriginPage.setAttributesToDefault(p);
+        appliedAttributes.putIfAbsent(p, new ArrayList<>());
+        appliedAttributes.get(p).clear();
         if (attribute.contains(p)) {
             runAttributeModifyPower(e);
         }
@@ -39,6 +44,7 @@ public class AttributeHandler extends CraftPower implements Listener {
     public void respawn(PlayerPostRespawnEvent e) {
         Player p = e.getPlayer();
         OriginPage.setAttributesToDefault(p);
+        appliedAttributes.putIfAbsent(p, new ArrayList<>());
         if (attribute.contains(p)) {
             runAttributeModifyPower(e);
         }
@@ -54,9 +60,10 @@ public class AttributeHandler extends CraftPower implements Listener {
                 for (Modifier modifier : power.getModifiers()) {
                     try {
                         Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
-                        if (p.getAttribute(attributeModifier) != null) {
-                            AttributeModifier m = DataConverter.convertToAttributeModifier(modifier);
+                        AttributeModifier m = DataConverter.convertToAttributeModifier(modifier);
+                        if (p.getAttribute(attributeModifier) != null && !appliedAttributes.get(p).contains(power)) {
                             p.getAttribute(attributeModifier).addTransientModifier(m);
+                            appliedAttributes.get(p).add(power);
                         }
                         AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attributeModifier, power, e.isAsynchronous());
                         Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);

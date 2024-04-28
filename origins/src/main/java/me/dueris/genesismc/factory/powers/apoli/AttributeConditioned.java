@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
+import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.appliedAttributes;
+
 public class AttributeConditioned extends CraftPower implements Listener {
 
     private static final HashMap<Player, Boolean> applied = new HashMap<>();
@@ -34,9 +36,10 @@ public class AttributeConditioned extends CraftPower implements Listener {
                 for (Modifier modifier : power.getModifiers()) {
                     if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) return;
                     Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
-                    if (p.getAttribute(attributeModifier) != null) {
-                        AttributeModifier m = DataConverter.convertToAttributeModifier(modifier);
+                    AttributeModifier m = DataConverter.convertToAttributeModifier(modifier);
+                    if (p.getAttribute(attributeModifier) != null && !appliedAttributes.get(p).contains(power)) {
                         p.getAttribute(attributeModifier).addTransientModifier(m);
+                        appliedAttributes.get(p).add(power);
                     }
                     p.sendHealthUpdate();
                 }
@@ -52,9 +55,10 @@ public class AttributeConditioned extends CraftPower implements Listener {
 
                 for (Modifier modifier : power.getModifiers()) {
                     Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
-                    if (p.getAttribute(attributeModifier) != null) {
-                        AttributeModifier m = DataConverter.convertToAttributeModifier(modifier);
+                    AttributeModifier m = DataConverter.convertToAttributeModifier(modifier);
+                    if (p.getAttribute(attributeModifier) != null && !appliedAttributes.get(p).contains(power)) {
                         p.getAttribute(attributeModifier).addTransientModifier(m);
+                        appliedAttributes.get(p).add(power);
                     }
                 }
             }
@@ -70,6 +74,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
 
     @Override
     public void run(Player p, Power power) {
+        appliedAttributes.putIfAbsent(p, new ArrayList<>());
         if (!applied.containsKey(p)) {
             applied.put(p, false);
         }

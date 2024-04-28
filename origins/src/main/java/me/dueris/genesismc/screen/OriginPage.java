@@ -39,6 +39,11 @@ public class OriginPage implements ChoosingPage {
     }
 
     public static void setAttributesToDefault(Player p) {
+        for (Attribute attribute : Attribute.values()) {
+            if (p.getBukkitEntity().getAttribute(attribute) != null) {
+                p.getBukkitEntity().getAttribute(attribute).getModifiers().clear();
+            }
+        }
         p.getBukkitEntity().getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
         p.getBukkitEntity().getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
         p.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1);
