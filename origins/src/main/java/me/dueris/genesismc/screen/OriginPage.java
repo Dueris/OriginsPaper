@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.w3c.dom.Attr;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,9 +39,15 @@ public class OriginPage implements ChoosingPage {
     }
 
     public static void setAttributesToDefault(Player p) {
-        for (Attribute att : Attribute.values()) {
-            p.getBukkitEntity().getAttribute(att).setBaseValue(p.getBukkitEntity().getAttribute(att).getDefaultValue());
-        }
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_LUCK).setBaseValue(0);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.10000000149011612F);
+        p.getBukkitEntity().getAttribute(Attribute.GENERIC_SCALE).setBaseValue(1);
     }
 
     public static ItemStack itemProperties(ItemStack item, Component displayName, ItemFlag[] itemFlag, Enchantment enchantment, String lore) {

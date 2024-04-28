@@ -2,6 +2,7 @@ package me.dueris.genesismc.integration.pehuki;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -23,22 +24,11 @@ public class CraftPehuki {
         dispatcher.register(
             literal("scale").requires(source -> source.hasPermission(3))
                 .then(literal("set")
-                    .then(argument("scale", FloatArgumentType.floatArg())
-                        .executes(context -> execute(context, Attribute.GENERIC_SCALE))
-                    )
-                    .then(literal("motion").then(argument("scale", FloatArgumentType.floatArg())
-                            .executes(context -> {
-                                execute(context, Attribute.GENERIC_MOVEMENT_SPEED);
-                                return SINGLE_SUCCESS;
-                            })
-                        )
-                    ).then(literal("entity_reach").then(argument("scale", FloatArgumentType.floatArg())
-                            .executes(context -> execute(context, Attribute.PLAYER_ENTITY_INTERACTION_RANGE))
-                        )
-                    ).then(literal("block_reach").then(argument("scale", FloatArgumentType.floatArg())
-                            .executes(context -> execute(context, Attribute.PLAYER_BLOCK_INTERACTION_RANGE))
-                        )
-                    ).then(literal("flight").then(argument("scale", FloatArgumentType.floatArg())
+                    .then(argument("scale", FloatArgumentType.floatArg()).executes(context -> execute(context, Attribute.GENERIC_SCALE)))
+                    .then(buildNew("motion", Attribute.GENERIC_MOVEMENT_SPEED))
+                    .then(buildNew("entity_reach", Attribute.PLAYER_ENTITY_INTERACTION_RANGE))
+                    .then(buildNew("block_reach", Attribute.PLAYER_BLOCK_INTERACTION_RANGE))
+                    .then(literal("flight").then(argument("scale", FloatArgumentType.floatArg())
                             .executes(context -> {
                                 try {
                                     if (context.getSource().isPlayer()) {
@@ -53,20 +43,18 @@ public class CraftPehuki {
                                 return SINGLE_SUCCESS;
                             })
                         )
-                    ).then(literal("knockback").then(argument("scale", FloatArgumentType.floatArg())
-                            .executes(context -> execute(context, Attribute.GENERIC_ATTACK_KNOCKBACK))
-                        )
-                    ).then(literal("scale").then(argument("scale", FloatArgumentType.floatArg())
-                            .executes(context -> execute(context, Attribute.GENERIC_SCALE))
-                        )
-                    ).then(literal("step-height").then(argument("scale", FloatArgumentType.floatArg())
-                            .executes(context -> execute(context, Attribute.GENERIC_STEP_HEIGHT))
-                        )
-                    ).then(literal("visibility").then(argument("scale", FloatArgumentType.floatArg())
-                            .executes(context -> execute(context, Attribute.GENERIC_FOLLOW_RANGE))
-                        )
                     )
+                    .then(buildNew("knockback", Attribute.GENERIC_ATTACK_KNOCKBACK))
+                    .then(buildNew("scale", Attribute.GENERIC_SCALE))
+                    .then(buildNew("step-height", Attribute.GENERIC_STEP_HEIGHT))
+                    .then(buildNew("visibility", Attribute.GENERIC_FOLLOW_RANGE))
                 )
+        );
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> buildNew(String e, Attribute attribute) {
+        return literal(e).then(argument("scale", FloatArgumentType.floatArg())
+            .executes(context -> execute(context, attribute))
         );
     }
 

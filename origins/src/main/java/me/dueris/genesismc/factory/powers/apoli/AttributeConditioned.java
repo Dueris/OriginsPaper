@@ -12,6 +12,7 @@ import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,18 +27,6 @@ public class AttributeConditioned extends CraftPower implements Listener {
 
     private static final HashMap<Player, Boolean> applied = new HashMap<>();
 
-    public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
-        BinaryOperator<Double> operator = Utils.getOperationMappingsDouble().get(operation);
-        if (operator != null) {
-            double result = Double.parseDouble(String.valueOf(operator.apply(base_value, value)));
-            p.getAttribute(attribute_modifier).setBaseValue(result);
-        } else {
-            Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
-            new Throwable().printStackTrace();
-        }
-        p.sendHealthUpdate();
-    }
-
     public void executeConditionAttribute(Player p) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
@@ -45,16 +34,9 @@ public class AttributeConditioned extends CraftPower implements Listener {
                 for (Modifier modifier : power.getModifiers()) {
                     if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) return;
                     Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
-                    double val = modifier.value();
-                    double baseVal = p.getAttribute(attributeModifier).getBaseValue();
-                    String operation = modifier.operation();
-                    BinaryOperator<Double> operator = Utils.getOperationMappingsDouble().get(operation);
-                    if (operator != null) {
-                        double result = Double.parseDouble(String.valueOf(operator.apply(baseVal, val)));
-                        p.getAttribute(attributeModifier).setBaseValue(result);
-                    } else {
-                        Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
-                        new Throwable().printStackTrace();
+                    if (p.getAttribute(attributeModifier) != null) {
+                        AttributeModifier m = DataConverter.convertToAttributeModifier(modifier);
+                        p.getAttribute(attributeModifier).addTransientModifier(m);
                     }
                     p.sendHealthUpdate();
                 }
@@ -69,11 +51,11 @@ public class AttributeConditioned extends CraftPower implements Listener {
                 if (power == null) continue;
 
                 for (Modifier modifier : power.getModifiers()) {
-                    Attribute attribute_modifier = Attribute.valueOf(NamespacedKey.fromString(modifier.handle.getString("attribute")).asString().split(":")[1].replace(".", "_").toUpperCase());
-                    double value = modifier.value();
-                    double base_value = p.getAttribute(attribute_modifier).getBaseValue();
-                    String operation = modifier.operation();
-                    executeAttributeModify(operation, attribute_modifier, base_value, p, -value);
+                    Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
+                    if (p.getAttribute(attributeModifier) != null) {
+                        AttributeModifier m = DataConverter.convertToAttributeModifier(modifier);
+                        p.getAttribute(attributeModifier).addTransientModifier(m);
+                    }
                 }
             }
 
