@@ -19,8 +19,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import java.util.ArrayList;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_projectile_damage;
-
 public class ModifyProjectileDamagePower extends CraftPower implements Listener {
 
     @EventHandler

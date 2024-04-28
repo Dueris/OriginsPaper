@@ -20,8 +20,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import java.util.ArrayList;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_damage_taken;
-
 public class ModifyDamageTakenPower extends CraftPower implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)

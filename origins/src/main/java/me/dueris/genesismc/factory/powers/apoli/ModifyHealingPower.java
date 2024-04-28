@@ -17,8 +17,6 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import java.util.ArrayList;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_healing;
-
 public class ModifyHealingPower extends CraftPower implements Listener {
 
     @EventHandler

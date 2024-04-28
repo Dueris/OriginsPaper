@@ -17,8 +17,6 @@ import org.bukkit.event.entity.EntityExhaustionEvent;
 import java.util.ArrayList;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_exhaustion;
-
 public class ModifyExhaustionPower extends CraftPower implements Listener {
 
     @EventHandler

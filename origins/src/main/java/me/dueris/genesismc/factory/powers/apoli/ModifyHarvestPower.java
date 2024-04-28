@@ -18,8 +18,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_harvest;
-
 public class ModifyHarvestPower extends CraftPower implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)

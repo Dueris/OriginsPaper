@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_block_render;
-
 public class ModifyBlockRenderPower extends CraftPower implements Listener {
     public static ArrayList<Runnable> que = new ArrayList<>();
 

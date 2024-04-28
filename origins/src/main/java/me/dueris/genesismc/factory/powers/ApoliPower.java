@@ -84,6 +84,27 @@ public interface ApoliPower extends Registrable {
     ArrayList<Player> attribute_modify_transfer = new ArrayList<>();
     ArrayList<Player> no_gravity = new ArrayList<>();
     ArrayList<Player> item_on_item = new ArrayList<>();
+    ArrayList<Player> modify_air_speed = new ArrayList<>();
+    ArrayList<Player> modify_block_render = new ArrayList<>();
+    ArrayList<Player> modify_break_speed = new ArrayList<>();
+    ArrayList<Player> modify_crafting = new ArrayList<>();
+    ArrayList<Player> modify_damage_dealt = new ArrayList<>();
+    ArrayList<Player> modify_damage_taken = new ArrayList<>();
+    ArrayList<Player> modify_exhaustion = new ArrayList<>();
+    ArrayList<Player> modify_falling = new ArrayList<>();
+    ArrayList<Player> modify_food = new ArrayList<>();
+    ArrayList<Player> modify_harvest = new ArrayList<>();
+    ArrayList<Player> modify_healing = new ArrayList<>();
+    ArrayList<Player> modify_jump = new ArrayList<>();
+    ArrayList<Player> modify_lava_speed = new ArrayList<>();
+    ArrayList<Player> modify_world_spawn = new ArrayList<>();
+    ArrayList<Player> modify_projectile_damage = new ArrayList<>();
+    ArrayList<Player> modify_effect_amplifier = new ArrayList<>();
+    ArrayList<Player> modify_effect_duration = new ArrayList<>();
+    ArrayList<Player> modify_enchantment_level = new ArrayList<>();
+    ArrayList<Player> modify_swim_speed = new ArrayList<>();
+    ArrayList<Player> modify_velocity = new ArrayList<>();
+    ArrayList<Player> modify_xp_gain = new ArrayList<>();
 
     default NamespacedKey getKey() {
         try {

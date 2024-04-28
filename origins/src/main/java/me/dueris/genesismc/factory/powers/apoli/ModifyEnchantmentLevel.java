@@ -3,7 +3,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
 import org.bukkit.NamespacedKey;
@@ -57,7 +56,7 @@ public class ModifyEnchantmentLevel extends CraftPower {
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return ValueModifyingSuperClass.modify_enchantment_level;
+        return modify_enchantment_level;
     }
 
 }

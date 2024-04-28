@@ -1,35 +1,35 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.function.BinaryOperator;
-
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_air_speed;
+import java.util.HashMap;
 
 public class ModifyAirSpeedPower extends CraftPower {
-    private static final String MODIFYING_KEY = "modify_air_speed";
-    private static final ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
+    private static final HashMap<Player, Float> base = new HashMap<>();
+
+    public static void compute(Player p, Power power) {
+        float b = base.containsKey(p) ? base.get(p) : p.getFlySpeed();
+        power.getModifiers().forEach(modifier -> p.setFlySpeed(Utils.getOperationMappingsFloat().get(modifier.operation()).apply(b, modifier.value())));
+        base.put(p, b);
+    }
 
     @Override
     public void run(Player p, Power power) {
-        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+        if (Bukkit.getCurrentTick() % 10 == 0) {
+            if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+                setActive(p, power.getTag(), false);
+                p.setFlySpeed(base.get(p));
+                return;
+            }
             setActive(p, power.getTag(), true);
-            p.setFlySpeed(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
-        } else {
-            setActive(p, power.getTag(), false);
-            p.setFlySpeed(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
+            compute(p, power);
         }
     }
 
@@ -41,29 +41,5 @@ public class ModifyAirSpeedPower extends CraftPower {
     @Override
     public ArrayList<Player> getPlayersWithPower() {
         return modify_air_speed;
-    }
-
-    public void apply(Player p) {
-        if (modify_air_speed.contains(p)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
-                    for (Modifier modifier : power.getModifiers()) {
-                        Float value = modifier.value();
-                        String operation = modifier.operation();
-                        BinaryOperator<Float> mathOperator = Utils.getOperationMappingsFloat().get(operation);
-                        if (mathOperator != null) {
-                            float result = mathOperator.apply(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY), value);
-                            valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
-                        } else {
-                            Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for modify_air_speed!");
-                            new Throwable().printStackTrace();
-                        }
-                    }
-                }
-
-            }
-        } else {
-            valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
-        }
     }
 }

@@ -19,8 +19,6 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_effect_duration;
-
 public class ModifyStatusEffectDurationPower extends CraftPower implements Listener {
 
     @EventHandler

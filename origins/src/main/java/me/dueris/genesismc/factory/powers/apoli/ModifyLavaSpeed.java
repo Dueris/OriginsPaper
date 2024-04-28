@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_lava_speed;
-
 public class ModifyLavaSpeed extends CraftPower implements Listener {
 
     @Override

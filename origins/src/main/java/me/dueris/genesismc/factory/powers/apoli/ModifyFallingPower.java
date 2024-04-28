@@ -19,8 +19,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_falling;
-
 public class ModifyFallingPower extends CraftPower implements Listener {
 
     @EventHandler

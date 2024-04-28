@@ -17,8 +17,6 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_jump;
-
 public class ModifyJumpPower extends CraftPower implements Listener {
 
     @EventHandler

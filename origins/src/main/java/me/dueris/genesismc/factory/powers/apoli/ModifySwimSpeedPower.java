@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_swim_speed;
-
 public class ModifySwimSpeedPower extends CraftPower {
 
     @Override

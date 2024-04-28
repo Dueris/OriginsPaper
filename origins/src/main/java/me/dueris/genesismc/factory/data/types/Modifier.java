@@ -13,7 +13,7 @@ public class Modifier {
         this.handle = factoryJsonObject;
     }
 
-    public float value() {
+    public Float value() {
         if (handle.isPresent("modifier")) {
             Modifier modifier = new Modifier(handle.getJsonObject("modifier"));
             Map<String, BinaryOperator<Float>> operators = Utils.getOperationMappingsFloat();

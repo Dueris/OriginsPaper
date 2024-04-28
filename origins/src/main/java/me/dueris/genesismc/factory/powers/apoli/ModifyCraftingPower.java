@@ -15,8 +15,6 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_crafting;
-
 public class ModifyCraftingPower extends CraftPower implements Listener {
 
     @EventHandler

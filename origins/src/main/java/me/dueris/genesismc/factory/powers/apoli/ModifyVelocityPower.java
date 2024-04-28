@@ -6,7 +6,6 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
@@ -78,7 +77,7 @@ public class ModifyVelocityPower extends CraftPower implements Listener {
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return ValueModifyingSuperClass.modify_velocity;
+        return modify_velocity;
     }
 
 

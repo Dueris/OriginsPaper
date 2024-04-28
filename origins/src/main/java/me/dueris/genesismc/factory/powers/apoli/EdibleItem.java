@@ -1,7 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import com.mojang.datafixers.util.Pair;
-import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
@@ -12,33 +10,18 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.food.FoodProperties;
 import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static net.minecraft.world.level.GameType.CREATIVE;
 
 public class EdibleItem extends CraftPower implements Listener {
     public static void runResultStack(Power power, boolean runActionUpon, InventoryHolder holder) {

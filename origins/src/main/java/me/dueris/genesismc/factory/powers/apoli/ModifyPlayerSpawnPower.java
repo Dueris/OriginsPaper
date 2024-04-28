@@ -41,8 +41,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_world_spawn;
-
 /**
  * This power remaps most of the utility methods inside of Apoli(ModifyPlayerSpawn)
  */

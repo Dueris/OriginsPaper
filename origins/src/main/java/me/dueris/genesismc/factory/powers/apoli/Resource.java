@@ -101,7 +101,7 @@ public class Resource extends CraftPower implements Listener {
         cooldownBuilder.append("[");
         Cooldown.cooldowns.putIfAbsent(p, new ArrayList<>());
         for (Pair<KeyedBossBar, Power> barPair : Cooldown.cooldowns.get(p)) {
-            cooldownBuilder.append(barPair.left().getKey().asString() + "<::>" + Double.toString(barPair.left().getProgress()));
+            cooldownBuilder.append(barPair.left().getKey().asString() + "<::>" + barPair.left().getProgress());
             cooldownBuilder.append(",");
         }
         cooldownBuilder.append("]");
@@ -161,7 +161,7 @@ public class Resource extends CraftPower implements Listener {
             this.mappedProgress = this.currentProgress.intValue();
             this.renderedBar = Resource.createRender(title, formatForFirstRender(this.currentProgress), power, player);
             this.renderedBar.setVisible(true);
-            this.oneInc = (double) 1.0 / this.max;
+            this.oneInc = 1.0 / this.max;
             if (player != null) {
                 this.renderedBar.addPlayer(player);
             }
@@ -173,7 +173,6 @@ public class Resource extends CraftPower implements Listener {
             if (element.isJsonObject()) {
                 FactoryJsonObject hudRender = element.toJsonObject();
                 if (hudRender.isEmpty() || !hudRender.isPresent("sprite_location")) return BarColor.WHITE;
-                ;
                 TextureLocation loc = ((Registrar<TextureLocation>) GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION))
                     .get(DataConverter.resolveTextureLocationNamespace(hudRender.getNamespacedKey("sprite_location")));
                 long index = (hudRender.getNumberOrDefault("bar_index", 1).getLong()) + 1;
