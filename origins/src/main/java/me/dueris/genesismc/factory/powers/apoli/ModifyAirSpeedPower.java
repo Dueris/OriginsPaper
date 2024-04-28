@@ -16,7 +16,12 @@ public class ModifyAirSpeedPower extends CraftPower {
 
     public static void compute(Player p, Power power) {
         float b = base.containsKey(p) ? base.get(p) : p.getFlySpeed();
-        power.getModifiers().forEach(modifier -> p.setFlySpeed(Utils.getOperationMappingsFloat().get(modifier.operation()).apply(b, modifier.value())));
+        power.getModifiers().forEach(modifier -> {
+            float f = Utils.getOperationMappingsFloat().get(modifier.operation()).apply(b, modifier.value());
+            if (f < 0) f = 0;
+            if (f > 1) f = 1;
+            p.setFlySpeed(f);
+        });
         base.put(p, b);
     }
 
@@ -30,6 +35,14 @@ public class ModifyAirSpeedPower extends CraftPower {
             }
             setActive(p, power.getTag(), true);
             compute(p, power);
+        }
+    }
+
+    @Override
+    public void doesntHavePower(Player p) {
+        if (base.containsKey(p)) {
+            p.setFlySpeed(base.get(p));
+            base.remove(p);
         }
     }
 
