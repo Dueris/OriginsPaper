@@ -14,12 +14,14 @@ import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
@@ -35,6 +37,26 @@ public class EdibleItem extends CraftPower implements Listener {
         ItemStack itemStack = new ItemStack(MiscUtils.getBukkitMaterial(stack.getString("item")), amt);
         holder.getInventory().addItem(itemStack);
         if (runActionUpon) Actions.executeItem(itemStack, power.getJsonObject("result_item_action"));
+    }
+
+    @EventHandler
+    public void actions(PlayerItemConsumeEvent e) {
+        if (e.getItem() != null && getPlayersWithPower().contains(e.getPlayer())) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType())) {
+                if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) continue;
+                if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) continue;
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (power.isPresent("result_stack")) {
+                            runResultStack(power, power.isPresent("result_item_action"), e.getPlayer());
+                        }
+                        Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action"));
+                        Actions.executeItem(e.getItem(), power.getJsonObject("item_action"));
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 1);
+            }
+        }
     }
 
     @EventHandler
@@ -57,11 +79,6 @@ public class EdibleItem extends CraftPower implements Listener {
                     meta.getPersistentDataContainer().set(GenesisMC.apoliIdentifier("edible_item_modified"), PersistentDataType.BOOLEAN, true);
                     meta.setFood(food);
                     stack.setItemMeta(meta);
-                    Actions.executeEntity(p, power.getJsonObject("entity_action"));
-                    Actions.executeItem(stack, power.getJsonObject("item_action"));
-                    if (power.isPresent("result_stack")) {
-                        runResultStack(power, power.isPresent("result_item_action"), p);
-                    }
                 }
                 return;
             }

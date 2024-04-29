@@ -185,7 +185,7 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
             for (FactoryElement item : jsonArray.asList()) {
                 result.add(item);
             }
-        } else {
+        } else if (obj != null && obj.handle != null) {
             result.add(obj);
         }
         return result;
