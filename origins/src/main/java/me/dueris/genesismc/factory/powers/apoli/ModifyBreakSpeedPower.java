@@ -5,9 +5,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -34,7 +32,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
         if (getPlayersWithPower().contains(e.getPlayer())) {
             Player p = e.getPlayer();
             OriginPlayerAccessor.getMultiPowerFileFromType(p, getType()).forEach(power -> {
-                if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) || !ConditionExecutor.testBlock(power.getJsonObject("block_condition"), CraftBlock.at(((CraftWorld)e.getPlayer().getWorld()).getHandle(), CraftLocation.toBlockPosition(e.getBlock().getLocation())))) {
+                if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) || !ConditionExecutor.testBlock(power.getJsonObject("block_condition"), CraftBlock.at(((CraftWorld) e.getPlayer().getWorld()).getHandle(), CraftLocation.toBlockPosition(e.getBlock().getLocation())))) {
                     setActive(p, power.getTag(), false);
                     p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).setBaseValue(p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getDefaultValue());
                     return;

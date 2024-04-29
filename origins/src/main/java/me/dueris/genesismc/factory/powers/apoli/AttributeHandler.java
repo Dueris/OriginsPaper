@@ -10,7 +10,6 @@ import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.OriginPage;
 import me.dueris.genesismc.util.DataConverter;
-import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -23,7 +22,6 @@ import org.bukkit.event.player.PlayerEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.BinaryOperator;
 
 public class AttributeHandler extends CraftPower implements Listener {
     protected static HashMap<Player, List<Power>> appliedAttributes = new HashMap<>();

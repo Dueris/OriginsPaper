@@ -10,9 +10,7 @@ import me.dueris.genesismc.util.DataConverter;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,6 +26,18 @@ import static me.dueris.genesismc.factory.powers.apoli.AttributeHandler.appliedA
 public class AttributeConditioned extends CraftPower implements Listener {
 
     private static final HashMap<Player, Boolean> applied = new HashMap<>();
+
+    public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
+        BinaryOperator<Double> operator = Utils.getOperationMappingsDouble().get(operation);
+        if (operator != null) {
+            double result = Double.parseDouble(String.valueOf(operator.apply(base_value, value)));
+            p.getAttribute(attribute_modifier).setBaseValue(result);
+        } else {
+            Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
+            new Throwable().printStackTrace();
+        }
+        p.sendHealthUpdate();
+    }
 
     public void executeConditionAttribute(Player p) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
@@ -71,22 +81,9 @@ public class AttributeConditioned extends CraftPower implements Listener {
         }
     }
 
-
     @EventHandler
     public void join(PlayerJoinEvent e) {
         applied.put(e.getPlayer(), false);
-    }
-
-    public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
-        BinaryOperator<Double> operator = Utils.getOperationMappingsDouble().get(operation);
-        if (operator != null) {
-            double result = Double.parseDouble(String.valueOf(operator.apply(base_value, value)));
-            p.getAttribute(attribute_modifier).setBaseValue(result);
-        } else {
-            Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
-            new Throwable().printStackTrace();
-        }
-        p.sendHealthUpdate();
     }
 
     @Override

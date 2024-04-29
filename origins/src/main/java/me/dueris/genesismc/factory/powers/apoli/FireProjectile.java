@@ -1,7 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import com.mojang.brigadier.StringReader;
-import io.papermc.paper.util.MCUtil;
 import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
@@ -14,37 +12,27 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import net.minecraft.commands.CommandSource;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Entity.RemovalReason;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.level.levelgen.structure.pools.alias.Random;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.GameRule;
-import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftEntityType;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class FireProjectile extends CraftPower implements Listener {
 
@@ -128,7 +116,7 @@ public class FireProjectile extends CraftPower implements Listener {
 
                                 float finalDivergence = divergence;
                                 boolean cont = !power.getJsonObject("key").getBooleanOrDefault("continuous", false);
-                                ServerPlayer player = ((CraftPlayer)p).getHandle();
+                                ServerPlayer player = ((CraftPlayer) p).getHandle();
                                 new BukkitRunnable() {
                                     int shotsLeft = -amt;
 
@@ -174,16 +162,14 @@ public class FireProjectile extends CraftPower implements Listener {
                                                 projectileToSpawn.setOwner(player);
                                                 projectileToSpawn.shootFromRotation(player, pitch, yaw, 0F, speed, finalDivergence);
 
-                                            }
+                                            } else {
 
-                                            else {
-
-                                                float  f = 0.017453292F;
+                                                float f = 0.017453292F;
                                                 double g = 0.007499999832361937D;
 
                                                 float h = -Mth.sin(yaw * f) * Mth.cos(pitch * f);
                                                 float i = -Mth.sin(pitch * f);
-                                                float j =  Mth.cos(yaw * f) * Mth.cos(pitch * f);
+                                                float j = Mth.cos(yaw * f) * Mth.cos(pitch * f);
 
                                                 Vec3 vec3d = new Vec3(h, i, j)
                                                     .normalize()
