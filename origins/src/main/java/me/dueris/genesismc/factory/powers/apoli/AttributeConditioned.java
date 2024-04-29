@@ -34,14 +34,20 @@ public class AttributeConditioned extends CraftPower implements Listener {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                 if (power == null) continue;
                 for (Modifier modifier : power.getModifiers()) {
-                    if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) return;
                     Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
-                    AttributeModifier m = DataConverter.convertToAttributeModifier(modifier);
                     if (p.getAttribute(attributeModifier) != null && !appliedAttributes.get(p).contains(power)) {
-                        p.getAttribute(attributeModifier).addTransientModifier(m);
-                        appliedAttributes.get(p).add(power);
+                        double val = DataConverter.convertToAttributeModifier(modifier).getAmount();
+                        double baseVal = p.getAttribute(attributeModifier).getBaseValue();
+                        String operation = modifier.operation();
+                        BinaryOperator<Double> operator = Utils.getOperationMappingsDouble().get(operation);
+                        if (operator != null) {
+                            double result = Double.parseDouble(String.valueOf(operator.apply(baseVal, val)));
+                            p.getAttribute(attributeModifier).setBaseValue(result);
+                        } else {
+                            Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
+                            new Throwable().printStackTrace();
+                        }
                     }
-                    p.sendHealthUpdate();
                 }
             }
 
@@ -54,12 +60,11 @@ public class AttributeConditioned extends CraftPower implements Listener {
                 if (power == null) continue;
 
                 for (Modifier modifier : power.getModifiers()) {
-                    Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
-                    AttributeModifier m = DataConverter.convertToAttributeModifier(modifier);
-                    if (p.getAttribute(attributeModifier) != null && !appliedAttributes.get(p).contains(power)) {
-                        p.getAttribute(attributeModifier).addTransientModifier(m);
-                        appliedAttributes.get(p).add(power);
-                    }
+                    Attribute attribute_modifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
+                    double value = DataConverter.convertToAttributeModifier(modifier).getAmount();
+                    double base_value = p.getAttribute(attribute_modifier).getBaseValue();
+                    String operation = modifier.operation();
+                    executeAttributeModify(operation, attribute_modifier, base_value, p, -value);
                 }
             }
 
@@ -70,6 +75,18 @@ public class AttributeConditioned extends CraftPower implements Listener {
     @EventHandler
     public void join(PlayerJoinEvent e) {
         applied.put(e.getPlayer(), false);
+    }
+
+    public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
+        BinaryOperator<Double> operator = Utils.getOperationMappingsDouble().get(operation);
+        if (operator != null) {
+            double result = Double.parseDouble(String.valueOf(operator.apply(base_value, value)));
+            p.getAttribute(attribute_modifier).setBaseValue(result);
+        } else {
+            Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
+            new Throwable().printStackTrace();
+        }
+        p.sendHealthUpdate();
     }
 
     @Override
