@@ -44,7 +44,8 @@ public class EdibleItem extends CraftPower implements Listener {
         if (e.getItem() != null && getPlayersWithPower().contains(e.getPlayer())) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType())) {
                 if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) continue;
-                if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) continue;
+                if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
+                    continue;
                 new BukkitRunnable() {
                     @Override
                     public void run() {

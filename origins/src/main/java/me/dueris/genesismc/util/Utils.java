@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.util.MiscUtils;
-import me.dueris.calio.util.holders.TriPair;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.registries.Power;
 import net.minecraft.Util;
@@ -314,7 +313,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
         }
 
         if ((entityNbt == null || entityNbt.isEmpty()) && entityToSpawn instanceof Mob mobToSpawn) {
-            mobToSpawn.finalizeSpawn(serverWorld, serverWorld.	getCurrentDifficultyAt(BlockPos.containing(pos)), MobSpawnType.COMMAND, null);
+            mobToSpawn.finalizeSpawn(serverWorld, serverWorld.getCurrentDifficultyAt(BlockPos.containing(pos)), MobSpawnType.COMMAND, null);
         }
 
         return Optional.of(entityToSpawn);
