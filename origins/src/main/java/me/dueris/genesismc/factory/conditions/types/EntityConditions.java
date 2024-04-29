@@ -45,6 +45,7 @@ import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Scoreboard;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.block.CraftBlock;
@@ -472,10 +473,7 @@ public class EntityConditions {
             return false;
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block"), (condition, entity) -> {
-            if (entity.getLocation().getBlock().getType().isCollidable()) {
-                return !condition.isPresent("block_condition") || ConditionExecutor.testBlock(condition.getJsonObject("block_condition"), (CraftBlock) entity.getLocation().getBlock());
-            }
-            return false;
+            return ConditionExecutor.testBlock(condition.getJsonObject("block_condition"), CraftBlock.at(entity.getHandle().level(), CraftLocation.toBlockPosition(entity.getLocation())));
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block_anywhere"), (condition, entity) -> {
             int stopAt = -1;

@@ -18,6 +18,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -191,25 +192,19 @@ public class BlockConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("light_blocking"), (condition, block) -> !block.getType().isOccluding()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("light_level"), (condition, block) -> {
-            String lightType = condition.getString("light_type");
-            CraftBlock bl = block;
-            int level = 0;
-            switch (lightType) {
-                case "sky" -> {
-                    level = bl.getLightFromSky();
-                }
-                case "block" -> {
-                    level = bl.getLightFromBlocks();
-                }
-                default -> {
-                    level = bl.getLightLevel();
-                }
-            }
+            ServerLevel level = block.getHandle().getMinecraftWorld();
+            BlockPos pos = block.getPosition();
 
+            int lightLevel;
+
+            if (condition.isPresent("light_type")) {
+                lightLevel = level.getBrightness(condition.getEnumValue("light_type", LightLayer.class), pos);
+            } else {
+                lightLevel = level.getMaxLocalRawBrightness(pos);
+            }
             String comparison = condition.getString("comparison");
             float compare_to = condition.getNumber("compare_to").getFloat();
-            float bR = level;
-            return Comparison.fromString(comparison).compare(bR, compare_to);
+            return Comparison.fromString(comparison).compare(lightLevel, compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("slipperiness"), (condition, block) -> {
             String comparison = condition.getString("comparison");

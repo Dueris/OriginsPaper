@@ -215,6 +215,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 return new JSONObject(Map.of("key", "key.origins.secondary_active"));
             }
         });
+        // Our version of restricted_armor allows handling of both.
+        ObjectRemapper.typeAlias.put("apoli:conditioned_restrict_armor", "apoli:restrict_armor");
         ThreadFactory threadFactory = new NamedTickThreadFactory("OriginParsingPool");
         CraftPower.tryPreloadClass(AsyncTaskWorker.class); // Preload worker
         loaderThreadPool = Executors.newFixedThreadPool(CraftApoli.getDynamicThreadCount(), threadFactory);

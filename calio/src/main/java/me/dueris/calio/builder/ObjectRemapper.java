@@ -23,6 +23,10 @@ public class ObjectRemapper {
      * List<Pair<CURRENT -> REMAPPED>>
      */
     public static ArrayList<Pair<String, String>> typeMappings = new ArrayList<>();
+    /**
+     * Allows telling the remapper to swap out type values
+     */
+    public static final HashMap<String, String> typeAlias = new HashMap<>();
 
     /**
      * Creates a remapped JSON object by parsing the contents of the specified file and remapping the keys using the given current namespace.
@@ -76,7 +80,6 @@ public class ObjectRemapper {
                     for (Pair<Object, Object> objectMapping : objectMappings.get(key)) {
                         if (valueInst.equals(objectMapping.left())) {
                             objectReturnable.addProperty(key, objectMapping.right().toString());
-                            continue;
                         }
                     }
                 }
@@ -85,16 +88,22 @@ public class ObjectRemapper {
             if (valueInst.isJsonPrimitive() && valueInst.getAsJsonPrimitive().isString()) {
                 String g = valueInst.getAsJsonPrimitive().getAsString();
                 if (g.contains(":") && g.contains("*")) {
-                    objectReturnable.addProperty(key, NamespaceUtils.getDynamicNamespace(currentNamespace.asString(), g).asString());
-                    continue;
+                    g = NamespaceUtils.getDynamicNamespace(currentNamespace.asString(), g).asString();
                 }
 
                 for (Pair<String, String> pair : typeMappings) {
                     if (key.equalsIgnoreCase("type") && g.startsWith(pair.left())) {
-                        objectReturnable.addProperty(key, pair.right() + ":" + g.split(":")[1]);
-                        continue;
+                        g = pair.right() + ":" + g.split(":")[1];
                     }
                 }
+
+                if (key.equalsIgnoreCase("type")) {
+                    if (typeAlias.containsKey(g)) {
+                        g = typeAlias.get(g);
+                    }
+                }
+
+                objectReturnable.addProperty(key, g);
             } else if (valueInst.isJsonObject()) {
                 objectReturnable.add(key, remapJsonObject(valueInst.getAsJsonObject(), currentNamespace));
                 continue;
