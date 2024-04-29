@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -20,32 +21,37 @@ public class CreativeFlight extends CraftPower implements Listener {
 
     @Override
     public void run(Player p, Power power) {
-        if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN) != null && Boolean.TRUE.equals(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN))) {
+        GameMode m = p.getGameMode();
+        NamespacedKey insideBlock = new NamespacedKey(GenesisMC.getPlugin(), "insideBlock");
+        PersistentDataContainer container = p.getPersistentDataContainer();
+        if (container.get(insideBlock, PersistentDataType.BOOLEAN) != null && Boolean.TRUE.equals(container.get(insideBlock, PersistentDataType.BOOLEAN))) {
             if (p.getAllowFlight()) {
                 p.setFlying(true);
             }
         } else {
-            if (p.getGameMode().equals(GameMode.CREATIVE)) {
-                p.setAllowFlight(true);
+            if (creative_flight.contains(p) || OriginPlayerAccessor.isInPhantomForm(p)) {
+                if (!p.getAllowFlight()) p.setAllowFlight(true);
+                if (p.isFlying()) {
+                    p.setFlying(true);
+                }
             } else {
-                if (creative_flight.contains(p) || OriginPlayerAccessor.isInPhantomForm(p)) {
+                boolean a = m.equals(GameMode.SPECTATOR) || m.equals(GameMode.CREATIVE) || ElytraFlightPower.elytra.contains(p) || no_gravity.contains(p) || grounded.contains(p);
+                if (a && !p.getAllowFlight()) {
                     p.setAllowFlight(true);
-                    if (p.isFlying()) {
-                        p.setFlying(true);
-                    }
-                } else {
-                    p.setAllowFlight(p.getGameMode().equals(GameMode.SPECTATOR) || ElytraFlightPower.elytra.contains(p) || no_gravity.contains(p) || grounded.contains(p));
-                    if (ElytraFlightPower.elytra.contains(p)) {
-                        p.setFlying(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR));
-                    }
+                } else if (!a && p.getAllowFlight()) {
+                    p.setAllowFlight(false);
+                }
+
+                if (ElytraFlightPower.elytra.contains(p)) {
+                    p.setFlying(m.equals(GameMode.CREATIVE) || m.equals(GameMode.SPECTATOR));
                 }
             }
         }
         if (p.getChunk().isLoaded()) {
             if (Phasing.inPhantomFormBlocks.contains(p)) { // Intended only for phantom form
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
+                container.set(insideBlock, PersistentDataType.BOOLEAN, true);
             } else {
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
+                container.set(insideBlock, PersistentDataType.BOOLEAN, false);
             }
         }
     }
