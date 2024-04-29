@@ -6,27 +6,35 @@ import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.KeybindingUtils;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Entity.RemovalReason;
+import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.level.levelgen.structure.pools.alias.Random;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftEntityType;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -90,7 +98,6 @@ public class FireProjectile extends CraftPower implements Listener {
     @EventHandler
     public void keybindPress(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
-        ArrayList<Player> peopladf = new ArrayList<>();
         if (doubleFirePatch.contains(p)) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
@@ -101,7 +108,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                 int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
                                 String tag = power.getStringOrDefault("tag", "{}");
                                 float divergence = power.getNumberOrDefault("divergence", 1.0f).getFloat();
-                                float speed = power.getNumberOrDefault("speed", 1).getFloat();
+                                float speed = power.getNumberOrDefault("speed", 1.5F).getFloat();
                                 int amt = power.getNumberOrDefault("count", 1).getInt();
                                 int start_delay = power.getNumberOrDefault("start_delay", 0).getInt();
                                 int interval = power.getNumberOrDefault("interval", 1).getInt();
@@ -121,8 +128,8 @@ public class FireProjectile extends CraftPower implements Listener {
 
                                 float finalDivergence = divergence;
                                 boolean cont = !power.getJsonObject("key").getBooleanOrDefault("continuous", false);
+                                ServerPlayer player = ((CraftPlayer)p).getHandle();
                                 new BukkitRunnable() {
-                                    final float finalDivergence1 = finalDivergence;
                                     int shotsLeft = -amt;
 
                                     @Override
@@ -139,123 +146,74 @@ public class FireProjectile extends CraftPower implements Listener {
 
                                         if (type.getEntityClass() != null) {
                                             if (doubleFirePatch.contains(p)) return;
-                                            Entity entityToSpawn = ((CraftEntity) p.getWorld().spawnEntity(p.getEyeLocation(), type)).getHandle();
-                                            if (entityToSpawn.getBukkitEntity() instanceof Projectile proj) {
-                                                proj.getScoreboardTags().add("fired_from_fp_power_by_" + p.getUniqueId());
-                                                proj.setShooter(p);
-                                                proj.setHasBeenShot(true);
-                                                ((CraftEntity) proj).getHandle().saveWithoutId(new CompoundTag());
-                                                Vector direction = p.getEyeLocation().getDirection();
-                                                Vector dir = direction.clone().normalize().multiply(1);
-                                                Vec3 startPos = MCUtil.toVec3(p.getEyeLocation());
-                                                Vec3 endPos = startPos.add(dir.getX(), dir.getY(), dir.getZ());
-                                                entityToSpawn.getBukkitEntity().getLocation().setDirection(direction);
-                                                Location spawnLoc = CraftLocation.toBukkit(endPos);
 
-                                                entityToSpawn.getBukkitEntity().teleport(spawnLoc);
+                                            ServerLevel serverWorld = (ServerLevel) player.level();
+                                            float yaw = player.getYRot();
+                                            float pitch = player.getXRot();
 
-                                                double yawRadians = Math.toRadians(p.getEyeLocation().getYaw() + finalDivergence1);
+                                            Entity entityToSpawn = Utils
+                                                .getEntityWithPassengers(serverWorld, CraftEntityType.bukkitToMinecraft(type), MiscUtils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(tag), CompoundTag.CODEC), player.position().add(0, player.getEyeHeight(player.getPose()), 0), yaw, pitch)
+                                                .orElse(null);
 
-                                                double x = -Math.sin(yawRadians) * Math.cos(Math.toRadians(p.getEyeLocation().getPitch()));
-                                                double y = -Math.sin(Math.toRadians(p.getEyeLocation().getPitch()));
-                                                double z = Math.cos(yawRadians) * Math.cos(Math.toRadians(p.getEyeLocation().getPitch()));
-
-                                                direction.setX(x);
-                                                direction.setY(y);
-                                                direction.setZ(z);
-                                                Vector finalVeloc = direction.normalize().multiply(speed);
-
-                                                entityToSpawn.getBukkitEntity().setVelocity(finalVeloc);
-                                                CompoundTag mergedTag = entityToSpawn.saveWithoutId(new CompoundTag());
-                                                String[] finalNbtTag = {""};
-                                                if (power.getJsonObject("tag") != null) {
-                                                    finalNbtTag[0] = mergedTag.merge(MiscUtils.ParserUtils.parseJson(new StringReader(tag), CompoundTag.CODEC)).getAsString();
-                                                } else {
-                                                    finalNbtTag[0] = mergedTag.getAsString();
-                                                }
-
-                                                Pattern pattern = Pattern.compile("b,Motion:\\[(.*?)\\],OnGround");
-                                                Matcher matcher = pattern.matcher(finalNbtTag[0]);
-
-                                                String previousSetMotion = "";
-                                                if (matcher.find()) {
-                                                    previousSetMotion = matcher.group(1);
-                                                }
-                                                finalNbtTag[0].replace(previousSetMotion, finalVeloc.getX() + "," + finalVeloc.getY() + "," + finalVeloc.getZ());
-                                                entityToSpawn.remove(RemovalReason.DISCARDED);
-                                                final boolean returnToNormal = p.getWorld().getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK);
-                                                p.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
-                                                new BukkitRunnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        String cmd = "execute at {player} run summon {type} {loc} {nbt}"
-                                                            .replace("{player}", p.getName())
-                                                            .replace("{type}", type.key().asString())
-                                                            .replace("{loc}", "^ ^1 ^")
-                                                            .replace("{nbt}", finalNbtTag[0]);
-                                                        CommandSourceStack source = new CommandSourceStack(
-                                                            CommandSource.NULL,
-                                                            ((CraftPlayer) p).getHandle().position(),
-                                                            ((CraftPlayer) p).getHandle().getRotationVector(),
-                                                            ((CraftPlayer) p).getHandle().level() instanceof ServerLevel ? (ServerLevel) ((CraftPlayer) p).getHandle().level() : null,
-                                                            4,
-                                                            ((CraftPlayer) p).getHandle().getName().getString(),
-                                                            ((CraftPlayer) p).getHandle().getDisplayName(),
-                                                            ((CraftPlayer) p).getHandle().getServer(),
-                                                            ((CraftPlayer) p).getHandle());
-                                                        ((CraftPlayer) p).getHandle().getServer().getCommands().performPrefixedCommand(source, cmd);
-                                                        setActive(p, power.getTag(), true);
-                                                        new BukkitRunnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                p.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, returnToNormal);
-                                                            }
-                                                        }.runTaskLater(GenesisMC.getPlugin(), 1);
-                                                        doubleFirePatch.add(p);
-                                                        new BukkitRunnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                doubleFirePatch.remove(p);
-                                                            }
-                                                        }.runTaskLater(GenesisMC.getPlugin(), 5);
-
-                                                        org.bukkit.entity.Entity gottenEntity = null;
-                                                        for (org.bukkit.entity.Entity nearbyEntity : p.getNearbyEntities(1, 2, 1)) {
-                                                            if (nearbyEntity.getScoreboardTags().contains("fired_from_fp_power_by_" + p.getUniqueId())) {
-                                                                gottenEntity = nearbyEntity;
-                                                                break;
-                                                            }
-                                                        }
-
-                                                        if (gottenEntity == null) return;
-
-                                                        org.bukkit.entity.Entity finalEntity = p.getWorld().spawnEntity(spawnLoc, type);
-                                                        if (finalEntity instanceof Projectile proj) {
-                                                            proj.setShooter(p);
-                                                        }
-                                                        finalEntity.setCustomName(gottenEntity.getCustomName());
-                                                        finalEntity.setCustomNameVisible(gottenEntity.isCustomNameVisible());
-                                                        finalEntity.setFallDistance(gottenEntity.getFallDistance());
-                                                        finalEntity.setFireTicks(gottenEntity.getFireTicks());
-                                                        finalEntity.setFreezeTicks(gottenEntity.getFreezeTicks());
-                                                        finalEntity.setGlowing(gottenEntity.isGlowing());
-                                                        finalEntity.setGravity(gottenEntity.hasGravity());
-                                                        finalEntity.setInvulnerable(gottenEntity.isInvulnerable());
-                                                        finalEntity.setPassenger(gottenEntity.getPassenger());
-                                                        finalEntity.setOp(gottenEntity.isOp());
-                                                        finalEntity.setVelocity(gottenEntity.getVelocity());
-                                                        finalEntity.setSilent(gottenEntity.isSilent());
-                                                        if (((CraftEntity) gottenEntity).getHandle().getFirstPassenger() != null)
-                                                            ((CraftEntity) gottenEntity).getHandle().getFirstPassenger().remove(RemovalReason.DISCARDED);
-                                                        ((CraftEntity) gottenEntity).getHandle().remove(RemovalReason.DISCARDED);
-                                                        setActive(p, power.getTag(), true);
-
-                                                        peopladf.add(p);
-                                                    }
-                                                }.runTaskLater(GenesisMC.getPlugin(), 1);
+                                            if (entityToSpawn == null) {
+                                                return;
                                             }
 
-                                            shotsLeft++; // Decrement the remaining shots
+                                            Vec3 rotationVector = player.getLookAngle();
+                                            Vec3 velocity = player.getDeltaMovement();
+                                            RandomSource random = serverWorld.getRandom();
+
+                                            if (entityToSpawn instanceof Projectile projectileToSpawn) {
+
+                                                if (projectileToSpawn instanceof AbstractHurtingProjectile explosiveProjectileToSpawn) {
+                                                    explosiveProjectileToSpawn.xPower = rotationVector.x * speed;
+                                                    explosiveProjectileToSpawn.yPower = rotationVector.y * speed;
+                                                    explosiveProjectileToSpawn.zPower = rotationVector.z * speed;
+                                                }
+
+                                                projectileToSpawn.setOwner(player);
+                                                projectileToSpawn.shootFromRotation(player, pitch, yaw, 0F, speed, finalDivergence);
+
+                                            }
+
+                                            else {
+
+                                                float  f = 0.017453292F;
+                                                double g = 0.007499999832361937D;
+
+                                                float h = -Mth.sin(yaw * f) * Mth.cos(pitch * f);
+                                                float i = -Mth.sin(pitch * f);
+                                                float j =  Mth.cos(yaw * f) * Mth.cos(pitch * f);
+
+                                                Vec3 vec3d = new Vec3(h, i, j)
+                                                    .normalize()
+                                                    .add(random.nextGaussian() * g * finalDivergence, random.nextGaussian() * g * finalDivergence, random.nextGaussian() * g * finalDivergence)
+                                                    .scale(speed);
+
+                                                entityToSpawn.setDeltaMovement(vec3d);
+                                                entityToSpawn.setDeltaMovement(velocity.x, player.onGround() ? 0.0D : velocity.y, velocity.z);
+
+                                            }
+
+                                            if (MiscUtils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(tag), CompoundTag.CODEC).isEmpty()) {
+
+                                                CompoundTag mergedTag = entityToSpawn.saveWithoutId(new CompoundTag());
+                                                mergedTag.merge(MiscUtils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(tag), CompoundTag.CODEC));
+
+                                                entityToSpawn.load(mergedTag);
+
+                                            }
+
+                                            if (entityToSpawn.getBukkitEntity() instanceof org.bukkit.entity.Projectile proj) {
+                                                proj.setShooter(p);
+                                            }
+
+                                            serverWorld.tryAddFreshEntityWithPassengers(entityToSpawn);
+                                            org.bukkit.entity.Entity bukkit = entityToSpawn.getBukkitEntity();
+                                            Actions.executeEntity(bukkit, power.getJsonObject("projectile_action"));
+                                            Actions.executeEntity(p, power.getJsonObject("shooter_action"));
+
+                                            shotsLeft++;
                                         }
                                     }
                                 }.runTaskTimer(GenesisMC.getPlugin(), start_delay, interval);

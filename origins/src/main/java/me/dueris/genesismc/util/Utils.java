@@ -13,19 +13,25 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -40,6 +46,7 @@ import org.bukkit.craftbukkit.potion.CraftPotionUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.components.FoodComponent;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.net.URL;
@@ -275,6 +282,43 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
     public static <T> Optional<T> createIfPresent(T instance) {
         if (instance != null) return Optional.of(instance);
         return Optional.empty();
+    }
+
+    public static Optional<Entity> getEntityWithPassengers(Level world, EntityType<?> entityType, @Nullable CompoundTag entityNbt, Vec3 pos, float yaw, float pitch) {
+        return getEntityWithPassengers(world, entityType, entityNbt, pos, Optional.of(yaw), Optional.of(pitch));
+    }
+
+    public static Optional<Entity> getEntityWithPassengers(Level world, EntityType<?> entityType, @Nullable CompoundTag entityNbt, Vec3 pos, Optional<Float> yaw, Optional<Float> pitch) {
+
+        if (!(world instanceof ServerLevel serverWorld)) {
+            return Optional.empty();
+        }
+
+        CompoundTag entityToSpawnNbt = new CompoundTag();
+        if (entityNbt != null && !entityNbt.isEmpty()) {
+            entityToSpawnNbt.merge(entityNbt);
+        }
+
+        entityToSpawnNbt.putString("id", BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString());
+        Entity entityToSpawn = EntityType.loadEntityRecursive(
+            entityToSpawnNbt,
+            serverWorld,
+            entity -> {
+                entity.moveTo(pos.x, pos.y, pos.z, yaw.orElse(entity.getYRot()), pitch.orElse(entity.getXRot()));
+                return entity;
+            }
+        );
+
+        if (entityToSpawn == null) {
+            return Optional.empty();
+        }
+
+        if ((entityNbt == null || entityNbt.isEmpty()) && entityToSpawn instanceof Mob mobToSpawn) {
+            mobToSpawn.finalizeSpawn(serverWorld, serverWorld.	getCurrentDifficultyAt(BlockPos.containing(pos)), MobSpawnType.COMMAND, null);
+        }
+
+        return Optional.of(entityToSpawn);
+
     }
 
     public static void unzip(String zipFilePath, String destDirectory) {
