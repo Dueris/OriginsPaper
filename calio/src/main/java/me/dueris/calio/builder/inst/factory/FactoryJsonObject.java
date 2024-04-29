@@ -64,6 +64,7 @@ public class FactoryJsonObject {
     }
 
     public <T extends Enum<T>> T getEnumValueOrDefault(String key, Class<T> enumClass, T def) {
+        if (!this.handle.has(key)) return def;
         String value = this.handle.get(key).getAsString().toLowerCase();
         return getEV(enumClass, value, def);
     }
