@@ -6,18 +6,18 @@ import kotlin.io.path.isDirectory
 plugins {
     `java-library`
     `maven-publish`
-    id("io.papermc.paperweight.userdev") version "1.6.0" apply true
+    id("io.papermc.paperweight.userdev") version "1.6.3" apply true
     id("xyz.jpenilla.run-paper") version "2.2.3"
-    id("com.github.johnrengelman.shadow") version "7.1.2" apply true
+    id("io.github.goooler.shadow") version "8.1.7" apply true
 }
 
-val paperweightVersion: String = "1.20.5-R0.1-SNAPSHOT"
+val paperweightVersion: String = "1.20.6-R0.1-SNAPSHOT"
 
 allprojects {
     apply(plugin = "java")
     apply(plugin = "maven-publish")
     apply(plugin = "io.papermc.paperweight.userdev")
-    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "io.github.goooler.shadow")
     paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
     java {
@@ -70,7 +70,7 @@ tasks {
         }
     }
     runServer {
-        minecraftVersion("1.20.5")
+        minecraftVersion("1.20.6")
     }
 }
 
