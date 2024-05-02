@@ -69,9 +69,7 @@ public class GravityPower extends CraftPower implements Listener {
                 public void run() {
                     if (e.getPlayer().isFlying()) return;
                     if (e.getPlayer().isSneaking()) {
-                        if (e.getPlayer().getVelocity().getY() < -0.2) {
-                            //nah
-                        } else {
+                        if (!(e.getPlayer().getVelocity().getY() < -0.2)) {
                             e.getPlayer().setVelocity(new Vector(e.getPlayer().getVelocity().getX(), e.getPlayer().getVelocity().getY() - 0.1, e.getPlayer().getVelocity().getZ()));
                         }
                     } else {
