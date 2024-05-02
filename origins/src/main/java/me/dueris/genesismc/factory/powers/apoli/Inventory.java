@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
+import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.ContainerType;
@@ -31,38 +32,21 @@ import java.util.Objects;
 public class Inventory extends CraftPower implements Listener {
 
     @EventHandler
-    public void MoveBackChange(OriginChangeEvent e) {
+    public void MoveBackChange(PowerUpdateEvent e) {
+        if (!e.isRemoved()) return;
+        Power power = e.getPower();
         Player p = e.getPlayer();
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (!shulker_inventory.contains(p)) {
-                            ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(p, power.getTag());
-                            org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
-
-                            vaultItems.forEach(vault::addItem);
-                            for (ItemStack item : vault.getContents()) {
-                                if (item != null && item.getType() != Material.AIR) {
-                                    p.getWorld().dropItemNaturally(p.getLocation(), item);
-                                    vault.removeItem(item);
-                                }
-                            }
-                            ArrayList<ItemStack> prunedItems = new ArrayList<>();
-
-                            Arrays.stream(vault.getContents())
-                                .filter(Objects::nonNull)
-                                .forEach(prunedItems::add);
-
-                            InventorySerializer.storeItems(prunedItems, p, power.getTag());
-                            vault.clear();
-                            this.cancel();
-                        }
-                    }
-                }.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
+        GenesisMC.scheduler.parent.onMain(() -> {
+            ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(p, power.getTag());
+            for (ItemStack item : new ArrayList<>(vaultItems)) {
+                if (item != null && item.getType() != Material.AIR) {
+                    p.getWorld().dropItemNaturally(p.getLocation(), item);
+                    vaultItems.remove(item);
+                }
             }
-        }
+
+            InventorySerializer.storeItems(new ArrayList<>(), p, power.getTag());
+        });
     }
 
     @EventHandler
@@ -75,7 +59,7 @@ public class Inventory extends CraftPower implements Listener {
                         setActive(e.getPlayer(), power.getTag(), true);
                         if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), e.getPlayer())) {
                             ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(e.getPlayer(), power.getTag());
-                            org.bukkit.inventory.Inventory vault = power.getEnumValueOrDefault("container_type", ContainerType.class, ContainerType.DROPPER).createInventory(e.getPlayer(), Utils.createIfPresent(power.getString("title")));
+                            org.bukkit.inventory.Inventory vault = power.getEnumValueOrDefault("container_type", ContainerType.class, ContainerType.DROPPER).createInventory(e.getPlayer(), Utils.createIfPresent(power.getStringOrDefault("title", "container.inventory")));
                             vaultItems.forEach(vault::addItem);
                             e.getPlayer().openInventory(vault);
                         }
@@ -94,28 +78,23 @@ public class Inventory extends CraftPower implements Listener {
                 Player p = e.getPlayer();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
                     if (power.getBooleanOrDefault("drop_on_death", false)) {
-                        ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(p, power.getTag());
-                        org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
-
-                        vaultItems.forEach(vault::addItem);
-                        for (ItemStack item : vault.getContents()) {
-                            if (item != null && item.getType() != Material.AIR) {
-                                p.getWorld().dropItemNaturally(p.getLocation(), item);
-                                vault.removeItem(item);
-                            }
-                        }
-                        ArrayList<ItemStack> prunedItems = new ArrayList<>();
-
-                        Arrays.stream(vault.getContents())
-                            .filter(Objects::nonNull)
-                            .forEach(prunedItems::add);
-
-                        InventorySerializer.storeItems(prunedItems, p, power.getTag());
-                        vault.clear();
+                        dropItems(power, e.getPlayer());
                     }
                 }
             }
         }
+    }
+
+    private void dropItems(Power power, Player p) {
+        ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(p, power.getTag());
+        for (ItemStack item : new ArrayList<>(vaultItems)) {
+            if (item != null && item.getType() != Material.AIR && ConditionExecutor.testItem(power.getJsonObject("drop_on_death_filter"), item)) {
+                p.getWorld().dropItemNaturally(p.getLocation(), item);
+                vaultItems.remove(item);
+            }
+        }
+
+        InventorySerializer.storeItems(vaultItems, p, power.getTag());
     }
 
     @Override
