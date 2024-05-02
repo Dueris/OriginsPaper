@@ -114,7 +114,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
         return ret;
     }
 
-    public static FoodComponent parseProperties(FactoryJsonObject jsonObject) {
+    public static CraftFoodComponent parseProperties(FactoryJsonObject jsonObject) {
         FoodProperties.Builder builder = new FoodProperties.Builder();
         Utils.computeIfObjectPresent("hunger", jsonObject, value -> builder.nutrition(value.getNumber().getInt()));
         Utils.computeIfObjectPresent("saturation", jsonObject, value -> builder.saturationModifier(value.getNumber().getFloat()));
