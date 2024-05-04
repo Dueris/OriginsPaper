@@ -24,7 +24,7 @@ public class RestrictArmor extends CraftPower implements Listener {
         Player p = e.getPlayer();
         if (getPlayersWithPower().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                     if (power == null) continue;
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         runPower(p, power);

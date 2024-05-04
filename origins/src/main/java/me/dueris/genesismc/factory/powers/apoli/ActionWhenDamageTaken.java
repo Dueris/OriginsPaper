@@ -26,7 +26,7 @@ public class ActionWhenDamageTaken extends CraftPower implements Listener {
         Entity actor = e.getEntity();
         if (!(actor instanceof Player player)) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
                 if (power == null) continue;
                 if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) actor)) return;
                 if (!ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) return;

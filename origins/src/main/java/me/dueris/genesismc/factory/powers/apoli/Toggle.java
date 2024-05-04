@@ -29,7 +29,7 @@ public class Toggle extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (getPlayersWithPower().contains(p)) {
                 in_continuous.putIfAbsent(p, new ArrayList<>());
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                     if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
                         if (true /* Toggle power always execute continuously */) {
                             if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"))) {
@@ -61,7 +61,7 @@ public class Toggle extends CraftPower implements Listener {
     public void keybindPress(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                 if (getPlayersWithPower().contains(p)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (!Cooldown.isInCooldown(p, power)) {

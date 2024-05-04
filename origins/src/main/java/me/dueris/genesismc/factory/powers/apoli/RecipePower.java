@@ -119,7 +119,7 @@ public class RecipePower extends CraftPower implements Listener {
         }
         if (getPlayersWithPower().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                     FactoryJsonObject recipe = power.getJsonObject("recipe");
                     String id = recipe.getString("id");
                     if (taggedRegistry.containsKey(id)) {

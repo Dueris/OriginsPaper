@@ -28,7 +28,7 @@ public class AttackerActionWhenHit extends CraftPower implements Listener {
         if (!getPlayersWithPower().contains(actor)) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
                 if (power == null) continue;
                 if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) actor)) return;
 

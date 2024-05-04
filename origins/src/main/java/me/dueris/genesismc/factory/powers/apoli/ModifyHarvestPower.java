@@ -26,7 +26,7 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
         if (modify_harvest.contains(p)) {
             if (p.getGameMode().equals(GameMode.CREATIVE)) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         if (e.isCancelled()) return;

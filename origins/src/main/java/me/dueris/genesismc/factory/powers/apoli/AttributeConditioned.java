@@ -41,7 +41,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
 
     public void executeConditionAttribute(Player p) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                 if (power == null) continue;
                 for (Modifier modifier : power.getModifiers()) {
                     Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
@@ -66,7 +66,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
 
     public void inverseConditionAttribute(Player p) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                 if (power == null) continue;
 
                 for (Modifier modifier : power.getModifiers()) {

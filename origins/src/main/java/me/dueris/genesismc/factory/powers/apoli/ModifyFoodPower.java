@@ -33,7 +33,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
         Player player = e.getPlayer();
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (modify_food.contains(player)) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
                         if (power.isPresent("food_modifier")) {
                             for (FactoryJsonObject jsonObject : power.getList$SingularPlural("food_modifier", "food_modifiers").stream().map(FactoryElement::toJsonObject).toList()) {

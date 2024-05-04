@@ -134,7 +134,7 @@ public class InventorySerializer implements Listener {
         Player p = (Player) e.getPlayer();
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, "apoli:inventory", layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(p, "apoli:inventory", layer)) {
                 if (matches(e.getView(), power)) {
                     ArrayList<ItemStack> prunedItems = new ArrayList<>();
 

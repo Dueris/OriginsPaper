@@ -43,7 +43,7 @@ public class Grounded extends CraftPower implements Listener {
     public void doubleJump(PlayerToggleFlightEvent e) {
         Player p = e.getPlayer();
         if (!getPlayersWithPower().contains(p) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
-        for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType())) {
+        for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
             if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                 e.setCancelled(true);
                 p.setFlying(false);
@@ -90,7 +90,7 @@ public class Grounded extends CraftPower implements Listener {
         if (!(e.getEntity() instanceof Player p)) return;
         if (!getPlayersWithPower().contains(p) || !(e.getCause().equals(EntityDamageEvent.DamageCause.FALL) && !e.isCancelled()))
             return;
-        for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType())) {
+        for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
             if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                 e.setCancelled(true);
             }

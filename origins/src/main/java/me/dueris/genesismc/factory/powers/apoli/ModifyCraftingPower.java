@@ -24,7 +24,7 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
             if (e.getRecipe() == null) return;
             if (e.getInventory().getResult() == null) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         String currKey = RecipePower.computeTag(e.getRecipe());
                         if (currKey == null) continue;

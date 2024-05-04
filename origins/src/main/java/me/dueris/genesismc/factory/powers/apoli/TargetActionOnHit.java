@@ -29,7 +29,7 @@ public class TargetActionOnHit extends CraftPower implements Listener {
         if (!getPlayersWithPower().contains(actor)) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
                 if (Cooldown.isInCooldown(player, power)) continue;
                 new BukkitRunnable() {
                     @Override

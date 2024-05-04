@@ -28,7 +28,7 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
         if (!getPlayersWithPower().contains(player)) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
                 if (!(ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) actor, (CraftEntity) target) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), actor.getInventory().getItem(e.getHand()))))
                     return;
 

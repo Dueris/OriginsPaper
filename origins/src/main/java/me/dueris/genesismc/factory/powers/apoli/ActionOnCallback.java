@@ -28,7 +28,7 @@ public class ActionOnCallback extends CraftPower implements Listener {
         if (!getPlayersWithPower().contains(actor)) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(actor, getType(), layer)) {
                 if (power == null) continue;
                 if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
                     return;
@@ -51,7 +51,7 @@ public class ActionOnCallback extends CraftPower implements Listener {
         Player player = e.getPlayer();
         if (!getPlayersWithPower().contains(player)) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
                 if (e.isRemoved()) {
                     Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action_removed"));
                 } else {
@@ -66,7 +66,7 @@ public class ActionOnCallback extends CraftPower implements Listener {
         Player player = e.getPlayer();
         if (!getPlayersWithPower().contains(player)) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
                 Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action_respawned"));
             }
         }

@@ -54,7 +54,7 @@ public class StackingStatusEffect extends CraftPower implements Listener {
     public void runExecution(Player p) {
         if (getPlayersWithPower().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         applyStackingEffect(p, power);

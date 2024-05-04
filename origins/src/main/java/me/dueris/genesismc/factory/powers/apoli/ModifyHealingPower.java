@@ -24,7 +24,7 @@ public class ModifyHealingPower extends CraftPower implements Listener {
         if (e.getEntity() instanceof Player p) {
             if (!modify_healing.contains(p)) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                     for (Modifier modifier : power.getModifiers()) {
                         Float value = modifier.value();
                         String operation = modifier.operation();

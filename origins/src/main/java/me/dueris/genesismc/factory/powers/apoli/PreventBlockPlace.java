@@ -24,7 +24,7 @@ public class PreventBlockPlace extends CraftPower implements Listener {
     public void blockBreak(BlockPlaceEvent e) {
         if (prevent_block_place.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
                     if (!(ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItemInHand()) && ConditionExecutor.testBlock(power.getJsonObject("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock(power.getJsonObject("place_on_condition"), (CraftBlock) e.getBlockAgainst())))
                         return;
                     e.setCancelled(true);

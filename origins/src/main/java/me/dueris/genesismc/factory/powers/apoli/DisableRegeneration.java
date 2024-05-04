@@ -21,7 +21,7 @@ public class DisableRegeneration extends CraftPower implements Listener {
         if (e.getEntity() instanceof Player p) {
             if (disable_regen.contains(p)) {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                    for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
                             if (e.getRegainReason().equals(EntityRegainHealthEvent.RegainReason.SATIATED)) {

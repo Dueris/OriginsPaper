@@ -47,7 +47,7 @@ public class Inventory extends CraftPower implements Listener {
     public void keytrigger(KeybindTriggerEvent e) {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (getPlayersWithPower().contains(e.getPlayer())) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
                     if (Cooldown.isInCooldown(e.getPlayer(), power)) continue;
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
@@ -70,7 +70,7 @@ public class Inventory extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (shulker_inventory.contains(e.getPlayer())) {
                 Player p = e.getPlayer();
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                     if (power.getBooleanOrDefault("drop_on_death", false)) {
                         dropItems(power, e.getPlayer());
                     }

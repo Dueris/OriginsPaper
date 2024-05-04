@@ -26,7 +26,7 @@ public class ActionOnItemUse extends CraftPower implements Listener {
         if (!e.getAction().isRightClick()) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
                 if (power == null) continue;
                 if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) return;
                 if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) return;

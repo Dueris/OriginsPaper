@@ -28,7 +28,7 @@ public class ModifyDamageDealtPower extends CraftPower implements Listener {
         if (e.getDamager() instanceof Player p && modify_damage_dealt.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 try {
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                    for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                         if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) continue;
                         if (!ConditionExecutor.testEntity(power.getJsonObject("target_condition"), (CraftEntity) e.getEntity()))
                             continue;

@@ -25,7 +25,7 @@ public class ItemOnItemPower extends CraftPower implements Listener {
             if (p.getGameMode().equals(GameMode.CREATIVE)) return;
             if (this.getPlayersWithPower().contains(p)) {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                    for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                         boolean pass =
                                 ConditionExecutor.testItem(power.getJsonObject("using_item_condition"), e.getCursor()) &&
                                         ConditionExecutor.testItem(power.getJsonObject("on_item_condition"), e.getCurrentItem());

@@ -121,7 +121,7 @@ public class OriginPlayerAccessor implements Listener {
         playerPowerMapping.put(p, map);
     }
 
-    public static ArrayList<Power> getMultiPowerFileFromType(Player p, String powerType) {
+    public static ArrayList<Power> getPowers(Player p, String powerType) {
         ArrayList<Power> powers = new ArrayList<>();
         if (playerPowerMapping.get(p) == null) return powers;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
@@ -134,7 +134,7 @@ public class OriginPlayerAccessor implements Listener {
         return powers;
     }
 
-    public static ArrayList<Power> getMultiPowerFileFromType(Player p, String powerType, Layer layer) {
+    public static ArrayList<Power> getPowers(Player p, String powerType, Layer layer) {
         ArrayList<Power> powers = new ArrayList<>();
         if (playerPowerMapping.get(p) == null) return powers;
         for (Power power : playerPowerMapping.get(p).get(layer)) {

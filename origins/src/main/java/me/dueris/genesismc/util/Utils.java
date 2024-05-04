@@ -242,6 +242,35 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
         return lC;
     }
 
+    public static int[] missingNumbers(Integer[] array, int minRange, int maxRange) {
+        boolean[] found = new boolean[maxRange - minRange + 1];
+        int missingCount = 0;
+        for (int num : array) {
+            int adjustedIndex = num - minRange;
+            if (adjustedIndex >= 0 && adjustedIndex < found.length) {
+                found[adjustedIndex] = true;
+            }
+        }
+
+        for (boolean val : found) {
+            if (!val) {
+                missingCount++;
+            }
+        }
+
+        int[] missingNumbers = new int[missingCount];
+        int index = 0;
+        for (int i = minRange; i <= maxRange; i++) {
+            int adjustedIndex = i - minRange;
+            if (adjustedIndex >= 0 && adjustedIndex < found.length && !found[adjustedIndex]) {
+                missingNumbers[index++] = i;
+            }
+        }
+
+        return missingNumbers;
+    }
+
+
     private static String getFileNameFromUrl(String fileUrl) {
         String[] segments = fileUrl.split("/");
         return segments[segments.length - 1];

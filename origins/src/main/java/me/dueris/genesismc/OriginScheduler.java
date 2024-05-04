@@ -69,7 +69,7 @@ public class OriginScheduler {
                     tickedPowers.get(p).add(c);
                     activePowerRunners.add(c);
 
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, c.getType())) {
+                    for (Power power : OriginPlayerAccessor.getPowers(p, c.getType())) {
                         try {
                             c.run(p, power);
                         } catch (Throwable throwable) {

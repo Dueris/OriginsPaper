@@ -26,7 +26,7 @@ public class ActionOnHit extends CraftPower implements Listener {
             Entity target = e.getEntity();
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 if (getPlayersWithPower().contains(p)) {
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                    for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                         if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p))
                             return;
                         if (!ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) return;

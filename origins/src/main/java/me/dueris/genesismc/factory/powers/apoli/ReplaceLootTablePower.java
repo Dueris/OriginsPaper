@@ -36,7 +36,7 @@ public class ReplaceLootTablePower extends CraftPower implements Listener {
     @EventHandler
     public void inventoryPopulate(LootGenerateEvent e) {
         if (getPlayersWithPower().contains(e.getEntity())) {
-            OriginPlayerAccessor.getMultiPowerFileFromType((Player) e.getEntity(), getType()).forEach(power -> modifyLoot(e.getLoot(), power, e.getLootTable().getKey(), e.getWorld(), e.getEntity().getLocation()));
+            OriginPlayerAccessor.getPowers((Player) e.getEntity(), getType()).forEach(power -> modifyLoot(e.getLoot(), power, e.getLootTable().getKey(), e.getWorld(), e.getEntity().getLocation()));
         }
     }
 
@@ -47,7 +47,7 @@ public class ReplaceLootTablePower extends CraftPower implements Listener {
             String key = "minecraft:entities/" + e.getEntityType().getKey().getKey();
             if (Bukkit.getLootTable(NamespacedKey.fromString(key)) != null) {
                 if (getPlayersWithPower().contains(p)) {
-                    OriginPlayerAccessor.getMultiPowerFileFromType(p, getType()).forEach(power -> modifyLoot(e.getDrops(), power, NamespacedKey.fromString(key), e.getEntity().getWorld(), e.getEntity().getLocation()));
+                    OriginPlayerAccessor.getPowers(p, getType()).forEach(power -> modifyLoot(e.getDrops(), power, NamespacedKey.fromString(key), e.getEntity().getWorld(), e.getEntity().getLocation()));
                 }
             }
         }
@@ -58,7 +58,7 @@ public class ReplaceLootTablePower extends CraftPower implements Listener {
         if (getPlayersWithPower().contains(e.getPlayer())) {
             String formattedKey = "minecraft:blocks/" + e.getBlockState().getType().getKey().getKey();
             List<ItemStack> drops = new ArrayList<>();
-            OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType())
+            OriginPlayerAccessor.getPowers(e.getPlayer(), getType())
                     .forEach(power -> drops.addAll(modifyLoot(new ArrayList<>(e.getBlockState().getDrops()), power, NamespacedKey.fromString(formattedKey), e.getBlock().getWorld(), e.getBlock().getLocation())));
             if (!drops.isEmpty()) {
                 e.setCancelled(true); // Genesis overrides the drops because the loottable returned was not empty

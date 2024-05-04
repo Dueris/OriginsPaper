@@ -21,7 +21,7 @@ public class ActionOnWakeUp extends CraftPower implements Listener {
     public void w(PlayerBedLeaveEvent e) {
         if (!getPlayersWithPower().contains(e.getPlayer())) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
                 if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
                     return;
                 setActive(e.getPlayer(), power.getTag(), true);

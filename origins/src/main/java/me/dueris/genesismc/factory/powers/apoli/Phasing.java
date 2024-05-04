@@ -133,7 +133,7 @@ public class Phasing extends CraftPower implements Listener {
                     if (getPlayersWithPower().contains(e.getPlayer())) {
                         Player p = e.getPlayer();
                         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                            for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                                 if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                                     if (ConditionExecutor.testBlock(power.getJsonObject("phase_down_condition"), (CraftBlock) p.getLocation().add(0, -1, 0).getBlock())) {
                                         p.teleportAsync(p.getLocation().add(0, -0.1, 0));

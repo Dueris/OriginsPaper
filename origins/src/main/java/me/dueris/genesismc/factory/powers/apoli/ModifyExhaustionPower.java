@@ -24,7 +24,7 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
         Player p = (Player) e.getEntity();
         if (modify_exhaustion.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         for (Modifier modifier : power.getModifiers()) {
                             Float value = modifier.value();

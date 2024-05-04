@@ -26,7 +26,7 @@ public class ActionOnLand extends CraftPower implements Listener {
         if (!(e.getEntity() instanceof Player player)) return;
         if (!getPlayersWithPower().contains(player)) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
                 if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) return;
                 setActive(player, power.getTag(), true);
                 Actions.executeEntity(player, power.getJsonObject("entity_action"));

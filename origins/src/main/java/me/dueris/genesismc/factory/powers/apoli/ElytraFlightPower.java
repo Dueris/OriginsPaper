@@ -60,7 +60,7 @@ public class ElytraFlightPower extends CraftPower implements Listener {
             e.setCancelled(true);
             p.setFlying(false);
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         if (!p.isGliding() && !p.getLocation().add(0, 1, 0).getBlock().isCollidable()) {

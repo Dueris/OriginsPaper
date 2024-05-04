@@ -22,7 +22,7 @@ public class PreventDeath extends CraftPower implements Listener {
     public void run(PlayerDeathEvent e) {
         if (prevent_death.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e.getEntity().getLastDamageCause())) {
                         e.setCancelled(true);
                         if (!getPlayersWithPower().contains(e.getPlayer())) return;

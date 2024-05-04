@@ -83,7 +83,7 @@ public class EntitySetPower extends CraftPower implements Listener {
                 }
             }
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
                     addToEntitySet(e.getPlayer(), power.getTag());
                 }
             }
@@ -97,7 +97,7 @@ public class EntitySetPower extends CraftPower implements Listener {
             if (entity instanceof Player p) {
                 if (entity_set.contains(p)) {
                     for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                        for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                        for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                             if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p))
                                 return;
                             if (power.getJsonObject("action_on_add") == null) return;
@@ -118,7 +118,7 @@ public class EntitySetPower extends CraftPower implements Listener {
             if (entity instanceof Player p) {
                 if (entity_set.contains(p)) {
                     for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                        for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                        for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                             if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p))
                                 return;
                             if (power.getJsonObject("action_on_add") == null) return;
@@ -141,7 +141,7 @@ public class EntitySetPower extends CraftPower implements Listener {
                 }
             }
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
                     if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
                         return;
                     addToEntitySet(e.getPlayer(), power.getTag());

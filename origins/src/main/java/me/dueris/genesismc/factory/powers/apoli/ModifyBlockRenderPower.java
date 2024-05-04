@@ -34,7 +34,7 @@ public class ModifyBlockRenderPower extends CraftPower implements Listener {
         if (!getPlayersWithPower().contains(p)) return;
         final ChunkManagerWorld worldChunkAccessor = new ChunkManagerWorld(e.getWorld());
         ServerLevel level = ((CraftWorld) e.getWorld()).getHandle();
-        for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType())) {
+        for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
             que.add(() -> {
                 Map<Position, BlockData> updates = new ConcurrentHashMap<>();
                 BlockData toSend = power.getMaterial("block").createBlockData();

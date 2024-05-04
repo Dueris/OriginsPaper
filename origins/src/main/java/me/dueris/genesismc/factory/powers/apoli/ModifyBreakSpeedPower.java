@@ -31,7 +31,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
     public void swing(BlockDamageEvent e) {
         if (getPlayersWithPower().contains(e.getPlayer())) {
             Player p = e.getPlayer();
-            OriginPlayerAccessor.getMultiPowerFileFromType(p, getType()).forEach(power -> {
+            OriginPlayerAccessor.getPowers(p, getType()).forEach(power -> {
                 if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) || !ConditionExecutor.testBlock(power.getJsonObject("block_condition"), CraftBlock.at(((CraftWorld) e.getPlayer().getWorld()).getHandle(), CraftLocation.toBlockPosition(e.getBlock().getLocation())))) {
                     setActive(p, power.getTag(), false);
                     p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).setBaseValue(p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getDefaultValue());

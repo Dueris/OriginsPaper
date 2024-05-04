@@ -23,7 +23,7 @@ public class PreventItemUse extends CraftPower implements Listener {
             if (e.getItem() == null) return;
 
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
                     if (power == null) {
                         getPlayersWithPower().remove(e.getPlayer());
                         return;

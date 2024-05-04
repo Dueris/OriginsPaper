@@ -78,7 +78,7 @@ public class ClimbingPower extends CraftPower implements Listener {
         Player p = e.getPlayer();
         if (climbing.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                     if (power.getBooleanOrDefault("allow_holding", true)) {
                         final Location[] location = {p.getLocation()};
                         if (e.isSneaking() && getActiveClimbingMap().contains(p)) {

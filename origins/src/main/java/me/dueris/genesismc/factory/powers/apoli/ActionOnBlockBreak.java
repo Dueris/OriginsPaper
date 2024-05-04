@@ -33,7 +33,7 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
         if (!getPlayersWithPower().contains(actor)) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power powerContainer : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getType(), layer)) {
+            for (Power powerContainer : OriginPlayerAccessor.getPowers(actor, getType(), layer)) {
                 if (powerContainer == null) continue;
                 if (!(ConditionExecutor.testBlock(powerContainer.getJsonObject("block_condition"), (CraftBlock) e.getBlock()) && ConditionExecutor.testEntity(powerContainer.getJsonObject("condition"), (CraftEntity) e.getPlayer())))
                     return;

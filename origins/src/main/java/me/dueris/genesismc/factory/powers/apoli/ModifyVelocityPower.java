@@ -29,7 +29,7 @@ public class ModifyVelocityPower extends CraftPower implements Listener {
         if (getPlayersWithPower().contains(e.getPlayer())) {
             Player p = e.getPlayer();
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         List<String> identifiers = new ArrayList<>(power.getJsonArray("axes").asList().stream().map(FactoryElement::getString).toList());
                         if (identifiers.isEmpty()) {

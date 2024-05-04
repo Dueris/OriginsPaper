@@ -66,7 +66,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
             e.getPlayer().teleport(e.getPlayer().getBedSpawnLocation());
         } else {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
                     this.teleportToModifiedSpawn(((CraftPlayer) e.getPlayer()).getHandle(), power);
                 }
             }

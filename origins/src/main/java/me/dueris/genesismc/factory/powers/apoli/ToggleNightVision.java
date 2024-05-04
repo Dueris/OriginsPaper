@@ -59,7 +59,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
     public void keybindToggle(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                 if (getPlayersWithPower().contains(p)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
                         if (!Cooldown.isInCooldown(p, power)) {
@@ -78,7 +78,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
         Player p = e.getPlayer();
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (getPlayersWithPower().contains(p)) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                     if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
                         in_continuous.putIfAbsent(p, new ArrayList<>());
                         if (true /* TNV power always execute continuously */) {

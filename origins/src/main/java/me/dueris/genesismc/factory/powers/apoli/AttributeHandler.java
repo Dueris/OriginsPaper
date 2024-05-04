@@ -52,7 +52,7 @@ public class AttributeHandler extends CraftPower implements Listener {
         Player p = e.getPlayer();
         if (!attribute.contains(p)) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
                 if (power == null) continue;
 
                 for (Modifier modifier : power.getModifiers()) {

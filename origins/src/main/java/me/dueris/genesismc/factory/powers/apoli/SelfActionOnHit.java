@@ -26,7 +26,7 @@ public class SelfActionOnHit extends CraftPower implements Listener {
         if (!getPlayersWithPower().contains(target)) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
+            for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
                 if (Cooldown.isInCooldown((Player) target, power)) return;
                 if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
                     setActive(player, power.getTag(), true);

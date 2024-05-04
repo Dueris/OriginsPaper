@@ -25,7 +25,7 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
     public void runGive(OriginChangeEvent e) {
         if (starting_equip.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         runGiveItems(e.getPlayer(), power);
@@ -47,7 +47,7 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
     public void runRespawn(PlayerRespawnEvent e) {
         if (starting_equip.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
+                for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
                     if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         if (power.isPresent("recurrent") && power.getBoolean("recurrent")) {

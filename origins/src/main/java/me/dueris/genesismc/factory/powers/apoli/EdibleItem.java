@@ -42,7 +42,7 @@ public class EdibleItem extends CraftPower implements Listener {
     @EventHandler
     public void actions(PlayerItemConsumeEvent e) {
         if (e.getItem() != null && getPlayersWithPower().contains(e.getPlayer())) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType())) {
+            for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType())) {
                 if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) continue;
                 if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
                     continue;
@@ -66,7 +66,7 @@ public class EdibleItem extends CraftPower implements Listener {
         if (stack != null) {
             if (getPlayersWithPower().contains(e.getPlayer()) && !stack.getItemMeta().getPersistentDataContainer().has(GenesisMC.apoliIdentifier("edible_item_modified"))) {
                 Player p = e.getPlayer();
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType())) {
+                for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
                     if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), stack)) continue;
                     if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) continue;
                     FoodComponent food = Utils.parseProperties(power.getJsonObject("food_component"));
