@@ -29,6 +29,7 @@ public class OriginConfiguration {
     }
 
     private static File fillFile(String a, File o) {
+        if (o.exists()) return o;
         ClassLoader cL = OriginConfiguration.class.getClassLoader();
         try (InputStream stream = cL.getResourceAsStream(a)) {
             if (stream == null) throw new RuntimeException("Unable to find resource: " + a);
