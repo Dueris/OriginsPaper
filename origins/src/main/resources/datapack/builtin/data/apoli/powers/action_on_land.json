@@ -1,7 +1,0 @@
-{
-  "type": "origins:action_on_land",
-  "entity_action": {
-    "type": "origins:heal",
-    "amount": 1
-  }
-}

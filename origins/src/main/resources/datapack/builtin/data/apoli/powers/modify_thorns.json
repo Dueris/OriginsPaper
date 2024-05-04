@@ -1,8 +1,0 @@
-{
-  "type": "origins:modify_enchantment_level",
-  "enchantment": "minecraft:thorns",
-  "modifiers": {
-    "operation": "set_total",
-    "value": 3
-  }
-}

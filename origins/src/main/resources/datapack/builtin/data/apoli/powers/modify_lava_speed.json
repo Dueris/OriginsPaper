@@ -1,7 +1,0 @@
-{
-  "type": "origins:modify_lava_speed",
-  "modifier": {
-    "operation": "multiply_total",
-    "value": 2
-  }
-}

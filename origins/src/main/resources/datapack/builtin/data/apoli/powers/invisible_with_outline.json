@@ -1,8 +1,0 @@
-{
-  "type": "origins:invisibility",
-  "render_armor": false,
-  "render_outline": true,
-  "condition": {
-    "type": "origins:glowing"
-  }
-}

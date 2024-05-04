@@ -1,8 +1,0 @@
-{
-  "type": "origins:action_over_time",
-  "interval": 20,
-  "entity_action": {
-    "type": "origins:swing_hand",
-    "hand": "main_hand"
-  }
-}

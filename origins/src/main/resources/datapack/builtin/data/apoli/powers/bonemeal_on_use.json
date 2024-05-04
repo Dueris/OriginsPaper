@@ -1,6 +1,0 @@
-{
-  "type": "origins:action_on_block_use",
-  "block_action": {
-    "type": "origins:bonemeal"
-  }
-}

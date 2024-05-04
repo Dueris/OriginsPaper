@@ -1,7 +1,0 @@
-{
-  "type": "origins:modify_jump",
-  "entity_action": {
-    "type": "origins:swing_hand",
-    "hand": "off_hand"
-  }
-}

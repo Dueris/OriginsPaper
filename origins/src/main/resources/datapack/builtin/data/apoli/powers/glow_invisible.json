@@ -1,8 +1,0 @@
-{
-  "type": "origins:entity_glow",
-  "entity_condition": {
-    "type": "origins:status_effect",
-    "effect": "minecraft:invisibility"
-  },
-  "blue": 0.0
-}

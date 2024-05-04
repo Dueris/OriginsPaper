@@ -1,9 +1,0 @@
-{
-  "type": "origins:action_on_entity_use",
-  "priority": -100,
-  "bientity_action": {
-    "type": "origins:add_velocity",
-    "z": 0.8,
-    "y": 0.2
-  }
-}

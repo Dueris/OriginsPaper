@@ -1,7 +1,0 @@
-{
-  "type": "origins:modify_damage_dealt",
-  "modifier": {
-    "operation": "addition",
-    "value": 20
-  }
-}
