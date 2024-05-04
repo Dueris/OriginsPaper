@@ -12,12 +12,12 @@ public class BuiltinRegistry {
     private static final Layer[] builtinLayers;
 
     static {
-        builtinLayers = new Layer[]{new Layer(GenesisMC.apoliIdentifier("command"), new ArrayList<>(), new FactoryJsonObject(new Gson().fromJson("{\"order\":0,\"origins\":[],\"enabled\":false,\"replace\":false,\"name\":\"Command Layer\",\"hidden\":true}", JsonObject.class)))};
+	builtinLayers = new Layer[]{new Layer(GenesisMC.apoliIdentifier("command"), new ArrayList<>(), new FactoryJsonObject(new Gson().fromJson("{\"order\":0,\"origins\":[],\"enabled\":false,\"replace\":false,\"name\":\"Command Layer\",\"hidden\":true}", JsonObject.class)))};
     }
 
     public static void bootstrap() {
-        for (Layer layer : builtinLayers) {
-            GenesisMC.getPlugin().registry.retrieve(Registries.LAYER).register(layer);
-        }
+	for (Layer layer : builtinLayers) {
+	    GenesisMC.getPlugin().registry.retrieve(Registries.LAYER).register(layer);
+	}
     }
 }

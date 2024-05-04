@@ -16,47 +16,47 @@ import java.util.ArrayList;
 public class Overlay extends CraftPower implements Listener {
 
     public static void initializeOverlay(Player player) {
-        CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
-        border.setCenter(player.getWorld().getWorldBorder().getCenter());
-        border.setSize(player.getWorld().getWorldBorder().getSize());
-        border.setWarningDistance(999999999);
-        player.setWorldBorder(border);
+	CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
+	border.setCenter(player.getWorld().getWorldBorder().getCenter());
+	border.setSize(player.getWorld().getWorldBorder().getSize());
+	border.setWarningDistance(999999999);
+	player.setWorldBorder(border);
     }
 
     public static void deactivateOverlay(Player player) {
-        player.setWorldBorder(player.getWorld().getWorldBorder());
+	player.setWorldBorder(player.getWorld().getWorldBorder());
     }
 
     @EventHandler
     public void remove(PowerUpdateEvent e) {
-        if (e.isRemoved() && e.getPower().getType().equals(getType())) {
-            deactivateOverlay(e.getPlayer());
-        }
+	if (e.isRemoved() && e.getPower().getType().equals(getType())) {
+	    deactivateOverlay(e.getPlayer());
+	}
     }
 
     @Override
     public void run(Player player, Power power) {
-        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
-            setActive(player, power.getTag(), true);
-            initializeOverlay(player);
-        } else {
-            setActive(player, power.getTag(), false);
-            deactivateOverlay(player);
-        }
+	if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
+	    setActive(player, power.getTag(), true);
+	    initializeOverlay(player);
+	} else {
+	    setActive(player, power.getTag(), false);
+	    deactivateOverlay(player);
+	}
     }
 
     @Override
     public void doesntHavePower(Player p) {
-        deactivateOverlay(p);
+	deactivateOverlay(p);
     }
 
     @Override
     public String getType() {
-        return "apoli:overlay";
+	return "apoli:overlay";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return overlay;
+	return overlay;
     }
 }

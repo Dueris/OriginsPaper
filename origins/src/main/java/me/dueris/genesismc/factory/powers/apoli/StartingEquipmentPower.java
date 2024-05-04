@@ -23,51 +23,51 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
 
     @EventHandler
     public void runGive(OriginChangeEvent e) {
-        if (starting_equip.contains(e.getPlayer())) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
-                        setActive(e.getPlayer(), power.getTag(), true);
-                        runGiveItems(e.getPlayer(), power);
-                    } else {
-                        setActive(e.getPlayer(), power.getTag(), false);
-                    }
-                }
-            }
-        }
+	if (starting_equip.contains(e.getPlayer())) {
+	    for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+		for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
+		    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
+			setActive(e.getPlayer(), power.getTag(), true);
+			runGiveItems(e.getPlayer(), power);
+		    } else {
+			setActive(e.getPlayer(), power.getTag(), false);
+		    }
+		}
+	    }
+	}
     }
 
     public void runGiveItems(Player p, Power power) {
-        for (FactoryJsonObject stack : power.getList$SingularPlural("stack", "stacks").stream().map(FactoryElement::toJsonObject).toList()) {
-            p.getInventory().addItem(new ItemStack(Material.valueOf(stack.getString("item").toUpperCase().split(":")[1]), power.getNumberOrDefault("amount", 1).getInt()));
-        }
+	for (FactoryJsonObject stack : power.getList$SingularPlural("stack", "stacks").stream().map(FactoryElement::toJsonObject).toList()) {
+	    p.getInventory().addItem(new ItemStack(Material.valueOf(stack.getString("item").toUpperCase().split(":")[1]), power.getNumberOrDefault("amount", 1).getInt()));
+	}
     }
 
     @EventHandler
     public void runRespawn(PlayerRespawnEvent e) {
-        if (starting_equip.contains(e.getPlayer())) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
-                        setActive(e.getPlayer(), power.getTag(), true);
-                        if (power.isPresent("recurrent") && power.getBoolean("recurrent")) {
-                            runGiveItems(e.getPlayer(), power);
-                        }
-                    } else {
-                        setActive(e.getPlayer(), power.getTag(), false);
-                    }
-                }
-            }
-        }
+	if (starting_equip.contains(e.getPlayer())) {
+	    for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+		for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
+		    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
+			setActive(e.getPlayer(), power.getTag(), true);
+			if (power.isPresent("recurrent") && power.getBoolean("recurrent")) {
+			    runGiveItems(e.getPlayer(), power);
+			}
+		    } else {
+			setActive(e.getPlayer(), power.getTag(), false);
+		    }
+		}
+	    }
+	}
     }
 
     @Override
     public String getType() {
-        return "apoli:starting_equipment";
+	return "apoli:starting_equipment";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return starting_equip;
+	return starting_equip;
     }
 }

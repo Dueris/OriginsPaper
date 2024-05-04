@@ -20,20 +20,20 @@ public enum ContainerType {
     private final InventoryType bukkit;
 
     ContainerType(int size, InventoryType type) {
-        this.size = size == -1 ? type.getDefaultSize() : size;
-        this.bukkit = type;
+	this.size = size == -1 ? type.getDefaultSize() : size;
+	this.bukkit = type;
     }
 
     public InventoryType getBukkit() {
-        return this.bukkit;
+	return this.bukkit;
     }
 
     public int getSize() {
-        return this.size;
+	return this.size;
     }
 
     public Inventory createInventory(InventoryHolder holder, Optional<String> string) {
-        Component name = Component.text(Utils.getOrAbsent(string, "container.inventory"));
-        return this == DOUBLE_CHEST ? Bukkit.createInventory(holder, this.getSize(), name) : this == CHEST ? Bukkit.createInventory(holder, this.getSize(), name) : Bukkit.createInventory(holder, this.bukkit, name);
+	Component name = Component.text(Utils.getOrAbsent(string, "container.inventory"));
+	return this == DOUBLE_CHEST ? Bukkit.createInventory(holder, this.getSize(), name) : this == CHEST ? Bukkit.createInventory(holder, this.getSize(), name) : Bukkit.createInventory(holder, this.bukkit, name);
     }
 }

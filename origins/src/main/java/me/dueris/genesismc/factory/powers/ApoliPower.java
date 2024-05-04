@@ -107,16 +107,16 @@ public interface ApoliPower extends Registrable {
     ArrayList<Player> modify_xp_gain = new ArrayList<>();
 
     default NamespacedKey getKey() {
-        try {
-            if (this instanceof PowerProvider && this.getClass().getDeclaredField("powerReference") != null) {
-                String refrence = Reflector.accessField("powerReference", this.getClass(), this, NamespacedKey.class).asString();
-                return NamespacedKey.fromString(refrence);
-            } else {
-                return NamespacedKey.fromString(getType());
-            }
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException("An unhandled exception occurred when retrieving a key from a power");
-        }
+	try {
+	    if (this instanceof PowerProvider && this.getClass().getDeclaredField("powerReference") != null) {
+		String refrence = Reflector.accessField("powerReference", this.getClass(), this, NamespacedKey.class).asString();
+		return NamespacedKey.fromString(refrence);
+	    } else {
+		return NamespacedKey.fromString(getType());
+	    }
+	} catch (NoSuchFieldException e) {
+	    throw new RuntimeException("An unhandled exception occurred when retrieving a key from a power");
+	}
     }
 
     default void run(Player p, Power power) {
@@ -133,16 +133,16 @@ public interface ApoliPower extends Registrable {
     ArrayList<Player> getPlayersWithPower();
 
     default void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
+	if (powers_active.containsKey(p)) {
+	    if (powers_active.get(p).containsKey(tag)) {
+		powers_active.get(p).replace(tag, bool);
+	    } else {
+		powers_active.get(p).put(tag, bool);
+	    }
+	} else {
+	    powers_active.put(p, new HashMap());
+	    setActive(p, tag, bool);
+	}
     }
 
 }

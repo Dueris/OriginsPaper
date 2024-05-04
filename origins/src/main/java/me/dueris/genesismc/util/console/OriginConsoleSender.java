@@ -12,50 +12,45 @@ public class OriginConsoleSender extends OriginServerCommandSender implements Co
     protected final ConversationTracker conversationTracker = new ConversationTracker();
 
     public OriginConsoleSender() {
-        super();
+	super();
     }
 
     @Override
     public void sendMessage(String message) {
-
     }
 
     public void sendRawMessage(String message) {
-
     }
 
     public void sendRawMessage(UUID sender, String message) {
-
     }
 
     @Override
     public void sendMessage(String... messages) {
-
     }
 
     @Override
     public @NotNull String getName() {
-        return "ORIGINS";
+	return "ORIGINS";
     }
 
     @Override
     public net.kyori.adventure.text.Component name() {
-        return net.kyori.adventure.text.Component.text(this.getName());
+	return net.kyori.adventure.text.Component.text(this.getName());
     }
 
     @Override
     public boolean isOp() {
-        return true;
+	return true;
     }
 
     @Override
     public void setOp(boolean value) {
-
     }
 
     @Override
     public boolean beginConversation(Conversation conversation) {
-        return this.conversationTracker.beginConversation(conversation);
+	return this.conversationTracker.beginConversation(conversation);
     }
 
     @Override
@@ -70,21 +65,21 @@ public class OriginConsoleSender extends OriginServerCommandSender implements Co
 
     @Override
     public void acceptConversationInput(String input) {
-        this.conversationTracker.acceptConversationInput(input);
+	this.conversationTracker.acceptConversationInput(input);
     }
 
     @Override
     public boolean isConversing() {
-        return this.conversationTracker.isConversing();
+	return this.conversationTracker.isConversing();
     }
 
     @Override
     public boolean hasPermission(String name) {
-        return true;
+	return true;
     }
 
     @Override
     public boolean hasPermission(org.bukkit.permissions.Permission perm) {
-        return true;
+	return true;
     }
 }

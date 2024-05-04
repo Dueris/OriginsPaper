@@ -22,38 +22,38 @@ public class ActionWhenHit extends CraftPower implements Listener {
 
     @EventHandler
     public void h(EntityDamageByEntityEvent e) {
-        Entity actor = e.getEntity();
-        Entity target = e.getDamager();
+	Entity actor = e.getEntity();
+	Entity target = e.getDamager();
 
-        if (!(actor instanceof Player player)) return;
-        if (!getPlayersWithPower().contains(actor)) return;
+	if (!(actor instanceof Player player)) return;
+	if (!getPlayersWithPower().contains(actor)) return;
 
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
-                if (power == null) continue;
-                if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) actor) || !ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
-                    return;
-                setActive(player, power.getTag(), true);
-                Actions.executeBiEntity(actor, target, power.getJsonObject("bientity_action"));
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (!getPlayersWithPower().contains(target)) return;
-                        setActive(player, power.getTag(), false);
-                    }
-                }.runTaskLater(GenesisMC.getPlugin(), 2L);
-            }
-        }
+	for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+	    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
+		if (power == null) continue;
+		if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) actor) || !ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
+		    return;
+		setActive(player, power.getTag(), true);
+		Actions.executeBiEntity(actor, target, power.getJsonObject("bientity_action"));
+		new BukkitRunnable() {
+		    @Override
+		    public void run() {
+			if (!getPlayersWithPower().contains(target)) return;
+			setActive(player, power.getTag(), false);
+		    }
+		}.runTaskLater(GenesisMC.getPlugin(), 2L);
+	    }
+	}
     }
 
     @Override
     public String getType() {
-        return "apoli:action_when_hit";
+	return "apoli:action_when_hit";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return action_when_hit;
+	return action_when_hit;
     }
 
 }

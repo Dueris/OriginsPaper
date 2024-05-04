@@ -10,23 +10,23 @@ public class OriginChoosePromptEvent extends PlayerEvent {
     private boolean canceled = false;
 
     public OriginChoosePromptEvent(@NotNull Player who) {
-        super(who, true);
+	super(who, true);
     }
 
     public static HandlerList getHandlerList() {
-        return handlers;
+	return handlers;
     }
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
+	return handlers;
     }
 
     public boolean isCanceled() {
-        return this.canceled;
+	return this.canceled;
     }
 
     public void setCanceled(boolean canceled) {
-        this.canceled = canceled;
+	this.canceled = canceled;
     }
 }

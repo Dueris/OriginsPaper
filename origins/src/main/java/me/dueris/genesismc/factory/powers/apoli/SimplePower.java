@@ -8,11 +8,11 @@ import java.util.ArrayList;
 public class SimplePower extends CraftPower {
     @Override
     public String getType() {
-        return "apoli:simple";
+	return "apoli:simple";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return simple;
+	return simple;
     }
 }

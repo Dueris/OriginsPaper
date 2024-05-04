@@ -12,25 +12,25 @@ public class PowerUpdateEvent extends PlayerEvent {
     private static boolean removed;
 
     public PowerUpdateEvent(@NotNull Player who, Power power, boolean removed) {
-        super(who, true);
-        PowerUpdateEvent.power = power;
-        PowerUpdateEvent.removed = removed;
+	super(who, true);
+	PowerUpdateEvent.power = power;
+	PowerUpdateEvent.removed = removed;
     }
 
     public static HandlerList getHandlerList() {
-        return handlers;
+	return handlers;
     }
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
+	return handlers;
     }
 
     public Power getPower() {
-        return power;
+	return power;
     }
 
     public boolean isRemoved() {
-        return removed;
+	return removed;
     }
 }

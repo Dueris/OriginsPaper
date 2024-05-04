@@ -29,69 +29,69 @@ public class DamageConditions {
     public static HashMap<String, ArrayList<DamageType>> damageTagMappings = new HashMap<>();
 
     public void prep() {
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("projectile"), (condition, event) -> {
-            if (event.getCause().equals(DamageCause.PROJECTILE)) {
-                boolean projectile = true;
-                boolean projectileCondition = true;
-                if (condition.isPresent("projectile_condition")) {
-                    projectileCondition = ConditionExecutor.testEntity(condition.getJsonObject("projectile_condition"), ((CraftEntity) ((EntityDamageByEntityEvent) event).getDamager()));
-                }
-                if (condition.isPresent("projectile") && event instanceof EntityDamageByEntityEvent eventT) {
-                    String identifier = condition.getString("projectile");
-                    if (identifier.contains(":")) {
-                        identifier = identifier.split(":")[1];
-                    }
-                    projectile = eventT.getDamager().getType().equals(EntityType.valueOf(identifier.toUpperCase()));
-                }
-                return projectileCondition && projectile;
-            }
-            return false;
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("name"), (condition, event) -> CraftDamageType.bukkitToMinecraft(event.getDamageSource().getDamageType()).msgId().equalsIgnoreCase(condition.getString("name"))));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, event) -> {
-            NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag"));
-            TagKey<net.minecraft.world.damagesource.DamageType> key = TagKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE, CraftNamespacedKey.toMinecraft(tag));
-            Holder<net.minecraft.world.damagesource.DamageType> nmsDamageType = CraftDamageType.bukkitToMinecraftHolder(event.getDamageSource().getDamageType());
-            return nmsDamageType.is(key);
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("fire"), (condition, event) -> event.getCause().equals(DamageCause.FIRE)));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("attacker"), (condition, event) -> {
-            if (event.getEntity() instanceof LivingEntity li && ((CraftLivingEntity) li).getHandle().getLastAttacker() != null) {
-                boolean rtn = true;
-                if (condition.isPresent("entity_condition")) {
-                    rtn = ConditionExecutor.testEntity(condition, ((CraftLivingEntity) li).getHandle().getLastAttacker().getBukkitEntity());
-                }
-                return rtn;
-            }
-            return false;
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("amount"), (condition, event) -> {
-            String comparison = condition.getString("comparison");
-            Long compare_to = condition.getNumber("compare_to").getLong();
-            return Comparison.fromString(comparison).compare(event.getDamage(), compare_to);
-        }));
+	register(new ConditionFactory(GenesisMC.apoliIdentifier("projectile"), (condition, event) -> {
+	    if (event.getCause().equals(DamageCause.PROJECTILE)) {
+		boolean projectile = true;
+		boolean projectileCondition = true;
+		if (condition.isPresent("projectile_condition")) {
+		    projectileCondition = ConditionExecutor.testEntity(condition.getJsonObject("projectile_condition"), ((CraftEntity) ((EntityDamageByEntityEvent) event).getDamager()));
+		}
+		if (condition.isPresent("projectile") && event instanceof EntityDamageByEntityEvent eventT) {
+		    String identifier = condition.getString("projectile");
+		    if (identifier.contains(":")) {
+			identifier = identifier.split(":")[1];
+		    }
+		    projectile = eventT.getDamager().getType().equals(EntityType.valueOf(identifier.toUpperCase()));
+		}
+		return projectileCondition && projectile;
+	    }
+	    return false;
+	}));
+	register(new ConditionFactory(GenesisMC.apoliIdentifier("name"), (condition, event) -> CraftDamageType.bukkitToMinecraft(event.getDamageSource().getDamageType()).msgId().equalsIgnoreCase(condition.getString("name"))));
+	register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, event) -> {
+	    NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag"));
+	    TagKey<net.minecraft.world.damagesource.DamageType> key = TagKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE, CraftNamespacedKey.toMinecraft(tag));
+	    Holder<net.minecraft.world.damagesource.DamageType> nmsDamageType = CraftDamageType.bukkitToMinecraftHolder(event.getDamageSource().getDamageType());
+	    return nmsDamageType.is(key);
+	}));
+	register(new ConditionFactory(GenesisMC.apoliIdentifier("fire"), (condition, event) -> event.getCause().equals(DamageCause.FIRE)));
+	register(new ConditionFactory(GenesisMC.apoliIdentifier("attacker"), (condition, event) -> {
+	    if (event.getEntity() instanceof LivingEntity li && ((CraftLivingEntity) li).getHandle().getLastAttacker() != null) {
+		boolean rtn = true;
+		if (condition.isPresent("entity_condition")) {
+		    rtn = ConditionExecutor.testEntity(condition, ((CraftLivingEntity) li).getHandle().getLastAttacker().getBukkitEntity());
+		}
+		return rtn;
+	    }
+	    return false;
+	}));
+	register(new ConditionFactory(GenesisMC.apoliIdentifier("amount"), (condition, event) -> {
+	    String comparison = condition.getString("comparison");
+	    Long compare_to = condition.getNumber("compare_to").getLong();
+	    return Comparison.fromString(comparison).compare(event.getDamage(), compare_to);
+	}));
     }
 
     private void register(ConditionFactory factory) {
-        GenesisMC.getPlugin().registry.retrieve(Registries.DAMAGE_CONDITION).register(factory);
+	GenesisMC.getPlugin().registry.retrieve(Registries.DAMAGE_CONDITION).register(factory);
     }
 
     public class ConditionFactory implements Registrable {
-        NamespacedKey key;
-        BiPredicate<FactoryJsonObject, EntityDamageEvent> test;
+	NamespacedKey key;
+	BiPredicate<FactoryJsonObject, EntityDamageEvent> test;
 
-        public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, EntityDamageEvent> test) {
-            this.key = key;
-            this.test = test;
-        }
+	public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, EntityDamageEvent> test) {
+	    this.key = key;
+	    this.test = test;
+	}
 
-        public boolean test(FactoryJsonObject condition, EntityDamageEvent tester) {
-            return test.test(condition, tester);
-        }
+	public boolean test(FactoryJsonObject condition, EntityDamageEvent tester) {
+	    return test.test(condition, tester);
+	}
 
-        @Override
-        public NamespacedKey getKey() {
-            return key;
-        }
+	@Override
+	public NamespacedKey getKey() {
+	    return key;
+	}
     }
 }

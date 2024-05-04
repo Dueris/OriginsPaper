@@ -20,28 +20,28 @@ public class PreventBeingUsed extends CraftPower implements Listener {
 
     @EventHandler
     public void run(PlayerInteractEvent e) {
-        if (prevent_being_used.contains(e.getPlayer())) {
-            Player p = e.getPlayer();
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
-                        setActive(p, power.getTag(), true);
-                        e.setCancelled(true);
-                    } else {
-                        setActive(p, power.getTag(), false);
-                    }
-                }
-            }
-        }
+	if (prevent_being_used.contains(e.getPlayer())) {
+	    Player p = e.getPlayer();
+	    for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+		for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+		    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
+			setActive(p, power.getTag(), true);
+			e.setCancelled(true);
+		    } else {
+			setActive(p, power.getTag(), false);
+		    }
+		}
+	    }
+	}
     }
 
     @Override
     public String getType() {
-        return "apoli:prevent_being_used";
+	return "apoli:prevent_being_used";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return prevent_being_used;
+	return prevent_being_used;
     }
 }

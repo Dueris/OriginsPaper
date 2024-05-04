@@ -10,17 +10,17 @@ public class DatapackRepository implements Registrable {
     private final Path path;
 
     public DatapackRepository(NamespacedKey key, Path path) {
-        this.key = key;
-        this.path = path;
+	this.key = key;
+	this.path = path;
     }
 
     @Override
     public NamespacedKey getKey() {
-        return this.key;
+	return this.key;
     }
 
     public Path getPath() {
-        return this.path;
+	return this.path;
     }
 
 }

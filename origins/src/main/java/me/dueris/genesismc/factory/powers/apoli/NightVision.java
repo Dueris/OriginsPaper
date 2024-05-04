@@ -14,37 +14,37 @@ public class NightVision extends CraftPower {
 
     @Override
     public void run(Player p, Power power) {
-        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-            setActive(p, power.getTag(), true);
-            p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getNumberOrDefault("strength", 1.0f).getFloat()), false, false, false));
-        } else {
-            setActive(p, power.getTag(), false);
-        }
+	if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+	    setActive(p, power.getTag(), true);
+	    p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getNumberOrDefault("strength", 1.0f).getFloat()), false, false, false));
+	} else {
+	    setActive(p, power.getTag(), false);
+	}
     }
 
     public int roundNumber(double num) {
-        if (String.valueOf(num).contains(".")) {
-            String[] parts = String.valueOf(num).split("\\.");
-            if (parts.length > 1) {
-                int decimalPart = Integer.parseInt(parts[1]);
-                if (decimalPart >= 5) {
-                    return Integer.parseInt(parts[0]) + 1;
-                } else {
-                    return Integer.parseInt(parts[0]);
-                }
-            }
-        }
-        return 0;
+	if (String.valueOf(num).contains(".")) {
+	    String[] parts = String.valueOf(num).split("\\.");
+	    if (parts.length > 1) {
+		int decimalPart = Integer.parseInt(parts[1]);
+		if (decimalPart >= 5) {
+		    return Integer.parseInt(parts[0]) + 1;
+		} else {
+		    return Integer.parseInt(parts[0]);
+		}
+	    }
+	}
+	return 0;
     }
 
 
     @Override
     public String getType() {
-        return "apoli:night_vision";
+	return "apoli:night_vision";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return night_vision;
+	return night_vision;
     }
 }

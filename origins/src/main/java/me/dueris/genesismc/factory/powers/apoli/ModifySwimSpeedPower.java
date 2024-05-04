@@ -15,24 +15,24 @@ public class ModifySwimSpeedPower extends CraftPower {
 
     @Override
     public String getType() {
-        return "apoli:modify_swim_speed";
+	return "apoli:modify_swim_speed";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return modify_swim_speed;
+	return modify_swim_speed;
     }
 
     @Override
     public void run(Player p, Power power) {
-        Block be = p.getLocation().getBlock();
-        if (!getPlayersWithPower().contains(p) || p.isFlying() || be == null ||
-            !p.getLocation().getBlock().isLiquid() || !p.isSwimming()) return;
-        float multiplyBy = 0.6F;
-        for (Modifier modifier : power.getModifiers()) {
-            Map<String, BinaryOperator<Float>> floatBinaryOperator = Utils.getOperationMappingsFloat();
-            floatBinaryOperator.get(modifier.operation()).apply(multiplyBy, modifier.value() * 10f);
-        }
-        p.setVelocity(p.getLocation().getDirection().multiply(multiplyBy));
+	Block be = p.getLocation().getBlock();
+	if (!getPlayersWithPower().contains(p) || p.isFlying() || be == null ||
+	    !p.getLocation().getBlock().isLiquid() || !p.isSwimming()) return;
+	float multiplyBy = 0.6F;
+	for (Modifier modifier : power.getModifiers()) {
+	    Map<String, BinaryOperator<Float>> floatBinaryOperator = Utils.getOperationMappingsFloat();
+	    floatBinaryOperator.get(modifier.operation()).apply(multiplyBy, modifier.value() * 10f);
+	}
+	p.setVelocity(p.getLocation().getDirection().multiply(multiplyBy));
     }
 }

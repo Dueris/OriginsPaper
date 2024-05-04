@@ -21,34 +21,34 @@ public class ModifyJumpPower extends CraftPower implements Listener {
 
     @EventHandler
     public void ruDn(PlayerJumpEvent e) {
-        Player p = e.getPlayer();
-        if (modify_jump.contains(p)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        for (Modifier modifier : power.getModifiers()) {
-                            float modifierValue = modifier.value();
-                            /*((modifierValue - 1.0) * 2.0)*/
-                            int jumpBoostLevel = Math.round(modifierValue * 4);
+	Player p = e.getPlayer();
+	if (modify_jump.contains(p)) {
+	    for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+		for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+		    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+			for (Modifier modifier : power.getModifiers()) {
+			    float modifierValue = modifier.value();
+			    /*((modifierValue - 1.0) * 2.0)*/
+			    int jumpBoostLevel = Math.round(modifierValue * 4);
 
-                            if (jumpBoostLevel >= 0) {
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, 20, jumpBoostLevel, false, false, false));
-                                setActive(p, power.getTag(), true);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+			    if (jumpBoostLevel >= 0) {
+				p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, 20, jumpBoostLevel, false, false, false));
+				setActive(p, power.getTag(), true);
+			    }
+			}
+		    }
+		}
+	    }
+	}
     }
 
     @Override
     public String getType() {
-        return "apoli:modify_jump";
+	return "apoli:modify_jump";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return modify_jump;
+	return modify_jump;
     }
 }

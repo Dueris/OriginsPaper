@@ -12,21 +12,21 @@ public class Swimming extends CraftPower {
 
     @Override
     public void run(Player p, Power power) {
-        if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-            setActive(p, power.getTag(), false);
-            return;
-        }
-        p.setSwimming(true);
-        setActive(p, power.getTag(), true);
+	if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+	    setActive(p, power.getTag(), false);
+	    return;
+	}
+	p.setSwimming(true);
+	setActive(p, power.getTag(), true);
     }
 
     @Override
     public String getType() {
-        return "apoli:swimming";
+	return "apoli:swimming";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return swimming;
+	return swimming;
     }
 }

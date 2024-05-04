@@ -29,91 +29,91 @@ public class ClimbingPower extends CraftPower implements Listener {
     public ArrayList<Player> allowedToClimb = new ArrayList<>();
 
     public boolean isActiveClimbing(Player player) {
-        return active_climbing.contains(player);
+	return active_climbing.contains(player);
     }
 
     public ArrayList<Player> getActiveClimbingMap() {
-        return active_climbing;
+	return active_climbing;
     }
 
     @Override
     public void run(Player p, Power power) {
-        if (!p.isSneaking()) holdingPlayers.remove(p);
-        if (!((CraftWorld) p.getWorld()).getHandle().getBlockStates(((CraftPlayer) p).getHandle().getBoundingBox().inflate(0.1, 0, 0.1)).filter(state -> state.getBukkitMaterial().isCollidable()).toList().isEmpty()) {
-            if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && allowedToClimb.contains(p)) {
-                setActive(p, power.getTag(), true);
-                p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 4, 2, false, false, false));
-                getActiveClimbingMap().add(p);
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        getActiveClimbingMap().remove(p);
-                    }
-                }.runTaskLater(GenesisMC.getPlugin(), 2L);
-            } else {
-                setActive(p, power.getTag(), false);
-            }
-        }
+	if (!p.isSneaking()) holdingPlayers.remove(p);
+	if (!((CraftWorld) p.getWorld()).getHandle().getBlockStates(((CraftPlayer) p).getHandle().getBoundingBox().inflate(0.1, 0, 0.1)).filter(state -> state.getBukkitMaterial().isCollidable()).toList().isEmpty()) {
+	    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && allowedToClimb.contains(p)) {
+		setActive(p, power.getTag(), true);
+		p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 4, 2, false, false, false));
+		getActiveClimbingMap().add(p);
+		new BukkitRunnable() {
+		    @Override
+		    public void run() {
+			getActiveClimbingMap().remove(p);
+		    }
+		}.runTaskLater(GenesisMC.getPlugin(), 2L);
+	    } else {
+		setActive(p, power.getTag(), false);
+	    }
+	}
     }
 
     @EventHandler
     public void jump(PlayerJumpEvent e) {
-        if (climbing.contains(e.getPlayer())) {
-            Player p = e.getPlayer();
-            allowedToClimb.add(p);
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (p.isOnGround()) {
-                        allowedToClimb.remove(p);
-                        cancel();
-                    }
-                }
-            }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
-        }
+	if (climbing.contains(e.getPlayer())) {
+	    Player p = e.getPlayer();
+	    allowedToClimb.add(p);
+	    new BukkitRunnable() {
+		@Override
+		public void run() {
+		    if (p.isOnGround()) {
+			allowedToClimb.remove(p);
+			cancel();
+		    }
+		}
+	    }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+	}
     }
 
     @EventHandler
     public void latch(PlayerToggleSneakEvent e) {
-        Player p = e.getPlayer();
-        if (climbing.contains(p)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
-                    if (power.getBooleanOrDefault("allow_holding", true)) {
-                        final Location[] location = {p.getLocation()};
-                        if (e.isSneaking() && getActiveClimbingMap().contains(p)) {
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    if (p.isSneaking()) {
-                                        if (location[0].getPitch() != p.getPitch() || location[0].getYaw() != p.getYaw()) {
-                                            float pitch = p.getPitch();
-                                            float yaw = p.getYaw();
-                                            Location updatedLocation = new Location(location[0].getWorld(), location[0].getX(), location[0].getY(), location[0].getZ(), yaw, pitch);
-                                            location[0] = updatedLocation;
-                                        }
-                                        p.teleportAsync(location[0]);
-                                        holdingPlayers.add(p);
-                                    } else {
-                                        holdingPlayers.remove(p);
-                                        cancel();
-                                    }
-                                }
-                            }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
-                        }
-                    }
-                }
-            }
-        }
+	Player p = e.getPlayer();
+	if (climbing.contains(p)) {
+	    for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+		for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+		    if (power.getBooleanOrDefault("allow_holding", true)) {
+			final Location[] location = {p.getLocation()};
+			if (e.isSneaking() && getActiveClimbingMap().contains(p)) {
+			    new BukkitRunnable() {
+				@Override
+				public void run() {
+				    if (p.isSneaking()) {
+					if (location[0].getPitch() != p.getPitch() || location[0].getYaw() != p.getYaw()) {
+					    float pitch = p.getPitch();
+					    float yaw = p.getYaw();
+					    Location updatedLocation = new Location(location[0].getWorld(), location[0].getX(), location[0].getY(), location[0].getZ(), yaw, pitch);
+					    location[0] = updatedLocation;
+					}
+					p.teleportAsync(location[0]);
+					holdingPlayers.add(p);
+				    } else {
+					holdingPlayers.remove(p);
+					cancel();
+				    }
+				}
+			    }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+			}
+		    }
+		}
+	    }
+	}
     }
 
     @Override
     public String getType() {
-        return "apoli:climbing";
+	return "apoli:climbing";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return climbing;
+	return climbing;
     }
 }

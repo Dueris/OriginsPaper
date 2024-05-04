@@ -48,283 +48,278 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     @EventHandler
     public void powerRemove(PowerUpdateEvent e) {
-        if (e.isRemoved() && e.getPower().getType().equals(getType())) {
-            // Apoli remap start
-            ServerPlayer ServerPlayer = ((CraftPlayer) e.getPlayer()).getHandle();
-            if (ServerPlayer.hasDisconnected() || ServerPlayer.getRespawnPosition() == null || !ServerPlayer.isRespawnForced())
-                return;
+	if (e.isRemoved() && e.getPower().getType().equals(getType())) {
+	    // Apoli remap start
+	    ServerPlayer ServerPlayer = ((CraftPlayer) e.getPlayer()).getHandle();
+	    if (ServerPlayer.hasDisconnected() || ServerPlayer.getRespawnPosition() == null || !ServerPlayer.isRespawnForced())
+		return;
 
-            ServerPlayer.setRespawnPosition(Level.OVERWORLD, null, 0F, false, false);
-            // Apoli remap end
-        }
+	    ServerPlayer.setRespawnPosition(Level.OVERWORLD, null, 0F, false, false);
+	    // Apoli remap end
+	}
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void runD(PlayerPostRespawnEvent e) {
-        if (!getPlayersWithPower().contains(e.getPlayer())) return;
-        if (e.getPlayer().getBedSpawnLocation() != null) {
-            e.getPlayer().teleport(e.getPlayer().getBedSpawnLocation());
-        } else {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
-                    this.teleportToModifiedSpawn(((CraftPlayer) e.getPlayer()).getHandle(), power);
-                }
-            }
-        }
+	if (!getPlayersWithPower().contains(e.getPlayer())) return;
+	if (e.getPlayer().getBedSpawnLocation() != null) {
+	    e.getPlayer().teleport(e.getPlayer().getBedSpawnLocation());
+	} else {
+	    for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+		for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
+		    this.teleportToModifiedSpawn(((CraftPlayer) e.getPlayer()).getHandle(), power);
+		}
+	    }
+	}
     }
 
     private ResourceKey<Level> getDimension(Power power) {
-        NamespacedKey key = NamespacedKey.fromString(power.getString("dimension"));
-        return ((CraftWorld) Bukkit.getWorld(key)).getHandle().dimension();
+	NamespacedKey key = NamespacedKey.fromString(power.getString("dimension"));
+	return ((CraftWorld) Bukkit.getWorld(key)).getHandle().dimension();
     }
 
     @Override
     public String getType() {
-        return "apoli:modify_player_spawn";
+	return "apoli:modify_player_spawn";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return modify_world_spawn;
+	return modify_world_spawn;
     }
 
     public void teleportToModifiedSpawn(Entity entity, Power power) {
+	if (false || !(entity instanceof net.minecraft.world.entity.player.Player playerEntity)) return;
 
-        if (false || !(entity instanceof net.minecraft.world.entity.player.Player playerEntity)) return;
+	ServerPlayer serverPlayer = (ServerPlayer) playerEntity;
+	Pair<ServerLevel, BlockPos> newSpawn = getSpawn(entity, power);
 
-        ServerPlayer serverPlayer = (ServerPlayer) playerEntity;
-        Pair<ServerLevel, BlockPos> newSpawn = getSpawn(entity, power);
+	if (newSpawn == null) return;
+	ServerLevel newSpawnDimension = newSpawn.getFirst();
+	BlockPos newSpawnPos = newSpawn.getSecond();
 
-        if (newSpawn == null) return;
-        ServerLevel newSpawnDimension = newSpawn.getFirst();
-        BlockPos newSpawnPos = newSpawn.getSecond();
-
-        Vec3 tpPos = DismountHelper.findSafeDismountLocation(playerEntity.getType(), newSpawn.getFirst(), newSpawn.getSecond(), true);
-        if (tpPos == null) {
-            serverPlayer.teleportTo(newSpawnDimension, newSpawnPos.getX(), newSpawnPos.getY(), newSpawnPos.getZ(), entity.getXRot(), entity.getYRot());
-        } else {
-            serverPlayer.teleportTo(newSpawnDimension, tpPos.x, tpPos.y, tpPos.z, entity.getXRot(), entity.getYRot());
-        }
+	Vec3 tpPos = DismountHelper.findSafeDismountLocation(playerEntity.getType(), newSpawn.getFirst(), newSpawn.getSecond(), true);
+	if (tpPos == null) {
+	    serverPlayer.teleportTo(newSpawnDimension, newSpawnPos.getX(), newSpawnPos.getY(), newSpawnPos.getZ(), entity.getXRot(), entity.getYRot());
+	} else {
+	    serverPlayer.teleportTo(newSpawnDimension, tpPos.x, tpPos.y, tpPos.z, entity.getXRot(), entity.getYRot());
+	}
 
     }
 
     public Pair<ServerLevel, BlockPos> getSpawn(Entity entity, Power power) {
-        SpawnStrategy spawnStrategy = SpawnStrategy.valueOf(power.getStringOrDefault("spawn_strategy", "default").toUpperCase());
-        ResourceKey<Level> dimension = getDimension(power);
-        float dimensionDistanceMultiplier = power.getNumberOrDefault("dimension_distance_multiplier", 1f).getFloat();
-        if (false || !(entity instanceof net.minecraft.world.entity.player.Player playerEntity)) return null;
+	SpawnStrategy spawnStrategy = SpawnStrategy.valueOf(power.getStringOrDefault("spawn_strategy", "default").toUpperCase());
+	ResourceKey<Level> dimension = getDimension(power);
+	float dimensionDistanceMultiplier = power.getNumberOrDefault("dimension_distance_multiplier", 1f).getFloat();
+	if (false || !(entity instanceof net.minecraft.world.entity.player.Player playerEntity)) return null;
 
-        ServerPlayer ServerPlayer = (ServerPlayer) playerEntity;
-        MinecraftServer server = ServerPlayer.getServer();
-        if (server == null) return null;
+	ServerPlayer ServerPlayer = (ServerPlayer) playerEntity;
+	MinecraftServer server = ServerPlayer.getServer();
+	if (server == null) return null;
 
-        ServerLevel overworldDimension = server.getLevel(Level.OVERWORLD);
-        if (overworldDimension == null) {
-            return null;
-        }
+	ServerLevel overworldDimension = server.getLevel(Level.OVERWORLD);
+	if (overworldDimension == null) {
+	    return null;
+	}
 
-        ServerLevel targetDimension = server.getLevel(dimension);
-        if (targetDimension == null) {
-            return null;
-        }
+	ServerLevel targetDimension = server.getLevel(dimension);
+	if (targetDimension == null) {
+	    return null;
+	}
 
-        int center = targetDimension.getLogicalHeight() / 2;
-        int range = 64;
+	int center = targetDimension.getLogicalHeight() / 2;
+	int range = 64;
 
-        AtomicReference<Vec3> modifiedSpawnPos = new AtomicReference<>();
+	AtomicReference<Vec3> modifiedSpawnPos = new AtomicReference<>();
 
-        BlockPos regularSpawnBlockPos = overworldDimension.getSharedSpawnPos();
-        BlockPos.MutableBlockPos modifiedSpawnBlockPos = new BlockPos.MutableBlockPos();
-        BlockPos.MutableBlockPos dimensionSpawnPos = spawnStrategy.apply(regularSpawnBlockPos, center, dimensionDistanceMultiplier).mutable();
+	BlockPos regularSpawnBlockPos = overworldDimension.getSharedSpawnPos();
+	BlockPos.MutableBlockPos modifiedSpawnBlockPos = new BlockPos.MutableBlockPos();
+	BlockPos.MutableBlockPos dimensionSpawnPos = spawnStrategy.apply(regularSpawnBlockPos, center, dimensionDistanceMultiplier).mutable();
 
-        getBiomePos(targetDimension, dimensionSpawnPos, power).ifPresent(dimensionSpawnPos::set);
-        getSpawnPos(targetDimension, dimensionSpawnPos, range, power, entity).ifPresent(modifiedSpawnPos::set);
+	getBiomePos(targetDimension, dimensionSpawnPos, power).ifPresent(dimensionSpawnPos::set);
+	getSpawnPos(targetDimension, dimensionSpawnPos, range, power, entity).ifPresent(modifiedSpawnPos::set);
 
-        if (modifiedSpawnPos.get() == null) {
-            return null;
-        }
+	if (modifiedSpawnPos.get() == null) {
+	    return null;
+	}
 
-        Vec3 msp = modifiedSpawnPos.get();
-        modifiedSpawnBlockPos.set(msp.x, msp.y, msp.z);
-        targetDimension.getChunkSource().addRegionTicket(TicketType.START, new ChunkPos(modifiedSpawnBlockPos), 11, Unit.INSTANCE);
+	Vec3 msp = modifiedSpawnPos.get();
+	modifiedSpawnBlockPos.set(msp.x, msp.y, msp.z);
+	targetDimension.getChunkSource().addRegionTicket(TicketType.START, new ChunkPos(modifiedSpawnBlockPos), 11, Unit.INSTANCE);
 
-        return new Pair<>(targetDimension, modifiedSpawnBlockPos);
+	return new Pair<>(targetDimension, modifiedSpawnBlockPos);
 
     }
 
     private Optional<BlockPos> getBiomePos(ServerLevel targetDimension, BlockPos originPos, Power power) {
+	if (!power.isPresent("biome")) return Optional.empty();
 
-        if (!power.isPresent("biome")) return Optional.empty();
-
-        Optional<Biome> targetBiome = CraftRegistry.getMinecraftRegistry().registry(Registries.BIOME).get().getOptional(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(power.getString("biome"))));
-        if (targetBiome.isEmpty()) {
-            return Optional.empty();
-        }
-        int radius = 9400;
-        int horizontalBlockCheckInterval = 64;
-        int verticalBlockCheckInterval = 64;
-        if (radius < 0) radius = 6400;
-        if (horizontalBlockCheckInterval <= 0) horizontalBlockCheckInterval = 64;
-        if (verticalBlockCheckInterval <= 0) verticalBlockCheckInterval = 64;
-        Pair<BlockPos, Holder<Biome>> targetBiomePos = targetDimension.findClosestBiome3d((
-                biome -> biome.value() == targetBiome.get()),
-            originPos,
-            radius,
-            horizontalBlockCheckInterval,
-            verticalBlockCheckInterval
-        );
-        if (targetBiomePos != null) return Optional.of(targetBiomePos.getFirst());
-        else {
-            return Optional.empty();
-        }
+	Optional<Biome> targetBiome = CraftRegistry.getMinecraftRegistry().registry(Registries.BIOME).get().getOptional(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(power.getString("biome"))));
+	if (targetBiome.isEmpty()) {
+	    return Optional.empty();
+	}
+	int radius = 9400;
+	int horizontalBlockCheckInterval = 64;
+	int verticalBlockCheckInterval = 64;
+	if (radius < 0) radius = 6400;
+	if (horizontalBlockCheckInterval <= 0) horizontalBlockCheckInterval = 64;
+	if (verticalBlockCheckInterval <= 0) verticalBlockCheckInterval = 64;
+	Pair<BlockPos, Holder<Biome>> targetBiomePos = targetDimension.findClosestBiome3d((
+		biome -> biome.value() == targetBiome.get()),
+	    originPos,
+	    radius,
+	    horizontalBlockCheckInterval,
+	    verticalBlockCheckInterval
+	);
+	if (targetBiomePos != null) return Optional.of(targetBiomePos.getFirst());
+	else {
+	    return Optional.empty();
+	}
     }
 
     private Optional<Pair<BlockPos, Structure>> getStructurePos(ServerLevel world, Power power) {
-        NamespacedKey key = NamespacedKey.fromString(power.getString("structure"));
-        Registry<Structure> structureRegistry = CraftRegistry.getMinecraftRegistry().registry(Registries.STRUCTURE).get();
-        ResourceKey<Structure> stRk = GenesisMC.server.registryAccess().registry(Registries.STRUCTURE).get().getResourceKey(structureRegistry.get(CraftNamespacedKey.toMinecraft(key))).get();
-        HolderSet<Structure> structureHolderSet = null;
+	NamespacedKey key = NamespacedKey.fromString(power.getString("structure"));
+	Registry<Structure> structureRegistry = CraftRegistry.getMinecraftRegistry().registry(Registries.STRUCTURE).get();
+	ResourceKey<Structure> stRk = GenesisMC.server.registryAccess().registry(Registries.STRUCTURE).get().getResourceKey(structureRegistry.get(CraftNamespacedKey.toMinecraft(key))).get();
+	HolderSet<Structure> structureHolderSet = null;
 
-        if (stRk != null) {
-            var entry = structureRegistry.getHolder(stRk);
-            if (entry.isPresent()) {
-                structureHolderSet = HolderSet.direct(entry.get());
-            }
-        }
+	if (stRk != null) {
+	    var entry = structureRegistry.getHolder(stRk);
+	    if (entry.isPresent()) {
+		structureHolderSet = HolderSet.direct(entry.get());
+	    }
+	}
 
-        BlockPos center = new BlockPos(0, 70, 0);
+	BlockPos center = new BlockPos(0, 70, 0);
 
-        Pair<BlockPos, Holder<Structure>> struPos = world.getChunkSource().getGenerator().findNearestMapStructure(world, structureHolderSet, center, 100, false);
+	Pair<BlockPos, Holder<Structure>> struPos = world.getChunkSource().getGenerator().findNearestMapStructure(world, structureHolderSet, center, 100, false);
 
-        BlockPos taStrPos = struPos.getFirst();
-        ChunkPos taStrChPos = new ChunkPos(taStrPos.getX() >> 4, taStrPos.getZ() >> 4);
-        StructureStart start = world.structureManager().getStartForStructure(SectionPos.of(taStrChPos, 0), struPos.getSecond().value(), world.getChunk(taStrPos));
+	BlockPos taStrPos = struPos.getFirst();
+	ChunkPos taStrChPos = new ChunkPos(taStrPos.getX() >> 4, taStrPos.getZ() >> 4);
+	StructureStart start = world.structureManager().getStartForStructure(SectionPos.of(taStrChPos, 0), struPos.getSecond().value(), world.getChunk(taStrPos));
 
-        return Optional.of(new Pair<>(taStrPos, start.getStructure()));
+	return Optional.of(new Pair<>(taStrPos, start.getStructure()));
 
     }
 
     private Optional<Vec3> getSpawnPos(ServerLevel targetDimension, BlockPos originPos, int range, Power power, Entity entity) {
-        if (!power.isPresent("structure")) return getValidSpawn(targetDimension, originPos, range, entity);
+	if (!power.isPresent("structure")) return getValidSpawn(targetDimension, originPos, range, entity);
 
-        Optional<Pair<BlockPos, Structure>> targetStructure = getStructurePos(targetDimension, power);
-        if (targetStructure.isEmpty()) return Optional.empty();
+	Optional<Pair<BlockPos, Structure>> targetStructure = getStructurePos(targetDimension, power);
+	if (targetStructure.isEmpty()) return Optional.empty();
 
-        BlockPos targetStructurePos = targetStructure.get().getFirst();
-        ChunkPos targetStructureChunkPos = new ChunkPos(targetStructurePos.getX() >> 4, targetStructurePos.getZ() >> 4);
+	BlockPos targetStructurePos = targetStructure.get().getFirst();
+	ChunkPos targetStructureChunkPos = new ChunkPos(targetStructurePos.getX() >> 4, targetStructurePos.getZ() >> 4);
 
-        StructureStart targetStructureStart = targetDimension.structureManager().getStartForStructure(SectionPos.of(targetStructureChunkPos, 0), targetStructure.get().getSecond(), targetDimension.getChunk(targetStructurePos));
-        if (targetStructureStart == null) return Optional.empty();
+	StructureStart targetStructureStart = targetDimension.structureManager().getStartForStructure(SectionPos.of(targetStructureChunkPos, 0), targetStructure.get().getSecond(), targetDimension.getChunk(targetStructurePos));
+	if (targetStructureStart == null) return Optional.empty();
 
-        BlockPos targetStructureCenter = new BlockPos(targetStructureStart.getBoundingBox().getCenter());
-        return getValidSpawn(targetDimension, targetStructureCenter, range, entity);
+	BlockPos targetStructureCenter = new BlockPos(targetStructureStart.getBoundingBox().getCenter());
+	return getValidSpawn(targetDimension, targetStructureCenter, range, entity);
 
     }
 
     private Optional<Vec3> getValidSpawn(ServerLevel targetDimension, BlockPos startPos, int range, Entity entity) {
+	//  The 'direction' vector that determines the direction of the iteration
+	int dx = 1;
+	int dz = 0;
 
-        //  The 'direction' vector that determines the direction of the iteration
-        int dx = 1;
-        int dz = 0;
+	//  The length of the current segment
+	int segmentLength = 1;
 
-        //  The length of the current segment
-        int segmentLength = 1;
+	//  The center of the structure/dimension
+	int center = startPos.getY();
 
-        //  The center of the structure/dimension
-        int center = startPos.getY();
+	//  The valid spawn position and (mutable) starting position
+	Vec3 spawnPos;
+	BlockPos.MutableBlockPos mutableStartPos = startPos.mutable();
 
-        //  The valid spawn position and (mutable) starting position
-        Vec3 spawnPos;
-        BlockPos.MutableBlockPos mutableStartPos = startPos.mutable();
+	//  The current position
+	int x = startPos.getX();
+	int z = startPos.getZ();
 
-        //  The current position
-        int x = startPos.getX();
-        int z = startPos.getZ();
+	//  Determines how much of the current segment has been passed
+	int segmentPassed = 0;
 
-        //  Determines how much of the current segment has been passed
-        int segmentPassed = 0;
+	//  Vertical offsets
+	int upOffset = 0;
+	int downOffset = 0;
 
-        //  Vertical offsets
-        int upOffset = 0;
-        int downOffset = 0;
+	//  The min and max Y values of the target dimension
+	int maxY = targetDimension.getLogicalHeight();
+	int minY = targetDimension.dimensionTypeRegistration().value().minY();
 
-        //  The min and max Y values of the target dimension
-        int maxY = targetDimension.getLogicalHeight();
-        int minY = targetDimension.dimensionTypeRegistration().value().minY();
+	while (upOffset < maxY || downOffset > minY) {
+	    for (int steps = 0; steps < range; ++steps) {
+		//  Make a step by adding the 'direction' vector to the current position
+		x += dx;
+		z += dz;
+		mutableStartPos.setX(x);
+		mutableStartPos.setZ(z);
 
-        while (upOffset < maxY || downOffset > minY) {
+		//  Increment how much of the current segment has been passed
+		++segmentPassed;
 
-            for (int steps = 0; steps < range; ++steps) {
+		//  Offset the Y axis (up and down) of the current position to check for valid spawn positions
+		mutableStartPos.setY(center + upOffset);
+		spawnPos = DismountHelper.findSafeDismountLocation(entity.getType(), targetDimension, mutableStartPos, true);
+		if (spawnPos != null) return Optional.of(spawnPos);
 
-                //  Make a step by adding the 'direction' vector to the current position
-                x += dx;
-                z += dz;
-                mutableStartPos.setX(x);
-                mutableStartPos.setZ(z);
+		mutableStartPos.setY(center + downOffset);
+		spawnPos = DismountHelper.findSafeDismountLocation(entity.getType(), targetDimension, mutableStartPos, true);
+		if (spawnPos != null) return Optional.of(spawnPos);
 
-                //  Increment how much of the current segment has been passed
-                ++segmentPassed;
+		//  If the current segment has not been passed, continue the loop
+		if (segmentPassed != segmentLength) continue;
 
-                //  Offset the Y axis (up and down) of the current position to check for valid spawn positions
-                mutableStartPos.setY(center + upOffset);
-                spawnPos = DismountHelper.findSafeDismountLocation(entity.getType(), targetDimension, mutableStartPos, true);
-                if (spawnPos != null) return Optional.of(spawnPos);
+		//  Otherwise, reset the value of how much of the current segment has been passed
+		segmentPassed = 0;
 
-                mutableStartPos.setY(center + downOffset);
-                spawnPos = DismountHelper.findSafeDismountLocation(entity.getType(), targetDimension, mutableStartPos, true);
-                if (spawnPos != null) return Optional.of(spawnPos);
+		//  'Rotate' the 'direction' vector
+		int bdx = dx;
+		dx = -dz;
+		dz = bdx;
 
-                //  If the current segment has not been passed, continue the loop
-                if (segmentPassed != segmentLength) continue;
+		//  Increment the length of the current segment if necessary
+		if (dz == 0) ++segmentLength;
 
-                //  Otherwise, reset the value of how much of the current segment has been passed
-                segmentPassed = 0;
+	    }
 
-                //  'Rotate' the 'direction' vector
-                int bdx = dx;
-                dx = -dz;
-                dz = bdx;
+	    //  Increment/decrement the up/down offsets until it's no longer less/greater than the max/min Y
+	    if (upOffset < maxY) upOffset++;
+	    if (downOffset > minY) downOffset--;
 
-                //  Increment the length of the current segment if necessary
-                if (dz == 0) ++segmentLength;
+	}
 
-            }
-
-            //  Increment/decrement the up/down offsets until it's no longer less/greater than the max/min Y
-            if (upOffset < maxY) upOffset++;
-            if (downOffset > minY) downOffset--;
-
-        }
-
-        return Optional.empty();
+	return Optional.empty();
 
     }
 
     public enum SpawnStrategy {
 
-        CENTER((blockPos, center, multiplier) -> new BlockPos(0, center, 0)),
-        DEFAULT(
-            (blockPos, center, multiplier) -> {
-                BlockPos.MutableBlockPos mut = new BlockPos.MutableBlockPos();
+	CENTER((blockPos, center, multiplier) -> new BlockPos(0, center, 0)),
+	DEFAULT(
+	    (blockPos, center, multiplier) -> {
+		BlockPos.MutableBlockPos mut = new BlockPos.MutableBlockPos();
 
-                if (multiplier != 0)
-                    mut.set(blockPos.getX() * multiplier, blockPos.getY(), blockPos.getZ() * multiplier);
-                else mut.set(blockPos);
+		if (multiplier != 0)
+		    mut.set(blockPos.getX() * multiplier, blockPos.getY(), blockPos.getZ() * multiplier);
+		else mut.set(blockPos);
 
-                return mut;
+		return mut;
 
-            }
-        );
+	    }
+	);
 
-        final TriFunction<BlockPos, Integer, Float, BlockPos> strategyApplier;
+	final TriFunction<BlockPos, Integer, Float, BlockPos> strategyApplier;
 
-        SpawnStrategy(TriFunction<BlockPos, Integer, Float, BlockPos> strategyApplier) {
-            this.strategyApplier = strategyApplier;
-        }
+	SpawnStrategy(TriFunction<BlockPos, Integer, Float, BlockPos> strategyApplier) {
+	    this.strategyApplier = strategyApplier;
+	}
 
-        public BlockPos apply(BlockPos blockPos, int center, float multiplier) {
-            return strategyApplier.apply(blockPos, center, multiplier);
-        }
+	public BlockPos apply(BlockPos blockPos, int center, float multiplier) {
+	    return strategyApplier.apply(blockPos, center, multiplier);
+	}
 
     }
 }

@@ -20,29 +20,29 @@ public class PreventDeath extends CraftPower implements Listener {
 
     @EventHandler
     public void run(PlayerDeathEvent e) {
-        if (prevent_death.contains(e.getPlayer())) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e.getEntity().getLastDamageCause())) {
-                        e.setCancelled(true);
-                        if (!getPlayersWithPower().contains(e.getPlayer())) return;
-                        setActive(e.getPlayer(), power.getTag(), true);
-                    } else {
-                        if (!getPlayersWithPower().contains(e.getPlayer())) return;
-                        setActive(e.getPlayer(), power.getTag(), false);
-                    }
-                }
-            }
-        }
+	if (prevent_death.contains(e.getPlayer())) {
+	    for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+		for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getType(), layer)) {
+		    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e.getEntity().getLastDamageCause())) {
+			e.setCancelled(true);
+			if (!getPlayersWithPower().contains(e.getPlayer())) return;
+			setActive(e.getPlayer(), power.getTag(), true);
+		    } else {
+			if (!getPlayersWithPower().contains(e.getPlayer())) return;
+			setActive(e.getPlayer(), power.getTag(), false);
+		    }
+		}
+	    }
+	}
     }
 
     @Override
     public String getType() {
-        return "apoli:prevent_death";
+	return "apoli:prevent_death";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return prevent_death;
+	return prevent_death;
     }
 }

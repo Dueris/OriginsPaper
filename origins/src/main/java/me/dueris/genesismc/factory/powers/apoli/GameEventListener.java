@@ -19,35 +19,35 @@ public class GameEventListener extends CraftPower implements Listener {
 
     @EventHandler
     public void event(GenericGameEvent e) {
-        if (e.getEntity() == null) return;
-        if (e.getEntity() instanceof Player p) {
-            if (!this.getPlayersWithPower().contains(p)) return;
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        String event = power.getStringOrDefault("event", null);
-                        if (event == null)
-                            throw new IllegalArgumentException("Event for game_event_listener must not be null");
-                        if (event.contains(":")) {
-                            event = event.split(":")[1];
-                        }
-                        if (e.getEvent().toString().equals(event)) {
-                            Actions.executeEntity(e.getEntity(), power.getJsonObject("entity_action"));
-                        }
-                    }
-                }
-            }
-        }
+	if (e.getEntity() == null) return;
+	if (e.getEntity() instanceof Player p) {
+	    if (!this.getPlayersWithPower().contains(p)) return;
+	    for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+		for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+		    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+			String event = power.getStringOrDefault("event", null);
+			if (event == null)
+			    throw new IllegalArgumentException("Event for game_event_listener must not be null");
+			if (event.contains(":")) {
+			    event = event.split(":")[1];
+			}
+			if (e.getEvent().toString().equals(event)) {
+			    Actions.executeEntity(e.getEntity(), power.getJsonObject("entity_action"));
+			}
+		    }
+		}
+	    }
+	}
     }
 
     @Override
     public String getType() {
-        return "apoli:game_event_listener";
+	return "apoli:game_event_listener";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-        return game_event_listener;
+	return game_event_listener;
     }
 
 }

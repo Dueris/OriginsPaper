@@ -13,36 +13,36 @@ import java.util.function.BiPredicate;
 
 public class FluidConditions {
     public void prep() {
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("empty"), (condition, fluid) -> fluid.defaultFluidState().isEmpty()));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, fluid) -> {
-            NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag"));
-            TagKey key = TagKey.create(net.minecraft.core.registries.Registries.FLUID, CraftNamespacedKey.toMinecraft(tag));
-            return fluid.is(key);
-        }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("still"), (condition, fluid) -> fluid.defaultFluidState().isSource()));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid"), (condition, fluid) -> fluid.builtInRegistryHolder().key().location().equals(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(condition.getString("fluid"))))));
+	register(new ConditionFactory(GenesisMC.apoliIdentifier("empty"), (condition, fluid) -> fluid.defaultFluidState().isEmpty()));
+	register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, fluid) -> {
+	    NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag"));
+	    TagKey key = TagKey.create(net.minecraft.core.registries.Registries.FLUID, CraftNamespacedKey.toMinecraft(tag));
+	    return fluid.is(key);
+	}));
+	register(new ConditionFactory(GenesisMC.apoliIdentifier("still"), (condition, fluid) -> fluid.defaultFluidState().isSource()));
+	register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid"), (condition, fluid) -> fluid.builtInRegistryHolder().key().location().equals(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(condition.getString("fluid"))))));
     }
 
     private void register(ConditionFactory factory) {
-        GenesisMC.getPlugin().registry.retrieve(Registries.FLUID_CONDITION).register(factory);
+	GenesisMC.getPlugin().registry.retrieve(Registries.FLUID_CONDITION).register(factory);
     }
 
     public class ConditionFactory implements Registrable {
-        NamespacedKey key;
-        BiPredicate<FactoryJsonObject, Fluid> test;
+	NamespacedKey key;
+	BiPredicate<FactoryJsonObject, Fluid> test;
 
-        public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, Fluid> test) {
-            this.key = key;
-            this.test = test;
-        }
+	public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, Fluid> test) {
+	    this.key = key;
+	    this.test = test;
+	}
 
-        public boolean test(FactoryJsonObject condition, net.minecraft.world.level.material.Fluid tester) {
-            return test.test(condition, tester);
-        }
+	public boolean test(FactoryJsonObject condition, net.minecraft.world.level.material.Fluid tester) {
+	    return test.test(condition, tester);
+	}
 
-        @Override
-        public NamespacedKey getKey() {
-            return key;
-        }
+	@Override
+	public NamespacedKey getKey() {
+	    return key;
+	}
     }
 }

@@ -55,154 +55,154 @@ public class OriginPlayerAccessor implements Listener {
     public static ArrayList<Player> currentSprintingPlayersFallback = new ArrayList<>();
 
     public static void moveEquipmentInventory(Player player, EquipmentSlot equipmentSlot) {
-        ItemStack item = player.getInventory().getItem(equipmentSlot);
+	ItemStack item = player.getInventory().getItem(equipmentSlot);
 
-        if (item != null && item.getType() != Material.AIR) {
-            // Find an empty slot in the player's inventory
-            int emptySlot = player.getInventory().firstEmpty();
+	if (item != null && item.getType() != Material.AIR) {
+	    // Find an empty slot in the player's inventory
+	    int emptySlot = player.getInventory().firstEmpty();
 
-            if (emptySlot != -1) {
-                // Set the equipment slot to empty
-                player.getInventory().setItem(equipmentSlot, null);
+	    if (emptySlot != -1) {
+		// Set the equipment slot to empty
+		player.getInventory().setItem(equipmentSlot, null);
 
-                // Move the item to the empty slot
-                player.getInventory().setItem(emptySlot, item);
-            }
-        }
+		// Move the item to the empty slot
+		player.getInventory().setItem(emptySlot, item);
+	    }
+	}
     }
 
     public static boolean hasOrigin(Player player, String originTag) {
-        if (OriginDataContainer.getDataMap().containsKey(player)) {
-            HashMap<Layer, Origin> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(player));
-            for (Origin origin : origins.values()) if (origin.getTag().equals(originTag)) return true;
-        }
-        return false;
+	if (OriginDataContainer.getDataMap().containsKey(player)) {
+	    HashMap<Layer, Origin> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(player));
+	    for (Origin origin : origins.values()) if (origin.getTag().equals(originTag)) return true;
+	}
+	return false;
     }
 
     public static Origin getOrigin(Player player, Layer layer) {
-        if (!OriginDataContainer.getDataMap().containsKey(player)) {
-            if (OriginDataContainer.getLayer(player) == null) {
-                setOrigin(player, layer, CraftApoli.emptyOrigin());
-                return CraftApoli.emptyOrigin();
-            }
-        }
-        return CraftApoli.toOrigin(OriginDataContainer.getLayer(player), layer);
+	if (!OriginDataContainer.getDataMap().containsKey(player)) {
+	    if (OriginDataContainer.getLayer(player) == null) {
+		setOrigin(player, layer, CraftApoli.emptyOrigin());
+		return CraftApoli.emptyOrigin();
+	    }
+	}
+	return CraftApoli.toOrigin(OriginDataContainer.getLayer(player), layer);
     }
 
     public static HashMap<Layer, Origin> getOrigin(Player player) {
-        return CraftApoli.toOrigin(OriginDataContainer.getLayer(player));
+	return CraftApoli.toOrigin(OriginDataContainer.getLayer(player));
     }
 
     public static void setupPowers(Player p) {
-        OriginDataContainer.loadData(p);
-        String[] layers = OriginDataContainer.getLayer(p).split("\n");
-        HashMap<Layer, ConcurrentLinkedQueue<Power>> map = new HashMap<>();
-        for (String layer : layers) {
-            String[] layerData = layer.split("\\|");
-            Layer layerContainer = CraftApoli.getLayerFromTag(layerData[0]);
-            ConcurrentLinkedQueue<Power> powers = new ConcurrentLinkedQueue<Power>();
-            // setup powers
-            for (String dataPiece : layerData) {
-                if (layerData.length == 1) continue;
-                Power powerCon = (Power) GenesisMC.getPlugin().registry.retrieve(Registries.POWER).get(NamespacedKey.fromString(dataPiece));
-                if (powerCon != null) {
-                    if (powers.contains(powerCon)) continue;
-                    powers.add(powerCon);
-                    if (powerCon.isOriginMultipleParent()) {
-                        ArrayList<Power> nestedPowers = CraftApoli.getNestedPowers(powerCon);
-                        for (Power nested : nestedPowers) {
-                            if (nested != null) powers.add(nested);
-                        }
-                    }
-                }
-            }
-            map.put(layerContainer, powers);
-        }
-        playerPowerMapping.put(p, map);
+	OriginDataContainer.loadData(p);
+	String[] layers = OriginDataContainer.getLayer(p).split("\n");
+	HashMap<Layer, ConcurrentLinkedQueue<Power>> map = new HashMap<>();
+	for (String layer : layers) {
+	    String[] layerData = layer.split("\\|");
+	    Layer layerContainer = CraftApoli.getLayerFromTag(layerData[0]);
+	    ConcurrentLinkedQueue<Power> powers = new ConcurrentLinkedQueue<Power>();
+	    // setup powers
+	    for (String dataPiece : layerData) {
+		if (layerData.length == 1) continue;
+		Power powerCon = (Power) GenesisMC.getPlugin().registry.retrieve(Registries.POWER).get(NamespacedKey.fromString(dataPiece));
+		if (powerCon != null) {
+		    if (powers.contains(powerCon)) continue;
+		    powers.add(powerCon);
+		    if (powerCon.isOriginMultipleParent()) {
+			ArrayList<Power> nestedPowers = CraftApoli.getNestedPowers(powerCon);
+			for (Power nested : nestedPowers) {
+			    if (nested != null) powers.add(nested);
+			}
+		    }
+		}
+	    }
+	    map.put(layerContainer, powers);
+	}
+	playerPowerMapping.put(p, map);
     }
 
     public static ArrayList<Power> getMultiPowerFileFromType(Player p, String powerType) {
-        ArrayList<Power> powers = new ArrayList<>();
-        if (playerPowerMapping.get(p) == null) return powers;
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (layer == null) continue;
-            for (Power power : playerPowerMapping.get(p).get(layer)) {
-                if (power == null) continue;
-                if (power.getType().equals(powerType)) powers.add(power);
-            }
-        }
-        return powers;
+	ArrayList<Power> powers = new ArrayList<>();
+	if (playerPowerMapping.get(p) == null) return powers;
+	for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+	    if (layer == null) continue;
+	    for (Power power : playerPowerMapping.get(p).get(layer)) {
+		if (power == null) continue;
+		if (power.getType().equals(powerType)) powers.add(power);
+	    }
+	}
+	return powers;
     }
 
     public static ArrayList<Power> getMultiPowerFileFromType(Player p, String powerType, Layer layer) {
-        ArrayList<Power> powers = new ArrayList<>();
-        if (playerPowerMapping.get(p) == null) return powers;
-        for (Power power : playerPowerMapping.get(p).get(layer)) {
-            if (power == null) continue;
-            if (power.getType().equals(powerType)) powers.add(power);
-        }
-        return powers;
+	ArrayList<Power> powers = new ArrayList<>();
+	if (playerPowerMapping.get(p) == null) return powers;
+	for (Power power : playerPowerMapping.get(p).get(layer)) {
+	    if (power == null) continue;
+	    if (power.getType().equals(powerType)) powers.add(power);
+	}
+	return powers;
     }
 
     public static boolean hasPower(Player p, String powerKey) {
-        if (playerPowerMapping.containsKey(p)) {
-            for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
-                for (Power power : playerPowerMapping.get(p).get(layerContainer)) {
-                    if (power.getTag().equalsIgnoreCase(powerKey)) return true;
-                }
-            }
-        }
-        return false;
+	if (playerPowerMapping.containsKey(p)) {
+	    for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
+		for (Power power : playerPowerMapping.get(p).get(layerContainer)) {
+		    if (power.getTag().equalsIgnoreCase(powerKey)) return true;
+		}
+	    }
+	}
+	return false;
     }
 
     public static void setOrigin(Player player, Layer layer, Origin origin) {
-        NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originLayer");
-        HashMap<Layer, Origin> origins = CraftApoli.toOrigin(player.getPersistentDataContainer().get(key, PersistentDataType.STRING));
-        if (!CraftApoli.getLayersFromRegistry().contains(layer)) {
-            return;
-        }
+	NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originLayer");
+	HashMap<Layer, Origin> origins = CraftApoli.toOrigin(player.getPersistentDataContainer().get(key, PersistentDataType.STRING));
+	if (!CraftApoli.getLayersFromRegistry().contains(layer)) {
+	    return;
+	}
 
-        if (!origin.getTag().equals(CraftApoli.emptyOrigin().getTag())) {
-            try {
-                unassignPowers(player, layer);
-            } catch (NotFoundException e) {
-                throw new RuntimeException();
-            }
-        }
-        for (Layer layers : origins.keySet()) {
-            if (layer.getTag().equals(layers.getTag())) origins.replace(layers, origin);
-        }
-        player.getPersistentDataContainer().set(key, PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(origins));
-        OriginDataContainer.loadData(player);
-        setupPowers(player);
+	if (!origin.getTag().equals(CraftApoli.emptyOrigin().getTag())) {
+	    try {
+		unassignPowers(player, layer);
+	    } catch (NotFoundException e) {
+		throw new RuntimeException();
+	    }
+	}
+	for (Layer layers : origins.keySet()) {
+	    if (layer.getTag().equals(layers.getTag())) origins.replace(layers, origin);
+	}
+	player.getPersistentDataContainer().set(key, PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(origins));
+	OriginDataContainer.loadData(player);
+	setupPowers(player);
 
-        String originTag = origin.getTag();
-        if (!originTag.equals(CraftApoli.emptyOrigin().getTag())) Metrics.originPopularity(player);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                try {
-                    assignPowers(player, layer);
-                    // Extra precaution due to gravity messing up on origin switch
-                    if (!new GravityPower().getPlayersWithPower().contains(player)) {
-                        new GravityPower().doesntHavePower(player);
-                    }
-                } catch (InstantiationException | NotFoundException | SecurityException | NoSuchFieldException |
-                         IllegalArgumentException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }.runTaskLater(GenesisMC.getPlugin(), 3L);
-        inChoosingLayer.remove(player);
+	String originTag = origin.getTag();
+	if (!originTag.equals(CraftApoli.emptyOrigin().getTag())) Metrics.originPopularity(player);
+	new BukkitRunnable() {
+	    @Override
+	    public void run() {
+		try {
+		    assignPowers(player, layer);
+		    // Extra precaution due to gravity messing up on origin switch
+		    if (!new GravityPower().getPlayersWithPower().contains(player)) {
+			new GravityPower().doesntHavePower(player);
+		    }
+		} catch (InstantiationException | NotFoundException | SecurityException | NoSuchFieldException |
+			 IllegalArgumentException | IllegalAccessException e) {
+		    throw new RuntimeException(e);
+		}
+	    }
+	}.runTaskLater(GenesisMC.getPlugin(), 3L);
+	inChoosingLayer.remove(player);
     }
 
     public static boolean isInPhantomForm(Player player) {
-        return player.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform")) ? player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN) : false;
+	return player.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform")) ? player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN) : false;
     }
 
     public static ConcurrentLinkedQueue<ApoliPower> getPowersApplied(Player p) {
-        if (!powersAppliedList.containsKey(p)) powersAppliedList.put(p, new ConcurrentLinkedQueue<ApoliPower>());
-        return powersAppliedList.get(p);
+	if (!powersAppliedList.containsKey(p)) powersAppliedList.put(p, new ConcurrentLinkedQueue<ApoliPower>());
+	return powersAppliedList.get(p);
     }
 
     /**
@@ -215,115 +215,117 @@ public class OriginPlayerAccessor implements Listener {
      * @param p
      */
     public static void checkForDuplicates(Player p) {
-        List<NamespacedKey> keys = new ArrayList<>();
-        List<ApoliPower> duplicates = new ArrayList<>();
-        for (ApoliPower power : getPowersApplied(p)) {
-            if (keys.contains(power.getKey())) {
-                duplicates.add(power);
-            } else {
-                keys.add(power.getKey());
-            }
-        }
-        duplicates.forEach(power -> getPowersApplied(p).remove(power));
+	List<NamespacedKey> keys = new ArrayList<>();
+	List<ApoliPower> duplicates = new ArrayList<>();
+	for (ApoliPower power : getPowersApplied(p)) {
+	    if (keys.contains(power.getKey())) {
+		duplicates.add(power);
+	    } else {
+		keys.add(power.getKey());
+	    }
+	}
+	duplicates.forEach(power -> getPowersApplied(p).remove(power));
     }
 
     public static void applyPower(Player player, Power power, boolean suppress) {
-        if (power == null) return;
-        String name = power.getType().equalsIgnoreCase("apoli:simple") ? power.getTag() : power.getType();
-        ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
-        if (c != null) {
-            c.getPlayersWithPower().add(player);
-            if (!powersAppliedList.containsKey(player))
-                powersAppliedList.put(player, new ConcurrentLinkedQueue<ApoliPower>(List.of(c)));
-            else powersAppliedList.get(player).add(c);
-            if (!suppress) {
-                if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true"))
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
-            }
-            new PowerUpdateEvent(player, power, false).callEvent();
-        }
+	if (power == null) return;
+	String name = power.getType().equalsIgnoreCase("apoli:simple") ? power.getTag() : power.getType();
+	ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
+	if (c != null) {
+	    c.getPlayersWithPower().add(player);
+	    if (!powersAppliedList.containsKey(player))
+		powersAppliedList.put(player, new ConcurrentLinkedQueue<ApoliPower>(List.of(c)));
+	    else powersAppliedList.get(player).add(c);
+	    if (!suppress) {
+		if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true"))
+		    Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
+	    }
+	    new PowerUpdateEvent(player, power, false).callEvent();
+	}
     }
 
     public static void removePower(Player player, Power power, boolean suppress) {
-        if (power == null) return;
-        String name = power.getType().equalsIgnoreCase("apoli:simple") ? power.getTag() : power.getType();
-        ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
-        if (c != null) {
-            powersAppliedList.get(player).remove(c);
-            c.getPlayersWithPower().remove(player);
-            if (!suppress) {
-                if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true"))
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
-            }
-            new PowerUpdateEvent(player, power, true).callEvent();
-        }
+	if (power == null) return;
+	String name = power.getType().equalsIgnoreCase("apoli:simple") ? power.getTag() : power.getType();
+	ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
+	if (c != null) {
+	    powersAppliedList.get(player).remove(c);
+	    c.getPlayersWithPower().remove(player);
+	    if (!suppress) {
+		if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true"))
+		    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
+	    }
+	    new PowerUpdateEvent(player, power, true).callEvent();
+	}
     }
 
     public static void unassignPowers(@NotNull Player player) {
-        HashMap<Layer, Origin> origins = getOrigin(player);
-        for (Layer layer : origins.keySet()) {
-            try {
-                unassignPowers(player, layer);
-                hasPowers.remove(player);
-            } catch (NotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
+	HashMap<Layer, Origin> origins = getOrigin(player);
+	for (Layer layer : origins.keySet()) {
+	    try {
+		unassignPowers(player, layer);
+		hasPowers.remove(player);
+	    } catch (NotFoundException e) {
+		throw new RuntimeException(e);
+	    }
+	}
     }
 
     public static void assignPowers(@NotNull Player player) {
-        HashMap<Layer, Origin> origins = getOrigin(player);
-        for (Layer layer : origins.keySet()) {
-            try {
-                assignPowers(player, layer);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException |
-                     SecurityException | NotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
+	HashMap<Layer, Origin> origins = getOrigin(player);
+	for (Layer layer : origins.keySet()) {
+	    try {
+		assignPowers(player, layer);
+	    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException |
+		     SecurityException | NotFoundException e) {
+		throw new RuntimeException(e);
+	    }
+	}
     }
 
     public static void unassignPowers(@NotNull Player player, Layer layer) throws NotFoundException {
-        try {
-            CompletableFuture.runAsync(() -> {
-                if (layer == null) {
-                    GenesisMC.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
-                    return;
-                }
-                for (Power power : playerPowerMapping.get(player).get(layer)) {
-                    removePower(player, power, false);
-                }
-            }).thenRun(() -> {
-                OriginDataContainer.unloadData(player);
-            }).get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+
+	try {
+	    CompletableFuture.runAsync(() -> {
+		if (layer == null) {
+		    GenesisMC.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
+		    return;
+		}
+		for (Power power : playerPowerMapping.get(player).get(layer)) {
+		    removePower(player, power, false);
+		}
+	    }).thenRun(() -> {
+		OriginDataContainer.unloadData(player);
+	    }).get();
+	} catch (InterruptedException | ExecutionException e) {
+	    e.printStackTrace();
+	}
     }
 
     public static void assignPowers(@NotNull Player player, Layer layer) throws InstantiationException, IllegalAccessException, NotFoundException, IllegalArgumentException, NoSuchFieldException, SecurityException {
-        try {
-            CompletableFuture.runAsync(() -> {
-                if (layer == null) {
-                    GenesisMC.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
-                    return;
-                }
-                for (Power power : playerPowerMapping.get(player).get(layer)) {
-                    applyPower(player, power, false);
-                }
-            }).thenRun(() -> {
-                OriginDataContainer.loadData(player);
-                setupPowers(player);
-                hasPowers.add(player);
-            }).get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+
+	try {
+	    CompletableFuture.runAsync(() -> {
+		if (layer == null) {
+		    GenesisMC.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
+		    return;
+		}
+		for (Power power : playerPowerMapping.get(player).get(layer)) {
+		    applyPower(player, power, false);
+		}
+	    }).thenRun(() -> {
+		OriginDataContainer.loadData(player);
+		setupPowers(player);
+		hasPowers.add(player);
+	    }).get();
+	} catch (InterruptedException | ExecutionException e) {
+	    e.printStackTrace();
+	}
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void sprint(PlayerToggleSprintEvent e) {
-        if (e.isSprinting()) currentSprintingPlayersFallback.add(e.getPlayer());
-        else currentSprintingPlayersFallback.remove(e.getPlayer());
+	if (e.isSprinting()) currentSprintingPlayersFallback.add(e.getPlayer());
+	else currentSprintingPlayersFallback.remove(e.getPlayer());
     }
 }

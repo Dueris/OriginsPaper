@@ -19,69 +19,71 @@ import java.util.concurrent.ExecutionException;
 public abstract class CraftPower extends BukkitRunnable implements ApoliPower {
 
     protected static List<Class<CraftPower>> findCraftPowerClasses() throws IOException {
-        CompletableFuture<List<Class<CraftPower>>> future = CompletableFuture.supplyAsync(() -> {
-            List<Class<CraftPower>> classes = new ArrayList<>();
-            try (ScanResult result = new ClassGraph().whitelistPackages("me.dueris.genesismc.factory.powers").enableClassInfo().scan()) {
-                for (Class<CraftPower> power : result.getSubclasses(CraftPower.class).loadClasses(CraftPower.class)) {
-                    if (!power.isInterface() && !power.isEnum() && !(power.isAssignableFrom(DontRegister.class) || DontRegister.class.isAssignableFrom(power))) {
-                        tryPreloadClass(power);
-                        classes.add(power);
-                    }
-                }
-            }
-            return classes;
-        });
 
-        try {
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
+	CompletableFuture<List<Class<CraftPower>>> future = CompletableFuture.supplyAsync(() -> {
+	    List<Class<CraftPower>> classes = new ArrayList<>();
+	    try (ScanResult result = new ClassGraph().whitelistPackages("me.dueris.genesismc.factory.powers").enableClassInfo().scan()) {
+		for (Class<CraftPower> power : result.getSubclasses(CraftPower.class).loadClasses(CraftPower.class)) {
+		    if (!power.isInterface() && !power.isEnum() && !(power.isAssignableFrom(DontRegister.class) || DontRegister.class.isAssignableFrom(power))) {
+			tryPreloadClass(power);
+			classes.add(power);
+		    }
+		}
+	    }
+	    return classes;
+	});
+
+	try {
+	    return future.get();
+	} catch (InterruptedException | ExecutionException e) {
+	    e.printStackTrace();
+	}
+	return null;
     }
 
     public static void tryPreloadClass(Class<?> clz) {
-        try {
-            Class.forName(clz.getName());
-        } catch (Exception e) {
-            // Silence
-        }
+	try {
+	    Class.forName(clz.getName());
+	} catch (Exception e) {
+	    // Silence
+	}
     }
 
     private static void registerBuiltinPowers() {
-        try {
-            for (Class<CraftPower> c : CraftPower.findCraftPowerClasses()) {
-                if (CraftPower.class.isAssignableFrom(c)) {
-                    CraftPower instance = c.newInstance();
-                    GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).register(instance);
-                    if (instance instanceof Listener || Listener.class.isAssignableFrom(c)) {
-                        Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
-                    }
-                }
-            }
-            OriginSimpleContainer.registerPower(BounceSlimeBlock.class);
-            OriginSimpleContainer.registerPower(PiglinNoAttack.class);
-            OriginSimpleContainer.registerPower(ScareCreepers.class);
-            OriginSimpleContainer.registerPower(NoCobWebSlowdown.class);
-            OriginSimpleContainer.registerPower(LikeWater.class);
-            OriginSimpleContainer.registerPower(Bioluminescent.class);
-        } catch (IOException | ReflectiveOperationException e) {
-            e.printStackTrace();
-        }
+	try {
+	    for (Class<CraftPower> c : CraftPower.findCraftPowerClasses()) {
+		if (CraftPower.class.isAssignableFrom(c)) {
+		    CraftPower instance = c.newInstance();
+		    GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).register(instance);
+		    if (instance instanceof Listener || Listener.class.isAssignableFrom(c)) {
+			Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
+		    }
+		}
+	    }
+	    OriginSimpleContainer.registerPower(BounceSlimeBlock.class);
+	    OriginSimpleContainer.registerPower(PiglinNoAttack.class);
+	    OriginSimpleContainer.registerPower(ScareCreepers.class);
+	    OriginSimpleContainer.registerPower(NoCobWebSlowdown.class);
+	    OriginSimpleContainer.registerPower(LikeWater.class);
+	    OriginSimpleContainer.registerPower(Bioluminescent.class);
+	} catch (IOException | ReflectiveOperationException e) {
+	    e.printStackTrace();
+	}
     }
 
     public static void registerNewPower(Class<? extends CraftPower> c) throws InstantiationException, IllegalAccessException {
-        if (CraftPower.class.isAssignableFrom(c)) {
-            CraftPower instance = c.newInstance();
-            GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).register(instance);
-            if (instance instanceof Listener || Listener.class.isAssignableFrom(c)) {
-                Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
-            }
-        }
+
+	if (CraftPower.class.isAssignableFrom(c)) {
+	    CraftPower instance = c.newInstance();
+	    GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).register(instance);
+	    if (instance instanceof Listener || Listener.class.isAssignableFrom(c)) {
+		Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
+	    }
+	}
     }
 
     @Override
     public void run() {
-        // Do nothing, powers can override
+	// Do nothing, powers can override
     }
 }
