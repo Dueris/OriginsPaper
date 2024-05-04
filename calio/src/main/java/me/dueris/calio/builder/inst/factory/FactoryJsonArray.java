@@ -18,19 +18,19 @@ public class FactoryJsonArray {
 
     public FactoryElement[] asArray() {
         return this.handle.asList().stream()
-            .map(FactoryElement::fromJson)
-            .toArray(FactoryElement[]::new);
+                .map(FactoryElement::fromJson)
+                .toArray(FactoryElement[]::new);
     }
 
     public List<FactoryElement> asList() {
         return this.handle.asList().stream()
-            .map(FactoryElement::fromJson)
-            .collect(Collectors.toList());
+                .map(FactoryElement::fromJson)
+                .collect(Collectors.toList());
     }
 
     public List<FactoryJsonObject> asJsonObjectList() {
         return this.asList().stream().map(FactoryElement::toJsonObject)
-            .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     public List<FactoryNumber> asLongList() {

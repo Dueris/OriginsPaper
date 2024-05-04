@@ -155,6 +155,7 @@ public class FactoryJsonObject {
             }
             return new ItemStack(Material.valueOf(NamespacedKey.fromString(materialVal).asString().split(":")[1].toUpperCase()), amt);
         }
+        if (inst != null && inst.isString()) return new ItemStack(MiscUtils.getBukkitMaterial(inst.getString()));
         return new ItemStack(Material.PLAYER_HEAD, 1);
     }
 }

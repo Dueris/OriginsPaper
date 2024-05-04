@@ -10,8 +10,8 @@ public class FactoryObjectInstance extends TriPair {
         if (defaultVal != null) {
             if ((defaultVal.getClass() != type || !defaultVal.getClass().isAssignableFrom(type)) && !type.isAnnotationPresent(IgnoreFactoryValidationCheck.class)) {
                 CraftCalio.INSTANCE.getLogger().severe("Provided FactoryObjectInstance({oN}) default is not an instanceof provided class type : {c}"
-                    .replace("{oN}", objName)
-                    .replace("{c}", type.getSimpleName())
+                        .replace("{oN}", objName)
+                        .replace("{c}", type.getSimpleName())
                 );
             }
         }

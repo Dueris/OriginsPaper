@@ -30,11 +30,11 @@ public class JsonFactoryValidator {
                 }
                 if (!(obj.getClass().equals(instance.getType()) || obj.getClass().isAssignableFrom(instance.getType()) || obj.getClass().isInstance(instance.getType()))) {
                     CraftCalio.INSTANCE.getLogger().severe("Provided FactoryProvider({b}) has provided an invalid instance for object \"{a}\""
-                        .replace("{a}", instance.getObjName())
-                        .replace("{b}", factoryKey.asString())
+                            .replace("{a}", instance.getObjName())
+                            .replace("{b}", factoryKey.asString())
                     );
                     CraftCalio.INSTANCE.getLogger().severe("Object must be an instanceof \"{c}\""
-                        .replace("{c}", instance.getType().getSimpleName())
+                            .replace("{c}", instance.getType().getSimpleName())
                     );
                     return null;
                 }
@@ -43,8 +43,8 @@ public class JsonFactoryValidator {
                     cloned.putDefault(instance.getObjName(), instance.getDefaultValue());
                 } else {
                     CraftCalio.INSTANCE.getLogger().severe("Provided FactoryProvider({b}) is missing instance: {a}"
-                        .replace("{a}", instance.getObjName())
-                        .replace("{b}", factoryKey.asString())
+                            .replace("{a}", instance.getObjName())
+                            .replace("{b}", factoryKey.asString())
                     );
                     return null;
                 }

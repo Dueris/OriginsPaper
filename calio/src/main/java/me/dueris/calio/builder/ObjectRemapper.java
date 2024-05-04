@@ -15,18 +15,17 @@ import java.util.HashMap;
 
 public class ObjectRemapper {
     /**
+     * Allows telling the remapper to swap out type values
+     */
+    public static final HashMap<String, String> typeAlias = new HashMap<>();
+    /**
      * Map<KEY, Pair<CURRENT -> REMAPPED>>
      */
     private static final HashMap<String, ArrayList<Pair<Object, Object>>> objectMappings = new HashMap<>();
-
     /**
      * List<Pair<CURRENT -> REMAPPED>>
      */
     public static ArrayList<Pair<String, String>> typeMappings = new ArrayList<>();
-    /**
-     * Allows telling the remapper to swap out type values
-     */
-    public static final HashMap<String, String> typeAlias = new HashMap<>();
 
     /**
      * Creates a remapped JSON object by parsing the contents of the specified file and remapping the keys using the given current namespace.
