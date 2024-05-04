@@ -43,34 +43,41 @@ public class RaycastUtils {
         Actions.executeEntity(entity.getBukkitEntity(), data.getJsonObject("before_action"));
 
         float step = Math.round(data.getNumberOrDefault("command_step", 1d).getDouble());
-        if (data.isPresent("command_along_ray")) {
-            executeStepCommands(entity, origin, target, data.getStringOrDefault("command_along_ray", null), step);
-        }
         MinecraftServer server = entity.getServer();
         if (server != null) {
             Vec3 dir = target.subtract(origin).normalize();
             double length = origin.distanceTo(target);
+            boolean hit = false;
+            Vec3 vecLoc = null;
             for (double current = 0; current < length; current += step) {
                 Location curLoc = CraftLocation.toBukkit(origin.add(dir.scale(current)));
+                vecLoc = CraftLocation.toVec3D(curLoc);
                 curLoc.setWorld(entity.getBukkitEntity().getWorld());
-                boolean hit = false;
-                if (!curLoc.getNearbyEntities(0.3, 0.3, 0.3).isEmpty()) { // entity hit
+                if (!curLoc.getNearbyEntities(0.4, 0.4, 0.4)
+                    .stream().filter(e -> e != entity.getBukkitEntity()).toList().isEmpty() && data.getBooleanOrDefault("entity", true)) { // entity hit
                     hit = true;
-                    Actions.executeBiEntity(entity.getBukkitEntity(), (org.bukkit.entity.Entity) curLoc.getNearbyEntities(0.3, 0.3, 0.3).toArray()[0], data.getJsonObject("bientity_action"));
+                    curLoc.getNearbyEntities(0.4, 0.4, 0.4)
+                        .stream().filter(e -> e != entity.getBukkitEntity()).toList()
+                        .forEach(entity1 -> Actions.executeBiEntity(entity.getBukkitEntity(), entity1, data.getJsonObject("bientity_action")));
                 }
-                if (curLoc.getBlock().isCollidable()) {
+                if (curLoc.getBlock().isCollidable() && data.getBooleanOrDefault("block", true)) {
                     hit = true;
-                    Actions.executeBlock(curLoc, data.getJsonObject("hit_action"));
+                    Actions.executeBlock(curLoc, data.getJsonObject("block_action"));
                 }
 
-                if (curLoc.getBlock().isCollidable()) {
-                    if (hit) {
-                        Actions.executeEntity(entity.getBukkitEntity(), data.getJsonObject("hit_action"));
-                    }
-                    if (data.isPresent("command_at_hit")) {
-                        executeNMSCommand(entity, CraftLocation.toVec3D(curLoc), data.getStringOrDefault("command_at_hit", null));
-                    }
-                    break;
+                if (data.isPresent("command_along_ray")) {
+                    executeNMSCommand(entity, vecLoc, data.getString("command_along_ray"));
+                }
+
+                if (hit) break;
+            }
+
+            if (!hit) {
+                Actions.executeEntity(entity.getBukkitEntity(), data.getJsonObject("miss_action"));
+            } else {
+                Actions.executeEntity(entity.getBukkitEntity(), data.getJsonObject("hit_action"));
+                if (data.isPresent("command_at_hit")) {
+                    executeNMSCommand(entity, vecLoc, data.getString("command_at_hit"));
                 }
             }
         }

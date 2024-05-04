@@ -28,23 +28,6 @@
           "command": "playsound minecraft:entity.warden.sonic_boom master @s ~ ~ ~ 1 1"
         },
         {
-          "type": "origins:and",
-          "actions": [
-            {
-              "type": "origins:execute_command",
-              "command": "tag @s add mimic_warden_starting"
-            },
-            {
-              "type": "origins:delay",
-              "ticks": 2,
-              "action": {
-                "type": "origins:execute_command",
-                "command": "tag @s remove mimic_warden_starting"
-              }
-            }
-          ]
-        },
-        {
           "type": "origins:area_of_effect",
           "radius": 8,
           "shape": "sphere",
