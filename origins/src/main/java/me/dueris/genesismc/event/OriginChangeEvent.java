@@ -12,25 +12,25 @@ public class OriginChangeEvent extends PlayerEvent {
     private final boolean fromOrb;
 
     public OriginChangeEvent(@NotNull Player who, Origin origin, boolean fromOrb) {
-	super(who);
-	this.origin = origin;
-	this.fromOrb = fromOrb;
+        super(who);
+        this.origin = origin;
+        this.fromOrb = fromOrb;
     }
 
     public static HandlerList getHandlerList() {
-	return handlers;
+        return handlers;
     }
 
     @Override
     public @NotNull HandlerList getHandlers() {
-	return handlers;
+        return handlers;
     }
 
     public Origin getOrigin() {
-	return origin;
+        return origin;
     }
 
     public boolean isFromOrb() {
-	return fromOrb;
+        return fromOrb;
     }
 }

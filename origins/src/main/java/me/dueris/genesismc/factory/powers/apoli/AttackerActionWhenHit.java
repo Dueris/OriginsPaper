@@ -22,36 +22,36 @@ public class AttackerActionWhenHit extends CraftPower implements Listener {
 
     @EventHandler
     public void a(EntityDamageByEntityEvent e) {
-	Entity actor = e.getEntity();
+        Entity actor = e.getEntity();
 
-	if (!(actor instanceof Player player)) return;
-	if (!getPlayersWithPower().contains(actor)) return;
+        if (!(actor instanceof Player player)) return;
+        if (!getPlayersWithPower().contains(actor)) return;
 
-	for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-	    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
-		if (power == null) continue;
-		if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) actor)) return;
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getType(), layer)) {
+                if (power == null) continue;
+                if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) actor)) return;
 
-		setActive(player, power.getTag(), true);
-		Actions.executeBiEntity(actor, actor, power.getJsonObject("bientity_action"));
-		new BukkitRunnable() {
-		    @Override
-		    public void run() {
-			setActive(player, power.getTag(), false);
-		    }
-		}.runTaskLater(GenesisMC.getPlugin(), 2L);
-	    }
-	}
+                setActive(player, power.getTag(), true);
+                Actions.executeBiEntity(actor, actor, power.getJsonObject("bientity_action"));
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        setActive(player, power.getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
+        }
     }
 
     @Override
     public String getType() {
-	return "apoli:attacker_action_when_hit";
+        return "apoli:attacker_action_when_hit";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-	return attacker_action_when_hit;
+        return attacker_action_when_hit;
     }
 
 }

@@ -18,20 +18,20 @@ public class NoCobWebSlowdown extends CraftPower implements Listener, PowerProvi
 
     @EventHandler
     public void insideBlock(EntityInsideBlockEvent e) {
-	if (!getPlayersWithPower().contains(e.getEntity())) return;
-	if (e.getBlock().getType().equals(Material.COBWEB)) {
-	    e.setCancelled(true);
-	}
+        if (!getPlayersWithPower().contains(e.getEntity())) return;
+        if (e.getBlock().getType().equals(Material.COBWEB)) {
+            e.setCancelled(true);
+        }
     }
 
     @Override
     public String getType() {
-	return null;
+        return null;
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-	return cobwebBypassers;
+        return cobwebBypassers;
     }
 
 }

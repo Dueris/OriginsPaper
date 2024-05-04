@@ -17,34 +17,34 @@ public class ActionOverTime extends CraftPower {
 
     @Override
     public void run(Player p, Power power) {
-	long interval = power.getNumberOrDefault("interval", 20L).getLong();
-	if (Bukkit.getServer().getCurrentTick() % interval == 0) {
-	    taggedAllowedMap.putIfAbsent(power.getTag(), false);
-	    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-		if (!taggedAllowedMap.get(power.getTag())) {
-		    taggedAllowedMap.put(power.getTag(), true);
-		    Actions.executeEntity(p, power.getJsonObject("rising_action"));
-		}
-		setActive(p, power.getTag(), true);
-		Actions.executeEntity(p, power.getJsonObject("entity_action"));
-	    } else {
-		if (taggedAllowedMap.get(power.getTag())) {
-		    taggedAllowedMap.put(power.getTag(), false);
-		    Actions.executeEntity(p, power.getJsonObject("falling_action"));
-		}
-		setActive(p, power.getTag(), false);
-	    }
-	}
+        long interval = power.getNumberOrDefault("interval", 20L).getLong();
+        if (Bukkit.getServer().getCurrentTick() % interval == 0) {
+            taggedAllowedMap.putIfAbsent(power.getTag(), false);
+            if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+                if (!taggedAllowedMap.get(power.getTag())) {
+                    taggedAllowedMap.put(power.getTag(), true);
+                    Actions.executeEntity(p, power.getJsonObject("rising_action"));
+                }
+                setActive(p, power.getTag(), true);
+                Actions.executeEntity(p, power.getJsonObject("entity_action"));
+            } else {
+                if (taggedAllowedMap.get(power.getTag())) {
+                    taggedAllowedMap.put(power.getTag(), false);
+                    Actions.executeEntity(p, power.getJsonObject("falling_action"));
+                }
+                setActive(p, power.getTag(), false);
+            }
+        }
     }
 
     @Override
     public String getType() {
-	return "apoli:action_over_time";
+        return "apoli:action_over_time";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-	return action_ove_time;
+        return action_ove_time;
     }
 
 }

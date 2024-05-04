@@ -31,70 +31,70 @@ public class Grounded extends CraftPower implements Listener {
 
     @Override
     public String getType() {
-	return "apoli:grounded";
+        return "apoli:grounded";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-	return grounded;
+        return grounded;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void doubleJump(PlayerToggleFlightEvent e) {
-	Player p = e.getPlayer();
-	if (!getPlayersWithPower().contains(p) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
-	for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType())) {
-	    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-		e.setCancelled(true);
-		p.setFlying(false);
-		ServerPlayer player = ((CraftPlayer) p).getHandle();
-		Vec3 vec3d = player.getDeltaMovement();
+        Player p = e.getPlayer();
+        if (!getPlayersWithPower().contains(p) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
+        for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType())) {
+            if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+                e.setCancelled(true);
+                p.setFlying(false);
+                ServerPlayer player = ((CraftPlayer) p).getHandle();
+                Vec3 vec3d = player.getDeltaMovement();
 
-		new BukkitRunnable() {
-		    @Override
-		    public void run() {
-			player.getBukkitEntity().setVelocity(CraftVector.toBukkit(new Vec3(vec3d.x, (0.42F * entity$getBlockJumpFactor(player) + player.getJumpBoostPower()), vec3d.z)));
-			if (player.isSprinting()) {
-			    float fe = player.getYRot() * 0.017453292F;
-			    player.getBukkitEntity().setVelocity(CraftVector.toBukkit(player.getDeltaMovement().add((-Mth.sin(fe) * 0.2F), 0.0D, (Mth.cos(fe) * 0.2F))));
-			}
-		    }
-		}.runTaskLater(GenesisMC.getPlugin(), 1);
-	    }
-	}
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        player.getBukkitEntity().setVelocity(CraftVector.toBukkit(new Vec3(vec3d.x, (0.42F * entity$getBlockJumpFactor(player) + player.getJumpBoostPower()), vec3d.z)));
+                        if (player.isSprinting()) {
+                            float fe = player.getYRot() * 0.017453292F;
+                            player.getBukkitEntity().setVelocity(CraftVector.toBukkit(player.getDeltaMovement().add((-Mth.sin(fe) * 0.2F), 0.0D, (Mth.cos(fe) * 0.2F))));
+                        }
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 1);
+            }
+        }
     }
 
     public float entity$getBlockJumpFactor(Entity entity) {
-	float l = entity.level().getBlockState(entity.blockPosition()).getBlock().getJumpFactor();
-	float l9 = entity.level().getBlockState(this.entity$getOnPos(entity, 0.500001F)).getBlock().getJumpFactor();
+        float l = entity.level().getBlockState(entity.blockPosition()).getBlock().getJumpFactor();
+        float l9 = entity.level().getBlockState(this.entity$getOnPos(entity, 0.500001F)).getBlock().getJumpFactor();
 
-	return (double) l == 1.0D ? l9 : l;
+        return (double) l == 1.0D ? l9 : l;
     }
 
     public BlockPos entity$getOnPos(Entity entity, float offset) {
-	if (entity.mainSupportingBlockPos.isPresent() && entity.level().getChunkIfLoadedImmediately(entity.mainSupportingBlockPos.get()) != null) {
-	    BlockPos bp = entity.mainSupportingBlockPos.get();
+        if (entity.mainSupportingBlockPos.isPresent() && entity.level().getChunkIfLoadedImmediately(entity.mainSupportingBlockPos.get()) != null) {
+            BlockPos bp = entity.mainSupportingBlockPos.get();
 
-	    if (offset <= 1.0E-5F) return bp;
-	    else {
-		BlockState bs = entity.level().getBlockState(bp);
+            if (offset <= 1.0E-5F) return bp;
+            else {
+                BlockState bs = entity.level().getBlockState(bp);
 
-		return ((double) offset > 0.5D || !bs.is(BlockTags.FENCES)) && !bs.is(BlockTags.WALLS) && !(bs.getBlock() instanceof FenceGateBlock) ? bp.atY(Mth.floor(entity.position().y - (double) offset)) : bp;
-	    }
-	} else
-	    return new BlockPos(Mth.floor(entity.position().x), Mth.floor(entity.position().y - (double) offset), Mth.floor(entity.position().z));
+                return ((double) offset > 0.5D || !bs.is(BlockTags.FENCES)) && !bs.is(BlockTags.WALLS) && !(bs.getBlock() instanceof FenceGateBlock) ? bp.atY(Mth.floor(entity.position().y - (double) offset)) : bp;
+            }
+        } else
+            return new BlockPos(Mth.floor(entity.position().x), Mth.floor(entity.position().y - (double) offset), Mth.floor(entity.position().z));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void negateFallDamage(EntityDamageEvent e) {
-	if (!(e.getEntity() instanceof Player p)) return;
-	if (!getPlayersWithPower().contains(p) || !(e.getCause().equals(EntityDamageEvent.DamageCause.FALL) && !e.isCancelled()))
-	    return;
-	for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType())) {
-	    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-		e.setCancelled(true);
-	    }
-	}
+        if (!(e.getEntity() instanceof Player p)) return;
+        if (!getPlayersWithPower().contains(p) || !(e.getCause().equals(EntityDamageEvent.DamageCause.FALL) && !e.isCancelled()))
+            return;
+        for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType())) {
+            if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+                e.setCancelled(true);
+            }
+        }
     }
 
 }

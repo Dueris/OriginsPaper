@@ -28,60 +28,60 @@ public class AttributeHandler extends CraftPower implements Listener {
 
     @EventHandler
     public void powerUpdate(PowerUpdateEvent e) {
-	if (!e.getPower().getType().equalsIgnoreCase(this.getType())) return;
-	Player p = e.getPlayer();
-	OriginPage.setAttributesToDefault(p);
-	appliedAttributes.putIfAbsent(p, new ArrayList<>());
-	appliedAttributes.get(p).clear();
-	if (attribute.contains(p)) {
-	    runAttributeModifyPower(e);
-	}
+        if (!e.getPower().getType().equalsIgnoreCase(this.getType())) return;
+        Player p = e.getPlayer();
+        OriginPage.setAttributesToDefault(p);
+        appliedAttributes.putIfAbsent(p, new ArrayList<>());
+        appliedAttributes.get(p).clear();
+        if (attribute.contains(p)) {
+            runAttributeModifyPower(e);
+        }
     }
 
     @EventHandler
     public void respawn(PlayerPostRespawnEvent e) {
-	Player p = e.getPlayer();
-	OriginPage.setAttributesToDefault(p);
-	appliedAttributes.putIfAbsent(p, new ArrayList<>());
-	if (attribute.contains(p)) {
-	    runAttributeModifyPower(e);
-	}
+        Player p = e.getPlayer();
+        OriginPage.setAttributesToDefault(p);
+        appliedAttributes.putIfAbsent(p, new ArrayList<>());
+        if (attribute.contains(p)) {
+            runAttributeModifyPower(e);
+        }
     }
 
     protected void runAttributeModifyPower(PlayerEvent e) {
-	Player p = e.getPlayer();
-	if (!attribute.contains(p)) return;
-	for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-	    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
-		if (power == null) continue;
+        Player p = e.getPlayer();
+        if (!attribute.contains(p)) return;
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                if (power == null) continue;
 
-		for (Modifier modifier : power.getModifiers()) {
-		    try {
-			Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
-			AttributeModifier m = DataConverter.convertToAttributeModifier(modifier);
-			if (p.getAttribute(attributeModifier) != null && !appliedAttributes.get(p).contains(power)) {
-			    p.getAttribute(attributeModifier).addTransientModifier(m);
-			    appliedAttributes.get(p).add(power);
-			}
-			AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attributeModifier, power, e.isAsynchronous());
-			Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
-			setActive(p, power.getTag(), true);
-			p.sendHealthUpdate();
-		    } catch (Exception ev) {
-			ev.printStackTrace();
-		    }
-		}
-	    }
-	}
+                for (Modifier modifier : power.getModifiers()) {
+                    try {
+                        Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
+                        AttributeModifier m = DataConverter.convertToAttributeModifier(modifier);
+                        if (p.getAttribute(attributeModifier) != null && !appliedAttributes.get(p).contains(power)) {
+                            p.getAttribute(attributeModifier).addTransientModifier(m);
+                            appliedAttributes.get(p).add(power);
+                        }
+                        AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attributeModifier, power, e.isAsynchronous());
+                        Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
+                        setActive(p, power.getTag(), true);
+                        p.sendHealthUpdate();
+                    } catch (Exception ev) {
+                        ev.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public String getType() {
-	return "apoli:attribute";
+        return "apoli:attribute";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-	return attribute;
+        return attribute;
     }
 }

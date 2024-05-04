@@ -13,25 +13,25 @@ public class OriginKeybindExecuteEvent extends PlayerEvent {
     static ItemStack item;
 
     public OriginKeybindExecuteEvent(@NotNull Player who, String key_type, ItemStack itemTrigger) {
-	super(who);
-	OriginKeybindExecuteEvent.key_type = key_type;
-	item = itemTrigger;
+        super(who);
+        OriginKeybindExecuteEvent.key_type = key_type;
+        item = itemTrigger;
     }
 
     public static HandlerList getHandlerList() {
-	return handlers;
+        return handlers;
     }
 
     public String getKey() {
-	return key_type;
+        return key_type;
     }
 
     public ItemStack getItemTrigger() {
-	return item;
+        return item;
     }
 
     @Override
     public HandlerList getHandlers() {
-	return handlers;
+        return handlers;
     }
 }

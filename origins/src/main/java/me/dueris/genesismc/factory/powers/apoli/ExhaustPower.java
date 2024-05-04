@@ -14,26 +14,26 @@ public class ExhaustPower extends CraftPower {
 
     @Override
     public void run(Player p, Power power) {
-	long interval = power.getNumberOrDefault("interval", 20L).getLong();
-	if (p.getTicksLived() % interval == 0) {
-	    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-		setActive(p, power.getTag(), true);
-		if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
-		    return;
-		((CraftPlayer) p).getHandle().causeFoodExhaustion(power.getNumber("exhaustion").getFloat());
-	    } else {
-		setActive(p, power.getTag(), false);
-	    }
-	}
+        long interval = power.getNumberOrDefault("interval", 20L).getLong();
+        if (p.getTicksLived() % interval == 0) {
+            if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+                setActive(p, power.getTag(), true);
+                if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
+                    return;
+                ((CraftPlayer) p).getHandle().causeFoodExhaustion(power.getNumber("exhaustion").getFloat());
+            } else {
+                setActive(p, power.getTag(), false);
+            }
+        }
     }
 
     @Override
     public String getType() {
-	return "apoli:exhaust";
+        return "apoli:exhaust";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-	return more_exhaustion;
+        return more_exhaustion;
     }
 }

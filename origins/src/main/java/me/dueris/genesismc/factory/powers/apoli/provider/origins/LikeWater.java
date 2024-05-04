@@ -18,18 +18,18 @@ public class LikeWater extends CraftPower implements Listener, PowerProvider {
 
     @Override
     public void run(Player p, Power power) {
-	if (this.getPlayersWithPower().contains(p))
-	    p.setGravity(!p.isInWaterOrBubbleColumn() && !p.isSwimming() && !p.isSneaking());
+        if (this.getPlayersWithPower().contains(p))
+            p.setGravity(!p.isInWaterOrBubbleColumn() && !p.isSwimming() && !p.isSneaking());
     }
 
     @Override
     public String getType() {
-	return null;
+        return null;
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-	return likeWaterPlayers;
+        return likeWaterPlayers;
     }
 
 }

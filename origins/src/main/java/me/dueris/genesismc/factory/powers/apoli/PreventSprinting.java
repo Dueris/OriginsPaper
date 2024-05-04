@@ -14,21 +14,21 @@ public class PreventSprinting extends CraftPower {
 
     @Override
     public void run(Player p, Power power) {
-	if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-	    setActive(p, power.getTag(), true);
-	    p.setSprinting(false);
-	} else {
-	    setActive(p, power.getTag(), false);
-	}
+        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+            setActive(p, power.getTag(), true);
+            p.setSprinting(false);
+        } else {
+            setActive(p, power.getTag(), false);
+        }
     }
 
     @Override
     public String getType() {
-	return "apoli:prevent_sprinting";
+        return "apoli:prevent_sprinting";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-	return prevent_sprinting;
+        return prevent_sprinting;
     }
 }

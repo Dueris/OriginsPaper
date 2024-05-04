@@ -21,28 +21,28 @@ public class GuiTicker extends BukkitRunnable {
 
     @Override
     public void run() {
-	if (ScreenNavigator.layerPages.isEmpty()) return; // No pages to display.
-	for (Player p : Bukkit.getOnlinePlayers()) {
-	    if (delayedPlayers.contains(p)) continue;
-	    for (Layer layer : CraftApoli.getLayersFromRegistry().stream().filter(Layer::isEnabled).toList()) {
-		if (layer.testChoosable(p).isEmpty()) continue;
-		try {
-		    if (OriginPlayerAccessor.getOrigin(p, layer).getTag().equalsIgnoreCase("origins:empty")) {
-			if (layer.testDefaultOrigin(p)) continue;
-			if (!inChoosingLayer.containsKey(((CraftPlayer) p).getHandle())) {
-			    OriginChoosePromptEvent event = new OriginChoosePromptEvent(p);
-			    Bukkit.getPluginManager().callEvent(event);
-			    if (!event.isCanceled()) {
-				ScreenNavigator.open(p, layer, false);
-			    }
-			}
-		    }
-		    p.setInvulnerable(inChoosingLayer.containsKey(((CraftPlayer) p).getHandle()));
-		} catch (Exception e) {
-		    p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"));
-		    e.printStackTrace();
-		}
-	    }
-	}
+        if (ScreenNavigator.layerPages.isEmpty()) return; // No pages to display.
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (delayedPlayers.contains(p)) continue;
+            for (Layer layer : CraftApoli.getLayersFromRegistry().stream().filter(Layer::isEnabled).toList()) {
+                if (layer.testChoosable(p).isEmpty()) continue;
+                try {
+                    if (OriginPlayerAccessor.getOrigin(p, layer).getTag().equalsIgnoreCase("origins:empty")) {
+                        if (layer.testDefaultOrigin(p)) continue;
+                        if (!inChoosingLayer.containsKey(((CraftPlayer) p).getHandle())) {
+                            OriginChoosePromptEvent event = new OriginChoosePromptEvent(p);
+                            Bukkit.getPluginManager().callEvent(event);
+                            if (!event.isCanceled()) {
+                                ScreenNavigator.open(p, layer, false);
+                            }
+                        }
+                    }
+                    p.setInvulnerable(inChoosingLayer.containsKey(((CraftPlayer) p).getHandle()));
+                } catch (Exception e) {
+                    p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"));
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

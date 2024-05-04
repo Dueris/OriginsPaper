@@ -8,33 +8,33 @@ public enum DestructionType {
     DESTROY;
 
     public static DestructionType parse(String string) {
-	switch (string.toLowerCase()) {
-	    case "none" -> {
-		return NONE;
-	    }
-	    case "destroy" -> {
-		return DESTROY;
-	    }
-	    default -> {
-		return BREAK;
-	    }
-	}
+        switch (string.toLowerCase()) {
+            case "none" -> {
+                return NONE;
+            }
+            case "destroy" -> {
+                return DESTROY;
+            }
+            default -> {
+                return BREAK;
+            }
+        }
     }
 
     public Explosion.BlockInteraction getNMS() {
-	switch (this) {
-	    case DESTROY -> {
-		return Explosion.BlockInteraction.DESTROY_WITH_DECAY;
-	    }
-	    case NONE -> {
-		return Explosion.BlockInteraction.KEEP;
-	    }
-	    case BREAK -> {
-		return Explosion.BlockInteraction.DESTROY;
-	    }
-	    default -> {
-		return Explosion.BlockInteraction.DESTROY_WITH_DECAY;
-	    }
-	}
+        switch (this) {
+            case DESTROY -> {
+                return Explosion.BlockInteraction.DESTROY_WITH_DECAY;
+            }
+            case NONE -> {
+                return Explosion.BlockInteraction.KEEP;
+            }
+            case BREAK -> {
+                return Explosion.BlockInteraction.DESTROY;
+            }
+            default -> {
+                return Explosion.BlockInteraction.DESTROY_WITH_DECAY;
+            }
+        }
     }
 }

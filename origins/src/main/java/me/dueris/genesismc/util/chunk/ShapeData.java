@@ -5,33 +5,33 @@ public class ShapeData {
     boolean useTopBottomThinger;
 
     public ShapeData(String shape, boolean useTopToBottom) {
-	this.useTopBottomThinger = useTopToBottom;
-	this.shape = shape;
+        this.useTopBottomThinger = useTopToBottom;
+        this.shape = shape;
     }
 
     public String getShape() {
-	return shape;
+        return shape;
     }
 
     public void setShape(String shape) {
-	this.shape = shape;
+        this.shape = shape;
     }
 
     @Override
     public String toString() {
-	return super.toString();
+        return super.toString();
     }
 
     @Override
     public boolean equals(Object obj) {
-	return super.equals(obj);
+        return super.equals(obj);
     }
 
     public boolean isUseTopBottomThinger() {
-	return useTopBottomThinger;
+        return useTopBottomThinger;
     }
 
     public void setUseTopBottomThinger(boolean useTopBottomThinger) {
-	this.useTopBottomThinger = useTopBottomThinger;
+        this.useTopBottomThinger = useTopBottomThinger;
     }
 }

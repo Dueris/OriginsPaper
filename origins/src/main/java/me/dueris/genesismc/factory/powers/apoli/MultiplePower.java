@@ -10,11 +10,11 @@ public class MultiplePower extends CraftPower {
 
     @Override
     public String getType() {
-	return "apoli:multiple";
+        return "apoli:multiple";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-	return multiple;
+        return multiple;
     }
 }

@@ -24,84 +24,84 @@ public class ToggleNightVision extends CraftPower implements Listener {
     public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
 
     public void execute(Player p, Power power) {
-	in_continuous.putIfAbsent(p, new ArrayList<>());
-	int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
-	String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
+        in_continuous.putIfAbsent(p, new ArrayList<>());
+        int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
+        String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
 
-	boolean cont = !Boolean.valueOf(power.getJsonObject("key").getStringOrDefault("continuous", "false"));
-	new BukkitRunnable() {
-	    @Override
-	    public void run() {
-		/* TNV power always execute continuously */
-		if (!in_continuous.get(p).contains(key)) {
-		    Cooldown.addCooldown(p, cooldown, power);
-		    setActive(p, power.getTag(), false);
-		    p.removePotionEffect(PotionEffectType.NIGHT_VISION);
-		    this.cancel();
-		    return;
-		}
+        boolean cont = !Boolean.valueOf(power.getJsonObject("key").getStringOrDefault("continuous", "false"));
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                /* TNV power always execute continuously */
+                if (!in_continuous.get(p).contains(key)) {
+                    Cooldown.addCooldown(p, cooldown, power);
+                    setActive(p, power.getTag(), false);
+                    p.removePotionEffect(PotionEffectType.NIGHT_VISION);
+                    this.cancel();
+                    return;
+                }
 
-		PotionEffect effect = new PotionEffect(PotionEffectType.NIGHT_VISION, 500, 0, false, false, false);
-		if (p.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
-		    // Check duration
-		    if (p.getPotionEffect(PotionEffectType.NIGHT_VISION).getDuration() < 350) {
-			p.addPotionEffect(effect);
-		    }
-		} else {
-		    p.addPotionEffect(effect);
-		}
-		setActive(p, power.getTag(), true);
-	    }
-	}.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+                PotionEffect effect = new PotionEffect(PotionEffectType.NIGHT_VISION, 500, 0, false, false, false);
+                if (p.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
+                    // Check duration
+                    if (p.getPotionEffect(PotionEffectType.NIGHT_VISION).getDuration() < 350) {
+                        p.addPotionEffect(effect);
+                    }
+                } else {
+                    p.addPotionEffect(effect);
+                }
+                setActive(p, power.getTag(), true);
+            }
+        }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
     }
 
     @EventHandler
     public void keybindToggle(KeybindTriggerEvent e) {
-	Player p = e.getPlayer();
-	for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-	    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
-		if (getPlayersWithPower().contains(p)) {
-		    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-			if (!Cooldown.isInCooldown(p, power)) {
-			    if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
-				execute(p, power);
-			    }
-			}
-		    }
-		}
-	    }
-	}
+        Player p = e.getPlayer();
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                if (getPlayersWithPower().contains(p)) {
+                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+                        if (!Cooldown.isInCooldown(p, power)) {
+                            if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
+                                execute(p, power);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @EventHandler
     public void inContinuousFix(KeybindTriggerEvent e) {
-	Player p = e.getPlayer();
-	for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-	    if (getPlayersWithPower().contains(p)) {
-		for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
-		    if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
-			in_continuous.putIfAbsent(p, new ArrayList<>());
-			if (true /* TNV power always execute continuously */) {
-			    if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"))) {
-				in_continuous.get(p).remove(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
-			    } else {
-				in_continuous.get(p).add(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
-			    }
-			}
-		    }
-		}
-	    }
-	}
+        Player p = e.getPlayer();
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            if (getPlayersWithPower().contains(p)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getType(), layer)) {
+                    if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
+                        in_continuous.putIfAbsent(p, new ArrayList<>());
+                        if (true /* TNV power always execute continuously */) {
+                            if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"))) {
+                                in_continuous.get(p).remove(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
+                            } else {
+                                in_continuous.get(p).add(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
     @Override
     public String getType() {
-	return "apoli:toggle_night_vision";
+        return "apoli:toggle_night_vision";
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-	return toggle_night_vision;
+        return toggle_night_vision;
     }
 }

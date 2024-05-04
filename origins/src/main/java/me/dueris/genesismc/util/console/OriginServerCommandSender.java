@@ -18,91 +18,91 @@ public class OriginServerCommandSender implements CommandSender {
     public final PermissibleBase perm;
 
     public OriginServerCommandSender() {
-	this.perm = new PermissibleBase(this);
+        this.perm = new PermissibleBase(this);
     }
 
     protected OriginServerCommandSender(PermissibleBase perm) {
-	this.perm = perm;
+        this.perm = perm;
     }
 
     @Override
     public boolean isPermissionSet(String name) {
-	return true;
+        return true;
     }
 
     @Override
     public boolean isPermissionSet(Permission perm) {
-	return true;
+        return true;
     }
 
     @Override
     public boolean hasPermission(String name) {
-	return true;
+        return true;
     }
 
     @Override
     public boolean hasPermission(Permission perm) {
-	return true;
+        return true;
     }
 
     @Override
     public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
-	return this.perm.addAttachment(plugin, name, value);
+        return this.perm.addAttachment(plugin, name, value);
     }
 
     @Override
     public PermissionAttachment addAttachment(Plugin plugin) {
-	return this.perm.addAttachment(plugin);
+        return this.perm.addAttachment(plugin);
     }
 
     @Override
     public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
-	return this.perm.addAttachment(plugin, name, value, ticks);
+        return this.perm.addAttachment(plugin, name, value, ticks);
     }
 
     @Override
     public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
-	return this.perm.addAttachment(plugin, ticks);
+        return this.perm.addAttachment(plugin, ticks);
     }
 
     @Override
     public void removeAttachment(PermissionAttachment attachment) {
-	this.perm.removeAttachment(attachment);
+        this.perm.removeAttachment(attachment);
     }
 
     @Override
     public void recalculatePermissions() {
-	this.perm.recalculatePermissions();
+        this.perm.recalculatePermissions();
     }
 
     @Override
     public Set<PermissionAttachmentInfo> getEffectivePermissions() {
-	return this.perm.getEffectivePermissions();
+        return this.perm.getEffectivePermissions();
     }
 
     public boolean isPlayer() {
-	return false;
+        return false;
     }
 
     @Override
     public Server getServer() {
-	return Bukkit.getServer();
+        return Bukkit.getServer();
     }
 
     @Override
     public @NotNull String getName() {
-	return "ORIGINS";
+        return "ORIGINS";
     }
 
     @NotNull
     @Override
     public Spigot spigot() {
-	return null;
+        return null;
     }
 
     @Override
     public @NotNull Component name() {
-	return Component.text(getName());
+        return Component.text(getName());
     }
 
     @Override
@@ -123,7 +123,7 @@ public class OriginServerCommandSender implements CommandSender {
 
     @Override
     public boolean isOp() {
-	return true;
+        return true;
     }
 
     @Override

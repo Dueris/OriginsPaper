@@ -10,37 +10,37 @@ import org.bukkit.attribute.AttributeModifier;
  */
 public class DataConverter {
     public static Attribute resolveAttribute(String string) {
-	String att = fixNamespace(fixAttributeNamespace(string));
-	if (att.equalsIgnoreCase("reach-entity-attributes:reach")) return Attribute.PLAYER_BLOCK_INTERACTION_RANGE;
-	if (att.equalsIgnoreCase("reach-entity-attributes:attack_range"))
-	    return Attribute.PLAYER_ENTITY_INTERACTION_RANGE;
-	return Attribute.valueOf(att.toUpperCase().split(":")[1]);
+        String att = fixNamespace(fixAttributeNamespace(string));
+        if (att.equalsIgnoreCase("reach-entity-attributes:reach")) return Attribute.PLAYER_BLOCK_INTERACTION_RANGE;
+        if (att.equalsIgnoreCase("reach-entity-attributes:attack_range"))
+            return Attribute.PLAYER_ENTITY_INTERACTION_RANGE;
+        return Attribute.valueOf(att.toUpperCase().split(":")[1]);
     }
 
     public static NamespacedKey resolveTextureLocationNamespace(NamespacedKey key) {
-	if (key.asString().equalsIgnoreCase("origins:resource_bar.png"))
-	    return NamespacedKey.fromString("origins:textures/gui/resource_bar.png");
-	return key;
+        if (key.asString().equalsIgnoreCase("origins:resource_bar.png"))
+            return NamespacedKey.fromString("origins:textures/gui/resource_bar.png");
+        return key;
     }
 
     private static String fixNamespace(String input) {
-	return input.contains(":") ? input : NamespacedKey.fromString(input).asString();
+        return input.contains(":") ? input : NamespacedKey.fromString(input).asString();
     }
 
     private static String fixAttributeNamespace(String input) {
-	return input.contains(".") ? input.replace(".", "_") : input;
+        return input.contains(".") ? input.replace(".", "_") : input;
     }
 
     public static AttributeModifier.Operation convertToOperation(Modifier modifier) {
-	return switch (modifier.operation()) {
-	    case "addition" -> AttributeModifier.Operation.ADD_NUMBER;
-	    case "multiply_base" -> AttributeModifier.Operation.ADD_SCALAR;
-	    case "multiply_total" -> AttributeModifier.Operation.MULTIPLY_SCALAR_1;
-	    default -> throw new RuntimeException("Not a valid attribute operation!");
-	};
+        return switch (modifier.operation()) {
+            case "addition" -> AttributeModifier.Operation.ADD_NUMBER;
+            case "multiply_base" -> AttributeModifier.Operation.ADD_SCALAR;
+            case "multiply_total" -> AttributeModifier.Operation.MULTIPLY_SCALAR_1;
+            default -> throw new RuntimeException("Not a valid attribute operation!");
+        };
     }
 
     public static AttributeModifier convertToAttributeModifier(Modifier modifier) {
-	return new AttributeModifier(modifier.handle.getStringOrDefault("name", "modifier"), modifier.value(), convertToOperation(modifier));
+        return new AttributeModifier(modifier.handle.getStringOrDefault("name", "modifier"), modifier.value(), convertToOperation(modifier));
     }
 }

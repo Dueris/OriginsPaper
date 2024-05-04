@@ -15,12 +15,12 @@ public class Bioluminescent extends CraftPower implements Listener, PowerProvide
 
     @Override
     public String getType() {
-	return null;
+        return null;
     }
 
     @Override
     public ArrayList<Player> getPlayersWithPower() {
-	return players;
+        return players;
     }
 
 }

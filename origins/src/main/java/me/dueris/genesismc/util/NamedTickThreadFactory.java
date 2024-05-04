@@ -16,23 +16,23 @@ public class NamedTickThreadFactory implements ThreadFactory { // Extends the fu
     private final boolean daemon;
 
     public NamedTickThreadFactory(String name) {
-	this.namePrefix = name + "-";
-	this.priority = 5;
-	this.daemon = false;
+        this.namePrefix = name + "-";
+        this.priority = 5;
+        this.daemon = false;
     }
 
     @Override
     public Thread newThread(@NotNull Runnable runnable) {
-	TickThread thread = new TickThread(runnable, namePrefix + this.threadNumber.getAndIncrement());
-	thread.setDaemon(daemon);
-	thread.setUncaughtExceptionHandler((threadx, throwable) -> {
-	    LOGGER.error("Caught exception in thread {} from {}", threadx, runnable);
-	    LOGGER.error("", throwable);
-	});
-	if (thread.getPriority() != priority) {
-	    thread.setPriority(priority);
-	}
+        TickThread thread = new TickThread(runnable, namePrefix + this.threadNumber.getAndIncrement());
+        thread.setDaemon(daemon);
+        thread.setUncaughtExceptionHandler((threadx, throwable) -> {
+            LOGGER.error("Caught exception in thread {} from {}", threadx, runnable);
+            LOGGER.error("", throwable);
+        });
+        if (thread.getPriority() != priority) {
+            thread.setPriority(priority);
+        }
 
-	return thread;
+        return thread;
     }
 }

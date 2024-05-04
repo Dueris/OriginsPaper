@@ -26,38 +26,38 @@ public class OriginLootCondition implements LootItemCondition {
     public static final LootItemConditionType TYPE;
 
     static {
-	TYPE = new LootItemConditionType(MapCodec.assumeMapUnsafe(CODEC));
+        TYPE = new LootItemConditionType(MapCodec.assumeMapUnsafe(CODEC));
     }
 
     private final ResourceLocation originId;
     private final ResourceLocation originSourceId;
 
     private OriginLootCondition(ResourceLocation originId, Optional<ResourceLocation> originSourceId) {
-	this.originId = originId;
-	this.originSourceId = originSourceId.orElseGet(null);
+        this.originId = originId;
+        this.originSourceId = originSourceId.orElseGet(null);
     }
 
     public boolean test(LootContext context) {
-	Entity entity = context.getParam(LootContextParams.THIS_ENTITY);
-	CraftEntity var4 = entity.getBukkitEntity();
-	if (var4 instanceof Player player) {
-	    NamespacedKey key = CraftNamespacedKey.fromMinecraft(this.originId);
-	    Origin origin = (Origin) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(key);
-	    return OriginPlayerAccessor.hasOrigin(player, origin.getTag());
-	} else {
-	    return false;
-	}
+        Entity entity = context.getParam(LootContextParams.THIS_ENTITY);
+        CraftEntity var4 = entity.getBukkitEntity();
+        if (var4 instanceof Player player) {
+            NamespacedKey key = CraftNamespacedKey.fromMinecraft(this.originId);
+            Origin origin = (Origin) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(key);
+            return OriginPlayerAccessor.hasOrigin(player, origin.getTag());
+        } else {
+            return false;
+        }
     }
 
     public @NotNull LootItemConditionType getType() {
-	return OriginLootCondition.TYPE;
+        return OriginLootCondition.TYPE;
     }
 
     public ResourceLocation getOriginId() {
-	return this.originId;
+        return this.originId;
     }
 
     public Optional<ResourceLocation> getOriginSourceId() {
-	return Optional.of(this.originSourceId);
+        return Optional.of(this.originSourceId);
     }
 }

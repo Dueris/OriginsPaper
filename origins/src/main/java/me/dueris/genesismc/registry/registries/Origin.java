@@ -14,7 +14,7 @@ import me.dueris.calio.util.holders.TriPair;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.storage.GenesisConfigs;
+import me.dueris.genesismc.storage.OriginConfiguration;
 import me.dueris.genesismc.util.AsyncUpgradeTracker;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -38,10 +38,10 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
     boolean isDisabled = false;
 
     public Origin(boolean toRegistry) {
-	super(null);
-	if (!toRegistry) {
-	    throw new RuntimeException("Invalid constructor used.");
-	}
+        super(null);
+        if (!toRegistry) {
+            throw new RuntimeException("Invalid constructor used.");
+        }
     }
 
     /**
@@ -51,10 +51,10 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
      * @param powerContainer An array of powers that the origin has.
      */
     public Origin(NamespacedKey tag, ArrayList<Power> powerContainer, FactoryJsonObject factoryJsonObject) {
-	super(factoryJsonObject.handle);
-	this.tag = tag;
-	this.powerContainer = powerContainer;
-	this.factory = factoryJsonObject;
+        super(factoryJsonObject.handle);
+        this.tag = tag;
+        this.powerContainer = powerContainer;
+        this.factory = factoryJsonObject;
     }
 
     /**
@@ -62,147 +62,147 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
      */
     @Override
     public String toString() {
-	return "Tag: " + this.tag + ", PowerContainer: " + this.powerContainer.toString();
+        return "Tag: " + this.tag + ", PowerContainer: " + this.powerContainer.toString();
     }
 
     public boolean getUsesCondition() {
-	return this.choosingCondition != null && !this.choosingCondition.isEmpty();
+        return this.choosingCondition != null && !this.choosingCondition.isEmpty();
     }
 
     public void setUsesCondition(FactoryJsonObject condition) {
-	this.choosingCondition = condition;
+        this.choosingCondition = condition;
     }
 
     @Override
     public NamespacedKey getKey() {
-	return this.tag;
+        return this.tag;
     }
 
     /**
      * @return The origin tag.
      */
     public String getTag() {
-	return this.tag.asString();
+        return this.tag.asString();
     }
 
     /**
      * @return An array containing all the origin powers.
      */
     public ArrayList<Power> getPowerContainers() {
-	return new ArrayList<>(this.powerContainer);
+        return new ArrayList<>(this.powerContainer);
     }
 
     /**
      * @return The name of the origin.
      */
     public String getName() {
-	return getString("name");
+        return getString("name");
     }
 
     /**
      * @return The description for the origin.
      */
     public String getDescription() {
-	return getString("description");
+        return getString("description");
     }
 
     /**
      * @return An array of powers from the origin.
      */
     public List<String> getPowers() {
-	return isPresent("powers") ? getJsonArray("powers").asList().stream().map(FactoryElement::getString).toList() : new ArrayList<>();
+        return isPresent("powers") ? getJsonArray("powers").asList().stream().map(FactoryElement::getString).toList() : new ArrayList<>();
     }
 
     /**
      * @return The icon of the origin.
      */
     public String getIcon() {
-	return getItemStack("icon").getType().getKey().asString();
+        return getItemStack("icon").getType().getKey().asString();
     }
 
     public int getOrder() {
-	return !isPresent("order") ? 5 : getNumber("order").getInt();
+        return !isPresent("order") ? 5 : getNumber("order").getInt();
     }
 
     /**
      * @return The icon as a Material Object.
      */
     public Material getMaterialIcon() {
-	return me.dueris.calio.util.MiscUtils.getBukkitMaterial(getIcon());
+        return me.dueris.calio.util.MiscUtils.getBukkitMaterial(getIcon());
     }
 
     /**
      * @return The impact of the origin.
      */
     public int getImpact() {
-	return getNumberOrDefault("impact", 0).getInt();
+        return getNumberOrDefault("impact", 0).getInt();
     }
 
     /**
      * @return If the origin is choose-able from the choose menu.
      */
     public boolean getUnchooseable() {
-	return getBooleanOrDefault("unchoosable", false) || isDisabled;
+        return getBooleanOrDefault("unchoosable", false) || isDisabled;
     }
 
     private void setDisabled() {
-	isDisabled = true;
+        isDisabled = true;
     }
 
     /**
      * @return The PowerContainer with the given type if present in the origin.
      */
     public ArrayList<Power> getMultiPowerFileFromType(String powerType) {
-	ArrayList<Power> powers = new ArrayList<>();
-	for (Power power : getPowerContainers()) {
-	    if (power == null) continue;
-	    if (power.getType().equals(powerType)) powers.add(power);
-	}
-	return powers;
+        ArrayList<Power> powers = new ArrayList<>();
+        for (Power power : getPowerContainers()) {
+            if (power == null) continue;
+            if (power.getType().equals(powerType)) powers.add(power);
+        }
+        return powers;
     }
 
     @Override
     public List<FactoryObjectInstance> getValidObjectFactory() {
-	return List.of(
-	    new FactoryObjectInstance("name", String.class, "No Name"),
-	    new FactoryObjectInstance("description", String.class, "No Description"),
-	    new FactoryObjectInstance("icon", ItemStack.class, new ItemStack(Material.PLAYER_HEAD, 1)),
-	    new FactoryObjectInstance("impact", Integer.class, 0),
-	    new FactoryObjectInstance("unchooseable", Boolean.class, false),
-	    new FactoryObjectInstance("powers", FactoryJsonArray.class, new JsonArray())
-	);
+        return List.of(
+                new FactoryObjectInstance("name", String.class, "No Name"),
+                new FactoryObjectInstance("description", String.class, "No Description"),
+                new FactoryObjectInstance("icon", ItemStack.class, new ItemStack(Material.PLAYER_HEAD, 1)),
+                new FactoryObjectInstance("impact", Integer.class, 0),
+                new FactoryObjectInstance("unchooseable", Boolean.class, false),
+                new FactoryObjectInstance("powers", FactoryJsonArray.class, new JsonArray())
+        );
     }
 
     @Override
     public void createInstance(FactoryBuilder obj, File rawFile, Registrar<? extends Registrable> registry, NamespacedKey namespacedTag) {
-	Registrar<Origin> registrar = (Registrar<Origin>) registry;
-	ArrayList<Power> containers = new ArrayList<>();
-	for (String element : obj.getRoot().getJsonArray("powers").asList().stream().map(FactoryElement::getString).toList()) {
-	    if (((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).rawRegistry.containsKey(NamespacedKey.fromString(element))) {
-		containers.add(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(element)));
-	    }
-	    for (Power power : CraftApoli.getNestedPowers(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(element)))) {
-		if (power != null) {
-		    containers.add(power);
-		}
-	    }
-	}
-	Origin origin = new Origin(namespacedTag, containers, obj.getRoot());
-	((ArrayList<String>) GenesisConfigs.getMainConfig().get("disabled-origins")).forEach(d -> {
-	    if (origin.getTag().equalsIgnoreCase(d)) {
-		CraftCalio.INSTANCE.getLogger().info("Origin(%e%) was disabled by the config!".replace("%e%", d));
-		origin.setDisabled();
-	    }
-	});
-	registrar.register(origin);
+        Registrar<Origin> registrar = (Registrar<Origin>) registry;
+        ArrayList<Power> containers = new ArrayList<>();
+        for (String element : obj.getRoot().getJsonArray("powers").asList().stream().map(FactoryElement::getString).toList()) {
+            if (((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).rawRegistry.containsKey(NamespacedKey.fromString(element))) {
+                containers.add(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(element)));
+            }
+            for (Power power : CraftApoli.getNestedPowers(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(element)))) {
+                if (power != null) {
+                    containers.add(power);
+                }
+            }
+        }
+        Origin origin = new Origin(namespacedTag, containers, obj.getRoot());
+        ((ArrayList<String>) OriginConfiguration.getConfiguration().get("disabled-origins")).forEach(d -> {
+            if (origin.getTag().equalsIgnoreCase(d)) {
+                CraftCalio.INSTANCE.getLogger().info("Origin(%e%) was disabled by the config!".replace("%e%", d));
+                origin.setDisabled();
+            }
+        });
+        registrar.register(origin);
 
-	if (obj.getRoot().isPresent("upgrades")) {
-	    obj.getRoot().getJsonArray("upgrades").asJsonObjectList().forEach(upgrade -> AsyncUpgradeTracker.upgrades.put(
-		origin, new TriPair(
-		    upgrade.getString("condition"),
-		    upgrade.getNamespacedKey("origin"),
-		    upgrade.getStringOrDefault("announcement", AsyncUpgradeTracker.NO_ANNOUNCEMENT)
-		)));
-	}
+        if (obj.getRoot().isPresent("upgrades")) {
+            obj.getRoot().getJsonArray("upgrades").asJsonObjectList().forEach(upgrade -> AsyncUpgradeTracker.upgrades.put(
+                    origin, new TriPair(
+                            upgrade.getString("condition"),
+                            upgrade.getNamespacedKey("origin"),
+                            upgrade.getStringOrDefault("announcement", AsyncUpgradeTracker.NO_ANNOUNCEMENT)
+                    )));
+        }
     }
 }
