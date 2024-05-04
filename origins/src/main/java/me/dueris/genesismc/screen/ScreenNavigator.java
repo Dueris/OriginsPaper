@@ -3,7 +3,13 @@ package me.dueris.genesismc.screen;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.content.OrbOfOrigins;
+import me.dueris.genesismc.event.OrbInteractEvent;
+import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.storage.OriginConfiguration;
+import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
@@ -16,6 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -26,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
+
+import static org.bukkit.Bukkit.getServer;
 
 public class ScreenNavigator implements Listener {
     public static final ItemStack NEXT_ITEMSTACK;
@@ -147,6 +156,27 @@ public class ScreenNavigator implements Listener {
                     tickCooldown.remove(e.getWhoClicked());
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 3);
+        }
+    }
+
+    @EventHandler
+    public void onOrbClick(PlayerInteractEvent e) {
+        org.bukkit.entity.Player p = e.getPlayer();
+        if (OriginConfiguration.getConfiguration().getBoolean("orb-of-origins")) {
+            if (e.getAction().isRightClick()) {
+                if (e.getItem() != null) {
+                    if ((isSimilarEnough(e.getItem(), OrbOfOrigins.orb)) && e.getItem().getItemMeta().getPersistentDataContainer().has(GenesisMC.identifier("origins"))) {
+                        if (!((CraftPlayer) p).getHandle().getAbilities().instabuild) {
+                            Utils.consumeItem(e.getItem());
+                        }
+                        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                            OriginPlayerAccessor.setOrigin(p, layer, CraftApoli.emptyOrigin());
+                        }
+                        OrbInteractEvent event = new OrbInteractEvent(p);
+                        getServer().getPluginManager().callEvent(event);
+                    }
+                }
+            }
         }
     }
 }
