@@ -24,10 +24,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class AsyncUpgradeTracker implements Listener {
-	private static final List<Runnable> ticks = new ArrayList<>();
-	public static HashMap<Origin, TriPair/*String advancement, NamespacedKey identifier, String announcement*/> upgrades = new HashMap<>();
+	private static final ConcurrentLinkedQueue<Runnable> ticks = new ConcurrentLinkedQueue<>();
+	public static ConcurrentHashMap<Origin, TriPair/*String advancement, NamespacedKey identifier, String announcement*/> upgrades = new ConcurrentHashMap<>();
 	public static AsyncUpgradeTracker tracker;
 	public static String NO_ANNOUNCEMENT = "no_announcement_found";
 
