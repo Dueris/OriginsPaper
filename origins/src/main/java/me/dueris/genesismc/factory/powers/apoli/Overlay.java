@@ -14,9 +14,9 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 
 public class Overlay extends CraftPower implements Listener {
+    private static final CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
 
     public static void initializeOverlay(Player player) {
-        CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
         border.setCenter(player.getWorld().getWorldBorder().getCenter());
         border.setSize(player.getWorld().getWorldBorder().getSize());
         border.setWarningDistance(999999999);
@@ -36,6 +36,7 @@ public class Overlay extends CraftPower implements Listener {
 
     @Override
     public void run(Player player, Power power) {
+        if (Bukkit.getCurrentTick() % 2 == 0) return;
         if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
             setActive(player, power.getTag(), true);
             initializeOverlay(player);
