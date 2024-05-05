@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,34 +28,36 @@ public class CraftApoli {
      * Size of the buffer to read/write data
      */
     private static final int BUFFER_SIZE = 4096;
-    private static int dynamic_thread_count = 0;
+    private static final Registrar<Layer> layerRegistrar = ((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER));
+    private static final Registrar<Origin> originRegistrar = ((Registrar<Origin>) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN));
+    private static final Registrar<Power> powerRegistrar = (Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER);
 
-    public static List<Layer> getLayersFromRegistry() {
-        return GenesisMC.getPlugin().registry.retrieve(Registries.LAYER).values().stream().toList();
+    public static Collection<Layer> getLayersFromRegistry() {
+        return layerRegistrar.values();
     }
 
-    public static List<Origin> getOriginsFromRegistry() {
-        return ((Registrar<Origin>) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).values().stream().toList();
+    public static Collection<Origin> getOriginsFromRegistry() {
+        return originRegistrar.values();
     }
 
-    public static List<Power> getPowersFromRegistry() {
-        return ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).values().stream().toList();
+    public static Collection<Power> getPowersFromRegistry() {
+        return powerRegistrar.values();
     }
 
     public static Origin getOrigin(String originTag) {
-        for (Origin o : ((Registrar<Origin>) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).values())
+        for (Origin o : originRegistrar.values())
             if (o.getTag().equals(originTag)) return o;
         return emptyOrigin();
     }
 
     public static Layer getLayerFromTag(String layerTag) {
-        for (Layer l : ((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).values())
+        for (Layer l : layerRegistrar.values())
             if (l.getTag().equals(layerTag)) return l;
-        return ((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).get(new NamespacedKey("origins", "origin"));
+        return layerRegistrar.get(new NamespacedKey("origins", "origin"));
     }
 
     public static Power getPowerFromTag(String powerTag) {
-        for (Power p : ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).values())
+        for (Power p : powerRegistrar.values())
             if (p.getTag().equals(powerTag)) return p;
         return null;
     }
@@ -63,14 +66,16 @@ public class CraftApoli {
      * @return A copy of The null origin.
      **/
     public static Origin emptyOrigin() {
-        return new Origin(
-                GenesisMC.originIdentifier("empty"),
-                new ArrayList<>(),
-                new FactoryJsonObject(
-                        JsonParser.parseString("{\"icon\":{\"item\":\"minecraft:player_head\"},\"name\":\"Null\",\"description\":\"Still Null\",\"order\":0,\"impact\":0}").getAsJsonObject()
-                )
-        );
+        return empty;
     }
+
+    static Origin empty = new Origin(
+        GenesisMC.originIdentifier("empty"),
+        new ArrayList<>(),
+        new FactoryJsonObject(
+            JsonParser.parseString("{\"icon\":{\"item\":\"minecraft:player_head\"},\"name\":\"Null\",\"description\":\"Still Null\",\"order\":0,\"impact\":0}").getAsJsonObject()
+        )
+    );
 
     public static void processNestedPowers(Power powerContainer, ArrayList<Power> powerContainers, String powerFolder, String powerFileName, File sourceFile) {
         for (String key : powerContainer.keySet()) {
@@ -80,7 +85,7 @@ public class CraftApoli {
                 FactoryBuilder accessor = new FactoryBuilder(subPowerValue.handle, sourceFile);
 
                 Power newPower = new Power(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), jsonObject, true, false, powerContainer, accessor);
-                ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(newPower);
+                powerRegistrar.register(newPower);
             }
         }
     }
@@ -93,8 +98,8 @@ public class CraftApoli {
 
         for (String key : power.keySet()) {
             if (power.getElement(key).isJsonObject()) {
-                if (((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase())) != null) {
-                    nested.add(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(powerFolder + ":" + powerFileName + "_" + key.toLowerCase())));
+                if (powerRegistrar.get(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase())) != null) {
+                    nested.add(powerRegistrar.get(NamespacedKey.fromString(powerFolder + ":" + powerFileName + "_" + key.toLowerCase())));
                 }
             }
         }
@@ -107,15 +112,6 @@ public class CraftApoli {
 
     public static File[] datapacksInDir() {
         return datapackDir().listFiles();
-    }
-
-    public static int getDynamicThreadCount() {
-        return dynamic_thread_count;
-    }
-
-    public static void setupDynamicThreadCount() {
-        int avalibleJVMThreads = Runtime.getRuntime().availableProcessors() * 2;
-        dynamic_thread_count = avalibleJVMThreads < 4 ? avalibleJVMThreads : avalibleJVMThreads >= OriginConfiguration.getConfiguration().getInt("max-loader-threads") ? OriginConfiguration.getConfiguration().getInt("max-loader-threads") : avalibleJVMThreads;
     }
 
     public static void unloadData() {
@@ -172,7 +168,7 @@ public class CraftApoli {
                 String[] layers = originData.split("\n");
                 for (String layer : layers) {
                     String[] layerData = layer.split("\\|");
-                    if (((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).get(NamespacedKey.fromString(layerData[0])).equals(originLayer)) {
+                    if (layerRegistrar.get(NamespacedKey.fromString(layerData[0])).equals(originLayer)) {
                         return CraftApoli.getOrigin(layerData[1]);
                     }
                 }
@@ -190,7 +186,7 @@ public class CraftApoli {
     public static HashMap<Layer, Origin> toOrigin(String originData) {
         HashMap<Layer, Origin> containedOrigins = new HashMap<>();
         if (originData == null) {
-            ((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).forEach((key, layer) -> {
+            layerRegistrar.forEach((key, layer) -> {
                 containedOrigins.put(layer, CraftApoli.emptyOrigin());
             });
         } else {
@@ -198,13 +194,13 @@ public class CraftApoli {
                 String[] layers = originData.split("\n");
                 for (String layer : layers) {
                     String[] layerData = layer.split("\\|");
-                    Layer layerContainer = ((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).get(NamespacedKey.fromString(layerData[0]));
+                    Layer layerContainer = layerRegistrar.get(NamespacedKey.fromString(layerData[0]));
                     Origin originContainer = CraftApoli.getOrigin(layerData[1]);
                     containedOrigins.put(layerContainer, originContainer);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                ((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).forEach((key, layer) -> {
+                layerRegistrar.forEach((key, layer) -> {
                     containedOrigins.put(layer, CraftApoli.emptyOrigin());
                 });
                 return containedOrigins;

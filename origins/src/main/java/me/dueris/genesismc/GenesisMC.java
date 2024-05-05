@@ -71,9 +71,7 @@ import org.json.simple.JSONObject;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.*;
 
 import static me.dueris.genesismc.util.ColorConstants.AQUA;
 
@@ -87,7 +85,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static String apoliVersion = "1.12.8";
     public static boolean placeholderapi = false;
     public static File playerDataFolder;
-    public static boolean debugOrigins = false;
     public static boolean forceUseCurrentVersion = false;
     public static OriginScheduler.OriginSchedulerTree scheduler = null;
     public static String version = Bukkit.getVersion().split("\\(MC: ")[1].replace(")", "");
@@ -185,7 +182,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
 
         debug(Component.text("* (-debugOrigins={true}) || BEGINNING DEBUG {"));
-        CraftApoli.setupDynamicThreadCount();
         ObjectRemapper.typeMappings.add(new Pair<String, String>() {
             @Override
             public String left() {
@@ -223,8 +219,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         ObjectRemapper.typeAlias.put("apoli:conditioned_restrict_armor", "apoli:restrict_armor");
         ThreadFactory threadFactory = new NamedTickThreadFactory("OriginParsingPool");
         CraftPower.tryPreloadClass(AsyncTaskWorker.class); // Preload worker
-        loaderThreadPool = Executors.newFixedThreadPool(CraftApoli.getDynamicThreadCount(), threadFactory);
-        debugOrigins = OriginConfiguration.getConfiguration().getBoolean("debug");
         placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
         if (placeholderapi) new PlaceHolderAPI(this).register();
 
@@ -269,6 +263,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 Utils.unzip(pack.getPath(), getTmpFolder().getAbsolutePath());
             }
         });
+        int avalibleJVMThreads = Runtime.getRuntime().availableProcessors() * 2;
+        int dynamic_thread_count = avalibleJVMThreads < 4 ? avalibleJVMThreads : Math.min(avalibleJVMThreads, OriginConfiguration.getConfiguration().getInt("max-loader-threads"));
+        loaderThreadPool = Executors.newFixedThreadPool(dynamic_thread_count, threadFactory);
 
         this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(GenesisMC.originIdentifier("builtin"), getTmpFolder().toPath()));
         this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(GenesisMC.originIdentifier("default"), server.getWorldPath(LevelResource.DATAPACK_DIR)));
@@ -303,7 +300,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                     Registries.LAYER,
                     new Layer(true), 2
             );
-            calio.start(debugOrigins, loaderThreadPool);
+            calio.start(OriginConfiguration.getConfiguration().getBoolean("debug"), loaderThreadPool);
             BuiltinRegistry.bootstrap();
             // End calio parsing
         } catch (Throwable e) {
@@ -323,7 +320,18 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         GenesisMC.scheduler = new OriginScheduler.OriginSchedulerTree();
         GenesisMC.scheduler.runTaskTimer(this, 0, 1);
-        WaterProtBook.init();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                GenesisMC.scheduler.tickAsyncScheduler();
+            }
+        }.runTaskTimerAsynchronously(GenesisMC.getPlugin(), 0, 1);
+		ConcurrentHashMap<Player, List<ApoliPower>> playerListConcurrentHashMap = OriginScheduler.tickedPowers;
+		for (Player player : Bukkit.getOnlinePlayers()) {
+            OriginPlayerAccessor.powersAppliedList.putIfAbsent(player, new ConcurrentLinkedQueue<>());
+			playerListConcurrentHashMap.put(player, new ArrayList<>());
+		}
+		WaterProtBook.init();
         start();
         patchPowers();
         debug(Component.text("  - Power thread starting with {originScheduler}".replace("originScheduler", GenesisMC.scheduler.toString())));
@@ -344,6 +352,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         PowerCommand.register(((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
         // Load addons
         CraftPehuki.onLoad();
+        CraftPower.tryPreloadClass(CraftApoli.class);
 
         try {
             Bootstrap.deleteDirectory(GenesisMC.getTmpFolder().toPath(), true);
@@ -367,7 +376,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     }
 
     public void debug(Component component) {
-        if (debugOrigins) printComponent(component);
+        if (OriginConfiguration.getConfiguration().getBoolean("debug")) printComponent(component);
     }
 
     private void start() {

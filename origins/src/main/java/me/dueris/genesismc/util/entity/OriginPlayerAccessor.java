@@ -28,9 +28,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -201,7 +199,6 @@ public class OriginPlayerAccessor implements Listener {
     }
 
     public static ConcurrentLinkedQueue<ApoliPower> getPowersApplied(Player p) {
-        if (!powersAppliedList.containsKey(p)) powersAppliedList.put(p, new ConcurrentLinkedQueue<ApoliPower>());
         return powersAppliedList.get(p);
     }
 

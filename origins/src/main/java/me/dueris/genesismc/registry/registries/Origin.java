@@ -32,6 +32,7 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
     private static final long serialVersionUID = 1L;
 
     NamespacedKey tag;
+    String cachedStringTag;
     ArrayList<Power> powerContainer;
     FactoryJsonObject choosingCondition;
     FactoryJsonObject factory;
@@ -53,6 +54,7 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
     public Origin(NamespacedKey tag, ArrayList<Power> powerContainer, FactoryJsonObject factoryJsonObject) {
         super(factoryJsonObject.handle);
         this.tag = tag;
+        this.cachedStringTag = this.tag.asString();
         this.powerContainer = powerContainer;
         this.factory = factoryJsonObject;
     }
@@ -82,7 +84,7 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
      * @return The origin tag.
      */
     public String getTag() {
-        return this.tag.asString();
+        return this.cachedStringTag;
     }
 
     /**

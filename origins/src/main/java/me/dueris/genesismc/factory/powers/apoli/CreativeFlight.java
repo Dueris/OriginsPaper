@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class CreativeFlight extends CraftPower implements Listener {
 
     @Override
-    public void run(Player p, Power power) {
+    public void runAsync(Player p, Power power) {
         GameMode m = p.getGameMode();
         NamespacedKey insideBlock = new NamespacedKey(GenesisMC.getPlugin(), "insideBlock");
         PersistentDataContainer container = p.getPersistentDataContainer();

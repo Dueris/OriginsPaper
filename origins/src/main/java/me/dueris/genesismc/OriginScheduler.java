@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class OriginScheduler {
-
-    public static ArrayList<ApoliPower> activePowerRunners = new ArrayList<>();
-    public static HashMap<Player, List<ApoliPower>> tickedPowers = new HashMap<>();
+    public static ConcurrentHashMap<Player, List<ApoliPower>> tickedPowers = new ConcurrentHashMap<>();
     final Plugin plugin;
 
     public OriginScheduler(Plugin plugin) {
@@ -51,15 +51,11 @@ public class OriginScheduler {
         @Override
         public void run() {
             for (Player p : OriginPlayerAccessor.hasPowers) {
-                tickedPowers.putIfAbsent(p, new ArrayList<>());
-                if (!OriginPlayerAccessor.getPowersApplied(p).contains(CreativeFlight.class)) {
-                    // Ensures the flight handler can still tick on players because of issues when it doesn't tick
-                    flightHandler.run(p, null);
-                }
                 if (Bukkit.getServer().getCurrentTick() % 20 == 0) {
                     OriginPlayerAccessor.checkForDuplicates(p);
                 }
-                for (ApoliPower c : OriginPlayerAccessor.getPowersApplied(p)) {
+                ConcurrentLinkedQueue<ApoliPower> applied = OriginPlayerAccessor.getPowersApplied(p);
+                for (ApoliPower c : applied) {
                     if (!c.getPlayersWithPower().contains(p)) {
                         c.doesntHavePower(p); // Allow powers to tick on players that don't have that power
                         continue; // Player doesn't have this power or the power isn't assigned
@@ -67,7 +63,6 @@ public class OriginScheduler {
                     if (tickedPowers.get(p).contains(c))
                         continue; // CraftPower was already ticked, we are not ticking it again.
                     tickedPowers.get(p).add(c);
-                    activePowerRunners.add(c);
 
                     for (Power power : OriginPlayerAccessor.getPowers(p, c.getType())) {
                         try {
@@ -89,6 +84,20 @@ public class OriginScheduler {
             }
 
             tickedPowers.keySet().forEach(OriginSchedulerTree::accept);
+        }
+
+        public void tickAsyncScheduler() {
+            for (Player p : OriginPlayerAccessor.hasPowers) {
+                ConcurrentLinkedQueue<ApoliPower> applied = OriginPlayerAccessor.getPowersApplied(p);
+                if (!applied.contains(CreativeFlight.class)) {
+                    flightHandler.run(p, null);
+                }
+                for (ApoliPower c : applied) {
+                    for (Power power : OriginPlayerAccessor.getPowers(p, c.getType())) {
+                        c.runAsync(p, power);
+                    }
+                }
+            }
         }
     }
 

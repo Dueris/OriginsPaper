@@ -122,6 +122,9 @@ public interface ApoliPower extends Registrable {
     default void run(Player p, Power power) {
     }
 
+    default void runAsync(Player p, Power power) {
+    }
+
     default void doesntHavePower(Player p) {
     }
 

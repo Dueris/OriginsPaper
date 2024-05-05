@@ -2,7 +2,9 @@ package me.dueris.genesismc.util;
 
 import me.dueris.calio.util.holders.TriPair;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.advancements.AdvancementHolder;
@@ -40,7 +42,7 @@ public class AsyncUpgradeTracker implements Listener {
             MinecraftServer server = GenesisMC.server;
             for (Map.Entry<Origin, TriPair> entry : upgrades.entrySet()) {
                 for (CraftPlayer player : ((CraftServer) Bukkit.getServer()).getOnlinePlayers()) {
-                    OriginPlayerAccessor.getOrigin(player).keySet().forEach(layer -> {
+                    for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                         if (OriginPlayerAccessor.getOrigin(player, layer).equals(entry.getKey())) {
                             String advancement = (String) entry.getValue().first;
                             NamespacedKey originToSet = (NamespacedKey) entry.getValue().second;
@@ -59,7 +61,7 @@ public class AsyncUpgradeTracker implements Listener {
                                 }
                             }
                         }
-                    });
+                    }
                 }
             }
         });
@@ -74,6 +76,6 @@ public class AsyncUpgradeTracker implements Listener {
                 tracker.scheduleTick();
                 ticks.forEach(Runnable::run);
             }
-        }.runTaskTimer(GenesisMC.getPlugin(), 0, 5);
+        }.runTaskTimerAsynchronously(GenesisMC.getPlugin(), 0, 5);
     }
 }

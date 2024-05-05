@@ -6,14 +6,14 @@ import org.bukkit.NamespacedKey;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 public class Registrar<T extends Registrable> {
-    public HashMap<NamespacedKey, T> rawRegistry = new HashMap<>();
+    public ConcurrentHashMap<NamespacedKey, T> rawRegistry = new ConcurrentHashMap<>();
     private boolean frozen = false;
 
     /**

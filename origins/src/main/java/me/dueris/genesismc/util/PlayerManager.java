@@ -1,6 +1,7 @@
 package me.dueris.genesismc.util;
 
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.OriginScheduler;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.genesismc.GravityPower;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PlayerManager implements Listener {
 
@@ -66,6 +68,8 @@ public class PlayerManager implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
+        OriginScheduler.tickedPowers.putIfAbsent(p, new ArrayList<>());
+        OriginPlayerAccessor.powersAppliedList.putIfAbsent(p, new ConcurrentLinkedQueue<>());
         //set origins to null if none present
         if (
                 !p.getPersistentDataContainer().has(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) ||

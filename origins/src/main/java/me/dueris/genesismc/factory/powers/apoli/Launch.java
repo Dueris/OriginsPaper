@@ -66,8 +66,7 @@ public class Launch extends CraftPower implements Listener {
                                         int speed = Integer.parseInt(power.getStringOrDefault("speed", null)); // used as string so that upon parsing the int it throws if not found
                                         Cooldown.addCooldown(p, cooldown, power);
                                         setActive(p, power.getTag(), true);
-                                        p.setVelocity(p.getVelocity().setY(0));
-                                        p.setVelocity(p.getVelocity().setY(speed));
+                                        p.setVelocity(p.getVelocity().setY(p.getVelocity().getY() + speed));
                                         ((CraftWorld) p.getWorld()).getHandle().sendParticles(ParticleTypes.CLOUD, p.getX(), p.getY(), p.getZ(), 8, ((CraftPlayer) p).getHandle().getRandom().nextGaussian(), 0.0D, ((CraftPlayer) p).getHandle().getRandom().nextGaussian(), 0.5);
                                         if (power.isPresent("sound")) {
                                             p.getWorld().playSound(p, MiscUtils.parseSound(power.getString("sound")), 0.5F, 0.4F / (((CraftPlayer) p).getHandle().getRandom().nextFloat() * 0.4F + 0.8F));

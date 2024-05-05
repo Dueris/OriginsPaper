@@ -37,6 +37,8 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
 
     public FactoryBuilder rawAccessor;
     NamespacedKey powerTag;
+    String cachedStringPowerTag;
+    String cachedType;
     boolean originMultiple;
     boolean originMultipleParent;
     JsonElement jsonData;
@@ -59,6 +61,8 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
     public Power(NamespacedKey powerTag, FactoryJsonObject jsonData, boolean originMultiple, boolean originMultipleParent, Power powerParent, FactoryBuilder accessor) {
         super(jsonData.handle);
         this.powerTag = powerTag;
+        this.cachedStringPowerTag = powerTag.asString();
+        this.cachedType = jsonData.getString("type");
         this.originMultiple = originMultiple;
         this.originMultipleParent = originMultipleParent;
         this.powerParent = powerParent;
@@ -112,7 +116,7 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
      * @return The power tag.
      */
     public String getTag() {
-        return this.powerTag.asString();
+        return this.cachedStringPowerTag;
     }
 
     /**
@@ -155,7 +159,7 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
      * @return The type from the power file. Will return "" if there is no type present.
      */
     public String getType() {
-        return this.getString("type");
+        return this.cachedType;
     }
 
     /**
