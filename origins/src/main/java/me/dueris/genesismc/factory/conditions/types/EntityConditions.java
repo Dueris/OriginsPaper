@@ -6,7 +6,6 @@ import com.mojang.brigadier.StringReader;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.registry.Registrar;
-import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
@@ -310,7 +309,7 @@ public class EntityConditions {
 
             return level.canSeeSky(blockPos);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, entity) -> NbtUtils.compareNbt(MiscUtils.ParserUtils.parseJson(new StringReader(condition.getString("nbt")), CompoundTag.CODEC), entity.getHandle().saveWithoutId(new CompoundTag()), true)));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, entity) -> NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.getString("nbt")), CompoundTag.CODEC), entity.getHandle().saveWithoutId(new CompoundTag()), true)));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("sneaking"), (condition, entity) -> entity.isSneaking()));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("resource"), (condition, entity) -> {
             Optional<Resource.Bar> bar = Resource.getDisplayedBar(entity, condition.getString("resource"));
@@ -599,9 +598,9 @@ public class EntityConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("status_effect"), (condition, entity) -> {
             if (entity instanceof LivingEntity le) {
-                if (entity != null && StackingStatusEffect.getPotionEffectType(condition.getString("effect")) != null) {
+                if (entity != null && Utils.getPotionEffectType(condition.getString("effect")) != null) {
                     for (PotionEffect effect : le.getActivePotionEffects()) {
-                        return effect.getType().equals(StackingStatusEffect.getPotionEffectType(condition.getString("effect")))
+                        return effect.getType().equals(Utils.getPotionEffectType(condition.getString("effect")))
                                 && effect.getAmplifier() >= condition.getNumberOrDefault("min_amplifier", 0).getInt()
                                 && effect.getAmplifier() <= condition.getNumberOrDefault("max_amplifier", Integer.MAX_VALUE).getInt()
                                 && effect.getDuration() >= condition.getNumberOrDefault("min_duration", 0).getInt()

@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -9,6 +8,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.KeybindingUtils;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.particles.ParticleTypes;
 import org.bukkit.craftbukkit.CraftWorld;
@@ -69,7 +69,7 @@ public class Launch extends CraftPower implements Listener {
                                         p.setVelocity(p.getVelocity().setY(p.getVelocity().getY() + speed));
                                         ((CraftWorld) p.getWorld()).getHandle().sendParticles(ParticleTypes.CLOUD, p.getX(), p.getY(), p.getZ(), 8, ((CraftPlayer) p).getHandle().getRandom().nextGaussian(), 0.0D, ((CraftPlayer) p).getHandle().getRandom().nextGaussian(), 0.5);
                                         if (power.isPresent("sound")) {
-                                            p.getWorld().playSound(p, MiscUtils.parseSound(power.getString("sound")), 0.5F, 0.4F / (((CraftPlayer) p).getHandle().getRandom().nextFloat() * 0.4F + 0.8F));
+                                            p.getWorld().playSound(p, Utils.parseSound(power.getString("sound")), 0.5F, 0.4F / (((CraftPlayer) p).getHandle().getRandom().nextFloat() * 0.4F + 0.8F));
                                         }
                                         setActive(p, power.getTag(), true);
                                         times[0]++;

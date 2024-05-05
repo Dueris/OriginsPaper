@@ -3,14 +3,13 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.Utils;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect.getPotionEffectType;
 
 public class EffectImmunity extends CraftPower {
 
@@ -27,7 +26,7 @@ public class EffectImmunity extends CraftPower {
             }
             if (!effects.isEmpty()) {
                 for (String effectString : effects) {
-                    PotionEffectType effectType = getPotionEffectType(effectString);
+                    PotionEffectType effectType = Utils.getPotionEffectType(effectString);
                     if (effectType != null) {
                         if (p.hasPotionEffect(effectType)) {
                             p.removePotionEffect(effectType);

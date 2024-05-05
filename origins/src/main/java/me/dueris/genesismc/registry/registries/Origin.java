@@ -19,6 +19,7 @@ import me.dueris.genesismc.util.AsyncUpgradeTracker;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
 import java.io.Serial;
@@ -38,6 +39,7 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
     FactoryJsonObject factory;
     boolean isDisabled = false;
 
+    @ApiStatus.Internal
     public Origin(boolean toRegistry) {
         super(null);
         if (!toRegistry) {
@@ -130,7 +132,7 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
      * @return The icon as a Material Object.
      */
     public Material getMaterialIcon() {
-        return me.dueris.calio.util.MiscUtils.getBukkitMaterial(getIcon());
+        return this.getItemStack("icon").getType();
     }
 
     /**

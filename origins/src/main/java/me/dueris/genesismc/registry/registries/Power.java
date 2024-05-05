@@ -11,7 +11,10 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.util.Utils;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.NamespacedKey;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
 import java.io.Serial;
@@ -41,9 +44,9 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
     String cachedType;
     boolean originMultiple;
     boolean originMultipleParent;
-    JsonElement jsonData;
     Power powerParent;
 
+    @ApiStatus.Internal
     public Power(boolean toRegistry) {
         super(null);
         if (!toRegistry) {
@@ -193,6 +196,10 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
             result.add(obj);
         }
         return result;
+    }
+
+    public CompoundTag getCompoundTag(String key) {
+        return Utils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(this.getString(key)), CompoundTag.CODEC);
     }
 
     public String fillStackTrace() {

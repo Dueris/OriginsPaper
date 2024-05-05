@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -140,7 +139,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                             float pitch = player.getXRot();
 
                                             Entity entityToSpawn = Utils
-                                                    .getEntityWithPassengers(serverWorld, CraftEntityType.bukkitToMinecraft(type), MiscUtils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(tag), CompoundTag.CODEC), player.position().add(0, player.getEyeHeight(player.getPose()), 0), yaw, pitch)
+                                                    .getEntityWithPassengers(serverWorld, CraftEntityType.bukkitToMinecraft(type), Utils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(tag), CompoundTag.CODEC), player.position().add(0, player.getEyeHeight(player.getPose()), 0), yaw, pitch)
                                                     .orElse(null);
 
                                             if (entityToSpawn == null) {
@@ -180,9 +179,9 @@ public class FireProjectile extends CraftPower implements Listener {
 
                                             }
 
-                                            if (MiscUtils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(tag), CompoundTag.CODEC).isEmpty()) {
+                                            if (Utils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(tag), CompoundTag.CODEC).isEmpty()) {
                                                 CompoundTag mergedTag = entityToSpawn.saveWithoutId(new CompoundTag());
-                                                mergedTag.merge(MiscUtils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(tag), CompoundTag.CODEC));
+                                                mergedTag.merge(Utils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(tag), CompoundTag.CODEC));
 
                                                 entityToSpawn.load(mergedTag);
 

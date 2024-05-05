@@ -3,9 +3,7 @@ package me.dueris.calio.builder.inst.factory;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import me.dueris.calio.util.IgnoreFactoryValidationCheck;
-import me.dueris.calio.util.MiscUtils;
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -130,11 +128,8 @@ public class FactoryJsonObject {
     }
 
     public Material getMaterial(String key) {
-        return MiscUtils.getBukkitMaterial(this.getString(key));
-    }
-
-    public CompoundTag getCompoundTag(String key) {
-        return MiscUtils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(this.getString(key)), CompoundTag.CODEC);
+        NamespacedKey a = this.getNamespacedKey(key);
+        return Material.matchMaterial(a.asString());
     }
 
     public <T> TagKey<T> getTagKey(String key, ResourceKey<Registry<T>> registry) {
@@ -155,7 +150,7 @@ public class FactoryJsonObject {
             }
             return new ItemStack(Material.valueOf(NamespacedKey.fromString(materialVal).asString().split(":")[1].toUpperCase()), amt);
         }
-        if (inst != null && inst.isString()) return new ItemStack(MiscUtils.getBukkitMaterial(inst.getString()));
+        if (inst != null && inst.isString()) return new ItemStack(this.getMaterial(key));
         return new ItemStack(Material.PLAYER_HEAD, 1);
     }
 }

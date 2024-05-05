@@ -148,11 +148,9 @@ public class PowerCommand {
                         .executes(context -> {
                             for (ServerPlayer player : EntityArgument.getPlayers(context, "targets")) {
                                 ConcurrentLinkedQueue<Power> allPowers = new ConcurrentLinkedQueue<>();
-                                for (Layer layerContainer : OriginCommand.commandProvidedLayers) {
-                                    ConcurrentLinkedQueue<Power> powers = OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()).get(layerContainer);
-                                    if (!(powers == null || powers.isEmpty())) {
-                                        allPowers.addAll(powers);
-                                    }
+                                ArrayList<Power> powers = OriginPlayerAccessor.getPowers(player.getBukkitEntity());
+                                if (!powers.isEmpty()) {
+                                    allPowers.addAll(powers);
                                 }
 
                                 if (allPowers.isEmpty()) {

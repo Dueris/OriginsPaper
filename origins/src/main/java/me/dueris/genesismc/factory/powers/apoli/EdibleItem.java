@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
-import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -34,7 +33,7 @@ public class EdibleItem extends CraftPower implements Listener {
         } else {
             amt = 1;
         }
-        ItemStack itemStack = new ItemStack(MiscUtils.getBukkitMaterial(stack.getString("item")), amt);
+        ItemStack itemStack = new ItemStack(power.getMaterial(stack.getString("item")), amt);
         holder.getInventory().addItem(itemStack);
         if (runActionUpon) Actions.executeItem(itemStack, power.getJsonObject("result_item_action"));
     }

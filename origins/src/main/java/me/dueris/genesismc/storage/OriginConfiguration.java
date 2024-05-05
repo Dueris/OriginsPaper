@@ -15,8 +15,9 @@ public class OriginConfiguration {
     private static File server;
     private static File orb;
 
-    public static void load() {
+    public static void load() throws IOException {
         JavaPlugin plugin = GenesisMC.getPlugin();
+        if (!plugin.getDataFolder().exists()) plugin.getDataFolder().mkdirs();
         File orbFile = fillFile("orb-of-origin.yml", new File(plugin.getDataFolder(), "orb-of-origin.yml"));
         File originServer = fillFile("origin-server.yml", new File(plugin.getDataFolder(), "origin-server.yml"));
         server = originServer;
@@ -28,8 +29,9 @@ public class OriginConfiguration {
         getOrbConfiguration().addDefaults(Map.of());
     }
 
-    private static File fillFile(String a, File o) {
+    private static File fillFile(String a, File o) throws IOException {
         if (o.exists()) return o;
+        else o.createNewFile();
         ClassLoader cL = OriginConfiguration.class.getClassLoader();
         try (InputStream stream = cL.getResourceAsStream(a)) {
             if (stream == null) throw new RuntimeException("Unable to find resource: " + a);

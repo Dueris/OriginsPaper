@@ -43,7 +43,7 @@ public class OriginPlayerAccessor implements Listener {
     // A list of CraftPowers to be ran on the player
     public static ConcurrentHashMap<Player, ConcurrentLinkedQueue<ApoliPower>> powersAppliedList = new ConcurrentHashMap<>();
     // A list of Players that have powers that should be run
-    public static ArrayList<Player> hasPowers = new ArrayList<>();
+    public static ConcurrentLinkedQueue<Player> hasPowers = new ConcurrentLinkedQueue<>();
     /**
      * For some reason, a mod on the client breaks the ability to check the
      * SharedConstant value retrieved and set in Player#isSprinting(), but it still sends
@@ -138,6 +138,17 @@ public class OriginPlayerAccessor implements Listener {
         for (Power power : playerPowerMapping.get(p).get(layer)) {
             if (power == null) continue;
             if (power.getType().equals(powerType)) powers.add(power);
+        }
+        return powers;
+    }
+
+    public static ArrayList<Power> getPowers(Player p) {
+        ArrayList<Power> powers = new ArrayList<>();
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power power : playerPowerMapping.get(p).get(layer)) {
+                if (power == null) continue;
+                powers.add(power);
+            }
         }
         return powers;
     }

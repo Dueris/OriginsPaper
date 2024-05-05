@@ -69,6 +69,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.json.simple.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
@@ -162,8 +163,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisMC.server = ((CraftServer) Bukkit.getServer()).getServer();
         world_container = server.options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
         playerDataFolder = server.playerDataStorage.getPlayerDir();
-        OriginConfiguration.load();
-        isCompatible = (!isFolia && (isExpandedScheduler));
+		try {
+			OriginConfiguration.load();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		isCompatible = (!isFolia && (isExpandedScheduler));
         boolean isCorrectVersion = false;
         for (String vers : versions) {
             if (vers.equalsIgnoreCase(String.valueOf(version))) {

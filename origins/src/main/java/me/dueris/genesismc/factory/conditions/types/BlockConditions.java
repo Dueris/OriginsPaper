@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
-import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
@@ -47,7 +46,7 @@ public class BlockConditions {
     public void prep() {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("material"), (condition, block) -> {
             try {
-                Material mat = MiscUtils.getBukkitMaterial(condition.getString("material"));
+                Material mat = condition.getMaterial(condition.getString("material"));
                 return block.getType().equals(mat);
             } catch (Exception e) {
                 e.printStackTrace();

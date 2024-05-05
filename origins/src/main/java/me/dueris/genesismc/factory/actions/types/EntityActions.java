@@ -6,14 +6,12 @@ import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.registry.Registrar;
-import me.dueris.calio.util.MiscUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.*;
 import me.dueris.genesismc.factory.powers.apoli.Cooldown;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
-import me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.apoli.Toggle;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Power;
@@ -164,7 +162,7 @@ public class EntityActions {
             float radius = action.getNumberOrDefault("radius", 3.0F).getFloat();
             int waitTime = action.getNumberOrDefault("wait_time", 10).getInt();
             float radiusOnUse = action.getNumberOrDefault("radius_on_use", -0.5F).getFloat();
-            List<PotionEffect> effects = MiscUtils.parseAndReturnPotionEffects(action);
+            List<PotionEffect> effects = Utils.parseAndReturnPotionEffects(action);
 
             net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
             ServerLevel level = (ServerLevel) nmsEntity.level();
@@ -216,7 +214,7 @@ public class EntityActions {
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("clear_effect"), (action, entity) -> {
-            PotionEffectType potionEffectType = StackingStatusEffect.getPotionEffectType(action.getString("effect"));
+            PotionEffectType potionEffectType = Utils.getPotionEffectType(action.getString("effect"));
             if (entity instanceof Player player) {
                 if (player.hasPotionEffect(potionEffectType)) {
                     player.removePotionEffect(potionEffectType);
@@ -345,7 +343,7 @@ public class EntityActions {
         register(new ActionFactory(GenesisMC.apoliIdentifier("raycast"), (action, entity) -> RaycastUtils.action(action, ((CraftEntity) entity).getHandle())));
         register(new ActionFactory(GenesisMC.apoliIdentifier("extinguish"), (action, entity) -> entity.setFireTicks(0)));
         register(new ActionFactory(GenesisMC.apoliIdentifier("play_sound"), (action, entity) -> {
-            Sound sound = MiscUtils.parseSound(action.getString("sound"));
+            Sound sound = Utils.parseSound(action.getString("sound"));
             Float volume = action.getNumberOrDefault("volume", 1.0).getFloat();
             Float pitch = action.getNumberOrDefault("pitch", 1.0).getFloat();
             entity.getWorld().playSound(entity, sound, volume, pitch);
@@ -458,7 +456,7 @@ public class EntityActions {
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("apply_effect"), (action, entity) -> {
             if (entity instanceof LivingEntity le) {
-                MiscUtils.parseAndReturnPotionEffects(action).forEach(potionEffect -> le.addPotionEffect(potionEffect, true));
+                Utils.parseAndReturnPotionEffects(action).forEach(potionEffect -> le.addPotionEffect(potionEffect, true));
             }
         }));
         register(new ActionFactory(GenesisMC.apoliIdentifier("area_of_effect"), (action, entity) -> {

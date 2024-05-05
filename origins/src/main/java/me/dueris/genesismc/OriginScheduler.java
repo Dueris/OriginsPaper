@@ -89,8 +89,8 @@ public class OriginScheduler {
         public void tickAsyncScheduler() {
             for (Player p : OriginPlayerAccessor.hasPowers) {
                 ConcurrentLinkedQueue<ApoliPower> applied = OriginPlayerAccessor.getPowersApplied(p);
-                if (!applied.contains(CreativeFlight.class)) {
-                    flightHandler.run(p, null);
+                if (!applied.stream().map(Object::getClass).toList().contains(CreativeFlight.class)) {
+                    flightHandler.runAsync(p, null);
                 }
                 for (ApoliPower c : applied) {
                     for (Power power : OriginPlayerAccessor.getPowers(p, c.getType())) {

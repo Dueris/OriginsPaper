@@ -19,6 +19,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
 import java.io.Serial;
@@ -35,6 +36,7 @@ public class Layer extends FactoryJsonObject implements Serializable, FactoryIns
     List<Origin> origins;
     FactoryJsonObject factory;
 
+    @ApiStatus.Internal
     public Layer(boolean toRegistry) {
         super(null);
         if (!toRegistry) {
