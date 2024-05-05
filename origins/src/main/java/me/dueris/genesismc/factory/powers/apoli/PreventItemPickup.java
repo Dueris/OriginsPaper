@@ -18,28 +18,28 @@ import java.util.ArrayList;
 
 public class PreventItemPickup extends CraftPower implements Listener {
 
-    @EventHandler
-    public void pickup(PlayerAttemptPickupItemEvent e) {
-        Player p = e.getPlayer();
-        if (this.getPlayersWithPower().contains(p)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-                    boolean shouldCancel = ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem().getItemStack()) && ConditionExecutor.testBiEntity(power.getJsonObject("bientiy_condition"), (CraftEntity) p, (CraftEntity) e.getItem());
-                    if (shouldCancel) e.setCancelled(true);
-                    Actions.executeItem(e.getItem().getItemStack(), power.getJsonObject("item_action"));
-                    Actions.executeBiEntity(p, e.getItem(), power.getJsonObject("bientiy_action_item"));
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void pickup(PlayerAttemptPickupItemEvent e) {
+		Player p = e.getPlayer();
+		if (this.getPlayersWithPower().contains(p)) {
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
+					boolean shouldCancel = ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem().getItemStack()) && ConditionExecutor.testBiEntity(power.getJsonObject("bientiy_condition"), (CraftEntity) p, (CraftEntity) e.getItem());
+					if (shouldCancel) e.setCancelled(true);
+					Actions.executeItem(e.getItem().getItemStack(), power.getJsonObject("item_action"));
+					Actions.executeBiEntity(p, e.getItem(), power.getJsonObject("bientiy_action_item"));
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:prevent_item_pickup";
-    }
+	@Override
+	public String getType() {
+		return "apoli:prevent_item_pickup";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return PreventSuperClass.prevent_item_pickup;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return PreventSuperClass.prevent_item_pickup;
+	}
 }

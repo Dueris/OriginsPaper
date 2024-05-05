@@ -20,41 +20,41 @@ import java.util.ArrayList;
 
 public class ActionOnHit extends CraftPower implements Listener {
 
-    @EventHandler
-    public void action(EntityDamageByEntityEvent e) {
-        if (e.getDamager() instanceof Player p) {
-            Entity target = e.getEntity();
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                if (getPlayersWithPower().contains(p)) {
-                    for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-                        if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p))
-                            return;
-                        if (!ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) return;
-                        if (!ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) target))
-                            return;
-                        setActive(p, power.getTag(), true);
-                        Actions.executeEntity(p, power.getJsonObject("entity_action"));
-                        Actions.executeBiEntity(p, target, power.getJsonObject("bientity_action"));
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                setActive(p, power.getTag(), false);
-                            }
-                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
-                    }
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void action(EntityDamageByEntityEvent e) {
+		if (e.getDamager() instanceof Player p) {
+			Entity target = e.getEntity();
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				if (getPlayersWithPower().contains(p)) {
+					for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
+						if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p))
+							return;
+						if (!ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) return;
+						if (!ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) target))
+							return;
+						setActive(p, power.getTag(), true);
+						Actions.executeEntity(p, power.getJsonObject("entity_action"));
+						Actions.executeBiEntity(p, target, power.getJsonObject("bientity_action"));
+						new BukkitRunnable() {
+							@Override
+							public void run() {
+								setActive(p, power.getTag(), false);
+							}
+						}.runTaskLater(GenesisMC.getPlugin(), 2L);
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:action_on_hit";
-    }
+	@Override
+	public String getType() {
+		return "apoli:action_on_hit";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return action_on_hit;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return action_on_hit;
+	}
 
 }

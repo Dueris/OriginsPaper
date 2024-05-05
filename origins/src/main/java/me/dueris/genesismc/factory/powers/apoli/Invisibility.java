@@ -14,38 +14,38 @@ import java.util.ArrayList;
 
 public class Invisibility extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p, Power power) {
-        boolean shouldSetInvisible = ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p);
+	@Override
+	public void run(Player p, Power power) {
+		boolean shouldSetInvisible = ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p);
 
-        p.setInvisible(shouldSetInvisible || p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY));
-    }
+		p.setInvisible(shouldSetInvisible || p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY));
+	}
 
-    @Override
-    public void doesntHavePower(Player p) {
-        if (p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY)) {
-            return;
-        }
-        p.setInvisible(false);
-    }
+	@Override
+	public void doesntHavePower(Player p) {
+		if (p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY)) {
+			return;
+		}
+		p.setInvisible(false);
+	}
 
-    @EventHandler
-    public void powerUpdate(PowerUpdateEvent e) {
-        if (!getPlayersWithPower().contains(e.getPlayer())) {
-            doesntHavePower(e.getPlayer());
-            return;
-        }
-        run(e.getPlayer(), e.getPower());
-    }
+	@EventHandler
+	public void powerUpdate(PowerUpdateEvent e) {
+		if (!getPlayersWithPower().contains(e.getPlayer())) {
+			doesntHavePower(e.getPlayer());
+			return;
+		}
+		run(e.getPlayer(), e.getPower());
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:invisibility";
-    }
+	@Override
+	public String getType() {
+		return "apoli:invisibility";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return invisibility;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return invisibility;
+	}
 
 }

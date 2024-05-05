@@ -20,41 +20,41 @@ import java.util.ArrayList;
 
 public class ActionOnBeingUsed extends CraftPower implements Listener {
 
-    @EventHandler
-    public void entityRightClickEntity(PlayerInteractEntityEvent e) {
-        Player actor = e.getPlayer();
-        Entity target = e.getRightClicked();
-        if (!(target instanceof Player player)) return;
-        if (!getPlayersWithPower().contains(player)) return;
+	@EventHandler
+	public void entityRightClickEntity(PlayerInteractEntityEvent e) {
+		Player actor = e.getPlayer();
+		Entity target = e.getRightClicked();
+		if (!(target instanceof Player player)) return;
+		if (!getPlayersWithPower().contains(player)) return;
 
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
-                if (!(ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) actor, (CraftEntity) target) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), actor.getInventory().getItem(e.getHand()))))
-                    return;
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
+				if (!(ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) actor, (CraftEntity) target) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), actor.getInventory().getItem(e.getHand()))))
+					return;
 
-                setActive(player, power.getTag(), true);
-                Actions.executeItem(actor.getInventory().getItem(e.getHand()), power.getJsonObject("held_item_action"));
-                if (power.isPresent("result_stack")) {
-                    EdibleItem.runResultStack(power, true, actor);
-                }
-                Actions.executeBiEntity(actor, target, power.getJsonObject("bientity_action"));
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        setActive(player, power.getTag(), false);
-                    }
-                }.runTaskLater(GenesisMC.getPlugin(), 2L);
-            }
-        }
-    }
+				setActive(player, power.getTag(), true);
+				Actions.executeItem(actor.getInventory().getItem(e.getHand()), power.getJsonObject("held_item_action"));
+				if (power.isPresent("result_stack")) {
+					EdibleItem.runResultStack(power, true, actor);
+				}
+				Actions.executeBiEntity(actor, target, power.getJsonObject("bientity_action"));
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						setActive(player, power.getTag(), false);
+					}
+				}.runTaskLater(GenesisMC.getPlugin(), 2L);
+			}
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:action_on_being_used";
-    }
+	@Override
+	public String getType() {
+		return "apoli:action_on_being_used";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return action_on_being_used;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return action_on_being_used;
+	}
 }

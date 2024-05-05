@@ -23,7 +23,7 @@ import java.util.*;
 
 public class InventorySerializer implements Listener {
 
-    public static void saveInNbtIO(String tag, String data, Player player) {
+	public static void saveInNbtIO(String tag, String data, Player player) {
 //        ServerPlayer p = ((CraftPlayer) player).getHandle();
 //        CompoundTag compoundRoot = p.saveWithoutId(new CompoundTag());
 //        if (!compoundRoot.contains("OriginData")) {
@@ -36,12 +36,12 @@ public class InventorySerializer implements Listener {
 //        CompoundTag inventoryData = originData.getCompound("InventoryData");
 //        inventoryData.putString(tag, data);
 //        p.load(compoundRoot);
-        PersistentDataContainer container = player.getPersistentDataContainer();
-        container.set(GenesisMC.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING, data);
-        player.saveData();
-    }
+		PersistentDataContainer container = player.getPersistentDataContainer();
+		container.set(GenesisMC.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING, data);
+		player.saveData();
+	}
 
-    private static String getInNbtIO(String tag, Player player) {
+	private static String getInNbtIO(String tag, Player player) {
 //        ServerPlayer p = ((CraftPlayer) player).getHandle();
 //        CompoundTag compoundRoot = p.saveWithoutId(new CompoundTag());
 //        if (!compoundRoot.contains("OriginData")) {
@@ -54,103 +54,103 @@ public class InventorySerializer implements Listener {
 //        } else {
 //            return originData.getCompound("InventoryData").getString(tag);
 //        }
-        PersistentDataContainer container = player.getPersistentDataContainer();
-        if (!container.has(GenesisMC.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING)) {
-            return "";
-        }
-        return container.get(GenesisMC.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING);
-    }
+		PersistentDataContainer container = player.getPersistentDataContainer();
+		if (!container.has(GenesisMC.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING)) {
+			return "";
+		}
+		return container.get(GenesisMC.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING);
+	}
 
-    private static String format(String tag) {
-        return tag.replace(" ", "_").replace(":", "_").replace("/", "_").replace("\\", "_");
-    }
+	private static String format(String tag) {
+		return tag.replace(" ", "_").replace(":", "_").replace("/", "_").replace("\\", "_");
+	}
 
-    public static void storeItems(List<ItemStack> items, Player p, String tag) {
-        PersistentDataContainer data = p.getPersistentDataContainer();
+	public static void storeItems(List<ItemStack> items, Player p, String tag) {
+		PersistentDataContainer data = p.getPersistentDataContainer();
 
-        if (items.size() == 0) {
-            saveInNbtIO(tag, "", p);
-        } else {
-            try {
-                ByteArrayOutputStream io = new ByteArrayOutputStream();
-                BukkitObjectOutputStream os = new BukkitObjectOutputStream(io);
+		if (items.size() == 0) {
+			saveInNbtIO(tag, "", p);
+		} else {
+			try {
+				ByteArrayOutputStream io = new ByteArrayOutputStream();
+				BukkitObjectOutputStream os = new BukkitObjectOutputStream(io);
 
-                os.writeInt(items.size());
+				os.writeInt(items.size());
 
-                for (ItemStack item : items) {
-                    if (item != null) {
-                        os.writeObject(item.clone()); // Clone the item to keep the original item intact
-                    } else {
-                        os.writeObject(null); // Write null for empty slots
-                    }
-                }
+				for (ItemStack item : items) {
+					if (item != null) {
+						os.writeObject(item.clone()); // Clone the item to keep the original item intact
+					} else {
+						os.writeObject(null); // Write null for empty slots
+					}
+				}
 
-                os.flush();
+				os.flush();
 
-                byte[] rawData = io.toByteArray();
+				byte[] rawData = io.toByteArray();
 
-                String encodedData = Base64.getEncoder().encodeToString(rawData);
+				String encodedData = Base64.getEncoder().encodeToString(rawData);
 
-                saveInNbtIO(tag, encodedData, p);
+				saveInNbtIO(tag, encodedData, p);
 
-                os.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
+				os.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
 
-    public static ArrayList<ItemStack> getItems(Player p, String tag) {
-        ArrayList<ItemStack> items = new ArrayList<>();
+	public static ArrayList<ItemStack> getItems(Player p, String tag) {
+		ArrayList<ItemStack> items = new ArrayList<>();
 
-        String encodedItems = getInNbtIO(tag, p);
+		String encodedItems = getInNbtIO(tag, p);
 
-        if (!encodedItems.isEmpty()) {
-            byte[] rawData = Base64.getDecoder().decode(encodedItems);
+		if (!encodedItems.isEmpty()) {
+			byte[] rawData = Base64.getDecoder().decode(encodedItems);
 
-            try {
-                ByteArrayInputStream io = new ByteArrayInputStream(rawData);
-                BukkitObjectInputStream in = new BukkitObjectInputStream(io);
+			try {
+				ByteArrayInputStream io = new ByteArrayInputStream(rawData);
+				BukkitObjectInputStream in = new BukkitObjectInputStream(io);
 
-                int itemsCount = in.readInt();
+				int itemsCount = in.readInt();
 
-                for (int i = 0; i < itemsCount; i++) {
-                    ItemStack item = (ItemStack) in.readObject();
-                    // Add AIR for empty slots
-                    items.add(Objects.requireNonNullElseGet(item, () -> new ItemStack(Material.AIR)));
-                }
+				for (int i = 0; i < itemsCount; i++) {
+					ItemStack item = (ItemStack) in.readObject();
+					// Add AIR for empty slots
+					items.add(Objects.requireNonNullElseGet(item, () -> new ItemStack(Material.AIR)));
+				}
 
-                in.close();
-            } catch (IOException | ClassNotFoundException ex) {
-                ex.printStackTrace();
-            }
-        }
+				in.close();
+			} catch (IOException | ClassNotFoundException ex) {
+				ex.printStackTrace();
+			}
+		}
 
-        return items;
-    }
+		return items;
+	}
 
-    @EventHandler
-    public void onInventoryClose(InventoryCloseEvent e) {
-        Player p = (Player) e.getPlayer();
+	@EventHandler
+	public void onInventoryClose(InventoryCloseEvent e) {
+		Player p = (Player) e.getPlayer();
 
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getPowers(p, "apoli:inventory", layer)) {
-                if (matches(e.getView(), power)) {
-                    ArrayList<ItemStack> prunedItems = new ArrayList<>();
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			for (Power power : OriginPlayerAccessor.getPowers(p, "apoli:inventory", layer)) {
+				if (matches(e.getView(), power)) {
+					ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
-                    Arrays.stream(e.getInventory().getContents())
-                            .filter(Objects::nonNull)
-                            .forEach(prunedItems::add);
-                    storeItems(prunedItems, p, power.getTag());
-                }
-            }
-        }
+					Arrays.stream(e.getInventory().getContents())
+						.filter(Objects::nonNull)
+						.forEach(prunedItems::add);
+					storeItems(prunedItems, p, power.getTag());
+				}
+			}
+		}
 
-    }
+	}
 
-    private boolean matches(InventoryView inventory, Power power) {
-        String title = power.getStringOrDefault("title", "container.inventory");
-        return inventory.getTitle().equalsIgnoreCase(title);
-    }
+	private boolean matches(InventoryView inventory, Power power) {
+		String title = power.getStringOrDefault("title", "container.inventory");
+		return inventory.getTitle().equalsIgnoreCase(title);
+	}
 
 }

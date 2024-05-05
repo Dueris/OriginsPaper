@@ -7,22 +7,22 @@ import org.jetbrains.annotations.ApiStatus;
 import java.nio.file.Path;
 
 public class DatapackRepository implements Registrable {
-    private final NamespacedKey key;
-    private final Path path;
+	private final NamespacedKey key;
+	private final Path path;
 
-    @ApiStatus.Internal
-    public DatapackRepository(NamespacedKey key, Path path) {
-        this.key = key;
-        this.path = path;
-    }
+	@ApiStatus.Internal
+	public DatapackRepository(NamespacedKey key, Path path) {
+		this.key = key;
+		this.path = path;
+	}
 
-    @Override
-    public NamespacedKey getKey() {
-        return this.key;
-    }
+	@Override
+	public NamespacedKey getKey() {
+		return this.key;
+	}
 
-    public Path getPath() {
-        return this.path;
-    }
+	public Path getPath() {
+		return this.path;
+	}
 
 }

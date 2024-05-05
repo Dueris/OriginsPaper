@@ -13,25 +13,25 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 
 public class NoCobWebSlowdown extends CraftPower implements Listener, PowerProvider {
-    public static ArrayList<Player> cobwebBypassers = new ArrayList<>();
-    protected static NamespacedKey powerReference = GenesisMC.originIdentifier("master_of_webs_no_slowdown");
+	public static ArrayList<Player> cobwebBypassers = new ArrayList<>();
+	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("master_of_webs_no_slowdown");
 
-    @EventHandler
-    public void insideBlock(EntityInsideBlockEvent e) {
-        if (!getPlayersWithPower().contains(e.getEntity())) return;
-        if (e.getBlock().getType().equals(Material.COBWEB)) {
-            e.setCancelled(true);
-        }
-    }
+	@EventHandler
+	public void insideBlock(EntityInsideBlockEvent e) {
+		if (!getPlayersWithPower().contains(e.getEntity())) return;
+		if (e.getBlock().getType().equals(Material.COBWEB)) {
+			e.setCancelled(true);
+		}
+	}
 
-    @Override
-    public String getType() {
-        return null;
-    }
+	@Override
+	public String getType() {
+		return null;
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return cobwebBypassers;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return cobwebBypassers;
+	}
 
 }

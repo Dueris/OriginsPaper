@@ -12,36 +12,36 @@ import java.util.ArrayList;
 
 public class BurnPower extends CraftPower {
 
-    @Override
-    public void run(Player p, Power power) {
-        if (!power.isPresent("interval")) {
-            throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
-        }
+	@Override
+	public void run(Player p, Power power) {
+		if (!power.isPresent("interval")) {
+			throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
+		}
 
-        long interval = power.getNumber("interval").getLong();
-        if (interval == 0) interval = 1L;
-        if (Bukkit.getServer().getCurrentTick() % interval == 0) {
-            if (p.isInWaterOrRainOrBubbleColumn()) return;
-            if (p.getGameMode() == GameMode.CREATIVE) return;
-            if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                setActive(p, power.getTag(), true);
+		long interval = power.getNumber("interval").getLong();
+		if (interval == 0) interval = 1L;
+		if (Bukkit.getServer().getCurrentTick() % interval == 0) {
+			if (p.isInWaterOrRainOrBubbleColumn()) return;
+			if (p.getGameMode() == GameMode.CREATIVE) return;
+			if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+				setActive(p, power.getTag(), true);
 
-                long burn_duration = power.getNumberOrDefault("burn_duration", 100L).getLong();
-                p.setFireTicks((int) burn_duration * 20);
-            } else {
-                setActive(p, power.getTag(), false);
-            }
+				long burn_duration = power.getNumberOrDefault("burn_duration", 100L).getLong();
+				p.setFireTicks((int) burn_duration * 20);
+			} else {
+				setActive(p, power.getTag(), false);
+			}
 
-        }
-    }
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:burn";
-    }
+	@Override
+	public String getType() {
+		return "apoli:burn";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return burn;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return burn;
+	}
 }

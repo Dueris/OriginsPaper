@@ -18,37 +18,37 @@ import java.util.ArrayList;
 
 public class SelfActionOnKill extends CraftPower implements Listener {
 
-    @EventHandler
-    public void k(EntityDeathEvent e) {
-        Entity target = e.getEntity();
+	@EventHandler
+	public void k(EntityDeathEvent e) {
+		Entity target = e.getEntity();
 
-        if (!(target instanceof Player player)) return;
-        if (!getPlayersWithPower().contains(target)) return;
+		if (!(target instanceof Player player)) return;
+		if (!getPlayersWithPower().contains(target)) return;
 
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
-                if (Cooldown.isInCooldown(player, power)) continue;
-                if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
-                    setActive(player, power.getTag(), true);
-                    Actions.executeEntity(target, power.getJsonObject("entity_action"));
-                    if (power.isPresent("cooldown")) {
-                        Cooldown.addCooldown(player, power.getNumber("cooldown").getInt(), power);
-                    }
-                } else {
-                    setActive(player, power.getTag(), false);
-                }
-            }
-        }
-    }
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
+				if (Cooldown.isInCooldown(player, power)) continue;
+				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
+					setActive(player, power.getTag(), true);
+					Actions.executeEntity(target, power.getJsonObject("entity_action"));
+					if (power.isPresent("cooldown")) {
+						Cooldown.addCooldown(player, power.getNumber("cooldown").getInt(), power);
+					}
+				} else {
+					setActive(player, power.getTag(), false);
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:self_action_on_kill";
-    }
+	@Override
+	public String getType() {
+		return "apoli:self_action_on_kill";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return self_action_on_kill;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return self_action_on_kill;
+	}
 
 }

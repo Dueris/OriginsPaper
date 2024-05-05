@@ -33,79 +33,79 @@ import java.util.regex.Pattern;
 
 public class ReplaceLootTablePower extends CraftPower implements Listener {
 
-    @EventHandler
-    public void inventoryPopulate(LootGenerateEvent e) {
-        if (getPlayersWithPower().contains(e.getEntity())) {
-            OriginPlayerAccessor.getPowers((Player) e.getEntity(), getType()).forEach(power -> modifyLoot(e.getLoot(), power, e.getLootTable().getKey(), e.getWorld(), e.getEntity().getLocation()));
-        }
-    }
+	@EventHandler
+	public void inventoryPopulate(LootGenerateEvent e) {
+		if (getPlayersWithPower().contains(e.getEntity())) {
+			OriginPlayerAccessor.getPowers((Player) e.getEntity(), getType()).forEach(power -> modifyLoot(e.getLoot(), power, e.getLootTable().getKey(), e.getWorld(), e.getEntity().getLocation()));
+		}
+	}
 
-    @EventHandler
-    public void dropEvent(EntityDeathEvent e) {
-        if (getPlayersWithPower().contains(e.getEntity()) || (e.getEntity().getKiller() != null && getPlayersWithPower().contains(e.getEntity().getKiller()))) {
-            Player p = e.getEntity().getKiller();
-            String key = "minecraft:entities/" + e.getEntityType().getKey().getKey();
-            if (Bukkit.getLootTable(NamespacedKey.fromString(key)) != null) {
-                if (getPlayersWithPower().contains(p)) {
-                    OriginPlayerAccessor.getPowers(p, getType()).forEach(power -> modifyLoot(e.getDrops(), power, NamespacedKey.fromString(key), e.getEntity().getWorld(), e.getEntity().getLocation()));
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void dropEvent(EntityDeathEvent e) {
+		if (getPlayersWithPower().contains(e.getEntity()) || (e.getEntity().getKiller() != null && getPlayersWithPower().contains(e.getEntity().getKiller()))) {
+			Player p = e.getEntity().getKiller();
+			String key = "minecraft:entities/" + e.getEntityType().getKey().getKey();
+			if (Bukkit.getLootTable(NamespacedKey.fromString(key)) != null) {
+				if (getPlayersWithPower().contains(p)) {
+					OriginPlayerAccessor.getPowers(p, getType()).forEach(power -> modifyLoot(e.getDrops(), power, NamespacedKey.fromString(key), e.getEntity().getWorld(), e.getEntity().getLocation()));
+				}
+			}
+		}
+	}
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void blockDropEvent(BlockDropItemEvent e) {
-        if (getPlayersWithPower().contains(e.getPlayer())) {
-            String formattedKey = "minecraft:blocks/" + e.getBlockState().getType().getKey().getKey();
-            List<ItemStack> drops = new ArrayList<>();
-            OriginPlayerAccessor.getPowers(e.getPlayer(), getType())
-                    .forEach(power -> drops.addAll(modifyLoot(new ArrayList<>(e.getBlockState().getDrops()), power, NamespacedKey.fromString(formattedKey), e.getBlock().getWorld(), e.getBlock().getLocation())));
-            if (!drops.isEmpty()) {
-                e.setCancelled(true); // Genesis overrides the drops because the loottable returned was not empty
-                for (ItemStack drop : drops) {
-                    e.getBlock().getWorld().dropItem(e.getBlock().getLocation(), drop);
-                }
-            }
-        }
-    }
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void blockDropEvent(BlockDropItemEvent e) {
+		if (getPlayersWithPower().contains(e.getPlayer())) {
+			String formattedKey = "minecraft:blocks/" + e.getBlockState().getType().getKey().getKey();
+			List<ItemStack> drops = new ArrayList<>();
+			OriginPlayerAccessor.getPowers(e.getPlayer(), getType())
+				.forEach(power -> drops.addAll(modifyLoot(new ArrayList<>(e.getBlockState().getDrops()), power, NamespacedKey.fromString(formattedKey), e.getBlock().getWorld(), e.getBlock().getLocation())));
+			if (!drops.isEmpty()) {
+				e.setCancelled(true); // Genesis overrides the drops because the loottable returned was not empty
+				for (ItemStack drop : drops) {
+					e.getBlock().getWorld().dropItem(e.getBlock().getLocation(), drop);
+				}
+			}
+		}
+	}
 
-    protected List<ItemStack> modifyLoot(List<ItemStack> items, Power power, NamespacedKey table, World world, Location origin) {
-        FactoryJsonObject replace = power.getJsonObject("replace"); // Required
-        for (String toReplaceRaw : replace.keySet()) {
-            boolean canPass;
-            if (toReplaceRaw.contains("(") || toReplaceRaw.contains(")")) { // Pattern?
-                canPass = Pattern.compile(toReplaceRaw).matcher(table.asString()).matches();
-            } else {
-                canPass = table.asString().equals(toReplaceRaw);
-            }
+	protected List<ItemStack> modifyLoot(List<ItemStack> items, Power power, NamespacedKey table, World world, Location origin) {
+		FactoryJsonObject replace = power.getJsonObject("replace"); // Required
+		for (String toReplaceRaw : replace.keySet()) {
+			boolean canPass;
+			if (toReplaceRaw.contains("(") || toReplaceRaw.contains(")")) { // Pattern?
+				canPass = Pattern.compile(toReplaceRaw).matcher(table.asString()).matches();
+			} else {
+				canPass = table.asString().equals(toReplaceRaw);
+			}
 
-            if (canPass) {
-                // Clear current loottable
-                items.clear();
-                NamespacedKey replaceWith = replace.getNamespacedKey(toReplaceRaw);
-                if (Bukkit.getLootTable(replaceWith) != null) {
-                    // Modify loot table
-                    @NotNull LootTable l = Bukkit.getLootTable(replaceWith);
-                    CraftLootTable lootTable = ((CraftLootTable) l);
-                    LootParams.Builder builder = new LootParams.Builder(
-                            ((CraftWorld) world).getHandle()).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(CraftLocation.toBlockPosition(origin)));
-                    lootTable.getHandle().getRandomItems(builder.create(LootContextParamSets.CHEST)).stream()
-                            .filter(Objects::nonNull)
-                            .map(net.minecraft.world.item.ItemStack::getBukkitStack).forEach(items::add);
-                    return items;
-                }
-            }
-        }
-        return new ArrayList<>();
-    }
+			if (canPass) {
+				// Clear current loottable
+				items.clear();
+				NamespacedKey replaceWith = replace.getNamespacedKey(toReplaceRaw);
+				if (Bukkit.getLootTable(replaceWith) != null) {
+					// Modify loot table
+					@NotNull LootTable l = Bukkit.getLootTable(replaceWith);
+					CraftLootTable lootTable = ((CraftLootTable) l);
+					LootParams.Builder builder = new LootParams.Builder(
+						((CraftWorld) world).getHandle()).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(CraftLocation.toBlockPosition(origin)));
+					lootTable.getHandle().getRandomItems(builder.create(LootContextParamSets.CHEST)).stream()
+						.filter(Objects::nonNull)
+						.map(net.minecraft.world.item.ItemStack::getBukkitStack).forEach(items::add);
+					return items;
+				}
+			}
+		}
+		return new ArrayList<>();
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:replace_loot_table";
-    }
+	@Override
+	public String getType() {
+		return "apoli:replace_loot_table";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return replace_loot_table;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return replace_loot_table;
+	}
 }

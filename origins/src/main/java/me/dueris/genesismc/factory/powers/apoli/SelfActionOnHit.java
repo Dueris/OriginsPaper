@@ -18,37 +18,37 @@ import java.util.ArrayList;
 
 public class SelfActionOnHit extends CraftPower implements Listener {
 
-    @EventHandler
-    public void s(EntityDamageByEntityEvent e) {
-        Entity target = e.getDamager();
+	@EventHandler
+	public void s(EntityDamageByEntityEvent e) {
+		Entity target = e.getDamager();
 
-        if (!(target instanceof Player player)) return;
-        if (!getPlayersWithPower().contains(target)) return;
+		if (!(target instanceof Player player)) return;
+		if (!getPlayersWithPower().contains(target)) return;
 
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
-                if (Cooldown.isInCooldown((Player) target, power)) return;
-                if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
-                    setActive(player, power.getTag(), true);
-                    Actions.executeEntity(target, power.getJsonObject("entity_action"));
-                    if (power.isPresent("cooldown")) {
-                        Cooldown.addCooldown(player, power.getNumber("cooldown").getInt(), power);
-                    }
-                } else {
-                    setActive(player, power.getTag(), false);
-                }
-            }
-        }
-    }
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
+				if (Cooldown.isInCooldown((Player) target, power)) return;
+				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
+					setActive(player, power.getTag(), true);
+					Actions.executeEntity(target, power.getJsonObject("entity_action"));
+					if (power.isPresent("cooldown")) {
+						Cooldown.addCooldown(player, power.getNumber("cooldown").getInt(), power);
+					}
+				} else {
+					setActive(player, power.getTag(), false);
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:self_action_on_hit";
-    }
+	@Override
+	public String getType() {
+		return "apoli:self_action_on_hit";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return self_action_on_hit;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return self_action_on_hit;
+	}
 
 }

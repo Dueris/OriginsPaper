@@ -20,34 +20,34 @@ import java.util.ArrayList;
 
 public class ActionOnLand extends CraftPower implements Listener {
 
-    @EventHandler
-    public void e(GenericGameEvent e) {
-        if (e.getEvent() != GameEvent.HIT_GROUND) return;
-        if (!(e.getEntity() instanceof Player player)) return;
-        if (!getPlayersWithPower().contains(player)) return;
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
-                if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) return;
-                setActive(player, power.getTag(), true);
-                Actions.executeEntity(player, power.getJsonObject("entity_action"));
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        setActive(player, power.getTag(), false);
-                    }
-                }.runTaskLater(GenesisMC.getPlugin(), 2L);
-            }
-        }
-    }
+	@EventHandler
+	public void e(GenericGameEvent e) {
+		if (e.getEvent() != GameEvent.HIT_GROUND) return;
+		if (!(e.getEntity() instanceof Player player)) return;
+		if (!getPlayersWithPower().contains(player)) return;
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
+				if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) return;
+				setActive(player, power.getTag(), true);
+				Actions.executeEntity(player, power.getJsonObject("entity_action"));
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						setActive(player, power.getTag(), false);
+					}
+				}.runTaskLater(GenesisMC.getPlugin(), 2L);
+			}
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:action_on_land";
-    }
+	@Override
+	public String getType() {
+		return "apoli:action_on_land";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return action_on_land;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return action_on_land;
+	}
 
 }

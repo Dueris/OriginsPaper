@@ -20,51 +20,51 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BounceSlimeBlock extends CraftPower implements Listener, PowerProvider {
-    public static ArrayList<Player> bouncePlayers = new ArrayList<>();
-    public static HashMap<Player, Location> lastLoc = new HashMap<>();
-    protected static NamespacedKey powerReference = GenesisMC.originIdentifier("slime_block_bounce");
+	public static ArrayList<Player> bouncePlayers = new ArrayList<>();
+	public static HashMap<Player, Location> lastLoc = new HashMap<>();
+	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("slime_block_bounce");
 
-    @EventHandler
-    public void gameEvent(GenericGameEvent event) {
-        if (event.getEvent().equals(GameEvent.HIT_GROUND)) {
-            if (event.getEntity() instanceof Player player) {
-                me.dueris.genesismc.event.PlayerHitGroundEvent playerHitGroundEvent = new me.dueris.genesismc.event.PlayerHitGroundEvent(player);
-                Bukkit.getPluginManager().callEvent(playerHitGroundEvent);
-                if (player.isSneaking()) return;
-                if (!bouncePlayers.contains(player) && !lastLoc.containsKey(player)) return;
-                if (CraftBiome.bukkitToMinecraft(player.getLocation().getBlock().getBiome()).getTemperature(CraftLocation.toBlockPosition(player.getLocation())) < 0.2)
-                    return;
-                Location lastLocation = lastLoc.get(player);
+	@EventHandler
+	public void gameEvent(GenericGameEvent event) {
+		if (event.getEvent().equals(GameEvent.HIT_GROUND)) {
+			if (event.getEntity() instanceof Player player) {
+				me.dueris.genesismc.event.PlayerHitGroundEvent playerHitGroundEvent = new me.dueris.genesismc.event.PlayerHitGroundEvent(player);
+				Bukkit.getPluginManager().callEvent(playerHitGroundEvent);
+				if (player.isSneaking()) return;
+				if (!bouncePlayers.contains(player) && !lastLoc.containsKey(player)) return;
+				if (CraftBiome.bukkitToMinecraft(player.getLocation().getBlock().getBiome()).getTemperature(CraftLocation.toBlockPosition(player.getLocation())) < 0.2)
+					return;
+				Location lastLocation = lastLoc.get(player);
 
-                if (lastLocation.getY() > player.getY()) {
-                    double coefficientOfRestitution = 0.45;
-                    double reboundVelocity = -coefficientOfRestitution * -(lastLocation.getY() - player.getY());
-                    if (reboundVelocity <= 0.2) return;
+				if (lastLocation.getY() > player.getY()) {
+					double coefficientOfRestitution = 0.45;
+					double reboundVelocity = -coefficientOfRestitution * -(lastLocation.getY() - player.getY());
+					if (reboundVelocity <= 0.2) return;
 
-                    if (!player.isOnGround() || player.isJumping() || player.isSprinting()) return;
-                    player.setVelocity(new Vector(player.getVelocity().getX(), reboundVelocity, player.getVelocity().getZ()));
-                }
-            }
-        }
-    }
+					if (!player.isOnGround() || player.isJumping() || player.isSprinting()) return;
+					player.setVelocity(new Vector(player.getVelocity().getX(), reboundVelocity, player.getVelocity().getZ()));
+				}
+			}
+		}
+	}
 
-    @EventHandler
-    public void move(PlayerMoveEvent e) {
-        if (!e.isCancelled()) {
-            if (!bouncePlayers.contains(e.getPlayer())) return;
-            if (e.getPlayer().isOnGround()) return;
-            lastLoc.put(e.getPlayer(), e.getFrom());
-        }
-    }
+	@EventHandler
+	public void move(PlayerMoveEvent e) {
+		if (!e.isCancelled()) {
+			if (!bouncePlayers.contains(e.getPlayer())) return;
+			if (e.getPlayer().isOnGround()) return;
+			lastLoc.put(e.getPlayer(), e.getFrom());
+		}
+	}
 
-    @Override
-    public String getType() {
-        return null;
-    }
+	@Override
+	public String getType() {
+		return null;
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return bouncePlayers;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return bouncePlayers;
+	}
 
 }

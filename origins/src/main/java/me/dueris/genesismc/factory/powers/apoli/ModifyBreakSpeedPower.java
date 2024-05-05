@@ -19,37 +19,37 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ModifyBreakSpeedPower extends CraftPower implements Listener {
-    private static final HashMap<Player, Double> base = new HashMap<>();
+	private static final HashMap<Player, Double> base = new HashMap<>();
 
-    public static void compute(Player p, Power power) {
-        double b = p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getDefaultValue();
-        power.getModifiers().forEach(modifier -> p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).setBaseValue(Utils.getOperationMappingsDouble().get(modifier.operation()).apply(b, modifier.value().doubleValue() * 100)));
-        base.put(p, b);
-    }
+	public static void compute(Player p, Power power) {
+		double b = p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getDefaultValue();
+		power.getModifiers().forEach(modifier -> p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).setBaseValue(Utils.getOperationMappingsDouble().get(modifier.operation()).apply(b, modifier.value().doubleValue() * 100)));
+		base.put(p, b);
+	}
 
-    @EventHandler
-    public void swing(BlockDamageEvent e) {
-        if (getPlayersWithPower().contains(e.getPlayer())) {
-            Player p = e.getPlayer();
-            OriginPlayerAccessor.getPowers(p, getType()).forEach(power -> {
-                if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) || !ConditionExecutor.testBlock(power.getJsonObject("block_condition"), CraftBlock.at(((CraftWorld) e.getPlayer().getWorld()).getHandle(), CraftLocation.toBlockPosition(e.getBlock().getLocation())))) {
-                    setActive(p, power.getTag(), false);
-                    p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).setBaseValue(p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getDefaultValue());
-                    return;
-                }
-                setActive(p, power.getTag(), true);
-                compute(p, power);
-            });
-        }
-    }
+	@EventHandler
+	public void swing(BlockDamageEvent e) {
+		if (getPlayersWithPower().contains(e.getPlayer())) {
+			Player p = e.getPlayer();
+			OriginPlayerAccessor.getPowers(p, getType()).forEach(power -> {
+				if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) || !ConditionExecutor.testBlock(power.getJsonObject("block_condition"), CraftBlock.at(((CraftWorld) e.getPlayer().getWorld()).getHandle(), CraftLocation.toBlockPosition(e.getBlock().getLocation())))) {
+					setActive(p, power.getTag(), false);
+					p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).setBaseValue(p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getDefaultValue());
+					return;
+				}
+				setActive(p, power.getTag(), true);
+				compute(p, power);
+			});
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:modify_break_speed";
-    }
+	@Override
+	public String getType() {
+		return "apoli:modify_break_speed";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return modify_break_speed;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return modify_break_speed;
+	}
 }

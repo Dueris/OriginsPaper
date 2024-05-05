@@ -21,55 +21,55 @@ import java.util.ArrayList;
 
 public class ModifyFallingPower extends CraftPower implements Listener {
 
-    @EventHandler
-    public void runE(PlayerMoveEvent e) {
-        Player p = e.getPlayer();
-        if (modify_falling.contains(p)) {
-            if (e.getTo().getY() == e.getFrom().getY()) return;
-            @NotNull Vector velocity = p.getVelocity();
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                        if (power.getNumber("velocity").getFloat() < 0) {
-                            velocity.setY(power.getNumber("velocity").getFloat());
-                            p.setVelocity(velocity);
-                        } else {
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
-                        }
-                    }
-                }
+	@EventHandler
+	public void runE(PlayerMoveEvent e) {
+		Player p = e.getPlayer();
+		if (modify_falling.contains(p)) {
+			if (e.getTo().getY() == e.getFrom().getY()) return;
+			@NotNull Vector velocity = p.getVelocity();
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
+					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+						if (power.getNumber("velocity").getFloat() < 0) {
+							velocity.setY(power.getNumber("velocity").getFloat());
+							p.setVelocity(velocity);
+						} else {
+							p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
+						}
+					}
+				}
 
-            }
-        }
-    }
+			}
+		}
+	}
 
-    @EventHandler
-    public void runR(EntityDamageEvent e) {
-        if (e.getEntity() instanceof Player p) {
-            if (modify_falling.contains(p)) {
-                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                    for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-                        if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                            if (!power.getBooleanOrDefault("take_fall_damage", true)) {
-                                if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
-                                    e.setDamage(0);
-                                    e.setCancelled(true);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void runR(EntityDamageEvent e) {
+		if (e.getEntity() instanceof Player p) {
+			if (modify_falling.contains(p)) {
+				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+					for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
+						if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+							if (!power.getBooleanOrDefault("take_fall_damage", true)) {
+								if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+									e.setDamage(0);
+									e.setCancelled(true);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:modify_falling";
-    }
+	@Override
+	public String getType() {
+		return "apoli:modify_falling";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return modify_falling;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return modify_falling;
+	}
 }

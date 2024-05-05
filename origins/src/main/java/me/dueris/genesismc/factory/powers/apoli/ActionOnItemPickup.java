@@ -17,30 +17,30 @@ import java.util.ArrayList;
 
 public class ActionOnItemPickup extends CraftPower implements Listener {
 
-    @EventHandler
-    public void pickup(PlayerAttemptPickupItemEvent e) {
-        Player p = e.getPlayer();
-        if (this.getPlayersWithPower().contains(p)) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-                    if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem().getItemStack()))
-                        continue;
-                    ItemStack clone = e.getItem().getItemStack().clone();
-                    Actions.executeItem(clone, power.getJsonObject("item_action"));
-                    // Needs to update the ItemEntity
-                    e.getItem().setItemStack(clone);
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void pickup(PlayerAttemptPickupItemEvent e) {
+		Player p = e.getPlayer();
+		if (this.getPlayersWithPower().contains(p)) {
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
+					if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem().getItemStack()))
+						continue;
+					ItemStack clone = e.getItem().getItemStack().clone();
+					Actions.executeItem(clone, power.getJsonObject("item_action"));
+					// Needs to update the ItemEntity
+					e.getItem().setItemStack(clone);
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:action_on_item_pickup";
-    }
+	@Override
+	public String getType() {
+		return "apoli:action_on_item_pickup";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return action_on_item_pickup;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return action_on_item_pickup;
+	}
 }

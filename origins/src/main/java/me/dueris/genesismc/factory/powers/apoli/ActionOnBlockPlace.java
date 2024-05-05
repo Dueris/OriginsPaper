@@ -18,35 +18,35 @@ import java.util.ArrayList;
 
 public class ActionOnBlockPlace extends CraftPower implements Listener {
 
-    @EventHandler
-    public void blockBreak(BlockPlaceEvent e) {
-        if (action_on_block_place.contains(e.getPlayer())) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-                    if (!(ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItemInHand()) && ConditionExecutor.testBlock(power.getJsonObject("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock(power.getJsonObject("place_on_condition"), (CraftBlock) e.getBlockAgainst())))
-                        return;
-                    e.setCancelled(true);
-                    setActive(e.getPlayer(), power.getTag(), true);
-                    Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action"));
-                    Actions.executeItem(e.getItemInHand(), power.getJsonObject("held_item_action"));
-                    Actions.executeBlock(e.getBlockAgainst().getLocation(), power.getJsonObject("place_on_action"));
-                    Actions.executeBlock(e.getBlockPlaced().getLocation(), power.getJsonObject("place_to_action"));
-                    if (power.isPresent("result_stack")) {
-                        EdibleItem.runResultStack(power, true, e.getPlayer());
-                    }
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void blockBreak(BlockPlaceEvent e) {
+		if (action_on_block_place.contains(e.getPlayer())) {
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
+					if (!(ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItemInHand()) && ConditionExecutor.testBlock(power.getJsonObject("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock(power.getJsonObject("place_on_condition"), (CraftBlock) e.getBlockAgainst())))
+						return;
+					e.setCancelled(true);
+					setActive(e.getPlayer(), power.getTag(), true);
+					Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action"));
+					Actions.executeItem(e.getItemInHand(), power.getJsonObject("held_item_action"));
+					Actions.executeBlock(e.getBlockAgainst().getLocation(), power.getJsonObject("place_on_action"));
+					Actions.executeBlock(e.getBlockPlaced().getLocation(), power.getJsonObject("place_to_action"));
+					if (power.isPresent("result_stack")) {
+						EdibleItem.runResultStack(power, true, e.getPlayer());
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:action_on_block_place";
-    }
+	@Override
+	public String getType() {
+		return "apoli:action_on_block_place";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return action_on_block_place;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return action_on_block_place;
+	}
 
 }

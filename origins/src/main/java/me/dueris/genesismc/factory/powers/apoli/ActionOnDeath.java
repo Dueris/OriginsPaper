@@ -20,40 +20,40 @@ import java.util.ArrayList;
 
 public class ActionOnDeath extends CraftPower implements Listener {
 
-    @EventHandler
-    public void d(EntityDeathEvent e) {
-        if (e.getEntity() instanceof Player p) {
-            if (getPlayersWithPower().contains(p)) {
-                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                    for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-                        if (power == null) continue;
-                        if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) || !ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e.getEntity().getLastDamageCause()))
-                            return;
-                        setActive(p, power.getTag(), true);
-                        Actions.executeEntity(p, power.getJsonObject("entity_action"));
-                        if (((CraftPlayer) p).getHandle().getLastHurtByMob() != null) {
-                            Actions.executeBiEntity(((CraftPlayer) p).getHandle().getLastHurtByMob().getBukkitEntity(), p/* player is target? */, power.getJsonObject("bientity_action"));
-                        }
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                setActive(p, power.getTag(), false);
-                            }
-                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
-                    }
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void d(EntityDeathEvent e) {
+		if (e.getEntity() instanceof Player p) {
+			if (getPlayersWithPower().contains(p)) {
+				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+					for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
+						if (power == null) continue;
+						if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) || !ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e.getEntity().getLastDamageCause()))
+							return;
+						setActive(p, power.getTag(), true);
+						Actions.executeEntity(p, power.getJsonObject("entity_action"));
+						if (((CraftPlayer) p).getHandle().getLastHurtByMob() != null) {
+							Actions.executeBiEntity(((CraftPlayer) p).getHandle().getLastHurtByMob().getBukkitEntity(), p/* player is target? */, power.getJsonObject("bientity_action"));
+						}
+						new BukkitRunnable() {
+							@Override
+							public void run() {
+								setActive(p, power.getTag(), false);
+							}
+						}.runTaskLater(GenesisMC.getPlugin(), 2L);
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:action_on_death";
-    }
+	@Override
+	public String getType() {
+		return "apoli:action_on_death";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return action_on_death;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return action_on_death;
+	}
 
 }

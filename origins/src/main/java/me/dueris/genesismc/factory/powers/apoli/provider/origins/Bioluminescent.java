@@ -10,17 +10,17 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 
 public class Bioluminescent extends CraftPower implements Listener, PowerProvider {
-    public static ArrayList<Player> players = new ArrayList<>();
-    protected static NamespacedKey powerReference = GenesisMC.originIdentifier("allay_sparkle_light");
+	public static ArrayList<Player> players = new ArrayList<>();
+	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("allay_sparkle_light");
 
-    @Override
-    public String getType() {
-        return null;
-    }
+	@Override
+	public String getType() {
+		return null;
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return players;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return players;
+	}
 
 }

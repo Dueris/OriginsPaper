@@ -19,38 +19,38 @@ import java.util.function.BinaryOperator;
 
 public class ModifyHealingPower extends CraftPower implements Listener {
 
-    @EventHandler
-    public void runD(EntityRegainHealthEvent e) {
-        if (e.getEntity() instanceof Player p) {
-            if (!modify_healing.contains(p)) return;
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-                    for (Modifier modifier : power.getModifiers()) {
-                        Float value = modifier.value();
-                        String operation = modifier.operation();
-                        BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
-                        if (mathOperator != null) {
-                            float result = (float) mathOperator.apply(e.getAmount(), value);
-                            if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-                                setActive(p, power.getTag(), true);
-                                e.setAmount(result);
-                            } else {
-                                setActive(p, power.getTag(), false);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void runD(EntityRegainHealthEvent e) {
+		if (e.getEntity() instanceof Player p) {
+			if (!modify_healing.contains(p)) return;
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
+					for (Modifier modifier : power.getModifiers()) {
+						Float value = modifier.value();
+						String operation = modifier.operation();
+						BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
+						if (mathOperator != null) {
+							float result = (float) mathOperator.apply(e.getAmount(), value);
+							if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+								setActive(p, power.getTag(), true);
+								e.setAmount(result);
+							} else {
+								setActive(p, power.getTag(), false);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:modify_healing";
-    }
+	@Override
+	public String getType() {
+		return "apoli:modify_healing";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return modify_healing;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return modify_healing;
+	}
 }

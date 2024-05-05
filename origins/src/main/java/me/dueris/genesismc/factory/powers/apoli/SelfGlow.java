@@ -17,32 +17,32 @@ import java.util.ArrayList;
 
 public class SelfGlow extends CraftPower {
 
-    @Override
-    public void run(Player p, Power power) {
-        for (Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()) {
-            if (entity instanceof Player player) {
-                if (ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
-                    setActive(p, power.getTag(), true);
-                    CraftPlayer craftPlayers = (CraftPlayer) player;
-                    craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
-                            new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraftHolder(PotionEffectType.GLOWING), 5, 1, false, false, false), false));
-                } else {
-                    setActive(p, power.getTag(), false);
-                }
-            }
-        }
-        CraftPlayer craftPlayer = (CraftPlayer) p;
-        craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(craftPlayer.getEntityId(),
-                new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraftHolder(PotionEffectType.GLOWING), 5, 1, false, false, false), false));
-    }
+	@Override
+	public void run(Player p, Power power) {
+		for (Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()) {
+			if (entity instanceof Player player) {
+				if (ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
+					setActive(p, power.getTag(), true);
+					CraftPlayer craftPlayers = (CraftPlayer) player;
+					craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
+						new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraftHolder(PotionEffectType.GLOWING), 5, 1, false, false, false), false));
+				} else {
+					setActive(p, power.getTag(), false);
+				}
+			}
+		}
+		CraftPlayer craftPlayer = (CraftPlayer) p;
+		craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(craftPlayer.getEntityId(),
+			new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraftHolder(PotionEffectType.GLOWING), 5, 1, false, false, false), false));
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:self_glow";
-    }
+	@Override
+	public String getType() {
+		return "apoli:self_glow";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return self_glow;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return self_glow;
+	}
 }

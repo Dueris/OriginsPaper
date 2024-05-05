@@ -17,28 +17,28 @@ import java.util.ArrayList;
 
 public class ActionOnWakeUp extends CraftPower implements Listener {
 
-    @EventHandler
-    public void w(PlayerBedLeaveEvent e) {
-        if (!getPlayersWithPower().contains(e.getPlayer())) return;
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-                if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
-                    return;
-                setActive(e.getPlayer(), power.getTag(), true);
-                Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action"));
-                Actions.executeBlock(e.getBed().getLocation(), power.getJsonObject("block_action"));
-            }
-        }
-    }
+	@EventHandler
+	public void w(PlayerBedLeaveEvent e) {
+		if (!getPlayersWithPower().contains(e.getPlayer())) return;
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
+				if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
+					return;
+				setActive(e.getPlayer(), power.getTag(), true);
+				Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action"));
+				Actions.executeBlock(e.getBed().getLocation(), power.getJsonObject("block_action"));
+			}
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:action_on_wake_up";
-    }
+	@Override
+	public String getType() {
+		return "apoli:action_on_wake_up";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return action_on_wake_up;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return action_on_wake_up;
+	}
 
 }

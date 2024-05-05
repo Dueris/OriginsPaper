@@ -18,30 +18,30 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperCl
 
 public class PreventBeingUsed extends CraftPower implements Listener {
 
-    @EventHandler
-    public void run(PlayerInteractEvent e) {
-        if (prevent_being_used.contains(e.getPlayer())) {
-            Player p = e.getPlayer();
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-                    if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
-                        setActive(p, power.getTag(), true);
-                        e.setCancelled(true);
-                    } else {
-                        setActive(p, power.getTag(), false);
-                    }
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void run(PlayerInteractEvent e) {
+		if (prevent_being_used.contains(e.getPlayer())) {
+			Player p = e.getPlayer();
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
+					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
+						setActive(p, power.getTag(), true);
+						e.setCancelled(true);
+					} else {
+						setActive(p, power.getTag(), false);
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getType() {
-        return "apoli:prevent_being_used";
-    }
+	@Override
+	public String getType() {
+		return "apoli:prevent_being_used";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return prevent_being_used;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return prevent_being_used;
+	}
 }

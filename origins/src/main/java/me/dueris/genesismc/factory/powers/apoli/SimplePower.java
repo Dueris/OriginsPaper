@@ -6,13 +6,13 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 
 public class SimplePower extends CraftPower {
-    @Override
-    public String getType() {
-        return "apoli:simple";
-    }
+	@Override
+	public String getType() {
+		return "apoli:simple";
+	}
 
-    @Override
-    public ArrayList<Player> getPlayersWithPower() {
-        return simple;
-    }
+	@Override
+	public ArrayList<Player> getPlayersWithPower() {
+		return simple;
+	}
 }
