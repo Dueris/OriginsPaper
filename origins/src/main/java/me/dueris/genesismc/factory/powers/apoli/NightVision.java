@@ -18,6 +18,7 @@ public class NightVision extends CraftPower {
             setActive(p, power.getTag(), true);
             p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getNumberOrDefault("strength", 1.0f).getFloat()), false, false, false));
         } else {
+            p.removePotionEffect(PotionEffectType.NIGHT_VISION);
             setActive(p, power.getTag(), false);
         }
     }

@@ -162,6 +162,15 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
         return 0;
     }
 
+    public static boolean apoli$isSubmergedInLoosely(Entity entity, TagKey<Fluid> tag) {
+        if (tag == null) return false;
+        Optional<Set<TagKey<Fluid>>> submergedSet = getSubmergedSet(entity);
+        if (submergedSet.isPresent() && submergedSet.get() != null) {
+            return submergedSet.get().contains(tag);
+        }
+        return false;
+    }
+
     public static <T> boolean areTagsEqual(TagKey<T> tag1, TagKey<T> tag2) {
         if (tag1 == tag2) {
             return true;
@@ -178,6 +187,15 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
     protected static Optional<Object2DoubleMap<TagKey<Fluid>>> getFluidHeightMap(Entity entity) {
         try {
             return Optional.of(Reflector.accessField("fluidHeight", Entity.class, entity, Object2DoubleMap.class));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    protected static Optional<Set<TagKey<Fluid>>> getSubmergedSet(Entity entity) {
+        try {
+            return Optional.of(Reflector.accessField("fluidOnEyes", Entity.class, entity, Set.class));
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();

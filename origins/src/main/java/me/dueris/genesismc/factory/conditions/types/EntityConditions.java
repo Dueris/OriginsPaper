@@ -34,6 +34,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -287,8 +288,7 @@ public class EntityConditions {
             double compare_to = condition.getNumber("compare_to").getFloat();
 
             NamespacedKey tag = condition.getNamespacedKey("fluid");
-            TagKey key = TagKey.create(net.minecraft.core.registries.Registries.FLUID, CraftNamespacedKey.toMinecraft(tag));
-
+            TagKey<Fluid> key = TagKey.create(net.minecraft.core.registries.Registries.FLUID, CraftNamespacedKey.toMinecraft(tag));
             return Comparison.fromString(comparison).compare(Utils.apoli$getFluidHeightLoosely(entity.getHandle(), key), compare_to);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("invisible"), (condition, entity) -> {
@@ -321,14 +321,9 @@ public class EntityConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_flying"), (condition, entity) -> entity instanceof LivingEntity le && (((CraftLivingEntity) le).getHandle().isFallFlying() || ElytraFlightPower.getGlidingPlayers().contains(le))));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("submerged_in"), (condition, entity) -> {
-            String formatted = NamespacedKey.fromString(condition.getString("fluid")).asString();
-            if (formatted.equalsIgnoreCase("minecraft:water")) {
-                return entity.isInWaterOrBubbleColumn();
-            } else if (formatted.equalsIgnoreCase("minecraft:lava")) {
-                return entity.isInLava();
-            } else {
-                return false;
-            }
+            NamespacedKey tag = condition.getNamespacedKey("fluid");
+            TagKey<Fluid> key = TagKey.create(net.minecraft.core.registries.Registries.FLUID, CraftNamespacedKey.toMinecraft(tag));
+            return Utils.apoli$isSubmergedInLoosely(entity.getHandle(), key);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantment"), (condition, entity) -> {
             if (entity instanceof Player player) {
