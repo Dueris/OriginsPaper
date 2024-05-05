@@ -50,41 +50,32 @@ public class RestrictArmor extends CraftPower implements Listener {
 
     public void runPower(Player p, Power power) {
         setActive(p, power.getTag(), true);
-        boolean headb = true;
-        boolean chestb = true;
-        boolean legsb = true;
-        boolean feetb = true;
-        boolean passFeet;
-        boolean passLegs;
-        boolean passChest;
-        boolean passHead;
+        boolean passFeet = false;
+        boolean passLegs = false;
+        boolean passChest = false;
+        boolean passHead = false;
         FactoryJsonObject headObj = power.getJsonObject("head");
         FactoryJsonObject chestObj = power.getJsonObject("chest");
         FactoryJsonObject legsObj = power.getJsonObject("legs");
         FactoryJsonObject feetObj = power.getJsonObject("feet");
 
-        if (headObj == null) headb = false;
-        if (chestObj == null) chestb = false;
-        if (legsObj == null) legsb = false;
-        if (feetObj == null) feetb = false;
+        if (!headObj.isEmpty())
+            passHead = ConditionExecutor.testItem(headObj, p.getInventory().getItem(EquipmentSlot.HEAD));
+        if (!chestObj.isEmpty())
+            passChest = ConditionExecutor.testItem(chestObj, p.getInventory().getItem(EquipmentSlot.CHEST));
+        if (!legsObj.isEmpty())
+            passLegs = ConditionExecutor.testItem(legsObj, p.getInventory().getItem(EquipmentSlot.LEGS));
+        if (!feetObj.isEmpty())
+            passFeet = ConditionExecutor.testItem(feetObj, p.getInventory().getItem(EquipmentSlot.FEET));
 
-        passHead = !headb || ConditionExecutor.testItem(headObj, p.getInventory().getItem(EquipmentSlot.HEAD));
-        passChest = !chestb || ConditionExecutor.testItem(chestObj, p.getInventory().getItem(EquipmentSlot.CHEST));
-        passLegs = !legsb || ConditionExecutor.testItem(legsObj, p.getInventory().getItem(EquipmentSlot.LEGS));
-        passFeet = !feetb || ConditionExecutor.testItem(feetObj, p.getInventory().getItem(EquipmentSlot.FEET));
-
-        if (passFeet) {
+        if (passFeet)
             OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.FEET);
-        }
-        if (passChest) {
+        if (passChest)
             OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.CHEST);
-        }
-        if (passHead) {
+        if (passHead)
             OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.HEAD);
-        }
-        if (passLegs) {
+        if (passLegs)
             OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.LEGS);
-        }
     }
 
     @Override
