@@ -153,4 +153,16 @@ public class FactoryJsonObject {
         if (inst != null && inst.isString()) return new ItemStack(this.getMaterial(key));
         return new ItemStack(Material.PLAYER_HEAD, 1);
     }
+
+    public ItemStack asItemStack() {
+        String materialVal = "player_head";
+        int amt = 1;
+        if (this.isPresent("item")) {
+            materialVal = this.getString("item");
+        }
+        if (this.isPresent("amount")) {
+            amt = this.getNumber("amount").getInt();
+        }
+        return new ItemStack(Material.valueOf(NamespacedKey.fromString(materialVal).asString().split(":")[1].toUpperCase()), amt);
+    }
 }

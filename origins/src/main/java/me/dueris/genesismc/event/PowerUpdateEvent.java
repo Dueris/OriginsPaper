@@ -8,13 +8,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class PowerUpdateEvent extends PlayerEvent {
 	private static final HandlerList handlers = new HandlerList();
-	private static Power power;
-	private static boolean removed;
+	private Power power;
+	private boolean removed;
+	private boolean isNew;
 
-	public PowerUpdateEvent(@NotNull Player who, Power power, boolean removed) {
+	public PowerUpdateEvent(@NotNull Player who, Power power, boolean removed, boolean isNew) {
 		super(who, true);
-		PowerUpdateEvent.power = power;
-		PowerUpdateEvent.removed = removed;
+		this.power = power;
+		this.removed = removed;
+		this.isNew = isNew;
 	}
 
 	public static HandlerList getHandlerList() {
@@ -32,5 +34,9 @@ public class PowerUpdateEvent extends PlayerEvent {
 
 	public boolean isRemoved() {
 		return removed;
+	}
+
+	public boolean isNew() {
+		return isNew;
 	}
 }

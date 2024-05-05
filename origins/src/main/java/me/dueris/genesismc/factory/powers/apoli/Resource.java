@@ -91,7 +91,7 @@ public class Resource extends CraftPower implements Listener {
 				serverLoadedBars.put(power.getTag(), bar);
 			});
 		for (Player player : Bukkit.getOnlinePlayers())
-			OriginPlayerAccessor.getPowers(player, getType()).forEach(power -> powerAdd(new PowerUpdateEvent(player, power, false)));
+			OriginPlayerAccessor.getPowers(player, getType()).forEach(power -> powerAdd(new PowerUpdateEvent(player, power, false, false)));
 	}
 
 	@EventHandler

@@ -175,7 +175,7 @@ public class OriginPlayerAccessor implements Listener {
 
 		if (!origin.getTag().equals(CraftApoli.emptyOrigin().getTag())) {
 			try {
-				unassignPowers(player, layer);
+				unassignPowers(player, layer, true);
 			} catch (NotFoundException e) {
 				throw new RuntimeException();
 			}
@@ -193,7 +193,7 @@ public class OriginPlayerAccessor implements Listener {
 			@Override
 			public void run() {
 				try {
-					assignPowers(player, layer);
+					assignPowers(player, layer, true);
 					// Extra precaution due to gravity messing up on origin switch
 					if (!new GravityPower().getPlayersWithPower().contains(player)) {
 						new GravityPower().doesntHavePower(player);
@@ -238,6 +238,10 @@ public class OriginPlayerAccessor implements Listener {
 	}
 
 	public static void applyPower(Player player, Power power, boolean suppress) {
+		applyPower(player, power, suppress, false);
+	}
+
+	public static void applyPower(Player player, Power power, boolean suppress, boolean isNew) {
 		if (power == null) return;
 		String name = power.getType().equalsIgnoreCase("apoli:simple") ? power.getTag() : power.getType();
 		ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
@@ -250,11 +254,15 @@ public class OriginPlayerAccessor implements Listener {
 				if (OriginConfiguration.getConfiguration().getString("debug").equalsIgnoreCase("true"))
 					Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
 			}
-			new PowerUpdateEvent(player, power, false).callEvent();
+			new PowerUpdateEvent(player, power, false, isNew).callEvent();
 		}
 	}
 
 	public static void removePower(Player player, Power power, boolean suppress) {
+		removePower(player, power, suppress, false);
+	}
+
+	public static void removePower(Player player, Power power, boolean suppress, boolean isNew) {
 		if (power == null) return;
 		String name = power.getType().equalsIgnoreCase("apoli:simple") ? power.getTag() : power.getType();
 		ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
@@ -265,7 +273,7 @@ public class OriginPlayerAccessor implements Listener {
 				if (OriginConfiguration.getConfiguration().getString("debug").equalsIgnoreCase("true"))
 					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
 			}
-			new PowerUpdateEvent(player, power, true).callEvent();
+			new PowerUpdateEvent(player, power, true, isNew).callEvent();
 		}
 	}
 
@@ -294,6 +302,10 @@ public class OriginPlayerAccessor implements Listener {
 	}
 
 	public static void unassignPowers(@NotNull Player player, Layer layer) throws NotFoundException {
+		unassignPowers(player, layer, false);
+	}
+
+	public static void unassignPowers(@NotNull Player player, Layer layer, boolean isNew) throws NotFoundException {
 		try {
 			CompletableFuture.runAsync(() -> {
 				if (layer == null) {
@@ -312,6 +324,10 @@ public class OriginPlayerAccessor implements Listener {
 	}
 
 	public static void assignPowers(@NotNull Player player, Layer layer) throws InstantiationException, IllegalAccessException, NotFoundException, IllegalArgumentException, NoSuchFieldException, SecurityException {
+		assignPowers(player, layer, false);
+	}
+
+	public static void assignPowers(@NotNull Player player, Layer layer, boolean isNew) throws InstantiationException, IllegalAccessException, NotFoundException, IllegalArgumentException, NoSuchFieldException, SecurityException {
 		try {
 			CompletableFuture.runAsync(() -> {
 				if (layer == null) {
@@ -319,7 +335,7 @@ public class OriginPlayerAccessor implements Listener {
 					return;
 				}
 				for (Power power : playerPowerMapping.get(player).get(layer)) {
-					applyPower(player, power, false);
+					applyPower(player, power, false, isNew);
 				}
 			}).thenRun(() -> {
 				OriginDataContainer.loadData(player);

@@ -16,7 +16,7 @@ public class PowerUtils {
 		GenesisMC.getScheduler().parent.offMain(() -> {
 			if (!OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).contains(power)) {
 				OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).add(power);
-				OriginPlayerAccessor.applyPower(p, power, suppress);
+				OriginPlayerAccessor.applyPower(p, power, suppress, true);
 				if (!suppress) {
 					executor.sendMessage("Entity %name% was granted the power %power%"
 						.replace("%power%", power.getName())
@@ -37,7 +37,7 @@ public class PowerUtils {
 					try {
 						if (OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).contains(power)) {
 							OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).remove(power);
-							OriginPlayerAccessor.removePower(p, power, suppress);
+							OriginPlayerAccessor.removePower(p, power, suppress, true);
 							if (!suppress) {
 								executor.sendMessage("Entity %name% had the power %power% removed"
 									.replace("%power%", power.getName())

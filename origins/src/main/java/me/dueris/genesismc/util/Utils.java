@@ -49,6 +49,7 @@ import org.bukkit.craftbukkit.block.CraftBlockType;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.inventory.components.CraftFoodComponent;
 import org.bukkit.craftbukkit.potion.CraftPotionUtil;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -124,6 +125,31 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 			effectList.add(new PotionEffect(PotionEffectType.getByKey(new NamespacedKey(potionEffect.split(":")[0], potionEffect.split(":")[1])), duration, amplifier, isAmbient, showParticles, showIcon));
 		}
 		return effectList;
+	}
+
+	public static void addPositionedItemStack(Inventory inventory, ItemStack stack, int slot) {
+		int maxSlots = inventory.getSize();
+		if (slot < 0 || slot > maxSlots) {
+			GenesisMC.getPlugin().getLogger().warning("Invalid slot number provided!");
+			return;
+		}
+
+		if (inventory.getItem(slot) == null) {
+			inventory.setItem(slot, stack);
+			return;
+		}
+
+		int originalSlot = slot;
+		slot = (slot + 1) % maxSlots;
+		while (slot != originalSlot) {
+			if (inventory.getItem(slot) == null) {
+				inventory.setItem(slot, stack);
+				return;
+			}
+			slot = (slot + 1) % maxSlots;
+		}
+
+		GenesisMC.getPlugin().getLogger().warning("Inventory is full!");
 	}
 
 	public static Sound parseSound(String sound) {
