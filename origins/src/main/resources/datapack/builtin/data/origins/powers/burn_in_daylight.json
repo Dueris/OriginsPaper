@@ -9,8 +9,7 @@
         "type": "origins:exposed_to_sun"
       },
       {
-        "type": "origins:power_active",
-        "power": "origins:phantomize",
+        "type": "origins:invisible",
         "inverted": true
       }
     ]
