@@ -121,6 +121,22 @@ public class OriginPlayerAccessor implements Listener {
 		playerPowerMapping.put(p, map);
 	}
 
+	public static ArrayList<Power> getPowers(Player p, String powerType, ApoliPower r) {
+		ArrayList<Power> powers = new ArrayList<>();
+		if (playerPowerMapping.get(p) == null) return powers;
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			if (layer == null) continue;
+			for (Power power : playerPowerMapping.get(p).get(layer)) {
+				if (power == null) continue;
+				if (powerType == null) {
+					if (power.getType().equalsIgnoreCase("apoli:simple") &&
+						power.getTag().equalsIgnoreCase(r.getKey().asString())) powers.add(power);
+				} else if (power.getType().equals(powerType)) powers.add(power);
+			}
+		}
+		return powers;
+	}
+
 	public static ArrayList<Power> getPowers(Player p, String powerType) {
 		ArrayList<Power> powers = new ArrayList<>();
 		if (playerPowerMapping.get(p) == null) return powers;

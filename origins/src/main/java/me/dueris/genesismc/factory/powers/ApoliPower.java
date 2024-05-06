@@ -15,6 +15,7 @@ public interface ApoliPower extends Registrable {
 	HashMap<Player, HashMap<String, Boolean>> powers_active = new HashMap<>();
 	ArrayList<Player> game_event_listener = new ArrayList<>();
 	ArrayList<Player> cooldown = new ArrayList<>();
+	ArrayList<Player> ignore_water = new ArrayList<>();
 	ArrayList<Player> multiple = new ArrayList<>();
 	ArrayList<Player> entity_set = new ArrayList<>();
 	ArrayList<Player> edible_item = new ArrayList<>();

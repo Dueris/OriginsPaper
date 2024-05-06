@@ -62,6 +62,26 @@
       "inverted": true
     }
   },
+  "sense": {
+    "type": "origins:entity_glow",
+    "entity_condition": {
+      "type": "origins:and",
+      "conditions": [
+        {
+          "type": "origins:in_block_anywhere",
+          "block_condition": {
+            "type": "origins:in_tag",
+            "tag": "origins:cobwebs"
+          }
+        },
+        {
+          "type": "origins:entity_group",
+          "group": "arthropod",
+          "inverted": true
+        }
+      ]
+    }
+  },
   "web_crafting": {
     "hidden": true,
     "type": "origins:recipe",

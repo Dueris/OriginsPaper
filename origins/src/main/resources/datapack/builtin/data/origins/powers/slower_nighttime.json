@@ -10,7 +10,7 @@
       "amplifier": 1,
       "duration": 10
     },
-    "entity_condition": {
+    "condition": {
       "type": "origins:daytime",
       "inverted": true
     },

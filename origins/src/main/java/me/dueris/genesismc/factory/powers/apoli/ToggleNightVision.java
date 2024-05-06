@@ -28,12 +28,11 @@ public class ToggleNightVision extends CraftPower implements Listener {
 		int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
 		String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
 
-		boolean cont = !Boolean.valueOf(power.getJsonObject("key").getStringOrDefault("continuous", "false"));
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				/* TNV power always execute continuously */
-				if (!in_continuous.get(p).contains(key)) {
+				if (!in_continuous.get(p).contains(key) || !ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
 					Cooldown.addCooldown(p, cooldown, power);
 					setActive(p, power.getTag(), false);
 					p.removePotionEffect(PotionEffectType.NIGHT_VISION);

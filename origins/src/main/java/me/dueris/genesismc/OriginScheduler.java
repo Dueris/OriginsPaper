@@ -10,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -64,18 +63,20 @@ public class OriginScheduler {
 						continue; // CraftPower was already ticked, we are not ticking it again.
 					tickedPowers.get(p).add(c);
 
-					for (Power power : OriginPlayerAccessor.getPowers(p, c.getType())) {
+					for (Power power : OriginPlayerAccessor.getPowers(p, c.getType(), c)) {
 						try {
 							c.run(p, power);
 						} catch (Throwable throwable) {
 							String[] stacktrace = {"\n"};
 							Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
 							GenesisMC.getPlugin().getLogger().severe("An unhandled exception occurred when ticking a Power! [{a}]".replace("{a}", throwable.getClass().getSimpleName()));
+							String t = c.getType();
+							if (t == null) t = c.getKey().asString();
 							GenesisMC.getPlugin().getLogger().severe(
 								"Player: {a} | Power: {b} | CraftPower: {c} | Throwable: {d}"
 									.replace("{a}", p.getName())
 									.replace("{b}", power.getTag())
-									.replace("{c}", c.getType())
+									.replace("{c}", t)
 									.replace("{d}", throwable.getMessage() == null ? throwable.getClass().getSimpleName() : throwable.getMessage()) + stacktrace[0]
 							);
 						}

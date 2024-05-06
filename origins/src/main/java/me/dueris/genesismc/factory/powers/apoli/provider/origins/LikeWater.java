@@ -3,23 +3,31 @@ package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
-import me.dueris.genesismc.factory.powers.genesismc.GravityPower;
 import me.dueris.genesismc.registry.registries.Power;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 
 public class LikeWater extends CraftPower implements Listener, PowerProvider {
-	private static final GravityPower gravityHook = new GravityPower();
 	public static ArrayList<Player> likeWaterPlayers = new ArrayList<>();
 	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("like_water");
+	private static final AttributeModifier modifier = new AttributeModifier("LikeWater", -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
 	@Override
 	public void run(Player p, Power power) {
-		if (this.getPlayersWithPower().contains(p))
-			p.setGravity(!p.isInWaterOrBubbleColumn() && !p.isSwimming() && !p.isSneaking());
+		if (this.getPlayersWithPower().contains(p) && p.isInWaterOrBubbleColumn() && !p.isSneaking()) {
+			if (!p.getAttribute(Attribute.GENERIC_GRAVITY).getModifiers().contains(modifier)) {
+				p.getAttribute(Attribute.GENERIC_GRAVITY).addTransientModifier(modifier);
+			}
+		} else {
+			if (p.getAttribute(Attribute.GENERIC_GRAVITY).getModifiers().contains(modifier)) {
+				p.getAttribute(Attribute.GENERIC_GRAVITY).removeModifier(modifier);
+			}
+		}
 	}
 
 	@Override

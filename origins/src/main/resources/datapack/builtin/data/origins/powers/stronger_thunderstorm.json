@@ -5,7 +5,7 @@
   "description": "During thunderstorms, you are significantly stronger",
   "min_stacks": 0,
   "max_stacks": 1,
-  "duration_per_stack": 10,
+  "duration_per_stack": 60,
   "effects": [
     {
       "effect": "minecraft:speed",
@@ -14,7 +14,7 @@
     },
     {
       "effect": "minecraft:health_boost",
-      "amplifier": 1,
+      "amplifier": 2,
       "duration": 6
     },
     {

@@ -35,7 +35,7 @@ public class CreativeFlight extends CraftPower implements Listener {
 					p.setFlying(true);
 				}
 			} else {
-				boolean a = m.equals(GameMode.SPECTATOR) || m.equals(GameMode.CREATIVE) || ElytraFlightPower.elytra.contains(p) || no_gravity.contains(p) || grounded.contains(p);
+				boolean a = m.equals(GameMode.SPECTATOR) || m.equals(GameMode.CREATIVE) || ElytraFlightPower.elytra.contains(p) || no_gravity.contains(p) || grounded.contains(p) || swimming.contains(p);
 				if (a && !p.getAllowFlight()) {
 					p.setAllowFlight(true);
 				} else if (!a && p.getAllowFlight()) {

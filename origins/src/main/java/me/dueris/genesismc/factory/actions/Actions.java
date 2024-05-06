@@ -282,7 +282,7 @@ public class Actions {
 				case "apoli:if_else" -> {
 					boolean bool = ConditionExecutor.testBlock(action.getJsonObject("condition"), CraftBlock.at(((CraftWorld) location.getWorld()).getHandle(), CraftLocation.toBlockPosition(location)));
 					if (bool) {
-						executeBlock(location, action.getJsonObject("else_action"));
+						executeBlock(location, action.getJsonObject("if_action"));
 					} else {
 						executeBlock(location, action.getJsonObject("else_action"));
 					}

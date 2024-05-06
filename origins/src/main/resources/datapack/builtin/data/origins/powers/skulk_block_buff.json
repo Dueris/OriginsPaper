@@ -13,7 +13,7 @@
   },
   "min_stacks": 0,
   "max_stacks": 1,
-  "duration_per_stack": 10,
+  "duration_per_stack": 60,
   "effect": {
     "effect": "minecraft:health_boost",
     "amplifier": 2,

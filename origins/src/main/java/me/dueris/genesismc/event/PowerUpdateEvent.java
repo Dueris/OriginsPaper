@@ -8,9 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class PowerUpdateEvent extends PlayerEvent {
 	private static final HandlerList handlers = new HandlerList();
-	private Power power;
-	private boolean removed;
-	private boolean isNew;
+	private final Power power;
+	private final boolean removed;
+	private final boolean isNew;
 
 	public PowerUpdateEvent(@NotNull Player who, Power power, boolean removed, boolean isNew) {
 		super(who, true);
