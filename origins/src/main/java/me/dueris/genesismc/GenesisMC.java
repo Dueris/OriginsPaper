@@ -243,9 +243,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 		this.registry = CalioRegistry.INSTANCE;
 		// Create new registry instances
+		// Depreciated - for removal
 		this.registry.create(Registries.POWER, new Registrar<Power>());
 		this.registry.create(Registries.ORIGIN, new Registrar<Origin>());
 		this.registry.create(Registries.LAYER, new Registrar<Layer>());
+		// Depreciated - for removal
 		this.registry.create(Registries.CRAFT_POWER, new Registrar<ApoliPower>());
 		this.registry.create(Registries.FLUID_CONDITION, new Registrar<FluidConditions.ConditionFactory>());
 		this.registry.create(Registries.ENTITY_CONDITION, new Registrar<EntityConditions.ConditionFactory>());

@@ -28,7 +28,7 @@ public class CraftCalio {
     public static CraftCalio INSTANCE = new CraftCalio();
     private final List<File> datapackDirectoriesToParse = new ArrayList<>();
     private boolean isDebugging;
-    private final ConcurrentHashMap<NamespacedKey, FactoryData> types = new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<NamespacedKey, FactoryData> types = new ConcurrentHashMap<>();
 
     public static NamespacedKey bukkitIdentifier(String namespace, String path) {
         return NamespacedKey.fromString(namespace + ":" + path);

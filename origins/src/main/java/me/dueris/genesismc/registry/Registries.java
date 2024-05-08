@@ -6,8 +6,11 @@ import org.bukkit.NamespacedKey;
 public class Registries {
 	public static final NamespacedKey ORIGIN = GenesisMC.apoliIdentifier("origin");
 	public static final NamespacedKey LAYER = GenesisMC.apoliIdentifier("layer");
+	// Depreciated - for removal
 	public static final NamespacedKey POWER = GenesisMC.apoliIdentifier("power");
+	// Depreciated - for removal
 	public static final NamespacedKey CRAFT_POWER = GenesisMC.apoliIdentifier("craft_power");
+	public static final NamespacedKey POWER_TYPE = GenesisMC.apoliIdentifier("power_type");
 
 	public static final NamespacedKey FLUID_CONDITION = GenesisMC.apoliIdentifier("fluid_condition");
 	public static final NamespacedKey ITEM_CONDITION = GenesisMC.apoliIdentifier("item_condition");
