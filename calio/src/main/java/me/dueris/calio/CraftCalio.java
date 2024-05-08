@@ -4,6 +4,7 @@ import me.dueris.calio.builder.CalioBuilder;
 import me.dueris.calio.builder.inst.AccessorRoot;
 import me.dueris.calio.builder.inst.FactoryData;
 import me.dueris.calio.builder.inst.FactoryHolder;
+import me.dueris.calio.builder.inst.RequiresPlugin;
 import me.dueris.calio.parse.CalioJsonParser;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.NamespacedKey;
@@ -137,26 +138,22 @@ public class CraftCalio {
     /**
      * Allows registering new FactoryHolders defined by a "type" field inside the root of the JSON OBJECT
      */
-    public void register(Class<FactoryHolder> e) {
-        Class<FactoryHolder> holder = e;
-        Method rC = null;
-        while (holder != null && rC == null) {
-			try {
-				rC = holder.getDeclaredMethod("registerComponents", FactoryData.class);
-			} catch (NoSuchMethodException ex) {
-				holder = (Class<FactoryHolder>) holder.getSuperclass();
-			}
-		}
-
-        if (rC == null) throw new IllegalArgumentException("FactoryHolder doesnt have registerComponents method in it or its superclasses!");
+    public void register(Class<FactoryHolder> holder) {
         try {
+            Method rC = holder.getDeclaredMethod("registerComponents", FactoryData.class);
+            if (rC == null) throw new IllegalArgumentException("FactoryHolder doesnt have registerComponents method in it or its superclasses!");
+            if (holder.isAnnotationPresent(RequiresPlugin.class)) {
+                RequiresPlugin aN = holder.getAnnotation(RequiresPlugin.class);
+                if (!org.bukkit.Bukkit.getPluginManager().isPluginEnabled(aN.pluginName())) return;
+            }
             FactoryData data = (FactoryData) rC.invoke(null, new FactoryData());
             NamespacedKey identifier = data.getIdentifier();
             if (identifier == null) throw new IllegalArgumentException("Type identifier was not provided! FactoryHolder will not be loaded : " + holder.getSimpleName());
             this.types.put(identifier, data);
             System.out.println("new FactoryHolder registered! " + holder.getSimpleName());
-		} catch (IllegalAccessException | InvocationTargetException ea) {
-			ea.printStackTrace();
+		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ea) {
+            if (ea instanceof NoSuchMethodException) return;
+			throw new RuntimeException("An exception occured when registering FactoryHolder", ea);
 		}
 	}
 

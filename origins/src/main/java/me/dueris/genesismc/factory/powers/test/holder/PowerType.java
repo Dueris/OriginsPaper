@@ -75,7 +75,7 @@ public class PowerType implements FactoryHolder, Listener {
 		List<Class<FactoryHolder>> holders = new ArrayList<>();
 		try (ScanResult result = new ClassGraph().whitelistPackages("me.dueris.genesismc.factory.powers.test").enableClassInfo().scan()) {
 			holders.addAll(result.getAllClasses().loadClasses(FactoryHolder.class).stream().filter(clz -> {
-				return clz.getPackageName().endsWith("test") && !clz.isAnnotation() && !clz.isInterface();
+				return clz.getPackageName().endsWith("test") && !clz.isAnnotation() && !clz.isInterface() && !clz.isEnum();
 			}).toList());
 		}
 
