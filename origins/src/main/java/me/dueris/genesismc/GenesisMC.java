@@ -32,6 +32,7 @@ import me.dueris.genesismc.factory.powers.apoli.ModelColor;
 import me.dueris.genesismc.factory.powers.apoli.RecipePower;
 import me.dueris.genesismc.factory.powers.apoli.WaterBreathe;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
+import me.dueris.genesismc.factory.powers.test.holder.PowerType;
 import me.dueris.genesismc.integration.PlaceHolderAPI;
 import me.dueris.genesismc.integration.pehuki.CraftPehuki;
 import me.dueris.genesismc.registry.BuiltinRegistry;
@@ -306,6 +307,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 				new Layer(true), 2
 			);
 			calio.start(OriginConfiguration.getConfiguration().getBoolean("debug"), loaderThreadPool);
+			PowerType.registerAll();
 			BuiltinRegistry.bootstrap();
 			// End calio parsing
 		} catch (Throwable e) {

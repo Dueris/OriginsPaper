@@ -2,16 +2,23 @@ package me.dueris.calio;
 
 import me.dueris.calio.builder.CalioBuilder;
 import me.dueris.calio.builder.inst.AccessorRoot;
+import me.dueris.calio.builder.inst.FactoryData;
+import me.dueris.calio.builder.inst.FactoryHolder;
 import me.dueris.calio.parse.CalioJsonParser;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.NamespacedKey;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Logger;
@@ -20,6 +27,7 @@ public class CraftCalio {
     public static CraftCalio INSTANCE = new CraftCalio();
     private final List<File> datapackDirectoriesToParse = new ArrayList<>();
     private boolean isDebugging;
+    private final ConcurrentHashMap<NamespacedKey, FactoryData> types = new ConcurrentHashMap<>();
 
     public static NamespacedKey bukkitIdentifier(String namespace, String path) {
         return NamespacedKey.fromString(namespace + ":" + path);
@@ -124,5 +132,41 @@ public class CraftCalio {
      */
     public CalioBuilder getBuilder() {
         return CalioBuilder.INSTANCE;
+    }
+
+    /**
+     * Allows registering new FactoryHolders defined by a "type" field inside the root of the JSON OBJECT
+     */
+    public void register(Class<FactoryHolder> e) {
+        Class<FactoryHolder> holder = e;
+        Method rC = null;
+        while (holder != null && rC == null) {
+			try {
+				rC = holder.getDeclaredMethod("registerComponents", FactoryData.class);
+			} catch (NoSuchMethodException ex) {
+				holder = (Class<FactoryHolder>) holder.getSuperclass();
+			}
+		}
+
+        if (rC == null) throw new IllegalArgumentException("FactoryHolder doesnt have registerComponents method in it or its superclasses!");
+        try {
+            FactoryData data = (FactoryData) rC.invoke(null, new FactoryData());
+            NamespacedKey identifier = data.getIdentifier();
+            if (identifier == null) throw new IllegalArgumentException("Type identifier was not provided! FactoryHolder will not be loaded : " + holder.getSimpleName());
+            this.types.put(identifier, data);
+            System.out.println("new FactoryHolder registered! " + holder.getSimpleName());
+		} catch (IllegalAccessException | InvocationTargetException ea) {
+			ea.printStackTrace();
+		}
+	}
+
+    private boolean hasRegisterMethod(Class<?> clz) {
+        try {
+            Method method = clz.getDeclaredMethod("registerComponents", FactoryData.class);
+            int modifiers = method.getModifiers();
+            return Modifier.isStatic(modifiers) && Modifier.isPublic(modifiers);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

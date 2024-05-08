@@ -35,6 +35,8 @@ public class CalioJsonParser {
                     if (builder != null) {
                         loadingPrioritySortedMap.put(new Pair<>(builder, key), builder.getRoot().getNumberOrDefault("loading_priority", 0).getInt());
                     }
+                    // New Calio
+
                 } else {
                     parseDirectory(jsonFile, root, namespace, jsonFile.getName() + "/", false);
                 }
