@@ -13,7 +13,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ObjectRemapper {
+public class JsonObjectRemapper {
     /**
      * Allows telling the remapper to swap out type values
      */

@@ -15,8 +15,8 @@ public class FactoryData {
 	}
 
 	@NotNull
-	protected FactoryObjectInstance[] getProviders() {
-		return providers.toArray(providers.toArray(new FactoryObjectInstance[0]));
+	public FactoryObjectInstance[] getProviders() {
+		return providers.toArray(new FactoryObjectInstance[0]);
 	}
 
 	public FactoryData add(FactoryObjectInstance instance) {

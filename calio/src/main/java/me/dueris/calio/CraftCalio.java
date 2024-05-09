@@ -1,23 +1,17 @@
 package me.dueris.calio;
 
 import me.dueris.calio.builder.CalioBuilder;
-import me.dueris.calio.builder.inst.AccessorRoot;
-import me.dueris.calio.builder.inst.FactoryData;
-import me.dueris.calio.builder.inst.FactoryHolder;
-import me.dueris.calio.builder.inst.RequiresPlugin;
+import me.dueris.calio.builder.inst.*;
 import me.dueris.calio.parse.CalioJsonParser;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.NamespacedKey;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -29,6 +23,7 @@ public class CraftCalio {
     private final List<File> datapackDirectoriesToParse = new ArrayList<>();
     private boolean isDebugging;
     public final ConcurrentHashMap<NamespacedKey, FactoryData> types = new ConcurrentHashMap<>();
+    public final ArrayList<AccessorKey> keys = new ArrayList<>();
 
     public static NamespacedKey bukkitIdentifier(String namespace, String path) {
         return NamespacedKey.fromString(namespace + ":" + path);
@@ -58,7 +53,30 @@ public class CraftCalio {
         this.isDebugging = debug;
         Runnable parser = () -> {
             debug("Starting CraftCalio parser...");
+            // New Calio
+            this.keys.stream().sorted(Comparator.comparingInt(AccessorKey::getPriority)).forEach(accessorKey -> {
+                datapackDirectoriesToParse.forEach(root -> {
+                    for (File datapack : root.listFiles()) {
+                        if (!datapack.isDirectory()) continue;
+                        for (File data : datapack.listFiles()) {
+                            if (!data.getName().equalsIgnoreCase("data") || !data.isDirectory()) continue;
+                            // Parse namespaced factories
+                            String namespace;
+                            for (File namespacedFile : data.listFiles()) {
+                                if (!namespacedFile.isDirectory()) continue;
+                                namespace = namespacedFile.getName();
+                                for (File k : namespacedFile.listFiles()) {
+                                    if (k.getName().equalsIgnoreCase(accessorKey.getDirectory())) {
+                                        CalioJsonParser.parsePackDirectory(k, accessorKey, namespace, "", true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
             // Collections
+            /*
             getBuilder().accessorRoots.stream().sorted(Comparator.comparingInt(AccessorRoot::getPriority)).toList().forEach((root) -> {
                 datapackDirectoriesToParse.forEach(rootFolder -> {
                     for (File datapack : rootFolder.listFiles()) {
@@ -82,6 +100,7 @@ public class CraftCalio {
                     }
                 });
             });
+             */
         };
         if (threadPool != null) {
             CompletableFuture future = CompletableFuture.runAsync(parser, threadPool);
@@ -138,10 +157,10 @@ public class CraftCalio {
     /**
      * Allows registering new FactoryHolders defined by a "type" field inside the root of the JSON OBJECT
      */
-    public void register(Class<FactoryHolder> holder) {
+    public void register(Class<? extends FactoryHolder> holder) {
         try {
             Method rC = holder.getDeclaredMethod("registerComponents", FactoryData.class);
-            if (rC == null) throw new IllegalArgumentException("FactoryHolder doesnt have registerComponents method in it or its superclasses!");
+            if (rC == null) throw new IllegalArgumentException("FactoryHolder doesn't have registerComponents method in it or its superclasses!");
             if (holder.isAnnotationPresent(RequiresPlugin.class)) {
                 RequiresPlugin aN = holder.getAnnotation(RequiresPlugin.class);
                 if (!org.bukkit.Bukkit.getPluginManager().isPluginEnabled(aN.pluginName())) return;
@@ -165,5 +184,13 @@ public class CraftCalio {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public void registerAccessor(String directory, int priority, boolean useTypeDefiner, Class<? extends FactoryHolder> typeOf) {
+        keys.add(new AccessorKey(directory, priority, useTypeDefiner, typeOf));
+    }
+
+    public void registerAccessor(String directory, int priority, boolean useTypeDefiner) {
+        keys.add(new AccessorKey(directory, priority, useTypeDefiner, null));
     }
 }

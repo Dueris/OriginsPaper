@@ -5,7 +5,7 @@ import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.CraftCalio;
-import me.dueris.calio.builder.ObjectRemapper;
+import me.dueris.calio.builder.JsonObjectRemapper;
 import me.dueris.calio.registry.IRegistry;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.registry.impl.CalioRegistry;
@@ -188,7 +188,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		}
 
 		debug(Component.text("* (-debugOrigins={true}) || BEGINNING DEBUG {"));
-		ObjectRemapper.typeMappings.add(new Pair<String, String>() {
+		JsonObjectRemapper.typeMappings.add(new Pair<String, String>() {
 			@Override
 			public String left() {
 				return "origins";
@@ -199,7 +199,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 				return "apoli";
 			}
 		});
-		ObjectRemapper.addObjectMapping("key", new Pair<Object, Object>() {
+		JsonObjectRemapper.addObjectMapping("key", new Pair<Object, Object>() {
 			@Override
 			public Object left() {
 				return "primary";
@@ -210,7 +210,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 				return new JSONObject(Map.of("key", "key.origins.primary_active"));
 			}
 		});
-		ObjectRemapper.addObjectMapping("key", new Pair<Object, Object>() {
+		JsonObjectRemapper.addObjectMapping("key", new Pair<Object, Object>() {
 			@Override
 			public Object left() {
 				return "secondary";
@@ -222,7 +222,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			}
 		});
 		// Our version of restricted_armor allows handling of both.
-		ObjectRemapper.typeAlias.put("apoli:conditioned_restrict_armor", "apoli:restrict_armor");
+		JsonObjectRemapper.typeAlias.put("apoli:conditioned_restrict_armor", "apoli:restrict_armor");
 		ThreadFactory threadFactory = new NamedTickThreadFactory("OriginParsingPool");
 		CraftPower.tryPreloadClass(AsyncTaskWorker.class); // Preload worker
 		placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
@@ -308,8 +308,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 				Registries.LAYER,
 				new Layer(true), 2
 			);
-			calio.start(OriginConfiguration.getConfiguration().getBoolean("debug"), loaderThreadPool);
+			calio.registerAccessor("powers", 0, true, PowerType.class);
+			calio.registerAccessor("origins", 1, false);
+			calio.registerAccessor("origin_layers", 2, false);
 			PowerType.registerAll();
+			calio.start(OriginConfiguration.getConfiguration().getBoolean("debug"), loaderThreadPool);
 			BuiltinRegistry.bootstrap();
 			// End calio parsing
 		} catch (Throwable e) {

@@ -30,7 +30,7 @@ public class PowerType implements FactoryHolder, Listener {
 		this.description = description;
 		this.hidden = hidden;
 		this.condition = condition;
-		loadingPriority = loading_priority;
+		this.loadingPriority = loading_priority;
 	}
 
 	public static FactoryData registerComponents(FactoryData data) {

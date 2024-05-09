@@ -7,6 +7,7 @@ import org.bukkit.NamespacedKey;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated(forRemoval = true)
 public class CalioBuilder {
     public static CalioBuilder INSTANCE = new CalioBuilder();
     public List<AccessorRoot> accessorRoots = new ArrayList<>();
