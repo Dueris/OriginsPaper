@@ -171,7 +171,7 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
 			new FactoryDataDefiner("description", String.class, "No Description"),
 			new FactoryDataDefiner("impact", Integer.class, 0),
 			new FactoryDataDefiner("unchooseable", Boolean.class, false),
-			new FactoryDataDefiner("powers", FactoryJsonArray.class, new JsonArray())
+			new FactoryDataDefiner("powers", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()))
 		);
 	}
 

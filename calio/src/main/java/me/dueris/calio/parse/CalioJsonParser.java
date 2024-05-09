@@ -135,7 +135,11 @@ public class CalioJsonParser {
                     // Create the constructor
                     Class<? extends FactoryHolder> holder = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(entry.getKey().getA().get("type").getAsString())).getSecond();
                     Constructor<?> constructor = findConstructor(data, holder);
-                    System.out.println("Constructor found? : " + constructor != null);
+                    if (constructor != null) {
+                        
+                    } else {
+                        throw new IllegalStateException("Unable to find constructor for provided type!");
+                    }
                 } catch (Throwable throwable) {
                     String[] stacktrace = {"\n"};
                     Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
