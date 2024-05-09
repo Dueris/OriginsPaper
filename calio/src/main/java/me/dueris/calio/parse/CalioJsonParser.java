@@ -118,7 +118,7 @@ public class CalioJsonParser {
                             );
                             continue;
                         } else {
-                            data = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(entry.getKey().getA().get("type").getAsString()));
+                            data = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(entry.getKey().getA().get("type").getAsString())).getFirst();
                         }
                     } else {
                         // We gotta invoke the FactoryData manually
@@ -133,7 +133,7 @@ public class CalioJsonParser {
                     }
 
                     // Create the constructor
-                    Class<? extends FactoryHolder> holder = root.getOfType();
+                    Class<? extends FactoryHolder> holder = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(entry.getKey().getA().get("type").getAsString())).getSecond();
                     Constructor<?> constructor = findConstructor(data, holder);
                     System.out.println("Constructor found? : " + constructor != null);
                 } catch (Throwable throwable) {
