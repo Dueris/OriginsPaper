@@ -2,7 +2,7 @@ package me.dueris.genesismc.registry.registries;
 
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.inst.FactoryInstance;
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
+import me.dueris.calio.builder.inst.FactoryDataDefiner;
 import me.dueris.calio.builder.inst.factory.FactoryBuilder;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
@@ -145,13 +145,13 @@ public class Layer extends FactoryJsonObject implements Serializable, FactoryIns
 	}
 
 	@Override
-	public List<FactoryObjectInstance> getValidObjectFactory() {
+	public List<FactoryDataDefiner> getValidObjectFactory() {
 		return List.of(
-			new FactoryObjectInstance("origins", FactoryJsonArray.class, null),
-			new FactoryObjectInstance("enabled", Boolean.class, true),
-			new FactoryObjectInstance("replace", Boolean.class, false),
-			new FactoryObjectInstance("allow_random", Boolean.class, true),
-			new FactoryObjectInstance("hidden", Boolean.class, false)
+			new FactoryDataDefiner("origins", FactoryJsonArray.class, null),
+			new FactoryDataDefiner("enabled", Boolean.class, true),
+			new FactoryDataDefiner("replace", Boolean.class, false),
+			new FactoryDataDefiner("allow_random", Boolean.class, true),
+			new FactoryDataDefiner("hidden", Boolean.class, false)
 		);
 	}
 

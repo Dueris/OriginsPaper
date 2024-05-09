@@ -11,6 +11,7 @@ import org.bukkit.NamespacedKey;
 import oshi.util.tuples.Pair;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -132,6 +133,9 @@ public class CalioJsonParser {
                     }
 
                     // Create the constructor
+                    Class<? extends FactoryHolder> holder = root.getOfType();
+                    Constructor<?> constructor = findConstructor(data, holder);
+                    System.out.println("Constructor found? : " + constructor != null);
                 } catch (Throwable throwable) {
                     String[] stacktrace = {"\n"};
                     Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
@@ -149,5 +153,15 @@ public class CalioJsonParser {
             newLoadingPrioritySortedMap.clear();
         }
     }
+
+    private static Constructor<?> findConstructor(FactoryData data, Class<? extends FactoryHolder> holder) {
+        Class<?>[] params = Arrays.stream(data.getProviders()).map(FactoryDataDefiner::getType).toList().toArray(new Class<?>[0]);
+		try {
+			return holder.getConstructor(params);
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		}
+        return null;
+	}
 
 }

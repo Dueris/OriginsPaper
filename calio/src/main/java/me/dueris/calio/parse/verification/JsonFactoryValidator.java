@@ -1,7 +1,7 @@
 package me.dueris.calio.parse.verification;
 
 import me.dueris.calio.CraftCalio;
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
+import me.dueris.calio.builder.inst.FactoryDataDefiner;
 import me.dueris.calio.builder.inst.factory.FactoryBuilder;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
@@ -19,9 +19,9 @@ public class JsonFactoryValidator {
      * @param factoryKey the NamespacedKey representing the factory
      * @return a cloned and validated FactoryProvider
      */
-    public static FactoryBuilder validateFactory(FactoryBuilder provider, List<FactoryObjectInstance> valid, NamespacedKey factoryKey) {
+    public static FactoryBuilder validateFactory(FactoryBuilder provider, List<FactoryDataDefiner> valid, NamespacedKey factoryKey) {
         FactoryBuilder cloned = provider.cloneFactory();
-        for (FactoryObjectInstance instance : valid) {
+        for (FactoryDataDefiner instance : valid) {
             if (provider.getRoot().isPresent(instance.getObjName())) {
                 Object obj = retriveSpecificType(provider.getRoot(), instance.getObjName(), instance.getType());
                 if (obj == null) {

@@ -1,5 +1,6 @@
 package me.dueris.calio;
 
+import com.mojang.datafixers.util.Pair;
 import me.dueris.calio.builder.CalioBuilder;
 import me.dueris.calio.builder.inst.*;
 import me.dueris.calio.parse.CalioJsonParser;
@@ -22,7 +23,7 @@ public class CraftCalio {
     public static CraftCalio INSTANCE = new CraftCalio();
     private final List<File> datapackDirectoriesToParse = new ArrayList<>();
     private boolean isDebugging;
-    public final ConcurrentHashMap<NamespacedKey, FactoryData> types = new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<NamespacedKey, Pair<FactoryData, Class<? extends FactoryHolder>>> types = new ConcurrentHashMap<>();
     public final ArrayList<AccessorKey> keys = new ArrayList<>();
 
     public static NamespacedKey bukkitIdentifier(String namespace, String path) {
@@ -168,7 +169,7 @@ public class CraftCalio {
             FactoryData data = (FactoryData) rC.invoke(null, new FactoryData());
             NamespacedKey identifier = data.getIdentifier();
             if (identifier == null) throw new IllegalArgumentException("Type identifier was not provided! FactoryHolder will not be loaded : " + holder.getSimpleName());
-            this.types.put(identifier, data);
+            this.types.put(identifier, new Pair<>(data, holder));
             System.out.println("new FactoryHolder registered! " + holder.getSimpleName());
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ea) {
             if (ea instanceof NoSuchMethodException) return;

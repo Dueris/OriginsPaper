@@ -4,8 +4,8 @@ import me.dueris.calio.CraftCalio;
 import me.dueris.calio.util.IgnoreFactoryValidationCheck;
 import me.dueris.calio.util.holders.TriPair;
 
-public class FactoryObjectInstance extends TriPair {
-    public FactoryObjectInstance(String objName, Class type, Object defaultVal) {
+public class FactoryDataDefiner extends TriPair {
+    public FactoryDataDefiner(String objName, Class type, Object defaultVal) {
         super(objName, type, defaultVal);
         if (defaultVal != null) {
             if ((defaultVal.getClass() != type || !defaultVal.getClass().isAssignableFrom(type)) && !type.isAnnotationPresent(IgnoreFactoryValidationCheck.class)) {

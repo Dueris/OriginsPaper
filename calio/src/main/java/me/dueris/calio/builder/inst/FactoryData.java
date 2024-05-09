@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class FactoryData {
-	private final ConcurrentLinkedQueue<FactoryObjectInstance> providers;
+	private final ConcurrentLinkedQueue<FactoryDataDefiner> providers;
 	private NamespacedKey identifier;
 
 	public FactoryData() {
@@ -15,11 +15,11 @@ public class FactoryData {
 	}
 
 	@NotNull
-	public FactoryObjectInstance[] getProviders() {
-		return providers.toArray(new FactoryObjectInstance[0]);
+	public FactoryDataDefiner[] getProviders() {
+		return providers.toArray(new FactoryDataDefiner[0]);
 	}
 
-	public FactoryData add(FactoryObjectInstance instance) {
+	public FactoryData add(FactoryDataDefiner instance) {
 		Preconditions.checkArgument(instance != null, "Provided instance cannot be null!");
 		this.providers.add(instance);
 		return this;
@@ -29,7 +29,7 @@ public class FactoryData {
 		Preconditions.checkArgument(objName != null);
 		Preconditions.checkArgument(type != null);
 		Preconditions.checkArgument(defaultVal != null);
-		this.providers.add(new FactoryObjectInstance(objName, type, defaultVal));
+		this.providers.add(new FactoryDataDefiner(objName, type, defaultVal));
 		return this;
 	}
 

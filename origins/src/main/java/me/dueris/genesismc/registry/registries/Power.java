@@ -2,7 +2,7 @@ package me.dueris.genesismc.registry.registries;
 
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.inst.FactoryInstance;
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
+import me.dueris.calio.builder.inst.FactoryDataDefiner;
 import me.dueris.calio.builder.inst.factory.*;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
@@ -206,12 +206,12 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
 	}
 
 	@Override
-	public List<FactoryObjectInstance> getValidObjectFactory() {
+	public List<FactoryDataDefiner> getValidObjectFactory() {
 		return List.of(
-			new FactoryObjectInstance("type", NamespacedKey.class, null),
-			new FactoryObjectInstance("name", String.class, "No Name"),
-			new FactoryObjectInstance("description", String.class, "No Description"),
-			new FactoryObjectInstance("hidden", Boolean.class, false)
+			new FactoryDataDefiner("type", NamespacedKey.class, null),
+			new FactoryDataDefiner("name", String.class, "No Name"),
+			new FactoryDataDefiner("description", String.class, "No Description"),
+			new FactoryDataDefiner("hidden", Boolean.class, false)
 		);
 	}
 

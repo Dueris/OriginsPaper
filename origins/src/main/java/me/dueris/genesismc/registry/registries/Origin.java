@@ -3,7 +3,7 @@ package me.dueris.genesismc.registry.registries;
 import com.google.gson.JsonArray;
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.inst.FactoryInstance;
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
+import me.dueris.calio.builder.inst.FactoryDataDefiner;
 import me.dueris.calio.builder.inst.factory.FactoryBuilder;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
@@ -165,13 +165,13 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
 	}
 
 	@Override
-	public List<FactoryObjectInstance> getValidObjectFactory() {
+	public List<FactoryDataDefiner> getValidObjectFactory() {
 		return List.of(
-			new FactoryObjectInstance("name", String.class, "No Name"),
-			new FactoryObjectInstance("description", String.class, "No Description"),
-			new FactoryObjectInstance("impact", Integer.class, 0),
-			new FactoryObjectInstance("unchooseable", Boolean.class, false),
-			new FactoryObjectInstance("powers", FactoryJsonArray.class, new JsonArray())
+			new FactoryDataDefiner("name", String.class, "No Name"),
+			new FactoryDataDefiner("description", String.class, "No Description"),
+			new FactoryDataDefiner("impact", Integer.class, 0),
+			new FactoryDataDefiner("unchooseable", Boolean.class, false),
+			new FactoryDataDefiner("powers", FactoryJsonArray.class, new JsonArray())
 		);
 	}
 

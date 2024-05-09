@@ -36,9 +36,9 @@ public class PowerType implements FactoryHolder, Listener {
 	public static FactoryData registerComponents(FactoryData data) {
 		return data.add("name", String.class, "craftapoli.name.not_found")
 			.add("description", String.class, "craftapoli.description.not_found")
-			.add("hidden", Boolean.class, false)
+			.add("hidden", boolean.class, false)
 			.add("condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
-			.add("loading_priority", Integer.class, 1);
+			.add("loading_priority", int.class, 1);
 	}
 
 	public String getName() {

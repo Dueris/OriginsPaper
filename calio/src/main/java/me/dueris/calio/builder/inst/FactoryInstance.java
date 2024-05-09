@@ -13,7 +13,7 @@ public interface FactoryInstance extends Registrable {
     /**
      * Returns the current allowed instances for the Registerable
      */
-    List<FactoryObjectInstance> getValidObjectFactory();
+    List<FactoryDataDefiner> getValidObjectFactory();
 
     /**
      * Creates an instance of the FactoryProvider class using the provided raw file, registry, and namespaced tag associated with the instance being created.
