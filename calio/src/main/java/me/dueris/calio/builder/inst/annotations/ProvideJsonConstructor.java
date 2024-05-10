@@ -1,8 +1,7 @@
-package me.dueris.calio.builder.inst;
+package me.dueris.calio.builder.inst.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Register {
-}
+public @interface ProvideJsonConstructor { }

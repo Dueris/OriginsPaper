@@ -10,4 +10,6 @@ public interface FactoryHolder extends Registrable {
 	}
 
 	public NamespacedKey ofResourceLocation(NamespacedKey key);
+
+	public default void bootstrap() { }
 }

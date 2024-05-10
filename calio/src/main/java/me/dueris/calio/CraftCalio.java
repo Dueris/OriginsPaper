@@ -2,6 +2,7 @@ package me.dueris.calio;
 
 import com.mojang.datafixers.util.Pair;
 import me.dueris.calio.builder.inst.*;
+import me.dueris.calio.builder.inst.annotations.RequiresPlugin;
 import me.dueris.calio.parse.CalioJsonParser;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.NamespacedKey;

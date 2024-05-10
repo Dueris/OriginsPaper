@@ -1,10 +1,11 @@
 package me.dueris.genesismc.factory.powers.test;
 
 import me.dueris.calio.builder.inst.FactoryData;
-import me.dueris.calio.builder.inst.Register;
+import me.dueris.calio.builder.inst.annotations.Register;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.powers.test.holder.PowerType;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
+
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 
 public class TestPower extends PowerType {

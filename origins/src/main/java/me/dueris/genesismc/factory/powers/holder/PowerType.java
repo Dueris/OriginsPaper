@@ -1,4 +1,4 @@
-package me.dueris.genesismc.factory.powers.test.holder;
+package me.dueris.genesismc.factory.powers.holder;
 
 import com.google.gson.JsonObject;
 import io.github.classgraph.ClassGraph;
@@ -6,7 +6,7 @@ import io.github.classgraph.ScanResult;
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.inst.FactoryData;
 import me.dueris.calio.builder.inst.FactoryHolder;
-import me.dueris.calio.builder.inst.Register;
+import me.dueris.calio.builder.inst.annotations.Register;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 
 import org.bukkit.NamespacedKey;
@@ -25,7 +25,7 @@ public class PowerType implements FactoryHolder, Listener {
 	private final FactoryJsonObject condition;
 	private final int loadingPriority;
 	private final ConcurrentLinkedQueue<CraftPlayer> players = new ConcurrentLinkedQueue<>();
-	private boolean tagSet = false;
+	protected boolean tagSet = false;
 	private NamespacedKey tag = null;
 
 	@Register
@@ -77,10 +77,12 @@ public class PowerType implements FactoryHolder, Listener {
 
 	public static void registerAll() {
 		List<Class<FactoryHolder>> holders = new ArrayList<>();
-		try (ScanResult result = new ClassGraph().whitelistPackages("me.dueris.genesismc.factory.powers.test").enableClassInfo().scan()) {
-			holders.addAll(result.getAllClasses().loadClasses(FactoryHolder.class).stream().filter(clz -> {
-				return clz.getPackageName().endsWith("test") && !clz.isAnnotation() && !clz.isInterface() && !clz.isEnum();
+		try (ScanResult result = new ClassGraph().whitelistPackages("me.dueris.genesismc.factory.powers").enableClassInfo().scan()) {
+			holders.addAll(result.getSubclasses(PowerType.class).loadClasses(FactoryHolder.class).stream().filter(clz -> {
+				return !clz.isAnnotation() && !clz.isInterface() && !clz.isEnum();
 			}).toList());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		holders.forEach(CraftCalio.INSTANCE::register);

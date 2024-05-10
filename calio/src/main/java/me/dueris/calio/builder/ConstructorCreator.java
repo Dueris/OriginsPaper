@@ -2,22 +2,28 @@ package me.dueris.calio.builder;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.inst.FactoryData;
 import me.dueris.calio.builder.inst.FactoryDataDefiner;
 import me.dueris.calio.builder.inst.FactoryHolder;
-import me.dueris.calio.builder.inst.Register;
+import me.dueris.calio.builder.inst.annotations.Register;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import oshi.util.tuples.Pair;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.NamespacedKey;
+
 public class ConstructorCreator {
-    public static FactoryHolder invoke(Constructor<? extends FactoryHolder> constructor, FactoryData data, JsonObject getter) throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    public static FactoryHolder invoke(Constructor<? extends FactoryHolder> constructor, FactoryData data, Pair<JsonObject, NamespacedKey> pair) throws InvocationTargetException, InstantiationException, IllegalAccessException {
+		JsonObject getter = pair.getA();
+		NamespacedKey tag = pair.getB();
 		List<Object> invoker = new ArrayList<>();
 		if (!constructor.isAnnotationPresent(Register.class)) {
 			CraftCalio.INSTANCE.getLogger().severe("@Register annotation must be present in constructor annotation : " + data.getIdentifier().asString());
@@ -43,6 +49,9 @@ public class ConstructorCreator {
 				);
 				return null;
 			}
+		}
+		if (constructor.getParameters()[constructor.getParameters().length - 1].getType().equals(JsonObject.class)) {
+			invoker.add(getter);
 		}
 		return constructor.newInstance(invoker.toArray(new Object[0]));
 	}

@@ -5,6 +5,8 @@ import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.ConstructorCreator;
 import me.dueris.calio.builder.JsonObjectRemapper;
 import me.dueris.calio.builder.inst.*;
+import me.dueris.calio.builder.inst.annotations.ProvideJsonConstructor;
+import me.dueris.calio.builder.inst.annotations.RequiresPlugin;
 import me.dueris.calio.registry.impl.CalioRegistry;
 
 import org.bukkit.NamespacedKey;
@@ -47,70 +49,83 @@ public class CalioJsonParser {
             Collections.sort(list, Map.Entry.comparingByValue());
 
             for (Map.Entry<Pair<JsonObject, NamespacedKey>, Integer> entry : list) {
-                NamespacedKey key = entry.getKey().getB();
-                Pair<JsonObject, NamespacedKey> pair = entry.getKey();
-                if (accessorKey.getOfType() == null) continue;
-
-                try {
-                    FactoryData data;
-                    if (accessorKey.usesTypeDefiner()) {
-                        if (!CraftCalio.INSTANCE.types.containsKey(NamespacedKey.fromString(pair.getA().get("type").getAsString()))) {
-                            CraftCalio.INSTANCE.getLogger().severe("Unknown type was provided! : {a} | {b}"
-                                .replace("{a}", NamespacedKey.fromString(pair.getA().get("type").getAsString()).asString())
-                                .replace("{b}", key.asString())
-                            );
-                            continue;
-                        } else {
-                            data = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(pair.getA().get("type").getAsString())).getFirst();
-                        }
-                    } else {
-                        // We gotta invoke the FactoryData manually
-                        Class<? extends FactoryHolder> holder = accessorKey.getOfType();
-                        Method rC = holder.getDeclaredMethod("registerComponents", FactoryData.class);
-                        if (rC == null) throw new IllegalArgumentException("FactoryHolder doesn't have registerComponents method in it or its superclasses!");
-                        if (holder.isAnnotationPresent(RequiresPlugin.class)) {
-                            RequiresPlugin aN = holder.getAnnotation(RequiresPlugin.class);
-                            if (!org.bukkit.Bukkit.getPluginManager().isPluginEnabled(aN.pluginName())) return;
-                        }
-                        data = (FactoryData) rC.invoke(null, new FactoryData());
-                    }
-
-                    // Create the constructor
-                    Class<? extends FactoryHolder> holder = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(entry.getKey().getA().get("type").getAsString())).getSecond();
-                    Constructor<? extends FactoryHolder> constructor = findConstructor(data, holder);
-                    if (constructor != null) {
-                        FactoryHolder created = ConstructorCreator.invoke(constructor, data, entry.getKey().getA());
-                        created.ofResourceLocation(pair.getB());
-                        CalioRegistry.INSTANCE.retrieve(accessorKey.getRegistryKey()).registerOrThrow(created);
-                    } else {
-                        throw new IllegalStateException("Unable to find constructor for provided type!");
-                    }
-                } catch (Throwable throwable) {
-                    String[] stacktrace = {"\n"};
-                    Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
-                    CraftCalio.INSTANCE.getLogger().severe(
-                        "An unhandled exception was thrown when attempting to create new Registerable!");
-                    CraftCalio.INSTANCE.getLogger().severe(
-                        "Registry: {a} | Associated Namespace: {b} | Throwable: {c}"
-                            .replace("{a}", accessorKey.getOfType().getSimpleName())
-                            .replace("{b}", key.asString())
-                            .replace("{c}", throwable.getMessage()) + stacktrace[0]
-                    );
-                }
+                initilize(entry.getKey(), accessorKey);
             }
 
             newLoadingPrioritySortedMap.clear();
         }
     }
 
+    public static void initilize(Pair<JsonObject, NamespacedKey> pair, AccessorKey accessorKey) {
+        NamespacedKey key = pair.getB();
+        if (accessorKey.getOfType() == null) return;
+        try {
+            FactoryData data;
+            if (accessorKey.usesTypeDefiner()) {
+                if (!CraftCalio.INSTANCE.types.containsKey(NamespacedKey.fromString(pair.getA().get("type").getAsString()))) {
+                    CraftCalio.INSTANCE.getLogger().severe("Unknown type was provided! : {a} | {b}"
+                        .replace("{a}", NamespacedKey.fromString(pair.getA().get("type").getAsString()).asString())
+                        .replace("{b}", key.asString())
+                    );
+                    return;
+                } else {
+                    data = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(pair.getA().get("type").getAsString())).getFirst();
+                }
+            } else {
+                // We gotta invoke the FactoryData manually
+                Class<? extends FactoryHolder> holder = accessorKey.getOfType();
+                Method rC = holder.getDeclaredMethod("registerComponents", FactoryData.class);
+                if (rC == null) throw new IllegalArgumentException("FactoryHolder doesn't have registerComponents method in it or its superclasses!");
+                if (holder.isAnnotationPresent(RequiresPlugin.class)) {
+                    RequiresPlugin aN = holder.getAnnotation(RequiresPlugin.class);
+                    if (!org.bukkit.Bukkit.getPluginManager().isPluginEnabled(aN.pluginName())) return;
+                }
+                data = (FactoryData) rC.invoke(null, new FactoryData());
+            }
+
+            // Create the constructor
+            Class<? extends FactoryHolder> holder = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(pair.getA().get("type").getAsString())).getSecond();
+            Constructor<? extends FactoryHolder> constructor = findConstructor(data, holder);
+            if (constructor != null) {
+                FactoryHolder created = ConstructorCreator.invoke(constructor, data, pair);
+                created.ofResourceLocation(pair.getB());
+                CalioRegistry.INSTANCE.retrieve(accessorKey.getRegistryKey()).registerOrThrow(created);
+                created.bootstrap();
+            } else throw new IllegalStateException("Unable to find constructor for provided type!");
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            String[] stacktrace = {"\n"};
+            Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
+            CraftCalio.INSTANCE.getLogger().severe(
+                "An unhandled exception was thrown when attempting to create new Registerable!");
+            CraftCalio.INSTANCE.getLogger().severe(
+                "Registry: {a} | Associated Namespace: {b} | Throwable: {c}"
+                    .replace("{a}", accessorKey.getOfType().getSimpleName())
+                    .replace("{b}", key.asString())
+                    .replace("{c}", throwable.getMessage()) + stacktrace[0]
+            );
+        }
+    }
+
     private static Constructor<? extends FactoryHolder> findConstructor(FactoryData data, Class<? extends FactoryHolder> holder) {
-        Class<?>[] params = Arrays.stream(data.getProviders()).map(FactoryDataDefiner::getType).toList().toArray(new Class<?>[0]);
-		try {
-			return holder.getConstructor(params);
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		}
+        Class<?>[] params = Arrays.stream(data.getProviders())
+                .map(FactoryDataDefiner::getType)
+                .toList()
+                .toArray(new Class<?>[0]);
+    
+        if (holder.isAnnotationPresent(ProvideJsonConstructor.class)) {
+            Class<?>[] updatedParams = Arrays.copyOf(params, params.length + 1);
+            updatedParams[params.length] = JsonObject.class;
+            params = updatedParams;
+        }
+    
+        try {
+            return holder.getConstructor(params);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
         return null;
-	}
+    }
+    
 
 }

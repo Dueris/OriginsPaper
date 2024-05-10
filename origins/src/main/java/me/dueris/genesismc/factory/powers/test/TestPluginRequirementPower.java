@@ -1,11 +1,11 @@
 package me.dueris.genesismc.factory.powers.test;
 
-import me.dueris.calio.builder.inst.RequiresPlugin;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.builder.inst.FactoryData;
-import me.dueris.calio.builder.inst.Register;
+import me.dueris.calio.builder.inst.annotations.Register;
+import me.dueris.calio.builder.inst.annotations.RequiresPlugin;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.powers.test.holder.PowerType;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 
 @RequiresPlugin(pluginName = "skinsrestorer")
 public class TestPluginRequirementPower extends TestPower {
