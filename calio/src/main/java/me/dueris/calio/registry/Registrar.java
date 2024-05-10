@@ -145,7 +145,7 @@ public class Registrar<T extends Registrable> {
      *                 which takes a namespaced key and the corresponding value as input
      * @return void
      */
-    public void forEach(BiConsumer<? super NamespacedKey, ? super T> consumer) {
+    public void forEach(BiConsumer<NamespacedKey, T> consumer) {
         this.rawRegistry.forEach(consumer);
     }
 

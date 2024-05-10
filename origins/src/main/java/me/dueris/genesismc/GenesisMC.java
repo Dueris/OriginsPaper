@@ -281,14 +281,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 		try {
 			// Register builtin instances
-			Reflector.accessMethod$Invoke("registerBuiltinPowers", CraftPower.class, null);
-
 			ConditionExecutor.registerAll();
 			Actions.registerAll();
-			if (Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")) {
-				CraftPower.registerNewPower(ModelColor.ModelTransformer.class);
-			}
-			TextureLocation.parseAll();
+			TextureLocation.registerAll();
+			PowerType.registerAll();
 			// Start calio parser for data driven instances
 			final CraftCalio calio = CraftCalio.INSTANCE;
 			((Registrar<DatapackRepository>) this.registry.retrieve(Registries.PACK_SOURCE)).values().stream()
@@ -306,7 +302,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 				"origin_layers", 2,
 			false, Registries.LAYER
 			);
-			PowerType.registerAll();
 			calio.start(OriginConfiguration.getConfiguration().getBoolean("debug"), loaderThreadPool);
 			BuiltinRegistry.bootstrap();
 			// End calio parsing
@@ -314,7 +309,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			throwable(e, true);
 		}
 
-		debug(Component.text("  - Loaded @1 powers".replace("@1", String.valueOf(this.registry.retrieve(Registries.POWER).registrySize()))));
+		debug(Component.text("  - Loaded @1 powers".replace("@1", String.valueOf(this.registry.retrieve(Registries.CRAFT_POWER).registrySize()))));
 		debug(Component.text("  - Loaded @4 layers".replace("@4", String.valueOf(this.registry.retrieve(Registries.LAYER).registrySize()))));
 		debug(Component.text("  - Loaded @2 origins = [".replace("@2", String.valueOf(this.registry.retrieve(Registries.ORIGIN).registrySize()))));
 		((Registrar<Origin>) this.registry.retrieve(Registries.ORIGIN)).forEach((u, o) -> debug(Component.text("     () -> {@3}".replace("@3", o.getTag()))));
