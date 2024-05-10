@@ -2,6 +2,7 @@ package me.dueris.calio.parse;
 
 import com.google.gson.JsonObject;
 import me.dueris.calio.CraftCalio;
+import me.dueris.calio.builder.ConstructorCreator;
 import me.dueris.calio.builder.JsonObjectRemapper;
 import me.dueris.calio.builder.inst.*;
 import me.dueris.calio.builder.inst.factory.FactoryBuilder;
@@ -134,9 +135,9 @@ public class CalioJsonParser {
 
                     // Create the constructor
                     Class<? extends FactoryHolder> holder = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(entry.getKey().getA().get("type").getAsString())).getSecond();
-                    Constructor<?> constructor = findConstructor(data, holder);
+                    Constructor<? extends FactoryHolder> constructor = findConstructor(data, holder);
                     if (constructor != null) {
-                        
+                        FactoryHolder created = ConstructorCreator.invoke(constructor, data, entry.getKey().getA());
                     } else {
                         throw new IllegalStateException("Unable to find constructor for provided type!");
                     }
@@ -158,7 +159,7 @@ public class CalioJsonParser {
         }
     }
 
-    private static Constructor<?> findConstructor(FactoryData data, Class<? extends FactoryHolder> holder) {
+    private static Constructor<? extends FactoryHolder> findConstructor(FactoryData data, Class<? extends FactoryHolder> holder) {
         Class<?>[] params = Arrays.stream(data.getProviders()).map(FactoryDataDefiner::getType).toList().toArray(new Class<?>[0]);
 		try {
 			return holder.getConstructor(params);

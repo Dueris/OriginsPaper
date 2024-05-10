@@ -177,16 +177,6 @@ public class CraftCalio {
 		}
 	}
 
-    private boolean hasRegisterMethod(Class<?> clz) {
-        try {
-            Method method = clz.getDeclaredMethod("registerComponents", FactoryData.class);
-            int modifiers = method.getModifiers();
-            return Modifier.isStatic(modifiers) && Modifier.isPublic(modifiers);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     public void registerAccessor(String directory, int priority, boolean useTypeDefiner, Class<? extends FactoryHolder> typeOf) {
         keys.add(new AccessorKey(directory, priority, useTypeDefiner, typeOf));
     }
