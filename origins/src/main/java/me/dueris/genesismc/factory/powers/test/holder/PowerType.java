@@ -8,6 +8,8 @@ import me.dueris.calio.builder.inst.FactoryData;
 import me.dueris.calio.builder.inst.FactoryHolder;
 import me.dueris.calio.builder.inst.Register;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -23,6 +25,8 @@ public class PowerType implements FactoryHolder, Listener {
 	private final FactoryJsonObject condition;
 	private final int loadingPriority;
 	private final ConcurrentLinkedQueue<CraftPlayer> players = new ConcurrentLinkedQueue<>();
+	private boolean tagSet = false;
+	private NamespacedKey tag = null;
 
 	@Register
 	public PowerType(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
@@ -80,5 +84,13 @@ public class PowerType implements FactoryHolder, Listener {
 		}
 
 		holders.forEach(CraftCalio.INSTANCE::register);
+	}
+
+	@Override
+	public NamespacedKey ofResourceLocation(NamespacedKey key) {
+		if (this.tagSet) return this.tag;
+		tagSet = true;
+		this.tag = key;
+		return key;
 	}
 }

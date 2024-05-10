@@ -6,6 +6,7 @@ import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.inst.FactoryData;
 import me.dueris.calio.builder.inst.FactoryDataDefiner;
 import me.dueris.calio.builder.inst.FactoryHolder;
+import me.dueris.calio.builder.inst.Register;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
 import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
@@ -18,6 +19,10 @@ import java.util.List;
 public class ConstructorCreator {
     public static FactoryHolder invoke(Constructor<? extends FactoryHolder> constructor, FactoryData data, JsonObject getter) throws InvocationTargetException, InstantiationException, IllegalAccessException {
 		List<Object> invoker = new ArrayList<>();
+		if (!constructor.isAnnotationPresent(Register.class)) {
+			CraftCalio.INSTANCE.getLogger().severe("@Register annotation must be present in constructor annotation : " + data.getIdentifier().asString());
+			return null;
+		}
 		for (FactoryDataDefiner provider : data.getProviders()) {
 			if (getter.has(provider.getObjName())) {
 				Object o = getOrCreate(provider.getType(), getter.get(provider.getObjName()));

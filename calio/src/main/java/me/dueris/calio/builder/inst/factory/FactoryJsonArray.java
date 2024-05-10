@@ -1,14 +1,12 @@
 package me.dueris.calio.builder.inst.factory;
 
 import com.google.gson.JsonArray;
-import me.dueris.calio.util.IgnoreFactoryValidationCheck;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-@IgnoreFactoryValidationCheck
 public class FactoryJsonArray {
     public JsonArray handle;
 

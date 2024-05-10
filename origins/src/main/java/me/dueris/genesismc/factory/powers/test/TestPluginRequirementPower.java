@@ -10,6 +10,7 @@ import me.dueris.genesismc.factory.powers.test.holder.PowerType;
 @RequiresPlugin(pluginName = "skinsrestorer")
 public class TestPluginRequirementPower extends TestPower {
 
+	@Register
 	public TestPluginRequirementPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, String test) {
 		super(name, description, hidden, condition, loading_priority, test);
 	}

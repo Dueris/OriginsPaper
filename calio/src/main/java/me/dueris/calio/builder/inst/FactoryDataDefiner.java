@@ -1,7 +1,5 @@
 package me.dueris.calio.builder.inst;
 
-import me.dueris.calio.CraftCalio;
-import me.dueris.calio.util.IgnoreFactoryValidationCheck;
 import me.dueris.calio.util.holders.TriPair;
 
 public class FactoryDataDefiner extends TriPair {
@@ -9,8 +7,8 @@ public class FactoryDataDefiner extends TriPair {
         super(objName, type, defaultVal);
     }
 
-    public Class getType() {
-        return (Class) this.second;
+    public Class<?> getType() {
+        return (Class<?>) this.second;
     }
 
     public String getObjName() {

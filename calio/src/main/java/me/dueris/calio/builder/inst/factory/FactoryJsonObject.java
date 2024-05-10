@@ -2,7 +2,6 @@ package me.dueris.calio.builder.inst.factory;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import me.dueris.calio.util.IgnoreFactoryValidationCheck;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@IgnoreFactoryValidationCheck
 public class FactoryJsonObject {
     public JsonObject handle;
 

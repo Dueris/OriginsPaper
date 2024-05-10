@@ -1,9 +1,7 @@
 package me.dueris.calio.builder.inst.factory;
 
 import com.google.gson.JsonElement;
-import me.dueris.calio.util.IgnoreFactoryValidationCheck;
 
-@IgnoreFactoryValidationCheck
 public class FactoryElement {
     public JsonElement handle;
 

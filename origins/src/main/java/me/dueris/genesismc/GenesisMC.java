@@ -292,25 +292,19 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			final CraftCalio calio = CraftCalio.INSTANCE;
 			((Registrar<DatapackRepository>) this.registry.retrieve(Registries.PACK_SOURCE)).values().stream()
 				.map(DatapackRepository::getPath).forEach(calio::addDatapackPath);
-
-			calio.getBuilder().addAccessorRoot(
-				"powers",
-				Registries.POWER,
-				new Power(true), 0
+			calio.registerAccessor(
+				"powers", 0,
+				true, PowerType.class,
+				Registries.CRAFT_POWER
 			);
-			calio.getBuilder().addAccessorRoot(
-				"origins",
-				Registries.ORIGIN,
-				new Origin(true), 1
+			calio.registerAccessor(
+				"origins", 1,
+				false, Registries.ORIGIN
 			);
-			calio.getBuilder().addAccessorRoot(
-				"origin_layers",
-				Registries.LAYER,
-				new Layer(true), 2
+			calio.registerAccessor(
+				"origin_layers", 2,
+			false, Registries.LAYER
 			);
-			calio.registerAccessor("powers", 0, true, PowerType.class);
-			calio.registerAccessor("origins", 1, false);
-			calio.registerAccessor("origin_layers", 2, false);
 			PowerType.registerAll();
 			calio.start(OriginConfiguration.getConfiguration().getBoolean("debug"), loaderThreadPool);
 			BuiltinRegistry.bootstrap();

@@ -1,7 +1,6 @@
 package me.dueris.calio;
 
 import com.mojang.datafixers.util.Pair;
-import me.dueris.calio.builder.CalioBuilder;
 import me.dueris.calio.builder.inst.*;
 import me.dueris.calio.parse.CalioJsonParser;
 import net.minecraft.resources.ResourceLocation;
@@ -10,7 +9,6 @@ import org.bukkit.NamespacedKey;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -147,15 +145,6 @@ public class CraftCalio {
     }
 
     /**
-     * Retrieves the instance of the CalioBuilder.
-     *
-     * @return the CalioBuilder instance
-     */
-    public CalioBuilder getBuilder() {
-        return CalioBuilder.INSTANCE;
-    }
-
-    /**
      * Allows registering new FactoryHolders defined by a "type" field inside the root of the JSON OBJECT
      */
     public void register(Class<? extends FactoryHolder> holder) {
@@ -177,11 +166,11 @@ public class CraftCalio {
 		}
 	}
 
-    public void registerAccessor(String directory, int priority, boolean useTypeDefiner, Class<? extends FactoryHolder> typeOf) {
-        keys.add(new AccessorKey(directory, priority, useTypeDefiner, typeOf));
+    public void registerAccessor(String directory, int priority, boolean useTypeDefiner, Class<? extends FactoryHolder> typeOf, NamespacedKey registryKey) {
+        keys.add(new AccessorKey(directory, priority, useTypeDefiner, registryKey, typeOf));
     }
 
-    public void registerAccessor(String directory, int priority, boolean useTypeDefiner) {
-        keys.add(new AccessorKey(directory, priority, useTypeDefiner, null));
+    public void registerAccessor(String directory, int priority, boolean useTypeDefiner, NamespacedKey registryKey) {
+        keys.add(new AccessorKey(directory, priority, useTypeDefiner, registryKey, null));
     }
 }

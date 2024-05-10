@@ -5,6 +5,7 @@ import me.dueris.calio.builder.inst.FactoryData;
 import me.dueris.calio.builder.inst.FactoryHolder;
 import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 public class RewriteOrigin implements FactoryHolder {
@@ -16,6 +17,8 @@ public class RewriteOrigin implements FactoryHolder {
 	private final FactoryJsonArray upgrades;
 	private final FactoryJsonArray powers;
 	private final int loadingPriority;
+	private boolean tagSet = false;
+	private NamespacedKey tag = null;
 
 	public RewriteOrigin(String name, String description, int impact, boolean unchoosable, FactoryJsonArray upgrades, FactoryJsonArray powers, int loading_priority) {
 		this.name = name;
@@ -64,5 +67,13 @@ public class RewriteOrigin implements FactoryHolder {
 
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public NamespacedKey ofResourceLocation(NamespacedKey key) {
+		if (this.tagSet) return this.tag;
+		tagSet = true;
+		this.tag = key;
+		return key;
 	}
 }
