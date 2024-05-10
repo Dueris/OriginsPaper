@@ -14,35 +14,32 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ConstructorCreator {
     public static FactoryHolder invoke(Constructor<? extends FactoryHolder> constructor, FactoryData data, JsonObject getter) throws InvocationTargetException, InstantiationException, IllegalAccessException {
 		List<Object> invoker = new ArrayList<>();
 		for (FactoryDataDefiner provider : data.getProviders()) {
 			if (getter.has(provider.getObjName())) {
-				System.out.println(getOrCreate(provider.getType(), getter));
 				Object o = getOrCreate(provider.getType(), getter);
 				if (o != null) {
 					invoker.add(o);
 				} else {
-					CraftCalio.INSTANCE.getLogger().severe("Created value was null when creating factory data! Bug?: {a} | {b} | {c}"
+					CraftCalio.INSTANCE.getLogger().severe("Created value was null when creating factory data! Bug?: {a} | {b}"
 						.replace("{a}", provider.getObjName())
 						.replace("{b}", provider.getType().getSimpleName())
 					);
 				}
 			} else if (provider.getDefaultValue() != null) {
-				System.out.println(provider.getDefaultValue());
 				invoker.add(provider.getDefaultValue());
 			} else {
-				System.out.println("b");
 				CraftCalio.INSTANCE.getLogger().severe("Provided default value was null when creating factory data! Please provide an instance of that type: {a} | {b}"
 					.replace("{a}", provider.getObjName())
 					.replace("{b}", provider.getType().getSimpleName())
 				);
+				return null;
 			}
 		}
-		return constructor.newInstance(invoker.stream().filter(Objects::nonNull));
+		return constructor.newInstance(invoker.toArray(new Object[0]));
 	}
 
 	private static Object getOrCreate(Class<?> ofType, JsonElement provided) {
@@ -70,9 +67,11 @@ public class ConstructorCreator {
 			if (isNumber(provided)) {
 				return provided.getAsJsonPrimitive().getAsNumber().longValue();
 			}
-		} else if (ofType.equals(String.class)) {
-			if (provided.isJsonPrimitive() && provided.getAsJsonPrimitive().isString()) {
-				return provided.getAsJsonPrimitive().getAsString();
+		}
+		if (ofType.equals(String.class)) {
+			System.out.println(provided.getAsString());
+			if (provided.getAsJsonPrimitive().isString()) {
+				return provided.getAsString();
 			}
 		} else if (ofType.equals(FactoryJsonObject.class)) {
 			if (provided.isJsonObject()) {

@@ -138,6 +138,7 @@ public class CalioJsonParser {
                     Constructor<? extends FactoryHolder> constructor = findConstructor(data, holder);
                     if (constructor != null) {
                         FactoryHolder created = ConstructorCreator.invoke(constructor, data, entry.getKey().getA());
+                        System.out.println(created != null);
                     } else {
                         throw new IllegalStateException("Unable to find constructor for provided type!");
                     }
