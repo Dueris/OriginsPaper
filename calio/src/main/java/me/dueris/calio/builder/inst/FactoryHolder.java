@@ -2,7 +2,9 @@ package me.dueris.calio.builder.inst;
 
 import org.bukkit.NamespacedKey;
 
-public interface FactoryHolder {
+import me.dueris.calio.registry.Registrable;
+
+public interface FactoryHolder extends Registrable {
 	static FactoryData registerComponents(FactoryData data) {
 		return new FactoryData();
 	}

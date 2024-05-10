@@ -93,4 +93,9 @@ public class PowerType implements FactoryHolder, Listener {
 		this.tag = key;
 		return key;
 	}
+
+	@Override
+	public NamespacedKey getKey() {
+		return this.tag;
+	}
 }

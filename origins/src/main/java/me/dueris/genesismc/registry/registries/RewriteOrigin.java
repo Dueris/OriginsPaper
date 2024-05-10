@@ -9,7 +9,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 public class RewriteOrigin implements FactoryHolder {
-
 	private final String name;
 	private final String description;
 	private final int impact;
@@ -75,5 +74,10 @@ public class RewriteOrigin implements FactoryHolder {
 		tagSet = true;
 		this.tag = key;
 		return key;
+	}
+
+	@Override
+	public NamespacedKey getKey() {
+		return this.tag;
 	}
 }

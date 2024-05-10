@@ -55,7 +55,7 @@ public class JsonObjectRemapper {
         if (objectMappings.containsKey(key)) {
             objectMappings.get(key).add(mapper);
         } else {
-            ArrayList list = new ArrayList<>();
+            ArrayList<Pair<Object, Object>> list = new ArrayList<>();
             list.add(mapper);
             objectMappings.put(key, list);
         }

@@ -15,6 +15,11 @@ import java.util.stream.IntStream;
 public class Registrar<T extends Registrable> {
     public ConcurrentHashMap<NamespacedKey, T> rawRegistry = new ConcurrentHashMap<>();
     private boolean frozen = false;
+    private Class<T> ofType;
+
+    public Registrar(Class<T> ofType) {
+        this.ofType = ofType;
+    }
 
     /**
      * Registers an item in the registry.
@@ -174,5 +179,9 @@ public class Registrar<T extends Registrable> {
      */
     public int registrySize() {
         return this.rawRegistry.size();
+    }
+
+    public Class<T> getRegisterableType() {
+        return ofType;
     }
 }

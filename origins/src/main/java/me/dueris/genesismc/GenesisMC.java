@@ -41,6 +41,7 @@ import me.dueris.genesismc.registry.registries.DatapackRepository;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.registry.registries.RewriteOrigin;
 import me.dueris.genesismc.screen.ChoosingPage;
 import me.dueris.genesismc.screen.GuiTicker;
 import me.dueris.genesismc.screen.RandomOriginPage;
@@ -244,25 +245,25 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		this.registry = CalioRegistry.INSTANCE;
 		// Create new registry instances
 		// Depreciated - for removal
-		this.registry.create(Registries.POWER, new Registrar<Power>());
-		this.registry.create(Registries.ORIGIN, new Registrar<Origin>());
-		this.registry.create(Registries.LAYER, new Registrar<Layer>());
+		this.registry.create(Registries.POWER, new Registrar<Power>(Power.class));
+		this.registry.create(Registries.ORIGIN, new Registrar<Origin>(Origin.class));
+		this.registry.create(Registries.LAYER, new Registrar<Layer>(Layer.class));
 		// Depreciated - for removal
-		this.registry.create(Registries.CRAFT_POWER, new Registrar<ApoliPower>());
-		this.registry.create(Registries.FLUID_CONDITION, new Registrar<FluidConditions.ConditionFactory>());
-		this.registry.create(Registries.ENTITY_CONDITION, new Registrar<EntityConditions.ConditionFactory>());
-		this.registry.create(Registries.BIOME_CONDITION, new Registrar<BiomeConditions.ConditionFactory>());
-		this.registry.create(Registries.BIENTITY_CONDITION, new Registrar<BiEntityConditions.ConditionFactory>());
-		this.registry.create(Registries.BLOCK_CONDITION, new Registrar<BlockConditions.ConditionFactory>());
-		this.registry.create(Registries.ITEM_CONDITION, new Registrar<ItemConditions.ConditionFactory>());
-		this.registry.create(Registries.DAMAGE_CONDITION, new Registrar<DamageConditions.ConditionFactory>());
-		this.registry.create(Registries.ENTITY_ACTION, new Registrar<EntityActions.ActionFactory>());
-		this.registry.create(Registries.ITEM_ACTION, new Registrar<ItemActions.ActionFactory>());
-		this.registry.create(Registries.BLOCK_ACTION, new Registrar<BlockActions.ActionFactory>());
-		this.registry.create(Registries.BIENTITY_ACTION, new Registrar<BiEntityActions.ActionFactory>());
-		this.registry.create(Registries.TEXTURE_LOCATION, new Registrar<TextureLocation>());
-		this.registry.create(Registries.PACK_SOURCE, new Registrar<DatapackRepository>());
-		this.registry.create(Registries.CHOOSING_PAGE, new Registrar<ChoosingPage>());
+		this.registry.create(Registries.CRAFT_POWER, new Registrar<PowerType>(PowerType.class));
+		this.registry.create(Registries.FLUID_CONDITION, new Registrar<FluidConditions.ConditionFactory>(FluidConditions.ConditionFactory.class));
+		this.registry.create(Registries.ENTITY_CONDITION, new Registrar<EntityConditions.ConditionFactory>(EntityConditions.ConditionFactory.class));
+		this.registry.create(Registries.BIOME_CONDITION, new Registrar<BiomeConditions.ConditionFactory>(BiomeConditions.ConditionFactory.class));
+		this.registry.create(Registries.BIENTITY_CONDITION, new Registrar<BiEntityConditions.ConditionFactory>(BiEntityConditions.ConditionFactory.class));
+		this.registry.create(Registries.BLOCK_CONDITION, new Registrar<BlockConditions.ConditionFactory>(BlockConditions.ConditionFactory.class));
+		this.registry.create(Registries.ITEM_CONDITION, new Registrar<ItemConditions.ConditionFactory>(ItemConditions.ConditionFactory.class));
+		this.registry.create(Registries.DAMAGE_CONDITION, new Registrar<DamageConditions.ConditionFactory>(DamageConditions.ConditionFactory.class));
+		this.registry.create(Registries.ENTITY_ACTION, new Registrar<EntityActions.ActionFactory>(EntityActions.ActionFactory.class));
+		this.registry.create(Registries.ITEM_ACTION, new Registrar<ItemActions.ActionFactory>(ItemActions.ActionFactory.class));
+		this.registry.create(Registries.BLOCK_ACTION, new Registrar<BlockActions.ActionFactory>(BlockActions.ActionFactory.class));
+		this.registry.create(Registries.BIENTITY_ACTION, new Registrar<BiEntityActions.ActionFactory>(BiEntityActions.ActionFactory.class));
+		this.registry.create(Registries.TEXTURE_LOCATION, new Registrar<TextureLocation>(TextureLocation.class));
+		this.registry.create(Registries.PACK_SOURCE, new Registrar<DatapackRepository>(DatapackRepository.class));
+		this.registry.create(Registries.CHOOSING_PAGE, new Registrar<ChoosingPage>(ChoosingPage.class));
 
 		Utils.unpackOriginPack();
 		List<File> list = new ArrayList<>(Arrays.asList(server.getWorldPath(LevelResource.DATAPACK_DIR).toFile().listFiles()));

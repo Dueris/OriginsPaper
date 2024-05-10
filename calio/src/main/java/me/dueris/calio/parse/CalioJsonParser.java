@@ -5,6 +5,8 @@ import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.ConstructorCreator;
 import me.dueris.calio.builder.JsonObjectRemapper;
 import me.dueris.calio.builder.inst.*;
+import me.dueris.calio.registry.impl.CalioRegistry;
+
 import org.bukkit.NamespacedKey;
 
 import oshi.util.tuples.Pair;
@@ -79,7 +81,7 @@ public class CalioJsonParser {
                     if (constructor != null) {
                         FactoryHolder created = ConstructorCreator.invoke(constructor, data, entry.getKey().getA());
                         created.ofResourceLocation(pair.getB());
-                        
+                        CalioRegistry.INSTANCE.retrieve(accessorKey.getRegistryKey()).registerOrThrow(created);
                     } else {
                         throw new IllegalStateException("Unable to find constructor for provided type!");
                     }
