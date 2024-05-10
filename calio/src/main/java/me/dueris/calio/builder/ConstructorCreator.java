@@ -20,7 +20,7 @@ public class ConstructorCreator {
 		List<Object> invoker = new ArrayList<>();
 		for (FactoryDataDefiner provider : data.getProviders()) {
 			if (getter.has(provider.getObjName())) {
-				Object o = getOrCreate(provider.getType(), getter);
+				Object o = getOrCreate(provider.getType(), getter.get(provider.getObjName()));
 				if (o != null) {
 					invoker.add(o);
 				} else {
@@ -67,11 +67,9 @@ public class ConstructorCreator {
 			if (isNumber(provided)) {
 				return provided.getAsJsonPrimitive().getAsNumber().longValue();
 			}
-		}
-		if (ofType.equals(String.class)) {
-			System.out.println(provided.getAsString());
-			if (provided.getAsJsonPrimitive().isString()) {
-				return provided.getAsString();
+		} else if (ofType.equals(String.class)) {
+			if (provided.isJsonPrimitive()) {
+				return provided.getAsJsonPrimitive().getAsString();
 			}
 		} else if (ofType.equals(FactoryJsonObject.class)) {
 			if (provided.isJsonObject()) {
