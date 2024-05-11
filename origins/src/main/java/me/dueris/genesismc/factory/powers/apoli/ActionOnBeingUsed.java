@@ -67,7 +67,7 @@ public class ActionOnBeingUsed extends PowerType {
 		if (!pass) return;
 		Player actor = e.getPlayer();
 		Entity target = e.getRightClicked();
-		if (!(target instanceof Player player)) return;
+		if (!(target instanceof Player player) || !getPlayers().contains(player)) return;
 		if (!isActive(player)) return;
 
 		if (!(ConditionExecutor.testBiEntity(bientityCondition, (CraftEntity) actor, (CraftEntity) target) && ConditionExecutor.testItem(itemCondition, actor.getInventory().getItem(e.getHand()))))
