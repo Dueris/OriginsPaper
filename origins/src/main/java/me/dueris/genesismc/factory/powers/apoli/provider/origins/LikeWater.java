@@ -13,9 +13,9 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 
 public class LikeWater extends CraftPower implements Listener, PowerProvider {
+	private static final AttributeModifier modifier = new AttributeModifier("LikeWater", -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 	public static ArrayList<Player> likeWaterPlayers = new ArrayList<>();
 	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("like_water");
-	private static final AttributeModifier modifier = new AttributeModifier("LikeWater", -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
 	@Override
 	public void run(Player p, Power power) {

@@ -2,10 +2,8 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.BlockPos;
@@ -59,32 +57,30 @@ public class ElytraFlightPower extends CraftPower implements Listener {
 		if (elytra.contains(e.getPlayer())) {
 			e.setCancelled(true);
 			p.setFlying(false);
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						setActive(p, power.getTag(), true);
-						if (!p.isGliding() && !p.getLocation().add(0, 1, 0).getBlock().isCollidable()) {
-							if (p.getGameMode() == GameMode.SPECTATOR) return;
-							glidingPlayers.add(p.getUniqueId());
-							new BukkitRunnable() {
-								@Override
-								public void run() {
-									if (p.isOnGround() || p.isFlying() || p.isInsideVehicle()) {
-										this.cancel();
-										glidingPlayers.remove(p.getUniqueId());
-									}
-									float angle = Math.round(p.getPitch() * 10.0F) / 10.0F;
-									if (angle <= 38.7) {
-										p.setFallDistance(0.0F);
-									}
-									glidingPlayers.add(p.getUniqueId());
-									p.setGliding(true);
+			for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+					setActive(p, power.getTag(), true);
+					if (!p.isGliding() && !p.getLocation().add(0, 1, 0).getBlock().isCollidable()) {
+						if (p.getGameMode() == GameMode.SPECTATOR) return;
+						glidingPlayers.add(p.getUniqueId());
+						new BukkitRunnable() {
+							@Override
+							public void run() {
+								if (p.isOnGround() || p.isFlying() || p.isInsideVehicle()) {
+									this.cancel();
+									glidingPlayers.remove(p.getUniqueId());
 								}
-							}.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);
-						}
-					} else {
-						setActive(p, power.getTag(), false);
+								float angle = Math.round(p.getPitch() * 10.0F) / 10.0F;
+								if (angle <= 38.7) {
+									p.setFallDistance(0.0F);
+								}
+								glidingPlayers.add(p.getUniqueId());
+								p.setGliding(true);
+							}
+						}.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);
 					}
+				} else {
+					setActive(p, power.getTag(), false);
 				}
 			}
 		}

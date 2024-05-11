@@ -4,11 +4,9 @@ import com.google.common.base.Preconditions;
 import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -82,10 +80,8 @@ public class EntitySetPower extends CraftPower implements Listener {
 					entity_sets.get(tag).removeIf(entity -> entity == e.getPlayer());
 				}
 			}
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-					addToEntitySet(e.getPlayer(), power.getTag());
-				}
+			for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType())) {
+				addToEntitySet(e.getPlayer(), power.getTag());
 			}
 		}
 	}
@@ -96,14 +92,12 @@ public class EntitySetPower extends CraftPower implements Listener {
 		for (Entity entity : entity_sets.get(e.getTag())) {
 			if (entity instanceof Player p) {
 				if (entity_set.contains(p)) {
-					for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-						for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-							if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p))
-								return;
-							if (power.getJsonObject("action_on_add") == null) return;
-							if (power.getTag() == e.getTag()) {
-								Actions.executeBiEntity(p, e.getEntity(), power.getJsonObject("action_on_add"));
-							}
+					for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+						if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p))
+							return;
+						if (power.getJsonObject("action_on_add") == null) return;
+						if (power.getTag() == e.getTag()) {
+							Actions.executeBiEntity(p, e.getEntity(), power.getJsonObject("action_on_add"));
 						}
 					}
 				}
@@ -117,14 +111,12 @@ public class EntitySetPower extends CraftPower implements Listener {
 		for (Entity entity : entity_sets.get(e.getTag())) {
 			if (entity instanceof Player p) {
 				if (entity_set.contains(p)) {
-					for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-						for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-							if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p))
-								return;
-							if (power.getJsonObject("action_on_add") == null) return;
-							if (power.getTag() == e.getTag()) {
-								Actions.executeBiEntity(p, e.getEntity(), power.getJsonObject("action_on_remove"));
-							}
+					for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+						if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p))
+							return;
+						if (power.getJsonObject("action_on_add") == null) return;
+						if (power.getTag() == e.getTag()) {
+							Actions.executeBiEntity(p, e.getEntity(), power.getJsonObject("action_on_remove"));
 						}
 					}
 				}
@@ -140,12 +132,10 @@ public class EntitySetPower extends CraftPower implements Listener {
 					entity_sets.get(tag).removeIf(entity -> entity == e.getPlayer());
 				}
 			}
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-					if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
-						return;
-					addToEntitySet(e.getPlayer(), power.getTag());
-				}
+			for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType())) {
+				if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
+					return;
+				addToEntitySet(e.getPlayer(), power.getTag());
 			}
 		}
 	}

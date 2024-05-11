@@ -3,10 +3,8 @@ package me.dueris.genesismc.factory.powers.apoli;
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
@@ -132,12 +130,10 @@ public class Phasing extends CraftPower implements Listener {
 				if (e.isSneaking()) {
 					if (getPlayersWithPower().contains(e.getPlayer())) {
 						Player p = e.getPlayer();
-						for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-							for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-								if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-									if (ConditionExecutor.testBlock(power.getJsonObject("phase_down_condition"), (CraftBlock) p.getLocation().add(0, -1, 0).getBlock())) {
-										p.teleportAsync(p.getLocation().add(0, -0.1, 0));
-									}
+						for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+							if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+								if (ConditionExecutor.testBlock(power.getJsonObject("phase_down_condition"), (CraftBlock) p.getLocation().add(0, -1, 0).getBlock())) {
+									p.teleportAsync(p.getLocation().add(0, -0.1, 0));
 								}
 							}
 						}

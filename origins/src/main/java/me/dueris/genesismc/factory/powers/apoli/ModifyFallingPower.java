@@ -1,9 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -27,18 +25,15 @@ public class ModifyFallingPower extends CraftPower implements Listener {
 		if (modify_falling.contains(p)) {
 			if (e.getTo().getY() == e.getFrom().getY()) return;
 			@NotNull Vector velocity = p.getVelocity();
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						if (power.getNumber("velocity").getFloat() < 0) {
-							velocity.setY(power.getNumber("velocity").getFloat());
-							p.setVelocity(velocity);
-						} else {
-							p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
-						}
+			for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+					if (power.getNumber("velocity").getFloat() < 0) {
+						velocity.setY(power.getNumber("velocity").getFloat());
+						p.setVelocity(velocity);
+					} else {
+						p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
 					}
 				}
-
 			}
 		}
 	}
@@ -47,14 +42,12 @@ public class ModifyFallingPower extends CraftPower implements Listener {
 	public void runR(EntityDamageEvent e) {
 		if (e.getEntity() instanceof Player p) {
 			if (modify_falling.contains(p)) {
-				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-					for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-						if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-							if (!power.getBooleanOrDefault("take_fall_damage", true)) {
-								if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
-									e.setDamage(0);
-									e.setCancelled(true);
-								}
+				for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+						if (!power.getBooleanOrDefault("take_fall_damage", true)) {
+							if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+								e.setDamage(0);
+								e.setCancelled(true);
 							}
 						}
 					}

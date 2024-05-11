@@ -1,11 +1,9 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.GameEvent;
@@ -25,18 +23,16 @@ public class ActionOnLand extends CraftPower implements Listener {
 		if (e.getEvent() != GameEvent.HIT_GROUND) return;
 		if (!(e.getEntity() instanceof Player player)) return;
 		if (!getPlayersWithPower().contains(player)) return;
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
-				if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) return;
-				setActive(player, power.getTag(), true);
-				Actions.executeEntity(player, power.getJsonObject("entity_action"));
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						setActive(player, power.getTag(), false);
-					}
-				}.runTaskLater(GenesisMC.getPlugin(), 2L);
-			}
+		for (Power power : OriginPlayerAccessor.getPowers(player, getType())) {
+			if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) return;
+			setActive(player, power.getTag(), true);
+			Actions.executeEntity(player, power.getJsonObject("entity_action"));
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					setActive(player, power.getTag(), false);
+				}
+			}.runTaskLater(GenesisMC.getPlugin(), 2L);
 		}
 	}
 

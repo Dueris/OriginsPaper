@@ -1,11 +1,9 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.block.CraftBlock;
@@ -32,29 +30,27 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
 
 		if (!getPlayersWithPower().contains(actor)) return;
 
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(actor, getType(), layer)) {
-				if (power == null) continue;
-				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()) &&
-					ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) e.getClickedBlock()) &&
-					ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
-					setActive(e.getPlayer(), power.getTag(), true);
-					Actions.executeBlock(e.getClickedBlock().getLocation(), power.getJsonObject("block_action"));
-					Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action"));
-					Actions.executeItem(e.getItem(), power.getJsonObject("item_action"));
-					Actions.executeItem(e.getItem(), power.getJsonObject("held_item_action"));
-					if (power.isPresent("result_stack")) {
-						EdibleItem.runResultStack(power, true, e.getPlayer());
-					}
-					tickFix.add(e.getPlayer());
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							setActive(e.getPlayer(), power.getTag(), false);
-							tickFix.remove(e.getPlayer());
-						}
-					}.runTaskLater(GenesisMC.getPlugin(), 2L);
+		for (Power power : OriginPlayerAccessor.getPowers(actor, getType())) {
+			if (power == null) continue;
+			if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()) &&
+				ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) e.getClickedBlock()) &&
+				ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
+				setActive(e.getPlayer(), power.getTag(), true);
+				Actions.executeBlock(e.getClickedBlock().getLocation(), power.getJsonObject("block_action"));
+				Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action"));
+				Actions.executeItem(e.getItem(), power.getJsonObject("item_action"));
+				Actions.executeItem(e.getItem(), power.getJsonObject("held_item_action"));
+				if (power.isPresent("result_stack")) {
+					EdibleItem.runResultStack(power, true, e.getPlayer());
 				}
+				tickFix.add(e.getPlayer());
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						setActive(e.getPlayer(), power.getTag(), false);
+						tickFix.remove(e.getPlayer());
+					}
+				}.runTaskLater(GenesisMC.getPlugin(), 2L);
 			}
 		}
 	}

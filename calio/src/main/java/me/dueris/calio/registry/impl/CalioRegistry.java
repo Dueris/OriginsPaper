@@ -9,29 +9,29 @@ import org.bukkit.NamespacedKey;
 import java.util.HashMap;
 
 public class CalioRegistry implements IRegistry {
-    public static final CalioRegistry INSTANCE = new CalioRegistry();
-    private final HashMap<NamespacedKey, Registrar> registry = new HashMap<>();
+	public static final CalioRegistry INSTANCE = new CalioRegistry();
+	private final HashMap<NamespacedKey, Registrar> registry = new HashMap<>();
 
-    @Override
-    public Registrar retrieve(NamespacedKey key) {
-        Preconditions.checkArgument(key != null, "NamespacedKey must not be null");
-        return registry.get(key);
-    }
+	@Override
+	public Registrar retrieve(NamespacedKey key) {
+		Preconditions.checkArgument(key != null, "NamespacedKey must not be null");
+		return registry.get(key);
+	}
 
-    @Override
-    public void create(NamespacedKey key, Registrar registrar) {
-        Preconditions.checkArgument(!registry.containsKey(key), new AlreadyRegisteredException("Cannot register a key thats already registered"));
-        Preconditions.checkArgument(!registry.containsValue(registrar), new AlreadyRegisteredException("Cannot register an registrar thats already registered"));
-        registry.put(key, registrar);
-    }
+	@Override
+	public void create(NamespacedKey key, Registrar registrar) {
+		Preconditions.checkArgument(!registry.containsKey(key), new AlreadyRegisteredException("Cannot register a key thats already registered"));
+		Preconditions.checkArgument(!registry.containsValue(registrar), new AlreadyRegisteredException("Cannot register an registrar thats already registered"));
+		registry.put(key, registrar);
+	}
 
-    public void freezeAll() {
-        registry.values().forEach(Registrar::freeze);
-    }
+	public void freezeAll() {
+		registry.values().forEach(Registrar::freeze);
+	}
 
-    @Override
-    public void clearRegistries() {
-        registry.clear();
-    }
+	@Override
+	public void clearRegistries() {
+		registry.clear();
+	}
 
 }

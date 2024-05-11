@@ -1,9 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -20,17 +18,15 @@ public class DisableRegeneration extends CraftPower implements Listener {
 	public void disable(EntityRegainHealthEvent e) {
 		if (e.getEntity() instanceof Player p) {
 			if (disable_regen.contains(p)) {
-				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-					for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-						if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-							setActive(p, power.getTag(), true);
-							if (e.getRegainReason().equals(EntityRegainHealthEvent.RegainReason.SATIATED)) {
-								e.setAmount(0);
-								e.setCancelled(true);
-							}
-						} else {
-							setActive(p, power.getTag(), false);
+				for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+						setActive(p, power.getTag(), true);
+						if (e.getRegainReason().equals(EntityRegainHealthEvent.RegainReason.SATIATED)) {
+							e.setAmount(0);
+							e.setCancelled(true);
 						}
+					} else {
+						setActive(p, power.getTag(), false);
 					}
 				}
 			}

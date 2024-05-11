@@ -29,11 +29,11 @@ public class Origin implements FactoryHolder {
 	private final int loadingPriority;
 	private final ItemStack icon;
 	private final int order;
+	private final List<ResourceLocation> powerIdentifiers = new ArrayList<>();
+	protected FactoryJsonObject choosingCondition;
 	private boolean tagSet = false;
 	private NamespacedKey tag = null;
 	private String cachedTag = null;
-	protected FactoryJsonObject choosingCondition;
-	private final List<ResourceLocation> powerIdentifiers = new ArrayList<>();
 	private boolean isDisabled;
 
 	@Register
@@ -50,6 +50,18 @@ public class Origin implements FactoryHolder {
 		this.powerIdentifiers.addAll(powers.asList().stream().map(FactoryElement::getString).map(NamespacedKey::fromString).filter(Objects::nonNull).map(CraftNamespacedKey::toMinecraft).toList());
 	}
 
+	public static FactoryData registerComponents(FactoryData data) {
+		return data.add("name", String.class, "craftapoli.origin.name.not_found")
+			.add("description", String.class, "craftapoli.origin.description.not_found")
+			.add("impact", int.class, 0)
+			.add("icon", ItemStack.class, new ItemStack(Material.PLAYER_HEAD))
+			.add("unchoosable", boolean.class, false)
+			.add("upgrades", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()))
+			.add("powers", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()))
+			.add("order", int.class, 0)
+			.add("loading_priority", int.class, 0);
+	}
+
 	@Override
 	public void bootstrap() {
 		for (String origin : OriginConfiguration.getConfiguration().getStringList("disabled-origins")) {
@@ -58,18 +70,6 @@ public class Origin implements FactoryHolder {
 				break;
 			}
 		}
-	}
-
-	public static FactoryData registerComponents(FactoryData data) {
-		return data.add("name", String.class, "craftapoli.name.not_found")
-			.add("description", String.class, "craftapoli.description.not_found")
-			.add("impact", int.class, 0)
-			.add("icon", ItemStack.class, new ItemStack(Material.PLAYER_HEAD))
-			.add("unchoosable", boolean.class, false)
-			.add("upgrades", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()))
-			.add("powers", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()))
-			.add("order", int.class, 0)
-			.add("loading_priority", int.class, 0);
 	}
 
 	public int getLoadingPriority() {

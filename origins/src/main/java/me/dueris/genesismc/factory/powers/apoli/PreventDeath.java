@@ -1,9 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -21,16 +19,14 @@ public class PreventDeath extends CraftPower implements Listener {
 	@EventHandler
 	public void run(PlayerDeathEvent e) {
 		if (prevent_death.contains(e.getPlayer())) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e.getEntity().getLastDamageCause())) {
-						e.setCancelled(true);
-						if (!getPlayersWithPower().contains(e.getPlayer())) return;
-						setActive(e.getPlayer(), power.getTag(), true);
-					} else {
-						if (!getPlayersWithPower().contains(e.getPlayer())) return;
-						setActive(e.getPlayer(), power.getTag(), false);
-					}
+			for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType())) {
+				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e.getEntity().getLastDamageCause())) {
+					e.setCancelled(true);
+					if (!getPlayersWithPower().contains(e.getPlayer())) return;
+					setActive(e.getPlayer(), power.getTag(), true);
+				} else {
+					if (!getPlayersWithPower().contains(e.getPlayer())) return;
+					setActive(e.getPlayer(), power.getTag(), false);
 				}
 			}
 		}

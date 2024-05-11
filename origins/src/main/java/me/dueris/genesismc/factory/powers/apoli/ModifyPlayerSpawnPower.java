@@ -4,9 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import com.mojang.datafixers.util.Pair;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.*;
@@ -65,10 +63,8 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 		if (e.getPlayer().getBedSpawnLocation() != null) {
 			e.getPlayer().teleport(e.getPlayer().getBedSpawnLocation());
 		} else {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-					this.teleportToModifiedSpawn(((CraftPlayer) e.getPlayer()).getHandle(), power);
-				}
+			for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType())) {
+				this.teleportToModifiedSpawn(((CraftPlayer) e.getPlayer()).getHandle(), power);
 			}
 		}
 	}

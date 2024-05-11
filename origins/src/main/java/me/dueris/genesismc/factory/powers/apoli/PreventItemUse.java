@@ -1,9 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
@@ -22,15 +20,13 @@ public class PreventItemUse extends CraftPower implements Listener {
 		if (prevent_item_use.contains(e.getPlayer())) {
 			if (e.getItem() == null) return;
 
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-					if (power == null) {
-						getPlayersWithPower().remove(e.getPlayer());
-						return;
-					} else {
-						boolean shouldCancel = ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem());
-						if (shouldCancel) e.setCancelled(true);
-					}
+			for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType())) {
+				if (power == null) {
+					getPlayersWithPower().remove(e.getPlayer());
+					return;
+				} else {
+					boolean shouldCancel = ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem());
+					if (shouldCancel) e.setCancelled(true);
 				}
 			}
 		}

@@ -2,12 +2,12 @@ package me.dueris.calio.data;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
+import org.bukkit.NamespacedKey;
 import oshi.util.tuples.Pair;
 
 import java.lang.reflect.Constructor;
@@ -15,10 +15,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.NamespacedKey;
-
 public class ConstructorCreator {
-    public static FactoryHolder invoke(Constructor<? extends FactoryHolder> constructor, FactoryData data, Pair<JsonObject, NamespacedKey> pair) throws InvocationTargetException, InstantiationException, IllegalAccessException {
+	public static FactoryHolder invoke(Constructor<? extends FactoryHolder> constructor, FactoryData data, Pair<JsonObject, NamespacedKey> pair) throws InvocationTargetException, InstantiationException, IllegalAccessException {
 		JsonObject getter = pair.getA();
 		NamespacedKey tag = pair.getB();
 		List<Object> invoker = new ArrayList<>();

@@ -1,11 +1,9 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.BlockPos;
@@ -32,33 +30,31 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
 
 		if (!getPlayersWithPower().contains(actor)) return;
 
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power powerContainer : OriginPlayerAccessor.getPowers(actor, getType(), layer)) {
-				if (powerContainer == null) continue;
-				if (!(ConditionExecutor.testBlock(powerContainer.getJsonObject("block_condition"), (CraftBlock) e.getBlock()) && ConditionExecutor.testEntity(powerContainer.getJsonObject("condition"), (CraftEntity) e.getPlayer())))
-					return;
-				boolean pass = true;
-				if (powerContainer.getBooleanOrDefault("only_when_harvested", true)) {
-					pass = ((CraftPlayer) actor).getHandle().hasCorrectToolForDrops(((CraftBlock) e.getBlock()).getNMS());
-				}
+		for (Power powerContainer : OriginPlayerAccessor.getPowers(actor, getType())) {
+			if (powerContainer == null) continue;
+			if (!(ConditionExecutor.testBlock(powerContainer.getJsonObject("block_condition"), (CraftBlock) e.getBlock()) && ConditionExecutor.testEntity(powerContainer.getJsonObject("condition"), (CraftEntity) e.getPlayer())))
+				return;
+			boolean pass = true;
+			if (powerContainer.getBooleanOrDefault("only_when_harvested", true)) {
+				pass = ((CraftPlayer) actor).getHandle().hasCorrectToolForDrops(((CraftBlock) e.getBlock()).getNMS());
+			}
 
-				setActive(actor, powerContainer.getTag(), true);
-				if (pass) {
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							Actions.executeBlock(e.getBlock().getLocation(), powerContainer.getJsonObject("block_action"));
-							Actions.executeEntity(e.getPlayer(), powerContainer.getJsonObject("entity_action"));
-						}
-					}.runTaskLater(GenesisMC.getPlugin(), 1);
-				}
+			setActive(actor, powerContainer.getTag(), true);
+			if (pass) {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						setActive(actor, powerContainer.getTag(), false);
+						Actions.executeBlock(e.getBlock().getLocation(), powerContainer.getJsonObject("block_action"));
+						Actions.executeEntity(e.getPlayer(), powerContainer.getJsonObject("entity_action"));
 					}
-				}.runTaskLater(GenesisMC.getPlugin(), 2L);
+				}.runTaskLater(GenesisMC.getPlugin(), 1);
 			}
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					setActive(actor, powerContainer.getTag(), false);
+				}
+			}.runTaskLater(GenesisMC.getPlugin(), 2L);
 		}
 	}
 	// Checks for if the player is mining

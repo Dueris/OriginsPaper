@@ -2,10 +2,8 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Location;
@@ -77,30 +75,28 @@ public class ClimbingPower extends CraftPower implements Listener {
 	public void latch(PlayerToggleSneakEvent e) {
 		Player p = e.getPlayer();
 		if (climbing.contains(p)) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (power.getBooleanOrDefault("allow_holding", true)) {
-						final Location[] location = {p.getLocation()};
-						if (e.isSneaking() && getActiveClimbingMap().contains(p)) {
-							new BukkitRunnable() {
-								@Override
-								public void run() {
-									if (p.isSneaking()) {
-										if (location[0].getPitch() != p.getPitch() || location[0].getYaw() != p.getYaw()) {
-											float pitch = p.getPitch();
-											float yaw = p.getYaw();
-											Location updatedLocation = new Location(location[0].getWorld(), location[0].getX(), location[0].getY(), location[0].getZ(), yaw, pitch);
-											location[0] = updatedLocation;
-										}
-										p.teleportAsync(location[0]);
-										holdingPlayers.add(p);
-									} else {
-										holdingPlayers.remove(p);
-										cancel();
+			for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+				if (power.getBooleanOrDefault("allow_holding", true)) {
+					final Location[] location = {p.getLocation()};
+					if (e.isSneaking() && getActiveClimbingMap().contains(p)) {
+						new BukkitRunnable() {
+							@Override
+							public void run() {
+								if (p.isSneaking()) {
+									if (location[0].getPitch() != p.getPitch() || location[0].getYaw() != p.getYaw()) {
+										float pitch = p.getPitch();
+										float yaw = p.getYaw();
+										Location updatedLocation = new Location(location[0].getWorld(), location[0].getX(), location[0].getY(), location[0].getZ(), yaw, pitch);
+										location[0] = updatedLocation;
 									}
+									p.teleportAsync(location[0]);
+									holdingPlayers.add(p);
+								} else {
+									holdingPlayers.remove(p);
+									cancel();
 								}
-							}.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
-						}
+							}
+						}.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
 					}
 				}
 			}

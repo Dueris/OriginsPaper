@@ -21,14 +21,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PowerType implements Serializable, FactoryHolder, Listener {
-	private final String name;
-	private final String description;
-	private final boolean hidden;
-	private final FactoryJsonObject condition;
-	private final int loadingPriority;
-	private final ConcurrentLinkedQueue<CraftPlayer> players = new ConcurrentLinkedQueue<>();
-	protected boolean tagSet = false;
-	private NamespacedKey tag = null;
 	@Serial
 	private static final long serialVersionUID = 2L;
 	public static List<NamespacedKey> allowedSkips = new ArrayList<>();
@@ -43,6 +35,15 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 		notPossibleTypes.add(new NamespacedKey("apoli", "modify_insomnia_ticks")); // Not possible
 		notPossibleTypes.add(new NamespacedKey("apoli", "modify_slipperiness"));
 	}
+
+	private final String name;
+	private final String description;
+	private final boolean hidden;
+	private final FactoryJsonObject condition;
+	private final int loadingPriority;
+	private final ConcurrentLinkedQueue<CraftPlayer> players = new ConcurrentLinkedQueue<>();
+	protected boolean tagSet = false;
+	private NamespacedKey tag = null;
 
 	@Register
 	public PowerType(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
@@ -59,6 +60,19 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 			.add("hidden", boolean.class, (boolean) false)
 			.add("condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("loading_priority", int.class, (int) 1);
+	}
+
+	public static void registerAll() {
+		List<Class<FactoryHolder>> holders = new ArrayList<>();
+		try (ScanResult result = new ClassGraph().whitelistPackages("me.dueris.genesismc.factory.powers").enableClassInfo().scan()) {
+			holders.addAll(result.getSubclasses(PowerType.class).loadClasses(FactoryHolder.class).stream().filter(clz -> {
+				return !clz.isAnnotation() && !clz.isInterface() && !clz.isEnum();
+			}).toList());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		holders.forEach(CraftCalio.INSTANCE::register);
 	}
 
 	public String getName() {
@@ -81,7 +95,8 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 		return loadingPriority;
 	}
 
-	public void tick() {}
+	public void tick() {
+	}
 
 	public ConcurrentLinkedQueue<CraftPlayer> getPlayers() {
 		return players;
@@ -89,19 +104,6 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 
 	public void forPlayer(Player player) {
 		this.players.add((CraftPlayer) player);
-	}
-
-	public static void registerAll() {
-		List<Class<FactoryHolder>> holders = new ArrayList<>();
-		try (ScanResult result = new ClassGraph().whitelistPackages("me.dueris.genesismc.factory.powers").enableClassInfo().scan()) {
-			holders.addAll(result.getSubclasses(PowerType.class).loadClasses(FactoryHolder.class).stream().filter(clz -> {
-				return !clz.isAnnotation() && !clz.isInterface() && !clz.isEnum();
-			}).toList());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		holders.forEach(CraftCalio.INSTANCE::register);
 	}
 
 	@Override

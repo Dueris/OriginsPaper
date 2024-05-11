@@ -1,10 +1,8 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
@@ -23,25 +21,22 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
 	public void run(EntityExhaustionEvent e) {
 		Player p = (Player) e.getEntity();
 		if (modify_exhaustion.contains(p)) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						for (Modifier modifier : power.getModifiers()) {
-							Float value = modifier.value();
-							String operation = modifier.operation();
-							BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
-							if (mathOperator != null) {
-								float result = (float) mathOperator.apply(e.getExhaustion(), value);
-								e.setExhaustion(result);
+			for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+					for (Modifier modifier : power.getModifiers()) {
+						Float value = modifier.value();
+						String operation = modifier.operation();
+						BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
+						if (mathOperator != null) {
+							float result = (float) mathOperator.apply(e.getExhaustion(), value);
+							e.setExhaustion(result);
 
-								setActive(p, power.getTag(), true);
-							}
+							setActive(p, power.getTag(), true);
 						}
-					} else {
-						setActive(p, power.getTag(), false);
 					}
+				} else {
+					setActive(p, power.getTag(), false);
 				}
-
 			}
 		}
 	}

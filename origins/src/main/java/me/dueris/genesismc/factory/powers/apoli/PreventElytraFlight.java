@@ -1,9 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -22,14 +20,12 @@ public class PreventElytraFlight extends CraftPower implements Listener {
 	public void run(EntityToggleGlideEvent e) {
 		if (e.getEntity() instanceof Player p) {
 			if (prevent_elytra_flight.contains(p)) {
-				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-					for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-						if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-							e.setCancelled(true);
-							setActive(p, power.getTag(), true);
-						} else {
-							setActive(p, power.getTag(), false);
-						}
+				for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+						e.setCancelled(true);
+						setActive(p, power.getTag(), true);
+					} else {
+						setActive(p, power.getTag(), false);
 					}
 				}
 			}

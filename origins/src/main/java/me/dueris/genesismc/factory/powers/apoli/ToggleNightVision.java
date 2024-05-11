@@ -2,10 +2,8 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
@@ -57,14 +55,12 @@ public class ToggleNightVision extends CraftPower implements Listener {
 	@EventHandler
 	public void keybindToggle(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-				if (getPlayersWithPower().contains(p)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						if (!Cooldown.isInCooldown(p, power)) {
-							if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
-								execute(p, power);
-							}
+		for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+			if (getPlayersWithPower().contains(p)) {
+				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+					if (!Cooldown.isInCooldown(p, power)) {
+						if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
+							execute(p, power);
 						}
 					}
 				}
@@ -75,17 +71,15 @@ public class ToggleNightVision extends CraftPower implements Listener {
 	@EventHandler
 	public void inContinuousFix(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			if (getPlayersWithPower().contains(p)) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
-						in_continuous.putIfAbsent(p, new ArrayList<>());
-						if (true /* TNV power always execute continuously */) {
-							if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"))) {
-								in_continuous.get(p).remove(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
-							} else {
-								in_continuous.get(p).add(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
-							}
+		if (getPlayersWithPower().contains(p)) {
+			for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+				if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
+					in_continuous.putIfAbsent(p, new ArrayList<>());
+					if (true /* TNV power always execute continuously */) {
+						if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"))) {
+							in_continuous.get(p).remove(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
+						} else {
+							in_continuous.get(p).add(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
 						}
 					}
 				}

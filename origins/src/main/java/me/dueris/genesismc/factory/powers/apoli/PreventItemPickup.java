@@ -1,11 +1,9 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -22,13 +20,11 @@ public class PreventItemPickup extends CraftPower implements Listener {
 	public void pickup(PlayerAttemptPickupItemEvent e) {
 		Player p = e.getPlayer();
 		if (this.getPlayersWithPower().contains(p)) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					boolean shouldCancel = ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem().getItemStack()) && ConditionExecutor.testBiEntity(power.getJsonObject("bientiy_condition"), (CraftEntity) p, (CraftEntity) e.getItem());
-					if (shouldCancel) e.setCancelled(true);
-					Actions.executeItem(e.getItem().getItemStack(), power.getJsonObject("item_action"));
-					Actions.executeBiEntity(p, e.getItem(), power.getJsonObject("bientiy_action_item"));
-				}
+			for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+				boolean shouldCancel = ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem().getItemStack()) && ConditionExecutor.testBiEntity(power.getJsonObject("bientiy_condition"), (CraftEntity) p, (CraftEntity) e.getItem());
+				if (shouldCancel) e.setCancelled(true);
+				Actions.executeItem(e.getItem().getItemStack(), power.getJsonObject("item_action"));
+				Actions.executeBiEntity(p, e.getItem(), power.getJsonObject("bientiy_action_item"));
 			}
 		}
 	}

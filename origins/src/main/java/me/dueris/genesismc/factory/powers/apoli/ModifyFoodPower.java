@@ -3,11 +3,9 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
@@ -31,57 +29,55 @@ public class ModifyFoodPower extends CraftPower implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void saturationorwhateverRUN(PlayerItemConsumeEvent e) {
 		Player player = e.getPlayer();
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			if (modify_food.contains(player)) {
-				for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
-						if (power.isPresent("food_modifier")) {
-							for (FactoryJsonObject jsonObject : power.getList$SingularPlural("food_modifier", "food_modifiers").stream().map(FactoryElement::toJsonObject).toList()) {
-								if (jsonObject.isPresent("value")) {
-									int val = jsonObject.getNumber("value").getInt();
-									String operation = jsonObject.getString("operation");
-									BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
-									if (mathOperator != null && CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD) != null) {
-										double finalValue = (double) mathOperator.apply(CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD).nutrition(), (double) val);
-										player.setFoodLevel(Integer.parseInt(String.valueOf(Math.round(player.getFoodLevel() + finalValue))));
-										setActive(player, power.getTag(), true);
-									}
+		if (modify_food.contains(player)) {
+			for (Power power : OriginPlayerAccessor.getPowers(player, getType())) {
+				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
+					if (power.isPresent("food_modifier")) {
+						for (FactoryJsonObject jsonObject : power.getList$SingularPlural("food_modifier", "food_modifiers").stream().map(FactoryElement::toJsonObject).toList()) {
+							if (jsonObject.isPresent("value")) {
+								int val = jsonObject.getNumber("value").getInt();
+								String operation = jsonObject.getString("operation");
+								BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
+								if (mathOperator != null && CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD) != null) {
+									double finalValue = (double) mathOperator.apply(CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD).nutrition(), (double) val);
+									player.setFoodLevel(Integer.parseInt(String.valueOf(Math.round(player.getFoodLevel() + finalValue))));
+									setActive(player, power.getTag(), true);
 								}
 							}
 						}
-						if (power.isPresent("saturation_modifier")) {
-							for (FactoryJsonObject jsonObject : power.getList$SingularPlural("saturation_modifier", "saturation_modifiers").stream().map(FactoryElement::toJsonObject).toList()) {
-								if (jsonObject.isPresent("value")) {
-									int val = jsonObject.getNumber("value").getInt();
-									String operation = jsonObject.getString("operation");
-									BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
-									if (mathOperator != null && CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD) != null) {
-										double finalValue = (double) mathOperator.apply(CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD).saturation(), (double) val);
-										player.setSaturation(Math.round(player.getFoodLevel() + finalValue));
-										setActive(player, power.getTag(), true);
-									}
-								}
-							}
-						}
-
-						if (power.isPresent("replace_stack")) {
-							e.setReplacement(power.getItemStack("result_stack"));
-						}
-						Actions.executeEntity(player, power.getJsonObject("entity_action"));
-						Actions.executeItem(e.getItem(), power.getJsonObject("item_action"));
-
-						if (power.getBooleanOrDefault("prevent_effects", false) && !e.isCancelled()) {
-							preventEffects.add(player);
-							new BukkitRunnable() {
-								@Override
-								public void run() {
-									preventEffects.remove(player);
-								}
-							}.runTaskLater(GenesisMC.getPlugin(), 1);
-						}
-					} else {
-						setActive(player, power.getTag(), false);
 					}
+					if (power.isPresent("saturation_modifier")) {
+						for (FactoryJsonObject jsonObject : power.getList$SingularPlural("saturation_modifier", "saturation_modifiers").stream().map(FactoryElement::toJsonObject).toList()) {
+							if (jsonObject.isPresent("value")) {
+								int val = jsonObject.getNumber("value").getInt();
+								String operation = jsonObject.getString("operation");
+								BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
+								if (mathOperator != null && CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD) != null) {
+									double finalValue = (double) mathOperator.apply(CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD).saturation(), (double) val);
+									player.setSaturation(Math.round(player.getFoodLevel() + finalValue));
+									setActive(player, power.getTag(), true);
+								}
+							}
+						}
+					}
+
+					if (power.isPresent("replace_stack")) {
+						e.setReplacement(power.getItemStack("result_stack"));
+					}
+					Actions.executeEntity(player, power.getJsonObject("entity_action"));
+					Actions.executeItem(e.getItem(), power.getJsonObject("item_action"));
+
+					if (power.getBooleanOrDefault("prevent_effects", false) && !e.isCancelled()) {
+						preventEffects.add(player);
+						new BukkitRunnable() {
+							@Override
+							public void run() {
+								preventEffects.remove(player);
+							}
+						}.runTaskLater(GenesisMC.getPlugin(), 1);
+					}
+				} else {
+					setActive(player, power.getTag(), false);
 				}
 			}
 		}

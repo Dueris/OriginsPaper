@@ -3,10 +3,8 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.event.PowerUpdateEvent;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
@@ -46,14 +44,12 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
 	@EventHandler
 	public void runRespawn(PlayerRespawnEvent e) {
 		if (starting_equip.contains(e.getPlayer())) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()) && power.getBooleanOrDefault("recurrent", false)) {
-						setActive(e.getPlayer(), power.getTag(), true);
-						runGiveItems(e.getPlayer(), power);
-					} else {
-						setActive(e.getPlayer(), power.getTag(), false);
-					}
+			for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType())) {
+				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()) && power.getBooleanOrDefault("recurrent", false)) {
+					setActive(e.getPlayer(), power.getTag(), true);
+					runGiveItems(e.getPlayer(), power);
+				} else {
+					setActive(e.getPlayer(), power.getTag(), false);
 				}
 			}
 		}

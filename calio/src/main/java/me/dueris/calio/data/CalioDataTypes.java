@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class CalioDataTypes {
-	public static <T> T test(Class<T> ofType, JsonElement provider){
+	public static <T> T test(Class<T> ofType, JsonElement provider) {
 		if (ofType.equals(ItemStack.class)) return (T) itemStack(provider);
 		if (ofType.equals(Item.class)) return (T) item(provider);
 		if (ofType.equals(NamespacedKey.class)) return (T) bukkitIdentifier(provider);

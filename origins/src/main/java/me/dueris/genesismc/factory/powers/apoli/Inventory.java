@@ -3,11 +3,9 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.event.PowerUpdateEvent;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.ContainerType;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.Utils;
@@ -45,21 +43,19 @@ public class Inventory extends CraftPower implements Listener {
 
 	@EventHandler
 	public void keytrigger(KeybindTriggerEvent e) {
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			if (getPlayersWithPower().contains(e.getPlayer())) {
-				for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-					if (Cooldown.isInCooldown(e.getPlayer(), power)) continue;
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
-						setActive(e.getPlayer(), power.getTag(), true);
-						if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), e.getPlayer())) {
-							ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(e.getPlayer(), power.getTag());
-							org.bukkit.inventory.Inventory vault = power.getEnumValueOrDefault("container_type", ContainerType.class, ContainerType.DROPPER).createInventory(e.getPlayer(), Utils.createIfPresent(power.getStringOrDefault("title", "container.inventory")));
-							vaultItems.forEach(vault::addItem);
-							e.getPlayer().openInventory(vault);
-						}
-					} else {
-						setActive(e.getPlayer(), power.getTag(), false);
+		if (getPlayersWithPower().contains(e.getPlayer())) {
+			for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType())) {
+				if (Cooldown.isInCooldown(e.getPlayer(), power)) continue;
+				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
+					setActive(e.getPlayer(), power.getTag(), true);
+					if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), e.getPlayer())) {
+						ArrayList<ItemStack> vaultItems = InventorySerializer.getItems(e.getPlayer(), power.getTag());
+						org.bukkit.inventory.Inventory vault = power.getEnumValueOrDefault("container_type", ContainerType.class, ContainerType.DROPPER).createInventory(e.getPlayer(), Utils.createIfPresent(power.getStringOrDefault("title", "container.inventory")));
+						vaultItems.forEach(vault::addItem);
+						e.getPlayer().openInventory(vault);
 					}
+				} else {
+					setActive(e.getPlayer(), power.getTag(), false);
 				}
 			}
 		}
@@ -67,13 +63,11 @@ public class Inventory extends CraftPower implements Listener {
 
 	@EventHandler
 	public void deathTIMEEE(PlayerDeathEvent e) {
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			if (shulker_inventory.contains(e.getPlayer())) {
-				Player p = e.getPlayer();
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (power.getBooleanOrDefault("drop_on_death", false)) {
-						dropItems(power, e.getPlayer());
-					}
+		if (shulker_inventory.contains(e.getPlayer())) {
+			Player p = e.getPlayer();
+			for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+				if (power.getBooleanOrDefault("drop_on_death", false)) {
+					dropItems(power, e.getPlayer());
 				}
 			}
 		}

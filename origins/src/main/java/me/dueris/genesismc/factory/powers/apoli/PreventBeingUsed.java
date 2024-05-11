@@ -1,9 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -22,14 +20,12 @@ public class PreventBeingUsed extends CraftPower implements Listener {
 	public void run(PlayerInteractEvent e) {
 		if (prevent_being_used.contains(e.getPlayer())) {
 			Player p = e.getPlayer();
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
-						setActive(p, power.getTag(), true);
-						e.setCancelled(true);
-					} else {
-						setActive(p, power.getTag(), false);
-					}
+			for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) {
+					setActive(p, power.getTag(), true);
+					e.setCancelled(true);
+				} else {
+					setActive(p, power.getTag(), false);
 				}
 			}
 		}

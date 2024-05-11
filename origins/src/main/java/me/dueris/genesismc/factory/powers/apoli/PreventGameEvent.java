@@ -1,9 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -23,16 +21,14 @@ public class PreventGameEvent extends CraftPower implements Listener {
 		if (e.getEntity() == null) return;
 		if (e.getEntity() instanceof Player p) {
 			if (!this.getPlayersWithPower().contains(p)) return;
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						String event = power.getString("event");
-						if (event.contains(":")) {
-							event = event.split(":")[1];
-						}
-						if (e.getEvent().key().asString().equals(event)) {
-							e.setCancelled(true);
-						}
+			for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+					String event = power.getString("event");
+					if (event.contains(":")) {
+						event = event.split(":")[1];
+					}
+					if (e.getEvent().key().asString().equals(event)) {
+						e.setCancelled(true);
 					}
 				}
 			}

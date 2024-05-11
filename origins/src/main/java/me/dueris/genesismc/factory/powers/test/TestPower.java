@@ -5,7 +5,6 @@ import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 
 public class TestPower extends PowerType {

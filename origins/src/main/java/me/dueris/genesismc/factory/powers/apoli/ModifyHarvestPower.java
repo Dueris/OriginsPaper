@@ -1,9 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.GameMode;
@@ -25,18 +23,16 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
 		Player p = e.getPlayer();
 		if (modify_harvest.contains(p)) {
 			if (p.getGameMode().equals(GameMode.CREATIVE)) return;
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						setActive(p, power.getTag(), true);
-						if (e.isCancelled()) return;
-						boolean willDrop = ((CraftPlayer) p).getHandle().hasCorrectToolForDrops(((CraftBlock) e.getBlock()).getNMS());
-						if (power.getBooleanOrDefault("allow", true) && !willDrop) {
-							e.getBlock().getDrops().forEach((itemStack -> p.getWorld().dropItemNaturally(e.getBlock().getLocation(), itemStack)));
-						}
-					} else {
-						setActive(p, power.getTag(), false);
+			for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+					setActive(p, power.getTag(), true);
+					if (e.isCancelled()) return;
+					boolean willDrop = ((CraftPlayer) p).getHandle().hasCorrectToolForDrops(((CraftBlock) e.getBlock()).getNMS());
+					if (power.getBooleanOrDefault("allow", true) && !willDrop) {
+						e.getBlock().getDrops().forEach((itemStack -> p.getWorld().dropItemNaturally(e.getBlock().getLocation(), itemStack)));
 					}
+				} else {
+					setActive(p, power.getTag(), false);
 				}
 			}
 		}

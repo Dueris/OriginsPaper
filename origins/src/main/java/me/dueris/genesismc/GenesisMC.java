@@ -12,6 +12,7 @@ import me.dueris.calio.registry.impl.CalioRegistry;
 import me.dueris.genesismc.command.OriginCommand;
 import me.dueris.genesismc.command.PowerCommand;
 import me.dueris.genesismc.content.ContentTicker;
+import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.content.WaterProtBook;
 import me.dueris.genesismc.content.enchantment.AnvilHandler;
 import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
@@ -38,8 +39,8 @@ import me.dueris.genesismc.registry.BuiltinRegistry;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.DatapackRepository;
 import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.registry.registries.Origin;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.ChoosingPage;
 import me.dueris.genesismc.screen.GuiTicker;
 import me.dueris.genesismc.screen.RandomOriginPage;
@@ -74,6 +75,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
 
+import static me.dueris.genesismc.factory.powers.apoli.RecipePower.parseRecipes;
 import static me.dueris.genesismc.util.ColorConstants.AQUA;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
@@ -299,7 +301,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			);
 			calio.registerAccessor(
 				"origin_layers", 2,
-			false, Registries.LAYER
+				false, Layer.class,
+				Registries.LAYER
 			);
 			calio.start(OriginConfiguration.getConfiguration().getBoolean("debug"), loaderThreadPool);
 			BuiltinRegistry.bootstrap();
@@ -391,7 +394,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new ContentTicker(), this);
 		getServer().getPluginManager().registerEvents(new BounceSlimeBlock(), this);
 		getServer().getPluginManager().registerEvents(new BiEntityConditions(), this);
-		getServer().getPluginManager().registerEvents(new LogoutBugWorkaround(), this);
 		getServer().getPluginManager().registerEvents(new VillagerTradeHook(), this);
 		getServer().getPluginManager().registerEvents(new OriginScheduler.OriginSchedulerTree(), this);
 		getServer().getPluginManager().registerEvents(new StructureGeneration(), this);
@@ -456,5 +458,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	public void loadEvent(ServerLoadEvent e) {
 		ChoosingPage.registerInstances();
 		ScreenNavigator.layerPages.values().forEach((pages) -> pages.add(pages.size(), new RandomOriginPage()));
+		parseRecipes();
+		OrbOfOrigins.init();
 	}
 }

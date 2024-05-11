@@ -4,13 +4,10 @@ import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.event.PowerUpdateEvent;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
@@ -105,10 +102,8 @@ public class RecipePower extends CraftPower implements Listener {
 		return null;
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void load(ServerLoadEvent e) {
-		parseRecipes();
-		OrbOfOrigins.init();
 		Bukkit.getOnlinePlayers().forEach((pl) -> applyRecipePower(pl));
 	}
 
@@ -118,21 +113,17 @@ public class RecipePower extends CraftPower implements Listener {
 			recipeMapping.clear();
 		}
 		if (getPlayersWithPower().contains(p)) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					FactoryJsonObject recipe = power.getJsonObject("recipe");
-					String id = recipe.getString("id");
-					if (taggedRegistry.containsKey(id)) {
-						if (recipeMapping.containsKey(p)) {
-							recipeMapping.get(p).add(id);
-						} else {
-							List<String> put = new ArrayList<>();
-							put.add(id);
-							recipeMapping.put(p, put);
-						}
+			for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+				FactoryJsonObject recipe = power.getJsonObject("recipe");
+				String id = recipe.getString("id");
+				if (taggedRegistry.containsKey(id)) {
+					if (recipeMapping.containsKey(p)) {
+						recipeMapping.get(p).add(id);
 					} else {
-						throw new IllegalStateException("Unable to locate recipe id. Bug?");
+						recipeMapping.put(p, List.of(id));
 					}
+				} else {
+					throw new IllegalStateException("Unable to locate recipe id. Bug?");
 				}
 			}
 		}

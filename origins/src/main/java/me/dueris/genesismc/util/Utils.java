@@ -1,9 +1,6 @@
 package me.dueris.genesismc.util;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.google.gson.*;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 import com.mojang.serialization.Codec;
@@ -403,6 +400,15 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 	public static <T> Optional<T> createIfPresent(T instance) {
 		if (instance != null) return Optional.of(instance);
 		return Optional.empty();
+	}
+
+	public static JsonArray toJsonStringArray(List<String> strings) {
+		Gson gson = new Gson();
+		JsonArray array = new JsonArray();
+		for (String s : strings) {
+			array.add(s);
+		}
+		return array;
 	}
 
 	public static Optional<Entity> getEntityWithPassengers(Level world, EntityType<?> entityType, @Nullable CompoundTag entityNbt, Vec3 pos, float yaw, float pitch) {

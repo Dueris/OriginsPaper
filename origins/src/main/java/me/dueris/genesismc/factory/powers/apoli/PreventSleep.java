@@ -1,9 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Location;
@@ -35,25 +33,23 @@ public class PreventSleep extends CraftPower implements Listener {
 		if (e.getAction().isLeftClick()) return;
 		if (beds.contains(e.getClickedBlock().getType())) {
 			Player player = e.getPlayer();
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				Block clickedBlock = e.getClickedBlock();
-				Location blockLocation = clickedBlock.getLocation();
-				for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
-					boolean meetsCondition = ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) player.getLocation().getBlock());
+			Block clickedBlock = e.getClickedBlock();
+			Location blockLocation = clickedBlock.getLocation();
+			for (Power power : OriginPlayerAccessor.getPowers(player, getType())) {
+				boolean meetsCondition = ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) player.getLocation().getBlock());
 
-					if (meetsCondition) {
-						if (power.getBooleanOrDefault("set_spawn_point", false)) {
-							player.setBedSpawnLocation(blockLocation);
-						}
-						String message = power.getStringOrDefault("message", "text.apoli.cannot_sleep");
-						// Origins Mod translation
-						if (message.equalsIgnoreCase("text.apoli.cannot_sleep")) message = "You cannot sleep";
-						if (message.equalsIgnoreCase("origins.avian_sleep_fail"))
-							message = "You need fresh air to sleep";
-
-						player.sendMessage(message);
-						e.setCancelled(true);
+				if (meetsCondition) {
+					if (power.getBooleanOrDefault("set_spawn_point", false)) {
+						player.setBedSpawnLocation(blockLocation);
 					}
+					String message = power.getStringOrDefault("message", "text.apoli.cannot_sleep");
+					// Origins Mod translation
+					if (message.equalsIgnoreCase("text.apoli.cannot_sleep")) message = "You cannot sleep";
+					if (message.equalsIgnoreCase("origins.avian_sleep_fail"))
+						message = "You need fresh air to sleep";
+
+					player.sendMessage(message);
+					e.setCancelled(true);
 				}
 			}
 		}

@@ -214,7 +214,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 						if (context.getSource().isPlayer()) {
 							ServerPlayer p = context.getSource().getPlayer();
 							HashMap<Layer, Origin> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(p.getBukkitEntity()));
-							origins.entrySet().removeIf(entry -> entry.getKey().getBooleanOrDefault("hidden", false));
+							origins.entrySet().removeIf(entry -> entry.getKey().isHidden());
 							playerOrigins.put(p.getBukkitEntity(), new ArrayList<>(origins.values()));
 							if (!playerPage.containsKey(p.getBukkitEntity()))
 								playerPage.put(p.getBukkitEntity(), 0);

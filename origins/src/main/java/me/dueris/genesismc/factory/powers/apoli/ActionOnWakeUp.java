@@ -1,11 +1,9 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -25,14 +23,12 @@ public class ActionOnWakeUp extends CraftPower implements Listener {
 			@Override
 			public void run() {
 				if (!getPlayersWithPower().contains(e.getPlayer()) || !e.getPlayer().getWorld().isDayTime()) return;
-				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-					for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-						if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
-							return;
-						setActive(e.getPlayer(), power.getTag(), true);
-						Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action"));
-						Actions.executeBlock(e.getBed().getLocation(), power.getJsonObject("block_action"));
-					}
+				for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType())) {
+					if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
+						return;
+					setActive(e.getPlayer(), power.getTag(), true);
+					Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action"));
+					Actions.executeBlock(e.getBed().getLocation(), power.getJsonObject("block_action"));
 				}
 			}
 		}.runTaskLater(GenesisMC.getPlugin(), 2);

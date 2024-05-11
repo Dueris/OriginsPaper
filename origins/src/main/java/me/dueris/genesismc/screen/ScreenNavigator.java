@@ -88,8 +88,8 @@ public class ScreenNavigator implements Listener {
 		if (inOrbChoosing) orbChoosing.add(player);
 
 		@NotNull Inventory gui = Bukkit.createInventory(player.getBukkitEntity(), 54,
-			Component.text(layer.isPresent("gui_title") ? layer.getString("gui_title") :
-				"Choosing - " + (layer.isPresent("name") ? layer.getString("name") : layer.getTag()))
+			Component.text(!layer.getGuiTitle().isEmpty() ? layer.getGuiTitle().getStringOrDefault("choose_origin", "Choosing - " + layer.getTag()) :
+				"Choosing - " + (!layer.getName().equalsIgnoreCase("craftapoli.layer.name.not_found") ? layer.getName() : layer.getTag()))
 		);
 
 		gui.setContents(layerPages.get(layer).get(currentDisplayingPage.getInt(player)).createDisplay(player, layer));

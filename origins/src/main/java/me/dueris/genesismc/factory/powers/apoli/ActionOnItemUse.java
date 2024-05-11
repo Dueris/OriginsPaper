@@ -1,11 +1,9 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -25,21 +23,19 @@ public class ActionOnItemUse extends CraftPower implements Listener {
 		if (!getPlayersWithPower().contains(player)) return;
 		if (!e.getAction().isRightClick()) return;
 
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
-				if (power == null) continue;
-				if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) return;
-				if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) return;
-				setActive(e.getPlayer(), power.getTag(), true);
-				Actions.executeItem(e.getItem(), power.getJsonObject("item_action"));
-				Actions.executeEntity(player, power.getJsonObject("entity_action"));
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						setActive(e.getPlayer(), power.getTag(), false);
-					}
-				}.runTaskLater(GenesisMC.getPlugin(), 2L);
-			}
+		for (Power power : OriginPlayerAccessor.getPowers(player, getType())) {
+			if (power == null) continue;
+			if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) return;
+			if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem())) return;
+			setActive(e.getPlayer(), power.getTag(), true);
+			Actions.executeItem(e.getItem(), power.getJsonObject("item_action"));
+			Actions.executeEntity(player, power.getJsonObject("entity_action"));
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					setActive(e.getPlayer(), power.getTag(), false);
+				}
+			}.runTaskLater(GenesisMC.getPlugin(), 2L);
 		}
 	}
 

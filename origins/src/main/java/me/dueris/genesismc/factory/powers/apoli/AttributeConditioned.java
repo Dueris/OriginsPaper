@@ -1,10 +1,8 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.DataConverter;
 import me.dueris.genesismc.util.Utils;
@@ -40,44 +38,36 @@ public class AttributeConditioned extends CraftPower implements Listener {
 	}
 
 	public void executeConditionAttribute(Player p) {
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-				if (power == null) continue;
-				for (Modifier modifier : power.getModifiers()) {
-					Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
-					if (p.getAttribute(attributeModifier) != null && !appliedAttributes.get(p).contains(power)) {
-						double val = DataConverter.convertToAttributeModifier(modifier).getAmount();
-						double baseVal = p.getAttribute(attributeModifier).getBaseValue();
-						String operation = modifier.operation();
-						BinaryOperator<Double> operator = Utils.getOperationMappingsDouble().get(operation);
-						if (operator != null) {
-							double result = Double.parseDouble(String.valueOf(operator.apply(baseVal, val)));
-							p.getAttribute(attributeModifier).setBaseValue(result);
-						} else {
-							Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
-							new Throwable().printStackTrace();
-						}
+		for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+			if (power == null) continue;
+			for (Modifier modifier : power.getModifiers()) {
+				Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
+				if (p.getAttribute(attributeModifier) != null && !appliedAttributes.get(p).contains(power)) {
+					double val = DataConverter.convertToAttributeModifier(modifier).getAmount();
+					double baseVal = p.getAttribute(attributeModifier).getBaseValue();
+					String operation = modifier.operation();
+					BinaryOperator<Double> operator = Utils.getOperationMappingsDouble().get(operation);
+					if (operator != null) {
+						double result = Double.parseDouble(String.valueOf(operator.apply(baseVal, val)));
+						p.getAttribute(attributeModifier).setBaseValue(result);
+					} else {
+						Bukkit.getLogger().warning("An unexpected error occurred when retrieving the BinaryOperator for attribute_conditioned!");
+						new Throwable().printStackTrace();
 					}
 				}
 			}
-
 		}
 	}
 
 	public void inverseConditionAttribute(Player p) {
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-				if (power == null) continue;
-
-				for (Modifier modifier : power.getModifiers()) {
-					Attribute attribute_modifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
-					double value = DataConverter.convertToAttributeModifier(modifier).getAmount();
-					double base_value = p.getAttribute(attribute_modifier).getBaseValue();
-					String operation = modifier.operation();
-					executeAttributeModify(operation, attribute_modifier, base_value, p, -value);
-				}
+		for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+			for (Modifier modifier : power.getModifiers()) {
+				Attribute attribute_modifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
+				double value = DataConverter.convertToAttributeModifier(modifier).getAmount();
+				double base_value = p.getAttribute(attribute_modifier).getBaseValue();
+				String operation = modifier.operation();
+				executeAttributeModify(operation, attribute_modifier, base_value, p, -value);
 			}
-
 		}
 	}
 

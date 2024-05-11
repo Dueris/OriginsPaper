@@ -1,11 +1,9 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -30,31 +28,29 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
 		if (!getPlayersWithPower().contains(actor)) return;
 		if (cooldownTick.contains(actor)) return;
 
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(actor, getType(), layer)) {
-				if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) actor)) return;
-				if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), actor.getInventory().getItem(e.getHand())))
-					return;
-				if (!ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
-					return;
-				cooldownTick.add(actor);
-				setActive(e.getPlayer(), power.getTag(), true);
-				Actions.executeBiEntity(actor, target, power.getJsonObject("bientity_action"));
-				Actions.executeItem(actor.getActiveItem(), power.getJsonObject("held_item_action"));
-				Actions.executeItem(actor.getActiveItem(), power.getJsonObject("result_item_action"));
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						setActive(e.getPlayer(), power.getTag(), false);
-					}
-				}.runTaskLater(GenesisMC.getPlugin(), 2L);
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						cooldownTick.remove(actor);
-					}
-				}.runTaskLater(GenesisMC.getPlugin(), 1);
-			}
+		for (Power power : OriginPlayerAccessor.getPowers(actor, getType())) {
+			if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) actor)) return;
+			if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), actor.getInventory().getItem(e.getHand())))
+				return;
+			if (!ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) actor, (CraftEntity) target))
+				return;
+			cooldownTick.add(actor);
+			setActive(e.getPlayer(), power.getTag(), true);
+			Actions.executeBiEntity(actor, target, power.getJsonObject("bientity_action"));
+			Actions.executeItem(actor.getActiveItem(), power.getJsonObject("held_item_action"));
+			Actions.executeItem(actor.getActiveItem(), power.getJsonObject("result_item_action"));
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					setActive(e.getPlayer(), power.getTag(), false);
+				}
+			}.runTaskLater(GenesisMC.getPlugin(), 2L);
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					cooldownTick.remove(actor);
+				}
+			}.runTaskLater(GenesisMC.getPlugin(), 1);
 		}
 	}
 

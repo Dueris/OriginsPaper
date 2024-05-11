@@ -25,6 +25,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class OriginPage implements ChoosingPage {
 	private final Origin origin;
@@ -103,7 +104,7 @@ public class OriginPage implements ChoosingPage {
 	@Override
 	public ItemStack[] createDisplay(Player player, Layer layer) {
 		List<ItemStack> stacks = new ArrayList<>();
-		List<Power> powerContainers = new ArrayList<>(origin.getPowerContainers().stream().filter(p -> !p.isHidden()).toList());
+		List<Power> powerContainers = new ArrayList<>(origin.getPowerContainers().stream().filter(Objects::nonNull).filter(p -> !p.isHidden()).toList());
 
 		for (int i = 0; i < 54; i++) {
 			if (i <= 2 || (i >= 6 && i <= 8)) {

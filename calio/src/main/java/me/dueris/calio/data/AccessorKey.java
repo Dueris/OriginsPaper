@@ -6,8 +6,8 @@ public class AccessorKey {
 	private final String directory;
 	private final boolean usesTypeDefiner;
 	private final int priority;
-	private Class<? extends FactoryHolder> ofType;
 	private final NamespacedKey registryKey;
+	private Class<? extends FactoryHolder> ofType;
 
 	public AccessorKey(String directory, int priority, boolean usesTypeDefiner, NamespacedKey registryKey) {
 		this.directory = directory;

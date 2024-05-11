@@ -1,8 +1,6 @@
 package me.dueris.genesismc.util.entity;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -133,16 +131,14 @@ public class InventorySerializer implements Listener {
 	public void onInventoryClose(InventoryCloseEvent e) {
 		Player p = (Player) e.getPlayer();
 
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(p, "apoli:inventory", layer)) {
-				if (matches(e.getView(), power)) {
-					ArrayList<ItemStack> prunedItems = new ArrayList<>();
+		for (Power power : OriginPlayerAccessor.getPowers(p, "apoli:inventory")) {
+			if (matches(e.getView(), power)) {
+				ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
-					Arrays.stream(e.getInventory().getContents())
-						.filter(Objects::nonNull)
-						.forEach(prunedItems::add);
-					storeItems(prunedItems, p, power.getTag());
-				}
+				Arrays.stream(e.getInventory().getContents())
+					.filter(Objects::nonNull)
+					.forEach(prunedItems::add);
+				storeItems(prunedItems, p, power.getTag());
 			}
 		}
 

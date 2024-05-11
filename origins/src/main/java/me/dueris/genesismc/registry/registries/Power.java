@@ -1,8 +1,8 @@
 package me.dueris.genesismc.registry.registries;
 
 import me.dueris.calio.CraftCalio;
-import me.dueris.calio.data.FactoryInstance;
 import me.dueris.calio.data.FactoryDataDefiner;
+import me.dueris.calio.data.FactoryInstance;
 import me.dueris.calio.data.factory.*;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
