@@ -168,6 +168,7 @@ public class CraftCalio {
 			this.types.put(identifier, new Pair<>(data, holder));
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ea) {
 			if (ea instanceof NoSuchMethodException) return;
+            ea.printStackTrace();
 			throw new RuntimeException("An exception occured when registering FactoryHolder", ea);
 		}
 	}

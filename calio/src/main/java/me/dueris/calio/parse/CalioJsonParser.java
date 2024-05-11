@@ -6,7 +6,9 @@ import me.dueris.calio.data.*;
 import me.dueris.calio.data.annotations.ProvideJsonConstructor;
 import me.dueris.calio.data.annotations.RequiresPlugin;
 import me.dueris.calio.registry.impl.CalioRegistry;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.event.Listener;
 import oshi.util.tuples.Pair;
 
 import java.io.File;

@@ -399,6 +399,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new StructureGeneration(), this);
 		getServer().getPluginManager().registerEvents(new KeybindingUtils(), this);
 		getServer().getPluginManager().registerEvents(new AsyncUpgradeTracker(), this);
+		((Registrar<PowerType>) this.registry.retrieve(Registries.CRAFT_POWER)).values().forEach(powerType -> {
+			if (powerType != null) {
+				getServer().getPluginManager().registerEvents(powerType, this);
+			}
+		});
 
 		BukkitRunnable[] independentTickers = {new GuiTicker(), new ContentTicker(), new OriginCommand(), new Cooldown()};
 		WaterBreathe.start();

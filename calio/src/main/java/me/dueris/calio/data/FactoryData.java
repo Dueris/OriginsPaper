@@ -28,7 +28,6 @@ public class FactoryData {
 	public <T> FactoryData add(String objName, Class<T> type, T defaultVal) {
 		Preconditions.checkArgument(objName != null);
 		Preconditions.checkArgument(type != null);
-		Preconditions.checkArgument(defaultVal != null);
 		this.providers.add(new FactoryDataDefiner(objName, type, defaultVal));
 		return this;
 	}

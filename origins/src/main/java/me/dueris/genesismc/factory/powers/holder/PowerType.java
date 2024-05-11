@@ -9,7 +9,9 @@ import me.dueris.calio.data.FactoryHolder;
 import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -102,8 +104,16 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 		return players;
 	}
 
+	public String getType() {
+		return null;
+	}
+
 	public void forPlayer(Player player) {
 		this.players.add((CraftPlayer) player);
+	}
+
+	public boolean isActive(Player player) {
+		return ConditionExecutor.testEntity(this.condition, (CraftEntity) player);
 	}
 
 	@Override
