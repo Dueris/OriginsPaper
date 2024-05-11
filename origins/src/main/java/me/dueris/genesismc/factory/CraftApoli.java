@@ -1,8 +1,10 @@
 package me.dueris.genesismc.factory;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import me.dueris.calio.builder.inst.factory.FactoryBuilder;
 import me.dueris.calio.builder.inst.factory.FactoryElement;
+import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
 import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
@@ -12,8 +14,10 @@ import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.world.level.storage.LevelResource;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,11 +35,9 @@ public class CraftApoli {
 	private static final Registrar<Origin> originRegistrar = ((Registrar<Origin>) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN));
 	private static final Registrar<Power> powerRegistrar = (Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER);
 	static Origin empty = new Origin(
-		GenesisMC.originIdentifier("empty"),
-		new ArrayList<>(),
-		new FactoryJsonObject(
-			JsonParser.parseString("{\"icon\":{\"item\":\"minecraft:player_head\"},\"name\":\"Null\",\"description\":\"Still Null\",\"order\":0,\"impact\":0}").getAsJsonObject()
-		)
+		"Empty", "No Origin", 0,
+		new ItemStack(Material.BEDROCK), true, new FactoryJsonArray(new JsonArray()),
+		new FactoryJsonArray(new JsonArray()), 0, 0
 	);
 
 	public static Collection<Layer> getLayersFromRegistry() {

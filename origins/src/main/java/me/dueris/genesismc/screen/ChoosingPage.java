@@ -23,7 +23,7 @@ public interface ChoosingPage extends Registrable {
 				ScreenNavigator.layerPages.put(layer, new ArrayList<>());
 				List<Origin> choosable = layer.getOriginIdentifiers().stream()
 					.map(CraftApoli::getOrigin)
-					.filter(origin -> !origin.getUnchooseable())
+					.filter(origin -> !origin.isUnchoosable())
 					.sorted(Comparator.comparingInt(Origin::getOrder))
 					.sorted(Comparator.comparingInt(Origin::getImpact))
 					.toList();

@@ -28,7 +28,6 @@ import me.dueris.genesismc.factory.conditions.types.*;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.Cooldown;
-import me.dueris.genesismc.factory.powers.apoli.ModelColor;
 import me.dueris.genesismc.factory.powers.apoli.RecipePower;
 import me.dueris.genesismc.factory.powers.apoli.WaterBreathe;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
@@ -39,9 +38,8 @@ import me.dueris.genesismc.registry.BuiltinRegistry;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.DatapackRepository;
 import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.registry.registries.RewriteOrigin;
+import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.screen.ChoosingPage;
 import me.dueris.genesismc.screen.GuiTicker;
 import me.dueris.genesismc.screen.RandomOriginPage;
@@ -296,7 +294,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			);
 			calio.registerAccessor(
 				"origins", 1,
-				false, Registries.ORIGIN
+				false, Origin.class,
+				Registries.ORIGIN
 			);
 			calio.registerAccessor(
 				"origin_layers", 2,
