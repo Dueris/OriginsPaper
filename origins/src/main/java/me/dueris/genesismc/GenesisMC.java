@@ -28,9 +28,6 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.types.*;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.apoli.Cooldown;
-import me.dueris.genesismc.factory.powers.apoli.RecipePower;
-import me.dueris.genesismc.factory.powers.apoli.WaterBreathe;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.integration.PlaceHolderAPI;
@@ -40,7 +37,6 @@ import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.DatapackRepository;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.ChoosingPage;
 import me.dueris.genesismc.screen.GuiTicker;
 import me.dueris.genesismc.screen.RandomOriginPage;
@@ -49,7 +45,6 @@ import me.dueris.genesismc.storage.OriginConfiguration;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.storage.nbt.NBTFixerUpper;
 import me.dueris.genesismc.util.*;
-import me.dueris.genesismc.util.entity.InventorySerializer;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -75,7 +70,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static me.dueris.genesismc.factory.powers.apoli.RecipePower.parseRecipes;
 import static me.dueris.genesismc.util.ColorConstants.AQUA;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
@@ -244,11 +238,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 		this.registry = CalioRegistry.INSTANCE;
 		// Create new registry instances
-		// Depreciated - for removal
-		this.registry.create(Registries.POWER, new Registrar<Power>(Power.class));
 		this.registry.create(Registries.ORIGIN, new Registrar<Origin>(Origin.class));
 		this.registry.create(Registries.LAYER, new Registrar<Layer>(Layer.class));
-		// Depreciated - for removal
 		this.registry.create(Registries.CRAFT_POWER, new Registrar<PowerType>(PowerType.class));
 		this.registry.create(Registries.FLUID_CONDITION, new Registrar<FluidConditions.ConditionFactory>(FluidConditions.ConditionFactory.class));
 		this.registry.create(Registries.ENTITY_CONDITION, new Registrar<EntityConditions.ConditionFactory>(EntityConditions.ConditionFactory.class));
@@ -384,7 +375,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	}
 
 	private void start() {
-		getServer().getPluginManager().registerEvents(new InventorySerializer(), this);
 		getServer().getPluginManager().registerEvents(this, this);
 		getServer().getPluginManager().registerEvents(new PlayerManager(), this);
 		getServer().getPluginManager().registerEvents(new EnchantTableHandler(), this);

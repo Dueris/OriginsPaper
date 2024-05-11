@@ -12,7 +12,6 @@ import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.Material;
@@ -36,7 +35,7 @@ public class CraftApoli {
 	private static final Registrar<Origin> originRegistrar = ((Registrar<Origin>) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN));
 	// TODO: remove
 	@Deprecated(forRemoval = true)
-	private static final Registrar<Power> powerRegistrar = (Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER);
+	private static final Registrar<PowerType> powerRegistrar = (Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER);
 	private static final Registrar<PowerType> powersRegistrar = (Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER);
 	static Origin empty = new Origin(
 		"Empty", "No Origin", 0,
@@ -52,7 +51,7 @@ public class CraftApoli {
 		return originRegistrar.values();
 	}
 
-	public static Collection<Power> getPowersFromRegistry() {
+	public static Collection<PowerType> getPowersFromRegistry() {
 		return powerRegistrar.values();
 	}
 
@@ -68,8 +67,8 @@ public class CraftApoli {
 		return layerRegistrar.get(new NamespacedKey("origins", "origin"));
 	}
 
-	public static Power getPowerFromTag(String powerTag) {
-		for (Power p : powerRegistrar.values())
+	public static PowerType getPowerFromTag(String powerTag) {
+		for (PowerType p : powerRegistrar.values())
 			if (p.getTag().equals(powerTag)) return p;
 		return null;
 	}
@@ -79,37 +78,6 @@ public class CraftApoli {
 	 **/
 	public static Origin emptyOrigin() {
 		return empty;
-	}
-
-	public static void processNestedPowers(Power powerContainer, ArrayList<Power> powerContainers, String powerFolder, String powerFileName, File sourceFile) {
-		for (String key : powerContainer.keySet()) {
-			FactoryElement subPowerValue = powerContainer.getElement(key);
-			if (subPowerValue.isJsonObject()) {
-				FactoryJsonObject jsonObject = subPowerValue.toJsonObject();
-				FactoryBuilder accessor = new FactoryBuilder(subPowerValue.handle, sourceFile);
-
-				Power newPower = new Power(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), jsonObject, true, false, powerContainer, accessor);
-				powerRegistrar.register(newPower);
-			}
-		}
-	}
-
-	@Deprecated(forRemoval = true)
-	// TODO: remove this
-	public static ArrayList<Power> getNestedPowers(Power power) {
-		ArrayList<Power> nested = new ArrayList<>();
-		if (power == null) return nested;
-		String powerFolder = power.getTag().split(":")[0].toLowerCase();
-		String powerFileName = power.getTag().split(":")[1].toLowerCase();
-
-		for (String key : power.keySet()) {
-			if (power.getElement(key).isJsonObject()) {
-				if (powerRegistrar.get(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase())) != null) {
-					nested.add(powerRegistrar.get(NamespacedKey.fromString(powerFolder + ":" + powerFileName + "_" + key.toLowerCase())));
-				}
-			}
-		}
-		return nested;
 	}
 
 	public static ArrayList<PowerType> getNestedPowerTypes(PowerType power) {
@@ -143,7 +111,7 @@ public class CraftApoli {
 			Origin layerOrigins = origin.get(layer);
 			ArrayList<String> powers = new ArrayList<>();
 			if (PowerHolderComponent.playerPowerMapping.get(p).containsKey(layer)) {
-				powers.addAll(PowerHolderComponent.playerPowerMapping.get(p).get(layer).stream().map(Power::getTag).toList());
+				powers.addAll(PowerHolderComponent.playerPowerMapping.get(p).get(layer).stream().map(PowerType::getTag).toList());
 			} else {
 				powers.addAll(layerOrigins.getPowers());
 			}

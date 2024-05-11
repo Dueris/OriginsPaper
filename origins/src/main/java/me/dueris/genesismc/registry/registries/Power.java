@@ -215,31 +215,6 @@ public class Power extends FactoryJsonObject implements Serializable, FactoryIns
 		);
 	}
 
-	@Override
-	public void createInstance(FactoryBuilder root, File rawFile, Registrar registry, NamespacedKey namespacedTag) {
-		Registrar<Power> registrar = (Registrar<Power>) registry;
-		List<NamespacedKey> validTypes = ((Registrar<ApoliPower>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).rawRegistry.keySet().stream().toList();
-		if (!validTypes.contains(root.getRoot().getNamespacedKey("type")) && !allowedSkips.contains(root.getRoot().getNamespacedKey("type"))) {
-			if (notPossibleTypes.contains(root.getRoot().getNamespacedKey("type"))) {
-				CraftCalio.INSTANCE.getLogger().warning("Provided type({t}) is not possible with GenesisMC due to limitations of the ServerSide, power({p}) will not function correctly.".replace("{t}", root.getRoot().getString("type")).replace("{p}", namespacedTag.asString()));
-			} else {
-				CraftCalio.INSTANCE.getLogger().severe("Unknown type({t}) was provided when registering new Power: ".replace("{t}", root.getRoot().getString("type")) + namespacedTag.asString());
-			}
-		}
-		try {
-			Power newPower = new Power(namespacedTag, root.getRoot(), false, root.getRoot().getString("type").equalsIgnoreCase("apoli:multiple"), null, root);
-			registrar.register(newPower);
-			if (root.getRoot().getString("type").equalsIgnoreCase("apoli:multiple")) {
-				CraftApoli.processNestedPowers(
-					newPower,
-					new ArrayList<>(),
-					namespacedTag.getNamespace(),
-					namespacedTag.getKey(),
-					rawFile);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+
 
 }

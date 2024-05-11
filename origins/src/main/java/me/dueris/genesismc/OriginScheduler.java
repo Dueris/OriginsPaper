@@ -2,6 +2,7 @@ package me.dueris.genesismc;
 
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.CreativeFlight;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;
@@ -94,7 +95,7 @@ public class OriginScheduler {
 					flightHandler.runAsync(p, null);
 				}
 				for (ApoliPower c : applied) {
-					for (Power power : PowerHolderComponent.getPowers(p, c.getType())) {
+					for (PowerType power : PowerHolderComponent.getPowers(p, c.getClass())) {
 						c.runAsync(p, power);
 					}
 				}

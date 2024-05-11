@@ -12,6 +12,7 @@ import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.registries.Power;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -157,13 +158,13 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
 	}
 
-	public static Pair<String, String> getNameOrTag(Power power) {
+	public static Pair<String, String> getNameOrTag(PowerType power) {
 		String name = power.getName();
 		String tag = power.getTag();
 		return new Pair<String, String>() {
 			@Override
 			public String left() {
-				return !name.equals("No Name") ? name : power.getPowerParent() != null ? getNameOrTag(power.getPowerParent()).first() : tag;
+				return !name.equals("No Name") ? name : tag;
 			}
 
 			@Override

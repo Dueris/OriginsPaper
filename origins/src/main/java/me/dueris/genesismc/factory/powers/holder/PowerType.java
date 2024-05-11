@@ -10,6 +10,7 @@ import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -99,6 +100,13 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 	}
 
 	public void tick() {
+	}
+
+	public void tickAsync() {
+	}
+
+	public String getType() {
+		return PowerHolderComponent.getType(this);
 	}
 
 	public ConcurrentLinkedQueue<CraftPlayer> getPlayers() {

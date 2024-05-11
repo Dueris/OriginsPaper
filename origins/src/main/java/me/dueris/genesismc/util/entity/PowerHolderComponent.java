@@ -1,6 +1,7 @@
 package me.dueris.genesismc.util.entity;
 
 import javassist.NotFoundException;
+import me.dueris.calio.data.FactoryData;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -168,6 +169,17 @@ public class PowerHolderComponent implements Listener {
 		return false;
 	}
 
+	public static boolean hasPowerType(Player p, Class<? extends PowerType> typeOf) {
+		if (playerPowerMapping.containsKey(p)) {
+			for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
+				for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {
+					if (power.getClass().equals(typeOf)) return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public static void setOrigin(Player player, Layer layer, Origin origin) {
 		NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originLayer");
 		HashMap<Layer, Origin> origins = CraftApoli.toOrigin(player.getPersistentDataContainer().get(key, PersistentDataType.STRING));
@@ -239,13 +251,21 @@ public class PowerHolderComponent implements Listener {
 		duplicates.forEach(power -> getPowersApplied(p).remove(power));
 	}
 
+	public static String getType(PowerType powerType) {
+		return powerType.registerComponents(new FactoryData()).getIdentifier().asString();
+	}
+
+	public static boolean isOfType(PowerType type, Class<? extends PowerType> typeOf) {
+		return type.getClass().equals(typeOf);
+	}
+
 	public static void applyPower(Player player, PowerType power, boolean suppress) {
 		applyPower(player, power, suppress, false);
 	}
 
 	public static void applyPower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
-		String name = power.getClass().equals(Simple.class) ? power.getTag() : power.getType();
+		String name = power.getClass().equals(Simple.class) ? power.getTag() : getType(power);
 		ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
 		if (c != null) {
 			c.getPlayersWithPower().add(player);
@@ -266,7 +286,7 @@ public class PowerHolderComponent implements Listener {
 
 	public static void removePower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
-		String name = power.getType().equalsIgnoreCase("apoli:simple") ? power.getTag() : power.getType();
+		String name = power.getClass().equals(Simple.class) ? power.getTag() : getType(power);
 		ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
 		if (c != null) {
 			powersAppliedList.get(player).remove(c);
@@ -314,7 +334,7 @@ public class PowerHolderComponent implements Listener {
 					GenesisMC.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
 					return;
 				}
-				for (Power power : playerPowerMapping.get(player).get(layer)) {
+				for (PowerType power : playerPowerMapping.get(player).get(layer)) {
 					removePower(player, power, false);
 				}
 			}).thenRun(() -> {
@@ -336,7 +356,7 @@ public class PowerHolderComponent implements Listener {
 					GenesisMC.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
 					return;
 				}
-				for (Power power : playerPowerMapping.get(player).get(layer)) {
+				for (PowerType power : playerPowerMapping.get(player).get(layer)) {
 					applyPower(player, power, false, isNew);
 				}
 			}).thenRun(() -> {

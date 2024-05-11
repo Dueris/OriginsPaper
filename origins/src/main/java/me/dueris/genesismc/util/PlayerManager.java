@@ -12,7 +12,6 @@ import me.dueris.genesismc.screen.GuiTicker;
 import me.dueris.genesismc.storage.OriginConfiguration;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.storage.nbt.NBTFixerUpper;
-import me.dueris.genesismc.util.entity.InventorySerializer;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -91,7 +90,9 @@ public class PlayerManager implements Listener {
 		PersistentDataContainer data = p.getPersistentDataContainer();
 		if (data.has(GenesisMC.identifier("shulker-box"), PersistentDataType.STRING)) {
 			String save = data.get(GenesisMC.identifier("shulker-box"), PersistentDataType.STRING);
-			InventorySerializer.saveInNbtIO("origins:inventory", save, p);
+			PersistentDataContainer container = p.getPersistentDataContainer();
+			container.set(GenesisMC.apoliIdentifier("inventorydata_" + "origins:inventory".replace(":", "_").replace("/", "_").replace("\\", "_")), PersistentDataType.STRING, save);
+			p.saveData();
 			data.remove(GenesisMC.identifier("shulker-box"));
 		}
 		if (!p.getPersistentDataContainer().has(GenesisMC.identifier("can-explode"), PersistentDataType.INTEGER)) {

@@ -16,7 +16,7 @@ public class PowerUtils {
 			if (PowerHolderComponent.playerPowerMapping.get(p) != null) {
 				ArrayList<PowerType> powersToEdit = new ArrayList<>();
 				powersToEdit.add(poweR);
-				powersToEdit.addAll(CraftApoli.getNestedPowers(poweR));
+				powersToEdit.addAll(CraftApoli.getNestedPowerTypes(poweR));
 				for (PowerType power : powersToEdit) {
 					try {
 						if (PowerHolderComponent.playerPowerMapping.get(p).get(layer).contains(power)) {
