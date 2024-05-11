@@ -2,11 +2,9 @@ package me.dueris.calio.parse;
 
 import com.google.gson.JsonObject;
 import me.dueris.calio.CraftCalio;
-import me.dueris.calio.builder.ConstructorCreator;
-import me.dueris.calio.builder.JsonObjectRemapper;
-import me.dueris.calio.builder.inst.*;
-import me.dueris.calio.builder.inst.annotations.ProvideJsonConstructor;
-import me.dueris.calio.builder.inst.annotations.RequiresPlugin;
+import me.dueris.calio.data.*;
+import me.dueris.calio.data.annotations.ProvideJsonConstructor;
+import me.dueris.calio.data.annotations.RequiresPlugin;
 import me.dueris.calio.registry.impl.CalioRegistry;
 
 import org.bukkit.NamespacedKey;
@@ -61,6 +59,7 @@ public class CalioJsonParser {
         if (accessorKey.getOfType() == null) return;
         try {
             FactoryData data;
+            Class<? extends FactoryHolder> holder;
             if (accessorKey.usesTypeDefiner()) {
                 if (!CraftCalio.INSTANCE.types.containsKey(NamespacedKey.fromString(pair.getA().get("type").getAsString()))) {
                     CraftCalio.INSTANCE.getLogger().severe("Unknown type was provided! : {a} | {b}"
@@ -70,10 +69,11 @@ public class CalioJsonParser {
                     return;
                 } else {
                     data = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(pair.getA().get("type").getAsString())).getFirst();
+                    holder = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(pair.getA().get("type").getAsString())).getSecond();
                 }
             } else {
                 // We gotta invoke the FactoryData manually
-                Class<? extends FactoryHolder> holder = accessorKey.getOfType();
+                holder = accessorKey.getOfType();
                 Method rC = holder.getDeclaredMethod("registerComponents", FactoryData.class);
                 if (rC == null) throw new IllegalArgumentException("FactoryHolder doesn't have registerComponents method in it or its superclasses!");
                 if (holder.isAnnotationPresent(RequiresPlugin.class)) {
@@ -84,11 +84,11 @@ public class CalioJsonParser {
             }
 
             // Create the constructor
-            Class<? extends FactoryHolder> holder = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(pair.getA().get("type").getAsString())).getSecond();
             Constructor<? extends FactoryHolder> constructor = findConstructor(data, holder);
             if (constructor != null) {
                 FactoryHolder created = ConstructorCreator.invoke(constructor, data, pair);
                 created.ofResourceLocation(pair.getB());
+                System.out.println(created.getKey());
                 CalioRegistry.INSTANCE.retrieve(accessorKey.getRegistryKey()).registerOrThrow(created);
                 created.bootstrap();
             } else throw new IllegalStateException("Unable to find constructor for provided type!");

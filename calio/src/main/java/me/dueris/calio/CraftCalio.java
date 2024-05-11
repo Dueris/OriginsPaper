@@ -1,8 +1,10 @@
 package me.dueris.calio;
 
 import com.mojang.datafixers.util.Pair;
-import me.dueris.calio.builder.inst.*;
-import me.dueris.calio.builder.inst.annotations.RequiresPlugin;
+import me.dueris.calio.data.AccessorKey;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.FactoryHolder;
+import me.dueris.calio.data.annotations.RequiresPlugin;
 import me.dueris.calio.parse.CalioJsonParser;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.NamespacedKey;

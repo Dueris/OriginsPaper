@@ -5,7 +5,7 @@ import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.CraftCalio;
-import me.dueris.calio.builder.JsonObjectRemapper;
+import me.dueris.calio.data.JsonObjectRemapper;
 import me.dueris.calio.registry.IRegistry;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.registry.impl.CalioRegistry;

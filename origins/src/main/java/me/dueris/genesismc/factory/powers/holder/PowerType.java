@@ -4,10 +4,10 @@ import com.google.gson.JsonObject;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import me.dueris.calio.CraftCalio;
-import me.dueris.calio.builder.inst.FactoryData;
-import me.dueris.calio.builder.inst.FactoryHolder;
-import me.dueris.calio.builder.inst.annotations.Register;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.FactoryHolder;
+import me.dueris.calio.data.annotations.Register;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -105,11 +105,11 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 	}
 
 	@Override
-	public NamespacedKey ofResourceLocation(NamespacedKey key) {
-		if (this.tagSet) return this.tag;
+	public PowerType ofResourceLocation(NamespacedKey key) {
+		if (this.tagSet) return this;
 		tagSet = true;
 		this.tag = key;
-		return key;
+		return this;
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package me.dueris.genesismc.util;
 
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.util.ClipContextUtils;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.data.types.RotationType;

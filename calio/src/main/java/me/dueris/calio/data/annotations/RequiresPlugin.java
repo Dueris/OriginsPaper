@@ -1,7 +1,9 @@
-package me.dueris.calio.builder.inst.annotations;
+package me.dueris.calio.data.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ProvideJsonConstructor { }
+public @interface RequiresPlugin {
+	String pluginName() default "genesismc";
+}

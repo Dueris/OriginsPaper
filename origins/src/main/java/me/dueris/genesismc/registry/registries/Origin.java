@@ -1,11 +1,12 @@
 package me.dueris.genesismc.registry.registries;
 
 import com.google.gson.JsonArray;
-import me.dueris.calio.builder.inst.FactoryData;
-import me.dueris.calio.builder.inst.FactoryHolder;
-import me.dueris.calio.builder.inst.factory.FactoryElement;
-import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.FactoryHolder;
+import me.dueris.calio.data.annotations.Register;
+import me.dueris.calio.data.factory.FactoryElement;
+import me.dueris.calio.data.factory.FactoryJsonArray;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.storage.OriginConfiguration;
 import net.minecraft.resources.ResourceLocation;
@@ -35,6 +36,7 @@ public class Origin implements FactoryHolder {
 	private final List<ResourceLocation> powerIdentifiers = new ArrayList<>();
 	private boolean isDisabled;
 
+	@Register
 	public Origin(String name, String description, int impact, ItemStack icon, boolean unchoosable, FactoryJsonArray upgrades, FactoryJsonArray powers, int order, int loading_priority) {
 		this.name = name;
 		this.description = description;
@@ -119,7 +121,7 @@ public class Origin implements FactoryHolder {
 	}
 
 	public String getTag() {
-		return tag.asString();
+		return this.tag.asString();
 	}
 
 	/**
@@ -138,12 +140,12 @@ public class Origin implements FactoryHolder {
 	}
 
 	@Override
-	public NamespacedKey ofResourceLocation(NamespacedKey key) {
-		if (this.tagSet) return this.tag;
+	public Origin ofResourceLocation(NamespacedKey key) {
+		if (this.tagSet) return this;
 		tagSet = true;
 		this.tag = key;
 		this.cachedTag = key.asString();
-		return key;
+		return this;
 	}
 
 	@Override

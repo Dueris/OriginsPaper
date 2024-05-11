@@ -1,4 +1,4 @@
-package me.dueris.calio.builder.inst;
+package me.dueris.calio.data;
 
 import me.dueris.calio.util.holders.TriPair;
 

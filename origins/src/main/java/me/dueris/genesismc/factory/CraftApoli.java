@@ -1,11 +1,10 @@
 package me.dueris.genesismc.factory;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
-import me.dueris.calio.builder.inst.factory.FactoryBuilder;
-import me.dueris.calio.builder.inst.factory.FactoryElement;
-import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import me.dueris.calio.data.factory.FactoryBuilder;
+import me.dueris.calio.data.factory.FactoryElement;
+import me.dueris.calio.data.factory.FactoryJsonArray;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.Registries;
@@ -38,7 +37,7 @@ public class CraftApoli {
 		"Empty", "No Origin", 0,
 		new ItemStack(Material.BEDROCK), true, new FactoryJsonArray(new JsonArray()),
 		new FactoryJsonArray(new JsonArray()), 0, 0
-	);
+	).ofResourceLocation(NamespacedKey.fromString("origins:empty"));
 
 	public static Collection<Layer> getLayersFromRegistry() {
 		return layerRegistrar.values();

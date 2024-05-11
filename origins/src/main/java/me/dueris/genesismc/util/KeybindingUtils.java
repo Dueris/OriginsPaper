@@ -2,7 +2,7 @@ package me.dueris.genesismc.util;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.mojang.datafixers.util.Pair;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;

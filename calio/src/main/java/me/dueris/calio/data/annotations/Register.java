@@ -1,4 +1,4 @@
-package me.dueris.calio.builder.inst.annotations;
+package me.dueris.calio.data.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

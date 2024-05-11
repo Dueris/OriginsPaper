@@ -1,6 +1,6 @@
-package me.dueris.calio.builder.inst;
+package me.dueris.calio.data;
 
-import me.dueris.calio.builder.inst.factory.FactoryBuilder;
+import me.dueris.calio.data.factory.FactoryBuilder;
 import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.registry.Registrar;
 import org.bukkit.NamespacedKey;

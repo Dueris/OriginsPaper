@@ -1,9 +1,9 @@
 package me.dueris.genesismc.factory.powers.test;
 
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
-import me.dueris.calio.builder.inst.FactoryData;
-import me.dueris.calio.builder.inst.annotations.Register;
-import me.dueris.calio.builder.inst.annotations.RequiresPlugin;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.annotations.Register;
+import me.dueris.calio.data.annotations.RequiresPlugin;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 

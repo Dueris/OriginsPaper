@@ -1,16 +1,13 @@
-package me.dueris.calio.builder;
+package me.dueris.calio.data;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import me.dueris.calio.CraftCalio;
-import me.dueris.calio.builder.inst.FactoryData;
-import me.dueris.calio.builder.inst.FactoryDataDefiner;
-import me.dueris.calio.builder.inst.FactoryHolder;
-import me.dueris.calio.builder.inst.annotations.Register;
-import me.dueris.calio.builder.inst.factory.FactoryElement;
-import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import me.dueris.calio.data.annotations.Register;
+import me.dueris.calio.data.factory.FactoryElement;
+import me.dueris.calio.data.factory.FactoryJsonArray;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import oshi.util.tuples.Pair;
 
 import java.lang.reflect.Constructor;
@@ -26,7 +23,7 @@ public class ConstructorCreator {
 		NamespacedKey tag = pair.getB();
 		List<Object> invoker = new ArrayList<>();
 		if (!constructor.isAnnotationPresent(Register.class)) {
-			CraftCalio.INSTANCE.getLogger().severe("@Register annotation must be present in constructor annotation : " + data.getIdentifier().asString());
+			CraftCalio.INSTANCE.getLogger().severe("@Register annotation must be present in constructor annotation : " + tag.asString());
 			return null;
 		}
 		for (FactoryDataDefiner provider : data.getProviders()) {
@@ -95,6 +92,8 @@ public class ConstructorCreator {
 			if (provided.isJsonArray()) {
 				return new FactoryJsonArray(provided.getAsJsonArray());
 			}
+		} else if (CalioDataTypes.test(ofType, provided) != null) {
+			return CalioDataTypes.test(ofType, provided);
 		}
 		CraftCalio.INSTANCE.getLogger().severe("Unable to create instance {a}! Bug?"
 			.replace("{a}", ofType.getSimpleName())

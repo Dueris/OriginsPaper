@@ -1,4 +1,4 @@
-package me.dueris.calio.builder.inst.factory;
+package me.dueris.calio.data.factory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

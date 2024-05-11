@@ -1,4 +1,4 @@
-package me.dueris.calio.builder.inst;
+package me.dueris.calio.data;
 
 import com.google.common.base.Preconditions;
 import org.bukkit.NamespacedKey;

@@ -1,4 +1,4 @@
-package me.dueris.calio.builder.inst;
+package me.dueris.calio.data;
 
 import org.bukkit.NamespacedKey;
 
@@ -9,7 +9,7 @@ public interface FactoryHolder extends Registrable {
 		return new FactoryData();
 	}
 
-	public NamespacedKey ofResourceLocation(NamespacedKey key);
+	public FactoryHolder ofResourceLocation(NamespacedKey key);
 
 	public default void bootstrap() { }
 }

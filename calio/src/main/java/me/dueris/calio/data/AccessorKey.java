@@ -1,4 +1,4 @@
-package me.dueris.calio.builder.inst;
+package me.dueris.calio.data;
 
 import org.bukkit.NamespacedKey;
 

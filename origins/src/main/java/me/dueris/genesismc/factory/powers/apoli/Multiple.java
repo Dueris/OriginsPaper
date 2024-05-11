@@ -4,11 +4,11 @@ import org.bukkit.NamespacedKey;
 
 import com.google.gson.JsonObject;
 
-import me.dueris.calio.builder.inst.AccessorKey;
-import me.dueris.calio.builder.inst.FactoryData;
-import me.dueris.calio.builder.inst.annotations.ProvideJsonConstructor;
-import me.dueris.calio.builder.inst.annotations.Register;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import me.dueris.calio.data.AccessorKey;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.annotations.ProvideJsonConstructor;
+import me.dueris.calio.data.annotations.Register;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.parse.CalioJsonParser;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
@@ -39,17 +39,11 @@ public class Multiple extends PowerType {
         source.keySet().forEach(k -> {
             if (source.get(k).isJsonObject()) {
                 CalioJsonParser.initilize(
-                    new Pair<JsonObject,NamespacedKey>(source.get(k).getAsJsonObject(), NamespacedKey.fromString(this.getKey().asString() + "_" + k.toLowerCase())),
+					new Pair<>(source.get(k).getAsJsonObject(), NamespacedKey.fromString(this.getKey().asString() + "_" + k.toLowerCase())),
                     new AccessorKey("powers", this.getLoadingPriority(), true, Registries.CRAFT_POWER, PowerType.class)
                 );
             }
         });
-    }
-
-    @Override
-    public NamespacedKey ofResourceLocation(NamespacedKey key) {
-        super.ofResourceLocation(key);
-        return key;
     }
     
 }

@@ -2,7 +2,7 @@ package me.dueris.genesismc.registry;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.registries.Layer;
 
