@@ -5,7 +5,6 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.Multiple;
 import me.dueris.genesismc.factory.powers.apoli.Simple;
 import me.dueris.genesismc.factory.powers.genesismc.GravityPower;
@@ -46,7 +45,7 @@ public class PowerHolderComponent implements Listener {
 	// Power maps of every power based on each layer applied to the player
 	public static ConcurrentHashMap<Player, HashMap<Layer, ConcurrentLinkedQueue<PowerType>>> playerPowerMapping = new ConcurrentHashMap<>();
 	// A list of CraftPowers to be ran on the player
-	public static ConcurrentHashMap<Player, ConcurrentLinkedQueue<ApoliPower>> powersAppliedList = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Player, ConcurrentLinkedQueue<PowerType>> powersAppliedList = new ConcurrentHashMap<>();
 	// A list of Players that have powers that should be run
 	public static ConcurrentLinkedQueue<Player> hasPowers = new ConcurrentLinkedQueue<>();
 	/**
@@ -225,7 +224,7 @@ public class PowerHolderComponent implements Listener {
 		return player.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform")) ? player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN) : false;
 	}
 
-	public static ConcurrentLinkedQueue<ApoliPower> getPowersApplied(Player p) {
+	public static ConcurrentLinkedQueue<PowerType> getPowersApplied(Player p) {
 		return powersAppliedList.get(p);
 	}
 
@@ -240,8 +239,8 @@ public class PowerHolderComponent implements Listener {
 	 */
 	public static void checkForDuplicates(Player p) {
 		List<NamespacedKey> keys = new ArrayList<>();
-		List<ApoliPower> duplicates = new ArrayList<>();
-		for (ApoliPower power : getPowersApplied(p)) {
+		List<PowerType> duplicates = new ArrayList<>();
+		for (PowerType power : getPowersApplied(p)) {
 			if (keys.contains(power.getKey())) {
 				duplicates.add(power);
 			} else {
@@ -266,11 +265,11 @@ public class PowerHolderComponent implements Listener {
 	public static void applyPower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
 		String name = power.getClass().equals(Simple.class) ? power.getTag() : getType(power);
-		ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
+		PowerType c = (PowerType) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
 		if (c != null) {
-			c.getPlayersWithPower().add(player);
+			c.forPlayer(player);
 			if (!powersAppliedList.containsKey(player))
-				powersAppliedList.put(player, new ConcurrentLinkedQueue<ApoliPower>(List.of(c)));
+				powersAppliedList.put(player, new ConcurrentLinkedQueue<PowerType>(List.of(c)));
 			else powersAppliedList.get(player).add(c);
 			if (!suppress) {
 				if (OriginConfiguration.getConfiguration().getString("debug").equalsIgnoreCase("true"))
@@ -287,10 +286,10 @@ public class PowerHolderComponent implements Listener {
 	public static void removePower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
 		String name = power.getClass().equals(Simple.class) ? power.getTag() : getType(power);
-		ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
+		PowerType c = (PowerType) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
 		if (c != null) {
 			powersAppliedList.get(player).remove(c);
-			c.getPlayersWithPower().remove(player);
+			c.removePlayer(player);
 			if (!suppress) {
 				if (OriginConfiguration.getConfiguration().getString("debug").equalsIgnoreCase("true"))
 					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());

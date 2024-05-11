@@ -48,6 +48,7 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 	protected boolean tagSet = false;
 	private NamespacedKey tag = null;
 	private String cachedTagString = null;
+	private boolean hasPlayers = false;
 
 	@Register
 	public PowerType(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
@@ -99,10 +100,10 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 		return loadingPriority;
 	}
 
-	public void tick() {
+	public void tick(Player player) {
 	}
 
-	public void tickAsync() {
+	public void tickAsync(Player player) {
 	}
 
 	public String getType() {
@@ -117,8 +118,18 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 		return cachedTagString;
 	}
 
+	public boolean hasPlayers() {
+		return hasPlayers || !this.players.isEmpty();
+	}
+
 	public void forPlayer(Player player) {
+		this.hasPlayers = true;
 		this.players.add((CraftPlayer) player);
+	}
+
+	public void removePlayer(Player player) {
+		this.hasPlayers = false;
+		this.players.remove((CraftPlayer) player);
 	}
 
 	public boolean isActive(Player player) {

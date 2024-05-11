@@ -12,7 +12,6 @@ import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.factory.data.types.EntityGroup;
 import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
-import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Utils;

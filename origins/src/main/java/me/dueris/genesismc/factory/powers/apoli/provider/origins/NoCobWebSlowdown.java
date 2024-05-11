@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 
 import io.papermc.paper.event.entity.EntityInsideBlockEvent;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

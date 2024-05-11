@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;

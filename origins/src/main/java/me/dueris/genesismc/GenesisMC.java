@@ -26,8 +26,6 @@ import me.dueris.genesismc.factory.actions.types.EntityActions;
 import me.dueris.genesismc.factory.actions.types.ItemActions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.types.*;
-import me.dueris.genesismc.factory.powers.ApoliPower;
-import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.integration.PlaceHolderAPI;
@@ -219,7 +217,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		// Our version of restricted_armor allows handling of both.
 		JsonObjectRemapper.typeAlias.put("apoli:conditioned_restrict_armor", "apoli:restrict_armor");
 		ThreadFactory threadFactory = new NamedTickThreadFactory("OriginParsingPool");
-		CraftPower.tryPreloadClass(AsyncTaskWorker.class); // Preload worker
 		placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
 		if (placeholderapi) new PlaceHolderAPI(this).register();
 
@@ -315,17 +312,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 		GenesisMC.scheduler = new OriginScheduler.OriginSchedulerTree();
 		GenesisMC.scheduler.runTaskTimer(this, 0, 1);
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				GenesisMC.scheduler.tickAsyncScheduler();
-			}
-		}.runTaskTimerAsynchronously(GenesisMC.getPlugin(), 0, 1);
-		ConcurrentHashMap<Player, List<ApoliPower>> playerListConcurrentHashMap = OriginScheduler.tickedPowers;
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			PowerHolderComponent.powersAppliedList.putIfAbsent(player, new ConcurrentLinkedQueue<>());
-			playerListConcurrentHashMap.put(player, new ArrayList<>());
-		}
 		WaterProtBook.init();
 		start();
 		patchPowers();
@@ -347,7 +333,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		PowerCommand.register(((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
 		// Load addons
 		CraftPehuki.onLoad();
-		CraftPower.tryPreloadClass(CraftApoli.class);
 
 		try {
 			Bootstrap.deleteDirectory(GenesisMC.getTmpFolder().toPath(), true);

@@ -1,7 +1,5 @@
 package me.dueris.genesismc.util.exception;
 
-import me.dueris.genesismc.factory.powers.CraftPower;
-
 /**
  * Thrown when a duplicate CraftPower is detected when
  */

@@ -1,14 +1,9 @@
 package me.dueris.genesismc.util;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
-import com.mojang.datafixers.util.Pair;
-import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
-import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.powers.ApoliPower;
-import me.dueris.genesismc.registry.registries.Power;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -37,47 +32,6 @@ import java.util.HashMap;
 
 public class KeybindingUtils implements Listener {
 	public static HashMap<Player, ArrayList<String>> activeKeys = new HashMap<>();
-
-	public static Pair<Boolean, String> renderKeybind(Power power) {
-		boolean should = false;
-		String key = "[null]";
-		if (power.isOriginMultipleParent()) {
-			for (Power powerContainer : CraftApoli.getNestedPowers(power)) {
-				for (String object : powerContainer.keySet()) {
-					if (object.equalsIgnoreCase("key")) {
-						if (powerContainer.getElement(object).isString()) {
-							should = true;
-							key = "[%%]".replace("%%", powerContainer.getString(object));
-						} else if (powerContainer.getElement(object).isJsonObject()) {
-							FactoryJsonObject obj = powerContainer.getJsonObject(object);
-							should = obj.isPresent("key");
-							if (should) {
-								key = "[%%]".replace("%%", obj.getString("key"));
-							}
-						}
-					}
-				}
-			}
-		} else {
-			for (String object : power.keySet()) {
-				if (object.equalsIgnoreCase("key")) {
-					if (power.getElement(object).isString()) {
-						should = true;
-						key = "[%%]".replace("%%", power.getString(object));
-					} else if (power.getElement(object).isJsonObject()) {
-						FactoryJsonObject obj = power.getJsonObject(object);
-						should = obj.isPresent("key");
-						if (should) {
-							key = "[%%]".replace("%%", obj.getString("key"));
-						}
-					}
-				}
-			}
-		}
-		return new Pair<>(should, key);
-	}
-
-	// Keybind event triggers
 
 	public static String translateOriginRawKey(String string) {
 		if (string.contains("key.origins.primary_active"))
@@ -213,9 +167,6 @@ public class KeybindingUtils implements Listener {
 	private void resetKeybinds(Player p) {
 		if (activeKeys.containsKey(p)) {
 			activeKeys.get(p).clear();
-		}
-		if (ApoliPower.powers_active.containsKey(p)) {
-			ApoliPower.powers_active.get(p).clear();
 		}
 		for (ItemStack item : p.getInventory()) {
 			if (item == null) continue;

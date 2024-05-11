@@ -14,7 +14,6 @@ import me.dueris.genesismc.factory.powers.apoli.Cooldown;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.factory.powers.apoli.Toggle;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;

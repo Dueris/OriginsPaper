@@ -10,7 +10,6 @@ import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -1,7 +1,6 @@
 package me.dueris.genesismc.event;
 
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.registry.registries.Power;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;

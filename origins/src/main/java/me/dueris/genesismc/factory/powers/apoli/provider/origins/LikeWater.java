@@ -1,9 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
-import me.dueris.genesismc.registry.registries.Power;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
