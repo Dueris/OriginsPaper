@@ -15,7 +15,7 @@
 package me.dueris.genesismc.util;
 
 import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -105,7 +105,7 @@ public class Metrics {
 	}
 
 	public static void originPopularity(Player p) {
-		for (Origin origin : OriginPlayerAccessor.getOrigin(p).values()) {
+		for (Origin origin : PowerHolderComponent.getOrigin(p).values()) {
 			metrics.addCustomChart(new Metrics.DrilldownPie("originPopularity", () -> {
 				Map<String, Map<String, Integer>> map = new HashMap<>();
 				Map<String, Integer> entry = new HashMap<>();

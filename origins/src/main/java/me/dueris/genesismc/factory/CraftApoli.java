@@ -7,11 +7,13 @@ import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.apoli.Multiple;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -32,7 +34,10 @@ public class CraftApoli {
 	private static final int BUFFER_SIZE = 4096;
 	private static final Registrar<Layer> layerRegistrar = ((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER));
 	private static final Registrar<Origin> originRegistrar = ((Registrar<Origin>) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN));
+	// TODO: remove
+	@Deprecated(forRemoval = true)
 	private static final Registrar<Power> powerRegistrar = (Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER);
+	private static final Registrar<PowerType> powersRegistrar = (Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER);
 	static Origin empty = new Origin(
 		"Empty", "No Origin", 0,
 		new ItemStack(Material.BEDROCK), true, new FactoryJsonArray(new JsonArray()),
@@ -89,6 +94,8 @@ public class CraftApoli {
 		}
 	}
 
+	@Deprecated(forRemoval = true)
+	// TODO: remove this
 	public static ArrayList<Power> getNestedPowers(Power power) {
 		ArrayList<Power> nested = new ArrayList<>();
 		if (power == null) return nested;
@@ -101,6 +108,15 @@ public class CraftApoli {
 					nested.add(powerRegistrar.get(NamespacedKey.fromString(powerFolder + ":" + powerFileName + "_" + key.toLowerCase())));
 				}
 			}
+		}
+		return nested;
+	}
+
+	public static ArrayList<PowerType> getNestedPowerTypes(PowerType power) {
+		ArrayList<PowerType> nested = new ArrayList<>();
+		if (power == null) return nested;
+		if (power instanceof Multiple multiple) {
+			nested.addAll(multiple.getSubPowers());
 		}
 		return nested;
 	}
@@ -126,8 +142,8 @@ public class CraftApoli {
 			if (layer == null) continue;
 			Origin layerOrigins = origin.get(layer);
 			ArrayList<String> powers = new ArrayList<>();
-			if (OriginPlayerAccessor.playerPowerMapping.get(p).containsKey(layer)) {
-				powers.addAll(OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).stream().map(Power::getTag).toList());
+			if (PowerHolderComponent.playerPowerMapping.get(p).containsKey(layer)) {
+				powers.addAll(PowerHolderComponent.playerPowerMapping.get(p).get(layer).stream().map(Power::getTag).toList());
 			} else {
 				powers.addAll(layerOrigins.getPowers());
 			}

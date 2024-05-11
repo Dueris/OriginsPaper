@@ -11,12 +11,12 @@ import me.dueris.genesismc.content.enchantment.AnvilHandler;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.apoli.RecipePower;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.OriginPage;
 import me.dueris.genesismc.storage.OriginDataContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
@@ -57,7 +57,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 	public static HashMap<Player, ArrayList<Origin>> playerOrigins = new HashMap<>();
 	public static List<Origin> commandProvidedOrigins = new ArrayList<>();
 	public static List<Layer> commandProvidedLayers = new ArrayList<>();
-	public static List<Power> commandProvidedPowers = new ArrayList<>();
+	public static List<PowerType> commandProvidedPowers = new ArrayList<>();
 
 	static {
 		wearable = EnumSet.of(Material.ENCHANTED_BOOK, Material.BOOK, Material.PUMPKIN, Material.CARVED_PUMPKIN, Material.ELYTRA, Material.TURTLE_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_BOOTS, Material.LEATHER_LEGGINGS, Material.LEATHER_HELMET, Material.CHAINMAIL_BOOTS, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_HELMET, Material.CHAINMAIL_LEGGINGS, Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS, Material.GOLDEN_HELMET, Material.GOLDEN_CHESTPLATE, Material.GOLDEN_LEGGINGS, Material.GOLDEN_BOOTS, Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS, Material.NETHERITE_HELMET, Material.NETHERITE_CHESTPLATE, Material.NETHERITE_LEGGINGS, Material.NETHERITE_BOOTS);
@@ -99,7 +99,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 										return 0;
 									}
 									targets.forEach(player -> {
-										OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, origin);
+										PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, origin);
 										player.getBukkitEntity().getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
 										OriginChangeEvent originChangeEvent = new OriginChangeEvent(player.getBukkitEntity(), origin, false);
 										getServer().getPluginManager().callEvent(originChangeEvent);
@@ -151,7 +151,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 							}).executes(context -> {
 								Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
 								Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
-								targets.forEach(player -> context.getSource().getBukkitEntity().sendMessage(net.kyori.adventure.text.Component.text("%player% has the following %layer% : %origin%".replace("%player%", player.getBukkitEntity().getName()).replace("%layer%", layer.getTag()).replace("%origin%", OriginPlayerAccessor.getOrigin(player.getBukkitEntity(), layer).getTag()))));
+								targets.forEach(player -> context.getSource().getBukkitEntity().sendMessage(net.kyori.adventure.text.Component.text("%player% has the following %layer% : %origin%".replace("%player%", player.getBukkitEntity().getName()).replace("%layer%", layer.getTag()).replace("%origin%", PowerHolderComponent.getOrigin(player.getBukkitEntity(), layer).getTag()))));
 								return SINGLE_SUCCESS;
 							})
 						)
@@ -162,11 +162,11 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 						ServerPlayer player = context.getSource().getPlayer();
 						CraftApoli.getLayersFromRegistry().forEach(layer -> {
 							try {
-								OriginPlayerAccessor.unassignPowers(player.getBukkitEntity(), layer);
+								PowerHolderComponent.unassignPowers(player.getBukkitEntity(), layer);
 							} catch (NotFoundException e) {
 								throw new RuntimeException(e);
 							}
-							OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.emptyOrigin());
+							PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, CraftApoli.emptyOrigin());
 						});
 						return SINGLE_SUCCESS;
 					})
@@ -176,11 +176,11 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 							targets.forEach(player -> {
 								for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 									try {
-										OriginPlayerAccessor.unassignPowers(player.getBukkitEntity(), layer);
+										PowerHolderComponent.unassignPowers(player.getBukkitEntity(), layer);
 									} catch (NotFoundException e) {
 										throw new RuntimeException(e);
 									}
-									OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.emptyOrigin());
+									PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, CraftApoli.emptyOrigin());
 								}
 							});
 							return SINGLE_SUCCESS;
@@ -199,11 +199,11 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 								Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
 								targets.forEach(player -> {
 									try {
-										OriginPlayerAccessor.unassignPowers(player.getBukkitEntity(), layer);
+										PowerHolderComponent.unassignPowers(player.getBukkitEntity(), layer);
 									} catch (NotFoundException e) {
 										throw new RuntimeException(e);
 									}
-									OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.emptyOrigin());
+									PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, CraftApoli.emptyOrigin());
 								});
 								return SINGLE_SUCCESS;
 							})

@@ -46,6 +46,7 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 	private final ConcurrentLinkedQueue<CraftPlayer> players = new ConcurrentLinkedQueue<>();
 	protected boolean tagSet = false;
 	private NamespacedKey tag = null;
+	private String cachedTagString = null;
 
 	@Register
 	public PowerType(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
@@ -59,7 +60,7 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 	public static FactoryData registerComponents(FactoryData data) {
 		return data.add("name", String.class, "craftapoli.name.not_found")
 			.add("description", String.class, "craftapoli.description.not_found")
-			.add("hidden", boolean.class, (boolean) false)
+			.add("hidden", boolean.class, false)
 			.add("condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("loading_priority", int.class, (int) 1);
 	}
@@ -104,8 +105,8 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 		return players;
 	}
 
-	public String getType() {
-		return null;
+	public String getTag() {
+		return cachedTagString;
 	}
 
 	public void forPlayer(Player player) {
@@ -121,6 +122,7 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 		if (this.tagSet) return this;
 		tagSet = true;
 		this.tag = key;
+		this.cachedTagString = key.asString();
 		return this;
 	}
 

@@ -6,7 +6,7 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.server.MinecraftServer;
@@ -42,7 +42,7 @@ public class AsyncUpgradeTracker implements Listener {
 			for (Map.Entry<Origin, TriPair> entry : upgrades.entrySet()) {
 				for (CraftPlayer player : ((CraftServer) Bukkit.getServer()).getOnlinePlayers()) {
 					for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-						if (OriginPlayerAccessor.getOrigin(player, layer).equals(entry.getKey())) {
+						if (PowerHolderComponent.getOrigin(player, layer).equals(entry.getKey())) {
 							String advancement = (String) entry.getValue().first;
 							NamespacedKey originToSet = (NamespacedKey) entry.getValue().second;
 							String announcement = (String) entry.getValue().third;
@@ -54,7 +54,7 @@ public class AsyncUpgradeTracker implements Listener {
 
 							AdvancementProgress progress = player.getHandle().getAdvancements().getOrStartProgress(advancementHolder);
 							if (progress.isDone()) {
-								OriginPlayerAccessor.setOrigin(player, layer, (Origin) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(originToSet));
+								PowerHolderComponent.setOrigin(player, layer, (Origin) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(originToSet));
 								if (!announcement.equals(NO_ANNOUNCEMENT)) {
 									player.sendMessage(announcement);
 								}

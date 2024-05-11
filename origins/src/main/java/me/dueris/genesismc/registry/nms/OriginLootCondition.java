@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -43,7 +43,7 @@ public class OriginLootCondition implements LootItemCondition {
 		if (var4 instanceof Player player) {
 			NamespacedKey key = CraftNamespacedKey.fromMinecraft(this.originId);
 			Origin origin = (Origin) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(key);
-			return OriginPlayerAccessor.hasOrigin(player, origin.getTag());
+			return PowerHolderComponent.hasOrigin(player, origin.getTag());
 		} else {
 			return false;
 		}

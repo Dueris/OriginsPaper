@@ -5,7 +5,7 @@ import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
@@ -92,7 +92,7 @@ public class RandomOriginPage implements ChoosingPage {
 	public void onChoose(Player player, Layer layer) {
 		Origin origin = layer.getRandomOrigins().get(random.nextInt(layer.getRandomOrigins().size()));
 
-		OriginPlayerAccessor.setOrigin((org.bukkit.entity.Player) player.getBukkitEntity(), layer, origin);
+		PowerHolderComponent.setOrigin((org.bukkit.entity.Player) player.getBukkitEntity(), layer, origin);
 		OriginChangeEvent e = new OriginChangeEvent((org.bukkit.entity.Player) player.getBukkitEntity(), origin, ScreenNavigator.orbChoosing.contains(player));
 		Bukkit.getPluginManager().callEvent(e);
 		player.getBukkitEntity().getOpenInventory().close();

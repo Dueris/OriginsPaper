@@ -50,7 +50,7 @@ import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.storage.nbt.NBTFixerUpper;
 import me.dueris.genesismc.util.*;
 import me.dueris.genesismc.util.entity.InventorySerializer;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.server.MinecraftServer;
@@ -130,9 +130,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	private static void patchPowers() {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			OriginDataContainer.loadData();
-			OriginPlayerAccessor.setupPowers(p);
+			PowerHolderComponent.setupPowers(p);
 			PlayerManager.originValidCheck(p);
-			OriginPlayerAccessor.assignPowers(p);
+			PowerHolderComponent.assignPowers(p);
 			if (p.isOp())
 				p.sendMessage(Component.text("Origins Reloaded!").color(TextColor.fromHexString(AQUA)));
 		}
@@ -332,7 +332,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		}.runTaskTimerAsynchronously(GenesisMC.getPlugin(), 0, 1);
 		ConcurrentHashMap<Player, List<ApoliPower>> playerListConcurrentHashMap = OriginScheduler.tickedPowers;
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			OriginPlayerAccessor.powersAppliedList.putIfAbsent(player, new ConcurrentLinkedQueue<>());
+			PowerHolderComponent.powersAppliedList.putIfAbsent(player, new ConcurrentLinkedQueue<>());
 			playerListConcurrentHashMap.put(player, new ArrayList<>());
 		}
 		WaterProtBook.init();
@@ -343,7 +343,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 		// Shutdown executor, we don't need it anymore
 		loaderThreadPool.shutdown();
-		OriginCommand.commandProvidedPowers.addAll(((Registrar<Power>) this.registry.retrieve(Registries.POWER)).values().stream().toList());
+		OriginCommand.commandProvidedPowers.addAll(((Registrar<PowerType>) this.registry.retrieve(Registries.CRAFT_POWER)).values().stream().toList());
 		OriginCommand.commandProvidedOrigins.addAll(((Registrar<Origin>) this.registry.retrieve(Registries.ORIGIN)).values().stream().toList());
 		OriginCommand.commandProvidedLayers.addAll(((Registrar<Layer>) this.registry.retrieve(Registries.LAYER)).values().stream().filter(Layer::isEnabled).toList());
 
@@ -405,8 +405,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			}
 		});
 
-		BukkitRunnable[] independentTickers = {new GuiTicker(), new ContentTicker(), new OriginCommand(), new Cooldown()};
-		WaterBreathe.start();
+		BukkitRunnable[] independentTickers = {new GuiTicker(), new ContentTicker(), new OriginCommand(), /*new Cooldown()*/}; // TODO
+		// WaterBreathe.start(); // TODO
 		for (BukkitRunnable runnable : independentTickers) {
 			runnable.runTaskTimerAsynchronously(GenesisMC.getPlugin(), 0, 1);
 		}
@@ -416,19 +416,20 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	public void onDisable() {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			player.closeInventory(); // Ensure that all choosing players have closed inventories during reload
-			player.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerAccessor.getOrigin(player), player));
-			OriginPlayerAccessor.unassignPowers(player);
+			player.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(PowerHolderComponent.getOrigin(player), player));
+			PowerHolderComponent.unassignPowers(player);
 			OriginDataContainer.unloadData(player);
 		}
 		preShutdownTasks.forEach(Runnable::run);
 		CraftApoli.unloadData();
-		OriginPlayerAccessor.playerPowerMapping.clear();
-		OriginPlayerAccessor.powersAppliedList.clear();
+		PowerHolderComponent.playerPowerMapping.clear();
+		PowerHolderComponent.powersAppliedList.clear();
 		OriginCommand.commandProvidedLayers.clear();
 		OriginCommand.commandProvidedOrigins.clear();
 		OriginCommand.commandProvidedPowers.clear();
-		RecipePower.recipeMapping.clear();
-		RecipePower.tags.clear();
+		// TODO
+//		RecipePower.recipeMapping.clear();
+//		RecipePower.tags.clear();
 		this.registry.clearRegistries();
 		scheduler.cancel();
 		AsyncTaskWorker.shutdown();
@@ -463,7 +464,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	public void loadEvent(ServerLoadEvent e) {
 		ChoosingPage.registerInstances();
 		ScreenNavigator.layerPages.values().forEach((pages) -> pages.add(pages.size(), new RandomOriginPage()));
-		parseRecipes();
+		// TODO
+//		parseRecipes();
 		OrbOfOrigins.init();
 	}
 }

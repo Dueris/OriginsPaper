@@ -2,42 +2,26 @@ package me.dueris.genesismc.util;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
 public class PowerUtils {
-
-	public static void grant(CommandSender executor, Power power, Player p, Layer layer, boolean suppress) throws InstantiationException, IllegalAccessException {
+	public static void removePower(CommandSender executor, PowerType poweR, Player p, Layer layer, boolean suppress) throws InstantiationException, IllegalAccessException {
 		GenesisMC.getScheduler().parent.offMain(() -> {
-			if (!OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).contains(power)) {
-				OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).add(power);
-				OriginPlayerAccessor.applyPower(p, power, suppress, true);
-				if (!suppress) {
-					executor.sendMessage("Entity %name% was granted the power %power%"
-						.replace("%power%", power.getName())
-						.replace("%name%", p.getName())
-					);
-				}
-			}
-		});
-	}
-
-	public static void remove(CommandSender executor, Power poweR, Player p, Layer layer, boolean suppress) throws InstantiationException, IllegalAccessException {
-		GenesisMC.getScheduler().parent.offMain(() -> {
-			if (OriginPlayerAccessor.playerPowerMapping.get(p) != null) {
-				ArrayList<Power> powersToEdit = new ArrayList<>();
+			if (PowerHolderComponent.playerPowerMapping.get(p) != null) {
+				ArrayList<PowerType> powersToEdit = new ArrayList<>();
 				powersToEdit.add(poweR);
 				powersToEdit.addAll(CraftApoli.getNestedPowers(poweR));
-				for (Power power : powersToEdit) {
+				for (PowerType power : powersToEdit) {
 					try {
-						if (OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).contains(power)) {
-							OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).remove(power);
-							OriginPlayerAccessor.removePower(p, power, suppress, true);
+						if (PowerHolderComponent.playerPowerMapping.get(p).get(layer).contains(power)) {
+							PowerHolderComponent.playerPowerMapping.get(p).get(layer).remove(power);
+							PowerHolderComponent.removePower(p, power, suppress, true);
 							if (!suppress) {
 								executor.sendMessage("Entity %name% had the power %power% removed"
 									.replace("%power%", power.getName())
@@ -48,6 +32,22 @@ public class PowerUtils {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+				}
+			}
+		});
+	}
+
+	// New Rewrite
+	public static void grantPower(CommandSender executor, PowerType power, Player p, Layer layer, boolean suppress) throws InstantiationException, IllegalAccessException {
+		GenesisMC.getScheduler().parent.offMain(() -> {
+			if (!PowerHolderComponent.playerPowerMapping.get(p).get(layer).contains(power)) {
+				PowerHolderComponent.playerPowerMapping.get(p).get(layer).add(power);
+				PowerHolderComponent.applyPower(p, power, suppress, true);
+				if (!suppress) {
+					executor.sendMessage("Entity %name% was granted the power %power%"
+						.replace("%power%", power.getName())
+						.replace("%name%", p.getName())
+					);
 				}
 			}
 		});

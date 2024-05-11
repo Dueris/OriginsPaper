@@ -9,7 +9,7 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.storage.OriginConfiguration;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
@@ -170,7 +170,7 @@ public class ScreenNavigator implements Listener {
 							Utils.consumeItem(e.getItem());
 						}
 						for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-							OriginPlayerAccessor.setOrigin(p, layer, CraftApoli.emptyOrigin());
+							PowerHolderComponent.setOrigin(p, layer, CraftApoli.emptyOrigin());
 						}
 						OrbInteractEvent event = new OrbInteractEvent(p);
 						getServer().getPluginManager().callEvent(event);

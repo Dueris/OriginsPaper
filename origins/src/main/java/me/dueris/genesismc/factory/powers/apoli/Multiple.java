@@ -13,9 +13,13 @@ import me.dueris.genesismc.registry.Registries;
 import org.bukkit.NamespacedKey;
 import oshi.util.tuples.Pair;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @ProvideJsonConstructor
 public class Multiple extends PowerType {
 	private final JsonObject source;
+	private final List<PowerType> subPowers = new ArrayList<>();
 
 	@Register
 	public Multiple(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, JsonObject source) {
@@ -32,16 +36,22 @@ public class Multiple extends PowerType {
 		return this.source;
 	}
 
+	public List<PowerType> getSubPowers() {
+		return subPowers;
+	}
+
 	@Override
 	public void bootstrap() {
 		source.keySet().forEach(k -> {
 			if (source.get(k).isJsonObject()) {
-				CalioJsonParser.initilize(
+				PowerType type = (PowerType) CalioJsonParser.initilize(
 					new Pair<>(source.get(k).getAsJsonObject(), NamespacedKey.fromString(this.getKey().asString() + "_" + k.toLowerCase())),
 					new AccessorKey("powers", this.getLoadingPriority(), true, Registries.CRAFT_POWER, PowerType.class)
 				);
+				if (type != null) {
+					subPowers.add(type);
+				}
 			}
 		});
 	}
-
 }

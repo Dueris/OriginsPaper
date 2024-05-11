@@ -18,7 +18,7 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -483,7 +483,7 @@ public class EntityActions {
 		register(new ActionFactory(GenesisMC.apoliIdentifier("block_action_at"), (action, entity) -> executeBlock(entity.getLocation(), action.getJsonObject("block_action"))));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("toggle"), (action, entity) -> {
 			if (entity instanceof Player p) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, "apoli:toggle")) {
+				for (Power power : PowerHolderComponent.getPowers(p, "apoli:toggle")) {
 					if (!power.getTag().equalsIgnoreCase(action.getString("power"))) continue;
 					Toggle toggle = new Toggle();
 					toggle.execute(p, power);
@@ -496,7 +496,7 @@ public class EntityActions {
 				Arrays.stream(new String[]{"apoli:action_on_hit", "apoli:action_when_damage_taken", "apoli:action_when_hit",
 					"apoli:action_self", "apoli:attacker_action_when_hit", "apoli:self_action_on_hit",
 					"apoli:self_action_on_kill", "apoli:self_action_when_hit", "apoli:target_action_on_hit"}).forEach(type -> {
-					for (Power powerContainer : OriginPlayerAccessor.getPowers(player, type)) {
+					for (Power powerContainer : PowerHolderComponent.getPowers(player, type)) {
 						if (powerContainer.isPresent("cooldown") && powerContainer.isPresent("key")) {
 							Cooldown.addCooldown(player, powerContainer.getNumber("cooldown").getInt(), powerContainer);
 						}

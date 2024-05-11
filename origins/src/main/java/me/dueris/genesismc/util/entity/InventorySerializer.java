@@ -131,7 +131,7 @@ public class InventorySerializer implements Listener {
 	public void onInventoryClose(InventoryCloseEvent e) {
 		Player p = (Player) e.getPlayer();
 
-		for (Power power : OriginPlayerAccessor.getPowers(p, "apoli:inventory")) {
+		for (Power power : PowerHolderComponent.getPowers(p, "apoli:inventory")) {
 			if (matches(e.getView(), power)) {
 				ArrayList<ItemStack> prunedItems = new ArrayList<>();
 

@@ -13,11 +13,10 @@ import me.dueris.genesismc.factory.data.types.EntityGroup;
 import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
 import me.dueris.genesismc.factory.powers.ApoliPower;
-import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -107,7 +106,7 @@ public class EntityConditions {
 			}
 			return false;
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("origin"), (condition, entity) -> entity instanceof Player p && OriginPlayerAccessor.hasOrigin(p, condition.getString("origin"))));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("origin"), (condition, entity) -> entity instanceof Player p && PowerHolderComponent.hasOrigin(p, condition.getString("origin"))));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("power_active"), (condition, entity) -> {
 			if (!ApoliPower.powers_active.containsKey(entity)) return false;
 			String power = condition.getString("power");
@@ -128,7 +127,7 @@ public class EntityConditions {
 			}
 			return false;
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("sprinting"), (condition, entity) -> (entity instanceof CraftPlayer player && player.isSprinting()) || OriginPlayerAccessor.currentSprintingPlayersFallback.contains(entity)));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("sprinting"), (condition, entity) -> (entity instanceof CraftPlayer player && player.isSprinting()) || PowerHolderComponent.currentSprintingPlayersFallback.contains(entity)));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("food_level"), (condition, entity) -> {
 			String comparison = condition.getString("comparison");
 			float compare_to = condition.getNumber("compare_to").getFloat();

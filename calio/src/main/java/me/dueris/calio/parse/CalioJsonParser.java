@@ -54,9 +54,9 @@ public class CalioJsonParser {
 		}
 	}
 
-	public static void initilize(Pair<JsonObject, NamespacedKey> pair, AccessorKey accessorKey) {
+	public static FactoryHolder initilize(Pair<JsonObject, NamespacedKey> pair, AccessorKey accessorKey) {
 		NamespacedKey key = pair.getB();
-		if (accessorKey.getOfType() == null) return;
+		if (accessorKey.getOfType() == null) return null;
 		try {
 			FactoryData data;
 			Class<? extends FactoryHolder> holder;
@@ -66,7 +66,7 @@ public class CalioJsonParser {
 						.replace("{a}", NamespacedKey.fromString(pair.getA().get("type").getAsString()).asString())
 						.replace("{b}", key.asString())
 					);
-					return;
+					return null;
 				} else {
 					data = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(pair.getA().get("type").getAsString())).getFirst();
 					holder = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(pair.getA().get("type").getAsString())).getSecond();
@@ -79,7 +79,7 @@ public class CalioJsonParser {
 					throw new IllegalArgumentException("FactoryHolder doesn't have registerComponents method in it or its superclasses!");
 				if (holder.isAnnotationPresent(RequiresPlugin.class)) {
 					RequiresPlugin aN = holder.getAnnotation(RequiresPlugin.class);
-					if (!org.bukkit.Bukkit.getPluginManager().isPluginEnabled(aN.pluginName())) return;
+					if (!org.bukkit.Bukkit.getPluginManager().isPluginEnabled(aN.pluginName())) return null;
 				}
 				data = (FactoryData) rC.invoke(null, new FactoryData());
 			}
@@ -93,6 +93,7 @@ public class CalioJsonParser {
 					CalioRegistry.INSTANCE.retrieve(accessorKey.getRegistryKey()).registerOrThrow(created);
 					created.bootstrap();
 				}
+				return created;
 			} else throw new IllegalStateException("Unable to find constructor for provided type!");
 		} catch (Throwable throwable) {
 			throwable.printStackTrace();
@@ -107,6 +108,7 @@ public class CalioJsonParser {
 					.replace("{c}", throwable.getMessage()) + stacktrace[0]
 			);
 		}
+		return null;
 	}
 
 	private static Constructor<? extends FactoryHolder> findConstructor(FactoryData data, Class<? extends FactoryHolder> holder) {

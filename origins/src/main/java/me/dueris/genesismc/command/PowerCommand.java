@@ -1,18 +1,20 @@
 package me.dueris.genesismc.command;
 
-import com.google.gson.JsonParser;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import joptsimple.internal.Strings;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.JsonGetter;
 import me.dueris.genesismc.util.JsonTextFormatter;
 import me.dueris.genesismc.util.PowerUtils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
@@ -45,7 +47,7 @@ public class PowerCommand {
 					return builder.buildFuture();
 				}).executes(context -> {
 					try {
-						Power power = ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(ResourceLocationArgument.getId(context, "power").getNamespace() + ":" + ResourceLocationArgument.getId(context, "power").getPath()));
+						PowerType power = ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).get(NamespacedKey.fromString(ResourceLocationArgument.getId(context, "power").getNamespace() + ":" + ResourceLocationArgument.getId(context, "power").getPath()));
 						if (power == null) {
 							context.getSource().sendFailure(Component.literal("Power not found."));
 							return 1;
@@ -54,7 +56,7 @@ public class PowerCommand {
 						String indent = Strings.repeat(' ', 4);
 						context.getSource().sendSuccess(() -> {
 							String append = context.getSource().isPlayer() ? "" : "\n";
-							return Component.literal(append).append((new JsonTextFormatter(indent)).apply(JsonParser.parseString(power.getJsonData())));
+							return Component.literal(append).append((new JsonTextFormatter(indent)).apply(new Gson().fromJson(JsonGetter.getJsonString(power.getKey(), "powers"), JsonElement.class)));
 						}, false);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -75,13 +77,13 @@ public class PowerCommand {
 						return builder.buildFuture();
 					}).executes(context -> {
 						EntityArgument.getPlayers(context, "targets").forEach(player -> {
-							if (OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()) != null) {
-								Power poweR = ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
-								ArrayList<Power> powersToEdit = new ArrayList<>(CraftApoli.getNestedPowers(poweR));
+							if (PowerHolderComponent.playerPowerMapping.get(player.getBukkitEntity()) != null) {
+								PowerType poweR = ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
+								ArrayList<PowerType> powersToEdit = new ArrayList<>(CraftApoli.getNestedPowerTypes(poweR));
 								powersToEdit.add(poweR);
-								for (Power power : powersToEdit) {
+								for (PowerType power : powersToEdit) {
 									try {
-										PowerUtils.grant(context.getSource().getBukkitSender(), power, player.getBukkitEntity(), CraftApoli.getLayerFromTag("apoli:command"), context.getSource().isSilent());
+										PowerUtils.grantPower(context.getSource().getBukkitSender(), power, player.getBukkitEntity(), CraftApoli.getLayerFromTag("apoli:command"), context.getSource().isSilent());
 									} catch (InstantiationException | IllegalAccessException ex) {
 										throw new RuntimeException(ex);
 									}
@@ -92,13 +94,13 @@ public class PowerCommand {
 					}).then(argument("layer", ResourceLocationArgument.id())
 						.executes(context -> {
 							EntityArgument.getPlayers(context, "targets").forEach(player -> {
-								if (OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()) != null) {
-									Power poweR = ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
-									ArrayList<Power> powersToEdit = new ArrayList<>(CraftApoli.getNestedPowers(poweR));
+								if (PowerHolderComponent.playerPowerMapping.get(player.getBukkitEntity()) != null) {
+									PowerType poweR = ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
+									ArrayList<PowerType> powersToEdit = new ArrayList<>(CraftApoli.getNestedPowerTypes(poweR));
 									powersToEdit.add(poweR);
-									for (Power power : powersToEdit) {
+									for (PowerType power : powersToEdit) {
 										try {
-											PowerUtils.grant(context.getSource().getBukkitSender(), power, player.getBukkitEntity(), CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()), context.getSource().isSilent());
+											PowerUtils.grantPower(context.getSource().getBukkitSender(), power, player.getBukkitEntity(), CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()), context.getSource().isSilent());
 										} catch (InstantiationException | IllegalAccessException ex) {
 											throw new RuntimeException(ex);
 										}
@@ -125,7 +127,7 @@ public class PowerCommand {
 						AtomicBoolean passed = new AtomicBoolean(false);
 						EntityArgument.getPlayers(context, "targets").forEach(player -> {
 							for (Layer layer : OriginCommand.commandProvidedLayers) {
-								for (Power power : OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()).get(layer)) {
+								for (PowerType power : PowerHolderComponent.playerPowerMapping.get(player.getBukkitEntity()).get(layer)) {
 									if (passed.get()) continue;
 									if (power.getTag().equals(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString())) {
 										passed.set(true);
@@ -147,8 +149,8 @@ public class PowerCommand {
 			.then(argument("targets", EntityArgument.entities())
 				.executes(context -> {
 					for (ServerPlayer player : EntityArgument.getPlayers(context, "targets")) {
-						ConcurrentLinkedQueue<Power> allPowers = new ConcurrentLinkedQueue<>();
-						ArrayList<Power> powers = OriginPlayerAccessor.getPowers(player.getBukkitEntity());
+						ConcurrentLinkedQueue<PowerType> allPowers = new ConcurrentLinkedQueue<>();
+						ArrayList<PowerType> powers = PowerHolderComponent.getPowers(player.getBukkitEntity());
 						if (!powers.isEmpty()) {
 							allPowers.addAll(powers);
 						}
@@ -188,7 +190,7 @@ public class PowerCommand {
 						NamespacedKey arg = CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power"));
 						CraftApoli.getLayersFromRegistry().forEach(layer -> {
 							try {
-								PowerUtils.remove(context.getSource().getBukkitSender(), ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(arg), p.getBukkitEntity(), layer, context.getSource().isSilent());
+								PowerUtils.removePower(context.getSource().getBukkitSender(), ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).get(arg), p.getBukkitEntity(), layer, context.getSource().isSilent());
 							} catch (InstantiationException | IllegalAccessException e) {
 								throw new RuntimeException(e);
 							}
@@ -203,7 +205,7 @@ public class PowerCommand {
 							String layer = CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString();
 
 							try {
-								PowerUtils.remove(context.getSource().getBukkitSender(), ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(arg), p.getBukkitEntity(), CraftApoli.getLayerFromTag(layer), context.getSource().isSilent());
+								PowerUtils.removePower(context.getSource().getBukkitSender(), ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).get(arg), p.getBukkitEntity(), CraftApoli.getLayerFromTag(layer), context.getSource().isSilent());
 							} catch (InstantiationException | IllegalAccessException e) {
 								throw new RuntimeException(e);
 							}

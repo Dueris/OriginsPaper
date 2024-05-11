@@ -3,7 +3,7 @@ package me.dueris.genesismc;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.CreativeFlight;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -49,11 +49,11 @@ public class OriginScheduler {
 
 		@Override
 		public void run() {
-			for (Player p : OriginPlayerAccessor.hasPowers) {
+			for (Player p : PowerHolderComponent.hasPowers) {
 				if (Bukkit.getServer().getCurrentTick() % 20 == 0) {
-					OriginPlayerAccessor.checkForDuplicates(p);
+					PowerHolderComponent.checkForDuplicates(p);
 				}
-				ConcurrentLinkedQueue<ApoliPower> applied = OriginPlayerAccessor.getPowersApplied(p);
+				ConcurrentLinkedQueue<ApoliPower> applied = PowerHolderComponent.getPowersApplied(p);
 				for (ApoliPower c : applied) {
 					if (!c.getPlayersWithPower().contains(p)) {
 						c.doesntHavePower(p); // Allow powers to tick on players that don't have that power
@@ -63,7 +63,7 @@ public class OriginScheduler {
 						continue; // CraftPower was already ticked, we are not ticking it again.
 					tickedPowers.get(p).add(c);
 
-					for (Power power : OriginPlayerAccessor.getPowers(p, c.getType(), c)) {
+					for (Power power : PowerHolderComponent.getPowers(p, c.getType(), c)) {
 						try {
 							c.run(p, power);
 						} catch (Throwable throwable) {
@@ -88,13 +88,13 @@ public class OriginScheduler {
 		}
 
 		public void tickAsyncScheduler() {
-			for (Player p : OriginPlayerAccessor.hasPowers) {
-				ConcurrentLinkedQueue<ApoliPower> applied = OriginPlayerAccessor.getPowersApplied(p);
+			for (Player p : PowerHolderComponent.hasPowers) {
+				ConcurrentLinkedQueue<ApoliPower> applied = PowerHolderComponent.getPowersApplied(p);
 				if (!applied.stream().map(Object::getClass).toList().contains(CreativeFlight.class)) {
 					flightHandler.runAsync(p, null);
 				}
 				for (ApoliPower c : applied) {
-					for (Power power : OriginPlayerAccessor.getPowers(p, c.getType())) {
+					for (Power power : PowerHolderComponent.getPowers(p, c.getType())) {
 						c.runAsync(p, power);
 					}
 				}

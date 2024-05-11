@@ -17,5 +17,4 @@ public class Simple extends PowerType {
 		return PowerType.registerComponents(data)
 			.ofNamespace(GenesisMC.apoliIdentifier("simple"));
 	}
-
 }

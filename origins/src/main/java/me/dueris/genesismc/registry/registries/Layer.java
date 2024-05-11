@@ -16,7 +16,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.screen.ScreenNavigator;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
@@ -183,7 +183,7 @@ public class Layer implements FactoryHolder {
 			if (entity instanceof Player p) {
 				FactoryElement element = getOrigins().asList().get(0);
 				String identifier = element.getString();
-				OriginPlayerAccessor.setOrigin(p, this, CraftApoli.getOrigin(identifier));
+				PowerHolderComponent.setOrigin(p, this, CraftApoli.getOrigin(identifier));
 				return true;
 			}
 		}
@@ -193,7 +193,7 @@ public class Layer implements FactoryHolder {
 			NamespacedKey identifier = getDefaultOrigin();
 			Origin origin = ((Registrar<Origin>) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).get(identifier);
 			if (origin != null && entity instanceof Player p) {
-				OriginPlayerAccessor.setOrigin(p, this, origin);
+				PowerHolderComponent.setOrigin(p, this, origin);
 				return true;
 			}
 		}

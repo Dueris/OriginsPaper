@@ -4,7 +4,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChoosePromptEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -27,7 +27,7 @@ public class GuiTicker extends BukkitRunnable {
 			for (Layer layer : CraftApoli.getLayersFromRegistry().stream().filter(Layer::isEnabled).toList()) {
 				if (layer.testChoosable(p).isEmpty()) continue;
 				try {
-					if (OriginPlayerAccessor.getOrigin(p, layer).getTag().equalsIgnoreCase("origins:empty")) {
+					if (PowerHolderComponent.getOrigin(p, layer).getTag().equalsIgnoreCase("origins:empty")) {
 						if (layer.testDefaultOrigin(p)) continue;
 						if (!inChoosingLayer.containsKey(((CraftPlayer) p).getHandle())) {
 							OriginChoosePromptEvent event = new OriginChoosePromptEvent(p);

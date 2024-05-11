@@ -6,7 +6,7 @@ import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.ComponentMultiLine;
 import me.dueris.genesismc.util.KeybindingUtils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -182,7 +182,7 @@ public class OriginPage implements ChoosingPage {
 
 	@Override
 	public void onChoose(Player player, Layer layer) {
-		OriginPlayerAccessor.setOrigin((org.bukkit.entity.Player) player.getBukkitEntity(), layer, this.origin);
+		PowerHolderComponent.setOrigin((org.bukkit.entity.Player) player.getBukkitEntity(), layer, this.origin);
 		OriginChangeEvent e = new OriginChangeEvent((org.bukkit.entity.Player) player.getBukkitEntity(), this.origin, ScreenNavigator.orbChoosing.contains(player));
 		Bukkit.getPluginManager().callEvent(e);
 		player.getBukkitEntity().getOpenInventory().close();

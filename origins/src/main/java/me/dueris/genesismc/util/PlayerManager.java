@@ -13,7 +13,7 @@ import me.dueris.genesismc.storage.OriginConfiguration;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.storage.nbt.NBTFixerUpper;
 import me.dueris.genesismc.util.entity.InventorySerializer;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.NamespacedKey;
@@ -40,7 +40,7 @@ public class PlayerManager implements Listener {
 	public static ArrayList<Player> playersLeaving = new ArrayList<>();
 
 	public static void originValidCheck(Player p) {
-		HashMap<Layer, Origin> origins = OriginPlayerAccessor.getOrigin(p);
+		HashMap<Layer, Origin> origins = PowerHolderComponent.getOrigin(p);
 		for (Layer layer : origins.keySet()) {
 			if (layer == null) continue; // Layer was removed
 			for (String tag : layer.getOriginIdentifiers()) {
@@ -69,7 +69,7 @@ public class PlayerManager implements Listener {
 	public void playerJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		OriginScheduler.tickedPowers.putIfAbsent(p, new ArrayList<>());
-		OriginPlayerAccessor.powersAppliedList.putIfAbsent(p, new ConcurrentLinkedQueue<>());
+		PowerHolderComponent.powersAppliedList.putIfAbsent(p, new ConcurrentLinkedQueue<>());
 		//set origins to null if none present
 		if (
 			!p.getPersistentDataContainer().has(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) ||
@@ -123,9 +123,9 @@ public class PlayerManager implements Listener {
 		}
 
 		OriginDataContainer.loadData(p);
-		OriginPlayerAccessor.setupPowers(p);
+		PowerHolderComponent.setupPowers(p);
 		originValidCheck(p);
-		OriginPlayerAccessor.assignPowers(p);
+		PowerHolderComponent.assignPowers(p);
 
 		if (!new GravityPower().getPlayersWithPower().contains(p)) {
 			new GravityPower().doesntHavePower(p);
@@ -141,8 +141,8 @@ public class PlayerManager implements Listener {
 		}.runTaskLater(GenesisMC.getPlugin(), OriginConfiguration.getConfiguration().getInt("choosing_delay"));
 
 		// Update powers for 1.0.0 update
-		if (!p.getPersistentDataContainer().has(GenesisMC.identifier("updated")) && !OriginPlayerAccessor.getOrigin(p, CraftApoli.getLayerFromTag("origins:origin")).equals(CraftApoli.emptyOrigin())) {
-			OriginPlayerAccessor.setOrigin(p, CraftApoli.getLayerFromTag("origins:origin"), OriginPlayerAccessor.getOrigin(p, CraftApoli.getLayerFromTag("origins:origin")));
+		if (!p.getPersistentDataContainer().has(GenesisMC.identifier("updated")) && !PowerHolderComponent.getOrigin(p, CraftApoli.getLayerFromTag("origins:origin")).equals(CraftApoli.emptyOrigin())) {
+			PowerHolderComponent.setOrigin(p, CraftApoli.getLayerFromTag("origins:origin"), PowerHolderComponent.getOrigin(p, CraftApoli.getLayerFromTag("origins:origin")));
 			p.getPersistentDataContainer().set(GenesisMC.identifier("updated"), PersistentDataType.BOOLEAN, true);
 		}
 	}
@@ -150,8 +150,8 @@ public class PlayerManager implements Listener {
 	@EventHandler
 	public void playerQuitHandler(PlayerQuitEvent e) {
 		playersLeaving.add(e.getPlayer());
-		e.getPlayer().getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerAccessor.getOrigin(e.getPlayer()), e.getPlayer()));
-		OriginPlayerAccessor.unassignPowers(e.getPlayer());
+		e.getPlayer().getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(PowerHolderComponent.getOrigin(e.getPlayer()), e.getPlayer()));
+		PowerHolderComponent.unassignPowers(e.getPlayer());
 		OriginDataContainer.unloadData(e.getPlayer());
 		playersLeaving.remove(e.getPlayer());
 	}

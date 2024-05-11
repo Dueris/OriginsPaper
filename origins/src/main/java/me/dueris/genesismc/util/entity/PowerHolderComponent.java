@@ -5,11 +5,13 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.ApoliPower;
+import me.dueris.genesismc.factory.powers.apoli.Multiple;
+import me.dueris.genesismc.factory.powers.apoli.Simple;
 import me.dueris.genesismc.factory.powers.genesismc.GravityPower;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.storage.OriginConfiguration;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.util.Metrics;
@@ -38,10 +40,10 @@ import java.util.concurrent.ExecutionException;
 
 import static me.dueris.genesismc.screen.ScreenNavigator.inChoosingLayer;
 
-public class OriginPlayerAccessor implements Listener {
+public class PowerHolderComponent implements Listener {
 
 	// Power maps of every power based on each layer applied to the player
-	public static ConcurrentHashMap<Player, HashMap<Layer, ConcurrentLinkedQueue<Power>>> playerPowerMapping = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Player, HashMap<Layer, ConcurrentLinkedQueue<PowerType>>> playerPowerMapping = new ConcurrentHashMap<>();
 	// A list of CraftPowers to be ran on the player
 	public static ConcurrentHashMap<Player, ConcurrentLinkedQueue<ApoliPower>> powersAppliedList = new ConcurrentHashMap<>();
 	// A list of Players that have powers that should be run
@@ -96,21 +98,21 @@ public class OriginPlayerAccessor implements Listener {
 	public static void setupPowers(Player p) {
 		OriginDataContainer.loadData(p);
 		String[] layers = OriginDataContainer.getLayer(p).split("\n");
-		HashMap<Layer, ConcurrentLinkedQueue<Power>> map = new HashMap<>();
+		HashMap<Layer, ConcurrentLinkedQueue<PowerType>> map = new HashMap<>();
 		for (String layer : layers) {
 			String[] layerData = layer.split("\\|");
 			Layer layerContainer = CraftApoli.getLayerFromTag(layerData[0]);
-			ConcurrentLinkedQueue<Power> powers = new ConcurrentLinkedQueue<Power>();
+			ConcurrentLinkedQueue<PowerType> powers = new ConcurrentLinkedQueue<PowerType>();
 			// setup powers
 			for (String dataPiece : layerData) {
 				if (layerData.length == 1) continue;
-				Power powerCon = (Power) GenesisMC.getPlugin().registry.retrieve(Registries.POWER).get(NamespacedKey.fromString(dataPiece));
+				PowerType powerCon = (PowerType) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(dataPiece));
 				if (powerCon != null) {
 					if (powers.contains(powerCon)) continue;
 					powers.add(powerCon);
-					if (powerCon.isOriginMultipleParent()) {
-						ArrayList<Power> nestedPowers = CraftApoli.getNestedPowers(powerCon);
-						for (Power nested : nestedPowers) {
+					if (powerCon.getClass().equals(Multiple.class)) {
+						ArrayList<PowerType> nestedPowers = CraftApoli.getNestedPowerTypes(powerCon);
+						for (PowerType nested : nestedPowers) {
 							if (nested != null) powers.add(nested);
 						}
 					}
@@ -121,49 +123,33 @@ public class OriginPlayerAccessor implements Listener {
 		playerPowerMapping.put(p, map);
 	}
 
-	public static ArrayList<Power> getPowers(Player p, String powerType, ApoliPower r) {
-		ArrayList<Power> powers = new ArrayList<>();
+	public static ArrayList<PowerType> getPowers(Player p, Class<? extends PowerType> typeOf) {
+		ArrayList<PowerType> powers = new ArrayList<>();
 		if (playerPowerMapping.get(p) == null) return powers;
 		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 			if (layer == null) continue;
-			for (Power power : playerPowerMapping.get(p).get(layer)) {
+			for (PowerType power : playerPowerMapping.get(p).get(layer)) {
 				if (power == null) continue;
-				if (powerType == null) {
-					if (power.getType().equalsIgnoreCase("apoli:simple") &&
-						power.getTag().equalsIgnoreCase(r.getKey().asString())) powers.add(power);
-				} else if (power.getType().equals(powerType)) powers.add(power);
+				powers.add(power);
 			}
 		}
 		return powers;
 	}
 
-	public static ArrayList<Power> getPowers(Player p, String powerType) {
-		ArrayList<Power> powers = new ArrayList<>();
+	public static ArrayList<PowerType> getPowers(Player p, Class<? extends PowerType> powerType, Layer layer) {
+		ArrayList<PowerType> powers = new ArrayList<>();
 		if (playerPowerMapping.get(p) == null) return powers;
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			if (layer == null) continue;
-			for (Power power : playerPowerMapping.get(p).get(layer)) {
-				if (power == null) continue;
-				if (power.getType().equals(powerType)) powers.add(power);
-			}
-		}
-		return powers;
-	}
-
-	public static ArrayList<Power> getPowers(Player p, String powerType, Layer layer) {
-		ArrayList<Power> powers = new ArrayList<>();
-		if (playerPowerMapping.get(p) == null) return powers;
-		for (Power power : playerPowerMapping.get(p).get(layer)) {
+		for (PowerType power : playerPowerMapping.get(p).get(layer)) {
 			if (power == null) continue;
-			if (power.getType().equals(powerType)) powers.add(power);
+			if (power.getClass().equals(powerType)) powers.add(power);
 		}
 		return powers;
 	}
 
-	public static ArrayList<Power> getPowers(Player p) {
-		ArrayList<Power> powers = new ArrayList<>();
+	public static ArrayList<PowerType> getPowers(Player p) {
+		ArrayList<PowerType> powers = new ArrayList<>();
 		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : playerPowerMapping.get(p).get(layer)) {
+			for (PowerType power : playerPowerMapping.get(p).get(layer)) {
 				if (power == null) continue;
 				powers.add(power);
 			}
@@ -174,7 +160,7 @@ public class OriginPlayerAccessor implements Listener {
 	public static boolean hasPower(Player p, String powerKey) {
 		if (playerPowerMapping.containsKey(p)) {
 			for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
-				for (Power power : playerPowerMapping.get(p).get(layerContainer)) {
+				for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {
 					if (power.getTag().equalsIgnoreCase(powerKey)) return true;
 				}
 			}
@@ -253,13 +239,13 @@ public class OriginPlayerAccessor implements Listener {
 		duplicates.forEach(power -> getPowersApplied(p).remove(power));
 	}
 
-	public static void applyPower(Player player, Power power, boolean suppress) {
+	public static void applyPower(Player player, PowerType power, boolean suppress) {
 		applyPower(player, power, suppress, false);
 	}
 
-	public static void applyPower(Player player, Power power, boolean suppress, boolean isNew) {
+	public static void applyPower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
-		String name = power.getType().equalsIgnoreCase("apoli:simple") ? power.getTag() : power.getType();
+		String name = power.getClass().equals(Simple.class) ? power.getTag() : power.getType();
 		ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
 		if (c != null) {
 			c.getPlayersWithPower().add(player);
@@ -274,11 +260,11 @@ public class OriginPlayerAccessor implements Listener {
 		}
 	}
 
-	public static void removePower(Player player, Power power, boolean suppress) {
+	public static void removePower(Player player, PowerType power, boolean suppress) {
 		removePower(player, power, suppress, false);
 	}
 
-	public static void removePower(Player player, Power power, boolean suppress, boolean isNew) {
+	public static void removePower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
 		String name = power.getType().equalsIgnoreCase("apoli:simple") ? power.getTag() : power.getType();
 		ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
