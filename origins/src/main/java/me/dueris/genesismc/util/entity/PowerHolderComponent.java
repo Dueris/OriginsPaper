@@ -14,6 +14,7 @@ import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.storage.OriginConfiguration;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.util.Metrics;
+import me.dueris.genesismc.util.exception.PowerNotFoundException;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -283,8 +284,8 @@ public class PowerHolderComponent implements Listener {
 
 	public static void applyPower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
-		String name = power.getClass().equals(Simple.class) ? power.getTag() : power.getType();
-		PowerType c = (PowerType) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
+		NamespacedKey registryKey = power.getKey();
+		PowerType c = (PowerType) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(registryKey);
 		if (c != null) {
 			c.forPlayer(player);
 			if (!powersAppliedList.containsKey(player))
@@ -300,6 +301,8 @@ public class PowerHolderComponent implements Listener {
 					applyPower(player, subPower, suppress, isNew);
 				}
 			}
+		} else {
+			throw new PowerNotFoundException(registryKey.asString());
 		}
 	}
 
@@ -309,8 +312,8 @@ public class PowerHolderComponent implements Listener {
 
 	public static void removePower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
-		String name = power.getClass().equals(Simple.class) ? power.getTag() : power.getType();
-		PowerType c = (PowerType) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
+		NamespacedKey registryKey = power.getKey();
+		PowerType c = (PowerType) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(registryKey);
 		if (c != null) {
 			powersAppliedList.get(player).remove(c);
 			c.removePlayer(player);
@@ -324,6 +327,8 @@ public class PowerHolderComponent implements Listener {
 					removePower(player, subPower, suppress, isNew);
 				}
 			}
+		} else {
+			throw new PowerNotFoundException(registryKey.asString());
 		}
 	}
 

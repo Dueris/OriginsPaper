@@ -60,7 +60,6 @@ public class ElytraFlightPower extends PowerType implements Listener {
 	@EventHandler
 	@SuppressWarnings({"unchecked", "Not scheduled yet"})
 	public void executeFlight(PlayerToggleFlightEvent e) {
-		System.out.println(this.getKey().asString());
 		Player p = e.getPlayer();
 		if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
 		if (getPlayers().contains(e.getPlayer())) {

@@ -33,7 +33,6 @@ public class CraftApoli {
 	// TODO: remove
 	@Deprecated(forRemoval = true)
 	private static final Registrar<PowerType> powerRegistrar = (Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER);
-	private static final Registrar<PowerType> powersRegistrar = (Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER);
 	static Origin empty = new Origin(
 		"Empty", "No Origin", 0,
 		new ItemStack(Material.BEDROCK), true, new FactoryJsonArray(new JsonArray()),

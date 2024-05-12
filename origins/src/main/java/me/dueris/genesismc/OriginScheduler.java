@@ -65,7 +65,7 @@ public class OriginScheduler {
 			}
 
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				flight.tick(p);
+				flight.tickAsync(p);
 			}
 		}
 	}

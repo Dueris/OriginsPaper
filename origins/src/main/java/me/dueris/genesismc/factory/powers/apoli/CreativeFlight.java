@@ -55,7 +55,7 @@ public class CreativeFlight extends PowerType {
 			}
 		}
 		if (p.getChunk().isLoaded()) {
-			if (false) { // if (Phasing.inPhantomFormBlocks.contains(p)) { // Intended only for phantom form // TODO
+			if (Phasing.inPhantomFormBlocks.contains(p)) {
 				container.set(insideBlock, PersistentDataType.BOOLEAN, true);
 			} else {
 				container.set(insideBlock, PersistentDataType.BOOLEAN, false);
