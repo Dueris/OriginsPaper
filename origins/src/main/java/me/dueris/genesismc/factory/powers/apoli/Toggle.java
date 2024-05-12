@@ -97,6 +97,11 @@ public class Toggle extends PowerType implements Listener, KeyedPower {
 	}
 
 	@Override
+	public boolean isActive(Player player) {
+		return super.isActive(player) && in_continuous.getOrDefault(player, new ArrayList<>()).contains(key.getKey());
+	}
+
+	@Override
 	public JsonKeybind getJsonKey() {
 		return key;
 	}
