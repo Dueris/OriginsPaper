@@ -324,13 +324,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		OriginCommand.commandProvidedOrigins.addAll(((Registrar<Origin>) this.registry.retrieve(Registries.ORIGIN)).values().stream().toList());
 		OriginCommand.commandProvidedLayers.addAll(((Registrar<Layer>) this.registry.retrieve(Registries.LAYER)).values().stream().filter(Layer::isEnabled).toList());
 
-		if (((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher().getRoot().getChildren().stream().map(CommandNode::getName).toList().contains("origin")) {
+		if (GenesisMC.server.getCommands().getDispatcher().getRoot().getChildren().stream().map(CommandNode::getName).toList().contains("origin")) {
 			// Already registered, lets change that ;)
-			((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher().getRoot().removeCommand("origin");
-			((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher().getRoot().removeCommand("power");
+			((CraftServer) Bukkit.getServer()).getServer().getCommands().getDispatcher().getRoot().removeCommand("origin");
+			((CraftServer) Bukkit.getServer()).getServer().getCommands().getDispatcher().getRoot().removeCommand("power");
 		}
-		OriginCommand.register(((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
-		PowerCommand.register(((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
+		OriginCommand.register(((CraftServer) Bukkit.getServer()).getServer().getCommands().getDispatcher());
+		PowerCommand.register(((CraftServer) Bukkit.getServer()).getServer().getCommands().getDispatcher());
 		// Load addons
 		CraftPehuki.onLoad();
 

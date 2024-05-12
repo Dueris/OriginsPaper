@@ -210,10 +210,6 @@ public class PowerHolderComponent implements Listener {
 			public void run() {
 				try {
 					assignPowers(player, layer, true);
-					// Extra precaution due to gravity messing up on origin switch
-					if (!new GravityPower().getPlayersWithPower().contains(player)) {
-						new GravityPower().doesntHavePower(player);
-					}
 				} catch (InstantiationException | NotFoundException | SecurityException | NoSuchFieldException |
 						 IllegalArgumentException | IllegalAccessException e) {
 					throw new RuntimeException(e);
