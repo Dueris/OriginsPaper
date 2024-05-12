@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli.provider;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.registry.Registries;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.mineskin.com.google.common.base.Preconditions;

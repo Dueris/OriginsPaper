@@ -1,15 +1,15 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.event.PowerUpdateEvent;
-import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -30,17 +30,29 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class RecipePower extends CraftPower implements Listener {
+public class RecipePower extends PowerType implements Listener {
 	public static HashMap<Player, List<String>> recipeMapping = new HashMap<>();
 	public static HashMap<String, Recipe> taggedRegistry = new HashMap<>();
 	public static List<String> tags = new ArrayList<>();
 	private static boolean finishedLoad = false;
+	private final FactoryJsonObject recipe;
+
+	public RecipePower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject recipe) {
+		super(name, description, hidden, condition, loading_priority);
+		this.recipe = recipe;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("recipe"))
+			.add("recipe", FactoryJsonObject.class, null);
+	}
 
 	public static void parseRecipes() {
-		for (Power powerContainer : ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).values().stream().filter(powerContainer -> powerContainer.getType().equalsIgnoreCase("apoli:recipe")).toList()) {
-			FactoryJsonObject recipe = powerContainer.getJsonObject("recipe");
+		for (PowerType powerContainer : ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).values().stream().filter(powerContainer -> powerContainer.getType().equalsIgnoreCase("apoli:recipe")).toList()) {
+			if (!(powerContainer instanceof RecipePower recipePower)) continue;
+			FactoryJsonObject recipe = recipePower.getRecipe();
 			if (recipe == null)
-				throw new IllegalArgumentException("Unable to find recipe data for power: " + powerContainer.getTag());
+				throw new IllegalArgumentException("Unable to find recipe data for power: " + recipePower.getTag());
 			NamespacedKey key = new NamespacedKey(recipe.getString("id").split(":")[0], recipe.getString("id").split(":")[1]);
 			String type = recipe.getString("type");
 			if (!type.startsWith("minecraft:")) {
@@ -76,7 +88,7 @@ public class RecipePower extends CraftPower implements Listener {
 				tags.add(rec.getKey().asString());
 				taggedRegistry.put(rec.getKey().asString(), rec);
 			} else {
-				throw new IllegalArgumentException("Unable to get recipe type from power: " + powerContainer.getTag());
+				throw new IllegalArgumentException("Unable to get recipe type from power: " + recipePower.getTag());
 			}
 		}
 
@@ -112,9 +124,9 @@ public class RecipePower extends CraftPower implements Listener {
 		if (recipeMapping.containsKey(p)) {
 			recipeMapping.clear();
 		}
-		if (getPlayersWithPower().contains(p)) {
-			for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
-				FactoryJsonObject recipe = power.getJsonObject("recipe");
+		if (getPlayers().contains(p)) {
+			for (RecipePower power : PowerHolderComponent.getPowers(p, RecipePower.class)) {
+				FactoryJsonObject recipe = power.getRecipe();
 				String id = recipe.getString("id");
 				if (taggedRegistry.containsKey(id)) {
 					if (recipeMapping.containsKey(p)) {
@@ -164,15 +176,7 @@ public class RecipePower extends CraftPower implements Listener {
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:recipe";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
+	public FactoryJsonObject getRecipe() {
 		return recipe;
 	}
-
-
 }

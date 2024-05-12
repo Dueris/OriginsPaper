@@ -1,10 +1,7 @@
 package me.dueris.genesismc.factory;
 
 import com.google.gson.JsonArray;
-import me.dueris.calio.data.factory.FactoryBuilder;
-import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
-import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.apoli.Multiple;

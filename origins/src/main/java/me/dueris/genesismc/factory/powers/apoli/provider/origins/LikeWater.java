@@ -9,8 +9,6 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
-
 public class LikeWater implements Listener, PowerProvider {
 	private static final AttributeModifier modifier = new AttributeModifier("LikeWater", -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("like_water");

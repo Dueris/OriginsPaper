@@ -20,8 +20,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ClimbingPower extends PowerType implements Listener {
-	private final boolean allowHolding;
 	public static ArrayList<Player> active_climbing = new ArrayList<>();
+	private final boolean allowHolding;
 	public ArrayList<Player> holdingPlayers = new ArrayList<>();
 	public ArrayList<Player> allowedToClimb = new ArrayList<>();
 

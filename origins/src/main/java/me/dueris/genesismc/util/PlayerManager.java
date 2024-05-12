@@ -1,10 +1,8 @@
 package me.dueris.genesismc.util;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.OriginScheduler;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.powers.genesismc.GravityPower;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;

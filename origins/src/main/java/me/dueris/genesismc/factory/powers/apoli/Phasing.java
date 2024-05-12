@@ -92,6 +92,14 @@ public class Phasing extends PowerType implements Listener {
 		};
 	}
 
+	public static boolean isBedrock(Player p) {
+		if (Bukkit.getPluginManager().isPluginEnabled("floodgate")) {
+			return GeyserApi.api().connectionByUuid(p.getUniqueId()) != null;
+		} else {
+			return false;
+		}
+	}
+
 	public void setInPhasingBlockForm(Player p) {
 		test.put(p, true);
 		ServerPlayer player = ((CraftPlayer) p).getHandle();
@@ -220,14 +228,6 @@ public class Phasing extends PowerType implements Listener {
 				p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
 				test.put(p, false);
 			}
-		}
-	}
-
-	public static boolean isBedrock(Player p) {
-		if (Bukkit.getPluginManager().isPluginEnabled("floodgate")) {
-			return GeyserApi.api().connectionByUuid(p.getUniqueId()) != null;
-		} else {
-			return false;
 		}
 	}
 

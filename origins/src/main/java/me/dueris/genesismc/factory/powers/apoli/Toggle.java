@@ -1,16 +1,15 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.annotations.Register;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.data.types.JsonKeybind;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.KeybindingUtils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import me.dueris.genesismc.util.entity.PowerHolderComponent;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,35 +21,49 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Toggle extends PowerType implements Listener, KeyedPower {
 	public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
+	private final boolean activeByDefault;
+	private final JsonKeybind key;
+	private final boolean retainState;
+
+	@Register
+	public Toggle(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, boolean activeByDefault, FactoryJsonObject key, boolean retainState) {
+		super(name, description, hidden, condition, loading_priority);
+		this.activeByDefault = activeByDefault;
+		this.key = JsonKeybind.createJsonKeybind(key);
+		this.retainState = retainState;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("toggle"))
+			.add("active_by_default", boolean.class, true)
+			.add("key", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("retain_state", boolean.class, true);
+	}
 
 	@EventHandler
 	public void inContinuousFix(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			in_continuous.putIfAbsent(p, new ArrayList<>());
-			for (PowerType power : OriginPlayerAccessor.getPowers(p, getType())) {
-				if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
-					if (true /* Toggle power always execute continuously */) {
-						if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"))) {
-							in_continuous.get(p).remove(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
-						} else {
-							in_continuous.get(p).add(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
-						}
-					}
+			if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), p)) {
+				if (in_continuous.get(p).contains(getJsonKey().getKey())) {
+					in_continuous.get(p).remove(getJsonKey().getKey());
+				} else {
+					in_continuous.get(p).add(getJsonKey().getKey());
 				}
 			}
 		}
 	}
 
 	@EventHandler
-	public void activeByDefault(OriginChangeEvent e) {
+	public void activeByDefaultEvent(OriginChangeEvent e) {
 		e.getOrigin().getPowerContainers().forEach(power -> {
-			if (power.getType().equalsIgnoreCase(getType()) && power.getBooleanOrDefault("active_by_default", true)) {
+			if (power instanceof Toggle toggle && toggle.isActiveByDefault()) {
 				in_continuous.putIfAbsent(e.getPlayer(), new ArrayList<>());
-				if (in_continuous.get(e.getPlayer()).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active")))
+				if (in_continuous.get(e.getPlayer()).contains(getJsonKey().getKey()))
 					return;
-				in_continuous.get(e.getPlayer()).add(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
-				execute(e.getPlayer(), power);
+				in_continuous.get(e.getPlayer()).add(getJsonKey().getKey());
+				execute(e.getPlayer(), (KeyedPower) power);
 			}
 		});
 	}
@@ -76,10 +89,23 @@ public class Toggle extends PowerType implements Listener, KeyedPower {
 			public void run() {
 				AtomicBoolean cond = new AtomicBoolean(power.isActive(p));
 				/* Toggle power always execute continuously */
-				if (!cond.get() || (!in_continuous.get(p).contains(key))) {
+				if ((!cond.get() && !getRetainState()) || (!in_continuous.get(p).contains(key))) {
 					this.cancel();
 				}
 			}
 		}.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+	}
+
+	@Override
+	public JsonKeybind getJsonKey() {
+		return key;
+	}
+
+	public boolean isActiveByDefault() {
+		return activeByDefault;
+	}
+
+	public boolean getRetainState() {
+		return retainState;
 	}
 }

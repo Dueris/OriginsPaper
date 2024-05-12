@@ -7,7 +7,6 @@ import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.apoli.Multiple;
 import me.dueris.genesismc.factory.powers.apoli.Simple;
-import me.dueris.genesismc.factory.powers.genesismc.GravityPower;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
@@ -275,7 +274,7 @@ public class PowerHolderComponent implements Listener {
 	}
 
 	public static String getType(PowerType powerType) {
-		return powerType.registerComponents(new FactoryData()).getIdentifier().asString();
+		return PowerType.registerComponents(new FactoryData()).getIdentifier().asString();
 	}
 
 	public static boolean isOfType(PowerType type, Class<? extends PowerType> typeOf) {

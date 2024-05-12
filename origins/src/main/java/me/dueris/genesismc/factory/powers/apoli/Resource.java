@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
@@ -41,6 +42,7 @@ import static me.dueris.genesismc.util.TextureLocation.textureMap;
 public class Resource extends PowerType implements Listener, ResourcePower {
 	public static HashMap<String, Bar> serverLoadedBars = new HashMap<>(); // IDENTIFIER || BAR_IMPL
 	public static HashMap<Player, List<Bar>> currentlyDisplayed = new HashMap<>();
+
 	static {
 		GenesisMC.preShutdownTasks.add(() -> {
 			serverLoadedBars.values().forEach(Bar::delete);
@@ -55,6 +57,7 @@ public class Resource extends PowerType implements Listener, ResourcePower {
 	private final FactoryJsonObject minAction;
 	private final FactoryJsonObject maxAction;
 
+	@Register
 	public Resource(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int min, int max, FactoryJsonObject hudRender, Optional startValue, FactoryJsonObject minAction, FactoryJsonObject maxAction) {
 		super(name, description, hidden, condition, loading_priority);
 		this.min = min;

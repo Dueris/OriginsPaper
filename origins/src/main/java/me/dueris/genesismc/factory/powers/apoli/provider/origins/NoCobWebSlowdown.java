@@ -6,11 +6,8 @@ import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import java.util.ArrayList;
 
 // TODO: 1.21 attribute for movement efficiency
 public class NoCobWebSlowdown implements Listener, PowerProvider {

@@ -18,8 +18,6 @@ import org.bukkit.event.world.EntitiesLoadEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-
 public class ScareCreepers implements Listener, PowerProvider {
 	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("scare_creepers");
 	private final NamespacedKey hitByPlayerKey = new NamespacedKey(GenesisMC.getPlugin(), "hit-by-player");

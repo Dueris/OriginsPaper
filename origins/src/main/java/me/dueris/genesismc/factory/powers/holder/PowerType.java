@@ -8,7 +8,6 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.FactoryHolder;
 import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
-
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.apoli.provider.OriginSimpleContainer;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.*;
@@ -51,7 +50,7 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 	private NamespacedKey tag = null;
 	private String cachedTagString = null;
 	private boolean hasPlayers = false;
-	private List<FactoryJsonObject> conditions = new ArrayList<>();
+	private final List<FactoryJsonObject> conditions = new ArrayList<>();
 
 	@Register
 	public PowerType(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
@@ -68,7 +67,7 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 			.add("description", String.class, "craftapoli.description.not_found")
 			.add("hidden", boolean.class, false)
 			.add("condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
-			.add("loading_priority", int.class, (int) 1);
+			.add("loading_priority", int.class, 1);
 	}
 
 	public static void registerAll() {

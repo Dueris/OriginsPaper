@@ -5,14 +5,11 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.apoli.CreativeFlight;
 import me.dueris.genesismc.factory.powers.apoli.ElytraFlightPower;
-import me.dueris.genesismc.factory.powers.apoli.provider.origins.LikeWater;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,8 +17,6 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
 
 public class GravityPower extends PowerType implements Listener {
 

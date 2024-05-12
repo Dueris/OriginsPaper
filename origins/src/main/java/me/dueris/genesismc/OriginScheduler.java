@@ -28,8 +28,8 @@ public class OriginScheduler {
 	}
 
 	public static class OriginSchedulerTree extends BukkitRunnable implements Listener {
-		public OriginScheduler parent = new OriginScheduler(GenesisMC.getPlugin());
 		private final CreativeFlight flight = new CreativeFlight("creative_flight", "description", true, null, 0);
+		public OriginScheduler parent = new OriginScheduler(GenesisMC.getPlugin());
 
 		@Override
 		public String toString() {

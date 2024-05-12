@@ -1,11 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 
-import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
-import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
-import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameEvent;
@@ -20,7 +16,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.world.GenericGameEvent;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BounceSlimeBlock implements Listener, PowerProvider {
@@ -36,7 +31,8 @@ public class BounceSlimeBlock implements Listener, PowerProvider {
 				if (player.isSneaking()) return;
 				if (!PowerHolderComponent.hasPower(player, powerReference.asString())) return;
 				if (!lastLoc.containsKey(player)) return;
-				if (CraftBiome.bukkitToMinecraft(player.getLocation().getBlock().getBiome()).getTemperature(CraftLocation.toBlockPosition(player.getLocation())) < 0.2) return;
+				if (CraftBiome.bukkitToMinecraft(player.getLocation().getBlock().getBiome()).getTemperature(CraftLocation.toBlockPosition(player.getLocation())) < 0.2)
+					return;
 				Location lastLocation = lastLoc.get(player);
 
 				if (lastLocation.getY() > player.getY()) {

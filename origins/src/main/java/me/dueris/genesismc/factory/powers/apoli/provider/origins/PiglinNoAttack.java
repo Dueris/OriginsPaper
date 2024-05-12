@@ -18,11 +18,13 @@ import java.util.HashMap;
 public class PiglinNoAttack implements Listener, PowerProvider {
 	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("piglin_brothers");
 	static ArrayList<EntityType> piglinValid = new ArrayList<>();
+
 	static {
 		piglinValid.add(EntityType.PIGLIN);
 		piglinValid.add(EntityType.PIGLIN_BRUTE);
 		piglinValid.add(EntityType.ZOMBIFIED_PIGLIN);
 	}
+
 	private final HashMap<Player, HashMap<Entity, Integer>> cooldowns = new HashMap<>();
 
 	public void tick(Player p) {
