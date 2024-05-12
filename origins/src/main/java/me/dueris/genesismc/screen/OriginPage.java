@@ -1,6 +1,7 @@
 package me.dueris.genesismc.screen;
 
 import me.dueris.genesismc.event.OriginChangeEvent;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.util.ComponentMultiLine;
@@ -102,7 +103,7 @@ public class OriginPage implements ChoosingPage {
 	@Override
 	public ItemStack[] createDisplay(Player player, Layer layer) {
 		List<ItemStack> stacks = new ArrayList<>();
-		List<Power> powerContainers = new ArrayList<>(origin.getPowerContainers().stream().filter(Objects::nonNull).filter(p -> !p.isHidden()).toList());
+		List<PowerType> powerContainers = new ArrayList<>(origin.getPowerContainers().stream().filter(p -> !p.isHidden()).toList());
 
 		for (int i = 0; i < 54; i++) {
 			if (i <= 2 || (i >= 6 && i <= 8)) {

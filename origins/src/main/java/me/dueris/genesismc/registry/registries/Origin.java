@@ -8,6 +8,7 @@ import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.storage.OriginConfiguration;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Material;
@@ -127,7 +128,7 @@ public class Origin implements FactoryHolder {
 	/**
 	 * @return An array containing all the origin powers.
 	 */
-	public ArrayList<Power> getPowerContainers() {
+	public ArrayList<PowerType> getPowerContainers() {
 		return new ArrayList<>(this.powerIdentifiers.stream().map(CraftNamespacedKey::fromMinecraft).map(NamespacedKey::asString).map(CraftApoli::getPowerFromTag).toList());
 	}
 

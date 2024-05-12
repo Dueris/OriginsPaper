@@ -10,6 +10,8 @@ import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.powers.apoli.provider.OriginSimpleContainer;
+import me.dueris.genesismc.factory.powers.apoli.provider.origins.*;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -49,6 +51,7 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 	private NamespacedKey tag = null;
 	private String cachedTagString = null;
 	private boolean hasPlayers = false;
+	private List<FactoryJsonObject> conditions = new ArrayList<>();
 
 	@Register
 	public PowerType(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
@@ -57,6 +60,7 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 		this.hidden = hidden;
 		this.condition = condition;
 		this.loadingPriority = loading_priority;
+		this.addCondition(condition);
 	}
 
 	public static FactoryData registerComponents(FactoryData data) {
@@ -78,6 +82,13 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 		}
 
 		holders.forEach(CraftCalio.INSTANCE::register);
+
+		// Apoli-Simple
+		OriginSimpleContainer.registerPower(BounceSlimeBlock.class);
+		OriginSimpleContainer.registerPower(LikeWater.class);
+		OriginSimpleContainer.registerPower(NoCobWebSlowdown.class);
+		OriginSimpleContainer.registerPower(PiglinNoAttack.class);
+		OriginSimpleContainer.registerPower(ScareCreepers.class);
 	}
 
 	public String getName() {
@@ -133,7 +144,11 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 	}
 
 	public boolean isActive(Player player) {
-		return ConditionExecutor.testEntity(this.condition, (CraftEntity) player);
+		return conditions.stream().allMatch(condition -> ConditionExecutor.testEntity(condition, (CraftEntity) player));
+	}
+
+	public void addCondition(FactoryJsonObject condition) {
+		this.conditions.add(condition);
 	}
 
 	@Override

@@ -80,9 +80,4 @@ public class ActionOnBeingUsed extends PowerType {
 		}
 		Actions.executeBiEntity(actor, target, bientityAction);
 	}
-
-	@Override
-	public String getType() {
-		return "apoli:action_on_being_used";
-	}
 }

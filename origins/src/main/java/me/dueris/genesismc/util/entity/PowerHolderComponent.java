@@ -19,6 +19,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -157,7 +158,8 @@ public class PowerHolderComponent implements Listener {
 		return powers;
 	}
 
-	public static boolean hasPower(Player p, String powerKey) {
+	public static boolean hasPower(Entity p, String powerKey) {
+		if (!(p instanceof Player)) return false;
 		if (playerPowerMapping.containsKey(p)) {
 			for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
 				for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {
@@ -168,7 +170,8 @@ public class PowerHolderComponent implements Listener {
 		return false;
 	}
 
-	public static boolean hasPowerType(Player p, Class<? extends PowerType> typeOf) {
+	public static boolean hasPowerType(Entity p, Class<? extends PowerType> typeOf) {
+		if (!(p instanceof Player)) return false;
 		if (playerPowerMapping.containsKey(p)) {
 			for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
 				for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {

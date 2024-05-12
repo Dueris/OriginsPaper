@@ -9,6 +9,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -39,7 +40,7 @@ import java.util.Map;
 import java.util.function.BiPredicate;
 
 public class BlockConditions {
-	public static HashMap<Power, ArrayList<String>> inTagValues = new HashMap<>();
+	public static HashMap<PowerType, ArrayList<String>> inTagValues = new HashMap<>();
 	public static HashMap<String, ArrayList<Material>> blockTagMappings = new HashMap<>();
 
 	public void prep() {

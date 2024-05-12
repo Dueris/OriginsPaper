@@ -6,15 +6,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.mineskin.com.google.common.base.Preconditions;
 
+import java.util.ArrayList;
+
 public class OriginSimpleContainer {
+	public static ArrayList<PowerProvider> registeredPowers = new ArrayList<>();
 
-	public static boolean registerPower(Class<? extends CraftPower> clz) {
+	public static boolean registerPower(Class<?> clz) {
 		try {
-			Preconditions.checkArgument(clz.newInstance() instanceof PowerProvider, "CraftPower isnt an instance of a PowerProvider power. This is required to make it so that its marked as able to be its own originPower");
-			Preconditions.checkArgument(clz.getDeclaredField("powerReference") != null, "Unable to access required field \"powerReference\" inside CraftPower. This is required to point to what powerFile this PowerProvider will use");
+			Preconditions.checkArgument(clz.newInstance() instanceof PowerProvider, "Power isn't an instance of a PowerProvider power. This is required to make it so that its marked as able to be its own originPower");
+			Preconditions.checkArgument(clz.getDeclaredField("powerReference") != null, "Unable to access required field \"powerReference\" inside Power. This is required to point to what powerFile this PowerProvider will use");
 
-			CraftPower instance = clz.newInstance();
-			GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).register(instance);
+			PowerProvider instance = (PowerProvider) clz.newInstance();
+			registeredPowers.add(instance);
 			if (instance instanceof Listener || Listener.class.isAssignableFrom(clz)) {
 				Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
 			}

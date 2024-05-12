@@ -12,6 +12,8 @@ import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.factory.data.types.EntityGroup;
 import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
+import me.dueris.genesismc.factory.powers.apoli.ElytraFlightPower;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Utils;
@@ -98,9 +100,9 @@ public class EntityConditions {
 			return false;
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("power_type"), (condition, entity) -> {
-			for (ApoliPower c : ((Registrar<ApoliPower>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).values()) {
+			for (PowerType c : ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).values()) {
 				if (c.getType().equals(condition.getString("power_type"))) {
-					return c.getPlayersWithPower().contains(entity);
+					return c.getPlayers().contains(entity);
 				}
 			}
 			return false;
@@ -424,7 +426,7 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_group"), (condition, entity) -> (EntityGroupManager.modifiedEntityGroups.containsKey(entity) && EntityGroupManager.modifiedEntityGroups.get(entity).equals(condition.getEnumValue("group", EntityGroup.class))) || (entity.getHandle() instanceof net.minecraft.world.entity.LivingEntity le && EntityGroup.getMobType(le).equals(condition.getEnumValue("group", EntityGroup.class)))));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("elytra_flight_possible"), (condition, entity) -> {
-			boolean hasElytraPower = ElytraFlightPower.elytra.contains(entity);
+			boolean hasElytraPower = PowerHolderComponent.hasPowerType(entity, ElytraFlightPower.class);
 			boolean hasElytraEquipment = false;
 			if (entity instanceof LivingEntity li) {
 				for (ItemStack item : li.getEquipment().getArmorContents()) {
@@ -451,9 +453,7 @@ public class EntityConditions {
 			}
 			return false;
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block"), (condition, entity) -> {
-			return ConditionExecutor.testBlock(condition.getJsonObject("block_condition"), CraftBlock.at(entity.getHandle().level(), CraftLocation.toBlockPosition(entity.getLocation())));
-		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block"), (condition, entity) -> ConditionExecutor.testBlock(condition.getJsonObject("block_condition"), CraftBlock.at(entity.getHandle().level(), CraftLocation.toBlockPosition(entity.getLocation())))));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block_anywhere"), (condition, entity) -> {
 			int stopAt = -1;
 			Comparison comparison = Comparison.fromString(condition.getStringOrDefault("comparison", ">="));
