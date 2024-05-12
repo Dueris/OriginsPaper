@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -120,7 +121,11 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 	}
 
 	public String getType() {
-		return PowerHolderComponent.getType(this);
+		try {
+			return ((FactoryData) getClass().getDeclaredMethod("registerComponents", FactoryData.class).invoke(null, new FactoryData())).getIdentifier().asString();
+		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+			throw new RuntimeException("Unable to invoke type-getters!", e);
+		}
 	}
 
 	public ConcurrentLinkedQueue<CraftPlayer> getPlayers() {

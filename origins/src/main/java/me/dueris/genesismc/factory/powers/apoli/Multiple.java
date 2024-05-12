@@ -36,6 +36,11 @@ public class Multiple extends PowerType {
 		return this.source;
 	}
 
+	@Override
+	public String getType() {
+		return "apoli:multiple";
+	}
+
 	public List<PowerType> getSubPowers() {
 		return subPowers;
 	}

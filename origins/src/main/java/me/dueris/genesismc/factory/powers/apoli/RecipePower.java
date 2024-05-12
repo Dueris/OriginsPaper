@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
@@ -37,6 +38,7 @@ public class RecipePower extends PowerType implements Listener {
 	private static boolean finishedLoad = false;
 	private final FactoryJsonObject recipe;
 
+	@Register
 	public RecipePower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject recipe) {
 		super(name, description, hidden, condition, loading_priority);
 		this.recipe = recipe;

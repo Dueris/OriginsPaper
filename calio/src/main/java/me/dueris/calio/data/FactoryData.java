@@ -47,4 +47,9 @@ public class FactoryData {
 	public NamespacedKey getIdentifier() {
 		return identifier;
 	}
+
+	@Override
+	public String toString() {
+		return "FactoryData :: [%N%] : DataDefiners: [%%%]".replace("%%%", this.providers.toString()).replace("%N%", identifier.asString());
+	}
 }

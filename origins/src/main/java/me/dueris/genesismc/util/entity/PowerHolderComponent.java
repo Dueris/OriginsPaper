@@ -273,10 +273,6 @@ public class PowerHolderComponent implements Listener {
 		duplicates.forEach(power -> getPowersApplied(p).remove(power));
 	}
 
-	public static String getType(PowerType powerType) {
-		return PowerType.registerComponents(new FactoryData()).getIdentifier().asString();
-	}
-
 	public static boolean isOfType(PowerType type, Class<? extends PowerType> typeOf) {
 		return type.getClass().equals(typeOf);
 	}
@@ -287,7 +283,7 @@ public class PowerHolderComponent implements Listener {
 
 	public static void applyPower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
-		String name = power.getClass().equals(Simple.class) ? power.getTag() : getType(power);
+		String name = power.getClass().equals(Simple.class) ? power.getTag() : power.getType();
 		PowerType c = (PowerType) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
 		if (c != null) {
 			c.forPlayer(player);
@@ -308,7 +304,7 @@ public class PowerHolderComponent implements Listener {
 
 	public static void removePower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
-		String name = power.getClass().equals(Simple.class) ? power.getTag() : getType(power);
+		String name = power.getClass().equals(Simple.class) ? power.getTag() : power.getType();
 		PowerType c = (PowerType) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
 		if (c != null) {
 			powersAppliedList.get(player).remove(c);
