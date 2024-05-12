@@ -1,5 +1,6 @@
 package me.dueris.genesismc.event;
 
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -9,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 public class AttributeExecuteEvent extends PlayerEvent {
 	private static final HandlerList handlers = new HandlerList();
 	Attribute attribute;
-	Power power;
+	PowerType power;
 
-	public AttributeExecuteEvent(@NotNull Player who, Attribute attribute, Power power, boolean async) {
+	public AttributeExecuteEvent(@NotNull Player who, Attribute attribute, PowerType power, boolean async) {
 		super(who, async);
 		this.attribute = attribute;
 		this.power = power;
@@ -30,7 +31,7 @@ public class AttributeExecuteEvent extends PlayerEvent {
 		return attribute;
 	}
 
-	public Power getPower() {
+	public PowerType getPower() {
 		return power;
 	}
 

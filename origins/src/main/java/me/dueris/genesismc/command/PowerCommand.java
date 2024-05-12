@@ -95,7 +95,7 @@ public class PowerCommand {
 						.executes(context -> {
 							EntityArgument.getPlayers(context, "targets").forEach(player -> {
 								if (PowerHolderComponent.playerPowerMapping.get(player.getBukkitEntity()) != null) {
-									PowerType poweR = ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
+									PowerType poweR = ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
 									ArrayList<PowerType> powersToEdit = new ArrayList<>(CraftApoli.getNestedPowerTypes(poweR));
 									powersToEdit.add(poweR);
 									for (PowerType power : powersToEdit) {

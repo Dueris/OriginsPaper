@@ -19,6 +19,13 @@ public class FactoryData {
 		return providers.toArray(new FactoryDataDefiner[0]);
 	}
 
+	public Object retrieve(String dataKey) {
+		for (FactoryDataDefiner definer : this.providers) {
+			if (definer.getObjName().equalsIgnoreCase(dataKey)) return definer.getDefaultValue();
+		}
+		return null;
+	}
+
 	public FactoryData add(FactoryDataDefiner instance) {
 		Preconditions.checkArgument(instance != null, "Provided instance cannot be null!");
 		this.providers.add(instance);

@@ -14,7 +14,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+// Note for devs: Optionals ALWAYS return an Optional of a JsonElement if found
 public class ConstructorCreator {
 	public static FactoryHolder invoke(Constructor<? extends FactoryHolder> constructor, FactoryData data, Pair<JsonObject, NamespacedKey> pair) throws InvocationTargetException, InstantiationException, IllegalAccessException {
 		JsonObject getter = pair.getA();
@@ -90,6 +92,8 @@ public class ConstructorCreator {
 			if (provided.isJsonArray()) {
 				return new FactoryJsonArray(provided.getAsJsonArray());
 			}
+		} else if (ofType.equals(Optional.class)) {
+			return Optional.of(provided);
 		} else if (CalioDataTypes.test(ofType, provided) != null) {
 			return CalioDataTypes.test(ofType, provided);
 		}

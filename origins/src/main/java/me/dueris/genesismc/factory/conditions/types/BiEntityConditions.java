@@ -8,8 +8,6 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.factory.data.types.RotationType;
-import me.dueris.genesismc.factory.powers.apoli.EntitySetPower;
-import me.dueris.genesismc.factory.powers.apoli.PreventEntityRender;
 import me.dueris.genesismc.registry.Registries;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
@@ -105,8 +103,9 @@ public class BiEntityConditions implements Listener {
 			float compare_to = condition.getNumber("compare_to").getFloat();
 			return Comparison.fromString(comparison).compare(pair.first().getHandle().position().distanceToSqr(pair.second().getHandle().position()), compare_to);
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_set"), (condition, pair) -> EntitySetPower.isInEntitySet(pair.second(), condition.getString("set"))));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("can_see"), (condition, pair) -> PreventEntityRender.canSeeEntity(pair.first(), pair.second(), condition)));
+		// TODO
+//		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_set"), (condition, pair) -> EntitySetPower.isInEntitySet(pair.second(), condition.getString("set"))));
+//		register(new ConditionFactory(GenesisMC.apoliIdentifier("can_see"), (condition, pair) -> PreventEntityRender.canSeeEntity(pair.first(), pair.second(), condition)));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("owner"), (condition, pair) -> {
 			if (pair.second() instanceof Tameable tameable) {
 				return tameable.getOwner().equals(pair.first());

@@ -1,11 +1,11 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.genesismc.GravityPower;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
@@ -15,6 +15,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class CreativeFlight extends PowerType {
 
+	@Register
 	public CreativeFlight(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
 		super(name, description, hidden, condition, loading_priority);
 	}
@@ -40,8 +41,8 @@ public class CreativeFlight extends PowerType {
 				}
 			} else {
 				boolean a = m.equals(GameMode.SPECTATOR) || m.equals(GameMode.CREATIVE) ||
-					PowerHolderComponent.hasPowerType(p, ElytraFlightPower.class) || PowerHolderComponent.hasPowerType(p, GravityPower.class) ||
-					PowerHolderComponent.hasPowerType(p, Grounded.class) || PowerHolderComponent.hasPowerType(p, Swimming.class);
+					PowerHolderComponent.hasPowerType(p, ElytraFlightPower.class) || PowerHolderComponent.hasPowerType(p, GravityPower.class) || false; // TODO
+					// PowerHolderComponent.hasPowerType(p, Grounded.class) || PowerHolderComponent.hasPowerType(p, Swimming.class); // TODO
 				if (a && !p.getAllowFlight()) {
 					p.setAllowFlight(true);
 				} else if (!a && p.getAllowFlight()) {
@@ -54,7 +55,7 @@ public class CreativeFlight extends PowerType {
 			}
 		}
 		if (p.getChunk().isLoaded()) {
-			if (Phasing.inPhantomFormBlocks.contains(p)) { // Intended only for phantom form
+			if (false) { // if (Phasing.inPhantomFormBlocks.contains(p)) { // Intended only for phantom form // TODO
 				container.set(insideBlock, PersistentDataType.BOOLEAN, true);
 			} else {
 				container.set(insideBlock, PersistentDataType.BOOLEAN, false);

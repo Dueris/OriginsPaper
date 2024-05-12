@@ -67,7 +67,6 @@ public class PlayerManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
-		OriginScheduler.tickedPowers.putIfAbsent(p, new ArrayList<>());
 		PowerHolderComponent.powersAppliedList.putIfAbsent(p, new ConcurrentLinkedQueue<>());
 		//set origins to null if none present
 		if (
@@ -127,10 +126,6 @@ public class PlayerManager implements Listener {
 		PowerHolderComponent.setupPowers(p);
 		originValidCheck(p);
 		PowerHolderComponent.assignPowers(p);
-
-		if (!new GravityPower().getPlayersWithPower().contains(p)) {
-			new GravityPower().doesntHavePower(p);
-		}
 
 		// Add delay config
 		GuiTicker.delayedPlayers.add(p);

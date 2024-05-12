@@ -12,7 +12,9 @@ import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.factory.data.types.EntityGroup;
 import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
+import me.dueris.genesismc.factory.powers.apoli.ClimbingPower;
 import me.dueris.genesismc.factory.powers.apoli.ElytraFlightPower;
+import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.RaycastUtils;
@@ -109,9 +111,9 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("origin"), (condition, entity) -> entity instanceof Player p && PowerHolderComponent.hasOrigin(p, condition.getString("origin"))));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("power_active"), (condition, entity) -> {
-			if (!ApoliPower.powers_active.containsKey(entity)) return false;
 			String power = condition.getString("power");
-			return ApoliPower.powers_active.get(entity).getOrDefault(power, false);
+			PowerType found = PowerHolderComponent.getPower(entity, power);
+			return found != null && found.isActive((Player) entity);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("advancement"), (condition, entity) -> {
 			MinecraftServer server = GenesisMC.server;
@@ -202,16 +204,17 @@ public class EntityConditions {
 
 			return fixedComparison.compare(count, compare_to);
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("set_size"), (condition, entity) -> {
-			String tag = condition.getString("set");
-			ArrayList<Entity> entities = EntitySetPower.entity_sets.get(tag);
-			if (entities.contains(entity)) {
-				String comparison = condition.getString("comparison");
-				int compare_to = condition.getNumber("compare_to").getInt();
-				return Comparison.fromString(comparison).compare(entities.size(), compare_to);
-			}
-			return false;
-		}));
+		// TODO
+//		register(new ConditionFactory(GenesisMC.apoliIdentifier("set_size"), (condition, entity) -> {
+//			String tag = condition.getString("set");
+//			ArrayList<Entity> entities = EntitySetPower.entity_sets.get(tag);
+//			if (entities.contains(entity)) {
+//				String comparison = condition.getString("comparison");
+//				int compare_to = condition.getNumber("compare_to").getInt();
+//				return Comparison.fromString(comparison).compare(entities.size(), compare_to);
+//			}
+//			return false;
+//		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("scoreboard"), (condition, entity) -> {
 			String name = condition.getString("name");
 			if (name == null) {
@@ -268,8 +271,7 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("climbing"), (condition, entity) -> {
 			if (entity instanceof Player player) {
-				ClimbingPower climbing = new ClimbingPower();
-				return player.isClimbing() || climbing.isActiveClimbing(player);
+				return player.isClimbing() || ClimbingPower.isActiveClimbing(player);
 			}
 			return false;
 		}));
@@ -424,7 +426,8 @@ public class EntityConditions {
 
 			return Comparison.fromString(condition.getString("comparison")).compare(distance, condition.getNumber("compare_to").getFloat());
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_group"), (condition, entity) -> (EntityGroupManager.modifiedEntityGroups.containsKey(entity) && EntityGroupManager.modifiedEntityGroups.get(entity).equals(condition.getEnumValue("group", EntityGroup.class))) || (entity.getHandle() instanceof net.minecraft.world.entity.LivingEntity le && EntityGroup.getMobType(le).equals(condition.getEnumValue("group", EntityGroup.class)))));
+		// TODO
+		// register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_group"), (condition, entity) -> (EntityGroupManager.modifiedEntityGroups.containsKey(entity) && EntityGroupManager.modifiedEntityGroups.get(entity).equals(condition.getEnumValue("group", EntityGroup.class))) || (entity.getHandle() instanceof net.minecraft.world.entity.LivingEntity le && EntityGroup.getMobType(le).equals(condition.getEnumValue("group", EntityGroup.class)))));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("elytra_flight_possible"), (condition, entity) -> {
 			boolean hasElytraPower = PowerHolderComponent.hasPowerType(entity, ElytraFlightPower.class);
 			boolean hasElytraEquipment = false;
@@ -625,12 +628,13 @@ public class EntityConditions {
 			double compare_to = condition.getNumber("compare_to").getFloat();
 			return Comparison.fromString(comparison).compare(entity.getWorld().getTime(), compare_to);
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("set_size"), (condition, entity) -> {
-			NamespacedKey key = condition.getNamespacedKey("set");
-			String comparison = condition.getString("comparison");
-			int compare_to = condition.getNumber("compare_to").getInt();
-			return Comparison.fromString(comparison).compare(EntitySetPower.entity_sets.getOrDefault(key.toString(), new ArrayList<>()).size(), compare_to);
-		}));
+		// TODO
+//		register(new ConditionFactory(GenesisMC.apoliIdentifier("set_size"), (condition, entity) -> {
+//			NamespacedKey key = condition.getNamespacedKey("set");
+//			String comparison = condition.getString("comparison");
+//			int compare_to = condition.getNumber("compare_to").getInt();
+//			return Comparison.fromString(comparison).compare(EntitySetPower.entity_sets.getOrDefault(key.toString(), new ArrayList<>()).size(), compare_to);
+//		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("predicate"), (condition, entity) -> {
 			ServerLevel level = (ServerLevel) entity.getHandle().level();
 			ResourceLocation location = CraftNamespacedKey.toMinecraft(
@@ -651,10 +655,11 @@ public class EntityConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("using_effective_tool"), (condition, entity) -> {
 			if (entity instanceof Player player) {
 				ServerPlayer p = ((CraftPlayer) player).getHandle();
-				if (ActionOnBlockBreak.playersMining.containsKey(p.getBukkitEntity()) && ActionOnBlockBreak.playersMining.get(p.getBukkitEntity())) {
-					BlockState state = p.level().getBlockState(ActionOnBlockBreak.playersMiningBlockPos.get(p.getBukkitEntity()));
-					return p.hasCorrectToolForDrops(state);
-				}
+				// TODO
+//				if (ActionOnBlockBreak.playersMining.containsKey(p.getBukkitEntity()) && ActionOnBlockBreak.playersMining.get(p.getBukkitEntity())) {
+//					BlockState state = p.level().getBlockState(ActionOnBlockBreak.playersMiningBlockPos.get(p.getBukkitEntity()));
+//					return p.hasCorrectToolForDrops(state);
+//				}
 			}
 			return false;
 		}));

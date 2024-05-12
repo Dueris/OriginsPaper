@@ -124,13 +124,26 @@ public class PowerHolderComponent implements Listener {
 		playerPowerMapping.put(p, map);
 	}
 
-	public static ArrayList<PowerType> getPowers(Player p, Class<? extends PowerType> typeOf) {
+	public static <T extends PowerType> ArrayList<T> getPowers(Player p, Class<T> typeOf) {
+		ArrayList<T> powers = new ArrayList<>();
+		if (playerPowerMapping.get(p) == null) return powers;
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			if (layer == null) continue;
+			for (PowerType power : playerPowerMapping.get(p).get(layer)) {
+				if (power == null || !power.getClass().equals(typeOf)) continue;
+				powers.add(typeOf.cast(power));
+			}
+		}
+		return powers;
+	}
+
+	public static ArrayList<PowerType> getPowers(Player p, String typeOf) {
 		ArrayList<PowerType> powers = new ArrayList<>();
 		if (playerPowerMapping.get(p) == null) return powers;
 		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 			if (layer == null) continue;
 			for (PowerType power : playerPowerMapping.get(p).get(layer)) {
-				if (power == null) continue;
+				if (power == null || !power.getType().equalsIgnoreCase(typeOf)) continue;
 				powers.add(power);
 			}
 		}
@@ -156,6 +169,18 @@ public class PowerHolderComponent implements Listener {
 			}
 		}
 		return powers;
+	}
+
+	public static PowerType getPower(Entity p, String powerKey) {
+		if (!(p instanceof Player)) return null;
+		if (playerPowerMapping.containsKey(p)) {
+			for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
+				for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {
+					if (power.getTag().equalsIgnoreCase(powerKey)) return power;
+				}
+			}
+		}
+		return null;
 	}
 
 	public static boolean hasPower(Entity p, String powerKey) {

@@ -2,12 +2,15 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.annotations.Register;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.RaycastUtils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.Optionull;
 import net.minecraft.network.chat.RemoteChatSession;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
@@ -40,18 +43,28 @@ import java.util.HashMap;
 
 /**
  * Java Packet Manipulation(JPM) code was made in contribution with Origins-Reborn author, cometcake575
- * aka i helped fix bugs and he made the packet code/discovery with the info packets XD
  * <p>
- * cometcakes theory:
+ * Theory:
  * The client side has 2 gamemodes, one for all players and one for specifically themselves.
  * Values required in both the server and client, or required for both the client and other players, are stored
  * within the other players one (the bit affected by the ClientboundPlayerInfoUpdatePacket to allow a survival player to go into blocks),
  * and the one that is required only in the client for knowing stuff like which hotbar to render
  */
-public class Phasing extends CraftPower implements Listener {
-
+public class Phasing extends PowerType implements Listener {
 	public static ArrayList<Player> inPhantomFormBlocks = new ArrayList<>();
 	public static HashMap<Player, Boolean> test = new HashMap<>();
+	private final FactoryJsonObject phaseDownCondition;
+
+	@Register
+	public Phasing(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject phaseDownCondition) {
+		super(name, description, hidden, condition, loading_priority);
+		this.phaseDownCondition = phaseDownCondition;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("phasing"))
+			.add("phase_down_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	protected static void sendJavaPacket(ServerPlayer player) {
 		GameType gamemode = GameType.SPECTATOR;
@@ -71,18 +84,12 @@ public class Phasing extends CraftPower implements Listener {
 	}
 
 	public static float getGameModeFloat(GameMode gameMode) {
-		switch (gameMode) {
-			case CREATIVE:
-				return 1.0f;
-			case SURVIVAL:
-				return 0.0f;
-			case ADVENTURE:
-				return 2.0f;
-			case SPECTATOR:
-				return 3.0f;
-			default:
-				return 0.0f;
-		}
+		return switch (gameMode) {
+			case CREATIVE -> 1.0f;
+			case SURVIVAL -> 0.0f;
+			case ADVENTURE -> 2.0f;
+			case SPECTATOR -> 3.0f;
+		};
 	}
 
 	public void setInPhasingBlockForm(Player p) {
@@ -107,7 +114,7 @@ public class Phasing extends CraftPower implements Listener {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				if (isBedrock(e.getPlayer()) && getPlayersWithPower().contains(e.getPlayer())) {
+				if (isBedrock(e.getPlayer()) && getPlayers().contains(e.getPlayer())) {
 					e.getPlayer().sendMessage(ChatColor.YELLOW + "Warning! You are using a power(Phasing) that is highly experimental/breakable on bedrock! If you get stuck in a \"spectator like\" mode, type \"./origins-fixMe\" in chat to be fixed.");
 				}
 			}
@@ -128,13 +135,11 @@ public class Phasing extends CraftPower implements Listener {
 			@Override
 			public void run() {
 				if (e.isSneaking()) {
-					if (getPlayersWithPower().contains(e.getPlayer())) {
+					if (getPlayers().contains(e.getPlayer())) {
 						Player p = e.getPlayer();
-						for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
-							if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-								if (ConditionExecutor.testBlock(power.getJsonObject("phase_down_condition"), (CraftBlock) p.getLocation().add(0, -1, 0).getBlock())) {
-									p.teleportAsync(p.getLocation().add(0, -0.1, 0));
-								}
+						if (isActive(p)) {
+							if (ConditionExecutor.testBlock(phaseDownCondition, (CraftBlock) p.getLocation().add(0, -1, 0).getBlock())) {
+								p.teleportAsync(p.getLocation().add(0, -0.1, 0));
 							}
 						}
 					}
@@ -149,9 +154,8 @@ public class Phasing extends CraftPower implements Listener {
 	}
 
 	@Override
-	public void run(Player p, Power power) {
-		if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-			setActive(p, power.getTag(), true);
+	public void tick(Player p) {
+		if (isActive(p)) {
 			if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
 				p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
 				p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
@@ -199,7 +203,6 @@ public class Phasing extends CraftPower implements Listener {
 				p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
 			}
 		} else {
-			setActive(p, power.getTag(), false);
 			inPhantomFormBlocks.remove(p);
 			if (test.get(p) == null) {
 				test.put(p, false);
@@ -220,7 +223,7 @@ public class Phasing extends CraftPower implements Listener {
 		}
 	}
 
-	public boolean isBedrock(Player p) {
+	public static boolean isBedrock(Player p) {
 		if (Bukkit.getPluginManager().isPluginEnabled("floodgate")) {
 			return GeyserApi.api().connectionByUuid(p.getUniqueId()) != null;
 		} else {
@@ -247,25 +250,18 @@ public class Phasing extends CraftPower implements Listener {
 		}
 	}
 
-
-	@Override
-	public String getType() {
-		return "apoli:phasing";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return phasing;
-	}
-
 	@EventHandler
 	public void CancelSpectate(PlayerStartSpectatingEntityEvent e) {
 		Player p = e.getPlayer();
-		if (phasing.contains(p)) {
-			if (OriginPlayerAccessor.isInPhantomForm(p)) {
+		if (getPlayers().contains(p)) {
+			if (PowerHolderComponent.isInPhantomForm(p)) {
 				e.setCancelled(true);
 			}
 
 		}
+	}
+
+	public FactoryJsonObject getPhaseDownCondition() {
+		return phaseDownCondition;
 	}
 }

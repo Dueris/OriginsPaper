@@ -117,6 +117,9 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 	public void tickAsync(Player player) {
 	}
 
+	public void tick() {
+	}
+
 	public String getType() {
 		return PowerHolderComponent.getType(this);
 	}

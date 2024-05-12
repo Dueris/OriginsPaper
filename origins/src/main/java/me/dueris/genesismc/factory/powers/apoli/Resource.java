@@ -1,7 +1,9 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.Pair;
-import me.dueris.calio.data.factory.FactoryElement;
+import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
@@ -9,13 +11,13 @@ import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.data.types.Comparison;
-import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.data.types.HudRender;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.DataConverter;
 import me.dueris.genesismc.util.TextureLocation;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
@@ -30,20 +32,47 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.persistence.PersistentDataType;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.util.TextureLocation.textureMap;
 
-public class Resource extends CraftPower implements Listener {
+public class Resource extends PowerType implements Listener, ResourcePower {
 	public static HashMap<String, Bar> serverLoadedBars = new HashMap<>(); // IDENTIFIER || BAR_IMPL
 	public static HashMap<Player, List<Bar>> currentlyDisplayed = new HashMap<>();
-
 	static {
 		GenesisMC.preShutdownTasks.add(() -> {
 			serverLoadedBars.values().forEach(Bar::delete);
 			currentlyDisplayed.forEach((player, list) -> list.forEach(Bar::delete));
 		});
+	}
+
+	private final int min;
+	private final int max;
+	private final HudRender hudRender;
+	private final Integer startValue;
+	private final FactoryJsonObject minAction;
+	private final FactoryJsonObject maxAction;
+
+	public Resource(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int min, int max, FactoryJsonObject hudRender, Optional startValue, FactoryJsonObject minAction, FactoryJsonObject maxAction) {
+		super(name, description, hidden, condition, loading_priority);
+		this.min = min;
+		this.max = max;
+		this.hudRender = HudRender.createHudRender(hudRender);
+		this.startValue = startValue.isEmpty() ? min : ((JsonElement) startValue.get()).getAsInt();
+		this.minAction = minAction;
+		this.maxAction = maxAction;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("resource"))
+			.add("min", int.class, null)
+			.add("max", int.class, null)
+			.add("hud_render", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("start_value", Optional.class, Optional.empty())
+			.add("min_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("max_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
 	}
 
 	public static Optional<Bar> getDisplayedBar(Entity player, String identifier) {
@@ -54,11 +83,11 @@ public class Resource extends CraftPower implements Listener {
 		return Optional.empty();
 	}
 
-	protected static KeyedBossBar createRender(String title, double currentProgress, Power power, Player player) {
+	protected static KeyedBossBar createRender(String title, double currentProgress, ResourcePower power, Player player) {
 		NamespacedKey f = NamespacedKey.fromString(power.getTag() + "_bar_server_loaded");
 		KeyedBossBar bossBar = Bukkit.createBossBar(
 			player == null ? f : NamespacedKey.fromString(power.getTag() + "_bar_" + player.getName().toLowerCase()),
-			title, Bar.getBarColor(power.getElement("hud_render")), BarStyle.SEGMENTED_6);
+			title, Bar.getBarColor(power.getHudRender()), BarStyle.SEGMENTED_6);
 		bossBar.setProgress(currentProgress);
 		return bossBar;
 	}
@@ -85,13 +114,13 @@ public class Resource extends CraftPower implements Listener {
 	@EventHandler
 	public void preLoad(ServerLoadEvent e) {
 		// We preload the bars and then display a clone of them to each player
-		((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).values().stream()
+		((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).values().stream()
 			.filter(p -> p.getType().equalsIgnoreCase(getType())).forEach(power -> {
-				Bar bar = new Bar(power, null);
+				Bar bar = new Bar((Resource) power, null);
 				serverLoadedBars.put(power.getTag(), bar);
 			});
 		for (Player player : Bukkit.getOnlinePlayers())
-			OriginPlayerAccessor.getPowers(player, getType()).forEach(power -> powerAdd(new PowerUpdateEvent(player, power, false, false)));
+			PowerHolderComponent.getPowers(player, Resource.class).forEach(power -> powerAdd(new PowerUpdateEvent(player, power, false, false)));
 	}
 
 	@EventHandler
@@ -100,7 +129,7 @@ public class Resource extends CraftPower implements Listener {
 		StringBuilder cooldownBuilder = new StringBuilder();
 		cooldownBuilder.append("[");
 		Cooldown.cooldowns.putIfAbsent(p, new ArrayList<>());
-		for (Pair<KeyedBossBar, Power> barPair : Cooldown.cooldowns.get(p)) {
+		for (Pair<KeyedBossBar, ResourcePower> barPair : Cooldown.cooldowns.get(p)) {
 			cooldownBuilder.append(barPair.left().getKey().asString() + "<::>" + barPair.left().getProgress());
 			cooldownBuilder.append(",");
 		}
@@ -126,25 +155,42 @@ public class Resource extends CraftPower implements Listener {
 			Arrays.stream(encoded.split(",")).forEach(key -> {
 				String a = key.split("<::>")[0];
 				double b = Double.parseDouble(key.split("<::>")[1]);
-				Power power = CraftApoli.getPowerFromTag(a.split("_cooldown_")[0]);
-				Cooldown.addCooldown(p, power.getNumberOrDefault("cooldown", 1).getInt(), power, b);
+				PowerType power = CraftApoli.getPowerFromTag(a.split("_cooldown_")[0]);
+				if (power instanceof CooldownPower cooldownPower) {
+					Cooldown.addCooldown(p, cooldownPower.getCooldown(), cooldownPower, b);
+				}
 			});
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:resource";
+	public int getMin() {
+		return min;
 	}
 
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return resource;
+	public int getMax() {
+		return max;
+	}
+
+	public HudRender getHudRender() {
+		return hudRender;
+	}
+
+	@Nullable
+	public Integer getStartValue() {
+		return startValue;
+	}
+
+	public FactoryJsonObject getMinAction() {
+		return minAction;
+	}
+
+	public FactoryJsonObject getMaxAction() {
+		return maxAction;
 	}
 
 	public static class Bar {
 		String title;
-		Power power;
+		Resource power;
 		int min;
 		int max;
 		Double currentProgress; // Use lang class to use Number#intValue()
@@ -152,12 +198,12 @@ public class Resource extends CraftPower implements Listener {
 		KeyedBossBar renderedBar;
 		double oneInc;
 
-		Bar(Power power, Player player) {
+		Bar(Resource power, Player player) {
 			this.title = Utils.getNameOrTag(power).left();
 			this.power = power;
-			this.min = power.getNumber("min").getInt();
-			this.max = power.getNumber("max").getInt();
-			this.currentProgress = (double) (power.isPresent("start_value") ? power.getNumber("start_value").getInt() : this.min);
+			this.min = power.getMin();
+			this.max = power.getMax();
+			this.currentProgress = (double) (power.getStartValue() != null ? power.getStartValue() : this.min);
 			this.mappedProgress = this.currentProgress.intValue();
 			this.renderedBar = Resource.createRender(title, formatForFirstRender(this.currentProgress), power, player);
 			this.renderedBar.setVisible(true);
@@ -166,16 +212,14 @@ public class Resource extends CraftPower implements Listener {
 				this.renderedBar.addPlayer(player);
 			}
 
-			change(power.isPresent("start_value") ? power.getNumber("start_value").getInt() : this.min, "set", false);
+			change(power.getStartValue() != null ? power.getStartValue() : this.min, "set", false);
 		}
 
-		public static BarColor getBarColor(FactoryElement element) {
-			if (element.isJsonObject()) {
-				FactoryJsonObject hudRender = element.toJsonObject();
-				if (hudRender.isEmpty() || !hudRender.isPresent("sprite_location")) return BarColor.WHITE;
+		public static BarColor getBarColor(HudRender element) {
+			if (element != null && element.getSpriteLocation() != null) {
 				TextureLocation loc = ((Registrar<TextureLocation>) GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION))
-					.get(DataConverter.resolveTextureLocationNamespace(hudRender.getNamespacedKey("sprite_location")));
-				long index = (hudRender.getNumberOrDefault("bar_index", 1).getLong()) + 1;
+					.get(DataConverter.resolveTextureLocationNamespace(NamespacedKey.fromString(element.getSpriteLocation())));
+				long index = (element.getBarIndex()) + 1;
 				BarColor color = textureMap.get(loc.getKey().asString() + "/-/" + index);
 				return color != null ? color : BarColor.WHITE;
 			}
@@ -205,9 +249,9 @@ public class Resource extends CraftPower implements Listener {
 			}
 			this.renderedBar.getPlayers().forEach(entity -> {
 				if (this.renderedBar.getProgress() == 1.0) {
-					Actions.executeEntity(entity, this.power.getJsonObject("max_action"));
+					Actions.executeEntity(entity, this.power.getMaxAction());
 				} else if (this.renderedBar.getProgress() == 0.0) {
-					Actions.executeEntity(entity, this.power.getJsonObject("min_action"));
+					Actions.executeEntity(entity, this.power.getMinAction());
 				}
 			});
 		}

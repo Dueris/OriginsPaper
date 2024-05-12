@@ -31,10 +31,7 @@ public class ActionOnBeingUsed extends PowerType {
 	private final ItemStack resultStack;
 
 	@Register
-	public ActionOnBeingUsed(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject bientityAction,
-							 FactoryJsonObject heldItemAction, FactoryJsonObject resultItemAction, FactoryJsonObject bientityCondition, FactoryJsonObject itemCondition,
-							 FactoryJsonArray hands, ItemStack resultStack
-	) {
+	public ActionOnBeingUsed(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject bientityAction, FactoryJsonObject heldItemAction, FactoryJsonObject resultItemAction, FactoryJsonObject bientityCondition, FactoryJsonObject itemCondition, FactoryJsonArray hands, ItemStack resultStack) {
 		super(name, description, hidden, condition, loading_priority);
 		this.bientityAction = bientityAction;
 		this.heldItemAction = heldItemAction;

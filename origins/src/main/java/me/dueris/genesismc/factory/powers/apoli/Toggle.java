@@ -5,9 +5,11 @@ import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,15 +20,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Toggle extends CraftPower implements Listener {
+public class Toggle extends PowerType implements Listener, KeyedPower {
 	public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
 
 	@EventHandler
 	public void inContinuousFix(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
-		if (getPlayersWithPower().contains(p)) {
+		if (getPlayers().contains(p)) {
 			in_continuous.putIfAbsent(p, new ArrayList<>());
-			for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
+			for (PowerType power : OriginPlayerAccessor.getPowers(p, getType())) {
 				if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
 					if (true /* Toggle power always execute continuously */) {
 						if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"))) {
@@ -56,48 +58,28 @@ public class Toggle extends CraftPower implements Listener {
 	@EventHandler
 	public void keybindPress(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
-		for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
-			if (getPlayersWithPower().contains(p)) {
-				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-					if (!Cooldown.isInCooldown(p, power)) {
-						if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
-							execute(p, power);
-						}
-					}
+		if (getPlayers().contains(p)) {
+			if (isActive(p)) {
+				if (KeybindingUtils.isKeyActive(this.getJsonKey().getKey(), p)) {
+					execute(p, this);
 				}
 			}
 		}
 	}
 
-	public void execute(Player p, Power power) {
+	public void execute(Player p, KeyedPower power) {
 		in_continuous.putIfAbsent(p, new ArrayList<>());
-		int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
-		String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
+		String key = power.getJsonKey().getKey();
 
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				AtomicBoolean cond = new AtomicBoolean(ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p));
+				AtomicBoolean cond = new AtomicBoolean(power.isActive(p));
 				/* Toggle power always execute continuously */
 				if (!cond.get() || (!in_continuous.get(p).contains(key))) {
-					Cooldown.addCooldown(p, cooldown, power);
-					setActive(p, power.getTag(), false);
 					this.cancel();
-					return;
 				}
-
-				setActive(p, power.getTag(), true);
 			}
 		}.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
-	}
-
-	@Override
-	public String getType() {
-		return "apoli:toggle";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return toggle_power;
 	}
 }

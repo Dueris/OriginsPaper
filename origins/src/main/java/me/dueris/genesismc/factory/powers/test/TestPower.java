@@ -6,6 +6,7 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 
 public class TestPower extends PowerType {
 	private final String test;
@@ -27,7 +28,7 @@ public class TestPower extends PowerType {
 	}
 
 	@Override
-	public void tick() {
+	public void tick(Player player) {
 		System.out.println(this.test + " WOW. players: [");
 		this.getPlayers().stream().map(CraftPlayer::getName).forEach(System.out::println);
 		System.out.println("]");

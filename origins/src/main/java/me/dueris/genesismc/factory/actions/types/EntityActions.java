@@ -11,8 +11,10 @@ import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.*;
 import me.dueris.genesismc.factory.powers.apoli.Cooldown;
+import me.dueris.genesismc.factory.powers.apoli.CooldownPower;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.factory.powers.apoli.Toggle;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Utils;
@@ -151,7 +153,7 @@ public class EntityActions {
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("remove_power"), (action, entity) -> {
 			if (entity instanceof Player p) {
-				Power powerContainer = ((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(action.getNamespacedKey("power"));
+				PowerType powerContainer = ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).get(action.getNamespacedKey("power"));
 				if (powerContainer != null) {
 					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("action")));
 				}
@@ -482,10 +484,9 @@ public class EntityActions {
 		register(new ActionFactory(GenesisMC.apoliIdentifier("block_action_at"), (action, entity) -> executeBlock(entity.getLocation(), action.getJsonObject("block_action"))));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("toggle"), (action, entity) -> {
 			if (entity instanceof Player p) {
-				for (Power power : PowerHolderComponent.getPowers(p, "apoli:toggle")) {
+				for (Toggle power : PowerHolderComponent.getPowers(p, Toggle.class)) {
 					if (!power.getTag().equalsIgnoreCase(action.getString("power"))) continue;
-					Toggle toggle = new Toggle();
-					toggle.execute(p, power);
+					power.execute(p, power);
 				}
 			}
 		}));
@@ -495,9 +496,9 @@ public class EntityActions {
 				Arrays.stream(new String[]{"apoli:action_on_hit", "apoli:action_when_damage_taken", "apoli:action_when_hit",
 					"apoli:action_self", "apoli:attacker_action_when_hit", "apoli:self_action_on_hit",
 					"apoli:self_action_on_kill", "apoli:self_action_when_hit", "apoli:target_action_on_hit"}).forEach(type -> {
-					for (Power powerContainer : PowerHolderComponent.getPowers(player, type)) {
-						if (powerContainer.isPresent("cooldown") && powerContainer.isPresent("key")) {
-							Cooldown.addCooldown(player, powerContainer.getNumber("cooldown").getInt(), powerContainer);
+					for (PowerType powerContainer : PowerHolderComponent.getPowers(player, type)) {
+						if (powerContainer instanceof CooldownPower cooldownPower) {
+							Cooldown.addCooldown(player, cooldownPower.getCooldown(), cooldownPower);
 						}
 					}
 				});
