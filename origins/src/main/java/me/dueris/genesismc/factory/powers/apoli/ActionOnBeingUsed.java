@@ -60,7 +60,7 @@ public class ActionOnBeingUsed extends PowerType {
 		boolean pass = false;
 		if (e.getHand().isHand()) {
 			InteractionHand hand = CraftEquipmentSlot.getHand(e.getHand());
-			pass = hands.asList().stream().map(FactoryElement::getString).map(InteractionHand::valueOf).toList().contains(hand);
+			pass = hands.asList().stream().map(FactoryElement::getString).map(String::toUpperCase).map(InteractionHand::valueOf).toList().contains(hand);
 		}
 		if (!pass) return;
 		Player actor = e.getPlayer();

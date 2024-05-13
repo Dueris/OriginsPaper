@@ -2,6 +2,7 @@ package me.dueris.genesismc.util;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
+import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
@@ -154,5 +155,11 @@ public class PlayerManager implements Listener {
 	public void newOrigin(OriginChangeEvent e) {
 		OriginDataContainer.unloadData(e.getPlayer());
 		OriginDataContainer.loadData(e.getPlayer());
+	}
+
+	@EventHandler
+	public void powerUpdate(PowerUpdateEvent e) {
+		Player p = e.getPlayer();
+		p.setGravity(true);
 	}
 }

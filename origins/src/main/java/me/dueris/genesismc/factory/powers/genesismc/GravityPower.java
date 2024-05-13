@@ -30,7 +30,7 @@ public class GravityPower extends PowerType implements Listener {
 	}
 
 	@Override
-	public void tick(Player p) {
+	public void tickAsync(Player p) {
 		if (!PowerHolderComponent.hasPower(p, "origins:like_water")) { // Let LikeWater handle its own gravity
 			if (isActive(p)) {
 				if (getPlayers().contains(p)) {
