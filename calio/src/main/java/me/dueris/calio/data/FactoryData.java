@@ -1,10 +1,16 @@
 package me.dueris.calio.data;
 
 import com.google.common.base.Preconditions;
+
+import me.dueris.calio.data.types.OptionalInstance;
+import me.dueris.calio.data.types.RequiredInstance;
+
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.annotation.Nullable;
 
 public class FactoryData {
 	private final ConcurrentLinkedQueue<FactoryDataDefiner> providers;
@@ -33,6 +39,20 @@ public class FactoryData {
 	}
 
 	public <T> FactoryData add(String objName, Class<T> type, T defaultVal) {
+		Preconditions.checkArgument(objName != null);
+		Preconditions.checkArgument(type != null);
+		this.providers.add(new FactoryDataDefiner(objName, type, defaultVal));
+		return this;
+	}
+
+	public <T> FactoryData add(String objName, Class<T> type, RequiredInstance defaultVal) {
+		Preconditions.checkArgument(objName != null);
+		Preconditions.checkArgument(type != null);
+		this.providers.add(new FactoryDataDefiner(objName, type, defaultVal));
+		return this;
+	}
+
+	public <T> FactoryData add(String objName, Class<T> type, OptionalInstance defaultVal) {
 		Preconditions.checkArgument(objName != null);
 		Preconditions.checkArgument(type != null);
 		this.providers.add(new FactoryDataDefiner(objName, type, defaultVal));

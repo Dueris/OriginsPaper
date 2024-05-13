@@ -4,6 +4,7 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
@@ -46,7 +47,7 @@ public class RecipePower extends PowerType implements Listener {
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("recipe"))
-			.add("recipe", FactoryJsonObject.class, null);
+			.add("recipe", FactoryJsonObject.class, new RequiredInstance());
 	}
 
 	public static void parseRecipes() {

@@ -16,6 +16,7 @@ import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import org.bukkit.Color;
 import org.bukkit.NamespacedKey;
@@ -25,10 +26,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class CalioDataTypes {
+	public static HashMap<Class<?> /*ofType*/, Function<JsonElement, ?>> registries = new HashMap<>();
+	@SuppressWarnings("unchecked")
 	public static <T> T test(Class<T> ofType, JsonElement provider) {
 		if (ofType.equals(ItemStack.class)) return (T) itemStack(provider);
 		if (ofType.equals(Item.class)) return (T) item(provider);
@@ -37,6 +41,12 @@ public class CalioDataTypes {
 		if (ofType.equals(CompoundTag.class)) return (T) compoundTag(provider);
 		if (ofType.equals(ParticleEffect.class)) return (T) particleEffect(provider);
 		if (ofType.equals(Vector.class)) return (T) vector(provider);
+		if (ofType.isEnum()) {
+			return (T) getEnumValue(provider, (Class<Enum>) ofType);
+		}
+		if (registries.containsKey(ofType)) {
+			return (T) registries.get(ofType).apply(provider);
+		}
 		return null;
 	}
 
@@ -123,6 +133,21 @@ public class CalioDataTypes {
 
 	public static CompoundTag compoundTag(JsonElement element) {
 		return ParserUtils.parseJson(new StringReader(element.getAsString()), CompoundTag.CODEC);
+	}
+
+	private static <T extends Enum<T>> T getEV(Class<T> enumClass, String value) {
+		T[] enumConstants = enumClass.getEnumConstants();
+		for (T enumValue : enumConstants) {
+			if (enumValue.toString().toLowerCase().equalsIgnoreCase(value)) {
+				return enumValue;
+			}
+		}
+		throw new IllegalArgumentException("Provided JsonValue from key \"{key}\" was not an instanceof enum \"{enum}\"");
+	}
+
+	public static <T extends Enum<T>> T getEnumValue(JsonElement provider, Class<T> enumClass) {
+		String value = provider.getAsString().toLowerCase();
+		return getEV(enumClass, value);
 	}
 
 	public static class ParserUtils {

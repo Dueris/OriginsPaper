@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
@@ -70,8 +71,8 @@ public class Resource extends PowerType implements Listener, ResourcePower {
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("resource"))
-			.add("min", int.class, null)
-			.add("max", int.class, null)
+			.add("min", int.class, new RequiredInstance())
+			.add("max", int.class, new RequiredInstance())
 			.add("hud_render", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("start_value", Optional.class, Optional.empty())
 			.add("min_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))

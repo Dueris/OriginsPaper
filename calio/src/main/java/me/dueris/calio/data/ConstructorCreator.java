@@ -7,6 +7,9 @@ import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.OptionalInstance;
+import me.dueris.calio.data.types.RequiredInstance;
+
 import org.bukkit.NamespacedKey;
 import oshi.util.tuples.Pair;
 
@@ -38,7 +41,14 @@ public class ConstructorCreator {
 					);
 				}
 			} else if (provider.getDefaultValue() != null) {
-				invoker.add(provider.getDefaultValue());
+				if (provider.getDefaultValue() instanceof RequiredInstance) {
+					throw new IllegalArgumentException("Instance of \"{a}\" is required in registerable: {b}"
+						.replace("{a}", provider.getObjName())
+						.replace("{b}", tag.asString())
+					);
+				} else if (provider.getDefaultValue() instanceof OptionalInstance) {
+					invoker.add(null);
+				} else invoker.add(provider.getDefaultValue());
 			} else {
 				CraftCalio.INSTANCE.getLogger().severe("Provided default value was null when creating factory data! Please provide an instance of that type: {a} | {b}"
 					.replace("{a}", provider.getObjName())

@@ -4,6 +4,7 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.ParticleEffect;
+import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import net.minecraft.server.level.ServerPlayer;
@@ -47,7 +48,7 @@ public class ParticlePower extends PowerType {
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("particle"))
-			.add("particle", ParticleEffect.class, null)
+			.add("particle", ParticleEffect.class, new RequiredInstance())
 			.add("count", int.class, 1)
 			.add("speed", float.class, 0.0F)
 			.add("force", boolean.class, false)
@@ -55,7 +56,7 @@ public class ParticlePower extends PowerType {
 			.add("offset_x", float.class, 0.25F)
 			.add("offset_y", float.class, 0.50F)
 			.add("offset_z", float.class, 0.25F)
-			.add("frequency", int.class, 0)
+			.add("frequency", int.class, new RequiredInstance())
 			.add("visible_while_invisible", boolean.class, false);
 	}
 

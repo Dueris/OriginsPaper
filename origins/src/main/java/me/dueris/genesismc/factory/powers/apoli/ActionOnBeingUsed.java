@@ -8,6 +8,7 @@ import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -51,7 +52,7 @@ public class ActionOnBeingUsed extends PowerType {
 			.add("bientity_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("item_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("hands", FactoryJsonArray.class, new FactoryJsonArray(new Gson().fromJson("[\"off_hand\", \"main_hand\"]", JsonArray.class)))
-			.add("result_stack", ItemStack.class, null);
+			.add("result_stack", ItemStack.class, new OptionalInstance());
 	}
 
 	@EventHandler
