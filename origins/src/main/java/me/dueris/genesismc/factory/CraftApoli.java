@@ -17,10 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class CraftApoli {
 
@@ -33,6 +30,9 @@ public class CraftApoli {
 	// TODO: remove
 	@Deprecated(forRemoval = true)
 	private static final Registrar<PowerType> powerRegistrar = (Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER);
+	private static final Collection<Layer> layerValues = new ArrayList<>();
+	private static final Collection<Origin> originValues = new ArrayList<>();
+	private static final Collection<PowerType> powerValues = new ArrayList<>();
 	static Origin empty = new Origin(
 		"Empty", "No Origin", 0,
 		new ItemStack(Material.BEDROCK), true, new FactoryJsonArray(new JsonArray()),
@@ -40,15 +40,15 @@ public class CraftApoli {
 	).ofResourceLocation(NamespacedKey.fromString("origins:empty"));
 
 	public static Collection<Layer> getLayersFromRegistry() {
-		return layerRegistrar.values();
+		return layerValues;
 	}
 
 	public static Collection<Origin> getOriginsFromRegistry() {
-		return originRegistrar.values();
+		return originValues;
 	}
 
 	public static Collection<PowerType> getPowersFromRegistry() {
-		return powerRegistrar.values();
+		return powerValues;
 	}
 
 	public static Origin getOrigin(String originTag) {

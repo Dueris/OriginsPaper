@@ -150,16 +150,6 @@ public class PowerHolderComponent implements Listener {
 		return powers;
 	}
 
-	public static ArrayList<PowerType> getPowers(Player p, Class<? extends PowerType> powerType, Layer layer) {
-		ArrayList<PowerType> powers = new ArrayList<>();
-		if (playerPowerMapping.get(p) == null) return powers;
-		for (PowerType power : playerPowerMapping.get(p).get(layer)) {
-			if (power == null) continue;
-			if (power.getClass().equals(powerType)) powers.add(power);
-		}
-		return powers;
-	}
-
 	public static ArrayList<PowerType> getPowers(Player p) {
 		ArrayList<PowerType> powers = new ArrayList<>();
 		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
@@ -173,11 +163,9 @@ public class PowerHolderComponent implements Listener {
 
 	public static PowerType getPower(Entity p, String powerKey) {
 		if (!(p instanceof Player)) return null;
-		if (playerPowerMapping.containsKey(p)) {
-			for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
-				for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {
-					if (power.getTag().equalsIgnoreCase(powerKey)) return power;
-				}
+		for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
+			for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {
+				if (power.getTag().equalsIgnoreCase(powerKey)) return power;
 			}
 		}
 		return null;
@@ -185,11 +173,9 @@ public class PowerHolderComponent implements Listener {
 
 	public static boolean hasPower(Entity p, String powerKey) {
 		if (!(p instanceof Player)) return false;
-		if (playerPowerMapping.containsKey(p)) {
-			for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
-				for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {
-					if (power.getTag().equalsIgnoreCase(powerKey)) return true;
-				}
+		for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
+			for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {
+				if (power.getTag().equalsIgnoreCase(powerKey)) return true;
 			}
 		}
 		return false;
@@ -197,11 +183,9 @@ public class PowerHolderComponent implements Listener {
 
 	public static boolean hasPowerType(Entity p, Class<? extends PowerType> typeOf) {
 		if (!(p instanceof Player)) return false;
-		if (playerPowerMapping.containsKey(p)) {
-			for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
-				for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {
-					if (power.getClass().equals(typeOf)) return true;
-				}
+		for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
+			for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {
+				if (power.getClass().equals(typeOf)) return true;
 			}
 		}
 		return false;

@@ -10,6 +10,9 @@ import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -29,15 +32,14 @@ public class CreativeFlight extends PowerType {
 		GameMode m = p.getGameMode();
 		NamespacedKey insideBlock = new NamespacedKey(GenesisMC.getPlugin(), "insideBlock");
 		PersistentDataContainer container = p.getPersistentDataContainer();
-		if (container.get(insideBlock, PersistentDataType.BOOLEAN) != null && Boolean.TRUE.equals(container.get(insideBlock, PersistentDataType.BOOLEAN))) {
+		if (Boolean.TRUE.equals(container.get(insideBlock, PersistentDataType.BOOLEAN))) {
 			if (p.getAllowFlight()) {
 				p.setFlying(true);
 			}
 		} else {
-			if (getPlayers().contains(p) || PowerHolderComponent.isInPhantomForm(p)) {
-				if (!p.getAllowFlight()) p.setAllowFlight(true);
-				if (p.isFlying()) {
-					p.setFlying(true);
+			if (PowerHolderComponent.hasPowerType(p, CreativeFlight.class) || PowerHolderComponent.isInPhantomForm(p)) {
+				if (!p.getAllowFlight()) {
+					p.setAllowFlight(true);
 				}
 			} else {
 				boolean a = m.equals(GameMode.SPECTATOR) || m.equals(GameMode.CREATIVE) ||
@@ -49,8 +51,8 @@ public class CreativeFlight extends PowerType {
 					p.setAllowFlight(false);
 				}
 
-				if (PowerHolderComponent.hasPowerType(p, ElytraFlightPower.class)) {
-					p.setFlying(m.equals(GameMode.CREATIVE) || m.equals(GameMode.SPECTATOR));
+				if (m.equals(GameMode.SPECTATOR)) {
+					p.setFlying(true);
 				}
 			}
 		}
@@ -62,5 +64,4 @@ public class CreativeFlight extends PowerType {
 			}
 		}
 	}
-
 }

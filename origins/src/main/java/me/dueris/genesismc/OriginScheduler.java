@@ -67,7 +67,6 @@ public class OriginScheduler {
 			}
 
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				flight.tickAsync(p);
 				for (PowerProvider provider : OriginSimpleContainer.registeredPowers) {
 					provider.tick(p);
 				}
@@ -82,7 +81,7 @@ public class OriginScheduler {
 				}
 			}
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				flight.tick(p);
+				flight.tickAsync(p);
 			}
 		}
 	}

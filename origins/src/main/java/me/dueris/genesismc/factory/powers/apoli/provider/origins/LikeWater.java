@@ -12,10 +12,11 @@ import org.bukkit.event.Listener;
 public class LikeWater implements Listener, PowerProvider {
 	private static final AttributeModifier modifier = new AttributeModifier("LikeWater", -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("like_water");
+	private static final String cachedPowerRefrenceString = powerReference.asString();
 
 	@Override
 	public void tick(Player p) {
-		if (!PowerHolderComponent.hasPower(p, powerReference.asString())) return;
+		if (!PowerHolderComponent.hasPower(p, cachedPowerRefrenceString)) return;
 		if (p.isInWaterOrBubbleColumn() && !p.isSneaking()) {
 			if (!p.getAttribute(Attribute.GENERIC_GRAVITY).getModifiers().contains(modifier)) {
 				p.getAttribute(Attribute.GENERIC_GRAVITY).addTransientModifier(modifier);

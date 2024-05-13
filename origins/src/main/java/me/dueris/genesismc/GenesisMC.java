@@ -446,6 +446,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
       @param e
      */
 	public void loadEvent(ServerLoadEvent e) {
+		CraftApoli.getPowersFromRegistry().addAll(this.registry.retrieve(Registries.CRAFT_POWER).values());
+		CraftApoli.getOriginsFromRegistry().addAll(this.registry.retrieve(Registries.ORIGIN).values());
+		CraftApoli.getLayersFromRegistry().addAll(this.registry.retrieve(Registries.LAYER).values());
 		ChoosingPage.registerInstances();
 		ScreenNavigator.layerPages.values().forEach((pages) -> pages.add(pages.size(), new RandomOriginPage()));
 		// TODO
