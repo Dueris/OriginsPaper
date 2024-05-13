@@ -2,6 +2,8 @@ package me.dueris.genesismc;
 
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.apoli.CreativeFlight;
+import me.dueris.genesismc.factory.powers.apoli.provider.OriginSimpleContainer;
+import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;
@@ -11,6 +13,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class OriginScheduler {
 	final Plugin plugin;
@@ -27,7 +30,7 @@ public class OriginScheduler {
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
 	}
 
-	public static class OriginSchedulerTree extends BukkitRunnable implements Listener {
+	public static class MainTickerThread extends BukkitRunnable implements Listener {
 		private final CreativeFlight flight = new CreativeFlight("creative_flight", "description", true, null, 0);
 		public OriginScheduler parent = new OriginScheduler(GenesisMC.getPlugin());
 
@@ -46,7 +49,6 @@ public class OriginScheduler {
 					}
 					try {
 						power.tick(p);
-						power.tickAsync(p);
 					} catch (Throwable throwable) {
 						String[] stacktrace = {"\n"};
 						Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
@@ -66,6 +68,21 @@ public class OriginScheduler {
 
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				flight.tickAsync(p);
+				for (PowerProvider provider : OriginSimpleContainer.registeredPowers) {
+					provider.tick(p);
+				}
+			}
+		}
+
+		public void tickAsyncScheduler() {
+			for (Player p : PowerHolderComponent.hasPowers) {
+				ConcurrentLinkedQueue<PowerType> applied = PowerHolderComponent.getPowersApplied(p);
+				for (PowerType c : applied) {
+					c.tickAsync(p);
+				}
+			}
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				flight.tick(p);
 			}
 		}
 	}

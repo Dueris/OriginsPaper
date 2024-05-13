@@ -13,6 +13,7 @@ public class LikeWater implements Listener, PowerProvider {
 	private static final AttributeModifier modifier = new AttributeModifier("LikeWater", -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("like_water");
 
+	@Override
 	public void tick(Player p) {
 		if (!PowerHolderComponent.hasPower(p, powerReference.asString())) return;
 		if (p.isInWaterOrBubbleColumn() && !p.isSneaking()) {

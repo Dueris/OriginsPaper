@@ -66,9 +66,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.*;
 
 import static me.dueris.genesismc.util.ColorConstants.AQUA;
 
@@ -83,7 +81,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	public static boolean placeholderapi = false;
 	public static File playerDataFolder;
 	public static boolean forceUseCurrentVersion = false;
-	public static OriginScheduler.OriginSchedulerTree scheduler = null;
+	public static OriginScheduler.MainTickerThread scheduler = null;
 	public static String version = Bukkit.getVersion().split("\\(MC: ")[1].replace(")", "");
 	public static boolean isCompatible = false;
 	public static String pluginVersion = "v1.0.0";
@@ -101,7 +99,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 	public IRegistry registry;
 
-	public static OriginScheduler.OriginSchedulerTree getScheduler() {
+	public static OriginScheduler.MainTickerThread getScheduler() {
 		return scheduler;
 	}
 
@@ -312,8 +310,17 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			throwable(e, false);
 		}
 
-		GenesisMC.scheduler = new OriginScheduler.OriginSchedulerTree();
+		GenesisMC.scheduler = new OriginScheduler.MainTickerThread();
 		GenesisMC.scheduler.runTaskTimer(this, 0, 1);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				GenesisMC.scheduler.tickAsyncScheduler();
+			}
+		}.runTaskTimerAsynchronously(GenesisMC.getPlugin(), 0, 1);
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			PowerHolderComponent.powersAppliedList.putIfAbsent(player, new ConcurrentLinkedQueue<>());
+		}
 		WaterProtBook.init();
 		start();
 		patchPowers();
@@ -372,7 +379,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new BounceSlimeBlock(), this);
 		getServer().getPluginManager().registerEvents(new BiEntityConditions(), this);
 		getServer().getPluginManager().registerEvents(new VillagerTradeHook(), this);
-		getServer().getPluginManager().registerEvents(new OriginScheduler.OriginSchedulerTree(), this);
+		getServer().getPluginManager().registerEvents(new OriginScheduler.MainTickerThread(), this);
 		getServer().getPluginManager().registerEvents(new StructureGeneration(), this);
 		getServer().getPluginManager().registerEvents(new KeybindingUtils(), this);
 		getServer().getPluginManager().registerEvents(new AsyncUpgradeTracker(), this);

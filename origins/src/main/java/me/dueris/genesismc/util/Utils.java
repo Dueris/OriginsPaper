@@ -163,7 +163,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		return new Pair<String, String>() {
 			@Override
 			public String left() {
-				return !name.equals("No Name") ? name : tag;
+				return !name.equals("craftapoli.name.not_found") ? name : tag;
 			}
 
 			@Override

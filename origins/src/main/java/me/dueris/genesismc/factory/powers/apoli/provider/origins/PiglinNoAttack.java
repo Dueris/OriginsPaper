@@ -27,6 +27,7 @@ public class PiglinNoAttack implements Listener, PowerProvider {
 
 	private final HashMap<Player, HashMap<Entity, Integer>> cooldowns = new HashMap<>();
 
+	@Override
 	public void tick(Player p) {
 		if (cooldowns.containsKey(p)) {
 			for (Entity en : cooldowns.get(p).keySet()) {
