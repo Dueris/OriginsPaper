@@ -11,6 +11,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
+import me.dueris.genesismc.factory.powers.apoli.ActionOnBlockBreak;
 import me.dueris.genesismc.factory.powers.apoli.ClimbingPower;
 import me.dueris.genesismc.factory.powers.apoli.ElytraFlightPower;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
@@ -33,6 +34,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -653,11 +655,10 @@ public class EntityConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("using_effective_tool"), (condition, entity) -> {
 			if (entity instanceof Player player) {
 				ServerPlayer p = ((CraftPlayer) player).getHandle();
-				// TODO
-//				if (ActionOnBlockBreak.playersMining.containsKey(p.getBukkitEntity()) && ActionOnBlockBreak.playersMining.get(p.getBukkitEntity())) {
-//					BlockState state = p.level().getBlockState(ActionOnBlockBreak.playersMiningBlockPos.get(p.getBukkitEntity()));
-//					return p.hasCorrectToolForDrops(state);
-//				}
+				if (ActionOnBlockBreak.playersMining.containsKey(p.getBukkitEntity()) && ActionOnBlockBreak.playersMining.get(p.getBukkitEntity())) {
+					BlockState state = p.level().getBlockState(ActionOnBlockBreak.playersMiningBlockPos.get(p.getBukkitEntity()));
+					return p.hasCorrectToolForDrops(state);
+				}
 			}
 			return false;
 		}));

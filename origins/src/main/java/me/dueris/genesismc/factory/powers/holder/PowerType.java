@@ -11,7 +11,6 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.apoli.provider.OriginSimpleContainer;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.*;
-import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -47,11 +46,11 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 	private final FactoryJsonObject condition;
 	private final int loadingPriority;
 	private final ConcurrentLinkedQueue<CraftPlayer> players = new ConcurrentLinkedQueue<>();
+	private final List<FactoryJsonObject> conditions = new ArrayList<>();
 	protected boolean tagSet = false;
 	private NamespacedKey tag = null;
 	private String cachedTagString = null;
 	private boolean hasPlayers = false;
-	private final List<FactoryJsonObject> conditions = new ArrayList<>();
 
 	@Register
 	public PowerType(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
@@ -89,6 +88,7 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 		OriginSimpleContainer.registerPower(NoCobWebSlowdown.class);
 		OriginSimpleContainer.registerPower(PiglinNoAttack.class);
 		OriginSimpleContainer.registerPower(ScareCreepers.class);
+		OriginSimpleContainer.registerPower(WaterBreathe.class);
 	}
 
 	public String getName() {

@@ -9,14 +9,20 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import me.dueris.calio.data.factory.FactoryElement;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.ParticleEffect;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import org.bukkit.Color;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
 import java.util.Optional;
@@ -29,7 +35,25 @@ public class CalioDataTypes {
 		if (ofType.equals(NamespacedKey.class)) return (T) bukkitIdentifier(provider);
 		if (ofType.equals(ResourceLocation.class)) return (T) identifier(provider);
 		if (ofType.equals(CompoundTag.class)) return (T) compoundTag(provider);
+		if (ofType.equals(ParticleEffect.class)) return (T) particleEffect(provider);
+		if (ofType.equals(Vector.class)) return (T) vector(provider);
 		return null;
+	}
+
+	public static Vector vector(JsonElement element) {
+		FactoryJsonObject object = new FactoryJsonObject(element.getAsJsonObject());
+		float x = 0.0f;
+		float y = 0.0f;
+		float z = 0.0f;
+
+		if (object.isPresent("x"))
+			x = object.getNumber("x").getFloat();
+		if (object.isPresent("y"))
+			y = object.getNumber("y").getFloat();
+		if (object.isPresent("z"))
+			z = object.getNumber("z").getFloat();
+
+		return new Vector(x, y, z);
 	}
 
 	public static ItemStack itemStack(JsonElement element) {
@@ -45,6 +69,44 @@ public class CalioDataTypes {
 			// Assume string
 			return item(element).getDefaultInstance().asBukkitCopy();
 		}
+	}
+
+	public static ParticleEffect particleEffect(JsonElement raw) {
+		FactoryElement element = new FactoryElement(raw);
+		Particle particle = null;
+		Optional<Particle.DustOptions> data = Optional.empty();
+		boolean containsParams = !(element.isString()) && element.isJsonObject() && element.toJsonObject().isPresent("params");
+		if (element.isString()) {
+			particle = Particle.valueOf(ensureCorrectNamespace(element.getString()).split(":")[1].toUpperCase()); // Directly parse it
+		} else if (element.isJsonObject()) {
+			FactoryJsonObject particleObject = element.toJsonObject();
+			particle = particleObject.getEnumValue("type", Particle.class, true);
+		}
+		if (containsParams) {
+			String provided = element.toJsonObject().getStringOrDefault("params", "");
+			if (provided.contains(" ")) {
+				String[] splitArgs = provided.split(" ");
+				float arg1 = Float.parseFloat(splitArgs[0]);
+				float arg2 = Float.parseFloat(splitArgs[1]);
+				float arg3 = Float.parseFloat(splitArgs[2]);
+				float size = Float.parseFloat(splitArgs[3]);
+				data = Optional.of(new Particle.DustOptions(Color.fromRGB(calculateParticleValue(arg1), calculateParticleValue(arg2), calculateParticleValue(arg3)), size));
+			}
+		}
+
+		return new ParticleEffect(particle, data);
+	}
+
+	private static int calculateParticleValue(float value) {
+		if (Math.round(value * 255) > 255) {
+			return 254;
+		} else {
+			return Math.round(value * 255);
+		}
+	}
+
+	private static String ensureCorrectNamespace(String string) {
+		return string.contains(":") ? string : "minecraft:" + string;
 	}
 
 	public static Item item(JsonElement element) {

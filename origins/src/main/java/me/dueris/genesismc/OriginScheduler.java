@@ -42,6 +42,7 @@ public class OriginScheduler {
 		@Override
 		public void run() {
 			for (PowerType power : CraftApoli.getPowersFromRegistry()) {
+				power.tick(); // Allow powers to add their own BukkitRunnables
 				if (!power.hasPlayers()) continue;
 				for (Player p : power.getPlayers()) {
 					if (Bukkit.getServer().getCurrentTick() % 20 == 0) {
@@ -66,8 +67,9 @@ public class OriginScheduler {
 				}
 			}
 
-			for (Player p : Bukkit.getOnlinePlayers()) {
-				for (PowerProvider provider : OriginSimpleContainer.registeredPowers) {
+			for (PowerProvider provider : OriginSimpleContainer.registeredPowers) {
+				provider.tick();
+				for (Player p : Bukkit.getOnlinePlayers()) {
 					provider.tick(p);
 				}
 			}

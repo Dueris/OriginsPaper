@@ -42,6 +42,7 @@ import static me.dueris.genesismc.util.TextureLocation.textureMap;
 public class Resource extends PowerType implements Listener, ResourcePower {
 	public static HashMap<String, Bar> serverLoadedBars = new HashMap<>(); // IDENTIFIER || BAR_IMPL
 	public static HashMap<Player, List<Bar>> currentlyDisplayed = new HashMap<>();
+
 	static {
 		GenesisMC.preShutdownTasks.add(() -> {
 			serverLoadedBars.values().forEach(Bar::delete);
@@ -203,7 +204,6 @@ public class Resource extends PowerType implements Listener, ResourcePower {
 		double oneInc;
 
 		Bar(Resource power, Player player) {
-			System.out.println(power.getTag() + power.getType() + power.hashCode());
 			this.title = Utils.getNameOrTag(power).left();
 			this.power = power;
 			this.min = power.getMin();

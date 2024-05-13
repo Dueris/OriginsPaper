@@ -1,13 +1,10 @@
 package me.dueris.genesismc.util.entity;
 
 import javassist.NotFoundException;
-import me.dueris.calio.data.FactoryData;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.apoli.Multiple;
-import me.dueris.genesismc.factory.powers.apoli.Resource;
-import me.dueris.genesismc.factory.powers.apoli.Simple;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
@@ -40,7 +37,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 
-import static me.dueris.genesismc.factory.powers.apoli.Resource.*;
 import static me.dueris.genesismc.screen.ScreenNavigator.inChoosingLayer;
 
 public class PowerHolderComponent implements Listener {

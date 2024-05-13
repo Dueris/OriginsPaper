@@ -27,6 +27,7 @@ import me.dueris.genesismc.factory.actions.types.ItemActions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.types.*;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
+import me.dueris.genesismc.factory.powers.apoli.provider.origins.WaterBreathe;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.integration.PlaceHolderAPI;
 import me.dueris.genesismc.integration.pehuki.CraftPehuki;
@@ -66,7 +67,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import static me.dueris.genesismc.factory.powers.apoli.RecipePower.parseRecipes;
 import static me.dueris.genesismc.util.ColorConstants.AQUA;
@@ -391,8 +395,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			}
 		});
 
-		BukkitRunnable[] independentTickers = {new GuiTicker(), new ContentTicker(), new OriginCommand(), /*new Cooldown()*/}; // TODO
-		// WaterBreathe.start(); // TODO
+		BukkitRunnable[] independentTickers = {new GuiTicker(), new ContentTicker(), new OriginCommand()};
+		 WaterBreathe.start();
 		for (BukkitRunnable runnable : independentTickers) {
 			runnable.runTaskTimerAsynchronously(GenesisMC.getPlugin(), 0, 1);
 		}

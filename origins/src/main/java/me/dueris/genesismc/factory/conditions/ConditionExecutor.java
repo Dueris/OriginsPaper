@@ -208,7 +208,7 @@ public class ConditionExecutor {
 	}
 
 	public static boolean testBlock(FactoryJsonObject condition, Block block) {
-		return testBlock(condition, CraftBlock.at(((CraftWorld)block.getWorld()).getHandle(), CraftLocation.toBlockPosition(block.getLocation())));
+		return testBlock(condition, CraftBlock.at(((CraftWorld) block.getWorld()).getHandle(), CraftLocation.toBlockPosition(block.getLocation())));
 	}
 
 	@SuppressWarnings("index out of bounds")
