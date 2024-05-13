@@ -147,7 +147,6 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 
 	public void removePlayer(Player player) {
 		this.hasPlayers = false;
-		System.out.println("1111111111111");
 		this.players.remove((CraftPlayer) player);
 	}
 
