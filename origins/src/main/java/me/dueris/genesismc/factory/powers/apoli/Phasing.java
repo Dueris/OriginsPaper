@@ -20,6 +20,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -53,6 +55,7 @@ import java.util.HashMap;
 public class Phasing extends PowerType implements Listener {
 	public static ArrayList<Player> inPhantomFormBlocks = new ArrayList<>();
 	public static HashMap<Player, Boolean> test = new HashMap<>();
+	public static AttributeModifier speedFix = new AttributeModifier("PhantomSpeedFix", 1, AttributeModifier.Operation.ADD_NUMBER);
 	private final FactoryJsonObject phaseDownCondition;
 
 	@Register
@@ -243,9 +246,15 @@ public class Phasing extends PowerType implements Listener {
 
 	@EventHandler
 	public void fixMineSpeed(ServerTickEndEvent e) {
-		for (Player p : inPhantomFormBlocks) {
-			if (!p.getActivePotionEffects().contains(new PotionEffect(PotionEffectType.HASTE, 5, 3, false, false, false))) {
-				p.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 5, 3, false, false, false));
+		for (Player p : getPlayers()) {
+			if (inPhantomFormBlocks.contains(p)) {
+				if (!p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getModifiers().contains(speedFix)) {
+					p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).addModifier(speedFix);
+				}
+			} else {
+				if (p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getModifiers().contains(speedFix)) {
+					p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).removeModifier(speedFix);
+				}
 			}
 		}
 	}

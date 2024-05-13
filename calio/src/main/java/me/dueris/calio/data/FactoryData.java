@@ -10,8 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.annotation.Nullable;
-
 public class FactoryData {
 	private final ConcurrentLinkedQueue<FactoryDataDefiner> providers;
 	private NamespacedKey identifier;
@@ -45,14 +43,14 @@ public class FactoryData {
 		return this;
 	}
 
-	public <T> FactoryData add(String objName, Class<T> type, RequiredInstance defaultVal) {
+	public <T> FactoryData addRequiredInstance(String objName, Class<T> type, RequiredInstance defaultVal) {
 		Preconditions.checkArgument(objName != null);
 		Preconditions.checkArgument(type != null);
 		this.providers.add(new FactoryDataDefiner(objName, type, defaultVal));
 		return this;
 	}
 
-	public <T> FactoryData add(String objName, Class<T> type, OptionalInstance defaultVal) {
+	public <T> FactoryData addOptionalInstance(String objName, Class<T> type, OptionalInstance defaultVal) {
 		Preconditions.checkArgument(objName != null);
 		Preconditions.checkArgument(type != null);
 		this.providers.add(new FactoryDataDefiner(objName, type, defaultVal));

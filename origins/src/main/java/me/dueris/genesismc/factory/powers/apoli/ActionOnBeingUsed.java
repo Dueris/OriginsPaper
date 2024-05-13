@@ -52,7 +52,7 @@ public class ActionOnBeingUsed extends PowerType {
 			.add("bientity_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("item_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("hands", FactoryJsonArray.class, new FactoryJsonArray(new Gson().fromJson("[\"off_hand\", \"main_hand\"]", JsonArray.class)))
-			.add("result_stack", ItemStack.class, new OptionalInstance());
+			.addOptionalInstance("result_stack", ItemStack.class, new OptionalInstance());
 	}
 
 	@EventHandler

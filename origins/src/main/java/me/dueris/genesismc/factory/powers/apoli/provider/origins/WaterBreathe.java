@@ -22,9 +22,9 @@ import java.util.ArrayList;
 
 public class WaterBreathe implements Listener, PowerProvider {
 	private static final ArrayList<Player> genesisExecuting = new ArrayList<>();
+	public static ArrayList<Player> outofAIR = new ArrayList<>();
 	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("water_breathing");
 	private static final String cachedPowerRefrenceString = powerReference.asString();
-	public static ArrayList<Player> outofAIR = new ArrayList<>();
 
 	public static boolean isInBreathableWater(Player player) {
 		Block block = player.getEyeLocation().getBlock();
@@ -63,48 +63,48 @@ public class WaterBreathe implements Listener, PowerProvider {
 	@Override
 	public void tick(Player p) {
 		if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
-			if (PowerHolderComponent.hasPower(p, cachedPowerRefrenceString)) {
-				genesisExecuting.add(p);
-				int addonAir = 4;
-				int lowestAir = -10;
-				int tickDownAir = 1;
-				boolean shouldDamage = true;
-				if (((CraftPlayer) (p)).getHandle().hasEffect(MobEffects.WATER_BREATHING)
-					|| p.isInRain()
-					|| ((CraftPlayer) p).getHandle().hasEffect(MobEffects.CONDUIT_POWER)
-					|| p.getGameMode().equals(GameMode.SPECTATOR)
-					|| p.getGameMode().equals(GameMode.CREATIVE)
-				) {
-					addonAir = 0;
-					tickDownAir = 0;
-					shouldDamage = false;
-				}
-				if (isInBreathableWater(p)) {
-					if (p.getRemainingAir() < 290) {
-						p.setRemainingAir(p.getRemainingAir() + addonAir);
-					} else {
-						p.setRemainingAir(310);
-					}
-					outofAIR.remove(p);
-				} else {
-					int remainingAir = p.getRemainingAir();
-					if (remainingAir <= 5) {
-						p.setRemainingAir(lowestAir);
-						outofAIR.add(p);
-					} else {
-						p.setRemainingAir(remainingAir - tickDownAir);
-						outofAIR.remove(p);
-					}
-				}
-				if (!shouldDamage) {
-					outofAIR.remove(p);
-				} else if (outofAIR.contains(p)) {
-					if (p.getRemainingAir() > 20) {
-						outofAIR.remove(p);
-					}
-				}
-				genesisExecuting.remove(p);
+		if (PowerHolderComponent.hasPower(p, cachedPowerRefrenceString)) {
+			genesisExecuting.add(p);
+			int addonAir = 4;
+			int lowestAir = -10;
+			int tickDownAir = 1;
+			boolean shouldDamage = true;
+			if (((CraftPlayer) (p)).getHandle().hasEffect(MobEffects.WATER_BREATHING)
+				|| p.isInRain()
+				|| ((CraftPlayer) p).getHandle().hasEffect(MobEffects.CONDUIT_POWER)
+				|| p.getGameMode().equals(GameMode.SPECTATOR)
+				|| p.getGameMode().equals(GameMode.CREATIVE)
+			) {
+				addonAir = 0;
+				tickDownAir = 0;
+				shouldDamage = false;
 			}
+			if (isInBreathableWater(p)) {
+				if (p.getRemainingAir() < 290) {
+					p.setRemainingAir(p.getRemainingAir() + addonAir);
+				} else {
+					p.setRemainingAir(310);
+				}
+				outofAIR.remove(p);
+			} else {
+				int remainingAir = p.getRemainingAir();
+				if (remainingAir <= 5) {
+					p.setRemainingAir(lowestAir);
+					outofAIR.add(p);
+				} else {
+					p.setRemainingAir(remainingAir - tickDownAir);
+					outofAIR.remove(p);
+				}
+			}
+			if (!shouldDamage) {
+				outofAIR.remove(p);
+			} else if (outofAIR.contains(p)) {
+				if (p.getRemainingAir() > 20) {
+					outofAIR.remove(p);
+				}
+			}
+			genesisExecuting.remove(p);
+		}
 	}
 
 	public void tick() {

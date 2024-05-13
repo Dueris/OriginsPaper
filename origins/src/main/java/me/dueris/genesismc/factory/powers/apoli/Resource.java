@@ -71,8 +71,8 @@ public class Resource extends PowerType implements Listener, ResourcePower {
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("resource"))
-			.add("min", int.class, new RequiredInstance())
-			.add("max", int.class, new RequiredInstance())
+			.addRequiredInstance("min", int.class, new RequiredInstance())
+			.addRequiredInstance("max", int.class, new RequiredInstance())
 			.add("hud_render", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("start_value", Optional.class, Optional.empty())
 			.add("min_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))

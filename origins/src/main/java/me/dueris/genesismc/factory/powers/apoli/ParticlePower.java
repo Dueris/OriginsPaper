@@ -7,14 +7,9 @@ import me.dueris.calio.data.types.ParticleEffect;
 import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.util.CraftLocation;
-import org.bukkit.craftbukkit.util.CraftVector;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -48,7 +43,7 @@ public class ParticlePower extends PowerType {
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("particle"))
-			.add("particle", ParticleEffect.class, new RequiredInstance())
+			.addRequiredInstance("particle", ParticleEffect.class, new RequiredInstance())
 			.add("count", int.class, 1)
 			.add("speed", float.class, 0.0F)
 			.add("force", boolean.class, false)
@@ -56,7 +51,7 @@ public class ParticlePower extends PowerType {
 			.add("offset_x", float.class, 0.25F)
 			.add("offset_y", float.class, 0.50F)
 			.add("offset_z", float.class, 0.25F)
-			.add("frequency", int.class, new RequiredInstance())
+			.addRequiredInstance("frequency", int.class, new RequiredInstance())
 			.add("visible_while_invisible", boolean.class, false);
 	}
 
