@@ -68,19 +68,15 @@ public class ParticlePower extends PowerType {
 					throw new IllegalStateException("Unable to create CraftBukkit particle instance");
 				boolean visible_while_invis = isVisibleWhileInvis();
 				boolean pass = visible_while_invis || !player.isInvisible();
-
 				double offset_x = spread.getX();
 				double offset_y = spread.getY();
 				double offset_z = spread.getZ();
-
-				Particle.DustOptions data = null;
-				if (effect.getDustOptions().isPresent()) data = effect.getDustOptions().get();
 
 				if (pass) {
 					player.getWorld().spawnParticle(
 						particle.builder().source(player).force(false).location(player.getLocation()).count(1).particle(),
 						new Location(player.getWorld(), player.getEyeLocation().getX(), player.getEyeLocation().getY() - 0.7, player.getEyeLocation().getZ()),
-						count, offset_x, offset_y, offset_z, 0, data
+						count, offset_x, offset_y, offset_z, 0, effect.getDustOptions().orElse(null)
 					);
 				}
 			}
