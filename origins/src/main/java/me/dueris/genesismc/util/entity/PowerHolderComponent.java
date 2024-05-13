@@ -6,6 +6,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.apoli.Multiple;
+import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.factory.powers.apoli.Simple;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
@@ -39,6 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 
+import static me.dueris.genesismc.factory.powers.apoli.Resource.*;
 import static me.dueris.genesismc.screen.ScreenNavigator.inChoosingLayer;
 
 public class PowerHolderComponent implements Listener {
@@ -280,11 +282,6 @@ public class PowerHolderComponent implements Listener {
 					Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
 			}
 			new PowerUpdateEvent(player, power, false, isNew).callEvent();
-			if (power instanceof Multiple multiple) {
-				for (PowerType subPower : multiple.getSubPowers()) {
-					applyPower(player, subPower, suppress, isNew);
-				}
-			}
 		} else {
 			throw new PowerNotFoundException(registryKey.asString());
 		}
@@ -306,11 +303,6 @@ public class PowerHolderComponent implements Listener {
 					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
 			}
 			new PowerUpdateEvent(player, power, true, isNew).callEvent();
-			if (power instanceof Multiple multiple) {
-				for (PowerType subPower : multiple.getSubPowers()) {
-					removePower(player, subPower, suppress, isNew);
-				}
-			}
 		} else {
 			throw new PowerNotFoundException(registryKey.asString());
 		}

@@ -68,6 +68,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
 
+import static me.dueris.genesismc.factory.powers.apoli.RecipePower.parseRecipes;
 import static me.dueris.genesismc.util.ColorConstants.AQUA;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
@@ -383,6 +384,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new StructureGeneration(), this);
 		getServer().getPluginManager().registerEvents(new KeybindingUtils(), this);
 		getServer().getPluginManager().registerEvents(new AsyncUpgradeTracker(), this);
+		getServer().getPluginManager().registerEvents(new PowerHolderComponent(), this);
 		((Registrar<PowerType>) this.registry.retrieve(Registries.CRAFT_POWER)).values().forEach(powerType -> {
 			if (powerType != null) {
 				getServer().getPluginManager().registerEvents(powerType, this);
@@ -451,8 +453,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		CraftApoli.getLayersFromRegistry().addAll(this.registry.retrieve(Registries.LAYER).values());
 		ChoosingPage.registerInstances();
 		ScreenNavigator.layerPages.values().forEach((pages) -> pages.add(pages.size(), new RandomOriginPage()));
-		// TODO
-//		parseRecipes();
+		parseRecipes();
 		OrbOfOrigins.init();
 	}
 }

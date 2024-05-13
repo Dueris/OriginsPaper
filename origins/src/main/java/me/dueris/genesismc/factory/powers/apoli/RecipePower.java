@@ -155,7 +155,7 @@ public class RecipePower extends PowerType implements Listener {
 
 	@EventHandler
 	public void update(PowerUpdateEvent e) {
-		if (e.getPower().getType().equalsIgnoreCase(getType())) {
+		if (e.getPower().getType().equalsIgnoreCase(getType()) && e.getPower().getTag().equalsIgnoreCase(getTag())) {
 			applyRecipePower(e.getPlayer());
 		}
 	}

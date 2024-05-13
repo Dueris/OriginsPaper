@@ -42,7 +42,6 @@ import static me.dueris.genesismc.util.TextureLocation.textureMap;
 public class Resource extends PowerType implements Listener, ResourcePower {
 	public static HashMap<String, Bar> serverLoadedBars = new HashMap<>(); // IDENTIFIER || BAR_IMPL
 	public static HashMap<Player, List<Bar>> currentlyDisplayed = new HashMap<>();
-
 	static {
 		GenesisMC.preShutdownTasks.add(() -> {
 			serverLoadedBars.values().forEach(Bar::delete);
@@ -96,25 +95,6 @@ public class Resource extends PowerType implements Listener, ResourcePower {
 	}
 
 	@EventHandler
-	public void powerAdd(PowerUpdateEvent e) {
-		if (e.getPower().getType().equalsIgnoreCase(getType())) {
-			currentlyDisplayed.putIfAbsent(e.getPlayer(), new ArrayList<>());
-			if (!e.isRemoved()) {
-				// Power is added, display bar
-				if (serverLoadedBars.containsKey(e.getPower().getTag())) {
-					Bar displayed = serverLoadedBars.get(e.getPower().getTag()).cloneForPlayer(e.getPlayer());
-					currentlyDisplayed.get(e.getPlayer()).add(displayed);
-				}
-			} else if (currentlyDisplayed.containsKey(e.getPlayer())) {
-				// Power is removed, remove the bar
-				Bar cD = getDisplayedBar(e.getPlayer(), e.getPower().getTag()).orElse(null);
-				if (cD == null) return;
-				cD.delete();
-			}
-		}
-	}
-
-	@EventHandler
 	public void preLoad(ServerLoadEvent e) {
 		// We preload the bars and then display a clone of them to each player
 		((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).values().stream()
@@ -124,6 +104,27 @@ public class Resource extends PowerType implements Listener, ResourcePower {
 			});
 		for (Player player : Bukkit.getOnlinePlayers())
 			PowerHolderComponent.getPowers(player, Resource.class).forEach(power -> powerAdd(new PowerUpdateEvent(player, power, false, false)));
+	}
+
+	@EventHandler
+	public void powerAdd(PowerUpdateEvent e) {
+		if (e.getPower() instanceof Resource && e.getPower().getTag().equalsIgnoreCase(getTag())) {
+			currentlyDisplayed.putIfAbsent(e.getPlayer(), new ArrayList<>());
+			if (!e.isRemoved()) {
+				// Power is added, display bar
+				if (serverLoadedBars.containsKey(e.getPower().getTag())) {
+					Resource.Bar displayed = serverLoadedBars.get(e.getPower().getTag());
+					if (!currentlyDisplayed.get(e.getPlayer()).contains(displayed)) {
+						currentlyDisplayed.get(e.getPlayer()).add(displayed.cloneForPlayer(e.getPlayer()));
+					}
+				}
+			} else if (currentlyDisplayed.containsKey(e.getPlayer())) {
+				// Power is removed, remove the bar
+				Resource.Bar cD = getDisplayedBar(e.getPlayer(), e.getPower().getTag()).orElse(null);
+				if (cD == null) return;
+				cD.delete();
+			}
+		}
 	}
 
 	@EventHandler
@@ -202,6 +203,7 @@ public class Resource extends PowerType implements Listener, ResourcePower {
 		double oneInc;
 
 		Bar(Resource power, Player player) {
+			System.out.println(power.getTag() + power.getType() + power.hashCode());
 			this.title = Utils.getNameOrTag(power).left();
 			this.power = power;
 			this.min = power.getMin();
