@@ -44,6 +44,7 @@ import me.dueris.genesismc.storage.OriginConfiguration;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.storage.nbt.NBTFixerUpper;
 import me.dueris.genesismc.util.*;
+import me.dueris.genesismc.util.entity.GlowingEntitiesUtils;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -80,6 +81,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	public static final boolean isExpandedScheduler = classExists("io.papermc.paper.threadedregions.scheduler.ScheduledTask");
 	public static List<Runnable> preShutdownTasks = new ArrayList<>();
 	public static EnumSet<Material> tool;
+	public static GlowingEntitiesUtils glowingEntitiesUtils;
 	public static Metrics metrics;
 	public static ConditionExecutor conditionExecutor;
 	public static String apoliVersion = "1.12.8";
@@ -162,6 +164,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		GenesisMC.server = ((CraftServer) Bukkit.getServer()).getServer();
 		world_container = server.options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
 		playerDataFolder = server.playerDataStorage.getPlayerDir();
+		glowingEntitiesUtils = new GlowingEntitiesUtils(this);
 		try {
 			OriginConfiguration.load();
 		} catch (IOException e) {
@@ -411,6 +414,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			OriginDataContainer.unloadData(player);
 		}
 		preShutdownTasks.forEach(Runnable::run);
+		glowingEntitiesUtils.disable();
 		CraftApoli.unloadData();
 		PowerHolderComponent.playerPowerMapping.clear();
 		PowerHolderComponent.powersAppliedList.clear();
