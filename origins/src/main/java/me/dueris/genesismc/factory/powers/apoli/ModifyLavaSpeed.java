@@ -1,8 +1,14 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.annotations.Register;
+import me.dueris.calio.data.factory.FactoryJsonArray;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.data.types.Modifier;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.world.level.material.FluidState;
 import org.bukkit.NamespacedKey;
@@ -13,34 +19,37 @@ import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
-public class ModifyLavaSpeed extends CraftPower implements Listener {
+public class ModifyLavaSpeed extends PowerType implements Listener {
+	private final Modifier[] modifiers;
 
-	@Override
-	public String getType() {
-		return "apoli:modify_lava_speed";
+	@Register
+	public ModifyLavaSpeed(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, @Nullable FactoryJsonObject modifier, @Nullable FactoryJsonArray modifiers) {
+		super(name, description, hidden, condition, loading_priority);
+		this.modifiers = Modifier.getModifiers(modifier, modifiers);
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("modify_lava_speed"))
+			.add("modifier", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("modifiers", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()));
 	}
 
 	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return modify_lava_speed;
-	}
-
-	@Override
-	public void run(Player p, Power power) {
+	public void tick(Player p) {
 		Block be = p.getLocation().getBlock();
-		if (!getPlayersWithPower().contains(p) || p.isFlying() || be == null ||
+		if (!getPlayers().contains(p) || p.isFlying() || be == null ||
 			!p.getLocation().getBlock().isLiquid() || !p.isSprinting()) return;
 		CraftBlock nmsBlockAccessor = CraftBlock.at(((CraftWorld) p.getWorld()).getHandle(), CraftLocation.toBlockPosition(p.getLocation()));
 		if (nmsBlockAccessor.getNMS().getFluidState() != null) {
 			FluidState state = nmsBlockAccessor.getNMSFluid();
 			if (state.getType().builtInRegistryHolder().key().location().equals(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString("minecraft:lava")))) {
 				float multiplyBy = 0.1F;
-				for (Modifier modifier : power.getModifiers()) {
+				for (Modifier modifier : modifiers) {
 					Map<String, BinaryOperator<Float>> floatBinaryOperator = Utils.getOperationMappingsFloat();
 					floatBinaryOperator.get(modifier.operation()).apply(multiplyBy, modifier.value() * 10);
 				}

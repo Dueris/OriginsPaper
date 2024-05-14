@@ -95,6 +95,24 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		return source;
 	}
 
+	public static PotionEffect parsePotionEffect(FactoryJsonObject effect) {
+		String potionEffect = "minecraft:luck";
+		int duration = 100;
+		int amplifier = 0;
+		boolean isAmbient = false;
+		boolean showParticles = true;
+		boolean showIcon = true;
+
+		if (effect.isPresent("effect")) potionEffect = effect.getString("effect");
+		if (effect.isPresent("duration")) duration = effect.getNumber("duration").getInt();
+		if (effect.isPresent("amplifier")) amplifier = effect.getNumber("amplifier").getInt();
+		if (effect.isPresent("is_ambient")) isAmbient = effect.getBooleanOrDefault("is_ambient", true);
+		if (effect.isPresent("show_particles")) effect.getBooleanOrDefault("show_particles", false);
+		if (effect.isPresent("show_icon")) showIcon = effect.getBooleanOrDefault("show_icon", false);
+
+		return new PotionEffect(PotionEffectType.getByKey(new NamespacedKey(potionEffect.split(":")[0], potionEffect.split(":")[1])), duration, amplifier, isAmbient, showParticles, showIcon);
+	}
+
 	public static List<PotionEffect> parseAndReturnPotionEffects(FactoryJsonObject power) {
 		List<PotionEffect> effectList = new ArrayList<>();
 		FactoryJsonObject singleEffect = power.isPresent("effect") ? power.getJsonObject("effect") : new FactoryJsonObject(new JsonObject());
@@ -105,21 +123,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		}
 
 		for (FactoryJsonObject effect : effects) {
-			String potionEffect = "minecraft:luck";
-			int duration = 100;
-			int amplifier = 0;
-			boolean isAmbient = false;
-			boolean showParticles = true;
-			boolean showIcon = true;
-
-			if (effect.isPresent("effect")) potionEffect = effect.getString("effect");
-			if (effect.isPresent("duration")) duration = effect.getNumber("duration").getInt();
-			if (effect.isPresent("amplifier")) amplifier = effect.getNumber("amplifier").getInt();
-			if (effect.isPresent("is_ambient")) isAmbient = effect.getBooleanOrDefault("is_ambient", true);
-			if (effect.isPresent("show_particles")) effect.getBooleanOrDefault("show_particles", false);
-			if (effect.isPresent("show_icon")) showIcon = effect.getBooleanOrDefault("show_icon", false);
-
-			effectList.add(new PotionEffect(PotionEffectType.getByKey(new NamespacedKey(potionEffect.split(":")[0], potionEffect.split(":")[1])), duration, amplifier, isAmbient, showParticles, showIcon));
+			effectList.add(parsePotionEffect(effect));
 		}
 		return effectList;
 	}
