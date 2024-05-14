@@ -1,19 +1,20 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.annotations.Register;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.ContainerType;
-import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.data.types.JsonKeybind;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,41 +32,67 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 
-public class Inventory extends CraftPower implements Listener {
+public class Inventory extends PowerType implements Listener, KeyedPower {
+
+	private final String title;
+	private final ContainerType containerType;
+	private final boolean dropOnDeath;
+	private final FactoryJsonObject dropOnDeathFilter;
+	private final boolean recoverable;
+	private final JsonKeybind keybind;
+
+	@Register
+	public Inventory(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, String title, ContainerType containerType, boolean dropOnDeath, FactoryJsonObject dropOnDeathFilter, boolean recoverable, FactoryJsonObject key) {
+		super(name, description, hidden, condition, loading_priority);
+		this.title = title;
+		this.containerType = containerType;
+		this.dropOnDeath = dropOnDeath;
+		this.dropOnDeathFilter = dropOnDeathFilter;
+		this.recoverable = recoverable;
+		this.keybind = JsonKeybind.createJsonKeybind(key);
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("inventory"))
+			.add("title", String.class, "container.inventory")
+			.add("container_type", ContainerType.class, ContainerType.DROPPER)
+			.add("drop_on_death", boolean.class, false)
+			.add("drop_on_death_filter", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("recoverable", boolean.class, true)
+			.add("key", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	@EventHandler
 	public void MoveBackChange(PowerUpdateEvent e) {
 		if (!e.isRemoved()) return;
-		Power power = e.getPower();
-		Player p = e.getPlayer();
-		GenesisMC.scheduler.parent.onMain(() -> {
-			ArrayList<ItemStack> vaultItems = getItems(p, power.getTag());
-			for (ItemStack item : new ArrayList<>(vaultItems)) {
-				if (item != null && item.getType() != Material.AIR) {
-					p.getWorld().dropItemNaturally(p.getLocation(), item);
-					vaultItems.remove(item);
+		if (e.getPower() instanceof Inventory inventoryPower && e.getPower().getTag().equalsIgnoreCase(getTag())) {
+			PowerType power = e.getPower();
+			Player p = e.getPlayer();
+			GenesisMC.scheduler.parent.onMain(() -> {
+				ArrayList<ItemStack> vaultItems = getItems(p, power.getTag());
+				for (ItemStack item : new ArrayList<>(vaultItems)) {
+					if (item != null && item.getType() != Material.AIR) {
+						if (inventoryPower.recoverable) {
+							p.getWorld().dropItemNaturally(p.getLocation(), item);
+						}
+						vaultItems.remove(item);
+					}
 				}
-			}
 
-			storeItems(new ArrayList<>(), p, power.getTag());
-		});
+				storeItems(new ArrayList<>(), p, power.getTag());
+			});
+		}
 	}
 
 	@EventHandler
 	public void keytrigger(KeybindTriggerEvent e) {
-		if (getPlayersWithPower().contains(e.getPlayer())) {
-			for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType())) {
-				if (Cooldown.isInCooldown(e.getPlayer(), power)) continue;
-				if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer())) {
-					setActive(e.getPlayer(), power.getTag(), true);
-					if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), e.getPlayer())) {
-						ArrayList<ItemStack> vaultItems = getItems(e.getPlayer(), power.getTag());
-						org.bukkit.inventory.Inventory vault = power.getEnumValueOrDefault("container_type", ContainerType.class, ContainerType.DROPPER).createInventory(e.getPlayer(), Utils.createIfPresent(power.getStringOrDefault("title", "container.inventory")));
-						vaultItems.forEach(vault::addItem);
-						e.getPlayer().openInventory(vault);
-					}
-				} else {
-					setActive(e.getPlayer(), power.getTag(), false);
+		if (getPlayers().contains(e.getPlayer())) {
+			if (isActive(e.getPlayer())) {
+				if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), e.getPlayer())) {
+					ArrayList<ItemStack> vaultItems = getItems(e.getPlayer(), getTag());
+					org.bukkit.inventory.Inventory vault = containerType.createInventory(e.getPlayer(), Utils.createIfPresent(title));
+					vaultItems.forEach(vault::addItem);
+					e.getPlayer().openInventory(vault);
 				}
 			}
 		}
@@ -73,36 +100,24 @@ public class Inventory extends CraftPower implements Listener {
 
 	@EventHandler
 	public void deathTIMEEE(PlayerDeathEvent e) {
-		if (shulker_inventory.contains(e.getPlayer())) {
+		if (getPlayers().contains(e.getPlayer())) {
 			Player p = e.getPlayer();
-			for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
-				if (power.getBooleanOrDefault("drop_on_death", false)) {
-					dropItems(power, e.getPlayer());
-				}
+			if (dropOnDeath) {
+				dropItems(e.getPlayer());
 			}
 		}
 	}
 
-	private void dropItems(Power power, Player p) {
-		ArrayList<ItemStack> vaultItems = getItems(p, power.getTag());
+	private void dropItems(Player p) {
+		ArrayList<ItemStack> vaultItems = getItems(p, getTag());
 		for (ItemStack item : new ArrayList<>(vaultItems)) {
-			if (item != null && item.getType() != Material.AIR && ConditionExecutor.testItem(power.getJsonObject("drop_on_death_filter"), item)) {
+			if (item != null && item.getType() != Material.AIR && ConditionExecutor.testItem(dropOnDeathFilter, item)) {
 				p.getWorld().dropItemNaturally(p.getLocation(), item);
 				vaultItems.remove(item);
 			}
 		}
 
-		storeItems(vaultItems, p, power.getTag());
-	}
-
-	@Override
-	public String getType() {
-		return "apoli:inventory";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return shulker_inventory;
+		storeItems(vaultItems, p, getTag());
 	}
 
 	public static void saveInNbtIO(String tag, String data, Player player) {
@@ -215,7 +230,7 @@ public class Inventory extends CraftPower implements Listener {
 	public void onInventoryClose(InventoryCloseEvent e) {
 		Player p = (Player) e.getPlayer();
 
-		for (PowerType power : PowerHolderComponent.getPowers(p, Inventory.class)) {
+		for (Inventory power : PowerHolderComponent.getPowers(p, Inventory.class)) {
 			if (matches(e.getView(), power)) {
 				ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
@@ -228,9 +243,34 @@ public class Inventory extends CraftPower implements Listener {
 
 	}
 
-	private boolean matches(InventoryView inventory, Power power) {
-		String title = power.getStringOrDefault("title", "container.inventory");
-		return inventory.getTitle().equalsIgnoreCase(title);
+	private boolean matches(InventoryView inventory, Inventory power) {
+		String title = power.getTitle();
+		return inventory.getTitle().equalsIgnoreCase(title) && inventory.getTopInventory().getType().equals(power.getContainerType().getBukkit());
+	}
+
+	@Override
+	public JsonKeybind getJsonKey() {
+		return keybind;
+	}
+
+	public ContainerType getContainerType() {
+		return containerType;
+	}
+
+	public boolean isRecoverable() {
+		return recoverable;
+	}
+
+	public boolean isDropOnDeath() {
+		return dropOnDeath;
+	}
+
+	public FactoryJsonObject getDropOnDeathFilter() {
+		return dropOnDeathFilter;
+	}
+
+	public String getTitle() {
+		return title;
 	}
 }
 

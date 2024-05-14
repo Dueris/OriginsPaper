@@ -43,7 +43,7 @@ public class ParticlePower extends PowerType {
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("particle"))
-			.addRequiredInstance("particle", ParticleEffect.class, new RequiredInstance())
+			.add("particle", ParticleEffect.class, new RequiredInstance())
 			.add("count", int.class, 1)
 			.add("speed", float.class, 0.0F)
 			.add("force", boolean.class, false)
@@ -51,7 +51,7 @@ public class ParticlePower extends PowerType {
 			.add("offset_x", float.class, 0.25F)
 			.add("offset_y", float.class, 0.50F)
 			.add("offset_z", float.class, 0.25F)
-			.addRequiredInstance("frequency", int.class, new RequiredInstance())
+			.add("frequency", int.class, new RequiredInstance())
 			.add("visible_while_invisible", boolean.class, false);
 	}
 

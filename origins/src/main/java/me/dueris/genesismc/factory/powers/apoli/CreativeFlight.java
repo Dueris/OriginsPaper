@@ -40,8 +40,8 @@ public class CreativeFlight extends PowerType {
 				}
 			} else {
 				boolean a = m.equals(GameMode.SPECTATOR) || m.equals(GameMode.CREATIVE) ||
-					PowerHolderComponent.hasPowerType(p, ElytraFlightPower.class) || PowerHolderComponent.hasPowerType(p, GravityPower.class); // TODO
-				// PowerHolderComponent.hasPowerType(p, Grounded.class) || PowerHolderComponent.hasPowerType(p, Swimming.class); // TODO
+					PowerHolderComponent.hasPowerType(p, ElytraFlightPower.class) || PowerHolderComponent.hasPowerType(p, GravityPower.class) ||
+					PowerHolderComponent.hasPowerType(p, Grounded.class);// || PowerHolderComponent.hasPowerType(p, Swimming.class); // TODO
 				if (a && !p.getAllowFlight()) {
 					p.setAllowFlight(true);
 				} else if (!a && p.getAllowFlight()) {

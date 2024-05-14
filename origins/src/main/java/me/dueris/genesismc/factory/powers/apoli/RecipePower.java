@@ -47,7 +47,7 @@ public class RecipePower extends PowerType implements Listener {
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("recipe"))
-			.addRequiredInstance("recipe", FactoryJsonObject.class, new RequiredInstance());
+			.add("recipe", FactoryJsonObject.class, new RequiredInstance());
 	}
 
 	public static void parseRecipes() {

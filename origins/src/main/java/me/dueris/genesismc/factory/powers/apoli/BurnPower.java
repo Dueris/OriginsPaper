@@ -23,8 +23,8 @@ public class BurnPower extends PowerType {
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("burn"))
-			.addRequiredInstance("interval", int.class, new RequiredInstance())
-			.addRequiredInstance("burn_duration", int.class, new RequiredInstance());
+			.add("interval", int.class, new RequiredInstance())
+			.add("burn_duration", int.class, new RequiredInstance());
 	}
 
 	@Override

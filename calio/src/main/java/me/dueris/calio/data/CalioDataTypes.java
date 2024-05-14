@@ -21,6 +21,8 @@ import net.minecraft.world.item.Item;
 import org.bukkit.Color;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -41,6 +43,7 @@ public class CalioDataTypes {
 		if (ofType.equals(CompoundTag.class)) return (T) compoundTag(provider);
 		if (ofType.equals(ParticleEffect.class)) return (T) particleEffect(provider);
 		if (ofType.equals(Vector.class)) return (T) vector(provider);
+		if (ofType.equals(Sound.class)) return (T) sound(provider);
 		if (ofType.isEnum()) {
 			return (T) getEnumValue(provider, (Class<Enum>) ofType);
 		}
@@ -79,6 +82,10 @@ public class CalioDataTypes {
 			// Assume string
 			return item(element).getDefaultInstance().asBukkitCopy();
 		}
+	}
+
+	public static Sound sound(JsonElement element) {
+		return CraftRegistry.SOUNDS.get(NamespacedKey.fromString(element.getAsString()));
 	}
 
 	public static ParticleEffect particleEffect(JsonElement raw) {

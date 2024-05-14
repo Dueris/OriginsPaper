@@ -41,8 +41,8 @@ public class DamageOverTime extends PowerType implements Listener {
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("damage_over_time"))
 			.add("interval", int.class, 20)
-			.addRequiredInstance("damage", float.class, new RequiredInstance())
-			.addOptionalInstance("damage_easy", float.class, new OptionalInstance())
+			.add("damage", float.class, new RequiredInstance())
+			.add("damage_easy", float.class, new OptionalInstance())
 			.add("damage_type", String.class, "apoli:damage_over_time");
 	}
 

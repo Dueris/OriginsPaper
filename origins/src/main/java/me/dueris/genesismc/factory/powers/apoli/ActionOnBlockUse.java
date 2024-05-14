@@ -60,7 +60,7 @@ public class ActionOnBlockUse extends PowerType implements Listener {
 			.add("item_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("directions", FactoryJsonArray.class, new FactoryJsonArray(new Gson().fromJson("[\"up\", \"down\", \"north\", \"south\", \"east\", \"west\"]", JsonArray.class)))
 			.add("hands", FactoryJsonArray.class, new FactoryJsonArray(new Gson().fromJson("[\"off_hand\", \"main_hand\"]", JsonArray.class)))
-			.addOptionalInstance("result_stack", ItemStack.class, new OptionalInstance())
+			.add("result_stack", ItemStack.class, new OptionalInstance())
 			.add("result_item_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("held_item_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
 	}
