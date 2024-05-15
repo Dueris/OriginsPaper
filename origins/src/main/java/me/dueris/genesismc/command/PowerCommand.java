@@ -11,7 +11,6 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.util.JsonGetter;
 import me.dueris.genesismc.util.JsonTextFormatter;
 import me.dueris.genesismc.util.PowerUtils;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
@@ -56,7 +55,7 @@ public class PowerCommand {
 						String indent = Strings.repeat(' ', 4);
 						context.getSource().sendSuccess(() -> {
 							String append = context.getSource().isPlayer() ? "" : "\n";
-							return Component.literal(append).append((new JsonTextFormatter(indent)).apply(new Gson().fromJson(JsonGetter.getJsonString(power.getKey(), "powers"), JsonElement.class)));
+							return Component.literal(append).append((new JsonTextFormatter(indent)).apply(power.sourceObject));
 						}, false);
 					} catch (Exception e) {
 						e.printStackTrace();

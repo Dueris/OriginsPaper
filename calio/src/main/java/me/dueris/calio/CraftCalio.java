@@ -1,21 +1,25 @@
 package me.dueris.calio;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
 import me.dueris.calio.data.AccessorKey;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.FactoryHolder;
+import me.dueris.calio.data.JsonObjectRemapper;
 import me.dueris.calio.data.annotations.RequiresPlugin;
 import me.dueris.calio.parse.CalioJsonParser;
+import me.dueris.calio.parse.reader.FileReader;
+import me.dueris.calio.parse.reader.FileReaderFactory;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.NamespacedKey;
 
-import java.io.File;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -58,53 +62,50 @@ public class CraftCalio {
 		Runnable parser = () -> {
 			debug("Starting CraftCalio parser...");
 			// New Calio
-			this.keys.stream().sorted(Comparator.comparingInt(AccessorKey::getPriority)).forEach(accessorKey -> {
-				datapackDirectoriesToParse.forEach(root -> {
-					for (File datapack : root.listFiles()) {
-						if (!datapack.isDirectory()) continue;
-						for (File data : datapack.listFiles()) {
-							if (!data.getName().equalsIgnoreCase("data") || !data.isDirectory()) continue;
-							// Parse namespaced factories
-							String namespace;
-							for (File namespacedFile : data.listFiles()) {
-								if (!namespacedFile.isDirectory()) continue;
-								namespace = namespacedFile.getName();
-								for (File k : namespacedFile.listFiles()) {
-									if (k.getName().equalsIgnoreCase(accessorKey.getDirectory())) {
-										CalioJsonParser.parsePackDirectory(k, accessorKey, namespace, "", true);
+			this.keys.stream().sorted(Comparator.comparingInt(AccessorKey::getPriority)).forEach(accessorKey -> datapackDirectoriesToParse.forEach(root -> {
+				for (File datapack : root.listFiles()) {
+					try {
+						FileReader fileReader = FileReaderFactory.createFileReader(datapack.toPath());
+						List<String> files = fileReader.listFiles();
+						HashMap<Pair<JsonObject, NamespacedKey>, Integer> newLoadingPrioritySortedMap = new HashMap<>();
+						for (String file : files) {
+							file = file.replace("/", "\\");
+							if ((file.startsWith("data\\")) && file.endsWith(".json")) {
+								String fixedJsonFile = file.substring(file.indexOf("data\\"));
+								String namespace = fixedJsonFile.split("\\\\")[1];
+								String name = fixedJsonFile.split("\\\\")[2].split("\\\\")[0];
+								String key = fixedJsonFile.split("\\\\")[fixedJsonFile.split("\\\\").length - 1].replace(".json", "");
+								if (accessorKey.getDirectory().equalsIgnoreCase(name)) {
+									try (InputStream is = fileReader.getFileStream(file.replace("\\", "/"));
+										 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+										StringBuilder line = new StringBuilder();
+										String newLine;
+										while ((newLine = br.readLine()) != null) {
+											line.append(newLine);
+										}
+										String finishedLine = line.toString().replace("\n", "");
+										JsonObject powerParser = JsonParser.parseReader(new StringReader(finishedLine)).getAsJsonObject();
+										NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
+										JsonObject remappedJsonObject = JsonObjectRemapper.remapJsonObject(powerParser, namespacedKey);
+										newLoadingPrioritySortedMap.put(new Pair<>(remappedJsonObject, namespacedKey), remappedJsonObject.has("loading_priority") ? remappedJsonObject.getAsJsonPrimitive("loading_priority").getAsInt() : 0);
 									}
 								}
 							}
 						}
+
+						List<Map.Entry<Pair<JsonObject, NamespacedKey>, Integer>> list = new ArrayList<>(newLoadingPrioritySortedMap.entrySet());
+						Collections.sort(list, Map.Entry.comparingByValue());
+
+						for (Map.Entry<Pair<JsonObject, NamespacedKey>, Integer> entry : list) {
+							CalioJsonParser.initilize(entry.getKey(), accessorKey);
+						}
+
+						newLoadingPrioritySortedMap.clear();
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-				});
-			});
-			// Collections
-            /*
-            getBuilder().accessorRoots.stream().sorted(Comparator.comparingInt(AccessorRoot::getPriority)).toList().forEach((root) -> {
-                datapackDirectoriesToParse.forEach(rootFolder -> {
-                    for (File datapack : rootFolder.listFiles()) {
-                        if (!datapack.isDirectory()) continue;
-                        for (File data : datapack.listFiles()) {
-                            if (!data.getName().equalsIgnoreCase("data") || !data.isDirectory()) continue;
-                            // Parse namespaced factories
-                            String namespace;
-                            for (File namespacedFile : data.listFiles()) {
-                                if (!namespacedFile.isDirectory()) continue;
-                                namespace = namespacedFile.getName();
-                                // Inside namespace folder
-                                for (File ff : namespacedFile.listFiles()) {
-                                    if (!ff.isDirectory()) continue;
-                                    if (root.getDirectoryPath().equalsIgnoreCase(ff.getName())) {
-                                        CalioJsonParser.parseDirectory(ff, root, namespace, "", true);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            });
-             */
+				}
+			}));
 		};
 		if (threadPool != null) {
 			CompletableFuture future = CompletableFuture.runAsync(parser, threadPool);

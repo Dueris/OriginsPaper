@@ -2,8 +2,10 @@ package me.dueris.calio.data;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.data.annotations.Register;
+import me.dueris.calio.data.annotations.SourceProvider;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
@@ -11,10 +13,12 @@ import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
 
 import org.bukkit.NamespacedKey;
-import oshi.util.tuples.Pair;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.rmi.NoSuchObjectException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +26,8 @@ import java.util.Optional;
 // Note for devs: Optionals ALWAYS return an Optional of a JsonElement if found
 public class ConstructorCreator {
 	public static FactoryHolder invoke(Constructor<? extends FactoryHolder> constructor, FactoryData data, Pair<JsonObject, NamespacedKey> pair) throws InvocationTargetException, InstantiationException, IllegalAccessException {
-		JsonObject getter = pair.getA();
-		NamespacedKey tag = pair.getB();
+		JsonObject getter = pair.getFirst();
+		NamespacedKey tag = pair.getSecond();
 		List<Object> invoker = new ArrayList<>();
 		if (!constructor.isAnnotationPresent(Register.class)) {
 			CraftCalio.INSTANCE.getLogger().severe("@Register annotation must be present in constructor annotation : " + tag.asString());
@@ -60,7 +64,13 @@ public class ConstructorCreator {
 		if (constructor.getParameters()[constructor.getParameters().length - 1].getType().equals(JsonObject.class)) {
 			invoker.add(getter);
 		}
-		return constructor.newInstance(invoker.toArray(new Object[0]));
+		FactoryHolder created = constructor.newInstance(invoker.toArray(new Object[0]));
+		try {
+			setAnnotatedField(created, getter);
+		} catch (NoSuchObjectException e) {
+			// Ignore, it doesnt have such field, bc its optional.
+		}
+		return created;
 	}
 
 	private static Object getOrCreate(Class<?> ofType, JsonElement provided) {
@@ -115,5 +125,31 @@ public class ConstructorCreator {
 
 	private static boolean isNumber(JsonElement element) {
 		return element.isJsonPrimitive() && element.getAsJsonPrimitive().isNumber();
+	}
+
+	public static void setAnnotatedField(Object target, Object value) throws NoSuchObjectException {
+		Class<?> clazz = target.getClass();
+		Field field = findAnnotatedField(clazz, SourceProvider.class);
+
+		if (field != null) {
+			field.setAccessible(true);
+			try {
+				field.set(target, value);
+			} catch (IllegalAccessException e) {
+				throw new NoSuchObjectException("No such element!");
+			}
+		}
+	}
+
+	private static Field findAnnotatedField(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+		while (clazz != null) {
+			for (Field field : clazz.getDeclaredFields()) {
+				if (field.isAnnotationPresent(annotationClass)) {
+					return field;
+				}
+			}
+			clazz = clazz.getSuperclass();
+		}
+		return null;
 	}
 }

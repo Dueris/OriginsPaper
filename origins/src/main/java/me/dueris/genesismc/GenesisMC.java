@@ -26,6 +26,7 @@ import me.dueris.genesismc.factory.actions.types.EntityActions;
 import me.dueris.genesismc.factory.actions.types.ItemActions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.types.*;
+import me.dueris.genesismc.factory.powers.apoli.RecipePower;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.WaterBreathe;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
@@ -228,12 +229,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
 		if (placeholderapi) new PlaceHolderAPI(this).register();
 
-		try {
-			Bootstrap.deleteDirectory(GenesisMC.getTmpFolder().toPath(), true);
-		} catch (Throwable e) {
-			throwable(e, false);
-		}
-
 		if (!getTmpFolder().exists()) {
 			getTmpFolder().mkdirs();
 		}
@@ -261,19 +256,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		this.registry.create(Registries.PACK_SOURCE, new Registrar<DatapackRepository>(DatapackRepository.class));
 		this.registry.create(Registries.CHOOSING_PAGE, new Registrar<ChoosingPage>(ChoosingPage.class));
 
-		Utils.unpackOriginPack();
-		List<File> list = new ArrayList<>(Arrays.asList(server.getWorldPath(LevelResource.DATAPACK_DIR).toFile().listFiles()));
-		list.forEach(pack -> {
-			if (pack.isFile() && pack.getName().endsWith(".zip")) {
-				Utils.unzip(pack.getPath(), getTmpFolder().getAbsolutePath());
-			}
-		});
 		int avalibleJVMThreads = Runtime.getRuntime().availableProcessors() * 2;
 		int dynamic_thread_count = avalibleJVMThreads < 4 ? avalibleJVMThreads : Math.min(avalibleJVMThreads, OriginConfiguration.getConfiguration().getInt("max-loader-threads"));
 		loaderThreadPool = Executors.newFixedThreadPool(dynamic_thread_count, threadFactory);
 
-		this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(GenesisMC.originIdentifier("builtin"), getTmpFolder().toPath()));
-		this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(GenesisMC.originIdentifier("default"), server.getWorldPath(LevelResource.DATAPACK_DIR)));
+		this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(GenesisMC.originIdentifier("plugins"), Bukkit.getPluginsFolder().toPath()));
+		this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(GenesisMC.originIdentifier("datapacks"), server.getWorldPath(LevelResource.DATAPACK_DIR)));
 
 		try {
 			// Register builtin instances
@@ -350,21 +338,14 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		PowerCommand.register(((CraftServer) Bukkit.getServer()).getServer().getCommands().getDispatcher());
 		// Load addons
 		CraftPehuki.onLoad();
-
-		try {
-			Bootstrap.deleteDirectory(GenesisMC.getTmpFolder().toPath(), true);
-		} catch (Throwable e) {
-			throwable(e, false);
-		}
-
 		Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 	}
 
 	public void throwable(Throwable throwable, boolean kill) {
+		this.getLogger().severe("An unhandled exception occurred when starting Genesis!");
 		String[] stacktrace = {"\n"};
 		Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
-		this.getLogger().severe("An unhandled exception occurred when starting Genesis!");
-		this.getLogger().severe(stacktrace[0]);
+		this.getLogger().severe(throwable.getMessage() + stacktrace[0]);
 		if (kill) Bukkit.getPluginManager().disablePlugin(this);
 	}
 
@@ -421,9 +402,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		OriginCommand.commandProvidedLayers.clear();
 		OriginCommand.commandProvidedOrigins.clear();
 		OriginCommand.commandProvidedPowers.clear();
-		// TODO
-//		RecipePower.recipeMapping.clear();
-//		RecipePower.tags.clear();
+		RecipePower.recipeMapping.clear();
+		RecipePower.tags.clear();
 		this.registry.clearRegistries();
 		scheduler.cancel();
 		AsyncTaskWorker.shutdown();

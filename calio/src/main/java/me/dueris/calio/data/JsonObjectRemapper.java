@@ -28,23 +28,6 @@ public class JsonObjectRemapper {
 	public static ArrayList<Pair<String, String>> typeMappings = new ArrayList<>();
 
 	/**
-	 * Creates a remapped JSON object by parsing the contents of the specified file and remapping the keys using the given current namespace.
-	 *
-	 * @param file             the file to be parsed
-	 * @param currentNamespace the current namespace used for remapping
-	 * @return the remapped JSON object
-	 */
-	public static JsonObject createRemapped(File file, NamespacedKey currentNamespace) {
-		try {
-			JsonObject powerParser = JsonParser.parseReader(new FileReader(file)).getAsJsonObject();
-			return remapJsonObject(powerParser, currentNamespace);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return new JsonObject();
-	}
-
-	/**
 	 * Adds a mapping for the given key and mapper.
 	 *
 	 * @param key    the key for the mapping
@@ -67,7 +50,7 @@ public class JsonObjectRemapper {
 	 * @param obj              the JSON object to be remapped
 	 * @param currentNamespace the current namespace used for dynamic namespace remapping
 	 */
-	private static JsonObject remapJsonObject(JsonObject obj, NamespacedKey currentNamespace) {
+	public static JsonObject remapJsonObject(JsonObject obj, NamespacedKey currentNamespace) {
 		JsonObject objectReturnable = new JsonObject();
 		for (String key : obj.keySet()) {
 			if (objectReturnable.has(key))
