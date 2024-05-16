@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import me.dueris.calio.data.AccessorKey;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.parse.CalioJsonParser;
 import me.dueris.genesismc.GenesisMC;
@@ -18,7 +17,6 @@ import java.util.List;
 public class Multiple extends PowerType {
 	private final List<PowerType> subPowers = new ArrayList<>();
 
-	@Register
 	public Multiple(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
 		super(name, description, hidden, condition, loading_priority);
 	}

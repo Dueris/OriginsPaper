@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.genesismc.GenesisMC;
@@ -14,7 +13,6 @@ public class BurnPower extends PowerType {
 	private final int interval;
 	private final int burnDuration;
 
-	@Register
 	public BurnPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int interval, int burnDuration) {
 		super(name, description, hidden, condition, loading_priority);
 		this.interval = interval;

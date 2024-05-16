@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -21,7 +20,6 @@ import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
-import java.util.List;
 import java.util.Set;
 
 public class SelfGlow extends PowerType {
@@ -33,7 +31,6 @@ public class SelfGlow extends PowerType {
 	private final float green;
 	private final float blue;
 
-	@Register
 	public SelfGlow(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject entityCondition, FactoryJsonObject bientityCondition, boolean useTeams, float red, float green, float blue) {
 		super(name, description, hidden, condition, loading_priority);
 		this.entityCondition = entityCondition;
@@ -54,9 +51,21 @@ public class SelfGlow extends PowerType {
 			.add("blue", float.class, 1.0F);
 	}
 
+	public static ChatColor translateBarColor(BarColor barColor) {
+		return switch (barColor) {
+			case BLUE -> ChatColor.BLUE;
+			case GREEN -> ChatColor.GREEN;
+			case PINK -> ChatColor.LIGHT_PURPLE;
+			case PURPLE -> ChatColor.DARK_PURPLE;
+			case RED -> ChatColor.RED;
+			case WHITE -> ChatColor.WHITE;
+			case YELLOW -> ChatColor.YELLOW;
+		};
+	}
+
 	@Override
 	public void tick(Player p) {
-		ServerPlayer player = ((CraftPlayer)p).getHandle();
+		ServerPlayer player = ((CraftPlayer) p).getHandle();
 		ServerLevel level = (ServerLevel) player.level();
 		Set<Entity> entities = Shape.getEntities(Shape.SPHERE, level, CraftLocation.toVec3D(p.getLocation()), 60);
 		entities.add(player);
@@ -89,18 +98,6 @@ public class SelfGlow extends PowerType {
 		} catch (ReflectiveOperationException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	public static ChatColor translateBarColor(BarColor barColor) {
-		return switch (barColor) {
-			case BLUE -> ChatColor.BLUE;
-			case GREEN -> ChatColor.GREEN;
-			case PINK -> ChatColor.LIGHT_PURPLE;
-			case PURPLE -> ChatColor.DARK_PURPLE;
-			case RED -> ChatColor.RED;
-			case WHITE -> ChatColor.WHITE;
-			case YELLOW -> ChatColor.YELLOW;
-		};
 	}
 
 	public boolean useTeams() {

@@ -1,18 +1,15 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-public class FireImmunity extends PowerType implements Listener {
+public class FireImmunity extends PowerType {
 
-	@Register
 	public FireImmunity(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
 		super(name, description, hidden, condition, loading_priority);
 	}

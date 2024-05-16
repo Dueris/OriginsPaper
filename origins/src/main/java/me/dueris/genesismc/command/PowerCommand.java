@@ -1,7 +1,5 @@
 package me.dueris.genesismc.command;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import joptsimple.internal.Strings;

@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
@@ -22,7 +21,6 @@ import org.bukkit.craftbukkit.CraftSound;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
@@ -32,10 +30,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class ElytraFlightPower extends PowerType implements Listener {
+public class ElytraFlightPower extends PowerType {
 	public static ArrayList<UUID> glidingPlayers = new ArrayList<>();
 
-	@Register
 	public ElytraFlightPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
 		super(name, description, hidden, condition, loading_priority);
 	}

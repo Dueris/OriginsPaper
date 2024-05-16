@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
@@ -13,14 +12,13 @@ import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 
-public class ActionOnBlockBreak extends PowerType implements Listener {
+public class ActionOnBlockBreak extends PowerType {
 	public static HashMap<Player, Boolean> playersMining = new HashMap<>();
 	public static HashMap<Player, BlockPos> playersMiningBlockPos = new HashMap<>();
 	private final FactoryJsonObject entityAction;
@@ -28,7 +26,6 @@ public class ActionOnBlockBreak extends PowerType implements Listener {
 	private final FactoryJsonObject blockCondition;
 	private final boolean onlyWhenHarvested;
 
-	@Register
 	public ActionOnBlockBreak(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject entityAction, FactoryJsonObject blockAction, FactoryJsonObject blockCondition, boolean onlyWhenHarvested) {
 		super(name, description, hidden, condition, loading_priority);
 		this.entityAction = entityAction;

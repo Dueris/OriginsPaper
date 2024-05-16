@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
@@ -18,7 +17,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.CraftEquipmentSlot;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActionOnBlockUse extends PowerType implements Listener {
+public class ActionOnBlockUse extends PowerType {
 	public static ArrayList<Player> tickFix = new ArrayList<>();
 	private final FactoryJsonObject entityAction;
 	private final FactoryJsonObject blockAction;
@@ -38,7 +36,6 @@ public class ActionOnBlockUse extends PowerType implements Listener {
 	private final List<BlockFace> directions;
 	private final FactoryJsonArray hands;
 
-	@Register
 	public ActionOnBlockUse(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject entityAction, FactoryJsonObject blockAction, FactoryJsonObject blockCondition, FactoryJsonObject itemCondition, FactoryJsonArray directions, FactoryJsonArray hands, ItemStack resultStack, FactoryJsonObject resultItemAction, FactoryJsonObject heldItemAction) {
 		super(name, description, hidden, condition, loading_priority);
 		this.entityAction = entityAction;
@@ -73,8 +70,7 @@ public class ActionOnBlockUse extends PowerType implements Listener {
 
 		if (!getPlayers().contains(actor)) return;
 
-		if (isActive(actor) && ConditionExecutor.testBlock(blockCondition, e.getClickedBlock()) &&
-			ConditionExecutor.testItem(itemCondition, e.getItem())) {
+		if (isActive(actor) && ConditionExecutor.testBlock(blockCondition, e.getClickedBlock()) && ConditionExecutor.testItem(itemCondition, e.getItem())) {
 			boolean pass = false;
 			if (e.getHand().isHand()) {
 				InteractionHand hand = CraftEquipmentSlot.getHand(e.getHand());

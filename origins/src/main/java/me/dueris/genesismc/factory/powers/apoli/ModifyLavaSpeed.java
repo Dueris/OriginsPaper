@@ -3,7 +3,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
@@ -18,16 +17,14 @@ import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
-public class ModifyLavaSpeed extends PowerType implements Listener {
+public class ModifyLavaSpeed extends PowerType {
 	private final Modifier[] modifiers;
 
-	@Register
 	public ModifyLavaSpeed(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, @Nullable FactoryJsonObject modifier, @Nullable FactoryJsonArray modifiers) {
 		super(name, description, hidden, condition, loading_priority);
 		this.modifiers = Modifier.getModifiers(modifier, modifiers);

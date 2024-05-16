@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
@@ -30,14 +29,13 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FireProjectile extends PowerType implements Listener, KeyedPower, CooldownPower {
+public class FireProjectile extends PowerType implements KeyedPower, CooldownPower {
 	private static final ArrayList<Player> doubleFirePatch = new ArrayList<>();
 	public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
 	public static ArrayList<Player> enderian_pearl = new ArrayList<>();
@@ -56,7 +54,6 @@ public class FireProjectile extends PowerType implements Listener, KeyedPower, C
 	private final FactoryJsonObject projectileAction;
 	private final FactoryJsonObject shooterAction;
 
-	@Register
 	public FireProjectile(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, NamespacedKey entityType, int cooldown, FactoryJsonObject hudRender, int count, int interval, int startDelay, float speed, float divergence, Sound sound, CompoundTag tag, FactoryJsonObject key, FactoryJsonObject projectileAction, FactoryJsonObject shooterAction) {
 		super(name, description, hidden, condition, loading_priority);
 		this.entityType = entityType;

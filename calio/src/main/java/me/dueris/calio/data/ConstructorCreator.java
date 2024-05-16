@@ -29,10 +29,6 @@ public class ConstructorCreator {
 		JsonObject getter = pair.getFirst();
 		NamespacedKey tag = pair.getSecond();
 		List<Object> invoker = new ArrayList<>();
-		if (!constructor.isAnnotationPresent(Register.class)) {
-			CraftCalio.INSTANCE.getLogger().severe("@Register annotation must be present in constructor annotation : " + tag.asString());
-			return null;
-		}
 		for (FactoryDataDefiner provider : data.getProviders()) {
 			if (getter.has(provider.getObjName())) {
 				Object o = getOrCreate(provider.getType(), getter.get(provider.getObjName()));

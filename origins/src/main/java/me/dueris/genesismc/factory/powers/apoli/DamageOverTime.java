@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
@@ -17,19 +16,17 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class DamageOverTime extends PowerType implements Listener {
+public class DamageOverTime extends PowerType {
 	private final int interval;
 	private final float damage;
 	private final float damageEasy;
 	private final String damageType;
 
-	@Register
 	public DamageOverTime(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int interval, float damage, @Nullable float damageEasy, String damageType) {
 		super(name, description, hidden, condition, loading_priority);
 		this.interval = interval;

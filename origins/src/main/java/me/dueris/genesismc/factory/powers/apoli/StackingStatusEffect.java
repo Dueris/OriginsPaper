@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.OptionalInstance;
@@ -16,14 +15,13 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.potion.CraftPotionEffectType;
 import org.bukkit.craftbukkit.potion.CraftPotionUtil;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StackingStatusEffect extends PowerType implements Listener {
+public class StackingStatusEffect extends PowerType {
 	protected final List<MobEffectInstance> createdEffects = new ArrayList<>();
 	private final int minStacks;
 	private final int maxStacks;
@@ -32,7 +30,6 @@ public class StackingStatusEffect extends PowerType implements Listener {
 	private final List<FactoryJsonObject> effects;
 	protected int currentStack = 0;
 
-	@Register
 	public StackingStatusEffect(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int minStacks, int maxStacks, int durationPerStack, int tickRate, @Nullable FactoryJsonObject effect, @Nullable FactoryJsonArray effects) {
 		super(name, description, hidden, condition, loading_priority);
 		this.minStacks = minStacks;

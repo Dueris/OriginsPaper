@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -27,15 +28,14 @@ import java.util.logging.Logger;
  * <p>
  * <b>1.17 -> 1.20.6</b>
  *
- * @version 1.3.4
  * @author SkytAsul
+ * @version 1.3.4
  */
 public class GlowingEntitiesUtils implements Listener {
 
 	protected final @NotNull Plugin plugin;
-	private Map<Player, PlayerData> glowing;
 	boolean enabled = false;
-
+	private Map<Player, PlayerData> glowing;
 	private int uid;
 
 	public GlowingEntitiesUtils(@NotNull Plugin plugin) {
@@ -211,35 +211,30 @@ public class GlowingEntitiesUtils implements Listener {
 	protected static class Packets {
 
 		private static final byte GLOWING_FLAG = 1 << 6;
-
-		private static Cache<Object, Object> packets =
+		public static boolean enabled = false;
+		// Entities
+		static Object shulkerEntityType;
+		private static final Cache<Object, Object> packets =
 			CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.SECONDS).build();
-		private static Object dummy = new Object();
-
+		private static final Object dummy = new Object();
 		private static Logger logger;
 		private static int version;
 		private static int versionMinor;
-		private static String cpack = Bukkit.getServer().getClass().getPackage().getName() + ".";
+		private static final String cpack = Bukkit.getServer().getClass().getPackage().getName() + ".";
 		private static ProtocolMappings mappings;
-		public static boolean enabled = false;
-
 		private static Method getHandle;
 		private static Method getDataWatcher;
-
 		// Synched datas
 		private static Object watcherObjectFlags;
 		private static Object watcherDummy;
 		private static Method watcherGet;
-
 		private static Constructor<?> watcherItemConstructor;
 		private static Method watcherItemObject;
 		private static Method watcherItemDataGet;
-
 		private static Method watcherBCreator;
 		private static Method watcherBId;
 		private static Method watcherBSerializer;
 		private static Method watcherSerializerObject;
-
 		// Networking
 		private static Field playerConnection;
 		private static Method sendPacket;
@@ -247,16 +242,13 @@ public class GlowingEntitiesUtils implements Listener {
 		private static Field channelField;
 		private static Class<?> packetBundle;
 		private static Method packetBundlePackets;
-
 		// Metadata
 		private static Class<?> packetMetadata;
 		private static Constructor<?> packetMetadataConstructor;
 		private static Field packetMetadataEntity;
 		private static Field packetMetadataItems;
-
 		// Teams
-		private static EnumMap<ChatColor, TeamData> teams = new EnumMap<>(ChatColor.class);
-
+		private static final EnumMap<ChatColor, TeamData> teams = new EnumMap<>(ChatColor.class);
 		private static Constructor<?> createTeamPacket;
 		private static Constructor<?> createTeamPacketData;
 		private static Constructor<?> createTeam;
@@ -265,9 +257,6 @@ public class GlowingEntitiesUtils implements Listener {
 		private static Method setTeamPush;
 		private static Method setTeamColor;
 		private static Method getColorConstant;
-
-		// Entities
-		static Object shulkerEntityType;
 		private static Constructor<?> packetAddEntity;
 		private static Constructor<?> packetRemove;
 		private static Object vec3dZero;
@@ -324,8 +313,8 @@ public class GlowingEntitiesUtils implements Listener {
 					watcherDummy =
 						watcherBuilder.getClass().getDeclaredMethod(remapped ? "build" : "a").invoke(watcherBuilder);
 				} else {
-					var watcherConstructorArgsType = new Class<?>[] {entityClass};
-					var watcherConstructorArgs = new Object[] {markerEntity};
+					var watcherConstructorArgsType = new Class<?>[]{entityClass};
+					var watcherConstructorArgs = new Object[]{markerEntity};
 					watcherDummy = dataWatcherClass.getDeclaredConstructor(watcherConstructorArgsType)
 						.newInstance(watcherConstructorArgs);
 				}
@@ -560,7 +549,7 @@ public class GlowingEntitiesUtils implements Listener {
 					packets[i] = packetRemove.newInstance(entitiesId[i]);
 				}
 			} else {
-				packets = new Object[] {packetRemove.newInstance(entitiesId)};
+				packets = new Object[]{packetRemove.newInstance(entitiesId)};
 			}
 
 			sendPackets(player, packets);
@@ -649,7 +638,7 @@ public class GlowingEntitiesUtils implements Listener {
 								}
 							}
 						}
-					} else if (packetBundle != null && msg.getClass().equals(packetBundle)) {
+					} else if (msg.getClass().equals(packetBundle)) {
 						handlePacketBundle(msg);
 					}
 					super.write(ctx, msg, promise);
@@ -658,7 +647,7 @@ public class GlowingEntitiesUtils implements Listener {
 				@SuppressWarnings("rawtypes")
 				private void handlePacketBundle(Object bundle) throws ReflectiveOperationException {
 					Iterable subPackets = (Iterable) packetBundlePackets.invoke(bundle);
-					for (Iterator iterator = subPackets.iterator(); iterator.hasNext();) {
+					for (Iterator iterator = subPackets.iterator(); iterator.hasNext(); ) {
 						Object packet = iterator.next();
 
 						if (packet.getClass().equals(packetMetadata)) {
@@ -732,47 +721,6 @@ public class GlowingEntitiesUtils implements Listener {
 			return Class.forName("net.minecraft." + nmPackage + "." + className);
 		}
 
-		private static class TeamData {
-
-			private final String id;
-			private final Object creationPacket;
-
-			private final Cache<String, Object> addPackets =
-				CacheBuilder.newBuilder().expireAfterAccess(3, TimeUnit.MINUTES).build();
-			private final Cache<String, Object> removePackets =
-				CacheBuilder.newBuilder().expireAfterAccess(3, TimeUnit.MINUTES).build();
-
-			public TeamData(int uid, ChatColor color) throws ReflectiveOperationException {
-				if (!color.isColor())
-					throw new IllegalArgumentException();
-				id = "glow-" + uid + color.getChar();
-				Object team = createTeam.newInstance(scoreboardDummy, id);
-				setTeamPush.invoke(team, pushNever);
-				setTeamColor.invoke(team, getColorConstant.invoke(null, color.getChar()));
-				Object packetData = createTeamPacketData.newInstance(team);
-				creationPacket = createTeamPacket.newInstance(id, 0, Optional.of(packetData), Collections.EMPTY_LIST);
-			}
-
-			public Object getEntityAddPacket(String teamID) throws ReflectiveOperationException {
-				Object packet = addPackets.getIfPresent(teamID);
-				if (packet == null) {
-					packet = createTeamPacket.newInstance(id, 3, Optional.empty(), Arrays.asList(teamID));
-					addPackets.put(teamID, packet);
-				}
-				return packet;
-			}
-
-			public Object getEntityRemovePacket(String teamID) throws ReflectiveOperationException {
-				Object packet = removePackets.getIfPresent(teamID);
-				if (packet == null) {
-					packet = createTeamPacket.newInstance(id, 4, Optional.empty(), Arrays.asList(teamID));
-					removePackets.put(teamID, packet);
-				}
-				return packet;
-			}
-
-		}
-
 		private enum ProtocolMappings {
 			V1_17(
 				17,
@@ -806,28 +754,36 @@ public class GlowingEntitiesUtils implements Listener {
 				"setColor",
 				"id",
 				"packedItems"
-			)
-			;
+			);
+
+			static {
+				try {
+					fillAll();
+				} catch (ReflectiveOperationException ex) {
+					logger.severe("Failed to fill up all datas for mappings.");
+					ex.printStackTrace();
+				}
+			}
 
 			private final int major, minor;
 			private final boolean remapped;
-			private String watcherFlags;
-			private String markerTypeId;
-			private String watcherAccessor;
-			private String watcherGet;
-			private String playerConnection;
-			private String networkManager;
-			private String sendPacket;
-			private String channel;
-			private String teamSetCollsion;
-			private String teamSetColor;
-			private String metadataEntity;
-			private String metadataItems;
+			private final String watcherFlags;
+			private final String markerTypeId;
+			private final String watcherAccessor;
+			private final String watcherGet;
+			private final String playerConnection;
+			private final String networkManager;
+			private final String sendPacket;
+			private final String channel;
+			private final String teamSetCollsion;
+			private final String teamSetColor;
+			private final String metadataEntity;
+			private final String metadataItems;
 
-			private ProtocolMappings(int major, int minor, boolean remapped,
-									 String watcherFlags, String markerTypeId, String watcherAccessor, String watcherGet,
-									 String playerConnection, String networkManager, String sendPacket, String channel,
-									 String teamSetCollsion, String teamSetColor, String metdatataEntity, String metadataItems) {
+			ProtocolMappings(int major, int minor, boolean remapped,
+							 String watcherFlags, String markerTypeId, String watcherAccessor, String watcherGet,
+							 String playerConnection, String networkManager, String sendPacket, String channel,
+							 String teamSetCollsion, String teamSetColor, String metdatataEntity, String metadataItems) {
 				this.major = major;
 				this.minor = minor;
 				this.remapped = remapped;
@@ -843,6 +799,51 @@ public class GlowingEntitiesUtils implements Listener {
 				this.teamSetColor = teamSetColor;
 				this.metadataEntity = metdatataEntity;
 				this.metadataItems = metadataItems;
+			}
+
+			private static void fillAll() throws ReflectiveOperationException {
+				ProtocolMappings lastUnmapped = V1_17;
+				ProtocolMappings lastRemapped = V1_20_5_REMAPPED;
+				// /!\ we start at 1
+				for (int i = 1; i < ProtocolMappings.values().length; i++) {
+					ProtocolMappings map = ProtocolMappings.values()[i];
+					for (Field field : ProtocolMappings.class.getDeclaredFields()) {
+						if (field.getType() == String.class && field.get(map) == null) {
+							field.set(map, field.get(map.isRemapped() ? lastRemapped : lastUnmapped));
+						}
+					}
+					if (map.isRemapped())
+						lastRemapped = map;
+					else
+						lastUnmapped = map;
+				}
+			}
+
+			public static ProtocolMappings getMappings(int major, int minor, boolean remapped) {
+				ProtocolMappings lastGood = null;
+				for (ProtocolMappings map : values()) {
+					if (map.isRemapped() != remapped)
+						continue;
+
+					// loop in ascending version order
+					if (major == map.getMajor()) {
+						if (minor == map.getMinor())
+							return map; // perfect match
+
+						if (minor > map.getMinor())
+							lastGood = map; // looking for newer minor version
+
+						if (minor < map.getMinor())
+							return lastGood; // looking for older minor version: we get the last correct one
+					}
+				}
+				// will return either null if no mappings matched the major => fallback to latest major with a
+				// warning, either the last mappings with same major and smaller minor
+				return lastGood;
+			}
+
+			public static ProtocolMappings getLast(boolean remapped) {
+				return Arrays.stream(values()).filter(map -> map.isRemapped() == remapped).reduce((l, r) -> r).get();
 			}
 
 			public int getMajor() {
@@ -905,58 +906,45 @@ public class GlowingEntitiesUtils implements Listener {
 				return metadataItems;
 			}
 
-			static {
-				try {
-					fillAll();
-				} catch (ReflectiveOperationException ex) {
-					logger.severe("Failed to fill up all datas for mappings.");
-					ex.printStackTrace();
-				}
+		}
+
+		private static class TeamData {
+
+			private final String id;
+			private final Object creationPacket;
+
+			private final Cache<String, Object> addPackets =
+				CacheBuilder.newBuilder().expireAfterAccess(3, TimeUnit.MINUTES).build();
+			private final Cache<String, Object> removePackets =
+				CacheBuilder.newBuilder().expireAfterAccess(3, TimeUnit.MINUTES).build();
+
+			public TeamData(int uid, ChatColor color) throws ReflectiveOperationException {
+				if (!color.isColor())
+					throw new IllegalArgumentException();
+				id = "glow-" + uid + color.getChar();
+				Object team = createTeam.newInstance(scoreboardDummy, id);
+				setTeamPush.invoke(team, pushNever);
+				setTeamColor.invoke(team, getColorConstant.invoke(null, color.getChar()));
+				Object packetData = createTeamPacketData.newInstance(team);
+				creationPacket = createTeamPacket.newInstance(id, 0, Optional.of(packetData), Collections.EMPTY_LIST);
 			}
 
-			private static void fillAll() throws ReflectiveOperationException {
-				ProtocolMappings lastUnmapped = V1_17;
-				ProtocolMappings lastRemapped = V1_20_5_REMAPPED;
-				// /!\ we start at 1
-				for (int i = 1; i < ProtocolMappings.values().length; i++) {
-					ProtocolMappings map = ProtocolMappings.values()[i];
-					for (Field field : ProtocolMappings.class.getDeclaredFields()) {
-						if (field.getType() == String.class && field.get(map) == null) {
-							field.set(map, field.get(map.isRemapped() ? lastRemapped : lastUnmapped));
-						}
-					}
-					if (map.isRemapped())
-						lastRemapped = map;
-					else
-						lastUnmapped = map;
+			public Object getEntityAddPacket(String teamID) throws ReflectiveOperationException {
+				Object packet = addPackets.getIfPresent(teamID);
+				if (packet == null) {
+					packet = createTeamPacket.newInstance(id, 3, Optional.empty(), List.of(teamID));
+					addPackets.put(teamID, packet);
 				}
+				return packet;
 			}
 
-			public static ProtocolMappings getMappings(int major, int minor, boolean remapped) {
-				ProtocolMappings lastGood = null;
-				for (ProtocolMappings map : values()) {
-					if (map.isRemapped() != remapped)
-						continue;
-
-					// loop in ascending version order
-					if (major == map.getMajor()) {
-						if (minor == map.getMinor())
-							return map; // perfect match
-
-						if (minor > map.getMinor())
-							lastGood = map; // looking for newer minor version
-
-						if (minor < map.getMinor())
-							return lastGood; // looking for older minor version: we get the last correct one
-					}
+			public Object getEntityRemovePacket(String teamID) throws ReflectiveOperationException {
+				Object packet = removePackets.getIfPresent(teamID);
+				if (packet == null) {
+					packet = createTeamPacket.newInstance(id, 4, Optional.empty(), List.of(teamID));
+					removePackets.put(teamID, packet);
 				}
-				// will return either null if no mappings matched the major => fallback to latest major with a
-				// warning, either the last mappings with same major and smaller minor
-				return lastGood;
-			}
-
-			public static ProtocolMappings getLast(boolean remapped) {
-				return Arrays.stream(values()).filter(map -> map.isRemapped() == remapped).reduce((l, r) -> r).get();
+				return packet;
 			}
 
 		}

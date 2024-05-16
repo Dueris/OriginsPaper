@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
@@ -10,12 +9,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftWorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
-public class Overlay extends PowerType implements Listener {
+public class Overlay extends PowerType {
 	private static final CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
 
-	@Register
 	public Overlay(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
 		super(name, description, hidden, condition, loading_priority);
 	}

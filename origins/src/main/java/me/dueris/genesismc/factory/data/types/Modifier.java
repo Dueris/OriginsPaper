@@ -17,6 +17,14 @@ public class Modifier {
 		this.handle = factoryJsonObject;
 	}
 
+	public static Modifier[] getModifiers(@Nullable FactoryJsonObject singular, @Nullable FactoryJsonArray plural) {
+		List<Modifier> modifiers = new ArrayList<>();
+		if (singular != null) modifiers.add(new Modifier(singular));
+		if (plural != null && !plural.asList().isEmpty())
+			modifiers.addAll(plural.asJsonObjectList().stream().map(Modifier::new).toList());
+		return modifiers.toArray(new Modifier[0]);
+	}
+
 	public Float value() {
 		if (handle.isPresent("modifier")) {
 			Modifier modifier = new Modifier(handle.getJsonObject("modifier"));
@@ -30,12 +38,5 @@ public class Modifier {
 
 	public String operation() {
 		return this.handle.getStringOrDefault("operation", "add");
-	}
-
-	public static Modifier[] getModifiers(@Nullable FactoryJsonObject singular, @Nullable FactoryJsonArray plural) {
-		List<Modifier> modifiers = new ArrayList<>();
-		if (singular != null) modifiers.add(new Modifier(singular));
-		if (plural != null && !plural.asList().isEmpty()) modifiers.addAll(plural.asJsonObjectList().stream().map(Modifier::new).toList());
-		return modifiers.toArray(new Modifier[0]);
 	}
 }

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
@@ -17,13 +16,12 @@ import net.minecraft.world.InteractionHand;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.CraftEquipmentSlot;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class ActionOnBlockPlace extends PowerType implements Listener {
+public class ActionOnBlockPlace extends PowerType {
 
 	private final FactoryJsonObject entityAction;
 	private final FactoryJsonObject heldItemAction;
@@ -37,7 +35,6 @@ public class ActionOnBlockPlace extends PowerType implements Listener {
 	private final ItemStack resultStack;
 	private final FactoryJsonObject resultItemAction;
 
-	@Register
 	public ActionOnBlockPlace(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject entityAction, FactoryJsonObject heldItemAction, FactoryJsonObject placeToAction, FactoryJsonObject placeOnAction, FactoryJsonObject itemCondition, FactoryJsonObject placeToCondition, FactoryJsonObject placeOnCondition, FactoryJsonArray directions, FactoryJsonArray hands, ItemStack resultStack, FactoryJsonObject resultItemAction) {
 		super(name, description, hidden, condition, loading_priority);
 		this.entityAction = entityAction;

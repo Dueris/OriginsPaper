@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
@@ -11,7 +10,6 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -19,13 +17,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
-public class ClimbingPower extends PowerType implements Listener {
+public class ClimbingPower extends PowerType {
 	public static ArrayList<Player> active_climbing = new ArrayList<>();
 	private final boolean allowHolding;
 	public ArrayList<Player> holdingPlayers = new ArrayList<>();
 	public ArrayList<Player> allowedToClimb = new ArrayList<>();
 
-	@Register
 	public ClimbingPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, boolean allowHolding) {
 		super(name, description, hidden, condition, loading_priority);
 		this.allowHolding = allowHolding;

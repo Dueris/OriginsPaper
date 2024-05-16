@@ -3,7 +3,6 @@ package me.dueris.genesismc.registry.registries;
 import com.google.gson.JsonArray;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.FactoryHolder;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
@@ -37,7 +36,6 @@ public class Origin implements FactoryHolder {
 	private String cachedTag = null;
 	private boolean isDisabled;
 
-	@Register
 	public Origin(String name, String description, int impact, ItemStack icon, boolean unchoosable, FactoryJsonArray upgrades, FactoryJsonArray powers, int order, int loading_priority) {
 		this.name = name;
 		this.description = description;

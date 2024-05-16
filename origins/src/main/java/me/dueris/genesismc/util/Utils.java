@@ -324,11 +324,18 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		}
 	}
 
-	public static PotionEffectType getPotionEffectType(String effectString) {
-		if (effectString == null) {
+	public static PotionEffectType getPotionEffectType(String key) {
+		if (key == null) {
 			return null;
 		}
-		return PotionEffectType.getByKey(NamespacedKey.fromString(effectString));
+		return org.bukkit.Registry.EFFECT.get(NamespacedKey.fromString(key));
+	}
+
+	public static PotionEffectType getPotionEffectType(NamespacedKey key) {
+		if (key == null) {
+			return null;
+		}
+		return org.bukkit.Registry.EFFECT.get(key);
 	}
 
 	public static <T> List<T> collectValues(Collection<List<T>> collection) {

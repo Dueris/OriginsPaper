@@ -6,7 +6,6 @@ import io.github.classgraph.ScanResult;
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.FactoryHolder;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.annotations.SourceProvider;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -30,8 +29,7 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 	private static final long serialVersionUID = 2L;
 	public static List<NamespacedKey> allowedSkips = new ArrayList<>();
 	public static List<NamespacedKey> notPossibleTypes = new ArrayList<>();
-	@SourceProvider
-	public JsonObject sourceObject; // Gets initialized on creation via CraftCalio
+
 	static {
 		allowedSkips.add(new NamespacedKey("apoli", "model_color"));
 		notPossibleTypes.add(new NamespacedKey("apoli", "lava_vision")); // Not possible
@@ -49,12 +47,13 @@ public class PowerType implements Serializable, FactoryHolder, Listener {
 	private final int loadingPriority;
 	private final ConcurrentLinkedQueue<CraftPlayer> players = new ConcurrentLinkedQueue<>();
 	private final List<FactoryJsonObject> conditions = new ArrayList<>();
+	@SourceProvider
+	public JsonObject sourceObject; // Gets initialized on creation via CraftCalio
 	protected boolean tagSet = false;
 	private NamespacedKey tag = null;
 	private String cachedTagString = null;
 	private boolean hasPlayers = false;
 
-	@Register
 	public PowerType(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
 		this.name = name;
 		this.description = description;

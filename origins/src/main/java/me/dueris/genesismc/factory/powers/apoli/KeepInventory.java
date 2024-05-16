@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
@@ -16,19 +15,17 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.Objects;
 
-public class KeepInventory extends PowerType implements Listener {
+public class KeepInventory extends PowerType {
 
 	private final Integer[] slots;
 	private final FactoryJsonObject itemCondition;
 
-	@Register
 	public KeepInventory(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonArray slots, FactoryJsonObject itemCondition) {
 		super(name, description, hidden, condition, loading_priority);
 		this.slots = slots == null ? null : slots.asList().stream().map(FactoryElement::getNumber).map(FactoryNumber::getInt).toList().toArray(new Integer[0]);

@@ -4,7 +4,6 @@ import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -28,14 +27,11 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.geysermc.geyser.api.GeyserApi;
 
@@ -52,13 +48,12 @@ import java.util.HashMap;
  * within the other players one (the bit affected by the ClientboundPlayerInfoUpdatePacket to allow a survival player to go into blocks),
  * and the one that is required only in the client for knowing stuff like which hotbar to render
  */
-public class Phasing extends PowerType implements Listener {
+public class Phasing extends PowerType {
 	public static ArrayList<Player> inPhantomFormBlocks = new ArrayList<>();
 	public static HashMap<Player, Boolean> test = new HashMap<>();
 	public static AttributeModifier speedFix = new AttributeModifier("PhantomSpeedFix", 1, AttributeModifier.Operation.ADD_NUMBER);
 	private final FactoryJsonObject phaseDownCondition;
 
-	@Register
 	public Phasing(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject phaseDownCondition) {
 		super(name, description, hidden, condition, loading_priority);
 		this.phaseDownCondition = phaseDownCondition;

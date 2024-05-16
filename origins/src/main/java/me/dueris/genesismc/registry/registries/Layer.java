@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.FactoryHolder;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
@@ -46,7 +45,6 @@ public class Layer implements FactoryHolder {
 	private NamespacedKey tag;
 	private String cachedTagString;
 
-	@Register
 	public Layer(int order, FactoryJsonArray origins, boolean enabled, boolean replace, String name, FactoryJsonObject guiTitle, String missingName, String missingDescription,
 				 boolean allowRandom, boolean allowRandomUnchoosable, FactoryJsonArray excludeRandom, NamespacedKey defaultOrigin, boolean autoChoose, boolean hidden, int loadingPriority
 	) {

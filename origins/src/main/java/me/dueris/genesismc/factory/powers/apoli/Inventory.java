@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
@@ -17,7 +16,6 @@ import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.InventoryView;
@@ -32,7 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 
-public class Inventory extends PowerType implements Listener, KeyedPower {
+public class Inventory extends PowerType implements KeyedPower {
 
 	private final String title;
 	private final ContainerType containerType;
@@ -41,7 +39,6 @@ public class Inventory extends PowerType implements Listener, KeyedPower {
 	private final boolean recoverable;
 	private final JsonKeybind keybind;
 
-	@Register
 	public Inventory(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, String title, ContainerType containerType, boolean dropOnDeath, FactoryJsonObject dropOnDeathFilter, boolean recoverable, FactoryJsonObject key) {
 		super(name, description, hidden, condition, loading_priority);
 		this.title = title;
@@ -60,64 +57,6 @@ public class Inventory extends PowerType implements Listener, KeyedPower {
 			.add("drop_on_death_filter", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("recoverable", boolean.class, true)
 			.add("key", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
-	}
-
-	@EventHandler
-	public void MoveBackChange(PowerUpdateEvent e) {
-		if (!e.isRemoved()) return;
-		if (e.getPower() instanceof Inventory inventoryPower && e.getPower().getTag().equalsIgnoreCase(getTag())) {
-			PowerType power = e.getPower();
-			Player p = e.getPlayer();
-			GenesisMC.scheduler.parent.onMain(() -> {
-				ArrayList<ItemStack> vaultItems = getItems(p, power.getTag());
-				for (ItemStack item : new ArrayList<>(vaultItems)) {
-					if (item != null && item.getType() != Material.AIR) {
-						if (inventoryPower.recoverable) {
-							p.getWorld().dropItemNaturally(p.getLocation(), item);
-						}
-						vaultItems.remove(item);
-					}
-				}
-
-				storeItems(new ArrayList<>(), p, power.getTag());
-			});
-		}
-	}
-
-	@EventHandler
-	public void keytrigger(KeybindTriggerEvent e) {
-		if (getPlayers().contains(e.getPlayer())) {
-			if (isActive(e.getPlayer())) {
-				if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), e.getPlayer())) {
-					ArrayList<ItemStack> vaultItems = getItems(e.getPlayer(), getTag());
-					org.bukkit.inventory.Inventory vault = containerType.createInventory(e.getPlayer(), Utils.createIfPresent(title));
-					vaultItems.forEach(vault::addItem);
-					e.getPlayer().openInventory(vault);
-				}
-			}
-		}
-	}
-
-	@EventHandler
-	public void deathTIMEEE(PlayerDeathEvent e) {
-		if (getPlayers().contains(e.getPlayer())) {
-			Player p = e.getPlayer();
-			if (dropOnDeath) {
-				dropItems(e.getPlayer());
-			}
-		}
-	}
-
-	private void dropItems(Player p) {
-		ArrayList<ItemStack> vaultItems = getItems(p, getTag());
-		for (ItemStack item : new ArrayList<>(vaultItems)) {
-			if (item != null && item.getType() != Material.AIR && ConditionExecutor.testItem(dropOnDeathFilter, item)) {
-				p.getWorld().dropItemNaturally(p.getLocation(), item);
-				vaultItems.remove(item);
-			}
-		}
-
-		storeItems(vaultItems, p, getTag());
 	}
 
 	public static void saveInNbtIO(String tag, String data, Player player) {
@@ -224,6 +163,64 @@ public class Inventory extends PowerType implements Listener, KeyedPower {
 		}
 
 		return items;
+	}
+
+	@EventHandler
+	public void MoveBackChange(PowerUpdateEvent e) {
+		if (!e.isRemoved()) return;
+		if (e.getPower() instanceof Inventory inventoryPower && e.getPower().getTag().equalsIgnoreCase(getTag())) {
+			PowerType power = e.getPower();
+			Player p = e.getPlayer();
+			GenesisMC.scheduler.parent.onMain(() -> {
+				ArrayList<ItemStack> vaultItems = getItems(p, power.getTag());
+				for (ItemStack item : new ArrayList<>(vaultItems)) {
+					if (item != null && item.getType() != Material.AIR) {
+						if (inventoryPower.recoverable) {
+							p.getWorld().dropItemNaturally(p.getLocation(), item);
+						}
+						vaultItems.remove(item);
+					}
+				}
+
+				storeItems(new ArrayList<>(), p, power.getTag());
+			});
+		}
+	}
+
+	@EventHandler
+	public void keytrigger(KeybindTriggerEvent e) {
+		if (getPlayers().contains(e.getPlayer())) {
+			if (isActive(e.getPlayer())) {
+				if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), e.getPlayer())) {
+					ArrayList<ItemStack> vaultItems = getItems(e.getPlayer(), getTag());
+					org.bukkit.inventory.Inventory vault = containerType.createInventory(e.getPlayer(), Utils.createIfPresent(title));
+					vaultItems.forEach(vault::addItem);
+					e.getPlayer().openInventory(vault);
+				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void deathTIMEEE(PlayerDeathEvent e) {
+		if (getPlayers().contains(e.getPlayer())) {
+			Player p = e.getPlayer();
+			if (dropOnDeath) {
+				dropItems(e.getPlayer());
+			}
+		}
+	}
+
+	private void dropItems(Player p) {
+		ArrayList<ItemStack> vaultItems = getItems(p, getTag());
+		for (ItemStack item : new ArrayList<>(vaultItems)) {
+			if (item != null && item.getType() != Material.AIR && ConditionExecutor.testItem(dropOnDeathFilter, item)) {
+				p.getWorld().dropItemNaturally(p.getLocation(), item);
+				vaultItems.remove(item);
+			}
+		}
+
+		storeItems(vaultItems, p, getTag());
 	}
 
 	@EventHandler

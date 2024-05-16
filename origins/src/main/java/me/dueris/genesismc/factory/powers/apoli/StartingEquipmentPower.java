@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.OptionalInstance;
@@ -11,17 +10,15 @@ import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class StartingEquipmentPower extends PowerType implements Listener {
+public class StartingEquipmentPower extends PowerType {
 	private final List<FactoryJsonObject> stacks;
 	private final boolean recurrent;
 
-	@Register
 	public StartingEquipmentPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject stack, FactoryJsonArray stacks, boolean recurrent) {
 		super(name, description, hidden, condition, loading_priority);
 		this.stacks = stack != null ? List.of(stack) : stacks.asJsonObjectList();

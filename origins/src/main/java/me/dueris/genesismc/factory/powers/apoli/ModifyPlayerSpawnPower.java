@@ -3,7 +3,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import com.mojang.datafixers.util.Pair;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
@@ -35,20 +34,18 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ModifyPlayerSpawnPower extends PowerType implements Listener {
+public class ModifyPlayerSpawnPower extends PowerType {
 	private final NamespacedKey dimension;
 	private final @Nullable ResourceLocation biome;
 	private final @Nullable ResourceLocation structure;
 	private final SpawnStrategy spawnStrategy;
 	private final float dimensionDistanceMultiplier;
 
-	@Register
 	public ModifyPlayerSpawnPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, NamespacedKey dimension, ResourceLocation biome, ResourceLocation structure, SpawnStrategy spawnStrategy, float dimensionDistanceMultiplier) {
 		super(name, description, hidden, condition, loading_priority);
 		this.dimension = dimension;

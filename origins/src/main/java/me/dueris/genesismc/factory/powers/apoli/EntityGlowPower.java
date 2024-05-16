@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -21,7 +20,6 @@ import java.util.Set;
 
 public class EntityGlowPower extends SelfGlow {
 
-	@Register
 	public EntityGlowPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject entityCondition, FactoryJsonObject bientityCondition, boolean useTeams, float red, float green, float blue) {
 		super(name, description, hidden, condition, loading_priority, entityCondition, bientityCondition, useTeams, red, green, blue);
 	}
@@ -32,7 +30,7 @@ public class EntityGlowPower extends SelfGlow {
 
 	@Override
 	public void tick(Player p) {
-		ServerPlayer player = ((CraftPlayer)p).getHandle();
+		ServerPlayer player = ((CraftPlayer) p).getHandle();
 		ServerLevel level = (ServerLevel) player.level();
 		Set<Entity> entities = Shape.getEntities(Shape.SPHERE, level, CraftLocation.toVec3D(p.getLocation()), 60);
 		entities.add(player);

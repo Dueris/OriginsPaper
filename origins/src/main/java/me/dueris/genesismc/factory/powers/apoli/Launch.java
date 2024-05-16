@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
@@ -18,21 +17,19 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.factory.powers.apoli.FireProjectile.in_continuous;
 
-public class Launch extends PowerType implements Listener, CooldownPower, KeyedPower {
+public class Launch extends PowerType implements CooldownPower, KeyedPower {
 	private final int cooldown;
 	private final float speed;
 	private final HudRender hudRender;
 	private final Sound sound;
 	private final JsonKeybind keybind;
 
-	@Register
 	public Launch(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int cooldown, float speed, FactoryJsonObject hudRender, Sound sound, FactoryJsonObject keybind) {
 		super(name, description, hidden, condition, loading_priority);
 		this.cooldown = cooldown;

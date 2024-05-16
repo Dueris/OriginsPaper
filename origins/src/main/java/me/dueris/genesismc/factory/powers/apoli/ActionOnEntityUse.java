@@ -21,7 +21,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class ActionOnBeingUsed extends PowerType {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ActionOnEntityUse extends PowerType {
+	private static final ArrayList<Player> cooldownTick = new ArrayList<>();
 	private final FactoryJsonObject bientityAction;
 	private final FactoryJsonObject heldItemAction;
 	private final FactoryJsonObject resultItemAction;
@@ -30,7 +34,7 @@ public class ActionOnBeingUsed extends PowerType {
 	private final FactoryJsonArray hands;
 	private final ItemStack resultStack;
 
-	public ActionOnBeingUsed(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject bientityAction, FactoryJsonObject heldItemAction, FactoryJsonObject resultItemAction, FactoryJsonObject bientityCondition, FactoryJsonObject itemCondition, FactoryJsonArray hands, ItemStack resultStack) {
+	public ActionOnEntityUse(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject bientityAction, FactoryJsonObject heldItemAction, FactoryJsonObject resultItemAction, FactoryJsonObject bientityCondition, FactoryJsonObject itemCondition, FactoryJsonArray hands, ItemStack resultStack) {
 		super(name, description, hidden, condition, loading_priority);
 		this.bientityAction = bientityAction;
 		this.heldItemAction = heldItemAction;
@@ -42,8 +46,7 @@ public class ActionOnBeingUsed extends PowerType {
 	}
 
 	public static FactoryData registerComponents(FactoryData data) {
-		return PowerType.registerComponents(data)
-			.ofNamespace(GenesisMC.apoliIdentifier("action_on_being_used"))
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("action_on_entity_use"))
 			.add("bientity_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("held_item_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("result_item_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
@@ -55,25 +58,56 @@ public class ActionOnBeingUsed extends PowerType {
 
 	@EventHandler
 	public void entityRightClickEntity(PlayerInteractEntityEvent e) {
+		Player actor = e.getPlayer();
+		Entity target = e.getRightClicked();
+
+		if (!getPlayers().contains(actor)) return;
+		if (cooldownTick.contains(actor)) return;
+
+		if (!isActive(actor)) return;
+		if (!ConditionExecutor.testItem(itemCondition, actor.getInventory().getItem(e.getHand()))) return;
+		if (!ConditionExecutor.testBiEntity(bientityCondition, (CraftEntity) actor, (CraftEntity) target)) return;
 		boolean pass = false;
 		if (e.getHand().isHand()) {
 			InteractionHand hand = CraftEquipmentSlot.getHand(e.getHand());
 			pass = hands.asList().stream().map(FactoryElement::getString).map(String::toUpperCase).map(InteractionHand::valueOf).toList().contains(hand);
 		}
 		if (!pass) return;
-		Player actor = e.getPlayer();
-		Entity target = e.getRightClicked();
-		if (!(target instanceof Player player) || !getPlayers().contains(player)) return;
-		if (!isActive(player)) return;
-
-		if (!(ConditionExecutor.testBiEntity(bientityCondition, (CraftEntity) actor, (CraftEntity) target) && ConditionExecutor.testItem(itemCondition, actor.getInventory().getItem(e.getHand()))))
-			return;
-
-		Actions.executeItem(actor.getInventory().getItem(e.getHand()), heldItemAction);
-		if (resultStack != null) {
-			Actions.executeItem(resultStack, resultItemAction);
-			player.getInventory().addItem(resultStack);
-		}
+		cooldownTick.add(actor);
 		Actions.executeBiEntity(actor, target, bientityAction);
+		Actions.executeItem(actor.getActiveItem(), heldItemAction);
+		if (resultStack != null) {
+			actor.getInventory().addItem(resultStack);
+			Actions.executeItem(actor.getActiveItem(), resultItemAction);
+		}
 	}
+
+	public FactoryJsonObject getBientityAction() {
+		return bientityAction;
+	}
+
+	public ItemStack getResultStack() {
+		return resultStack;
+	}
+
+	public FactoryJsonObject getHeldItemAction() {
+		return heldItemAction;
+	}
+
+	public FactoryJsonObject getBientityCondition() {
+		return bientityCondition;
+	}
+
+	public FactoryJsonObject getResultItemAction() {
+		return resultItemAction;
+	}
+
+	public FactoryJsonObject getItemCondition() {
+		return itemCondition;
+	}
+
+	public List<InteractionHand> getHands() {
+		return hands.asList().stream().map(FactoryElement::getString).map(String::toUpperCase).map(InteractionHand::valueOf).toList();
+	}
+
 }

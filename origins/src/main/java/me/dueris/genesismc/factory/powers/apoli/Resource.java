@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.calio.registry.Registrar;
@@ -28,7 +27,6 @@ import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerLoadEvent;
@@ -40,7 +38,7 @@ import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.util.TextureLocation.textureMap;
 
-public class Resource extends PowerType implements Listener, ResourcePower {
+public class Resource extends PowerType implements ResourcePower {
 	public static HashMap<String, Bar> serverLoadedBars = new HashMap<>(); // IDENTIFIER || BAR_IMPL
 	public static HashMap<Player, List<Bar>> currentlyDisplayed = new HashMap<>();
 
@@ -58,7 +56,6 @@ public class Resource extends PowerType implements Listener, ResourcePower {
 	private final FactoryJsonObject minAction;
 	private final FactoryJsonObject maxAction;
 
-	@Register
 	public Resource(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int min, int max, FactoryJsonObject hudRender, Optional startValue, FactoryJsonObject minAction, FactoryJsonObject maxAction) {
 		super(name, description, hidden, condition, loading_priority);
 		this.min = min;

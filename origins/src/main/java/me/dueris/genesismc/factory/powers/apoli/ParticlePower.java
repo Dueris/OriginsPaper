@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.ParticleEffect;
 import me.dueris.calio.data.types.RequiredInstance;
@@ -26,7 +25,6 @@ public class ParticlePower extends PowerType {
 	private final int frequency;
 	private final boolean visibleWhileInvis;
 
-	@Register
 	public ParticlePower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, ParticleEffect effect, int count, float speed, boolean force, Vector spread, float offsetX, float offsetY, float offsetZ, int frequency, boolean visibleWhileInvis) {
 		super(name, description, hidden, condition, loading_priority);
 		this.effect = effect;

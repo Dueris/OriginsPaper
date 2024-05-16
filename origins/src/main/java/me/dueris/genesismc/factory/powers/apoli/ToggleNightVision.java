@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
@@ -11,7 +10,6 @@ import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.KeybindingUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -19,11 +17,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ToggleNightVision extends PowerType implements Listener, KeyedPower {
+public class ToggleNightVision extends PowerType implements KeyedPower {
 	public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
 	private final JsonKeybind key;
 
-	@Register
 	public ToggleNightVision(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject key) {
 		super(name, description, hidden, condition, loading_priority);
 		this.key = JsonKeybind.createJsonKeybind(key);

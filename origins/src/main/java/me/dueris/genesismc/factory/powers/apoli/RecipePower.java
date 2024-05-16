@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.RequiredInstance;
@@ -18,7 +17,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.ServerLoadEvent;
@@ -32,14 +30,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class RecipePower extends PowerType implements Listener {
+public class RecipePower extends PowerType {
 	public static HashMap<Player, List<String>> recipeMapping = new HashMap<>();
 	public static HashMap<String, Recipe> taggedRegistry = new HashMap<>();
 	public static List<String> tags = new ArrayList<>();
 	private static boolean finishedLoad = false;
 	private final FactoryJsonObject recipe;
 
-	@Register
 	public RecipePower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject recipe) {
 		super(name, description, hidden, condition, loading_priority);
 		this.recipe = recipe;
