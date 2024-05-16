@@ -14,10 +14,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
-import org.bukkit.entity.AnimalTamer;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Tameable;
+import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
 
 import java.util.function.BiConsumer;
@@ -78,10 +75,21 @@ public class BiEntityActions {
 			this.test = test;
 		}
 
-		public void test(FactoryJsonObject action, Pair<CraftEntity, CraftEntity> tester) {
+		public void test(FactoryJsonObject action, Pair<Entity, Entity> tester) {
 			if (action == null || action.isEmpty()) return; // Dont execute empty actions
 			try {
-				test.accept(action, tester);
+				Pair<CraftEntity, CraftEntity> newTester = new Pair<>() {
+					@Override
+					public CraftEntity left() {
+						return (CraftEntity) tester.left();
+					}
+
+					@Override
+					public CraftEntity right() {
+						return (CraftEntity) tester.right();
+					}
+				};
+				test.accept(action, newTester);
 			} catch (Exception e) {
 				GenesisMC.getPlugin().getLogger().severe("An Error occurred while running an action: " + e.getMessage());
 				e.printStackTrace();
