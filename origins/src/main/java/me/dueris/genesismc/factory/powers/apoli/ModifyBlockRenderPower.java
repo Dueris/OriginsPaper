@@ -90,4 +90,11 @@ public class ModifyBlockRenderPower extends PowerType implements Listener {
 		}
 	}
 
+	public Material getBlock() {
+		return block;
+	}
+
+	public FactoryJsonObject getBlockCondition() {
+		return blockCondition;
+	}
 }

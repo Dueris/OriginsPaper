@@ -91,6 +91,18 @@ public class ModelColor extends PowerType {
 		}
 	}
 
+	public float getB() {
+		return b;
+	}
+
+	public float getG() {
+		return g;
+	}
+
+	public float getR() {
+		return r;
+	}
+
 	public String formatUrl(String url) {
 		if (!url.startsWith("http://textures.minecraft.net")) {
 			return "http://textures.minecraft.net" + url;
