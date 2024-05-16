@@ -8,6 +8,7 @@ import me.dueris.calio.data.AccessorKey;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.FactoryHolder;
 import me.dueris.calio.data.JsonObjectRemapper;
+import me.dueris.calio.data.annotations.DontRegister;
 import me.dueris.calio.data.annotations.RequiresPlugin;
 import me.dueris.calio.parse.CalioJsonParser;
 import me.dueris.calio.parse.reader.FileReader;
@@ -155,6 +156,7 @@ public class CraftCalio {
 	 */
 	public void register(Class<? extends FactoryHolder> holder) {
 		try {
+			if (holder.isAnnotationPresent(DontRegister.class)) return;
 			Method rC = holder.getDeclaredMethod("registerComponents", FactoryData.class);
 			if (rC == null)
 				throw new IllegalArgumentException("FactoryHolder doesn't have registerComponents method in it or its superclasses!");

@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import me.dueris.calio.CraftCalio;
-import me.dueris.calio.data.annotations.Register;
 import me.dueris.calio.data.annotations.SourceProvider;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;

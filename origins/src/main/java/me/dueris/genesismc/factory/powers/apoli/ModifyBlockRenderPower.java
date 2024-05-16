@@ -1,17 +1,20 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
+import com.google.gson.JsonObject;
 import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
 import io.papermc.paper.math.Position;
+import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.RequiredInstance;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Shape;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.chunk.ChunkManagerWorld;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.CraftWorld;
@@ -25,44 +28,54 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ModifyBlockRenderPower extends CraftPower implements Listener {
+public class ModifyBlockRenderPower extends PowerType implements Listener {
 	public static ArrayList<Runnable> que = new ArrayList<>();
+	private final Material block;
+	private final FactoryJsonObject blockCondition;
+
+	public ModifyBlockRenderPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, Material block, FactoryJsonObject blockCondition) {
+		super(name, description, hidden, condition, loading_priority);
+		this.block = block;
+		this.blockCondition = blockCondition;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("modify_block_render"))
+			.add("block", Material.class, new RequiredInstance())
+			.add("block_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	@EventHandler
 	public void chunkLoad(PlayerChunkLoadEvent e) {
 		Player p = e.getPlayer();
-		if (!getPlayersWithPower().contains(p)) return;
+		if (!getPlayers().contains(p)) return;
 		final ChunkManagerWorld worldChunkAccessor = new ChunkManagerWorld(e.getWorld());
 		ServerLevel level = ((CraftWorld) e.getWorld()).getHandle();
-		for (Power power : OriginPlayerAccessor.getPowers(p, getType())) {
-			que.add(() -> {
-				Map<Position, BlockData> updates = new ConcurrentHashMap<>();
-				BlockData toSend = power.getMaterial("block").createBlockData();
-				FactoryJsonObject bc = power.getJsonObject("block_condition");
-				for (Block block : worldChunkAccessor.getAllBlocksInChunk(e.getChunk())) {
-					if (block == null) continue;
-					Location location = block.getLocation();
-					if (!ConditionExecutor.testBlock(bc, CraftBlock.at(level, CraftLocation.toBlockPosition(location))))
-						continue;
-					updates.put(location, toSend);
-				}
-				// We send in multi-block-changes to save on network spam
-				p.sendMultiBlockChange(updates);
-			});
-		}
+		que.add(() -> {
+			Map<Position, BlockData> updates = new ConcurrentHashMap<>();
+			BlockData toSend = block.createBlockData();
+			for (Block block : worldChunkAccessor.getAllBlocksInChunk(e.getChunk())) {
+				if (block == null) continue;
+				Location location = block.getLocation();
+				if (!ConditionExecutor.testBlock(blockCondition, CraftBlock.at(level, CraftLocation.toBlockPosition(location))))
+					continue;
+				updates.put(location, toSend);
+			}
+			// We send in multi-block-changes to save on network spam
+			p.sendMultiBlockChange(updates);
+		});
 	}
 
 	@Override
-	public void run(Player p, Power power) {
+	public void tick(Player p) {
 		Map<Position, BlockData> updates = new ConcurrentHashMap<>();
-		BlockData toSend = power.getMaterial("block").createBlockData();
-		FactoryJsonObject bc = power.getJsonObject("block_condition");
+		BlockData toSend = block.createBlockData();
 		ServerLevel level = ((CraftWorld) p.getWorld()).getHandle();
 		Shape.executeAtPositions(CraftLocation.toBlockPosition(p.getLocation()), Shape.SPHERE, 10, (pos) -> {
 			Block block = p.getWorld().getBlockAt(CraftLocation.toBukkit(pos));
 			if (block == null || block.getType().isAir()) return;
 			Location location = block.getLocation();
-			if (!ConditionExecutor.testBlock(bc, CraftBlock.at(level, CraftLocation.toBlockPosition(location)))) return;
+			if (!ConditionExecutor.testBlock(blockCondition, CraftBlock.at(level, CraftLocation.toBlockPosition(location)))) return;
 			updates.put(location, toSend);
 		});
 		// We send in multi-block-changes to save on network spam
@@ -77,13 +90,4 @@ public class ModifyBlockRenderPower extends CraftPower implements Listener {
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:modify_block_render";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return modify_block_render;
-	}
 }
