@@ -9,12 +9,10 @@ import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
+import me.dueris.genesismc.factory.data.types.EntityGroup;
 import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
-import me.dueris.genesismc.factory.powers.apoli.ActionOnBlockBreak;
-import me.dueris.genesismc.factory.powers.apoli.ClimbingPower;
-import me.dueris.genesismc.factory.powers.apoli.ElytraFlightPower;
-import me.dueris.genesismc.factory.powers.apoli.Resource;
+import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.RaycastUtils;
@@ -204,17 +202,6 @@ public class EntityConditions {
 
 			return fixedComparison.compare(count, compare_to);
 		}));
-		// TODO
-//		register(new ConditionFactory(GenesisMC.apoliIdentifier("set_size"), (condition, entity) -> {
-//			String tag = condition.getString("set");
-//			ArrayList<Entity> entities = EntitySetPower.entity_sets.get(tag);
-//			if (entities.contains(entity)) {
-//				String comparison = condition.getString("comparison");
-//				int compare_to = condition.getNumber("compare_to").getInt();
-//				return Comparison.fromString(comparison).compare(entities.size(), compare_to);
-//			}
-//			return false;
-//		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("scoreboard"), (condition, entity) -> {
 			String name = condition.getString("name");
 			if (name == null) {
@@ -426,8 +413,7 @@ public class EntityConditions {
 
 			return Comparison.fromString(condition.getString("comparison")).compare(distance, condition.getNumber("compare_to").getFloat());
 		}));
-		// TODO
-		// register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_group"), (condition, entity) -> (EntityGroupManager.modifiedEntityGroups.containsKey(entity) && EntityGroupManager.modifiedEntityGroups.get(entity).equals(condition.getEnumValue("group", EntityGroup.class))) || (entity.getHandle() instanceof net.minecraft.world.entity.LivingEntity le && EntityGroup.getMobType(le).equals(condition.getEnumValue("group", EntityGroup.class)))));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_group"), (condition, entity) -> (EntityGroupManager.modifiedEntityGroups.containsKey(entity) && EntityGroupManager.modifiedEntityGroups.get(entity).equals(condition.getEnumValue("group", EntityGroup.class))) || (entity.getHandle() instanceof net.minecraft.world.entity.LivingEntity le && EntityGroup.getMobType(le).equals(condition.getEnumValue("group", EntityGroup.class)))));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("elytra_flight_possible"), (condition, entity) -> {
 			boolean hasElytraPower = PowerHolderComponent.hasPowerType(entity, ElytraFlightPower.class);
 			boolean hasElytraEquipment = false;
@@ -628,13 +614,12 @@ public class EntityConditions {
 			double compare_to = condition.getNumber("compare_to").getFloat();
 			return Comparison.fromString(comparison).compare(entity.getWorld().getTime(), compare_to);
 		}));
-		// TODO
-//		register(new ConditionFactory(GenesisMC.apoliIdentifier("set_size"), (condition, entity) -> {
-//			NamespacedKey key = condition.getNamespacedKey("set");
-//			String comparison = condition.getString("comparison");
-//			int compare_to = condition.getNumber("compare_to").getInt();
-//			return Comparison.fromString(comparison).compare(EntitySetPower.entity_sets.getOrDefault(key.toString(), new ArrayList<>()).size(), compare_to);
-//		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("set_size"), (condition, entity) -> {
+			NamespacedKey key = condition.getNamespacedKey("set");
+			String comparison = condition.getString("comparison");
+			int compare_to = condition.getNumber("compare_to").getInt();
+			return Comparison.fromString(comparison).compare(EntitySetPower.entity_sets.getOrDefault(key.toString(), new ArrayList<>()).size(), compare_to);
+		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("predicate"), (condition, entity) -> {
 			ServerLevel level = (ServerLevel) entity.getHandle().level();
 			ResourceLocation location = CraftNamespacedKey.toMinecraft(

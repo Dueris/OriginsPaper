@@ -30,8 +30,6 @@ public class CraftApoli {
 	private static final int BUFFER_SIZE = 4096;
 	private static final Registrar<Layer> layerRegistrar = ((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER));
 	private static final Registrar<Origin> originRegistrar = ((Registrar<Origin>) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN));
-	// TODO: remove
-	@Deprecated(forRemoval = true)
 	private static final Registrar<PowerType> powerRegistrar = (Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER);
 	private static final Collection<Layer> layerValues = new ArrayList<>();
 	private static final Collection<Origin> originValues = new ArrayList<>();

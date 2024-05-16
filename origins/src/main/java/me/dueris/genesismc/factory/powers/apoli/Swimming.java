@@ -1,8 +1,9 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -11,15 +12,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.util.ArrayList;
-
 @ApiStatus.Experimental
-public class Swimming extends CraftPower {
+public class Swimming extends PowerType {
+
+	public Swimming(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
+		super(name, description, hidden, condition, loading_priority);
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("swimming"));
+	}
 
 	@Override
-	public void run(Player p, Power power) {
+	public void tick(Player p) {
 		CraftPlayer player = (CraftPlayer) p;
-		if (ConditionExecutor.testEntity(power.getJsonObject("condition"), player)) {
+		if (isActive(player)) {
 			player.setPose(Pose.SWIMMING);
 			player.setFlying(true);
 			Vec3 look = Vec3.directionFromRotation(player.getHandle().getRotationVector());
@@ -27,15 +34,5 @@ public class Swimming extends CraftPower {
 		} else if (!(player.getGameMode().equals(GameMode.SPECTATOR) || player.getGameMode().equals(GameMode.CREATIVE))) {
 			player.setFlying(false);
 		}
-	}
-
-	@Override
-	public String getType() {
-		return "apoli:swimming";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return swimming;
 	}
 }

@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class GravityPower extends PowerType implements Listener {
+public class GravityPower extends PowerType {
 
 	public GravityPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
 		super(name, description, hidden, condition, loading_priority);

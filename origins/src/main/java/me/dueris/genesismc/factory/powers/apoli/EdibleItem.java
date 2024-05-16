@@ -24,7 +24,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 
-public class EdibleItem extends PowerType implements Listener {
+public class EdibleItem extends PowerType {
 
 	private final FactoryJsonObject entityAction;
 	private final FactoryJsonObject itemAction;
