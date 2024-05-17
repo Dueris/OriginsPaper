@@ -46,6 +46,15 @@ public class ModifyDamageDealtPower extends ModifierPower implements Listener {
 			.add("self_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
 	}
 
+	public static void runSetDMG(EntityDamageByEntityEvent e, String operation, float value) {
+		double damage = e.getDamage();
+		BinaryOperator<Float> floatOperator = Utils.getOperationMappingsFloat().get(operation);
+		if (floatOperator != null) {
+			float newDamage = floatOperator.apply((float) damage, value);
+			e.setDamage(newDamage);
+		}
+	}
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void damageEVENT(EntityDamageByEntityEvent e) {
 		if (e.isCancelled()) return;
@@ -67,15 +76,6 @@ public class ModifyDamageDealtPower extends ModifierPower implements Listener {
 			} catch (Exception ev) {
 				ev.printStackTrace();
 			}
-		}
-	}
-
-	public static void runSetDMG(EntityDamageByEntityEvent e, String operation, float value) {
-		double damage = e.getDamage();
-		BinaryOperator<Float> floatOperator = Utils.getOperationMappingsFloat().get(operation);
-		if (floatOperator != null) {
-			float newDamage = floatOperator.apply((float) damage, value);
-			e.setDamage(newDamage);
 		}
 	}
 
