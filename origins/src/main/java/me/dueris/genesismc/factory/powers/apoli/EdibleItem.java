@@ -13,7 +13,6 @@ import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;

@@ -53,7 +53,8 @@ public class ModifyDamageDealtPower extends ModifierPower implements Listener {
 			try {
 				if (!isActive(p)) return;
 				if (!ConditionExecutor.testEntity(targetCondition, (CraftEntity) e.getEntity())) return;
-				if (!ConditionExecutor.testBiEntity(bientityCondition, (CraftEntity) p, (CraftEntity) e.getEntity())) return;
+				if (!ConditionExecutor.testBiEntity(bientityCondition, (CraftEntity) p, (CraftEntity) e.getEntity()))
+					return;
 				if (!ConditionExecutor.testDamage(damageCondition, e)) return;
 				for (Modifier modifier : getModifiers()) {
 					float value = modifier.value();
@@ -69,7 +70,7 @@ public class ModifyDamageDealtPower extends ModifierPower implements Listener {
 		}
 	}
 
-	public void runSetDMG(EntityDamageByEntityEvent e, String operation, float value) {
+	public static void runSetDMG(EntityDamageByEntityEvent e, String operation, float value) {
 		double damage = e.getDamage();
 		BinaryOperator<Float> floatOperator = Utils.getOperationMappingsFloat().get(operation);
 		if (floatOperator != null) {

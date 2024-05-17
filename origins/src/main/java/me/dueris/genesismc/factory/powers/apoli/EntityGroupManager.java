@@ -9,7 +9,6 @@ import me.dueris.genesismc.factory.data.types.EntityGroup;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
 import java.util.HashMap;
 

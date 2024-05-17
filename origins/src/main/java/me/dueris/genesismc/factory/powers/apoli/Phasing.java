@@ -143,7 +143,7 @@ public class Phasing extends PowerType {
 				if (e.isSneaking()) {
 					if (getPlayers().contains(e.getPlayer())) {
 						Player p = e.getPlayer();
-						if (isActive(p)) {
+						if (isActive(p) && !p.getLocation().getBlock().isCollidable()) {
 							if (ConditionExecutor.testBlock(phaseDownCondition, (CraftBlock) p.getLocation().add(0, -1, 0).getBlock())) {
 								p.teleportAsync(p.getLocation().add(0, -0.1, 0));
 							}

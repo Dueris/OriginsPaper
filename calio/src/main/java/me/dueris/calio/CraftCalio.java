@@ -157,13 +157,13 @@ public class CraftCalio {
 	public void register(Class<? extends FactoryHolder> holder) {
 		try {
 			if (holder.isAnnotationPresent(DontRegister.class)) return;
-			Method rC = holder.getDeclaredMethod("registerComponents", FactoryData.class);
-			if (rC == null)
-				throw new IllegalArgumentException("FactoryHolder doesn't have registerComponents method in it or its superclasses!");
 			if (holder.isAnnotationPresent(RequiresPlugin.class)) {
 				RequiresPlugin aN = holder.getAnnotation(RequiresPlugin.class);
 				if (!org.bukkit.Bukkit.getPluginManager().isPluginEnabled(aN.pluginName())) return;
 			}
+			Method rC = holder.getDeclaredMethod("registerComponents", FactoryData.class);
+			if (rC == null)
+				throw new IllegalArgumentException("FactoryHolder doesn't have registerComponents method in it or its superclasses!");
 			FactoryData data = (FactoryData) rC.invoke(null, new FactoryData());
 			NamespacedKey identifier = data.getIdentifier();
 			if (identifier == null)

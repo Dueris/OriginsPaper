@@ -11,7 +11,6 @@ import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -39,7 +38,7 @@ public class ItemOnItemPower extends PowerType {
 		this.onItemAction = onItemAction;
 		this.entityAction = entityAction;
 	}
-	
+
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("item_on_item"))
 			.add("using_item_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))

@@ -35,7 +35,8 @@ public class ActionOnDeath extends PowerType {
 	public void d(EntityDeathEvent e) {
 		if (e.getEntity() instanceof Player p) {
 			if (getPlayers().contains(p)) {
-				if (!isActive(p) || !ConditionExecutor.testDamage(damageCondition, e.getEntity().getLastDamageCause())) return;
+				if (!isActive(p) || !ConditionExecutor.testDamage(damageCondition, e.getEntity().getLastDamageCause()))
+					return;
 				if (ConditionExecutor.testBiEntity(bientityCondition, ((CraftPlayer) p).getHandle().getLastHurtByMob().getBukkitEntity(), p)) {
 					Actions.executeBiEntity(((CraftPlayer) p).getHandle().getLastHurtByMob().getBukkitEntity(), p/* player is target? */, bientityAction);
 				}

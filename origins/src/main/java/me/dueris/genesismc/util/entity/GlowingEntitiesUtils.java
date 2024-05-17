@@ -211,16 +211,18 @@ public class GlowingEntitiesUtils implements Listener {
 	protected static class Packets {
 
 		private static final byte GLOWING_FLAG = 1 << 6;
-		public static boolean enabled = false;
-		// Entities
-		static Object shulkerEntityType;
 		private static final Cache<Object, Object> packets =
 			CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.SECONDS).build();
 		private static final Object dummy = new Object();
+		private static final String cpack = Bukkit.getServer().getClass().getPackage().getName() + ".";
+		// Teams
+		private static final EnumMap<ChatColor, TeamData> teams = new EnumMap<>(ChatColor.class);
+		public static boolean enabled = false;
+		// Entities
+		static Object shulkerEntityType;
 		private static Logger logger;
 		private static int version;
 		private static int versionMinor;
-		private static final String cpack = Bukkit.getServer().getClass().getPackage().getName() + ".";
 		private static ProtocolMappings mappings;
 		private static Method getHandle;
 		private static Method getDataWatcher;
@@ -247,8 +249,6 @@ public class GlowingEntitiesUtils implements Listener {
 		private static Constructor<?> packetMetadataConstructor;
 		private static Field packetMetadataEntity;
 		private static Field packetMetadataItems;
-		// Teams
-		private static final EnumMap<ChatColor, TeamData> teams = new EnumMap<>(ChatColor.class);
 		private static Constructor<?> createTeamPacket;
 		private static Constructor<?> createTeamPacketData;
 		private static Constructor<?> createTeam;

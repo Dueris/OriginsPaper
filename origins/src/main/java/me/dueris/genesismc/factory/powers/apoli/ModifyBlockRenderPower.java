@@ -75,7 +75,8 @@ public class ModifyBlockRenderPower extends PowerType implements Listener {
 			Block block = p.getWorld().getBlockAt(CraftLocation.toBukkit(pos));
 			if (block == null || block.getType().isAir()) return;
 			Location location = block.getLocation();
-			if (!ConditionExecutor.testBlock(blockCondition, CraftBlock.at(level, CraftLocation.toBlockPosition(location)))) return;
+			if (!ConditionExecutor.testBlock(blockCondition, CraftBlock.at(level, CraftLocation.toBlockPosition(location))))
+				return;
 			updates.put(location, toSend);
 		});
 		// We send in multi-block-changes to save on network spam
