@@ -46,7 +46,7 @@ public class EdibleItem extends PowerType {
 		this.modifiers = Modifier.getModifiers(consumingTimeModifier, consumingTimeModifiers);
 	}
 
-	public static FactoryData regsiterComponents(FactoryData data) {
+	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("edible_item"))
 			.add("entity_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("item_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
