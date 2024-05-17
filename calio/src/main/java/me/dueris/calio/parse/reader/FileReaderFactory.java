@@ -12,7 +12,8 @@ public class FileReaderFactory {
 		} else if (Files.isRegularFile(path) && (path.toString().endsWith(".zip") || path.toString().endsWith(".jar"))) {
 			return new ZipFileReader(new ZipFile(path.toFile()));
 		} else {
-			throw new IllegalArgumentException("Unsupported file type: " + path);
+			new IllegalArgumentException("Unsupported file type: " + path).printStackTrace();
 		}
+		return null;
 	}
 }

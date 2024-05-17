@@ -32,6 +32,7 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+// TODO: MachineMaker PluginDatapacks
 public class Bootstrap implements PluginBootstrap {
 	public static WaterProtectionEnchantment waterProtection;
 	public static ArrayList<String> oldDV = new ArrayList<>();
@@ -91,10 +92,9 @@ public class Bootstrap implements PluginBootstrap {
 					break;
 				String name = entry.getName();
 
-				if (!name.startsWith("datapack/")) continue;
-				if (name.startsWith("datapack/builtin")) continue;
+				if (!name.startsWith("minecraft/")) continue;
 				if (FilenameUtils.getExtension(name).equals("zip")) continue;
-				if (name.equals("datapack/")) continue;
+				if (name.equals("minecraft/")) continue;
 
 				name = name.substring(9);
 				File file = new File(datapackPath.toAbsolutePath().toString().replace(".\\", "") + File.separator + name);

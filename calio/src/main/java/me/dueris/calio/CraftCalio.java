@@ -67,6 +67,7 @@ public class CraftCalio {
 				for (File datapack : root.listFiles()) {
 					try {
 						FileReader fileReader = FileReaderFactory.createFileReader(datapack.toPath());
+						if (fileReader == null) continue;
 						List<String> files = fileReader.listFiles();
 						HashMap<Pair<JsonObject, NamespacedKey>, Integer> newLoadingPrioritySortedMap = new HashMap<>();
 						for (String file : files) {

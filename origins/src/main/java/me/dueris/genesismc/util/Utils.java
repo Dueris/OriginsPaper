@@ -510,10 +510,9 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 					break;
 				String name = entry.getName();
 
-				if (!name.startsWith("datapack/")) continue;
-				if (!name.startsWith("datapack/builtin")) continue;
+				if (!name.startsWith("minecraft/")) continue;
 				if (FilenameUtils.getExtension(name).equals("zip")) continue;
-				if (name.equals("datapack/")) continue;
+				if (name.equals("minecraft/")) continue;
 
 				name = name.substring(9);
 				File file = new File(GenesisMC.getTmpFolder().getAbsolutePath().replace(".\\", "") + File.separator + name);
