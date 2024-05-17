@@ -24,7 +24,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.Arrays;
 
 public class EdibleItem extends PowerType {
-
 	private final FactoryJsonObject entityAction;
 	private final FactoryJsonObject itemAction;
 	private final FactoryJsonObject resultItemAction;
@@ -33,9 +32,7 @@ public class EdibleItem extends PowerType {
 	private final ItemStack resultStack;
 	private final Modifier[] modifiers;
 
-	public EdibleItem(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject entityAction, FactoryJsonObject itemAction,
-					  FactoryJsonObject resultItemAction, FactoryJsonObject itemCondition, FactoryJsonObject foodComponent, ItemStack resultStack, FactoryJsonObject consumingTimeModifier,
-					  FactoryJsonArray consumingTimeModifiers) {
+	public EdibleItem(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject entityAction, FactoryJsonObject itemAction, FactoryJsonObject resultItemAction, FactoryJsonObject itemCondition, FactoryJsonObject foodComponent, ItemStack resultStack, FactoryJsonObject consumingTimeModifier, FactoryJsonArray consumingTimeModifiers) {
 		super(name, description, hidden, condition, loading_priority);
 		this.entityAction = entityAction;
 		this.itemAction = itemAction;
@@ -55,7 +52,7 @@ public class EdibleItem extends PowerType {
 			.add("food_component", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("result_stack", ItemStack.class, new OptionalInstance())
 			.add("consuming_time_modifier", FactoryJsonObject.class, new OptionalInstance())
-			.add("consuming_time_modifiers", FactoryJsonObject.class, new OptionalInstance());
+			.add("consuming_time_modifiers", FactoryJsonArray.class, new OptionalInstance());
 	}
 
 	@EventHandler
