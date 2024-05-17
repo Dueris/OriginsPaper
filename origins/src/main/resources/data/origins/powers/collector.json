@@ -7,7 +7,7 @@
     "entity_type": "minecraft:item"
   },
   "use_teams": false,
-  "red": 0.0,
-  "green": 1.0,
-  "blue": 1.0
+  "red": 0.05,
+  "green": 0.56,
+  "blue": 0.96
 }
