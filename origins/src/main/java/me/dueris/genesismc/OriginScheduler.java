@@ -17,17 +17,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class OriginScheduler {
 	final Plugin plugin;
+	private final ConcurrentLinkedQueue<Runnable> tasksOnMain = new ConcurrentLinkedQueue<>();
+	private final ConcurrentLinkedQueue<Runnable> tasksOffMain = new ConcurrentLinkedQueue<>();
 
 	public OriginScheduler(Plugin plugin) {
 		this.plugin = plugin;
 	}
 
 	public void onMain(Runnable runnable) {
-		plugin.getServer().getScheduler().runTask(plugin, runnable);
+		this.tasksOnMain.add(runnable);
 	}
 
 	public void offMain(Runnable runnable) {
-		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
+		this.tasksOffMain.add(runnable);
 	}
 
 	public static class MainTickerThread extends BukkitRunnable implements Listener {
@@ -41,6 +43,9 @@ public class OriginScheduler {
 
 		@Override
 		public void run() {
+			ConcurrentLinkedQueue<Runnable> tasks = new ConcurrentLinkedQueue<>(parent.tasksOnMain);
+			parent.tasksOnMain.clear();
+			tasks.forEach(Runnable::run);
 			for (PowerType power : CraftApoli.getPowersFromRegistry()) {
 				power.tick(); // Allow powers to add their own BukkitRunnables
 				if (!power.hasPlayers()) continue;
@@ -76,6 +81,9 @@ public class OriginScheduler {
 		}
 
 		public void tickAsyncScheduler() {
+			ConcurrentLinkedQueue<Runnable> tasks = new ConcurrentLinkedQueue<>(parent.tasksOffMain);
+			parent.tasksOffMain.clear();
+			tasks.forEach(Runnable::run);
 			for (Player p : PowerHolderComponent.hasPowers) {
 				ConcurrentLinkedQueue<PowerType> applied = PowerHolderComponent.getPowersApplied(p);
 				for (PowerType c : applied) {
