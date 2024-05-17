@@ -1,71 +1,102 @@
 package me.dueris.genesismc.registry.registries;
 
 import com.google.gson.JsonArray;
-import me.dueris.calio.CraftCalio;
-import me.dueris.calio.builder.inst.FactoryInstance;
-import me.dueris.calio.builder.inst.FactoryObjectInstance;
-import me.dueris.calio.builder.inst.factory.FactoryBuilder;
-import me.dueris.calio.builder.inst.factory.FactoryElement;
-import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registrable;
-import me.dueris.calio.registry.Registrar;
-import me.dueris.calio.util.holders.TriPair;
-import me.dueris.genesismc.GenesisMC;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.FactoryHolder;
+import me.dueris.calio.data.factory.FactoryElement;
+import me.dueris.calio.data.factory.FactoryJsonArray;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.storage.OriginConfiguration;
-import me.dueris.genesismc.util.AsyncUpgradeTracker;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.jetbrains.annotations.ApiStatus;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
+import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class Origin extends FactoryJsonObject implements Serializable, FactoryInstance {
+public class Origin implements FactoryHolder {
+	private final String name;
+	private final String description;
+	private final int impact;
+	private final boolean unchoosable;
+	private final FactoryJsonArray upgrades;
+	private final FactoryJsonArray powers;
+	private final int loadingPriority;
+	private final ItemStack icon;
+	private final int order;
+	private final List<ResourceLocation> powerIdentifiers = new ArrayList<>();
+	protected FactoryJsonObject choosingCondition;
+	private boolean tagSet = false;
+	private NamespacedKey tag = null;
+	private String cachedTag = null;
+	private boolean isDisabled;
 
-	@Serial
-	private static final long serialVersionUID = 1L;
+	public Origin(String name, String description, int impact, ItemStack icon, boolean unchoosable, FactoryJsonArray upgrades, FactoryJsonArray powers, int order, int loading_priority) {
+		this.name = name;
+		this.description = description;
+		this.impact = impact;
+		this.unchoosable = unchoosable;
+		this.upgrades = upgrades;
+		this.powers = powers;
+		this.icon = icon;
+		this.order = order;
+		this.loadingPriority = loading_priority;
+		this.powerIdentifiers.addAll(powers.asList().stream().map(FactoryElement::getString).map(NamespacedKey::fromString).filter(Objects::nonNull).map(CraftNamespacedKey::toMinecraft).toList());
+	}
 
-	NamespacedKey tag;
-	String cachedStringTag;
-	ArrayList<Power> powerContainer;
-	FactoryJsonObject choosingCondition;
-	FactoryJsonObject factory;
-	boolean isDisabled = false;
+	public static FactoryData registerComponents(FactoryData data) {
+		return data.add("name", String.class, "craftapoli.origin.name.not_found")
+			.add("description", String.class, "craftapoli.origin.description.not_found")
+			.add("impact", int.class, 0)
+			.add("icon", ItemStack.class, new ItemStack(Material.PLAYER_HEAD))
+			.add("unchoosable", boolean.class, false)
+			.add("upgrades", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()))
+			.add("powers", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()))
+			.add("order", int.class, 0)
+			.add("loading_priority", int.class, 0);
+	}
 
-	@ApiStatus.Internal
-	public Origin(boolean toRegistry) {
-		super(null);
-		if (!toRegistry) {
-			throw new RuntimeException("Invalid constructor used.");
+	@Override
+	public void bootstrap() {
+		for (String origin : OriginConfiguration.getConfiguration().getStringList("disabled-origins")) {
+			if (this.cachedTag.equalsIgnoreCase(origin)) {
+				setDisabled();
+				break;
+			}
 		}
 	}
 
-	/**
-	 * An object that stores an origin and all the details about it.
-	 *
-	 * @param tag            The origin tag.
-	 * @param powerContainer An array of powers that the origin has.
-	 */
-	public Origin(NamespacedKey tag, ArrayList<Power> powerContainer, FactoryJsonObject factoryJsonObject) {
-		super(factoryJsonObject.handle);
-		this.tag = tag;
-		this.cachedStringTag = this.tag.asString();
-		this.powerContainer = powerContainer;
-		this.factory = factoryJsonObject;
+	public int getLoadingPriority() {
+		return loadingPriority;
 	}
 
-	/**
-	 * @return The customOrigin formatted for debugging, not to be used in other circumstances.
-	 */
-	@Override
-	public String toString() {
-		return "Tag: " + this.tag + ", PowerContainer: " + this.powerContainer.toString();
+	public FactoryJsonArray getPowerArray() {
+		return powers;
+	}
+
+	public FactoryJsonArray getUpgrades() {
+		return upgrades;
+	}
+
+	public boolean isUnchoosable() {
+		return unchoosable || isDisabled;
+	}
+
+	public int getImpact() {
+		return impact;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public boolean getUsesCondition() {
@@ -76,135 +107,48 @@ public class Origin extends FactoryJsonObject implements Serializable, FactoryIn
 		this.choosingCondition = condition;
 	}
 
-	@Override
-	public NamespacedKey getKey() {
-		return this.tag;
+	public ItemStack getIcon() {
+		return icon;
 	}
 
-	/**
-	 * @return The origin tag.
-	 */
+	public int getOrder() {
+		return order;
+	}
+
+	public Material getMaterialIcon() {
+		return getIcon().getType();
+	}
+
 	public String getTag() {
-		return this.cachedStringTag;
+		return this.tag.asString();
 	}
 
 	/**
 	 * @return An array containing all the origin powers.
 	 */
-	public ArrayList<Power> getPowerContainers() {
-		return new ArrayList<>(this.powerContainer);
+	public ArrayList<PowerType> getPowerContainers() {
+		return new ArrayList<>(this.powerIdentifiers.stream().map(CraftNamespacedKey::fromMinecraft).map(NamespacedKey::asString).map(CraftApoli::getPowerFromTag).toList());
 	}
 
-	/**
-	 * @return The name of the origin.
-	 */
-	public String getName() {
-		return getString("name");
-	}
-
-	/**
-	 * @return The description for the origin.
-	 */
-	public String getDescription() {
-		return getString("description");
-	}
-
-	/**
-	 * @return An array of powers from the origin.
-	 */
 	public List<String> getPowers() {
-		return isPresent("powers") ? getJsonArray("powers").asList().stream().map(FactoryElement::getString).toList() : new ArrayList<>();
-	}
-
-	/**
-	 * @return The icon of the origin.
-	 */
-	public String getIcon() {
-		return getItemStack("icon").getType().getKey().asString();
-	}
-
-	public int getOrder() {
-		return !isPresent("order") ? 5 : getNumber("order").getInt();
-	}
-
-	/**
-	 * @return The icon as a Material Object.
-	 */
-	public Material getMaterialIcon() {
-		return this.getItemStack("icon").getType();
-	}
-
-	/**
-	 * @return The impact of the origin.
-	 */
-	public int getImpact() {
-		return getNumberOrDefault("impact", 0).getInt();
-	}
-
-	/**
-	 * @return If the origin is choose-able from the choose menu.
-	 */
-	public boolean getUnchooseable() {
-		return getBooleanOrDefault("unchoosable", false) || isDisabled;
+		return new ArrayList<>(this.powerIdentifiers.stream().map(CraftNamespacedKey::fromMinecraft).map(NamespacedKey::asString).toList());
 	}
 
 	private void setDisabled() {
 		isDisabled = true;
 	}
 
-	/**
-	 * @return The PowerContainer with the given type if present in the origin.
-	 */
-	public ArrayList<Power> getMultiPowerFileFromType(String powerType) {
-		ArrayList<Power> powers = new ArrayList<>();
-		for (Power power : getPowerContainers()) {
-			if (power == null) continue;
-			if (power.getType().equals(powerType)) powers.add(power);
-		}
-		return powers;
+	@Override
+	public Origin ofResourceLocation(NamespacedKey key) {
+		if (this.tagSet) return this;
+		tagSet = true;
+		this.tag = key;
+		this.cachedTag = key.asString();
+		return this;
 	}
 
 	@Override
-	public List<FactoryObjectInstance> getValidObjectFactory() {
-		return List.of(
-			new FactoryObjectInstance("name", String.class, "No Name"),
-			new FactoryObjectInstance("description", String.class, "No Description"),
-			new FactoryObjectInstance("impact", Integer.class, 0),
-			new FactoryObjectInstance("unchooseable", Boolean.class, false),
-			new FactoryObjectInstance("powers", FactoryJsonArray.class, new JsonArray())
-		);
-	}
-
-	@Override
-	public void createInstance(FactoryBuilder obj, File rawFile, Registrar<? extends Registrable> registry, NamespacedKey namespacedTag) {
-		Registrar<Origin> registrar = (Registrar<Origin>) registry;
-		ArrayList<Power> containers = new ArrayList<>();
-		for (String element : obj.getRoot().getJsonArray("powers").asList().stream().map(FactoryElement::getString).toList()) {
-			if (((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).rawRegistry.containsKey(NamespacedKey.fromString(element))) {
-				containers.add(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(element)));
-			}
-			for (Power power : CraftApoli.getNestedPowers(((Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(element)))) {
-				if (power != null) {
-					containers.add(power);
-				}
-			}
-		}
-		Origin origin = new Origin(namespacedTag, containers, obj.getRoot());
-		((ArrayList<String>) OriginConfiguration.getConfiguration().get("disabled-origins")).forEach(d -> {
-			if (origin.getTag().equalsIgnoreCase(d)) {
-				CraftCalio.INSTANCE.getLogger().info("Origin(%e%) was disabled by the config!".replace("%e%", d));
-				origin.setDisabled();
-			}
-		});
-		registrar.register(origin);
-
-		if (obj.getRoot().isPresent("upgrades")) {
-			obj.getRoot().getJsonArray("upgrades").asJsonObjectList().forEach(upgrade -> AsyncUpgradeTracker.upgrades.put(
-				origin, new TriPair(
-					upgrade.getString("condition"),
-					upgrade.getNamespacedKey("origin"),
-					upgrade.getStringOrDefault("announcement", AsyncUpgradeTracker.NO_ANNOUNCEMENT)
-				)));
-		}
+	public NamespacedKey getKey() {
+		return this.tag;
 	}
 }

@@ -1,9 +1,6 @@
 package me.dueris.genesismc.util;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.google.gson.*;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 import com.mojang.serialization.Codec;
@@ -11,11 +8,11 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import me.dueris.calio.builder.inst.factory.FactoryElement;
-import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import me.dueris.calio.data.factory.FactoryElement;
+import me.dueris.calio.data.factory.FactoryJsonArray;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -98,6 +95,24 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		return source;
 	}
 
+	public static PotionEffect parsePotionEffect(FactoryJsonObject effect) {
+		String potionEffect = "minecraft:luck";
+		int duration = 100;
+		int amplifier = 0;
+		boolean isAmbient = false;
+		boolean showParticles = true;
+		boolean showIcon = true;
+
+		if (effect.isPresent("effect")) potionEffect = effect.getString("effect");
+		if (effect.isPresent("duration")) duration = effect.getNumber("duration").getInt();
+		if (effect.isPresent("amplifier")) amplifier = effect.getNumber("amplifier").getInt();
+		if (effect.isPresent("is_ambient")) isAmbient = effect.getBooleanOrDefault("is_ambient", true);
+		if (effect.isPresent("show_particles")) effect.getBooleanOrDefault("show_particles", false);
+		if (effect.isPresent("show_icon")) showIcon = effect.getBooleanOrDefault("show_icon", false);
+
+		return new PotionEffect(PotionEffectType.getByKey(new NamespacedKey(potionEffect.split(":")[0], potionEffect.split(":")[1])), duration, amplifier, isAmbient, showParticles, showIcon);
+	}
+
 	public static List<PotionEffect> parseAndReturnPotionEffects(FactoryJsonObject power) {
 		List<PotionEffect> effectList = new ArrayList<>();
 		FactoryJsonObject singleEffect = power.isPresent("effect") ? power.getJsonObject("effect") : new FactoryJsonObject(new JsonObject());
@@ -108,21 +123,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		}
 
 		for (FactoryJsonObject effect : effects) {
-			String potionEffect = "minecraft:luck";
-			int duration = 100;
-			int amplifier = 0;
-			boolean isAmbient = false;
-			boolean showParticles = true;
-			boolean showIcon = true;
-
-			if (effect.isPresent("effect")) potionEffect = effect.getString("effect");
-			if (effect.isPresent("duration")) duration = effect.getNumber("duration").getInt();
-			if (effect.isPresent("amplifier")) amplifier = effect.getNumber("amplifier").getInt();
-			if (effect.isPresent("is_ambient")) isAmbient = effect.getBooleanOrDefault("is_ambient", true);
-			if (effect.isPresent("show_particles")) effect.getBooleanOrDefault("show_particles", false);
-			if (effect.isPresent("show_icon")) showIcon = effect.getBooleanOrDefault("show_icon", false);
-
-			effectList.add(new PotionEffect(PotionEffectType.getByKey(new NamespacedKey(potionEffect.split(":")[0], potionEffect.split(":")[1])), duration, amplifier, isAmbient, showParticles, showIcon));
+			effectList.add(parsePotionEffect(effect));
 		}
 		return effectList;
 	}
@@ -160,13 +161,13 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
 	}
 
-	public static Pair<String, String> getNameOrTag(Power power) {
+	public static Pair<String, String> getNameOrTag(PowerType power) {
 		String name = power.getName();
 		String tag = power.getTag();
 		return new Pair<String, String>() {
 			@Override
 			public String left() {
-				return !name.equals("No Name") ? name : power.getPowerParent() != null ? getNameOrTag(power.getPowerParent()).first() : tag;
+				return !name.equals("craftapoli.name.not_found") ? name : tag;
 			}
 
 			@Override
@@ -323,11 +324,18 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		}
 	}
 
-	public static PotionEffectType getPotionEffectType(String effectString) {
-		if (effectString == null) {
+	public static PotionEffectType getPotionEffectType(String key) {
+		if (key == null) {
 			return null;
 		}
-		return PotionEffectType.getByKey(NamespacedKey.fromString(effectString));
+		return org.bukkit.Registry.EFFECT.get(NamespacedKey.fromString(key));
+	}
+
+	public static PotionEffectType getPotionEffectType(NamespacedKey key) {
+		if (key == null) {
+			return null;
+		}
+		return org.bukkit.Registry.EFFECT.get(key);
 	}
 
 	public static <T> List<T> collectValues(Collection<List<T>> collection) {
@@ -403,6 +411,15 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 	public static <T> Optional<T> createIfPresent(T instance) {
 		if (instance != null) return Optional.of(instance);
 		return Optional.empty();
+	}
+
+	public static JsonArray toJsonStringArray(List<String> strings) {
+		Gson gson = new Gson();
+		JsonArray array = new JsonArray();
+		for (String s : strings) {
+			array.add(s);
+		}
+		return array;
 	}
 
 	public static Optional<Entity> getEntityWithPassengers(Level world, EntityType<?> entityType, @Nullable CompoundTag entityNbt, Vec3 pos, float yaw, float pitch) {

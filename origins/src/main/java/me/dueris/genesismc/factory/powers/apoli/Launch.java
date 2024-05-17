@@ -1,40 +1,59 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.OptionalInstance;
+import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
-import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.factory.data.types.HudRender;
+import me.dueris.genesismc.factory.data.types.JsonKeybind;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.KeybindingUtils;
-import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.particles.ParticleTypes;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.factory.powers.apoli.FireProjectile.in_continuous;
 
-public class Launch extends CraftPower implements Listener {
+public class Launch extends PowerType implements CooldownPower, KeyedPower {
+	private final int cooldown;
+	private final float speed;
+	private final HudRender hudRender;
+	private final Sound sound;
+	private final JsonKeybind keybind;
+
+	public Launch(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int cooldown, float speed, FactoryJsonObject hudRender, Sound sound, FactoryJsonObject keybind) {
+		super(name, description, hidden, condition, loading_priority);
+		this.cooldown = cooldown;
+		this.speed = speed;
+		this.hudRender = HudRender.createHudRender(hudRender);
+		this.sound = sound;
+		this.keybind = JsonKeybind.createJsonKeybind(keybind);
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("launch"))
+			.add("cooldown", int.class, 1)
+			.add("speed", float.class, new RequiredInstance())
+			.add("hud_render", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("sound", Sound.class, new OptionalInstance())
+			.add("key", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	@EventHandler
 	public void inContinuousFix(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			if (getPlayersWithPower().contains(p)) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
-						in_continuous.putIfAbsent(p, new ArrayList<>());
-					}
-				}
+		if (getPlayers().contains(p)) {
+			if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), p)) {
+				in_continuous.putIfAbsent(p, new ArrayList<>());
 			}
 		}
 	}
@@ -42,41 +61,32 @@ public class Launch extends CraftPower implements Listener {
 	@EventHandler
 	public void keybindToggle(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-				if (getPlayersWithPower().contains(p)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						if (!Cooldown.isInCooldown(p, power)) {
-							if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
-								String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
-								final int[] times = {-1};
-								new BukkitRunnable() {
-									@Override
-									public void run() {
-										int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
-										if (times[0] >= 0) {
-											/* Launch power doesnt execute continuously */
-											if (!in_continuous.get(p).contains(key)) {
-												Cooldown.addCooldown(p, cooldown, power);
-												setActive(p, power.getTag(), false);
-												this.cancel();
-												return;
-											}
-										}
-										int speed = Integer.parseInt(power.getStringOrDefault("speed", null)); // used as string so that upon parsing the int it throws if not found
-										Cooldown.addCooldown(p, cooldown, power);
-										setActive(p, power.getTag(), true);
-										p.setVelocity(p.getVelocity().setY(p.getVelocity().getY() + speed));
-										((CraftWorld) p.getWorld()).getHandle().sendParticles(ParticleTypes.CLOUD, p.getX(), p.getY(), p.getZ(), 8, ((CraftPlayer) p).getHandle().getRandom().nextGaussian(), 0.0D, ((CraftPlayer) p).getHandle().getRandom().nextGaussian(), 0.5);
-										if (power.isPresent("sound")) {
-											p.getWorld().playSound(p, Utils.parseSound(power.getString("sound")), 0.5F, 0.4F / (((CraftPlayer) p).getHandle().getRandom().nextFloat() * 0.4F + 0.8F));
-										}
-										setActive(p, power.getTag(), true);
-										times[0]++;
+		if (getPlayers().contains(p)) {
+			if (isActive(p)) {
+				if (!Cooldown.isInCooldown(p, this)) {
+					if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), p)) {
+						String key = getJsonKey().getKey();
+						final int[] times = {-1};
+						new BukkitRunnable() {
+							@Override
+							public void run() {
+								if (times[0] >= 0) {
+									/* Launch power doesnt execute continuously */
+									if (!in_continuous.get(p).contains(key)) {
+										Cooldown.addCooldown(p, cooldown, getSelf());
+										this.cancel();
+										return;
 									}
-								}.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
+								}
+								Cooldown.addCooldown(p, cooldown, getSelf());
+								p.setVelocity(p.getVelocity().setY(p.getVelocity().getY() + speed));
+								((CraftWorld) p.getWorld()).getHandle().sendParticles(ParticleTypes.CLOUD, p.getX(), p.getY(), p.getZ(), 8, ((CraftPlayer) p).getHandle().getRandom().nextGaussian(), 0.0D, ((CraftPlayer) p).getHandle().getRandom().nextGaussian(), 0.5);
+								if (sound != null) {
+									p.getWorld().playSound(p, sound, 0.5F, 0.4F / (((CraftPlayer) p).getHandle().getRandom().nextFloat() * 0.4F + 0.8F));
+								}
+								times[0]++;
 							}
-						}
+						}.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
 					}
 				}
 			}
@@ -84,12 +94,29 @@ public class Launch extends CraftPower implements Listener {
 	}
 
 	@Override
-	public String getType() {
-		return "apoli:launch";
+	public int getCooldown() {
+		return cooldown;
 	}
 
 	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return launch_into_air;
+	public JsonKeybind getJsonKey() {
+		return keybind;
+	}
+
+	@Override
+	public HudRender getHudRender() {
+		return hudRender;
+	}
+
+	public float getSpeed() {
+		return speed;
+	}
+
+	public Sound getSound() {
+		return sound;
+	}
+
+	private Launch getSelf() {
+		return this;
 	}
 }

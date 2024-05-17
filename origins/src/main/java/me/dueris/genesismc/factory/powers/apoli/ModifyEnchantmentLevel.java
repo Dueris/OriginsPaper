@@ -1,32 +1,48 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonArray;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.RequiredInstance;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Modifier;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.function.BinaryOperator;
 
-public class ModifyEnchantmentLevel extends CraftPower {
+public class ModifyEnchantmentLevel extends ModifierPower {
+	private final FactoryJsonObject itemCondition;
+	private final NamespacedKey enchantment;
+
+	public ModifyEnchantmentLevel(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject modifier, FactoryJsonArray modifiers, FactoryJsonObject itemCondition, NamespacedKey enchantment) {
+		super(name, description, hidden, condition, loading_priority, modifier, modifiers);
+		this.itemCondition = itemCondition;
+		this.enchantment = enchantment;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return ModifierPower.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("modify_enchantment_level"))
+			.add("item_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("enchantment", NamespacedKey.class, new RequiredInstance());
+	}
 
 	@Override
-	public void run(Player p, Power power) {
+	public void tick(Player p) {
 		HashSet<ItemStack> items = new HashSet<>(Arrays.stream(p.getInventory().getArmorContents()).toList());
 		items.add(p.getInventory().getItemInMainHand());
 		for (ItemStack item : items) {
-			if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) continue;
-			if (!ConditionExecutor.testItem(power.getJsonObject("item_condition"), item)) continue;
-			for (Modifier modifier : power.getModifiers()) {
-				Enchantment enchant = Enchantment.getByKey(NamespacedKey.fromString(power.getString("enchantment")));
+			if (!isActive(p)) continue;
+			if (!ConditionExecutor.testItem(itemCondition, item)) continue;
+			for (Modifier modifier : getModifiers()) {
+				Enchantment enchant = Enchantment.getByKey(enchantment);
 				if (item.containsEnchantment(enchant)) {
 					item.removeEnchantment(enchant);
 				}
@@ -47,16 +63,6 @@ public class ModifyEnchantmentLevel extends CraftPower {
 				}
 			}
 		}
-	}
-
-	@Override
-	public String getType() {
-		return "apoli:modify_enchantment_level";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return modify_enchantment_level;
 	}
 
 }

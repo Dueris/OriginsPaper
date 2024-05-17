@@ -9,7 +9,7 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.storage.OriginConfiguration;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
@@ -88,8 +88,8 @@ public class ScreenNavigator implements Listener {
 		if (inOrbChoosing) orbChoosing.add(player);
 
 		@NotNull Inventory gui = Bukkit.createInventory(player.getBukkitEntity(), 54,
-			Component.text(layer.isPresent("gui_title") ? layer.getString("gui_title") :
-				"Choosing - " + (layer.isPresent("name") ? layer.getString("name") : layer.getTag()))
+			Component.text(!layer.getGuiTitle().isEmpty() ? layer.getGuiTitle().getStringOrDefault("choose_origin", "Choosing - " + layer.getTag()) :
+				"Choosing - " + (!layer.getName().equalsIgnoreCase("craftapoli.layer.name.not_found") ? layer.getName() : layer.getTag()))
 		);
 
 		gui.setContents(layerPages.get(layer).get(currentDisplayingPage.getInt(player)).createDisplay(player, layer));
@@ -170,7 +170,7 @@ public class ScreenNavigator implements Listener {
 							Utils.consumeItem(e.getItem());
 						}
 						for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-							OriginPlayerAccessor.setOrigin(p, layer, CraftApoli.emptyOrigin());
+							PowerHolderComponent.setOrigin(p, layer, CraftApoli.emptyOrigin());
 						}
 						OrbInteractEvent event = new OrbInteractEvent(p);
 						getServer().getPluginManager().callEvent(event);

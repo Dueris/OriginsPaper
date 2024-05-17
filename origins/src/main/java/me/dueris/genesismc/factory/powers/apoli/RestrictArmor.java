@@ -1,90 +1,79 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
-import me.dueris.genesismc.factory.CraftApoli;
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.entity.CraftEntity;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlot;
 
-import java.util.ArrayList;
+public class RestrictArmor extends PowerType {
+	private final FactoryJsonObject head;
+	private final FactoryJsonObject chest;
+	private final FactoryJsonObject legs;
+	private final FactoryJsonObject feet;
 
-public class RestrictArmor extends CraftPower implements Listener {
+	public RestrictArmor(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject head, FactoryJsonObject chest, FactoryJsonObject legs, FactoryJsonObject feet) {
+		super(name, description, hidden, condition, loading_priority);
+		this.head = head;
+		this.chest = chest;
+		this.legs = legs;
+		this.feet = feet;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("restrict_armor"))
+			.add("head", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("chest", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("legs", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("feet", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	@EventHandler
-	public void tick(PlayerArmorChangeEvent e) {
+	public void tickArmorChange(PlayerArmorChangeEvent e) {
 		Player p = e.getPlayer();
-		if (getPlayersWithPower().contains(p)) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (power == null) continue;
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						runPower(p, power);
-					}
-				}
+		if (getPlayers().contains(p)) {
+			if (isActive(p)) {
+				runPower(p);
 			}
 		}
 	}
 
 
 	@Override
-	public void run(Player p, Power power) {
-		long interval = power.getNumberOrDefault("interval", 1L).getLong();
-		if (interval == 0) interval = 1L;
-		if (Bukkit.getServer().getCurrentTick() % interval == 0) {
-			if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-				runPower(p, power);
-			} else {
-				setActive(p, power.getTag(), false);
-			}
+	public void tick(Player p) {
+		if (isActive(p)) {
+			runPower(p);
 		}
 	}
 
-	public void runPower(Player p, Power power) {
-		setActive(p, power.getTag(), true);
+	public void runPower(Player p) {
 		boolean passFeet = false;
 		boolean passLegs = false;
 		boolean passChest = false;
 		boolean passHead = false;
-		FactoryJsonObject headObj = power.getJsonObject("head");
-		FactoryJsonObject chestObj = power.getJsonObject("chest");
-		FactoryJsonObject legsObj = power.getJsonObject("legs");
-		FactoryJsonObject feetObj = power.getJsonObject("feet");
 
-		if (!headObj.isEmpty())
-			passHead = ConditionExecutor.testItem(headObj, p.getInventory().getItem(EquipmentSlot.HEAD));
-		if (!chestObj.isEmpty())
-			passChest = ConditionExecutor.testItem(chestObj, p.getInventory().getItem(EquipmentSlot.CHEST));
-		if (!legsObj.isEmpty())
-			passLegs = ConditionExecutor.testItem(legsObj, p.getInventory().getItem(EquipmentSlot.LEGS));
-		if (!feetObj.isEmpty())
-			passFeet = ConditionExecutor.testItem(feetObj, p.getInventory().getItem(EquipmentSlot.FEET));
+		if (!head.isEmpty())
+			passHead = ConditionExecutor.testItem(head, p.getInventory().getItem(EquipmentSlot.HEAD));
+		if (!chest.isEmpty())
+			passChest = ConditionExecutor.testItem(chest, p.getInventory().getItem(EquipmentSlot.CHEST));
+		if (!legs.isEmpty())
+			passLegs = ConditionExecutor.testItem(legs, p.getInventory().getItem(EquipmentSlot.LEGS));
+		if (!feet.isEmpty())
+			passFeet = ConditionExecutor.testItem(feet, p.getInventory().getItem(EquipmentSlot.FEET));
 
 		if (passFeet)
-			OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.FEET);
+			PowerHolderComponent.moveEquipmentInventory(p, EquipmentSlot.FEET);
 		if (passChest)
-			OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.CHEST);
+			PowerHolderComponent.moveEquipmentInventory(p, EquipmentSlot.CHEST);
 		if (passHead)
-			OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.HEAD);
+			PowerHolderComponent.moveEquipmentInventory(p, EquipmentSlot.HEAD);
 		if (passLegs)
-			OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.LEGS);
-	}
-
-	@Override
-	public String getType() {
-		return "apoli:restrict_armor";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return restrict_armor;
+			PowerHolderComponent.moveEquipmentInventory(p, EquipmentSlot.LEGS);
 	}
 }

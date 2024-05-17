@@ -1,9 +1,11 @@
 package me.dueris.genesismc;
 
-import me.dueris.genesismc.factory.powers.ApoliPower;
+import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.apoli.CreativeFlight;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.factory.powers.apoli.provider.OriginSimpleContainer;
+import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -11,36 +13,28 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class OriginScheduler {
-	public static ConcurrentHashMap<Player, List<ApoliPower>> tickedPowers = new ConcurrentHashMap<>();
 	final Plugin plugin;
+	private final ConcurrentLinkedQueue<Runnable> tasksOnMain = new ConcurrentLinkedQueue<>();
+	private final ConcurrentLinkedQueue<Runnable> tasksOffMain = new ConcurrentLinkedQueue<>();
 
 	public OriginScheduler(Plugin plugin) {
 		this.plugin = plugin;
 	}
 
 	public void onMain(Runnable runnable) {
-		plugin.getServer().getScheduler().runTask(plugin, runnable);
+		this.tasksOnMain.add(runnable);
 	}
 
 	public void offMain(Runnable runnable) {
-		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
+		this.tasksOffMain.add(runnable);
 	}
 
-	public static class OriginSchedulerTree extends BukkitRunnable implements Listener {
-
-		public static CreativeFlight flightHandler = new CreativeFlight();
-		private final HashMap<Player, HashMap<Power, Integer>> ticksEMap = new HashMap<>();
+	public static class MainTickerThread extends BukkitRunnable implements Listener {
+		private final CreativeFlight flight = new CreativeFlight("creative_flight", "description", true, null, 0);
 		public OriginScheduler parent = new OriginScheduler(GenesisMC.getPlugin());
-
-		private static void accept(Player p) {
-			tickedPowers.get(p).clear();
-		}
 
 		@Override
 		public String toString() {
@@ -49,55 +43,55 @@ public class OriginScheduler {
 
 		@Override
 		public void run() {
-			for (Player p : OriginPlayerAccessor.hasPowers) {
-				if (Bukkit.getServer().getCurrentTick() % 20 == 0) {
-					OriginPlayerAccessor.checkForDuplicates(p);
-				}
-				ConcurrentLinkedQueue<ApoliPower> applied = OriginPlayerAccessor.getPowersApplied(p);
-				for (ApoliPower c : applied) {
-					if (!c.getPlayersWithPower().contains(p)) {
-						c.doesntHavePower(p); // Allow powers to tick on players that don't have that power
-						continue; // Player doesn't have this power or the power isn't assigned
+			ConcurrentLinkedQueue<Runnable> tasks = new ConcurrentLinkedQueue<>(parent.tasksOnMain);
+			parent.tasksOnMain.clear();
+			tasks.forEach(Runnable::run);
+			for (PowerType power : CraftApoli.getPowersFromRegistry()) {
+				power.tick(); // Allow powers to add their own BukkitRunnables
+				if (!power.hasPlayers()) continue;
+				for (Player p : power.getPlayers()) {
+					if (Bukkit.getServer().getCurrentTick() % 20 == 0) {
+						PowerHolderComponent.checkForDuplicates(p);
 					}
-					if (tickedPowers.get(p).contains(c))
-						continue; // CraftPower was already ticked, we are not ticking it again.
-					tickedPowers.get(p).add(c);
-
-					for (Power power : OriginPlayerAccessor.getPowers(p, c.getType(), c)) {
-						try {
-							c.run(p, power);
-						} catch (Throwable throwable) {
-							String[] stacktrace = {"\n"};
-							Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
-							GenesisMC.getPlugin().getLogger().severe("An unhandled exception occurred when ticking a Power! [{a}]".replace("{a}", throwable.getClass().getSimpleName()));
-							String t = c.getType();
-							if (t == null) t = c.getKey().asString();
-							GenesisMC.getPlugin().getLogger().severe(
-								"Player: {a} | Power: {b} | CraftPower: {c} | Throwable: {d}"
-									.replace("{a}", p.getName())
-									.replace("{b}", power.getTag())
-									.replace("{c}", t)
-									.replace("{d}", throwable.getMessage() == null ? throwable.getClass().getSimpleName() : throwable.getMessage()) + stacktrace[0]
-							);
-						}
+					try {
+						power.tick(p);
+					} catch (Throwable throwable) {
+						String[] stacktrace = {"\n"};
+						Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
+						GenesisMC.getPlugin().getLogger().severe("An unhandled exception occurred when ticking a Power! [{a}]".replace("{a}", throwable.getClass().getSimpleName()));
+						String t = power.getType();
+						if (t == null) t = power.getKey().asString();
+						GenesisMC.getPlugin().getLogger().severe(
+							"Player: {a} | Power: {b} | CraftPower: {c} | Throwable: {d}"
+								.replace("{a}", p.getName())
+								.replace("{b}", power.getTag())
+								.replace("{c}", t)
+								.replace("{d}", throwable.getMessage() == null ? throwable.getClass().getSimpleName() : throwable.getMessage()) + stacktrace[0]
+						);
 					}
 				}
 			}
 
-			tickedPowers.keySet().forEach(OriginSchedulerTree::accept);
+			for (PowerProvider provider : OriginSimpleContainer.registeredPowers) {
+				provider.tick();
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					provider.tick(p);
+				}
+			}
 		}
 
 		public void tickAsyncScheduler() {
-			for (Player p : OriginPlayerAccessor.hasPowers) {
-				ConcurrentLinkedQueue<ApoliPower> applied = OriginPlayerAccessor.getPowersApplied(p);
-				if (!applied.stream().map(Object::getClass).toList().contains(CreativeFlight.class)) {
-					flightHandler.runAsync(p, null);
+			ConcurrentLinkedQueue<Runnable> tasks = new ConcurrentLinkedQueue<>(parent.tasksOffMain);
+			parent.tasksOffMain.clear();
+			tasks.forEach(Runnable::run);
+			for (Player p : PowerHolderComponent.hasPowers) {
+				ConcurrentLinkedQueue<PowerType> applied = PowerHolderComponent.getPowersApplied(p);
+				for (PowerType c : applied) {
+					c.tickAsync(p);
 				}
-				for (ApoliPower c : applied) {
-					for (Power power : OriginPlayerAccessor.getPowers(p, c.getType())) {
-						c.runAsync(p, power);
-					}
-				}
+			}
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				flight.tickAsync(p);
 			}
 		}
 	}

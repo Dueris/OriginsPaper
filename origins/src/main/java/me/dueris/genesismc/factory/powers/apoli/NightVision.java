@@ -1,51 +1,32 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
-import org.bukkit.craftbukkit.entity.CraftEntity;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
+public class NightVision extends PowerType {
+	private final int strength;
 
-public class NightVision extends CraftPower {
+	public NightVision(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, float strength) {
+		super(name, description, hidden, condition, loading_priority);
+		this.strength = Math.round(strength);
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("night_vision"))
+			.add("strength", float.class, 1.0F);
+	}
 
 	@Override
-	public void run(Player p, Power power) {
-		if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-			setActive(p, power.getTag(), true);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getNumberOrDefault("strength", 1.0f).getFloat()), false, false, false));
+	public void tick(Player p) {
+		if (isActive(p)) {
+			p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, strength, false, false, false));
 		} else {
 			p.removePotionEffect(PotionEffectType.NIGHT_VISION);
-			setActive(p, power.getTag(), false);
 		}
-	}
-
-	public int roundNumber(double num) {
-		if (String.valueOf(num).contains(".")) {
-			String[] parts = String.valueOf(num).split("\\.");
-			if (parts.length > 1) {
-				int decimalPart = Integer.parseInt(parts[1]);
-				if (decimalPart >= 5) {
-					return Integer.parseInt(parts[0]) + 1;
-				} else {
-					return Integer.parseInt(parts[0]);
-				}
-			}
-		}
-		return 0;
-	}
-
-
-	@Override
-	public String getType() {
-		return "apoli:night_vision";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return night_vision;
 	}
 }

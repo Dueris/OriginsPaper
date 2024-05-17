@@ -1,9 +1,8 @@
 package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -16,8 +15,7 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PiglinNoAttack extends CraftPower implements Listener, PowerProvider {
-	public static ArrayList<Player> piglinPlayers = new ArrayList<>();
+public class PiglinNoAttack implements Listener, PowerProvider {
 	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("piglin_brothers");
 	static ArrayList<EntityType> piglinValid = new ArrayList<>();
 
@@ -30,7 +28,7 @@ public class PiglinNoAttack extends CraftPower implements Listener, PowerProvide
 	private final HashMap<Player, HashMap<Entity, Integer>> cooldowns = new HashMap<>();
 
 	@Override
-	public void run(Player p, Power power) {
+	public void tick(Player p) {
 		if (cooldowns.containsKey(p)) {
 			for (Entity en : cooldowns.get(p).keySet()) {
 				if (cooldowns.get(p).get(en) <= 1) {
@@ -47,7 +45,7 @@ public class PiglinNoAttack extends CraftPower implements Listener, PowerProvide
 	@EventHandler
 	public void target(EntityTargetEvent e) {
 		if (piglinValid.contains(e.getEntity().getType())) {
-			if (piglinPlayers.contains(e.getTarget())) {
+			if (PowerHolderComponent.hasPower(e.getTarget(), powerReference.asString())) {
 				if (!cooldowns.containsKey(e.getTarget())) {
 					cooldowns.put((Player) e.getTarget(), new HashMap<>());
 				}
@@ -61,23 +59,13 @@ public class PiglinNoAttack extends CraftPower implements Listener, PowerProvide
 	@EventHandler
 	public void damageEntity(EntityDamageByEntityEvent e) {
 		if (piglinValid.contains(e.getEntity().getType())) {
-			if (piglinPlayers.contains(e.getDamager())) {
+			if (PowerHolderComponent.hasPower(e.getDamager(), powerReference.asString())) {
 				Player p = (Player) e.getDamager();
 				HashMap<Entity, Integer> map = new HashMap<>();
 				map.put(e.getEntity(), 600);
 				cooldowns.put(p, map);
 			}
 		}
-	}
-
-	@Override
-	public String getType() {
-		return null;
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return piglinPlayers;
 	}
 
 }

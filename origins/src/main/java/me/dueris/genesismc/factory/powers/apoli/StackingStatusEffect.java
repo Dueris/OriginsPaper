@@ -1,96 +1,101 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonArray;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.OptionalInstance;
+import me.dueris.calio.data.types.RequiredInstance;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.potion.CraftPotionEffectType;
 import org.bukkit.craftbukkit.potion.CraftPotionUtil;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class StackingStatusEffect extends CraftPower implements Listener {
-	protected final ConcurrentHashMap<Power, List<MobEffectInstance>> effects = new ConcurrentHashMap<>();
-	protected final Object2IntMap<Power> currentStackPowers = new Object2IntOpenHashMap<>();
+public class StackingStatusEffect extends PowerType {
+	protected final List<MobEffectInstance> createdEffects = new ArrayList<>();
+	private final int minStacks;
+	private final int maxStacks;
+	private final int durationPerStack;
+	private final int tickRate;
+	private final List<FactoryJsonObject> effects;
+	protected int currentStack = 0;
+
+	public StackingStatusEffect(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int minStacks, int maxStacks, int durationPerStack, int tickRate, @Nullable FactoryJsonObject effect, @Nullable FactoryJsonArray effects) {
+		super(name, description, hidden, condition, loading_priority);
+		this.minStacks = minStacks;
+		this.maxStacks = maxStacks;
+		this.durationPerStack = durationPerStack;
+		this.tickRate = tickRate;
+		this.effects = effect != null ? List.of(effect) : effects.asJsonObjectList();
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("stacking_status_effect"))
+			.add("min_stacks", int.class, new RequiredInstance())
+			.add("max_stacks", int.class, new RequiredInstance())
+			.add("duration_per_stack", int.class, new RequiredInstance())
+			.add("tick_rate", int.class, 10)
+			.add("effect", FactoryJsonObject.class, new OptionalInstance())
+			.add("effects", FactoryJsonArray.class, new OptionalInstance());
+	}
 
 	@Override
-	public void run(Player p, Power power) {
-		int currentStack = currentStackPowers.getOrDefault(power, 0); // Retrieve current stack or default to 0
-		int minStack = power.getNumber("min_stacks").getInt();
-		int maxStack = power.getNumber("max_stacks").getInt();
-		int tickRate = power.getNumberOrDefault("tick_rate", 10).getInt();
-
+	public void tick(Player p) {
 		if (p.getTicksLived() % tickRate == 0) {
-			if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
+			if (isActive(p)) {
 				currentStack += 1;
-				if (currentStack > maxStack) {
-					currentStack = maxStack;
+				if (currentStack > maxStacks) {
+					currentStack = maxStacks;
 				}
 				if (currentStack > 0) {
-					apoli$StackingStatusEffectPower$applyEffects(((CraftPlayer) p).getHandle(), power);
+					apoli$StackingStatusEffectPower$applyEffects(((CraftPlayer) p).getHandle());
 				}
 			} else {
 				currentStack -= 1;
-				if (currentStack < minStack) {
-					currentStack = minStack;
+				if (currentStack < minStacks) {
+					currentStack = minStacks;
 				}
 			}
 		}
-
-		currentStackPowers.put(power, currentStack);
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:stacking_status_effect";
+	public void addEffect(MobEffect effect) {
+		addEffect(effect, 80);
 	}
 
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return stacking_status_effect;
+	public void addEffect(MobEffect effect, int lingerDuration) {
+		addEffect(effect, lingerDuration, 0);
 	}
 
-	public void addEffect(MobEffect effect, Power power) {
-		addEffect(effect, 80, power);
+	public void addEffect(MobEffect effect, int lingerDuration, int amplifier) {
+		addEffect(new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraftHolder(CraftPotionEffectType.minecraftToBukkit(effect)), lingerDuration, amplifier));
 	}
 
-	public void addEffect(MobEffect effect, int lingerDuration, Power power) {
-		addEffect(effect, lingerDuration, 0, power);
+	public void addEffect(MobEffectInstance instance) {
+		createdEffects.add(instance);
 	}
 
-	public void addEffect(MobEffect effect, int lingerDuration, int amplifier, Power power) {
-		addEffect(new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraftHolder(CraftPotionEffectType.minecraftToBukkit(effect)), lingerDuration, amplifier), power);
+	public void applyEffects(LivingEntity entity) {
+		createdEffects.stream().map(MobEffectInstance::new).forEach(entity::addEffect);
 	}
 
-	public void addEffect(MobEffectInstance instance, Power power) {
-		effects.putIfAbsent(power, new ArrayList<>());
-		effects.get(power).add(instance);
-	}
-
-	public void applyEffects(LivingEntity entity, Power power) {
-		effects.getOrDefault(power, new ArrayList<>()).stream().map(MobEffectInstance::new).forEach(entity::addEffect);
-	}
-
-	public void apoli$StackingStatusEffectPower$applyEffects(LivingEntity entity, Power power) {
-		effects.putIfAbsent(power, new ArrayList<>());
-		if (effects.get(power).isEmpty()) {
-			effects.put(power, Utils.parseAndReturnPotionEffects(power).stream().map(CraftPotionUtil::fromBukkit).toList());
+	public void apoli$StackingStatusEffectPower$applyEffects(LivingEntity entity) {
+		if (createdEffects.isEmpty()) {
+			createdEffects.addAll(effects.stream().map(Utils::parsePotionEffect).map(CraftPotionUtil::fromBukkit).toList());
 		}
-		List<MobEffectInstance> effectInstances = effects.get(power);
+		List<MobEffectInstance> effectInstances = createdEffects;
 		effectInstances.forEach(sei -> {
-			int duration = power.getNumber("duration_per_stack").getInt() * currentStackPowers.getOrDefault(power, 0);
+			int duration = durationPerStack * currentStack;
 			if (duration > 0) {
 				MobEffectInstance applySei = new MobEffectInstance(sei.getEffect(), duration, sei.getAmplifier(), sei.isAmbient(), sei.isVisible(), sei.showIcon());
 				// GenesisMC - Paper/Spigot makers lots of changes to potion effects, making it work differently. This fixes it

@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.data.types;
 
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;

@@ -1,112 +1,116 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.calio.builder.inst.factory.FactoryElement;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.ParticleEffect;
+import me.dueris.calio.data.types.RequiredInstance;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
+public class ParticlePower extends PowerType {
 
-public class ParticlePower extends CraftPower {
+	private final ParticleEffect effect;
+	private final int count;
+	private final float speed;
+	private final boolean force;
+	private final Vector spread;
+	private final float offsetX;
+	private final float offsetY;
+	private final float offsetZ;
+	private final int frequency;
+	private final boolean visibleWhileInvis;
 
-	public static boolean containsParams(Power power) {
-		return !(power.getElement("particle").isString()) && power.getElement("particle").isJsonObject() && power.getJsonObject("particle").isPresent("params");
+	public ParticlePower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, ParticleEffect effect, int count, float speed, boolean force, Vector spread, float offsetX, float offsetY, float offsetZ, int frequency, boolean visibleWhileInvis) {
+		super(name, description, hidden, condition, loading_priority);
+		this.effect = effect;
+		this.count = count;
+		this.speed = speed;
+		this.force = force;
+		this.spread = spread;
+		this.offsetX = offsetX;
+		this.offsetY = offsetY;
+		this.offsetZ = offsetZ;
+		this.frequency = frequency;
+		this.visibleWhileInvis = visibleWhileInvis;
 	}
 
-	private static int calculateValue(float value) {
-		if (Math.round(value * 255) > 255) {
-			return 254;
-		} else {
-			return Math.round(value * 255);
-		}
-	}
-
-	public static Particle computeParticleArgs(FactoryElement root) {
-		if (root.isString()) {
-			return Particle.valueOf(ensureCorrectNamespace(root.getString()).split(":")[1].toUpperCase()); // Directly parse it
-		} else if (root.isJsonObject()) {
-			FactoryJsonObject particle = root.toJsonObject();
-			return particle.getEnumValue("type", Particle.class, true);
-		}
-		return null;
-	}
-
-	private static String ensureCorrectNamespace(String string) {
-		// No longer needed in 1.20.5
-        /* if (string.endsWith("dust")) {
-            string = string.replace("dust", "redstone");
-        } */
-		return string.contains(":") ? string : "minecraft:" + string;
-	}
-
-
-	@Override
-	public String getType() {
-		return "apoli:particle";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return particle;
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("particle"))
+			.add("particle", ParticleEffect.class, new RequiredInstance())
+			.add("count", int.class, 1)
+			.add("speed", float.class, 0.0F)
+			.add("force", boolean.class, false)
+			.add("spread", Vector.class, new Vector(0.5, 0.5, 0.5))
+			.add("offset_x", float.class, 0.25F)
+			.add("offset_y", float.class, 0.50F)
+			.add("offset_z", float.class, 0.25F)
+			.add("frequency", int.class, new RequiredInstance())
+			.add("visible_while_invisible", boolean.class, false);
 	}
 
 	@Override
-	public void run(Player player, Power power) {
-		int interval = power.getNumber("frequency").getInt();
-
-		if (Bukkit.getServer().getCurrentTick() % interval == 0) {
-			if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) player)) {
-				Particle particle = computeParticleArgs(power.getElement("particle"));
+	public void tick(Player player) {
+		if (Bukkit.getServer().getCurrentTick() % frequency == 0) {
+			if (isActive(player)) {
+				Particle particle = getEffect().getParticle();
 				if (particle == null)
 					throw new IllegalStateException("Unable to create CraftBukkit particle instance");
-				boolean visible_while_invis = power.getBooleanOrDefault("visible_while_invisible", false);
+				boolean visible_while_invis = isVisibleWhileInvis();
 				boolean pass = visible_while_invis || !player.isInvisible();
-				setActive(player, power.getTag(), pass);
-
-				float offset_x = 0.25f;
-				float offset_y = 0.50f;
-				float offset_z = 0.25f;
-
-				if (power.getJsonObject("spread").isPresent("y")) {
-					offset_y = power.getJsonObject("spread").getNumber("y").getFloat();
-				}
-				if (power.getJsonObject("spread").isPresent("x")) {
-					offset_x = power.getJsonObject("spread").getNumber("x").getFloat();
-				}
-				if (power.getJsonObject("spread").isPresent("z")) {
-					offset_z = power.getJsonObject("spread").getNumber("z").getFloat();
-				}
-
-				Particle.DustOptions data = null;
-				if (containsParams(power)) {
-					String provided = power.getJsonObject("particle").getStringOrDefault("params", "");
-					if (provided.contains(" ")) {
-						String[] splitArgs = provided.split(" ");
-						float arg1 = Float.parseFloat(splitArgs[0]);
-						float arg2 = Float.parseFloat(splitArgs[1]);
-						float arg3 = Float.parseFloat(splitArgs[2]);
-						float size = Float.parseFloat(splitArgs[3]);
-						data = new Particle.DustOptions(Color.fromRGB(calculateValue(arg1), calculateValue(arg2), calculateValue(arg3)), size);
-					}
-				}
 
 				if (pass) {
 					player.getWorld().spawnParticle(
-						particle.builder().source(player).force(false).location(player.getLocation()).count(1).particle(),
+						particle.builder().source(player).force(false).location(player.getLocation()).count(count).particle(),
 						new Location(player.getWorld(), player.getEyeLocation().getX(), player.getEyeLocation().getY() - 0.7, player.getEyeLocation().getZ()),
-						power.getNumberOrDefault("count", 1).getInt(), offset_x, offset_y, offset_z, 0, data
+						count, offsetX, offsetY, offsetZ, 0, effect.getDustOptions().orElse(null)
 					);
 				}
-			} else {
-				setActive(player, power.getTag(), false);
 			}
 		}
+	}
+
+	public ParticleEffect getEffect() {
+		return effect;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public float getSpeed() {
+		return speed;
+	}
+
+	public boolean isForce() {
+		return force;
+	}
+
+	public Vector getSpread() {
+		return spread;
+	}
+
+	public float getOffsetX() {
+		return offsetX;
+	}
+
+	public float getOffsetY() {
+		return offsetY;
+	}
+
+	public float getOffsetZ() {
+		return offsetZ;
+	}
+
+	public int getFrequency() {
+		return frequency;
+	}
+
+	public boolean isVisibleWhileInvis() {
+		return visibleWhileInvis;
 	}
 }

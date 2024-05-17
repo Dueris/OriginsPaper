@@ -1,8 +1,8 @@
 package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameEvent;
 import org.bukkit.Location;
@@ -16,11 +16,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.world.GenericGameEvent;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class BounceSlimeBlock extends CraftPower implements Listener, PowerProvider {
-	public static ArrayList<Player> bouncePlayers = new ArrayList<>();
+public class BounceSlimeBlock implements Listener, PowerProvider {
 	public static HashMap<Player, Location> lastLoc = new HashMap<>();
 	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("slime_block_bounce");
 
@@ -31,7 +29,8 @@ public class BounceSlimeBlock extends CraftPower implements Listener, PowerProvi
 				me.dueris.genesismc.event.PlayerHitGroundEvent playerHitGroundEvent = new me.dueris.genesismc.event.PlayerHitGroundEvent(player);
 				Bukkit.getPluginManager().callEvent(playerHitGroundEvent);
 				if (player.isSneaking()) return;
-				if (!bouncePlayers.contains(player) && !lastLoc.containsKey(player)) return;
+				if (!PowerHolderComponent.hasPower(player, powerReference.asString())) return;
+				if (!lastLoc.containsKey(player)) return;
 				if (CraftBiome.bukkitToMinecraft(player.getLocation().getBlock().getBiome()).getTemperature(CraftLocation.toBlockPosition(player.getLocation())) < 0.2)
 					return;
 				Location lastLocation = lastLoc.get(player);
@@ -51,20 +50,10 @@ public class BounceSlimeBlock extends CraftPower implements Listener, PowerProvi
 	@EventHandler
 	public void move(PlayerMoveEvent e) {
 		if (!e.isCancelled()) {
-			if (!bouncePlayers.contains(e.getPlayer())) return;
+			if (!PowerHolderComponent.hasPower(e.getPlayer(), powerReference.asString())) return;
 			if (e.getPlayer().isOnGround()) return;
 			lastLoc.put(e.getPlayer(), e.getFrom());
 		}
-	}
-
-	@Override
-	public String getType() {
-		return null;
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return bouncePlayers;
 	}
 
 }

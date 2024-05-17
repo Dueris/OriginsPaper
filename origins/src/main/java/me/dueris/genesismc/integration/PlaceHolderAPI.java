@@ -5,7 +5,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.storage.OriginDataContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +58,7 @@ public class PlaceHolderAPI extends PlaceholderExpansion {
 		if (params.equalsIgnoreCase("player_origin")) {
 			String done = "";
 			StringBuilder builder = new StringBuilder(done);
-			for (Origin origin : OriginPlayerAccessor.getOrigin(player).values()) {
+			for (Origin origin : PowerHolderComponent.getOrigin(player).values()) {
 				builder.append(origin.getTag() + "//");
 			}
 			return done;
@@ -66,7 +66,7 @@ public class PlaceHolderAPI extends PlaceholderExpansion {
 		if (params.equalsIgnoreCase("player_layer")) {
 			String done = "";
 			StringBuilder builder = new StringBuilder(done);
-			for (Origin origin : OriginPlayerAccessor.getOrigin(player).values()) {
+			for (Origin origin : PowerHolderComponent.getOrigin(player).values()) {
 				builder.append(origin.getTag() + "//");
 			}
 			return done;

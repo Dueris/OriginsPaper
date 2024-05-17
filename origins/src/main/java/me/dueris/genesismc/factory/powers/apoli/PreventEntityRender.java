@@ -1,13 +1,14 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.google.gson.JsonObject;
 import io.papermc.paper.util.MCUtil;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.util.ClipContextUtils;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Shape;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -18,12 +19,23 @@ import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Set;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_entity_render;
+public class PreventEntityRender extends PowerType {
+	private final FactoryJsonObject entityCondition;
+	private final FactoryJsonObject bientityCondition;
 
-public class PreventEntityRender extends CraftPower {
+	public PreventEntityRender(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject entityCondition, FactoryJsonObject bientityCondition) {
+		super(name, description, hidden, condition, loading_priority);
+		this.entityCondition = entityCondition;
+		this.bientityCondition = bientityCondition;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("prevent_entity_render"))
+			.add("entity_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("bientity_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	public static boolean canSeeEntity(Entity actor, Entity target, FactoryJsonObject source) {
 		net.minecraft.world.entity.Entity nmsActor = ((CraftEntity) actor).getHandle();
@@ -46,15 +58,15 @@ public class PreventEntityRender extends CraftPower {
 	}
 
 	@Override
-	public void run(Player p, Power power) {
+	public void tick(Player p) {
 		if (Bukkit.getServer().getCurrentTick() % 20L == 0) {
 			Set<net.minecraft.world.entity.Entity> gotten = Shape.getEntities(Shape.CUBE, ((CraftWorld) p.getWorld()).getHandle(), CraftLocation.toVec3D(p.getLocation()), 80);
 			Entity[] show = new Entity[gotten.size()];
 			Entity[] hide = new Entity[gotten.size()];
 			l:
 			for (CraftEntity entity : gotten.stream().map(net.minecraft.world.entity.Entity::getBukkitEntity).toList()) {
-				if (ConditionExecutor.testEntity(power.getJsonObject("entity_condition"), entity) && ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-					if (ConditionExecutor.testBiEntity(power.getJsonObject("bientity_condition"), (CraftEntity) p, entity)) {
+				if (ConditionExecutor.testEntity(entityCondition, entity) && isActive(p)) {
+					if (ConditionExecutor.testBiEntity(bientityCondition, (CraftEntity) p, entity)) {
 						if (canSeeEntity(p, entity, null)) {
 							p.hideEntity(GenesisMC.getPlugin(), entity);
 							for (int i = 0; i < hide.length; i++) {
@@ -64,9 +76,7 @@ public class PreventEntityRender extends CraftPower {
 								}
 							}
 						}
-						setActive(p, power.getTag(), true);
 					} else {
-						setActive(p, power.getTag(), false);
 						if (!canSeeEntity(p, entity, null)) {
 							for (int i = 0; i < show.length; i++) {
 								if (show[i] == null) {
@@ -77,7 +87,6 @@ public class PreventEntityRender extends CraftPower {
 						}
 					}
 				} else {
-					setActive(p, power.getTag(), false);
 					if (!canSeeEntity(p, entity, null)) {
 						for (int i = 0; i < show.length; i++) {
 							if (show[i] == null) {
@@ -102,13 +111,4 @@ public class PreventEntityRender extends CraftPower {
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:prevent_entity_render";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return prevent_entity_render;
-	}
 }

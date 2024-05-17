@@ -1,85 +1,77 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.event.PowerUpdateEvent;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.craftbukkit.entity.CraftEntity;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
+public class ActionOnCallback extends PowerType {
+	private final FactoryJsonObject entityActionChosen;
+	private final boolean executeChosenWhenOrb;
+	private final FactoryJsonObject entityActionGained;
+	private final FactoryJsonObject entityActionLost;
+	private final FactoryJsonObject entityActionAdded;
+	private final FactoryJsonObject entityActionRemoved;
+	private final FactoryJsonObject entityActionRespawned;
 
-public class ActionOnCallback extends CraftPower implements Listener {
+	public ActionOnCallback(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject entityActionChosen, boolean executeChosenWhenOrb, FactoryJsonObject entityActionGained, FactoryJsonObject entityActionLost, FactoryJsonObject entityActionAdded, FactoryJsonObject entityActionRemoved, FactoryJsonObject entityActionRespawned) {
+		super(name, description, hidden, condition, loading_priority);
+		this.executeChosenWhenOrb = executeChosenWhenOrb;
+		this.entityActionChosen = entityActionChosen;
+		this.entityActionGained = entityActionGained;
+		this.entityActionLost = entityActionLost;
+		this.entityActionAdded = entityActionAdded;
+		this.entityActionRemoved = entityActionRemoved;
+		this.entityActionRespawned = entityActionRespawned;
+	}
+
+	public static FactoryData regsiterComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("action_on_callback"))
+			.add("entity_action_chosen", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("execute_chosen_when_orb", boolean.class, true)
+			.add("entity_action_gained", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("entity_action_lost", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("entity_action_added", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("entity_action_removed", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("entity_action_respawned", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	@EventHandler
 	public void choose(OriginChangeEvent e) {
 		Player actor = e.getPlayer();
 
-		if (!getPlayersWithPower().contains(actor)) return;
+		if (!getPlayers().contains(actor)) return;
 
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(actor, getType(), layer)) {
-				if (power == null) continue;
-				if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
-					return;
-				if (power.getBooleanOrDefault("execute_chosen_when_orb", false) && !e.isFromOrb()) return;
-				setActive(e.getPlayer(), power.getTag(), true);
-				Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action"));
-				Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action_chosen"));
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						setActive(e.getPlayer(), power.getTag(), false);
-					}
-				}.runTaskLater(GenesisMC.getPlugin(), 2L);
-			}
-		}
+		if (!isActive(actor)) return;
+		if (executeChosenWhenOrb && !e.isFromOrb()) return;
+		Actions.executeEntity(e.getPlayer(), entityActionChosen);
 	}
 
 	@EventHandler
 	public void powerUpdate(PowerUpdateEvent e) {
 		Player player = e.getPlayer();
-		if (!getPlayersWithPower().contains(player)) return;
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
-				if (e.isRemoved()) {
-					Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action_removed"));
-				} else {
-					Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action_added"));
-				}
-			}
+		if (!getPlayers().contains(player) || !e.getPower().getTag().equalsIgnoreCase(getTag())) return;
+		if (e.isRemoved()) {
+			Actions.executeEntity(e.getPlayer(), entityActionRemoved);
+			Actions.executeEntity(e.getPlayer(), entityActionLost);
+		} else {
+			Actions.executeEntity(e.getPlayer(), entityActionAdded);
+			Actions.executeEntity(e.getPlayer(), entityActionGained);
 		}
 	}
 
 	@EventHandler
 	public void respawn(PlayerPostRespawnEvent e) {
 		Player player = e.getPlayer();
-		if (!getPlayersWithPower().contains(player)) return;
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
-				Actions.executeEntity(e.getPlayer(), power.getJsonObject("entity_action_respawned"));
-			}
-		}
-	}
-
-	@Override
-	public String getType() {
-		return "apoli:action_on_callback";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return action_on_callback;
+		if (!getPlayers().contains(player)) return;
+		Actions.executeEntity(e.getPlayer(), entityActionRespawned);
 	}
 
 }

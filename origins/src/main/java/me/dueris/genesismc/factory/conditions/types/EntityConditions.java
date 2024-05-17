@@ -3,7 +3,7 @@ package me.dueris.genesismc.factory.conditions.types;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.StringReader;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
@@ -12,12 +12,12 @@ import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.factory.data.types.EntityGroup;
 import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
-import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.*;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -100,18 +100,18 @@ public class EntityConditions {
 			return false;
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("power_type"), (condition, entity) -> {
-			for (ApoliPower c : ((Registrar<ApoliPower>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).values()) {
+			for (PowerType c : ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).values()) {
 				if (c.getType().equals(condition.getString("power_type"))) {
-					return c.getPlayersWithPower().contains(entity);
+					return c.getPlayers().contains(entity);
 				}
 			}
 			return false;
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("origin"), (condition, entity) -> entity instanceof Player p && OriginPlayerAccessor.hasOrigin(p, condition.getString("origin"))));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("origin"), (condition, entity) -> entity instanceof Player p && PowerHolderComponent.hasOrigin(p, condition.getString("origin"))));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("power_active"), (condition, entity) -> {
-			if (!ApoliPower.powers_active.containsKey(entity)) return false;
 			String power = condition.getString("power");
-			return ApoliPower.powers_active.get(entity).getOrDefault(power, false);
+			PowerType found = PowerHolderComponent.getPower(entity, power);
+			return found != null && found.isActive((Player) entity);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("advancement"), (condition, entity) -> {
 			MinecraftServer server = GenesisMC.server;
@@ -128,7 +128,7 @@ public class EntityConditions {
 			}
 			return false;
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("sprinting"), (condition, entity) -> (entity instanceof CraftPlayer player && player.isSprinting()) || OriginPlayerAccessor.currentSprintingPlayersFallback.contains(entity)));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("sprinting"), (condition, entity) -> (entity instanceof CraftPlayer player && player.isSprinting()) || PowerHolderComponent.currentSprintingPlayersFallback.contains(entity)));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("food_level"), (condition, entity) -> {
 			String comparison = condition.getString("comparison");
 			float compare_to = condition.getNumber("compare_to").getFloat();
@@ -202,16 +202,6 @@ public class EntityConditions {
 
 			return fixedComparison.compare(count, compare_to);
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("set_size"), (condition, entity) -> {
-			String tag = condition.getString("set");
-			ArrayList<Entity> entities = EntitySetPower.entity_sets.get(tag);
-			if (entities.contains(entity)) {
-				String comparison = condition.getString("comparison");
-				int compare_to = condition.getNumber("compare_to").getInt();
-				return Comparison.fromString(comparison).compare(entities.size(), compare_to);
-			}
-			return false;
-		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("scoreboard"), (condition, entity) -> {
 			String name = condition.getString("name");
 			if (name == null) {
@@ -268,8 +258,7 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("climbing"), (condition, entity) -> {
 			if (entity instanceof Player player) {
-				ClimbingPower climbing = new ClimbingPower();
-				return player.isClimbing() || climbing.isActiveClimbing(player);
+				return player.isClimbing() || ClimbingPower.isActiveClimbing(player);
 			}
 			return false;
 		}));
@@ -426,7 +415,7 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_group"), (condition, entity) -> (EntityGroupManager.modifiedEntityGroups.containsKey(entity) && EntityGroupManager.modifiedEntityGroups.get(entity).equals(condition.getEnumValue("group", EntityGroup.class))) || (entity.getHandle() instanceof net.minecraft.world.entity.LivingEntity le && EntityGroup.getMobType(le).equals(condition.getEnumValue("group", EntityGroup.class)))));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("elytra_flight_possible"), (condition, entity) -> {
-			boolean hasElytraPower = ElytraFlightPower.elytra.contains(entity);
+			boolean hasElytraPower = PowerHolderComponent.hasPowerType(entity, ElytraFlightPower.class);
 			boolean hasElytraEquipment = false;
 			if (entity instanceof LivingEntity li) {
 				for (ItemStack item : li.getEquipment().getArmorContents()) {
@@ -453,9 +442,7 @@ public class EntityConditions {
 			}
 			return false;
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block"), (condition, entity) -> {
-			return ConditionExecutor.testBlock(condition.getJsonObject("block_condition"), CraftBlock.at(entity.getHandle().level(), CraftLocation.toBlockPosition(entity.getLocation())));
-		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block"), (condition, entity) -> ConditionExecutor.testBlock(condition.getJsonObject("block_condition"), CraftBlock.at(entity.getHandle().level(), CraftLocation.toBlockPosition(entity.getLocation())))));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block_anywhere"), (condition, entity) -> {
 			int stopAt = -1;
 			Comparison comparison = Comparison.fromString(condition.getStringOrDefault("comparison", ">="));

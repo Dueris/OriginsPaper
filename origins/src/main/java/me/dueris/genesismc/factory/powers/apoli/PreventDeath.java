@@ -1,48 +1,40 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.entity.Player;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import java.util.ArrayList;
+public class PreventDeath extends PowerType implements Listener {
+	private final FactoryJsonObject damageCondition;
+	private final FactoryJsonObject entityAction;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_death;
+	public PreventDeath(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject damageCondition, FactoryJsonObject entityAction) {
+		super(name, description, hidden, condition, loading_priority);
+		this.damageCondition = damageCondition;
+		this.entityAction = entityAction;
+	}
 
-public class PreventDeath extends CraftPower implements Listener {
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("prevent_death"))
+			.add("damage_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("entity_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	@EventHandler
 	public void run(PlayerDeathEvent e) {
-		if (prevent_death.contains(e.getPlayer())) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e.getEntity().getLastDamageCause())) {
-						e.setCancelled(true);
-						if (!getPlayersWithPower().contains(e.getPlayer())) return;
-						setActive(e.getPlayer(), power.getTag(), true);
-					} else {
-						if (!getPlayersWithPower().contains(e.getPlayer())) return;
-						setActive(e.getPlayer(), power.getTag(), false);
-					}
-				}
+		if (getPlayers().contains(e.getPlayer())) {
+			if (isActive(e.getPlayer()) && ConditionExecutor.testDamage(damageCondition, e.getEntity().getLastDamageCause())) {
+				e.setCancelled(true);
+				Actions.executeEntity(e.getPlayer(), entityAction);
 			}
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:prevent_death";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return prevent_death;
-	}
 }

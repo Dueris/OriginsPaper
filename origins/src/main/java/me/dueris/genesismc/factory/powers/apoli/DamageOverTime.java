@@ -1,25 +1,47 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.OptionalInstance;
+import me.dueris.calio.data.types.RequiredInstance;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.Objects;
 
-public class DamageOverTime extends CraftPower implements Listener {
+public class DamageOverTime extends PowerType {
+	private final int interval;
+	private final float damage;
+	private final float damageEasy;
+	private final String damageType;
+
+	public DamageOverTime(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int interval, float damage, @Nullable float damageEasy, String damageType) {
+		super(name, description, hidden, condition, loading_priority);
+		this.interval = interval;
+		this.damage = damage;
+		this.damageEasy = Objects.isNull(damageEasy) ? damage : damageEasy;
+		this.damageType = damageType;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("damage_over_time"))
+			.add("interval", int.class, 20)
+			.add("damage", float.class, new RequiredInstance())
+			.add("damage_easy", float.class, new OptionalInstance())
+			.add("damage_type", String.class, "apoli:damage_over_time");
+	}
 
 	@EventHandler
 	public void erk(PlayerDeathEvent e) {
@@ -43,36 +65,33 @@ public class DamageOverTime extends CraftPower implements Listener {
 	}
 
 	@Override
-	public void run(Player p, Power power) {
-		if (!power.isPresent("interval")) {
-			throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
-		}
-		long interval = power.getNumberOrDefault("interval", 20L).getLong();
+	public void tick(Player p) {
 		if (Bukkit.getServer().getCurrentTick() % interval == 0) {
-			float damage = p.getWorld().getDifficulty().equals(Difficulty.EASY) ? power.getNumberOrDefault("damage_easy", power.getNumberOrDefault("damage", 1.0f).getFloat()).getFloat() : power.getNumberOrDefault("damage", 1.0f).getFloat();
+			float damageVal = p.getWorld().getDifficulty().equals(Difficulty.EASY) ? damageEasy : damage;
 
-			if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-				setActive(p, power.getTag(), true);
-
+			if (isActive(p)) {
 				if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
-					NamespacedKey key = NamespacedKey.fromString(power.getStringOrDefault("damage_type", "generic"));
+					NamespacedKey key = NamespacedKey.fromString(damageType);
 					DamageType dmgType = Utils.DAMAGE_REGISTRY.get(CraftNamespacedKey.toMinecraft(key));
-					((CraftPlayer) p).getHandle().hurt(Utils.getDamageSource(dmgType), damage);
+					((CraftPlayer) p).getHandle().hurt(Utils.getDamageSource(dmgType), damageVal);
 				}
-
-			} else {
-				setActive(p, power.getTag(), false);
 			}
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:damage_over_time";
+	public float getDamage() {
+		return damage;
 	}
 
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return damage_over_time;
+	public float getDamageEasy() {
+		return damageEasy;
+	}
+
+	public int getInterval() {
+		return interval;
+	}
+
+	public String getDamageType() {
+		return damageType;
 	}
 }

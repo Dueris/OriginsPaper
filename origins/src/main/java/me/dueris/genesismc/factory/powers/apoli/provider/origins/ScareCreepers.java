@@ -1,8 +1,8 @@
 package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import org.bukkit.Bukkit;
@@ -18,23 +18,9 @@ import org.bukkit.event.world.EntitiesLoadEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-
-public class ScareCreepers extends CraftPower implements Listener, PowerProvider {
-	public static ArrayList<Player> scaryPlayers = new ArrayList<>();
+public class ScareCreepers implements Listener, PowerProvider {
 	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("scare_creepers");
 	private final NamespacedKey hitByPlayerKey = new NamespacedKey(GenesisMC.getPlugin(), "hit-by-player");
-
-	@Override
-	public String getType() {
-		return null;
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return scaryPlayers;
-	}
-
 
 	@EventHandler
 	public void load(EntitySpawnEvent event) {
@@ -57,7 +43,7 @@ public class ScareCreepers extends CraftPower implements Listener, PowerProvider
 			(PathfinderMob) ((CraftEntity) creeper).getHandle(), net.minecraft.world.entity.player.Player.class, 6, 1, 1.2,
 			livingEntity -> {
 				if (livingEntity.getBukkitEntity() instanceof Player player) {
-					if (getPlayersWithPower().contains(player)) {
+					if (PowerHolderComponent.hasPower(player, powerReference.asString())) {
 						String data = creeper.getPersistentDataContainer().get(hitByPlayerKey, PersistentDataType.STRING);
 						if (data == null) {
 							return true;

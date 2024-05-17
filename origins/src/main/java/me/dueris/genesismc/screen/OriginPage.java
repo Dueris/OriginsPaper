@@ -1,12 +1,11 @@
 package me.dueris.genesismc.screen;
 
 import me.dueris.genesismc.event.OriginChangeEvent;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.ComponentMultiLine;
-import me.dueris.genesismc.util.KeybindingUtils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -25,6 +24,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class OriginPage implements ChoosingPage {
 	private final Origin origin;
@@ -103,7 +103,7 @@ public class OriginPage implements ChoosingPage {
 	@Override
 	public ItemStack[] createDisplay(Player player, Layer layer) {
 		List<ItemStack> stacks = new ArrayList<>();
-		List<Power> powerContainers = new ArrayList<>(origin.getPowerContainers().stream().filter(p -> !p.isHidden()).toList());
+		List<PowerType> powerContainers = new ArrayList<>(origin.getPowerContainers().stream().filter(Objects::nonNull).filter(p -> !p.isHidden()).toList());
 
 		for (int i = 0; i < 54; i++) {
 			if (i <= 2 || (i >= 6 && i <= 8)) {
@@ -137,9 +137,6 @@ public class OriginPage implements ChoosingPage {
 
 					ItemMeta meta = originPower.getItemMeta();
 					meta.displayName(ComponentMultiLine.apply(powerContainers.get(0).getName()).decorate(TextDecoration.ITALIC.as(false).decoration()));
-					if (KeybindingUtils.renderKeybind(powerContainers.get(0)).getFirst()) {
-						meta.displayName(Component.text().append(meta.displayName()).append(Component.text(" ")).append(Component.text(KeybindingUtils.translateOriginRawKey(KeybindingUtils.renderKeybind(powerContainers.get(0)).getSecond())).color(TextColor.color(32222))).build());
-					}
 					Arrays.stream(ItemFlag.values()).toList().forEach(originPower::addItemFlags);
 					meta.lore(ComponentMultiLine.apply(cutStringIntoLines(powerContainers.get(0).getDescription())));
 					originPower.setItemMeta(meta);
@@ -181,7 +178,7 @@ public class OriginPage implements ChoosingPage {
 
 	@Override
 	public void onChoose(Player player, Layer layer) {
-		OriginPlayerAccessor.setOrigin((org.bukkit.entity.Player) player.getBukkitEntity(), layer, this.origin);
+		PowerHolderComponent.setOrigin((org.bukkit.entity.Player) player.getBukkitEntity(), layer, this.origin);
 		OriginChangeEvent e = new OriginChangeEvent((org.bukkit.entity.Player) player.getBukkitEntity(), this.origin, ScreenNavigator.orbChoosing.contains(player));
 		Bukkit.getPluginManager().callEvent(e);
 		player.getBukkitEntity().getOpenInventory().close();

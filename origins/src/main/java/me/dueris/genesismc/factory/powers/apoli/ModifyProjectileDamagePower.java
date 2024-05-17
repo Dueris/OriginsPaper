@@ -1,14 +1,14 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonArray;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Modifier;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -16,51 +16,53 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import java.util.ArrayList;
 import java.util.function.BinaryOperator;
 
-public class ModifyProjectileDamagePower extends CraftPower implements Listener {
+public class ModifyProjectileDamagePower extends ModifierPower implements Listener {
+
+	private final FactoryJsonObject targetCondition;
+	private final FactoryJsonObject damageCondition;
+	private final FactoryJsonObject targetAction;
+	private final FactoryJsonObject selfAction;
+
+	public ModifyProjectileDamagePower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject modifier, FactoryJsonArray modifiers, FactoryJsonObject targetCondition, FactoryJsonObject damageCondition, FactoryJsonObject targetAction, FactoryJsonObject selfAction) {
+		super(name, description, hidden, condition, loading_priority, modifier, modifiers);
+		this.targetCondition = targetCondition;
+		this.damageCondition = damageCondition;
+		this.targetAction = targetAction;
+		this.selfAction = selfAction;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return ModifierPower.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("modify_projectile_damage"))
+			.add("target_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("damage_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("target_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("self_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	@EventHandler
 	public void runD(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Projectile p && p.getShooter() instanceof Player pl) {
-			if (modify_projectile_damage.contains(pl)) {
-				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-					try {
-						for (Power power : OriginPlayerAccessor.getPowers(pl, getType(), layer)) {
-							if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.getJsonObject("target_condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) {
-								for (Modifier modifier : power.getModifiers()) {
-									float value = modifier.value();
-									String operation = modifier.operation();
-									BinaryOperator<Double> mathOperator = Utils.getOperationMappingsDouble().get(operation);
-									if (mathOperator != null) {
-										ModifyDamageDealtPower damageDealtPower = new ModifyDamageDealtPower();
-										damageDealtPower.runSetDMG(e, operation, value);
-										setActive(pl, power.getTag(), true);
-										Actions.executeEntity(e.getEntity(), power.getJsonObject("target_action"));
-										Actions.executeEntity(pl, power.getJsonObject("self_action"));
-									}
-								}
-							} else {
-
-								setActive(pl, power.getTag(), false);
+			if (getPlayers().contains(pl)) {
+				try {
+					if (isActive(pl) && ConditionExecutor.testEntity(targetCondition, (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(damageCondition, e)) {
+						for (Modifier modifier : getModifiers()) {
+							float value = modifier.value();
+							String operation = modifier.operation();
+							BinaryOperator<Double> mathOperator = Utils.getOperationMappingsDouble().get(operation);
+							if (mathOperator != null) {
+								ModifyDamageDealtPower.runSetDMG(e, operation, value);
+								Actions.executeEntity(e.getEntity(), targetAction);
+								Actions.executeEntity(pl, selfAction);
 							}
 						}
-					} catch (Exception ev) {
-						ev.printStackTrace();
 					}
+				} catch (Exception ev) {
+					ev.printStackTrace();
 				}
 			}
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:modify_projectile_damage";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return modify_projectile_damage;
-	}
 }

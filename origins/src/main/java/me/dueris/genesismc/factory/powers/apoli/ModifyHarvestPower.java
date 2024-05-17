@@ -1,14 +1,14 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.RequiredInstance;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,39 +16,36 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import java.util.ArrayList;
+public class ModifyHarvestPower extends PowerType implements Listener {
 
-public class ModifyHarvestPower extends CraftPower implements Listener {
+	private final FactoryJsonObject blockCondition;
+	private final boolean allow;
+
+	public ModifyHarvestPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject blockCondition, boolean allow) {
+		super(name, description, hidden, condition, loading_priority);
+		this.blockCondition = blockCondition;
+		this.allow = allow;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("modify_harvest"))
+			.add("block_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("allow", boolean.class, new RequiredInstance());
+	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void runD(BlockBreakEvent e) {
 		Player p = e.getPlayer();
-		if (modify_harvest.contains(p)) {
+		if (getPlayers().contains(p)) {
 			if (p.getGameMode().equals(GameMode.CREATIVE)) return;
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						setActive(p, power.getTag(), true);
-						if (e.isCancelled()) return;
-						boolean willDrop = ((CraftPlayer) p).getHandle().hasCorrectToolForDrops(((CraftBlock) e.getBlock()).getNMS());
-						if (power.getBooleanOrDefault("allow", true) && !willDrop) {
-							e.getBlock().getDrops().forEach((itemStack -> p.getWorld().dropItemNaturally(e.getBlock().getLocation(), itemStack)));
-						}
-					} else {
-						setActive(p, power.getTag(), false);
-					}
+			if (isActive(p) && ConditionExecutor.testBlock(blockCondition, e.getBlock())) {
+				if (e.isCancelled()) return;
+				boolean willDrop = ((CraftPlayer) p).getHandle().hasCorrectToolForDrops(((CraftBlock) e.getBlock()).getNMS());
+				if (allow && !willDrop) {
+					e.getBlock().getDrops().forEach((itemStack -> p.getWorld().dropItemNaturally(e.getBlock().getLocation(), itemStack)));
 				}
 			}
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:modify_harvest";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return modify_harvest;
-	}
 }

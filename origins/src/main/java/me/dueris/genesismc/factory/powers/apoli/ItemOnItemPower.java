@@ -1,59 +1,78 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.OptionalInstance;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
+public class ItemOnItemPower extends PowerType {
 
-public class ItemOnItemPower extends CraftPower implements Listener {
+	private final FactoryJsonObject usingItemCondition;
+	private final FactoryJsonObject onItemCondition;
+	private final ItemStack resultStack;
+	private final FactoryJsonObject resultItemAction;
+	private final int resultFromOnStack;
+	private final FactoryJsonObject usingItemAction;
+	private final FactoryJsonObject onItemAction;
+	private final FactoryJsonObject entityAction;
+
+	public ItemOnItemPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject usingItemCondition,
+						   FactoryJsonObject onItemCondition, ItemStack resultStack, FactoryJsonObject resultItemAction, int resultFromOnStack,
+						   FactoryJsonObject usingItemAction, FactoryJsonObject onItemAction, FactoryJsonObject entityAction) {
+		super(name, description, hidden, condition, loading_priority);
+		this.usingItemCondition = usingItemCondition;
+		this.onItemCondition = onItemCondition;
+		this.resultStack = resultStack;
+		this.resultItemAction = resultItemAction;
+		this.resultFromOnStack = resultFromOnStack;
+		this.usingItemAction = usingItemAction;
+		this.onItemAction = onItemAction;
+		this.entityAction = entityAction;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("item_on_item"))
+			.add("using_item_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("on_item_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("result", ItemStack.class, new OptionalInstance())
+			.add("result_item_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("result_from_on_stack", int.class, 1)
+			.add("using_item_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("on_item_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("entity_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	@EventHandler
 	public void itemOnItem(InventoryClickEvent e) {
 		if (e.getCursor() != null && e.getCurrentItem() != null) { // Valid event
 			Player p = (Player) e.getWhoClicked();
 			if (p.getGameMode().equals(GameMode.CREATIVE)) return;
-			if (this.getPlayersWithPower().contains(p)) {
-				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-					for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-						boolean pass =
-							ConditionExecutor.testItem(power.getJsonObject("using_item_condition"), e.getCursor()) &&
-								ConditionExecutor.testItem(power.getJsonObject("on_item_condition"), e.getCurrentItem());
-						if (pass) {
-							ItemStack stack = power.getItemStack("result");
-							if (stack != null) {
-								Actions.executeItem(stack, power.getJsonObject("result_item_action"));
-								for (int i = 0; i < power.getNumberOrDefault("result_from_on_stack", 1).getInt(); i++) {
-									p.getInventory().addItem(stack);
-								}
-							}
-							Actions.executeItem(e.getCursor(), power.getJsonObject("using_item_action"));
-							Actions.executeItem(e.getCurrentItem(), power.getJsonObject("on_item_action"));
-							Actions.executeEntity(e.getWhoClicked(), power.getJsonObject("entity_action"));
+			if (this.getPlayers().contains(p)) {
+				boolean pass =
+					ConditionExecutor.testItem(usingItemCondition, e.getCursor()) &&
+						ConditionExecutor.testItem(onItemCondition, e.getCurrentItem());
+				if (pass) {
+					if (resultStack != null) {
+						Actions.executeItem(resultStack, resultItemAction);
+						for (int i = 0; i < resultFromOnStack; i++) {
+							p.getInventory().addItem(resultStack);
 						}
 					}
+					Actions.executeItem(e.getCursor(), usingItemAction);
+					Actions.executeItem(e.getCurrentItem(), onItemAction);
+					Actions.executeEntity(e.getWhoClicked(), entityAction);
 				}
 			}
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:item_on_item";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return item_on_item;
-	}
 }

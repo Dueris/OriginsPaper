@@ -1,48 +1,39 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.craftbukkit.entity.CraftEntity;
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.actions.Actions;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 
-import java.util.ArrayList;
+public class PreventElytraFlight extends PowerType implements Listener {
+	private final FactoryJsonObject entityAction;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_elytra_flight;
+	public PreventElytraFlight(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject entityAction) {
+		super(name, description, hidden, condition, loading_priority);
+		this.entityAction = entityAction;
+	}
 
-public class PreventElytraFlight extends CraftPower implements Listener {
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("prevent_elytra_flight"))
+			.add("entity_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	@EventHandler
 	public void run(EntityToggleGlideEvent e) {
 		if (e.getEntity() instanceof Player p) {
-			if (prevent_elytra_flight.contains(p)) {
-				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-					for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-						if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-							e.setCancelled(true);
-							setActive(p, power.getTag(), true);
-						} else {
-							setActive(p, power.getTag(), false);
-						}
-					}
+			if (getPlayers().contains(p)) {
+				if (isActive(p)) {
+					e.setCancelled(true);
+					Actions.executeEntity(p, entityAction);
 				}
 			}
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:prevent_elytra_flight";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return prevent_elytra_flight;
-	}
 }

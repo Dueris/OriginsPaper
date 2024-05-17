@@ -1,16 +1,18 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.OptionalInstance;
+import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.factory.data.types.HudRender;
+import me.dueris.genesismc.factory.data.types.JsonKeybind;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,25 +22,71 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.entity.CraftEntityType;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FireProjectile extends CraftPower implements Listener {
-
+public class FireProjectile extends PowerType implements KeyedPower, CooldownPower {
 	private static final ArrayList<Player> doubleFirePatch = new ArrayList<>();
 	public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
 	public static ArrayList<Player> enderian_pearl = new ArrayList<>();
 	public static ArrayList<Player> in_cooldown_patch = new ArrayList<>();
+	private final NamespacedKey entityType;
+	private final int cooldown;
+	private final HudRender hudRender;
+	private final int count;
+	private final int interval;
+	private final int startDelay;
+	private final float speed;
+	private final float providedDivergence;
+	private final Sound sound;
+	private final CompoundTag tag;
+	private final JsonKeybind keybind;
+	private final FactoryJsonObject projectileAction;
+	private final FactoryJsonObject shooterAction;
+
+	public FireProjectile(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, NamespacedKey entityType, int cooldown, FactoryJsonObject hudRender, int count, int interval, int startDelay, float speed, float divergence, Sound sound, CompoundTag tag, FactoryJsonObject key, FactoryJsonObject projectileAction, FactoryJsonObject shooterAction) {
+		super(name, description, hidden, condition, loading_priority);
+		this.entityType = entityType;
+		this.cooldown = cooldown;
+		this.hudRender = HudRender.createHudRender(hudRender);
+		this.count = count;
+		this.interval = interval;
+		this.startDelay = startDelay;
+		this.speed = speed;
+		this.providedDivergence = divergence;
+		this.sound = sound;
+		this.tag = tag;
+		this.keybind = JsonKeybind.createJsonKeybind(key);
+		this.projectileAction = projectileAction;
+		this.shooterAction = shooterAction;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("fire_projectile"))
+			.add("entity_type", NamespacedKey.class, new RequiredInstance())
+			.add("cooldown", int.class, 1)
+			.add("hud_render", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("count", int.class, 1)
+			.add("interval", int.class, 0)
+			.add("start_delay", int.class, 0)
+			.add("speed", float.class, 1.5F)
+			.add("divergence", float.class, 1.0F)
+			.add("sound", Sound.class, new OptionalInstance())
+			.add("tag", CompoundTag.class, new OptionalInstance())
+			.add("key", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("projectile_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("shooter_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	public static void addCooldownPatch(Player p) {
 		in_cooldown_patch.add(p);
@@ -53,18 +101,14 @@ public class FireProjectile extends CraftPower implements Listener {
 	@EventHandler
 	public void inContinuousFix(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			if (fire_projectile.contains(p)) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
-						in_continuous.putIfAbsent(p, new ArrayList<>());
-						if (power.getJsonObject("key").getBooleanOrDefault("continuous", false)) {
-							if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"))) {
-								in_continuous.get(p).remove(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
-							} else {
-								in_continuous.get(p).add(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
-							}
-						}
+		if (getPlayers().contains(p)) {
+			if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), p)) {
+				in_continuous.putIfAbsent(p, new ArrayList<>());
+				if (getJsonKey().isContinuous()) {
+					if (in_continuous.get(p).contains(getJsonKey().getKey())) {
+						in_continuous.get(p).remove(getJsonKey().getKey());
+					} else {
+						in_continuous.get(p).add(getJsonKey().getKey());
 					}
 				}
 			}
@@ -86,136 +130,164 @@ public class FireProjectile extends CraftPower implements Listener {
 	public void keybindPress(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
 		if (doubleFirePatch.contains(p)) return;
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-				if (fire_projectile.contains(p)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						if (!Cooldown.isInCooldown(p, power)) {
-							if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
-								int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
-								String tag = power.getStringOrDefault("tag", "{}");
-								float divergence = power.getNumberOrDefault("divergence", 1.0f).getFloat();
-								float speed = power.getNumberOrDefault("speed", 1.5F).getFloat();
-								int amt = power.getNumberOrDefault("count", 1).getInt();
-								int start_delay = power.getNumberOrDefault("start_delay", 0).getInt();
-								int interval = power.getNumberOrDefault("interval", 1).getInt();
+		if (getPlayers().contains(p)) {
+			if (isActive(p)) {
+				if (!Cooldown.isInCooldown(p, this)) {
+					if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), p)) {
+						// Slight random divergence
+						float divergence = providedDivergence + (float) ((Math.random() - 0.5) * 0.05);
 
-								// Introduce a slight random divergence
-								divergence += (float) ((Math.random() - 0.5) * 0.05); // Adjust the 0.05 value to control the randomness level
-
-								EntityType type;
-								if (power.getString("entity_type").equalsIgnoreCase("origins:enderian_pearl")) {
-									type = EntityType.ENDER_PEARL;
-									enderian_pearl.add(p);
-								} else {
-									type = EntityType.valueOf(power.getNamespacedKey("entity_type").asString().split(":")[1].toUpperCase());
-									enderian_pearl.remove(p);
-								}
-								String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
-
-								float finalDivergence = divergence;
-								boolean cont = !power.getJsonObject("key").getBooleanOrDefault("continuous", false);
-								ServerPlayer player = ((CraftPlayer) p).getHandle();
-								new BukkitRunnable() {
-									int shotsLeft = -amt;
-
-									@Override
-									public void run() {
-										if (shotsLeft >= 0) {
-											if ((!cont || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key)) {
-												Cooldown.addCooldown(p, cooldown, power);
-												setActive(p, power.getTag(), false);
-												this.cancel();
-												return;
-											}
-										}
-										addCooldownPatch(p);
-
-										if (type.getEntityClass() != null) {
-											if (doubleFirePatch.contains(p)) return;
-
-											ServerLevel serverWorld = (ServerLevel) player.level();
-											float yaw = player.getYRot();
-											float pitch = player.getXRot();
-
-											Entity entityToSpawn = Utils
-												.getEntityWithPassengers(serverWorld, CraftEntityType.bukkitToMinecraft(type), Utils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(tag), CompoundTag.CODEC), player.position().add(0, player.getEyeHeight(player.getPose()), 0), yaw, pitch)
-												.orElse(null);
-
-											if (entityToSpawn == null) {
-												return;
-											}
-
-											Vec3 rotationVector = player.getLookAngle();
-											Vec3 velocity = player.getDeltaMovement();
-											RandomSource random = serverWorld.getRandom();
-
-											if (entityToSpawn instanceof Projectile projectileToSpawn) {
-												if (projectileToSpawn instanceof AbstractHurtingProjectile explosiveProjectileToSpawn) {
-													explosiveProjectileToSpawn.xPower = rotationVector.x * speed;
-													explosiveProjectileToSpawn.yPower = rotationVector.y * speed;
-													explosiveProjectileToSpawn.zPower = rotationVector.z * speed;
-												}
-
-												projectileToSpawn.setOwner(player);
-												projectileToSpawn.shootFromRotation(player, pitch, yaw, 0F, speed, finalDivergence);
-
-											} else {
-
-												float f = 0.017453292F;
-												double g = 0.007499999832361937D;
-
-												float h = -Mth.sin(yaw * f) * Mth.cos(pitch * f);
-												float i = -Mth.sin(pitch * f);
-												float j = Mth.cos(yaw * f) * Mth.cos(pitch * f);
-
-												Vec3 vec3d = new Vec3(h, i, j)
-													.normalize()
-													.add(random.nextGaussian() * g * finalDivergence, random.nextGaussian() * g * finalDivergence, random.nextGaussian() * g * finalDivergence)
-													.scale(speed);
-
-												entityToSpawn.setDeltaMovement(vec3d);
-												entityToSpawn.setDeltaMovement(velocity.x, player.onGround() ? 0.0D : velocity.y, velocity.z);
-
-											}
-
-											if (Utils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(tag), CompoundTag.CODEC).isEmpty()) {
-												CompoundTag mergedTag = entityToSpawn.saveWithoutId(new CompoundTag());
-												mergedTag.merge(Utils.ParserUtils.parseJson(new com.mojang.brigadier.StringReader(tag), CompoundTag.CODEC));
-
-												entityToSpawn.load(mergedTag);
-
-											}
-
-											if (entityToSpawn.getBukkitEntity() instanceof org.bukkit.entity.Projectile proj) {
-												proj.setShooter(p);
-											}
-
-											serverWorld.tryAddFreshEntityWithPassengers(entityToSpawn);
-											org.bukkit.entity.Entity bukkit = entityToSpawn.getBukkitEntity();
-											Actions.executeEntity(bukkit, power.getJsonObject("projectile_action"));
-											Actions.executeEntity(p, power.getJsonObject("shooter_action"));
-
-											shotsLeft++;
-										}
-									}
-								}.runTaskTimer(GenesisMC.getPlugin(), start_delay, interval);
-							}
+						EntityType type;
+						if (entityType.asString().equalsIgnoreCase("origins:enderian_pearl")) {
+							type = EntityType.ENDER_PEARL;
+							enderian_pearl.add(p);
+						} else {
+							type = EntityType.valueOf(entityType.asString().split(":")[1].toUpperCase());
+							enderian_pearl.remove(p);
 						}
+						String key = getJsonKey().getKey();
+
+						boolean cont = !getJsonKey().isContinuous();
+						ServerPlayer player = ((CraftPlayer) p).getHandle();
+						new BukkitRunnable() {
+							int shotsLeft = -count;
+
+							@Override
+							public void run() {
+								if (shotsLeft >= 0) {
+									if ((!cont || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key)) {
+										Cooldown.addCooldown(p, cooldown, getSelf());
+										this.cancel();
+										return;
+									}
+								}
+								addCooldownPatch(p);
+
+								if (type.getEntityClass() != null) {
+									if (doubleFirePatch.contains(p)) return;
+
+									ServerLevel serverWorld = (ServerLevel) player.level();
+									float yaw = player.getYRot();
+									float pitch = player.getXRot();
+
+									Entity entityToSpawn = Utils
+										.getEntityWithPassengers(serverWorld, CraftEntityType.bukkitToMinecraft(type), tag, player.position().add(0, player.getEyeHeight(player.getPose()), 0), yaw, pitch)
+										.orElse(null);
+
+									if (entityToSpawn == null) {
+										return;
+									}
+
+									Vec3 rotationVector = player.getLookAngle();
+									Vec3 velocity = player.getDeltaMovement();
+									RandomSource random = serverWorld.getRandom();
+
+									if (entityToSpawn instanceof Projectile projectileToSpawn) {
+										if (projectileToSpawn instanceof AbstractHurtingProjectile explosiveProjectileToSpawn) {
+											explosiveProjectileToSpawn.xPower = rotationVector.x * speed;
+											explosiveProjectileToSpawn.yPower = rotationVector.y * speed;
+											explosiveProjectileToSpawn.zPower = rotationVector.z * speed;
+										}
+
+										projectileToSpawn.setOwner(player);
+										projectileToSpawn.shootFromRotation(player, pitch, yaw, 0F, speed, divergence);
+
+									} else {
+										float f = 0.017453292F;
+										double g = 0.007499999832361937D;
+
+										float h = -Mth.sin(yaw * f) * Mth.cos(pitch * f);
+										float i = -Mth.sin(pitch * f);
+										float j = Mth.cos(yaw * f) * Mth.cos(pitch * f);
+
+										Vec3 vec3d = new Vec3(h, i, j)
+											.normalize()
+											.add(random.nextGaussian() * g * divergence, random.nextGaussian() * g * divergence, random.nextGaussian() * g * divergence)
+											.scale(speed);
+
+										entityToSpawn.setDeltaMovement(vec3d);
+										entityToSpawn.setDeltaMovement(velocity.x, player.onGround() ? 0.0D : velocity.y, velocity.z);
+
+									}
+
+									if (tag != null) {
+										CompoundTag mergedTag = entityToSpawn.saveWithoutId(new CompoundTag());
+										mergedTag.merge(tag);
+
+										entityToSpawn.load(mergedTag);
+									}
+
+									if (entityToSpawn.getBukkitEntity() instanceof org.bukkit.entity.Projectile proj) {
+										proj.setShooter(p);
+									}
+
+									serverWorld.tryAddFreshEntityWithPassengers(entityToSpawn);
+									org.bukkit.entity.Entity bukkit = entityToSpawn.getBukkitEntity();
+									Actions.executeEntity(bukkit, projectileAction);
+									Actions.executeEntity(p, shooterAction);
+
+									shotsLeft++;
+								}
+							}
+						}.runTaskTimer(GenesisMC.getPlugin(), startDelay, interval);
 					}
 				}
 			}
 		}
 	}
 
-
-	@Override
-	public String getType() {
-		return "apoli:fire_projectile";
+	private FireProjectile getSelf() {
+		return this;
 	}
 
 	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return fire_projectile;
+	public int getCooldown() {
+		return cooldown;
+	}
+
+	@Override
+	public JsonKeybind getJsonKey() {
+		return keybind;
+	}
+
+	@Override
+	public HudRender getHudRender() {
+		return hudRender;
+	}
+
+	public NamespacedKey getEntityType() {
+		return entityType;
+	}
+
+	public Sound getSound() {
+		return sound;
+	}
+
+	public int getInterval() {
+		return interval;
+	}
+
+	public FactoryJsonObject getProjectileAction() {
+		return projectileAction;
+	}
+
+	public FactoryJsonObject getShooterAction() {
+		return shooterAction;
+	}
+
+	public float getDivergence() {
+		return providedDivergence;
+	}
+
+	public float getSpeed() {
+		return speed;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public int getStartDelay() {
+		return startDelay;
 	}
 }

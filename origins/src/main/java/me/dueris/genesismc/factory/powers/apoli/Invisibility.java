@@ -1,27 +1,31 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
-import org.bukkit.craftbukkit.entity.CraftEntity;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
+public class Invisibility extends PowerType {
 
-public class Invisibility extends CraftPower implements Listener {
+	public Invisibility(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
+		super(name, description, hidden, condition, loading_priority);
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("invisibility"));
+	}
 
 	@Override
-	public void run(Player p, Power power) {
-		boolean shouldSetInvisible = ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p);
+	public void tick(Player p) {
+		boolean shouldSetInvisible = isActive(p);
 
 		p.setInvisible(shouldSetInvisible || p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY));
 	}
 
-	@Override
 	public void doesntHavePower(Player p) {
 		if (p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY)) {
 			return;
@@ -31,21 +35,11 @@ public class Invisibility extends CraftPower implements Listener {
 
 	@EventHandler
 	public void powerUpdate(PowerUpdateEvent e) {
-		if (!getPlayersWithPower().contains(e.getPlayer())) {
+		if (!getPlayers().contains(e.getPlayer())) {
 			doesntHavePower(e.getPlayer());
 			return;
 		}
-		run(e.getPlayer(), e.getPower());
-	}
-
-	@Override
-	public String getType() {
-		return "apoli:invisibility";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return invisibility;
+		tick(e.getPlayer());
 	}
 
 }

@@ -2,16 +2,17 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import com.mojang.datafixers.util.Pair;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.OptionalInstance;
+import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
-import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,20 +32,37 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-/**
- * This power remaps most of the utility methods inside of Apoli(ModifyPlayerSpawn)
- */
-public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
+public class ModifyPlayerSpawnPower extends PowerType {
+	private final NamespacedKey dimension;
+	private final @Nullable ResourceLocation biome;
+	private final @Nullable ResourceLocation structure;
+	private final SpawnStrategy spawnStrategy;
+	private final float dimensionDistanceMultiplier;
+
+	public ModifyPlayerSpawnPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, NamespacedKey dimension, ResourceLocation biome, ResourceLocation structure, SpawnStrategy spawnStrategy, float dimensionDistanceMultiplier) {
+		super(name, description, hidden, condition, loading_priority);
+		this.dimension = dimension;
+		this.biome = biome;
+		this.structure = structure;
+		this.spawnStrategy = spawnStrategy;
+		this.dimensionDistanceMultiplier = dimensionDistanceMultiplier;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("modify_player_spawn"))
+			.add("dimension", NamespacedKey.class, new RequiredInstance())
+			.add("biome", ResourceLocation.class, new OptionalInstance())
+			.add("structure", ResourceLocation.class, new OptionalInstance())
+			.add("spawn_strategy", SpawnStrategy.class, SpawnStrategy.DEFAULT)
+			.add("dimension_distance_multiplier", float.class, 0.125F);
+	}
 
 	@EventHandler
 	public void powerRemove(PowerUpdateEvent e) {
@@ -61,38 +79,23 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void runD(PlayerPostRespawnEvent e) {
-		if (!getPlayersWithPower().contains(e.getPlayer())) return;
+		if (!getPlayers().contains(e.getPlayer())) return;
 		if (e.getPlayer().getBedSpawnLocation() != null) {
 			e.getPlayer().teleport(e.getPlayer().getBedSpawnLocation());
 		} else {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-					this.teleportToModifiedSpawn(((CraftPlayer) e.getPlayer()).getHandle(), power);
-				}
-			}
+			this.teleportToModifiedSpawn(((CraftPlayer) e.getPlayer()).getHandle());
 		}
 	}
 
-	private ResourceKey<Level> getDimension(Power power) {
-		NamespacedKey key = NamespacedKey.fromString(power.getString("dimension"));
-		return ((CraftWorld) Bukkit.getWorld(key)).getHandle().dimension();
+	private ResourceKey<Level> getDimension() {
+		return ((CraftWorld) Bukkit.getWorld(dimension)).getHandle().dimension();
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:modify_player_spawn";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return modify_world_spawn;
-	}
-
-	public void teleportToModifiedSpawn(Entity entity, Power power) {
+	public void teleportToModifiedSpawn(Entity entity) {
 		if (false || !(entity instanceof net.minecraft.world.entity.player.Player playerEntity)) return;
 
 		ServerPlayer serverPlayer = (ServerPlayer) playerEntity;
-		Pair<ServerLevel, BlockPos> newSpawn = getSpawn(entity, power);
+		Pair<ServerLevel, BlockPos> newSpawn = getSpawn(entity);
 
 		if (newSpawn == null) return;
 		ServerLevel newSpawnDimension = newSpawn.getFirst();
@@ -107,10 +110,8 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
 	}
 
-	public Pair<ServerLevel, BlockPos> getSpawn(Entity entity, Power power) {
-		SpawnStrategy spawnStrategy = SpawnStrategy.valueOf(power.getStringOrDefault("spawn_strategy", "default").toUpperCase());
-		ResourceKey<Level> dimension = getDimension(power);
-		float dimensionDistanceMultiplier = power.getNumberOrDefault("dimension_distance_multiplier", 1f).getFloat();
+	public Pair<ServerLevel, BlockPos> getSpawn(Entity entity) {
+		ResourceKey<Level> dimension = getDimension();
 		if (false || !(entity instanceof net.minecraft.world.entity.player.Player playerEntity)) return null;
 
 		ServerPlayer ServerPlayer = (ServerPlayer) playerEntity;
@@ -136,8 +137,8 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 		BlockPos.MutableBlockPos modifiedSpawnBlockPos = new BlockPos.MutableBlockPos();
 		BlockPos.MutableBlockPos dimensionSpawnPos = spawnStrategy.apply(regularSpawnBlockPos, center, dimensionDistanceMultiplier).mutable();
 
-		getBiomePos(targetDimension, dimensionSpawnPos, power).ifPresent(dimensionSpawnPos::set);
-		getSpawnPos(targetDimension, dimensionSpawnPos, range, power, entity).ifPresent(modifiedSpawnPos::set);
+		getBiomePos(targetDimension, dimensionSpawnPos).ifPresent(dimensionSpawnPos::set);
+		getSpawnPos(targetDimension, dimensionSpawnPos, range, entity).ifPresent(modifiedSpawnPos::set);
 
 		if (modifiedSpawnPos.get() == null) {
 			return null;
@@ -151,10 +152,10 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
 	}
 
-	private Optional<BlockPos> getBiomePos(ServerLevel targetDimension, BlockPos originPos, Power power) {
-		if (!power.isPresent("biome")) return Optional.empty();
+	private Optional<BlockPos> getBiomePos(ServerLevel targetDimension, BlockPos originPos) {
+		if (biome == null) return Optional.empty();
 
-		Optional<Biome> targetBiome = CraftRegistry.getMinecraftRegistry().registry(Registries.BIOME).get().getOptional(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(power.getString("biome"))));
+		Optional<Biome> targetBiome = CraftRegistry.getMinecraftRegistry().registry(Registries.BIOME).get().getOptional(biome);
 		if (targetBiome.isEmpty()) {
 			return Optional.empty();
 		}
@@ -177,10 +178,9 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 		}
 	}
 
-	private Optional<Pair<BlockPos, Structure>> getStructurePos(ServerLevel world, Power power) {
-		NamespacedKey key = NamespacedKey.fromString(power.getString("structure"));
+	private Optional<Pair<BlockPos, Structure>> getStructurePos(ServerLevel world) {
 		Registry<Structure> structureRegistry = CraftRegistry.getMinecraftRegistry().registry(Registries.STRUCTURE).get();
-		ResourceKey<Structure> stRk = GenesisMC.server.registryAccess().registry(Registries.STRUCTURE).get().getResourceKey(structureRegistry.get(CraftNamespacedKey.toMinecraft(key))).get();
+		ResourceKey<Structure> stRk = GenesisMC.server.registryAccess().registry(Registries.STRUCTURE).get().getResourceKey(structureRegistry.get(structure)).get();
 		HolderSet<Structure> structureHolderSet = null;
 
 		if (stRk != null) {
@@ -202,10 +202,10 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
 	}
 
-	private Optional<Vec3> getSpawnPos(ServerLevel targetDimension, BlockPos originPos, int range, Power power, Entity entity) {
-		if (!power.isPresent("structure")) return getValidSpawn(targetDimension, originPos, range, entity);
+	private Optional<Vec3> getSpawnPos(ServerLevel targetDimension, BlockPos originPos, int range, Entity entity) {
+		if (structure == null) return getValidSpawn(targetDimension, originPos, range, entity);
 
-		Optional<Pair<BlockPos, Structure>> targetStructure = getStructurePos(targetDimension, power);
+		Optional<Pair<BlockPos, Structure>> targetStructure = getStructurePos(targetDimension);
 		if (targetStructure.isEmpty()) return Optional.empty();
 
 		BlockPos targetStructurePos = targetStructure.get().getFirst();
@@ -296,7 +296,6 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 	}
 
 	public enum SpawnStrategy {
-
 		CENTER((blockPos, center, multiplier) -> new BlockPos(0, center, 0)),
 		DEFAULT(
 			(blockPos, center, multiplier) -> {

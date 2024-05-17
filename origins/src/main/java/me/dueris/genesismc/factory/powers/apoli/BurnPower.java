@@ -1,47 +1,47 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.RequiredInstance;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+public class BurnPower extends PowerType {
+	private final int interval;
+	private final int burnDuration;
 
-public class BurnPower extends CraftPower {
+	public BurnPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int interval, int burnDuration) {
+		super(name, description, hidden, condition, loading_priority);
+		this.interval = interval;
+		this.burnDuration = burnDuration;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("burn"))
+			.add("interval", int.class, new RequiredInstance())
+			.add("burn_duration", int.class, new RequiredInstance());
+	}
 
 	@Override
-	public void run(Player p, Power power) {
-		if (!power.isPresent("interval")) {
-			throw new IllegalArgumentException("Interval must not be null! Provide an interval!! : " + power.fillStackTrace());
-		}
-
-		long interval = power.getNumber("interval").getLong();
-		if (interval == 0) interval = 1L;
+	public void tick(Player p) {
 		if (Bukkit.getServer().getCurrentTick() % interval == 0) {
 			if (p.isInWaterOrRainOrBubbleColumn()) return;
 			if (p.getGameMode() == GameMode.CREATIVE) return;
-			if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-				setActive(p, power.getTag(), true);
-
-				long burn_duration = power.getNumberOrDefault("burn_duration", 100L).getLong();
-				p.setFireTicks((int) burn_duration * 20);
-			} else {
-				setActive(p, power.getTag(), false);
+			if (isActive(p)) {
+				p.setFireTicks(burnDuration * 20);
 			}
 
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:burn";
+	public int getInterval() {
+		return interval;
 	}
 
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return burn;
+	public int getBurnDuration() {
+		return burnDuration;
 	}
 }

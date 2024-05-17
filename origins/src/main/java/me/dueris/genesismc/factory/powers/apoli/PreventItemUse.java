@@ -1,48 +1,36 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.entity.Player;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.ArrayList;
+public class PreventItemUse extends PowerType implements Listener {
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_item_use;
+	private final FactoryJsonObject itemCondition;
 
-public class PreventItemUse extends CraftPower implements Listener {
+	public PreventItemUse(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject itemCondition) {
+		super(name, description, hidden, condition, loading_priority);
+		this.itemCondition = itemCondition;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("prevent_item_use"))
+			.add("item_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	@EventHandler
 	public void runD(PlayerInteractEvent e) {
-		if (prevent_item_use.contains(e.getPlayer())) {
+		if (getPlayers().contains(e.getPlayer())) {
 			if (e.getItem() == null) return;
-
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-					if (power == null) {
-						getPlayersWithPower().remove(e.getPlayer());
-						return;
-					} else {
-						boolean shouldCancel = ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getItem());
-						if (shouldCancel) e.setCancelled(true);
-					}
-				}
-			}
+			boolean shouldCancel = ConditionExecutor.testItem(itemCondition, e.getItem());
+			if (shouldCancel) e.setCancelled(true);
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:prevent_item_use";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return prevent_item_use;
-	}
 }

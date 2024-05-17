@@ -17,7 +17,7 @@ import static net.minecraft.commands.Commands.literal;
 
 public class CraftPehuki {
 	public static void onLoad() {
-		register(((CraftServer) Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
+		register(((CraftServer) Bukkit.getServer()).getServer().getCommands().getDispatcher());
 	}
 
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {

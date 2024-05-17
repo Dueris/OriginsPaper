@@ -1,52 +1,40 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.craftbukkit.entity.CraftEntity;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.RequiredInstance;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.GenericGameEvent;
 
-import java.util.ArrayList;
+public class PreventGameEvent extends PowerType implements Listener {
+	private final NamespacedKey event;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_game_event;
+	public PreventGameEvent(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, NamespacedKey event) {
+		super(name, description, hidden, condition, loading_priority);
+		this.event = event;
+	}
 
-public class PreventGameEvent extends CraftPower implements Listener {
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("prevent_game_event"))
+			.add("event", NamespacedKey.class, new RequiredInstance());
+	}
 
 	@EventHandler
 	public void event(GenericGameEvent e) {
 		if (e.getEntity() == null) return;
 		if (e.getEntity() instanceof Player p) {
-			if (!this.getPlayersWithPower().contains(p)) return;
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						String event = power.getString("event");
-						if (event.contains(":")) {
-							event = event.split(":")[1];
-						}
-						if (e.getEvent().key().asString().equals(event)) {
-							e.setCancelled(true);
-						}
-					}
+			if (!getPlayers().contains(p)) return;
+			if (isActive(p)) {
+				if (e.getEvent().key().equals(event)) {
+					e.setCancelled(true);
 				}
 			}
 		}
-	}
-
-	@Override
-	public String getType() {
-		return "apoli:prevent_game_event";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return prevent_game_event;
 	}
 
 }

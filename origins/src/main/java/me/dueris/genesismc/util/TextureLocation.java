@@ -26,7 +26,7 @@ public class TextureLocation implements Registrable {
 		this.key = key;
 	}
 
-	public static void parseAll() throws IOException {
+	public static void registerAll() throws IOException {
 		if (CraftApoli.datapacksInDir() == null) return;
 		for (File pack : CraftApoli.datapacksInDir()) {
 			if (pack == null) continue;

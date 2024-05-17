@@ -1,40 +1,31 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
-import org.bukkit.craftbukkit.entity.CraftEntity;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.event.PowerUpdateEvent;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 
-import java.util.ArrayList;
+public class PreventEntityCollision extends PowerType {
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_entity_collision;
+	public PreventEntityCollision(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
+		super(name, description, hidden, condition, loading_priority);
+	}
 
-public class PreventEntityCollision extends CraftPower {
-
-	@Override
-	public void run(Player p, Power power) {
-		if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-			p.setCollidable(false);
-			setActive(p, power.getTag(), false);
-		} else {
-			setActive(p, power.getTag(), false);
-			p.setCollidable(true);
-		}
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("prevent_entity_collision"));
 	}
 
 	@Override
-	public void doesntHavePower(Player p) {
-		p.setCollidable(true);
+	public void tick(Player p) {
+		p.setCollidable(isActive(p));
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:prevent_entity_collision";
+	@EventHandler
+	public void update(PowerUpdateEvent e) {
+		e.getPlayer().setCollidable(true);
 	}
 
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return prevent_entity_collision;
-	}
 }

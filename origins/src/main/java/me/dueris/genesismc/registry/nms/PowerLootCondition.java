@@ -4,9 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -41,8 +41,8 @@ public class PowerLootCondition implements LootItemCondition {
 		CraftEntity var4 = entity.getBukkitEntity();
 		if (var4 instanceof Player player) {
 			NamespacedKey key = CraftNamespacedKey.fromMinecraft(this.powerId);
-			Power power = (Power) GenesisMC.getPlugin().registry.retrieve(Registries.POWER).get(key);
-			return OriginPlayerAccessor.hasPower(player, power.getTag());
+			PowerType power = (PowerType) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(key);
+			return PowerHolderComponent.hasPower(player, power.getTag());
 		} else {
 			return false;
 		}

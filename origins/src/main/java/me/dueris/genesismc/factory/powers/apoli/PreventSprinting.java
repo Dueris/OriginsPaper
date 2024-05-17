@@ -1,34 +1,26 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
-import org.bukkit.craftbukkit.entity.CraftEntity;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+public class PreventSprinting extends PowerType {
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_sprinting;
+	public PreventSprinting(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
+		super(name, description, hidden, condition, loading_priority);
+	}
 
-public class PreventSprinting extends CraftPower {
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("prevent_sprinting"));
+	}
 
 	@Override
-	public void run(Player p, Power power) {
-		if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-			setActive(p, power.getTag(), true);
+	public void tick(Player p) {
+		if (isActive(p)) {
 			p.setSprinting(false);
-		} else {
-			setActive(p, power.getTag(), false);
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:prevent_sprinting";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return prevent_sprinting;
-	}
 }

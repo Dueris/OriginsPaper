@@ -1,25 +1,23 @@
 package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
-
-public class LikeWater extends CraftPower implements Listener, PowerProvider {
-	public static ArrayList<Player> likeWaterPlayers = new ArrayList<>();
-	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("like_water");
+public class LikeWater implements Listener, PowerProvider {
 	private static final AttributeModifier modifier = new AttributeModifier("LikeWater", -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+	protected static NamespacedKey powerReference = GenesisMC.originIdentifier("like_water");
+	private static final String cachedPowerRefrenceString = powerReference.asString();
 
 	@Override
-	public void run(Player p, Power power) {
-		if (this.getPlayersWithPower().contains(p) && p.isInWaterOrBubbleColumn() && !p.isSneaking()) {
+	public void tick(Player p) {
+		if (!PowerHolderComponent.hasPower(p, cachedPowerRefrenceString)) return;
+		if (p.isInWaterOrBubbleColumn() && !p.isSneaking()) {
 			if (!p.getAttribute(Attribute.GENERIC_GRAVITY).getModifiers().contains(modifier)) {
 				p.getAttribute(Attribute.GENERIC_GRAVITY).addTransientModifier(modifier);
 			}
@@ -28,16 +26,6 @@ public class LikeWater extends CraftPower implements Listener, PowerProvider {
 				p.getAttribute(Attribute.GENERIC_GRAVITY).removeModifier(modifier);
 			}
 		}
-	}
-
-	@Override
-	public String getType() {
-		return null;
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return likeWaterPlayers;
 	}
 
 }

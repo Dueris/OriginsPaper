@@ -1,8 +1,8 @@
 package me.dueris.genesismc.factory.conditions;
 
 import it.unimi.dsi.fastutil.Pair;
-import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import me.dueris.calio.data.factory.FactoryJsonArray;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.types.*;
@@ -11,10 +11,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.block.CraftBiome;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.util.CraftLocation;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -55,6 +58,10 @@ public class ConditionExecutor {
 			chance = 1f;
 		}
 		return new Random().nextFloat(1.0f) <= chance;
+	}
+
+	public static boolean testBiEntity(FactoryJsonObject condition, Entity actor, Entity target) {
+		return testBiEntity(condition, (CraftEntity) actor, (CraftEntity) target);
 	}
 
 	public static boolean testBiEntity(FactoryJsonObject condition, CraftEntity actor, CraftEntity target) {
@@ -200,6 +207,10 @@ public class ConditionExecutor {
 		return false;
 	}
 
+	public static boolean testBlock(FactoryJsonObject condition, Block block) {
+		return testBlock(condition, CraftBlock.at(((CraftWorld) block.getWorld()).getHandle(), CraftLocation.toBlockPosition(block.getLocation())));
+	}
+
 	@SuppressWarnings("index out of bounds")
 	public static boolean testBlock(FactoryJsonObject condition, CraftBlock block) {
 		if (condition == null || condition.isEmpty()) return true; // Empty condition, do nothing
@@ -331,6 +342,10 @@ public class ConditionExecutor {
 			}
 		}
 		return false;
+	}
+
+	public static boolean testEntity(FactoryJsonObject condition, Entity entity) {
+		return testEntity(condition, (CraftEntity) entity);
 	}
 
 	public static boolean testEntity(FactoryJsonObject condition, CraftEntity entity) {

@@ -1,8 +1,8 @@
 package me.dueris.genesismc.factory.actions;
 
 import it.unimi.dsi.fastutil.Pair;
-import me.dueris.calio.builder.inst.factory.FactoryJsonArray;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import me.dueris.calio.data.factory.FactoryJsonArray;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.types.BiEntityActions;
@@ -103,15 +103,15 @@ public class Actions {
 	public static void executeBiEntity(Entity actor, Entity target, FactoryJsonObject action) {
 		if (!action.isPresent("type") || action.isEmpty()) return;
 		String type = action.getString("type");
-		Pair entityPair = new Pair<CraftEntity, CraftEntity>() {
+		Pair<Entity, Entity> entityPair = new Pair<>() {
 			@Override
-			public CraftEntity left() {
-				return (CraftEntity) actor;
+			public Entity left() {
+				return actor;
 			}
 
 			@Override
-			public CraftEntity right() {
-				return (CraftEntity) target;
+			public Entity right() {
+				return target;
 			}
 		};
 		if (testMetaAction(action, new String[]{"apoli:actor_action", "apoli:invert", "apoli:target_action"})) {

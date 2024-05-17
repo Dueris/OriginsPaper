@@ -1,29 +1,39 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.craftbukkit.entity.CraftEntity;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class EntitySetPower extends CraftPower implements Listener {
-	// Map<KEY, ARRAY_OF_ENTITIES>
+public class EntitySetPower extends PowerType {
 	public static HashMap<String, ArrayList<Entity>> entity_sets = new HashMap<>();
+	private final FactoryJsonObject actionOnAdd;
+	private final FactoryJsonObject actionOnRemove;
+
+	public EntitySetPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject actionOnAdd, FactoryJsonObject actionOnRemove) {
+		super(name, description, hidden, condition, loading_priority);
+		this.actionOnAdd = actionOnAdd;
+		this.actionOnRemove = actionOnRemove;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("entity_set"))
+			.add("action_on_add", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("action_on_remove", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	public static void addToEntitySet(Entity p, String tag) {
 		Preconditions.checkArgument(p != null, "Entity must not be null");
@@ -76,17 +86,13 @@ public class EntitySetPower extends CraftPower implements Listener {
 
 	@EventHandler
 	public void join(PlayerJoinEvent e) {
-		if (entity_set.contains(e.getPlayer())) {
+		if (getPlayers().contains(e.getPlayer())) {
 			for (String tag : entity_sets.keySet()) {
 				if (entity_sets.containsKey(tag)) {
 					entity_sets.get(tag).removeIf(entity -> entity == e.getPlayer());
 				}
 			}
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-					addToEntitySet(e.getPlayer(), power.getTag());
-				}
-			}
+			addToEntitySet(e.getPlayer(), getTag());
 		}
 	}
 
@@ -94,18 +100,10 @@ public class EntitySetPower extends CraftPower implements Listener {
 	public void addEvent(AddToSetEvent e) {
 		addToEntitySet(e.getEntity(), e.getTag());
 		for (Entity entity : entity_sets.get(e.getTag())) {
-			if (entity instanceof Player p) {
-				if (entity_set.contains(p)) {
-					for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-						for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-							if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p))
-								return;
-							if (power.getJsonObject("action_on_add") == null) return;
-							if (power.getTag() == e.getTag()) {
-								Actions.executeBiEntity(p, e.getEntity(), power.getJsonObject("action_on_add"));
-							}
-						}
-					}
+			if (entity instanceof Player p && e.getTag().equalsIgnoreCase(getTag())) {
+				if (getPlayers().contains(p)) {
+					if (!isActive(p)) return;
+					Actions.executeBiEntity(p, e.getEntity(), actionOnAdd);
 				}
 			}
 		}
@@ -116,17 +114,9 @@ public class EntitySetPower extends CraftPower implements Listener {
 		removeFromEntitySet(e.getEntity(), e.getTag());
 		for (Entity entity : entity_sets.get(e.getTag())) {
 			if (entity instanceof Player p) {
-				if (entity_set.contains(p)) {
-					for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-						for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-							if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p))
-								return;
-							if (power.getJsonObject("action_on_add") == null) return;
-							if (power.getTag() == e.getTag()) {
-								Actions.executeBiEntity(p, e.getEntity(), power.getJsonObject("action_on_remove"));
-							}
-						}
-					}
+				if (getPlayers().contains(p) && e.getTag().equalsIgnoreCase(getTag())) {
+					if (!isActive(p)) return;
+					Actions.executeBiEntity(p, e.getEntity(), actionOnRemove);
 				}
 			}
 		}
@@ -134,30 +124,15 @@ public class EntitySetPower extends CraftPower implements Listener {
 
 	@EventHandler
 	public void changeOrigin(OriginChangeEvent e) {
-		if (entity_set.contains(e.getPlayer())) {
+		if (getPlayers().contains(e.getPlayer())) {
 			for (String tag : entity_sets.keySet()) {
 				if (entity_sets.containsKey(tag)) {
 					entity_sets.get(tag).removeIf(entity -> entity == e.getPlayer());
 				}
 			}
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(e.getPlayer(), getType(), layer)) {
-					if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) e.getPlayer()))
-						return;
-					addToEntitySet(e.getPlayer(), power.getTag());
-				}
-			}
+			if (!isActive(e.getPlayer())) return;
+			addToEntitySet(e.getPlayer(), getTag());
 		}
-	}
-
-	@Override
-	public String getType() {
-		return "apoli:entity_set";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return entity_set;
 	}
 
 }

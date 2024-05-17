@@ -1,8 +1,12 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.Pair;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.data.types.HudRender;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -14,20 +18,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Cooldown extends CraftPower {
+public class Cooldown extends PowerType {
 	private static final ConcurrentHashMap<NamespacedKey, Double> incrementGetter = new ConcurrentHashMap<>();
-	public static ConcurrentHashMap<Player, List<Pair<KeyedBossBar, Power>>> cooldowns = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Player, List<Pair<KeyedBossBar, ResourcePower>>> cooldowns = new ConcurrentHashMap<>();
+	private final HudRender hudRender;
 
-	public static void addCooldown(Player player, int amt, Power power) {
+	public Cooldown(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject hudRender) {
+		super(name, description, hidden, condition, loading_priority);
+		this.hudRender = HudRender.createHudRender(hudRender);
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("cooldown"))
+			.add("hud_render", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
+
+	public static void addCooldown(Player player, int amt, ResourcePower power) {
 		addCooldown(player, amt, power, 1.0);
 	}
 
-	protected static void addCooldown(Player player, int amt, Power power, double start) {
+	protected static void addCooldown(Player player, int amt, ResourcePower power, double start) {
 		cooldowns.putIfAbsent(player, new ArrayList<>());
 		if (isInCooldown(player, power)) return; // Already in cooldown
 		KeyedBossBar bossBar = Bukkit.createBossBar(
 			NamespacedKey.fromString(power.getTag() + "_cooldown_" + player.getName().toLowerCase()),
-			Utils.getNameOrTag(power).left(), Resource.Bar.getBarColor(power.getElement("hud_render")), BarStyle.SEGMENTED_6);
+			Utils.getNameOrTag((PowerType) power).left(), Resource.Bar.getBarColor(power.getHudRender()), BarStyle.SEGMENTED_6);
 		bossBar.setProgress(start);
 		bossBar.setVisible(true);
 		bossBar.addPlayer(player);
@@ -39,27 +54,22 @@ public class Cooldown extends CraftPower {
 			}
 
 			@Override
-			public Power right() {
+			public ResourcePower right() {
 				return power;
 			}
 		});
 	}
 
-	public static boolean isInCooldown(Player player, Power power) {
+	public static boolean isInCooldown(Player player, ResourcePower power) {
 		cooldowns.putIfAbsent(player, new ArrayList<>());
-		for (Pair<KeyedBossBar, Power> pair : cooldowns.get(player)) {
+		for (Pair<KeyedBossBar, ResourcePower> pair : cooldowns.get(player)) {
 			if (pair.right().getTag().equalsIgnoreCase(power.getTag())) return true;
 		}
 		return false;
 	}
 
 	@Override
-	public String getType() {
-		return "apoli:cooldown";
-	}
-
-	@Override
-	public void run() {
+	public void tick() {
 		Utils.collectValues(new ArrayList<>(cooldowns.values())).forEach((pair) -> {
 			KeyedBossBar bar = pair.left();
 			if (!incrementGetter.containsKey(bar.getKey())) return;
@@ -76,7 +86,7 @@ public class Cooldown extends CraftPower {
 		});
 	}
 
-	private void scheduleRemoval(Pair<KeyedBossBar, Power> pair) {
+	private void scheduleRemoval(Pair<KeyedBossBar, ResourcePower> pair) {
 		for (Player p : cooldowns.keySet()) {
 			if (cooldowns.get(p).contains(pair)) {
 				cooldowns.get(p).remove(pair);
@@ -86,8 +96,7 @@ public class Cooldown extends CraftPower {
 		}
 	}
 
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return cooldown;
+	public HudRender getHudRender() {
+		return hudRender;
 	}
 }

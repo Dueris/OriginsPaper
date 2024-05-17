@@ -1,27 +1,24 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 
-import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_sleep;
 import static org.bukkit.Material.*;
 
-public class PreventSleep extends CraftPower implements Listener {
+public class PreventSleep extends PowerType {
 	public static EnumSet<Material> beds;
 
 	static {
@@ -29,43 +26,44 @@ public class PreventSleep extends CraftPower implements Listener {
 			CYAN_BED, LIGHT_BLUE_BED, BLUE_BED, PURPLE_BED, MAGENTA_BED, PINK_BED);
 	}
 
+	private final FactoryJsonObject blockCondition;
+	private final String message;
+	private final boolean setSpawnPoint;
+
+	public PreventSleep(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject blockCondition, String message, boolean setSpawnPoint) {
+		super(name, description, hidden, condition, loading_priority);
+		this.blockCondition = blockCondition;
+		this.message = message;
+		this.setSpawnPoint = setSpawnPoint;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("prevent_sleep"))
+			.add("block_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("message", String.class, "text.apoli.cannot_sleep")
+			.add("set_spawn_point", boolean.class, false);
+	}
+
 	@EventHandler
 	public void runD(PlayerInteractEvent e) {
 		if (e.getClickedBlock() == null) return;
 		if (e.getAction().isLeftClick()) return;
+		if (!getPlayers().contains(e.getPlayer())) return;
 		if (beds.contains(e.getClickedBlock().getType())) {
 			Player player = e.getPlayer();
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				Block clickedBlock = e.getClickedBlock();
-				Location blockLocation = clickedBlock.getLocation();
-				for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
-					boolean meetsCondition = ConditionExecutor.testBlock(power.getJsonObject("block_condition"), (CraftBlock) player.getLocation().getBlock());
+			Block clickedBlock = e.getClickedBlock();
+			Location blockLocation = clickedBlock.getLocation();
+			boolean meetsCondition = ConditionExecutor.testBlock(blockCondition, (CraftBlock) player.getLocation().getBlock());
 
-					if (meetsCondition) {
-						if (power.getBooleanOrDefault("set_spawn_point", false)) {
-							player.setBedSpawnLocation(blockLocation);
-						}
-						String message = power.getStringOrDefault("message", "text.apoli.cannot_sleep");
-						// Origins Mod translation
-						if (message.equalsIgnoreCase("text.apoli.cannot_sleep")) message = "You cannot sleep";
-						if (message.equalsIgnoreCase("origins.avian_sleep_fail"))
-							message = "You need fresh air to sleep";
-
-						player.sendMessage(message);
-						e.setCancelled(true);
-					}
+			if (meetsCondition) {
+				if (setSpawnPoint) {
+					player.setBedSpawnLocation(blockLocation);
 				}
+
+				player.sendMessage(message.equalsIgnoreCase("origins.avian_sleep_fail") ? "You need fresh air to sleep" :
+					message.equalsIgnoreCase("text.apoli.cannot_sleep") ? "You cannot sleep" : "text.apoli.cannot_sleep");
+				e.setCancelled(true);
 			}
 		}
-	}
-
-	@Override
-	public String getType() {
-		return "apoli:prevent_sleep";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return prevent_sleep;
 	}
 }

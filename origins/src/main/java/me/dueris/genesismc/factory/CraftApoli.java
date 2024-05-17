@@ -1,19 +1,20 @@
 package me.dueris.genesismc.factory;
 
-import com.google.gson.JsonParser;
-import me.dueris.calio.builder.inst.factory.FactoryBuilder;
-import me.dueris.calio.builder.inst.factory.FactoryElement;
-import me.dueris.calio.builder.inst.factory.FactoryJsonObject;
+import com.google.gson.JsonArray;
+import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.apoli.Multiple;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.world.level.storage.LevelResource;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,25 +30,26 @@ public class CraftApoli {
 	private static final int BUFFER_SIZE = 4096;
 	private static final Registrar<Layer> layerRegistrar = ((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER));
 	private static final Registrar<Origin> originRegistrar = ((Registrar<Origin>) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN));
-	private static final Registrar<Power> powerRegistrar = (Registrar<Power>) GenesisMC.getPlugin().registry.retrieve(Registries.POWER);
+	private static final Registrar<PowerType> powerRegistrar = (Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER);
+	private static final Collection<Layer> layerValues = new ArrayList<>();
+	private static final Collection<Origin> originValues = new ArrayList<>();
+	private static final Collection<PowerType> powerValues = new ArrayList<>();
 	static Origin empty = new Origin(
-		GenesisMC.originIdentifier("empty"),
-		new ArrayList<>(),
-		new FactoryJsonObject(
-			JsonParser.parseString("{\"icon\":{\"item\":\"minecraft:player_head\"},\"name\":\"Null\",\"description\":\"Still Null\",\"order\":0,\"impact\":0}").getAsJsonObject()
-		)
-	);
+		"Empty", "No Origin", 0,
+		new ItemStack(Material.BEDROCK), true, new FactoryJsonArray(new JsonArray()),
+		new FactoryJsonArray(new JsonArray()), 0, 0
+	).ofResourceLocation(NamespacedKey.fromString("origins:empty"));
 
 	public static Collection<Layer> getLayersFromRegistry() {
-		return layerRegistrar.values();
+		return layerValues;
 	}
 
 	public static Collection<Origin> getOriginsFromRegistry() {
-		return originRegistrar.values();
+		return originValues;
 	}
 
-	public static Collection<Power> getPowersFromRegistry() {
-		return powerRegistrar.values();
+	public static Collection<PowerType> getPowersFromRegistry() {
+		return powerValues;
 	}
 
 	public static Origin getOrigin(String originTag) {
@@ -62,8 +64,8 @@ public class CraftApoli {
 		return layerRegistrar.get(new NamespacedKey("origins", "origin"));
 	}
 
-	public static Power getPowerFromTag(String powerTag) {
-		for (Power p : powerRegistrar.values())
+	public static PowerType getPowerFromTag(String powerTag) {
+		for (PowerType p : powerRegistrar.values())
 			if (p.getTag().equals(powerTag)) return p;
 		return null;
 	}
@@ -75,31 +77,11 @@ public class CraftApoli {
 		return empty;
 	}
 
-	public static void processNestedPowers(Power powerContainer, ArrayList<Power> powerContainers, String powerFolder, String powerFileName, File sourceFile) {
-		for (String key : powerContainer.keySet()) {
-			FactoryElement subPowerValue = powerContainer.getElement(key);
-			if (subPowerValue.isJsonObject()) {
-				FactoryJsonObject jsonObject = subPowerValue.toJsonObject();
-				FactoryBuilder accessor = new FactoryBuilder(subPowerValue.handle, sourceFile);
-
-				Power newPower = new Power(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), jsonObject, true, false, powerContainer, accessor);
-				powerRegistrar.register(newPower);
-			}
-		}
-	}
-
-	public static ArrayList<Power> getNestedPowers(Power power) {
-		ArrayList<Power> nested = new ArrayList<>();
+	public static ArrayList<PowerType> getNestedPowerTypes(PowerType power) {
+		ArrayList<PowerType> nested = new ArrayList<>();
 		if (power == null) return nested;
-		String powerFolder = power.getTag().split(":")[0].toLowerCase();
-		String powerFileName = power.getTag().split(":")[1].toLowerCase();
-
-		for (String key : power.keySet()) {
-			if (power.getElement(key).isJsonObject()) {
-				if (powerRegistrar.get(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase())) != null) {
-					nested.add(powerRegistrar.get(NamespacedKey.fromString(powerFolder + ":" + powerFileName + "_" + key.toLowerCase())));
-				}
-			}
+		if (power instanceof Multiple multiple) {
+			nested.addAll(multiple.getSubPowers());
 		}
 		return nested;
 	}
@@ -125,8 +107,8 @@ public class CraftApoli {
 			if (layer == null) continue;
 			Origin layerOrigins = origin.get(layer);
 			ArrayList<String> powers = new ArrayList<>();
-			if (OriginPlayerAccessor.playerPowerMapping.get(p).containsKey(layer)) {
-				powers.addAll(OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).stream().map(Power::getTag).toList());
+			if (PowerHolderComponent.playerPowerMapping.get(p).containsKey(layer)) {
+				powers.addAll(PowerHolderComponent.playerPowerMapping.get(p).get(layer).stream().map(PowerType::getTag).toList());
 			} else {
 				powers.addAll(layerOrigins.getPowers());
 			}

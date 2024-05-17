@@ -1,61 +1,94 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.CraftApoli;
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.OptionalInstance;
+import me.dueris.calio.data.types.RequiredInstance;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.craftbukkit.entity.CraftEntity;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
+public class ModifyCraftingPower extends PowerType implements Listener {
+	private final String recipe;
+	private final FactoryJsonObject itemAction;
+	private final FactoryJsonObject entityAction;
+	private final FactoryJsonObject blockAction;
+	private final FactoryJsonObject itemCondition;
+	private final ItemStack result;
 
-public class ModifyCraftingPower extends CraftPower implements Listener {
+	public ModifyCraftingPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, String recipe, FactoryJsonObject itemAction, FactoryJsonObject entityAction, FactoryJsonObject blockAction, FactoryJsonObject itemCondition, ItemStack result) {
+		super(name, description, hidden, condition, loading_priority);
+		this.recipe = recipe;
+		this.itemAction = itemAction;
+		this.entityAction = entityAction;
+		this.blockAction = blockAction;
+		this.itemCondition = itemCondition;
+		this.result = result;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("modify_crafting"))
+			.add("recipe", String.class, new OptionalInstance())
+			.add("item_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("entity_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("block_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("item_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("result", ItemStack.class, new RequiredInstance());
+	}
 
 	@EventHandler
 	public void runD(PrepareItemCraftEvent e) {
 		Player p = (Player) e.getInventory().getHolder();
-		if (modify_crafting.contains(p)) {
+		if (getPlayers().contains(p)) {
 			if (e.getRecipe() == null) return;
 			if (e.getInventory().getResult() == null) return;
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						String currKey = RecipePower.computeTag(e.getRecipe());
-						if (currKey == null) continue;
-						String provKey = power.getStringOrDefault("recipe", currKey);
-						boolean set = false;
-						if (currKey.equals(provKey)) { // Matched on crafting
-							set = ConditionExecutor.testItem(power.getJsonObject("item_condition"), e.getInventory().getResult());
-						}
-						if (set) {
-							if (power.isPresent("result")) {
-								e.getInventory().setResult(RecipePower.computeResult(power.getJsonObject("result")));
-							}
-							Actions.executeEntity(p, power.getJsonObject("entity_action"));
-							Actions.executeItem(e.getInventory().getResult(), power.getJsonObject("item_action"));
-							Actions.executeBlock(p.getLocation(), power.getJsonObject("block_action"));
-						}
-					} else {
-						setActive(p, power.getTag(), false);
+			if (isActive(p)) {
+				String currKey = RecipePower.computeTag(e.getRecipe());
+				if (currKey == null) return;
+				boolean set = false;
+				if (currKey.equals(recipe)) { // Matched on crafting
+					set = ConditionExecutor.testItem(itemCondition, e.getInventory().getResult());
+				}
+				if (set || recipe == null) {
+					if (result != null) {
+						e.getInventory().setResult(result);
 					}
+					Actions.executeEntity(p, entityAction);
+					Actions.executeItem(e.getInventory().getResult(), itemAction);
+					Actions.executeBlock(e.getInventory().getLocation(), blockAction);
 				}
 			}
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:modify_crafting";
+	public FactoryJsonObject getBlockAction() {
+		return blockAction;
 	}
 
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return modify_crafting;
+	public FactoryJsonObject getEntityAction() {
+		return entityAction;
+	}
+
+	public FactoryJsonObject getItemAction() {
+		return itemAction;
+	}
+
+	public FactoryJsonObject getItemCondition() {
+		return itemCondition;
+	}
+
+	public ItemStack getResult() {
+		return result;
+	}
+
+	public String getRecipe() {
+		return recipe;
 	}
 }

@@ -1,57 +1,59 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.craftbukkit.entity.CraftEntity;
+import me.dueris.genesismc.factory.data.types.HudRender;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
+public class ActionWhenDamageTaken extends PowerType implements CooldownPower {
+	private final HudRender hudRender;
+	private final int cooldown;
+	private final FactoryJsonObject damageCondition;
+	private final FactoryJsonObject entityAction;
 
-public class ActionWhenDamageTaken extends CraftPower implements Listener {
+	public ActionWhenDamageTaken(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject entityAction, FactoryJsonObject damageCondition, int cooldown, FactoryJsonObject hudRender) {
+		super(name, description, hidden, condition, loading_priority);
+		this.entityAction = entityAction;
+		this.damageCondition = damageCondition;
+		this.cooldown = cooldown;
+		this.hudRender = HudRender.createHudRender(hudRender);
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("action_when_damage_taken"))
+			.add("entity_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("damage_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("cooldown", int.class, 1)
+			.add("hud_render", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
 
 	@EventHandler
 	public void d(EntityDamageEvent e) {
 		if (e.getDamage() == 0 || e.isCancelled()) return;
 		Entity actor = e.getEntity();
 		if (!(actor instanceof Player player)) return;
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(player, getType(), layer)) {
-				if (power == null) continue;
-				if (!ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) actor)) return;
-				if (!ConditionExecutor.testDamage(power.getJsonObject("damage_condition"), e)) return;
-				Actions.executeEntity(actor, power.getJsonObject("entity_action"));
-				Actions.executeEntity(actor, power.getJsonObject("action"));
-
-				setActive(player, power.getTag(), true);
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						setActive(player, power.getTag(), false);
-					}
-				}.runTaskLater(GenesisMC.getPlugin(), 2L);
-			}
-		}
+		if (!getPlayers().contains(player) || Cooldown.isInCooldown(player, this)) return;
+		if (!isActive(player)) return;
+		if (!ConditionExecutor.testDamage(damageCondition, e)) return;
+		Actions.executeEntity(actor, entityAction);
+		Cooldown.addCooldown(player, cooldown, this);
 	}
 
 	@Override
-	public String getType() {
-		return "apoli:action_when_damage_taken";
+	public HudRender getHudRender() {
+		return hudRender;
 	}
 
 	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return action_when_damage_taken;
+	public int getCooldown() {
+		return cooldown;
 	}
-
 }

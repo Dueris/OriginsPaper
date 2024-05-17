@@ -1,13 +1,10 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
-import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -21,11 +18,9 @@ import org.bukkit.GameEvent;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.CraftSound;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
@@ -35,8 +30,16 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class ElytraFlightPower extends CraftPower implements Listener {
+public class ElytraFlightPower extends PowerType {
 	public static ArrayList<UUID> glidingPlayers = new ArrayList<>();
+
+	public ElytraFlightPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
+		super(name, description, hidden, condition, loading_priority);
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("elytra_flight"));
+	}
 
 	public static ArrayList<UUID> getGlidingPlayers() {
 		return glidingPlayers;
@@ -56,35 +59,28 @@ public class ElytraFlightPower extends CraftPower implements Listener {
 	public void executeFlight(PlayerToggleFlightEvent e) {
 		Player p = e.getPlayer();
 		if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
-		if (elytra.contains(e.getPlayer())) {
+		if (getPlayers().contains(e.getPlayer())) {
 			e.setCancelled(true);
 			p.setFlying(false);
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						setActive(p, power.getTag(), true);
-						if (!p.isGliding() && !p.getLocation().add(0, 1, 0).getBlock().isCollidable()) {
-							if (p.getGameMode() == GameMode.SPECTATOR) return;
+			if (isActive(p)) {
+				if (!p.isGliding() && !p.getLocation().add(0, 1, 0).getBlock().isCollidable()) {
+					if (p.getGameMode() == GameMode.SPECTATOR) return;
+					glidingPlayers.add(p.getUniqueId());
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							if (p.isOnGround() || p.isFlying() || p.isInsideVehicle()) {
+								this.cancel();
+								glidingPlayers.remove(p.getUniqueId());
+							}
+							float angle = Math.round(p.getPitch() * 10.0F) / 10.0F;
+							if (angle <= 38.7) {
+								p.setFallDistance(0.0F);
+							}
 							glidingPlayers.add(p.getUniqueId());
-							new BukkitRunnable() {
-								@Override
-								public void run() {
-									if (p.isOnGround() || p.isFlying() || p.isInsideVehicle()) {
-										this.cancel();
-										glidingPlayers.remove(p.getUniqueId());
-									}
-									float angle = Math.round(p.getPitch() * 10.0F) / 10.0F;
-									if (angle <= 38.7) {
-										p.setFallDistance(0.0F);
-									}
-									glidingPlayers.add(p.getUniqueId());
-									p.setGliding(true);
-								}
-							}.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);
+							p.setGliding(true);
 						}
-					} else {
-						setActive(p, power.getTag(), false);
-					}
+					}.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);
 				}
 			}
 		}
@@ -94,7 +90,7 @@ public class ElytraFlightPower extends CraftPower implements Listener {
 	public void onBoost(PlayerInteractEvent event) {
 		if (event.getAction() == Action.RIGHT_CLICK_AIR) {
 			if (event.getItem().getType().equals(Material.FIREWORK_ROCKET)) {
-				if (elytra.contains(event.getPlayer()) && glidingPlayers.contains(event.getPlayer().getUniqueId())) {
+				if (getPlayers().contains(event.getPlayer()) && glidingPlayers.contains(event.getPlayer().getUniqueId())) {
 					event.getPlayer().fireworkBoost(event.getItem());
 					if (!event.getPlayer().getGameMode().equals(GameMode.CREATIVE))
 						event.getItem().setAmount(event.getItem().getAmount() - 1);
@@ -108,7 +104,7 @@ public class ElytraFlightPower extends CraftPower implements Listener {
 		if (e.getEvent().equals(GameEvent.HIT_GROUND)) {
 			if (e.getEntity() instanceof Player p) {
 				if (p.getGameMode().equals(GameMode.CREATIVE)) return;
-				if (elytra.contains(p)) {
+				if (getPlayers().contains(p)) {
 					float fallDistance = p.getFallDistance();
 					ServerPlayer pl = ((CraftPlayer) p).getHandle();
 					if (pl.getAbilities().invulnerable) return;
@@ -149,15 +145,5 @@ public class ElytraFlightPower extends CraftPower implements Listener {
 			return Mth.ceil((fallDistance - 3.0F - dm) * damageMultiplier);
 		}
 		return 0;
-	}
-
-	@Override
-	public String getType() {
-		return "apoli:elytra_flight";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return elytra;
 	}
 }

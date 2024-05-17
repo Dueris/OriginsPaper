@@ -1,18 +1,15 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.google.gson.JsonObject;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
-import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.factory.data.types.JsonKeybind;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.KeybindingUtils;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -20,21 +17,29 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ToggleNightVision extends CraftPower implements Listener {
+public class ToggleNightVision extends PowerType implements KeyedPower {
 	public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
+	private final JsonKeybind key;
 
-	public void execute(Player p, Power power) {
+	public ToggleNightVision(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject key) {
+		super(name, description, hidden, condition, loading_priority);
+		this.key = JsonKeybind.createJsonKeybind(key);
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("toggle_night_vision"))
+			.add("key", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+	}
+
+	public void execute(Player p) {
 		in_continuous.putIfAbsent(p, new ArrayList<>());
-		int cooldown = power.getNumberOrDefault("cooldown", 1).getInt();
-		String key = power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active");
+		String key = getJsonKey().getKey();
 
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				/* TNV power always execute continuously */
-				if (!in_continuous.get(p).contains(key) || !ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-					Cooldown.addCooldown(p, cooldown, power);
-					setActive(p, power.getTag(), false);
+				if (!in_continuous.get(p).contains(key) || !isActive(p)) {
 					p.removePotionEffect(PotionEffectType.NIGHT_VISION);
 					this.cancel();
 					return;
@@ -49,7 +54,6 @@ public class ToggleNightVision extends CraftPower implements Listener {
 				} else {
 					p.addPotionEffect(effect);
 				}
-				setActive(p, power.getTag(), true);
 			}
 		}.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
 	}
@@ -57,16 +61,10 @@ public class ToggleNightVision extends CraftPower implements Listener {
 	@EventHandler
 	public void keybindToggle(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-				if (getPlayersWithPower().contains(p)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						if (!Cooldown.isInCooldown(p, power)) {
-							if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
-								execute(p, power);
-							}
-						}
-					}
+		if (getPlayers().contains(p)) {
+			if (isActive(p)) {
+				if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), p)) {
+					execute(p);
 				}
 			}
 		}
@@ -75,32 +73,20 @@ public class ToggleNightVision extends CraftPower implements Listener {
 	@EventHandler
 	public void inContinuousFix(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-			if (getPlayersWithPower().contains(p)) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (KeybindingUtils.isKeyActive(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"), p)) {
-						in_continuous.putIfAbsent(p, new ArrayList<>());
-						if (true /* TNV power always execute continuously */) {
-							if (in_continuous.get(p).contains(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"))) {
-								in_continuous.get(p).remove(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
-							} else {
-								in_continuous.get(p).add(power.getJsonObject("key").getStringOrDefault("key", "key.origins.primary_active"));
-							}
-						}
-					}
+		if (getPlayers().contains(p)) {
+			if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), p)) {
+				in_continuous.putIfAbsent(p, new ArrayList<>());
+				if (in_continuous.get(p).contains(getJsonKey().getKey())) {
+					in_continuous.get(p).remove(getJsonKey().getKey());
+				} else {
+					in_continuous.get(p).add(getJsonKey().getKey());
 				}
 			}
 		}
 	}
 
-
 	@Override
-	public String getType() {
-		return "apoli:toggle_night_vision";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return toggle_night_vision;
+	public JsonKeybind getJsonKey() {
+		return key;
 	}
 }

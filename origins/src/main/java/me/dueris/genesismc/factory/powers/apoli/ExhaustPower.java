@@ -1,39 +1,46 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.RequiredInstance;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+public class ExhaustPower extends PowerType {
+	private final int interval;
+	private final float exhaustion;
 
-public class ExhaustPower extends CraftPower {
+	public ExhaustPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int interval, float exhaustion) {
+		super(name, description, hidden, condition, loading_priority);
+		this.interval = interval;
+		this.exhaustion = exhaustion;
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("exhaust"))
+			.add("interval", int.class, 20)
+			.add("exhaustion", float.class, new RequiredInstance());
+	}
 
 	@Override
-	public void run(Player p, Power power) {
-		long interval = power.getNumberOrDefault("interval", 20L).getLong();
+	public void tick(Player p) {
 		if (p.getTicksLived() % interval == 0) {
-			if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-				setActive(p, power.getTag(), true);
+			if (isActive(p)) {
 				if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
 					return;
-				((CraftPlayer) p).getHandle().causeFoodExhaustion(power.getNumber("exhaustion").getFloat());
-			} else {
-				setActive(p, power.getTag(), false);
+				((CraftPlayer) p).getHandle().causeFoodExhaustion(exhaustion);
 			}
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:exhaust";
+	public int getInterval() {
+		return interval;
 	}
 
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return more_exhaustion;
+	public float getExhaustion() {
+		return exhaustion;
 	}
 }

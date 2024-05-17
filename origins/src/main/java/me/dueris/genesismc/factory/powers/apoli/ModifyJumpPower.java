@@ -1,54 +1,43 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
-import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryJsonArray;
+import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.data.types.Modifier;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
+public class ModifyJumpPower extends ModifierPower implements Listener {
 
-public class ModifyJumpPower extends CraftPower implements Listener {
+	public ModifyJumpPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject modifier, FactoryJsonArray modifiers) {
+		super(name, description, hidden, condition, loading_priority, modifier, modifiers);
+	}
+
+	public static FactoryData registerComponents(FactoryData data) {
+		return ModifierPower.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("modify_jump"));
+	}
 
 	@EventHandler
 	public void ruDn(PlayerJumpEvent e) {
 		Player p = e.getPlayer();
-		if (modify_jump.contains(p)) {
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-				for (Power power : OriginPlayerAccessor.getPowers(p, getType(), layer)) {
-					if (ConditionExecutor.testEntity(power.getJsonObject("condition"), (CraftEntity) p)) {
-						for (Modifier modifier : power.getModifiers()) {
-							float modifierValue = modifier.value();
-							/*((modifierValue - 1.0) * 2.0)*/
-							int jumpBoostLevel = Math.round(modifierValue * 4);
+		if (getPlayers().contains(p)) {
+			if (isActive(p)) {
+				for (Modifier modifier : getModifiers()) {
+					float modifierValue = modifier.value();
+					/*((modifierValue - 1.0) * 2.0)*/
+					int jumpBoostLevel = Math.round(modifierValue * 4);
 
-							if (jumpBoostLevel >= 0) {
-								p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, 20, jumpBoostLevel, false, false, false));
-								setActive(p, power.getTag(), true);
-							}
-						}
+					if (jumpBoostLevel >= 0) {
+						p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, 20, jumpBoostLevel, false, false, false));
 					}
 				}
 			}
 		}
 	}
 
-	@Override
-	public String getType() {
-		return "apoli:modify_jump";
-	}
-
-	@Override
-	public ArrayList<Player> getPlayersWithPower() {
-		return modify_jump;
-	}
 }
