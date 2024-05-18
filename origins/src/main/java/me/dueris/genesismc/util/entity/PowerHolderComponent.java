@@ -170,7 +170,7 @@ public class PowerHolderComponent implements Listener {
 	}
 
 	public static boolean hasPower(Entity p, String powerKey) {
-		if (!(p instanceof Player)) return false;
+		if (!(p instanceof Player) || playerPowerMapping.get(p) == null) return false;
 		for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
 			for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {
 				if (power.getTag().equalsIgnoreCase(powerKey)) return true;

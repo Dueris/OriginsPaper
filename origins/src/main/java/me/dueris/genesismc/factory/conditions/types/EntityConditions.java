@@ -245,17 +245,11 @@ public class EntityConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("brightness"), (condition, entity) -> {
 			String comparison = condition.getString("comparison");
 			double compare_to = condition.getNumber("compare_to").getFloat();
-			double brightness;
-			int lightLevel = entity.getLocation().getBlock().getLightLevel();
-			int ambientLight = 0;
+			ServerLevel world = (ServerLevel) entity.getHandle().level();
 
-			//calculate ambient light
-			if (entity.getWorld() == Bukkit.getServer().getWorlds().get(0)) {
-				ambientLight = 0;
-			} else if (entity.getWorld() == Bukkit.getServer().getWorlds().get(2)) {
-				ambientLight = 1;
-			}
-			brightness = ambientLight + (1 - ambientLight) * lightLevel / (60 - 3 * lightLevel);
+			BlockPos blockPos = BlockPos.containing(entity.getX(), entity.getY() + entity.getHandle().getEyeHeight(entity.getHandle().getPose()), entity.getZ());
+			float brightness = world.getLightLevelDependentMagicValue(blockPos);
+
 			return Comparison.fromString(comparison).compare(brightness, compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("light_level"), (condition, entity) -> {
@@ -295,10 +289,13 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_rain"), (condition, entity) -> entity.isInRain()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("exposed_to_sun"), (condition, entity) -> {
-			ServerLevel level = ((CraftWorld) entity.getWorld()).getHandle();
-			BlockPos blockPos = BlockPos.containing(entity.getX(), entity.getY() + entity.getHandle().getEyeHeight(entity.getHandle().getPose()), entity.getZ());
+			ServerLevel world = (ServerLevel) entity.getHandle().level();
 
-			return level.canSeeSky(blockPos) && entity.getWorld().isDayTime();
+			BlockPos blockPos = BlockPos.containing(entity.getX(), entity.getY() + entity.getHandle().getEyeHeight(entity.getHandle().getPose()), entity.getZ());
+			float brightness = world.getLightLevelDependentMagicValue(blockPos);
+
+			return brightness > 0.5
+				&& world.canSeeSky(blockPos);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("exposed_to_sky"), (condition, entity) -> {
 			ServerLevel level = ((CraftWorld) entity.getWorld()).getHandle();
