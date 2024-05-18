@@ -59,6 +59,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -413,21 +415,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	public void lagBackPatch(PlayerFailMoveEvent e) {
 		e.setAllowed(true);
 		e.setLogWarning(false);
-	}
-
-	@EventHandler
-    /*
-      This action is purely for development reasons, which is why there is a broadcast saying that its not supported.
-      Its NOT intended for normal gameplay, its just a fast way to reload parsing to test new data
-     */
-	public void reload(ServerResourcesReloadedEvent e) {
-		if (!(e.getCause().equals(ServerResourcesReloadedEvent.Cause.COMMAND) || e.getCause().equals(ServerResourcesReloadedEvent.Cause.PLUGIN)))
-			return;
-		Bukkit.broadcast(Component.text("GENESIS IS CONDUCTING A RESOURCE RELOAD, DO NOT REPORT BUGS OR CRASHES TO THE AUTHOR, THIS ACTION IS UNSUPPORTED").color(TextColor.color(230, 37, 23)));
-
-		onDisable();
-		onLoad();
-		onEnable();
 	}
 
 	@EventHandler

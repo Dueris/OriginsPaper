@@ -31,7 +31,7 @@ public class CalioRegistry implements IRegistry {
 
 	@Override
 	public void clearRegistries() {
-		registry.clear();
+		registry.values().forEach(Registrar::clearEntries);
 	}
 
 }
