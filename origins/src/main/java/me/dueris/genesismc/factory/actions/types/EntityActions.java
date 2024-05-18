@@ -19,7 +19,6 @@ import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -110,7 +109,7 @@ public class EntityActions {
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("set_on_fire"), (action, entity) -> entity.setFireTicks(action.getNumber("duration").getInt() * 20)));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_entity"), (action, entity) -> {
-			net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity)entity).getHandle();
+			net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
 			ServerLevel world = (ServerLevel) nmsEntity.level();
 			net.minecraft.world.entity.EntityType<?> entityType = CraftEntityType.bukkitToMinecraft(CraftEntityType.stringToBukkit(action.getString("entity_type")));
 			CompoundTag nbt = CalioDataTypes.compoundTag(action.getElement("tag").handle);
@@ -124,14 +123,14 @@ public class EntityActions {
 			Actions.executeBiEntity(entity, entityToSpawn.getBukkitEntity(), action.getJsonObject("bientity_action"));
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("modify_death_ticks"), (action, entity) -> {
-			if (((CraftEntity)entity).getHandle() instanceof net.minecraft.world.entity.LivingEntity living) {
+			if (((CraftEntity) entity).getHandle() instanceof net.minecraft.world.entity.LivingEntity living) {
 				Modifier modifier = new Modifier(action.getJsonObject("modifier"));
 				living.deathTime = Math.round(Utils.getOperationMappingsFloat().get(modifier.operation()).apply(Integer.valueOf(living.deathTime).floatValue(), modifier.value()));
 			}
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("emit_game_event"), (action, entity) -> {
 			NamespacedKey event = action.getNamespacedKey("event");
-			((CraftEntity)entity).getHandle().gameEvent(BuiltInRegistries.GAME_EVENT.wrapAsHolder(CraftGameEvent.bukkitToMinecraft(GameEvent.getByKey(event))));
+			((CraftEntity) entity).getHandle().gameEvent(BuiltInRegistries.GAME_EVENT.wrapAsHolder(CraftGameEvent.bukkitToMinecraft(GameEvent.getByKey(event))));
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_particles"), (action, entity) -> {
 			Particle particle = Particle.valueOf(action.getJsonObject("particle").getStringOrDefault("type", null).split(":")[1].toUpperCase());

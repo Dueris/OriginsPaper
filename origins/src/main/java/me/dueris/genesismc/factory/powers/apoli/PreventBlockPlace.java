@@ -47,7 +47,8 @@ public class PreventBlockPlace extends PowerType implements Listener {
 	public void blockBreak(BlockPlaceEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			if (!(isActive(e.getPlayer()) && ConditionExecutor.testItem(itemCondition, e.getItemInHand()) &&
-				ConditionExecutor.testBlock(placeToCondition, (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock(placeOnCondition, (CraftBlock) e.getBlockAgainst()))) return;
+				ConditionExecutor.testBlock(placeToCondition, (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock(placeOnCondition, (CraftBlock) e.getBlockAgainst())))
+				return;
 			e.setCancelled(true);
 			Actions.executeEntity(e.getPlayer(), entityAction);
 			Actions.executeItem(e.getItemInHand(), heldItemAction);

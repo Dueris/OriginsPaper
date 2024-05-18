@@ -30,7 +30,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftEntityType;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -173,7 +172,7 @@ public class BlockActions {
 		register(new ActionFactory(GenesisMC.apoliIdentifier("execute_command"), (action, location) -> RaycastUtils.executeNMSCommand(null, CraftLocation.toVec3D(location), action.getString("command"))));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("set_block"), (action, location) -> location.getBlock().setType(action.getMaterial("block"))));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_entity"), (action, location) -> {
-			ServerLevel world = ((CraftWorld)location.getWorld()).getHandle();
+			ServerLevel world = ((CraftWorld) location.getWorld()).getHandle();
 			net.minecraft.world.entity.EntityType<?> entityType = CraftEntityType.bukkitToMinecraft(CraftEntityType.stringToBukkit(action.getString("entity_type")));
 			CompoundTag nbt = CalioDataTypes.compoundTag(action.getElement("tag").handle);
 

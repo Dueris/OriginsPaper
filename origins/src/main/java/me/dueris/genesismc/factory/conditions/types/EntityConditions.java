@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.StringReader;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
-import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
@@ -25,7 +24,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ReloadableServerRegistries;
@@ -46,14 +44,14 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditions;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Scoreboard;
-import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.CraftEquipmentSlot;
 import org.bukkit.craftbukkit.CraftRegistry;
@@ -76,7 +74,6 @@ import org.bukkit.potion.PotionEffectType;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiPredicate;
@@ -154,9 +151,9 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("attribute"), (condition, entity) -> {
 			double attrValue = 0F;
-			if(entity.getHandle() instanceof net.minecraft.world.entity.LivingEntity living) {
+			if (entity.getHandle() instanceof net.minecraft.world.entity.LivingEntity living) {
 				AttributeInstance attributeInstance = living.getAttribute(CraftAttribute.bukkitToMinecraftHolder(CraftAttribute.stringToBukkit(condition.getString("attribute"))));
-				if(attributeInstance != null) {
+				if (attributeInstance != null) {
 					attrValue = attributeInstance.getValue();
 				}
 			}
@@ -666,7 +663,7 @@ public class EntityConditions {
 				.flatMap(Registry::holders)
 				.filter(regHolder -> regHolder.key().location().equals(location))
 				.map(Holder.Reference::value)
-			.findFirst().orElseThrow();
+				.findFirst().orElseThrow();
 
 			LootParams params = new LootParams.Builder(level)
 				.withParameter(LootContextParams.ORIGIN, entity.getHandle().position())
