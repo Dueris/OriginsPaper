@@ -29,6 +29,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.Level;
@@ -44,10 +45,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Scoreboard;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.CraftEquipmentSlot;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.attribute.CraftAttribute;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.enchantments.CraftEnchantment;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -133,6 +136,16 @@ public class EntityConditions {
 			String comparison = condition.getString("comparison");
 			float compare_to = condition.getNumber("compare_to").getFloat();
 			return entity instanceof Player p && Comparison.fromString(comparison).compare(p.getFoodLevel(), compare_to);
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("attribute"), (condition, entity) -> {
+			double attrValue = 0F;
+			if(entity.getHandle() instanceof net.minecraft.world.entity.LivingEntity living) {
+				AttributeInstance attributeInstance = living.getAttribute(CraftAttribute.bukkitToMinecraftHolder(CraftAttribute.stringToBukkit(condition.getString("attribute"))));
+				if(attributeInstance != null) {
+					attrValue = attributeInstance.getValue();
+				}
+			}
+			return (Comparison.fromString(condition.getString("comparison"))).compare(attrValue, condition.getNumber("compare_to").getDouble());
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("air"), (condition, entity) -> Comparison.fromString(condition.getString("comparison")).compare(Math.max(0, entity.getHandle().getAirSupply()), condition.getNumber("compare_to").getDouble())));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("block_collision"), (condition, entity) -> {
