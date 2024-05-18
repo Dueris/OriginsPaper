@@ -134,12 +134,7 @@ public class EntityConditions {
 			float compare_to = condition.getNumber("compare_to").getFloat();
 			return entity instanceof Player p && Comparison.fromString(comparison).compare(p.getFoodLevel(), compare_to);
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("air"), (condition, entity) -> {
-			if (entity instanceof Player p) {
-				return Comparison.fromString(condition.getString("comparison")).compare(p.getRemainingAir(), condition.getNumber("compare_to").getFloat());
-			}
-			return false;
-		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("air"), (condition, entity) -> Comparison.fromString(condition.getString("comparison")).compare(Math.max(0, entity.getHandle().getAirSupply()), condition.getNumber("compare_to").getDouble())));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("block_collision"), (condition, entity) -> {
 			net.minecraft.world.entity.Entity nmsEntity = entity.getHandle();
 			AABB boundingBox = nmsEntity.getBoundingBox();
