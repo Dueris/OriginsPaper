@@ -222,6 +222,7 @@ public class Resource extends PowerType implements ResourcePower {
 			if (element != null && element.getSpriteLocation() != null) {
 				TextureLocation loc = ((Registrar<TextureLocation>) GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION))
 					.get(DataConverter.resolveTextureLocationNamespace(NamespacedKey.fromString(element.getSpriteLocation())));
+				if (loc == null) return BarColor.WHITE;
 				long index = (element.getBarIndex()) + 1;
 				BarColor color = textureMap.get(loc.getKey().asString() + "/-/" + index);
 				return color != null ? color : BarColor.WHITE;

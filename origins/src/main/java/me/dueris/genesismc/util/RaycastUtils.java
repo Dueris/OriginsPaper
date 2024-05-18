@@ -3,6 +3,7 @@ package me.dueris.genesismc.util;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.util.ClipContextUtils;
 import me.dueris.genesismc.factory.actions.Actions;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.RotationType;
 import me.dueris.genesismc.factory.data.types.Space;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
@@ -205,9 +206,16 @@ public class RaycastUtils {
 			for (double current = 0; current < length; current += step) {
 				Location curLoc = CraftLocation.toBukkit(origin.add(dir.scale(current)));
 				curLoc.setWorld(entity.getBukkitEntity().getWorld());
-				if (curLoc.getBlock().isCollidable() || !curLoc.getNearbyEntities(0.3, 0.3, 0.3).isEmpty()) {
+				if (curLoc.getBlock().isCollidable()) {
 					hasHit = true;
-					break;
+				}
+				if (!curLoc.getNearbyEntities(0.3, 0.3, 0.3).stream().filter(entity1 -> !entity1.equals(entity.getBukkitEntity())).toList().isEmpty()) {
+					if (ConditionExecutor.testBiEntity(data.getJsonObject("match_bientity_condition"), entity.getBukkitEntity(), curLoc.getNearbyEntities(0.3, 0.3, 0.3).stream().filter(entity1 -> !entity1.equals(entity.getBukkitEntity())).findFirst().orElseThrow())) {
+						hasHit = true;
+						if (ConditionExecutor.testBiEntity(data.getJsonObject("hit_bientity_condition"), entity.getBukkitEntity(), curLoc.getNearbyEntities(0.3, 0.3, 0.3).stream().filter(entity1 -> !entity1.equals(entity.getBukkitEntity())).findFirst().orElseThrow())) {
+							break;
+						}
+					}
 				}
 			}
 			return hasHit;

@@ -16,16 +16,22 @@ import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.RaycastUtils;
+import me.dueris.genesismc.util.Reflector;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -40,6 +46,8 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditions;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Objective;
@@ -74,7 +82,6 @@ import java.util.Optional;
 import java.util.function.BiPredicate;
 
 public class EntityConditions {
-	public static HashMap<String, ArrayList<EntityType>> entityTagMappings = new HashMap<>();
 	private final Location[] prevLoca = new Location[100000];
 
 	public void prep() {
@@ -103,9 +110,17 @@ public class EntityConditions {
 			return false;
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("power_type"), (condition, entity) -> {
-			for (PowerType c : ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).values()) {
-				if (c.getType().equals(condition.getString("power_type"))) {
-					return c.getPlayers().contains(entity);
+			for (PowerType c : PowerHolderComponent.getPowers(entity)) {
+				if (c.getType().equals(condition.getString("power_type").replace("origins:", "apoli:"))) { // Apoli remapping
+					return true;
+				}
+			}
+			return false;
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("power"), (condition, entity) -> {
+			for (PowerType c : PowerHolderComponent.getPowers(entity)) {
+				if (c.getTag().equals(condition.getString("power"))) {
+					return true;
 				}
 			}
 			return false;
@@ -361,7 +376,10 @@ public class EntityConditions {
 			return false;
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("on_fire"), (condition, entity) -> entity.getHandle().isOnFire()));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_type"), (condition, entity) -> entity.getType().equals(EntityType.valueOf(condition.getString("entity_type").toUpperCase().split(":")[1]))));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_type"), (condition, entity) -> {
+			EntityType type = CraftEntityType.stringToBukkit(condition.getString("entity_type"));
+			return entity.getType().equals(type);
+		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("equipped_item"), (condition, entity) -> {
 			EquipmentSlot slot = condition.getEnumValue("equipment_slot", EquipmentSlot.class);
 			if (entity instanceof LivingEntity le && le.getEquipment().getItem(CraftEquipmentSlot.getSlot(slot)) != null) {
@@ -499,7 +517,10 @@ public class EntityConditions {
 			return CraftEntityType.bukkitToMinecraft(entity.getType()).is(key);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("living"), (condition, entity) -> !entity.isDead()));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("moving"), (condition, entity) -> isEntityMoving(entity)));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("moving"), (condition, entity) -> {
+			return (condition.getBooleanOrDefault("horizontally", true) && isEntityMovingHorizontal(entity))
+				|| (condition.getBooleanOrDefault("vertically", true) && isEntityMovingVertical(entity));
+		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("on_block"), (condition, entity) -> {
 			if (!condition.isPresent("block_condition")) {
 				return entity.isOnGround();
@@ -589,10 +610,10 @@ public class EntityConditions {
 			return Comparison.fromString(comparison).compare(count, compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("saturation_level"), (condition, entity) -> {
-			if (entity instanceof Player le) {
+			if (entity instanceof CraftPlayer le) {
 				String comparison = condition.getString("comparison");
 				double compare_to = condition.getNumber("compare_to").getFloat();
-				double fin = le.getSaturation();
+				double fin = le.getHandle().getFoodData().getSaturationLevel();
 				return Comparison.fromString(comparison).compare(fin, compare_to);
 			}
 			return false;
@@ -639,8 +660,13 @@ public class EntityConditions {
 			ResourceLocation location = CraftNamespacedKey.toMinecraft(
 				condition.getNamespacedKey("predicate")
 			);
+			ReloadableServerRegistries.Holder holder = entity.getHandle().getServer().reloadableRegistries();
 
-			LootItemCondition predicate = GenesisMC.server.registryAccess().registry(net.minecraft.core.registries.Registries.PREDICATE).orElseThrow().get(location);
+			LootItemCondition predicate = holder.get().registry(net.minecraft.core.registries.Registries.PREDICATE).stream()
+				.flatMap(Registry::holders)
+				.filter(regHolder -> regHolder.key().location().equals(location))
+				.map(Holder.Reference::value)
+			.findFirst().orElseThrow();
 
 			LootParams params = new LootParams.Builder(level)
 				.withParameter(LootContextParams.ORIGIN, entity.getHandle().position())
@@ -652,12 +678,15 @@ public class EntityConditions {
 			return predicate.test(context);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("using_effective_tool"), (condition, entity) -> {
-			if (entity instanceof Player player) {
-				ServerPlayer p = ((CraftPlayer) player).getHandle();
-				if (ActionOnBlockBreak.playersMining.containsKey(p.getBukkitEntity()) && ActionOnBlockBreak.playersMining.get(p.getBukkitEntity())) {
-					BlockState state = p.level().getBlockState(ActionOnBlockBreak.playersMiningBlockPos.get(p.getBukkitEntity()));
-					return p.hasCorrectToolForDrops(state);
+			if (entity instanceof CraftPlayer player) {
+				ServerPlayer p = player.getHandle();
+				ServerPlayerGameMode interactionManager = p.gameMode;
+				boolean isMining = Boolean.TRUE.equals(Reflector.accessField("isDestroyingBlock", ServerPlayerGameMode.class, interactionManager, boolean.class));
+				if (!isMining) {
+					return false;
 				}
+				BlockState miningBlockState = entity.getHandle().level().getBlockState(Reflector.accessField("destroyPos", ServerPlayerGameMode.class, interactionManager, BlockPos.class));
+				return player.getHandle().hasCorrectToolForDrops(miningBlockState);
 			}
 			return false;
 		}));
@@ -674,18 +703,18 @@ public class EntityConditions {
 			return false;
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("xp_levels"), (condition, entity) -> {
-			if (entity instanceof Player p) {
+			if (entity instanceof CraftPlayer p) {
 				String comparison = condition.getString("comparison");
 				double compare_to = condition.getNumber("compare_to").getFloat();
-				return Comparison.fromString(comparison).compare(p.getExpToLevel(), compare_to);
+				return Comparison.fromString(comparison).compare(p.getHandle().experienceLevel, compare_to);
 			}
 			return false;
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("xp_points"), (condition, entity) -> {
-			if (entity instanceof Player p) {
+			if (entity instanceof CraftPlayer p) {
 				String comparison = condition.getString("comparison");
 				double compare_to = condition.getNumber("compare_to").getFloat();
-				return Comparison.fromString(comparison).compare(p.getTotalExperience(), compare_to);
+				return Comparison.fromString(comparison).compare(p.getHandle().totalExperience, compare_to);
 			}
 			return false;
 		}));
@@ -700,10 +729,31 @@ public class EntityConditions {
 	public boolean isEntityMoving(Entity entity) {
 		int entID = entity.getEntityId();
 		Location prevLocat = prevLoca[entID];
-		Location cuLo = entity.getLocation();
+		Location cuLo = entity.getLocation().clone();
 		prevLoca[entID] = cuLo;
+		if (prevLocat != null) cuLo.setDirection(prevLocat.getDirection()); // Ignore direction changes
 
 		return !cuLo.equals(prevLocat);
+	}
+
+	public boolean isEntityMovingHorizontal(Entity entity) {
+		int entID = entity.getEntityId();
+		Location prevLocat = prevLoca[entID];
+		Location cuLo = entity.getLocation().clone();
+		prevLoca[entID] = cuLo;
+		if (prevLocat == null) return true;
+
+		return cuLo.getX() != prevLocat.getX() || cuLo.getZ() != cuLo.getZ();
+	}
+
+	public boolean isEntityMovingVertical(Entity entity) {
+		int entID = entity.getEntityId();
+		Location prevLocat = prevLoca[entID];
+		Location cuLo = entity.getLocation().clone();
+		prevLoca[entID] = cuLo;
+		if (prevLocat == null) return true;
+
+		return cuLo.getY() != prevLocat.getY();
 	}
 
 	public class ConditionFactory implements Registrable {

@@ -148,7 +148,8 @@ public class PowerHolderComponent implements Listener {
 		return powers;
 	}
 
-	public static ArrayList<PowerType> getPowers(Player p) {
+	public static ArrayList<PowerType> getPowers(Entity p) {
+		if (!(p instanceof Player)) return new ArrayList<>();
 		ArrayList<PowerType> powers = new ArrayList<>();
 		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 			for (PowerType power : playerPowerMapping.get(p).get(layer)) {
