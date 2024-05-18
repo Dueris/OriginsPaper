@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.actions.types;
 
 import com.google.gson.JsonObject;
+import me.dueris.calio.data.CalioDataTypes;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
@@ -21,13 +22,17 @@ import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.CraftGameEvent;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftEntityType;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.*;
@@ -105,15 +110,28 @@ public class EntityActions {
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("set_on_fire"), (action, entity) -> entity.setFireTicks(action.getNumber("duration").getInt() * 20)));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_entity"), (action, entity) -> {
-			OriginConsoleSender originConsoleSender = new OriginConsoleSender();
-			originConsoleSender.setOp(true);
-			RaycastUtils.executeNMSCommand(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), "summon $1 %1 %2 %3 $2"
-				.replace("$1", action.getString("entity_type"))
-				.replace("$2", action.getStringOrDefault("tag", "{}"))
-				.replace("%1", String.valueOf(entity.getLocation().getX()))
-				.replace("%2", String.valueOf(entity.getLocation().getY()))
-				.replace("%3", String.valueOf(entity.getLocation().getZ()))
-			);
+			net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity)entity).getHandle();
+			ServerLevel world = (ServerLevel) nmsEntity.level();
+			net.minecraft.world.entity.EntityType<?> entityType = CraftEntityType.bukkitToMinecraft(CraftEntityType.stringToBukkit(action.getString("entity_type")));
+			CompoundTag nbt = CalioDataTypes.compoundTag(action.getElement("tag").handle);
+
+			Optional<net.minecraft.world.entity.Entity> entityToSpawnOpt = Utils.getEntityWithPassengers(world, entityType, nbt, ((CraftEntity) entity).getHandle().position(), entity.getYaw(), entity.getPitch());
+
+			if (entityToSpawnOpt.isEmpty()) return;
+			net.minecraft.world.entity.Entity entityToSpawn = entityToSpawnOpt.get();
+			world.addFreshEntity(entityToSpawn);
+			Actions.executeEntity(entityToSpawn.getBukkitEntity(), action.getJsonObject("entity_action"));
+			Actions.executeBiEntity(entity, entityToSpawn.getBukkitEntity(), action.getJsonObject("bientity_action"));
+		}));
+		register(new ActionFactory(GenesisMC.apoliIdentifier("modify_death_ticks"), (action, entity) -> {
+			if (((CraftEntity)entity).getHandle() instanceof net.minecraft.world.entity.LivingEntity living) {
+				Modifier modifier = new Modifier(action.getJsonObject("modifier"));
+				living.deathTime = Math.round(Utils.getOperationMappingsFloat().get(modifier.operation()).apply(Integer.valueOf(living.deathTime).floatValue(), modifier.value()));
+			}
+		}));
+		register(new ActionFactory(GenesisMC.apoliIdentifier("emit_game_event"), (action, entity) -> {
+			NamespacedKey event = action.getNamespacedKey("event");
+			((CraftEntity)entity).getHandle().gameEvent(BuiltInRegistries.GAME_EVENT.wrapAsHolder(CraftGameEvent.bukkitToMinecraft(GameEvent.getByKey(event))));
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_particles"), (action, entity) -> {
 			Particle particle = Particle.valueOf(action.getJsonObject("particle").getStringOrDefault("type", null).split(":")[1].toUpperCase());

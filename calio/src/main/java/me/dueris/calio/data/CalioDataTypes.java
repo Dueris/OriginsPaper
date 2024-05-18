@@ -141,6 +141,7 @@ public class CalioDataTypes {
 	}
 
 	public static CompoundTag compoundTag(JsonElement element) {
+		if (element == null) return new CompoundTag();
 		return ParserUtils.parseJson(new StringReader(element.getAsString()), CompoundTag.CODEC);
 	}
 

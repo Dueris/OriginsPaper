@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.actions.types;
 
+import me.dueris.calio.data.CalioDataTypes;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
 import me.dueris.genesismc.GenesisMC;
@@ -10,8 +11,11 @@ import me.dueris.genesismc.factory.data.types.ExplosionMask;
 import me.dueris.genesismc.factory.data.types.ResourceOperation;
 import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.util.RaycastUtils;
+import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Explosion;
@@ -26,6 +30,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.block.CraftBlock;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftEntityType;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -164,7 +170,20 @@ public class BlockActions {
 			);
 			ExplosionMask.getExplosionMask(explosion, level).apply(action, true);
 		}));
+		register(new ActionFactory(GenesisMC.apoliIdentifier("execute_command"), (action, location) -> RaycastUtils.executeNMSCommand(null, CraftLocation.toVec3D(location), action.getString("command"))));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("set_block"), (action, location) -> location.getBlock().setType(action.getMaterial("block"))));
+		register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_entity"), (action, location) -> {
+			ServerLevel world = ((CraftWorld)location.getWorld()).getHandle();
+			net.minecraft.world.entity.EntityType<?> entityType = CraftEntityType.bukkitToMinecraft(CraftEntityType.stringToBukkit(action.getString("entity_type")));
+			CompoundTag nbt = CalioDataTypes.compoundTag(action.getElement("tag").handle);
+
+			Optional<net.minecraft.world.entity.Entity> entityToSpawnOpt = Utils.getEntityWithPassengers(world, entityType, nbt, CraftLocation.toVec3D(location), Optional.empty(), Optional.empty());
+
+			if (entityToSpawnOpt.isEmpty()) return;
+			net.minecraft.world.entity.Entity entityToSpawn = entityToSpawnOpt.get();
+			world.addFreshEntity(entityToSpawn);
+			Actions.executeEntity(entityToSpawn.getBukkitEntity(), action.getJsonObject("entity_action"));
+		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("modify_block_state"), (action, location) -> {
 			ServerLevel level = ((CraftWorld) location.getBlock().getWorld()).getHandle();
 			BlockState state = level.getBlockState(CraftLocation.toBlockPosition(location));
