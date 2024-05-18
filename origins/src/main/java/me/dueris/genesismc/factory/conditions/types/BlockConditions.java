@@ -14,6 +14,7 @@ import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
@@ -95,7 +96,8 @@ public class BlockConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("block_entity"), (condition, block) -> block.getState() instanceof TileState));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("block"), (condition, block) -> {
 			String r = condition.getString("block");
-			return Utils.KNOWN_MATERIALS.containsKey(r) && block.getType().equals(Utils.KNOWN_MATERIALS.get(r));
+			Block bl = BuiltInRegistries.BLOCK.get(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(r)));
+			return block.getNMS().is(bl);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("distance_from_coordinates"), (condition, block) -> {
 			boolean scaleReferenceToDimension = condition.getBooleanOrDefault("scale_reference_to_dimension", true);

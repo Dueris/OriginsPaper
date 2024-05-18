@@ -287,6 +287,13 @@ public class EntityConditions {
 			}
 			return false;
 		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("inventory"), (condition, entity) -> {
+			Utils.ProcessMode processMode = condition.getEnumValueOrDefault("process_mode", Utils.ProcessMode.class, Utils.ProcessMode.ITEMS);
+			Comparison comparison = condition.isPresent("comparison") ? Comparison.fromString(condition.getString("comparison")) : Comparison.GREATER_THAN;
+			int compareTo = condition.getNumber("compare_to").getInt();
+			int matches = Utils.checkInventory(condition, entity.getHandle(), null, processMode.getProcessor());
+			return comparison.compare(matches, compareTo);
+		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_rain"), (condition, entity) -> entity.isInRain()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("exposed_to_sun"), (condition, entity) -> {
 			ServerLevel world = (ServerLevel) entity.getHandle().level();
@@ -312,7 +319,7 @@ public class EntityConditions {
 			}
 			return false;
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_flying"), (condition, entity) -> entity instanceof LivingEntity le && (((CraftLivingEntity) le).getHandle().isFallFlying() || ElytraFlightPower.getGlidingPlayers().contains(le))));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_flying"), (condition, entity) -> entity instanceof LivingEntity le && (((CraftLivingEntity) le).getHandle().isFallFlying() || le.isGliding())));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("submerged_in"), (condition, entity) -> {
 			NamespacedKey tag = condition.getNamespacedKey("fluid");
 			TagKey<Fluid> key = TagKey.create(net.minecraft.core.registries.Registries.FLUID, CraftNamespacedKey.toMinecraft(tag));
@@ -443,11 +450,13 @@ public class EntityConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("glowing"), (condition, entity) -> entity.isGlowing()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("health"), (condition, entity) -> {
 			if (entity instanceof LivingEntity le) {
-				return Comparison.fromString(condition.getString("comparison")).compare(le.getHealth(), condition.getNumber("compare_to").getFloat());
+				return Comparison.fromString(condition.getString("comparison")).compare(le.getHealth() * 2, condition.getNumber("compare_to").getFloat());
 			}
 			return false;
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block"), (condition, entity) -> ConditionExecutor.testBlock(condition.getJsonObject("block_condition"), CraftBlock.at(entity.getHandle().level(), CraftLocation.toBlockPosition(entity.getLocation())))));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block"), (condition, entity) -> {
+			return ConditionExecutor.testBlock(condition.getJsonObject("block_condition"), entity.getLocation().getBlock());
+		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block_anywhere"), (condition, entity) -> {
 			int stopAt = -1;
 			Comparison comparison = Comparison.fromString(condition.getStringOrDefault("comparison", ">="));
@@ -680,7 +689,7 @@ public class EntityConditions {
 			}
 			return false;
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_snow"), (condition, entity) -> entity.isInPowderedSnow()));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_snow"), (condition, entity) -> Utils.inSnow(entity.getHandle().level(), entity.getHandle().blockPosition(), BlockPos.containing(entity.getHandle().blockPosition().getX(), entity.getHandle().getBoundingBox().maxY, entity.getHandle().blockPosition().getZ()))));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_thunderstorm"), (condition, entity) -> entity.isInRain() && entity.getWorld().isThundering()));
 	}
 

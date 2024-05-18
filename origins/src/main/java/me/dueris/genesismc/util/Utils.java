@@ -11,7 +11,9 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.factory.FactoryNumber;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -26,10 +28,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.level.Level;
@@ -342,6 +341,17 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		List<T> lC = new ArrayList<>();
 		collection.forEach(lC::addAll);
 		return lC;
+	}
+
+	public static List<Integer> fillMissingNumbers(List<Integer> numbers, int min, int max) {
+		Set<Integer> numberSet = new HashSet<>(numbers);
+		for (int i = min; i <= max; i++) {
+			numberSet.add(i);
+		}
+
+		List<Integer> filledNumbers = new ArrayList<>(numberSet);
+		Collections.sort(filledNumbers);
+		return filledNumbers;
 	}
 
 	public static int[] missingNumbers(Integer[] array, int minRange, int maxRange) {
@@ -687,5 +697,64 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 				return result.result().orElseThrow();
 			}
 		}
+	}
+
+	public enum ProcessMode {
+		STACKS(stack -> 1),
+		ITEMS(net.minecraft.world.item.ItemStack::getCount);
+
+		private final Function<net.minecraft.world.item.ItemStack, Integer> processor;
+
+		ProcessMode(Function<net.minecraft.world.item.ItemStack, Integer> processor) {
+			this.processor = processor;
+		}
+
+		public Function<net.minecraft.world.item.ItemStack, Integer> getProcessor() {
+			return processor;
+		}
+	}
+
+	public static List<Integer> getSlots(FactoryJsonObject data) {
+		FactoryJsonArray slots = null;
+		if (data.isPresent("slots")) {
+			slots = data.getJsonArray("slots");
+		}
+		if (!data.isPresent("slot")) {
+			return new ArrayList<>();
+		}
+		return slots == null ? List.of(data.getNumber("slot").getInt()) : slots.asList().stream().map(FactoryElement::getNumber).map(FactoryNumber::getInt).toList();
+	}
+
+	public static int checkInventory(FactoryJsonObject data, Entity entity, @Nullable me.dueris.genesismc.factory.powers.apoli.Inventory inventoryPower, Function<net.minecraft.world.item.ItemStack, Integer> processor) {
+		FactoryJsonObject itemCondition = data.getJsonObject("item_condition");
+		List<Integer> slots = getSlots(data);
+		if (slots.isEmpty()) {
+			slots = fillMissingNumbers(slots, 0, 40);
+		}
+
+		int matches = 0;
+		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
+
+		for (int slot : slots) {
+
+			SlotAccess stackReference = getStackReference(entity, inventoryPower, slot);
+			net.minecraft.world.item.ItemStack stack = stackReference.get();
+
+			if ((itemCondition == null && !stack.isEmpty()) || (itemCondition == null || ConditionExecutor.testItem(itemCondition, stack.getBukkitStack())) && !stack.getBukkitStack().getType().isAir()) {
+				matches += processor.apply(stack);
+			}
+
+		}
+
+		return matches;
+
+	}
+
+	public static boolean slotNotWithinBounds(Entity entity, @Nullable me.dueris.genesismc.factory.powers.apoli.Inventory inventoryPower, int slot) {
+		return entity.getSlot(slot) == SlotAccess.NULL;
+	}
+
+	public static SlotAccess getStackReference(Entity entity, @Nullable me.dueris.genesismc.factory.powers.apoli.Inventory inventoryPower, int slot) {
+		return entity.getSlot(slot);
 	}
 }
