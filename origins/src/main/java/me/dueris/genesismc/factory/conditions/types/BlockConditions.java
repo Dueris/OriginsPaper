@@ -40,8 +40,6 @@ import java.util.Map;
 import java.util.function.BiPredicate;
 
 public class BlockConditions {
-	public static HashMap<PowerType, ArrayList<String>> inTagValues = new HashMap<>();
-	public static HashMap<String, ArrayList<Material>> blockTagMappings = new HashMap<>();
 
 	public void prep() {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("material"), (condition, block) -> {

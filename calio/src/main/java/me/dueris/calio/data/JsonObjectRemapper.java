@@ -59,6 +59,7 @@ public class JsonObjectRemapper {
 			// Object mappings
 			for (String keyName : objectMappings.keySet()) {
 				if (keyName.equalsIgnoreCase(key)) {
+					System.out.println(key);
 					for (Pair<Object, Object> objectMapping : objectMappings.get(key)) {
 						if (valueInst.equals(objectMapping.left())) {
 							objectReturnable.addProperty(key, objectMapping.right().toString());

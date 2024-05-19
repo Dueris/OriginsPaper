@@ -10,6 +10,7 @@ import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.ItemTags;
@@ -86,29 +87,20 @@ public class ItemConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, itemStack) -> NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.getString("nbt")), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.saveOptional(GenesisMC.server.registryAccess()), true)));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("ingredient"), (condition, itemStack) -> {
 			if (itemStack != null && itemStack.getType() != null) {
-				Predicate<FactoryJsonObject> returnPred = new Predicate<>() {
-					@Override
-					public boolean test(FactoryJsonObject ingredientMap) {
-						if (ingredientMap.isPresent("item")) {
-							String itemValue = ingredientMap.getString("item");
-							String item;
-							if (itemValue.contains(":")) {
-								item = itemValue.split(":")[1];
-							} else {
-								item = itemValue;
-							}
-							if (item.contains("orb_of_origin")) {
-								return itemStack.isSimilar(OrbOfOrigins.orb);
-							}
-							return itemStack.getType().equals(Material.valueOf(item.toUpperCase()));
-						} else if (ingredientMap.isPresent("tag")) {
-							NamespacedKey tag = NamespacedKey.fromString(ingredientMap.getString("tag"));
-							TagKey<Item> key = TagKey.create(net.minecraft.core.registries.Registries.ITEM, CraftNamespacedKey.toMinecraft(tag));
-							return CraftItemStack.asNMSCopy(itemStack).is(key);
+				Predicate<FactoryJsonObject> returnPred = ingredientMap -> {
+					if (ingredientMap.isPresent("item")) {
+						String itemValue = ingredientMap.getString("item");
+						if (itemValue.contains("orb_of_origin")) {
+							return itemStack.isSimilar(OrbOfOrigins.orb);
 						}
-
-						return false;
+						return itemStack.getType().equals(CraftRegistry.MATERIAL.get(NamespacedKey.fromString(itemValue)));
+					} else if (ingredientMap.isPresent("tag")) {
+						NamespacedKey tag = NamespacedKey.fromString(ingredientMap.getString("tag"));
+						TagKey<Item> key = TagKey.create(net.minecraft.core.registries.Registries.ITEM, CraftNamespacedKey.toMinecraft(tag));
+						return CraftItemStack.asNMSCopy(itemStack).is(key);
 					}
+
+					return false;
 				};
 
 				if (condition.isJsonObject("ingredient")) {
@@ -124,13 +116,6 @@ public class ItemConditions {
 			}
 			return false;
 		}));
-		// Doesn't work since 1.20.5 - no more tier level
-        /* register(new ConditionFactory(GenesisMC.apoliIdentifier("harvest_level"), (condition, itemStack) -> {
-            String comparison = condition.getString("comparison");
-            double compareTo = condition.getNumber("compare_to").getDouble();
-            return CraftItemStack.asNMSCopy(itemStack).getItem() instanceof TieredItem toolItem
-                && Comparison.getFromString(comparison).compare(toolItem.getTier().getLevel(), compareTo);
-        })); */
 	}
 
 	private void register(ConditionFactory factory) {
