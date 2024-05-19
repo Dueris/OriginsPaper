@@ -277,7 +277,6 @@ public class GlowingEntitiesUtils implements Listener {
 				String[] versions = Bukkit.getBukkitVersion().split("-R")[0].split("\\.");
 				version = Integer.parseInt(versions[1]);
 				versionMinor = versions.length <= 2 ? 0 : Integer.parseInt(versions[2]);
-				logger.info("Found server version 1." + version + "." + versionMinor);
 
 				boolean remapped = Bukkit.getServer().getClass().getPackage().getName().split("\\.").length == 3;
 
@@ -286,7 +285,6 @@ public class GlowingEntitiesUtils implements Listener {
 					mappings = ProtocolMappings.getLast(remapped);
 					logger.warning("Loaded not matching version of the mappings for your server version");
 				}
-				logger.info("Loaded mappings " + mappings.name());
 
 				/* Global variables */
 
