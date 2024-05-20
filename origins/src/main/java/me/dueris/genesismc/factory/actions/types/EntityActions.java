@@ -133,7 +133,7 @@ public class EntityActions {
 			((CraftEntity) entity).getHandle().gameEvent(BuiltInRegistries.GAME_EVENT.wrapAsHolder(CraftGameEvent.bukkitToMinecraft(GameEvent.getByKey(event))));
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_particles"), (action, entity) -> {
-			Particle particle = Particle.valueOf(action.getJsonObject("particle").getStringOrDefault("type", null).split(":")[1].toUpperCase());
+			Particle particle = CalioDataTypes.particleEffect(action.getElement("particle").handle).getParticle();
 			int count = action.getNumber("count").getInt();
 			float offset_x = action.getNumberOrDefault("offset_z", 0).getFloat();
 			float offset_y = action.getNumberOrDefault("offset_z", 0.5F).getFloat();
@@ -223,9 +223,9 @@ public class EntityActions {
 		register(new ActionFactory(GenesisMC.apoliIdentifier("heal"), (action, entity) -> {
 			if (entity instanceof LivingEntity li) {
 				double healthFinal = li.getHealth() + action.getNumber("amount").getFloat();
-				if (li.getHealth() >= 20) return;
-				if (healthFinal > 20) {
-					li.setHealth(20);
+				if (li.getHealth() >= li.getMaxHealth()) return;
+				if (healthFinal > li.getMaxHealth()) {
+					li.setHealth(li.getMaxHealth());
 				} else {
 					li.setHealth(healthFinal);
 				}
@@ -233,15 +233,15 @@ public class EntityActions {
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("clear_effect"), (action, entity) -> {
 			PotionEffectType potionEffectType = Utils.getPotionEffectType(action.getString("effect"));
-			if (entity instanceof Player player) {
-				if (player.hasPotionEffect(potionEffectType)) {
-					player.removePotionEffect(potionEffectType);
+			if (entity instanceof LivingEntity living) {
+				if (living.hasPotionEffect(potionEffectType)) {
+					living.removePotionEffect(potionEffectType);
 				}
 			}
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("exhaust"), (action, entity) -> {
-			if (entity instanceof Player player) {
-				player.setFoodLevel(player.getFoodLevel() - Math.round(action.getNumber("amount").getFloat()));
+			if (entity instanceof HumanEntity human) {
+				human.setFoodLevel(human.getFoodLevel() - Math.round(action.getNumber("amount").getFloat()));
 			}
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("explode"), (action, entity) -> {
@@ -273,9 +273,9 @@ public class EntityActions {
 			ExplosionMask.getExplosionMask(explosion, level).apply(action, true);
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("crafting_table"), (action, entity) -> {
-			if (entity instanceof Player player) {
-				Inventory inventory = Bukkit.createInventory(player, InventoryType.CRAFTING);
-				player.openInventory(inventory);
+			if (entity instanceof HumanEntity human) {
+				Inventory inventory = Bukkit.createInventory(human, InventoryType.CRAFTING);
+				human.openInventory(inventory);
 			}
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("ender_chest"), (action, entity) -> {
@@ -362,14 +362,14 @@ public class EntityActions {
 		register(new ActionFactory(GenesisMC.apoliIdentifier("extinguish"), (action, entity) -> entity.setFireTicks(0)));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("play_sound"), (action, entity) -> {
 			Sound sound = Utils.parseSound(action.getString("sound"));
-			Float volume = action.getNumberOrDefault("volume", 1.0).getFloat();
-			Float pitch = action.getNumberOrDefault("pitch", 1.0).getFloat();
+			float volume = action.getNumberOrDefault("volume", 1.0).getFloat();
+			float pitch = action.getNumberOrDefault("pitch", 1.0).getFloat();
 			entity.getWorld().playSound(entity, sound, volume, pitch);
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("gain_air"), (action, entity) -> {
 			long amt = action.getNumber("value").getInt();
-			if (entity instanceof Player p) {
-				p.setRemainingAir(p.getRemainingAir() + Math.toIntExact(amt));
+			if (entity instanceof LivingEntity living) {
+				living.setRemainingAir(living.getRemainingAir() + Math.toIntExact(amt));
 			}
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("drop_inventory"), (action, entity) -> {
@@ -406,8 +406,8 @@ public class EntityActions {
 		register(new ActionFactory(GenesisMC.apoliIdentifier("revoke_advancement"), (action, entity) -> RaycastUtils.executeNMSCommand(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), "advancement revoke $1 $2".replace("$1", entity.getName()).replace("$2", action.getString("advacnement")))));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("selector_action"), (action, entity) -> {
 			if (action.isPresent("bientity_condition")) {
-				if (entity instanceof Player player) {
-					executeBiEntity(entity, player.getTargetEntity(4, false), action.getJsonObject("bientity_condition"));
+				if (entity instanceof LivingEntity living) {
+					executeBiEntity(entity, living.getTargetEntity(4, false), action.getJsonObject("bientity_condition"));
 				}
 			}
 		}));
@@ -443,20 +443,17 @@ public class EntityActions {
 			Vector3f vec = VectorGetter.getAsVector3f(action);
 			net.minecraft.world.entity.Entity en = ((CraftLivingEntity) entity).getHandle();
 			space.toGlobal(vec, en);
-			if (action.getBooleanOrDefault("set", false)) {
-				en.getBukkitEntity().getVelocity().add(new Vector(vec.x, vec.y, vec.z));
-			} else {
-				en.getBukkitEntity().setVelocity(new Vector(vec.x, vec.y, vec.z));
-			}
+			en.getBukkitEntity().setVelocity(new Vector(vec.x, vec.y, vec.z));
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("execute_command"), (action, entity) -> {
 			String cmd;
-			if (action.getString("command").startsWith("action") || action.getString("command").startsWith("/action"))
-				return;
 			if (action.getString("command").startsWith("/")) {
 				cmd = action.getString("command").split("/")[1];
 			} else {
 				cmd = action.getString("command");
+			}
+			if (cmd.startsWith("scale") && cmd.endsWith(" @s")) {
+				cmd = cmd.replace(" @s", ""); // Remove any specified player arg
 			}
 			RaycastUtils.executeNMSCommand(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), cmd);
 		}));
@@ -465,7 +462,7 @@ public class EntityActions {
 			int levels = 0;
 
 			if (action.isPresent("points")) points = action.getNumber("points").getInt();
-			if (action.isPresent("levels")) levels = action.getNumber("points").getInt();
+			if (action.isPresent("levels")) levels = action.getNumber("levels").getInt();
 
 			if (entity instanceof Player player) {
 				player.giveExp(points);

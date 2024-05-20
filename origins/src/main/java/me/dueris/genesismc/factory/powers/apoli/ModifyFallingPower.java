@@ -38,11 +38,14 @@ public class ModifyFallingPower extends PowerType implements Listener {
 			if (e.getTo().getY() == e.getFrom().getY()) return;
 			@NotNull Vector velocityVal = p.getVelocity();
 			if (isActive(p)) {
-				if (velocity < 0) {
-					velocityVal.setY(velocity);
-					p.setVelocity(velocityVal);
-				} else {
+				if (velocityVal.getY() > 0D) return;
+				if (velocity < 0.08) {
+					// This way is a lot smoother and also updates the client preventing weird glitches
 					p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
+				} else {
+					Vector veloc = e.getPlayer().getVelocity();
+					veloc.setY(veloc.getY() * (1 + velocity));
+					e.getPlayer().setVelocity(veloc);
 				}
 			}
 		}

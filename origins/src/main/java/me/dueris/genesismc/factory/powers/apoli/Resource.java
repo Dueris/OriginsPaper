@@ -11,6 +11,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.factory.data.types.HudRender;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
@@ -31,6 +32,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -90,6 +92,21 @@ public class Resource extends PowerType implements ResourcePower {
 			player == null ? f : NamespacedKey.fromString(power.getTag() + "_bar_" + player.getName().toLowerCase()),
 			title, Bar.getBarColor(power.getHudRender()), BarStyle.SEGMENTED_6);
 		bossBar.setProgress(currentProgress);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (!power.getHudRender().getShouldRender()) {
+					bossBar.setVisible(false);
+					this.cancel();
+				} else {
+					if (!power.getHudRender().getCondition().isEmpty()) {
+						bossBar.setVisible(ConditionExecutor.testEntity(power.getHudRender().getCondition(), player));
+					} else {
+						bossBar.setVisible(true);
+					}
+				}
+			}
+		}.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
 		return bossBar;
 	}
 

@@ -564,7 +564,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		operationMap.put("multiply", (a, b) -> a * b);
 		operationMap.put("division", (a, b) -> a / b);
 		operationMap.put("divide", (a, b) -> a / b);
-		operationMap.put("multiply_base", (a, b) -> a * (b + 1));
+		operationMap.put("multiply_base", (a, b) -> a + (a * b));
 		operationMap.put("multiply_total", (a, b) -> a * (1 + b));
 		operationMap.put("set_total", (a, b) -> b);
 		operationMap.put("set", (a, b) -> b);
@@ -593,7 +593,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		operationMap.put("multiply", (a, b) -> a * b);
 		operationMap.put("division", (a, b) -> a / b);
 		operationMap.put("divide", (a, b) -> a / b);
-		operationMap.put("multiply_base", (a, b) -> a * (b + 1));
+		operationMap.put("multiply_base", (a, b) -> a + (a * b));
 		operationMap.put("multiply_total", (a, b) -> a * (1 + b));
 		operationMap.put("set_total", (a, b) -> b);
 		operationMap.put("set", (a, b) -> b);
@@ -623,7 +623,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		operationMap.put("multiply", (a, b) -> a * b);
 		operationMap.put("division", (a, b) -> a / b);
 		operationMap.put("divide", (a, b) -> a / b);
-		operationMap.put("multiply_base", (a, b) -> a * (b + 1));
+		operationMap.put("multiply_base", (a, b) -> a + (a * b));
 		operationMap.put("multiply_total", (a, b) -> a * (1 + b));
 		operationMap.put("set_total", (a, b) -> b);
 		operationMap.put("set", (a, b) -> b);

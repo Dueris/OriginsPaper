@@ -11,6 +11,7 @@ import org.bukkit.craftbukkit.block.CraftBiome;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.world.GenericGameEvent;
@@ -47,10 +48,9 @@ public class BounceSlimeBlock implements Listener, PowerProvider {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void move(PlayerMoveEvent e) {
 		if (!e.isCancelled()) {
-			if (!PowerHolderComponent.hasPower(e.getPlayer(), powerReference.asString())) return;
 			if (e.getPlayer().isOnGround()) return;
 			lastLoc.put(e.getPlayer(), e.getFrom());
 		}

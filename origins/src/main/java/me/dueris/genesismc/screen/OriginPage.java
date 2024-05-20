@@ -1,6 +1,5 @@
 package me.dueris.genesismc.screen;
 
-import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
@@ -10,7 +9,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minecraft.world.entity.player.Player;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -38,11 +36,6 @@ public class OriginPage implements ChoosingPage {
 	}
 
 	public static void setAttributesToDefault(Player p) {
-		for (Attribute attribute : Attribute.values()) {
-			if (p.getBukkitEntity().getAttribute(attribute) != null) {
-				p.getBukkitEntity().getAttribute(attribute).getModifiers().clear();
-			}
-		}
 		p.getBukkitEntity().getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
 		p.getBukkitEntity().getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
 		p.getBukkitEntity().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1);
@@ -51,7 +44,6 @@ public class OriginPage implements ChoosingPage {
 		p.getBukkitEntity().getAttribute(Attribute.GENERIC_LUCK).setBaseValue(0);
 		p.getBukkitEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
 		p.getBukkitEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.10000000149011612F);
-		p.getBukkitEntity().getAttribute(Attribute.GENERIC_SCALE).setBaseValue(1);
 	}
 
 	public static ItemStack itemProperties(ItemStack item, Component displayName, ItemFlag[] itemFlag, Enchantment enchantment, String lore) {
@@ -179,8 +171,6 @@ public class OriginPage implements ChoosingPage {
 	@Override
 	public void onChoose(Player player, Layer layer) {
 		PowerHolderComponent.setOrigin((org.bukkit.entity.Player) player.getBukkitEntity(), layer, this.origin);
-		OriginChangeEvent e = new OriginChangeEvent((org.bukkit.entity.Player) player.getBukkitEntity(), this.origin, ScreenNavigator.orbChoosing.contains(player));
-		Bukkit.getPluginManager().callEvent(e);
 		player.getBukkitEntity().getOpenInventory().close();
 	}
 }

@@ -66,7 +66,7 @@ public class CalioJsonParser {
 				"Registry: {a} | Associated Namespace: {b} | Throwable: {c}"
 					.replace("{a}", accessorKey.getOfType().getSimpleName())
 					.replace("{b}", key.asString())
-					.replace("{c}", throwable.getMessage()) + stacktrace[0]
+					.replace("{c}", throwable.getMessage() == null ? "Null Message" : throwable.getMessage()) + stacktrace[0]
 			);
 		}
 		return null;

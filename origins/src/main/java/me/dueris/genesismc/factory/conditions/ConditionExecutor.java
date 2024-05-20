@@ -35,13 +35,13 @@ public class ConditionExecutor {
 	public static ItemConditions itemCondition = new ItemConditions();
 
 	public static void registerAll() {
-		biEntityCondition.prep();
-		biomeCondition.prep();
-		blockCondition.prep();
-		damageCondition.prep();
-		entityCondition.prep();
-		fluidCondition.prep();
-		itemCondition.prep();
+		biEntityCondition.registerConditions();
+		biomeCondition.registerConditions();
+		blockCondition.registerConditions();
+		damageCondition.registerConditions();
+		entityCondition.registerConditions();
+		fluidCondition.registerConditions();
+		itemCondition.registerConditions();
 
 		ConditionTypes.ConditionFactory.addMetaConditions();
 	}

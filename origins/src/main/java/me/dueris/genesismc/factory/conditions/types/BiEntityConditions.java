@@ -28,7 +28,7 @@ import java.util.function.BiPredicate;
 
 public class BiEntityConditions implements Listener {
 
-	public void prep() {
+	public void registerConditions() {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("both"), (condition, pair) -> {
 			AtomicBoolean a = new AtomicBoolean(true);
 			AtomicBoolean t = new AtomicBoolean(true);

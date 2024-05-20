@@ -13,22 +13,18 @@ import org.bukkit.craftbukkit.damage.CraftDamageType;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
-import org.bukkit.damage.DamageType;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.BiPredicate;
 
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class DamageConditions {
-	public static HashMap<String, ArrayList<DamageType>> damageTagMappings = new HashMap<>();
 
-	public void prep() {
+	public void registerConditions() {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("projectile"), (condition, event) -> {
 			if (event.getCause().equals(DamageCause.PROJECTILE)) {
 				boolean projectile = true;

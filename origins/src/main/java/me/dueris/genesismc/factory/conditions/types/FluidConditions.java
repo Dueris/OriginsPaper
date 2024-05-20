@@ -12,7 +12,7 @@ import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import java.util.function.BiPredicate;
 
 public class FluidConditions {
-	public void prep() {
+	public void registerConditions() {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("empty"), (condition, fluid) -> fluid.defaultFluidState().isEmpty()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, fluid) -> {
 			NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag"));

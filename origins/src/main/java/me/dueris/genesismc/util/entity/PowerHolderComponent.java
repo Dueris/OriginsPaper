@@ -2,6 +2,7 @@ package me.dueris.genesismc.util.entity;
 
 import javassist.NotFoundException;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.apoli.Multiple;
@@ -9,6 +10,7 @@ import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
+import me.dueris.genesismc.screen.ScreenNavigator;
 import me.dueris.genesismc.storage.OriginConfiguration;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.util.Metrics;
@@ -222,6 +224,8 @@ public class PowerHolderComponent implements Listener {
 						 IllegalArgumentException | IllegalAccessException e) {
 					throw new RuntimeException(e);
 				}
+				OriginChangeEvent e = new OriginChangeEvent(player, origin, ScreenNavigator.orbChoosing.contains(player));
+				Bukkit.getPluginManager().callEvent(e);
 			}
 		}.runTaskLater(GenesisMC.getPlugin(), 3L);
 		inChoosingLayer.remove(player);

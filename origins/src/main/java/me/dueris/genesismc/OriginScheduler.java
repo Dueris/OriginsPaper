@@ -4,6 +4,7 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.apoli.CreativeFlight;
 import me.dueris.genesismc.factory.powers.apoli.provider.OriginSimpleContainer;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
+import me.dueris.genesismc.factory.powers.genesismc.GravityPower;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;
@@ -92,6 +93,9 @@ public class OriginScheduler {
 			}
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				flight.tickAsync(p);
+				if (!PowerHolderComponent.hasPowerType(p, GravityPower.class) && !PowerHolderComponent.hasPower(p, "origins:like_water")) {
+					p.setGravity(true);
+				}
 			}
 		}
 	}

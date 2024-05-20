@@ -19,18 +19,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import javax.annotation.Nullable;
 
 public class AttributeHandler extends PowerType {
-	protected static HashMap<Player, List<PowerType>> appliedAttributes = new HashMap<>();
 	private final Modifier[] modifiers;
 	private final boolean updateHealth;
+	private final @Nullable String attribute;
 
-	public AttributeHandler(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, boolean updateHealth, FactoryJsonObject modifier, FactoryJsonArray modifiers) {
+	public AttributeHandler(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, boolean updateHealth, FactoryJsonObject modifier, FactoryJsonArray modifiers, String attribute) {
 		super(name, description, hidden, condition, loading_priority);
 		this.updateHealth = updateHealth;
+		this.attribute = attribute;
 		this.modifiers = Modifier.getModifiers(modifier, modifiers);
 	}
 
@@ -38,7 +37,8 @@ public class AttributeHandler extends PowerType {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("attribute"))
 			.add("update_health", boolean.class, true)
 			.add("modifier", FactoryJsonObject.class, new OptionalInstance())
-			.add("modifiers", FactoryJsonArray.class, new OptionalInstance());
+			.add("modifiers", FactoryJsonArray.class, new OptionalInstance())
+			.add("attribute", String.class, new OptionalInstance());
 	}
 
 	@EventHandler
@@ -46,18 +46,6 @@ public class AttributeHandler extends PowerType {
 		if (!e.getPower().getTag().equalsIgnoreCase(getTag())) return;
 		Player p = e.getPlayer();
 		OriginPage.setAttributesToDefault(p);
-		appliedAttributes.putIfAbsent(p, new ArrayList<>());
-		appliedAttributes.get(p).clear();
-		if (getPlayers().contains(p)) {
-			runAttributeModifyPower(e);
-		}
-	}
-
-	@EventHandler
-	public void respawn(PlayerPostRespawnEvent e) {
-		Player p = e.getPlayer();
-		OriginPage.setAttributesToDefault(p);
-		appliedAttributes.putIfAbsent(p, new ArrayList<>());
 		if (getPlayers().contains(p)) {
 			runAttributeModifyPower(e);
 		}
@@ -68,11 +56,10 @@ public class AttributeHandler extends PowerType {
 		if (!getPlayers().contains(p)) return;
 		for (Modifier modifier : modifiers) {
 			try {
-				Attribute attributeModifier = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
+				Attribute attributeModifier = attribute == null ? DataConverter.resolveAttribute(modifier.handle.getString("attribute")) : DataConverter.resolveAttribute(attribute);
 				AttributeModifier m = DataConverter.convertToAttributeModifier(modifier);
-				if (p.getAttribute(attributeModifier) != null && !appliedAttributes.get(p).contains(this)) {
+				if (p.getAttribute(attributeModifier) != null) {
 					p.getAttribute(attributeModifier).addTransientModifier(m);
-					appliedAttributes.get(p).add(this);
 				}
 				AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attributeModifier, this, e.isAsynchronous());
 				Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);

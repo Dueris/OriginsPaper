@@ -11,20 +11,15 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import oshi.util.tuples.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.BiPredicate;
 
 public class BiomeConditions {
 
-	public static HashMap<String, ArrayList<Biome>> biomeTagMappings = new HashMap<>();
-
-	public void prep() {
+	public void registerConditions() {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, biome) -> {
 			NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag"));
 			TagKey<net.minecraft.world.level.biome.Biome> key = TagKey.create(net.minecraft.core.registries.Registries.BIOME, CraftNamespacedKey.toMinecraft(tag));

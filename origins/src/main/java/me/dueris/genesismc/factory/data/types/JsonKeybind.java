@@ -12,8 +12,7 @@ public class JsonKeybind {
 	}
 
 	public static JsonKeybind createJsonKeybind(FactoryJsonObject jsonObject) {
-		if (!jsonObject.isPresent("key")) throw new IllegalArgumentException("\"key\" must be present!");
-		return new JsonKeybind(jsonObject.getString("key"), jsonObject.getBooleanOrDefault("continuous", false));
+		return new JsonKeybind(jsonObject.isPresent("key") ? jsonObject.getString("key") : "key.origins.primary_active", jsonObject.getBooleanOrDefault("continuous", false));
 	}
 
 	public String getKey() {

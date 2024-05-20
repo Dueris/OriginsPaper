@@ -11,6 +11,7 @@ import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class ActionOnCallback extends PowerType {
 	private final FactoryJsonObject entityActionChosen;
@@ -32,7 +33,7 @@ public class ActionOnCallback extends PowerType {
 		this.entityActionRespawned = entityActionRespawned;
 	}
 
-	public static FactoryData regsiterComponents(FactoryData data) {
+	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("action_on_callback"))
 			.add("entity_action_chosen", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("execute_chosen_when_orb", boolean.class, true)
@@ -47,11 +48,16 @@ public class ActionOnCallback extends PowerType {
 	public void choose(OriginChangeEvent e) {
 		Player actor = e.getPlayer();
 
-		if (!getPlayers().contains(actor)) return;
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (!getPlayers().contains(actor)) return;
 
-		if (!isActive(actor)) return;
-		if (executeChosenWhenOrb && !e.isFromOrb()) return;
-		Actions.executeEntity(e.getPlayer(), entityActionChosen);
+				if (!isActive(actor)) return;
+				if (!executeChosenWhenOrb && e.isFromOrb()) return;
+				Actions.executeEntity(e.getPlayer(), entityActionChosen);
+			}
+		}.runTaskLater(GenesisMC.getPlugin(), 1);
 	}
 
 	@EventHandler

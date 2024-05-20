@@ -68,23 +68,25 @@ public class ModifyFoodPower extends PowerType implements Listener {
 			if (isActive(player) && ConditionExecutor.testItem(itemCondition, e.getItem())) {
 				for (FactoryJsonObject jsonObject : foodModifiers) {
 					if (jsonObject.isPresent("value")) {
-						int val = jsonObject.getNumber("value").getInt();
+						Double val = jsonObject.getNumber("value").getDouble();
 						String operation = jsonObject.getString("operation");
 						BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
 						if (mathOperator != null && CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD) != null) {
-							double finalValue = (double) mathOperator.apply(CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD).nutrition(), (double) val);
+							double finalValue = (double) mathOperator.apply(Integer.valueOf(CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD).nutrition()).doubleValue(), val);
+							finalValue = finalValue - Integer.valueOf(CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD).nutrition()).doubleValue();
 							player.setFoodLevel(Integer.parseInt(String.valueOf(Math.round(player.getFoodLevel() + finalValue))));
 						}
 					}
 				}
 				for (FactoryJsonObject jsonObject : saturationModifiers) {
 					if (jsonObject.isPresent("value")) {
-						int val = jsonObject.getNumber("value").getInt();
+						Double val = jsonObject.getNumber("value").getDouble();
 						String operation = jsonObject.getString("operation");
 						BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
 						if (mathOperator != null && CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD) != null) {
-							double finalValue = (double) mathOperator.apply(CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD).saturation(), (double) val);
-							player.setSaturation(Math.round(player.getFoodLevel() + finalValue));
+							double finalValue = (double) mathOperator.apply(Float.valueOf(CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD).saturation()).doubleValue(), val);
+							finalValue = finalValue - Float.valueOf(CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD).saturation()).doubleValue();
+							player.setSaturation(Math.round(player.getSaturation() + finalValue));
 						}
 					}
 				}

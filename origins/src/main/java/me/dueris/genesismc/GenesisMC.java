@@ -68,7 +68,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -224,6 +223,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		});
 		// Our version of restricted_armor allows handling of both.
 		JsonObjectRemapper.typeAlias.put("apoli:conditioned_restrict_armor", "apoli:restrict_armor");
+		JsonObjectRemapper.typeAlias.put("apugli:edible_item", "apoli:edible_item");
+		JsonObjectRemapper.typeAlias.put("apoli:modify_attribute", "apoli:attribute");
 		ThreadFactory threadFactory = new NamedTickThreadFactory("OriginParsingPool");
 		placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
 		if (placeholderapi) new PlaceHolderAPI(this).register();
@@ -314,7 +315,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			}
 		}.runTaskTimerAsynchronously(GenesisMC.getPlugin(), 0, 1);
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			PowerHolderComponent.powersAppliedList.putIfAbsent(player, new ConcurrentLinkedQueue<>());
+			player.kick(Component.text("Origins is reloading! All players are kicked to ensure the server doesnt crash."));
 		}
 		WaterProtBook.init();
 		start();
@@ -364,6 +365,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new ScreenNavigator(), this);
 		getServer().getPluginManager().registerEvents(new OriginCommand(), this);
 		getServer().getPluginManager().registerEvents(new ContentTicker(), this);
+		getServer().getPluginManager().registerEvents(new LogoutBugWorkaround(), this);
 		getServer().getPluginManager().registerEvents(new BounceSlimeBlock(), this);
 		getServer().getPluginManager().registerEvents(new BiEntityConditions(), this);
 		getServer().getPluginManager().registerEvents(new VillagerTradeHook(), this);
@@ -372,6 +374,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new KeybindingUtils(), this);
 		getServer().getPluginManager().registerEvents(new AsyncUpgradeTracker(), this);
 		getServer().getPluginManager().registerEvents(new PowerHolderComponent(), this);
+		getServer().getPluginManager().registerEvents(new CraftPehuki(), this);
 		((Registrar<PowerType>) this.registry.retrieve(Registries.CRAFT_POWER)).values().forEach(powerType -> {
 			if (powerType != null) {
 				getServer().getPluginManager().registerEvents(powerType, this);

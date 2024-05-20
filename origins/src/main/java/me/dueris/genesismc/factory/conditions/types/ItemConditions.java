@@ -10,14 +10,12 @@ import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.enchantments.CraftEnchantment;
@@ -31,7 +29,7 @@ import java.util.function.Predicate;
 
 public class ItemConditions {
 
-	public void prep() {
+	public void registerConditions() {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("food"), (condition, itemStack) -> itemStack.getType().isEdible()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("smeltable"), (condition, itemStack) -> itemStack.getType().isFuel()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("relative_durability"), (condition, itemStack) -> {

@@ -35,9 +35,6 @@ public enum ConditionTypes {
 							}
 						});
 						Reflector.accessMethod$Invoke("register", c, c.newInstance(), new Class[]{inst.getClass()}, inst);
-						// Method registerMethod = c.getDeclaredMethod("register", inst.getClass());
-						// registerMethod.setAccessible(true);
-						// registerMethod.invoke(c.newInstance(), inst);
 					}
 				} catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
 						 IllegalAccessException | InvocationTargetException e) {

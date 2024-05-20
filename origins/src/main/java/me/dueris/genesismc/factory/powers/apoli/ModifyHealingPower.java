@@ -32,7 +32,7 @@ public class ModifyHealingPower extends ModifierPower implements Listener {
 				String operation = modifier.operation();
 				BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
 				if (mathOperator != null) {
-					float result = (float) mathOperator.apply(e.getAmount(), value);
+					float result = (float) mathOperator.apply(Double.valueOf(e.getAmount()).floatValue(), value);
 					if (isActive(p)) {
 						e.setAmount(result);
 					}

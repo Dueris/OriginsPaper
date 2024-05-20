@@ -5,6 +5,7 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
+import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -62,7 +63,7 @@ public class ElytraFlightPower extends PowerType {
 		if (getPlayers().contains(e.getPlayer())) {
 			e.setCancelled(true);
 			p.setFlying(false);
-			if (isActive(p)) {
+			if (isActive(p) && !PowerHolderComponent.hasPowerType(p, PreventElytraFlight.class)) {
 				if (!p.isGliding() && !p.getLocation().add(0, 1, 0).getBlock().isCollidable()) {
 					if (p.getGameMode() == GameMode.SPECTATOR) return;
 					glidingPlayers.add(p.getUniqueId());

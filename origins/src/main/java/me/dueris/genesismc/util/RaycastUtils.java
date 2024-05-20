@@ -2,6 +2,7 @@ package me.dueris.genesismc.util;
 
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.util.ClipContextUtils;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.RotationType;
@@ -55,7 +56,9 @@ public class RaycastUtils {
 				vecLoc = CraftLocation.toVec3D(curLoc);
 				curLoc.setWorld(entity.getBukkitEntity().getWorld());
 				if (!curLoc.getNearbyEntities(0.4, 0.4, 0.4)
-					.stream().filter(e -> e != entity.getBukkitEntity()).toList().isEmpty() && data.getBooleanOrDefault("entity", true)) { // entity hit
+					.stream().filter(e -> e != entity.getBukkitEntity()).toList().isEmpty() && data.getBooleanOrDefault("entity", true) &&
+					ConditionExecutor.testBiEntity(data.getJsonObject("bientity_condition"), entity.getBukkitEntity(), curLoc.getNearbyEntities(0.4, 0.4, 0.4)
+						.stream().filter(entity1 -> !entity1.equals(entity.getBukkitEntity())).findFirst().get())) { // entity hit
 					hit = true;
 					curLoc.getNearbyEntities(0.4, 0.4, 0.4)
 						.stream().filter(e -> e != entity.getBukkitEntity()).toList()
@@ -101,7 +104,7 @@ public class RaycastUtils {
 
 	private static void executeStepCommands(Entity entity, Vec3 origin, Vec3 target, String command, double step) {
 		if (command == null) return;
-		MinecraftServer server = entity.getServer();
+		MinecraftServer server = GenesisMC.server;
 		if (server != null) {
 			Vec3 direction = target.subtract(origin).normalize();
 			double length = origin.distanceTo(target);
@@ -210,7 +213,7 @@ public class RaycastUtils {
 					hasHit = true;
 				}
 				if (!curLoc.getNearbyEntities(0.3, 0.3, 0.3).stream().filter(entity1 -> !entity1.equals(entity.getBukkitEntity())).toList().isEmpty()) {
-					if (ConditionExecutor.testBiEntity(data.getJsonObject("match_bientity_condition"), entity.getBukkitEntity(), curLoc.getNearbyEntities(0.3, 0.3, 0.3).stream().filter(entity1 -> !entity1.equals(entity.getBukkitEntity())).findFirst().orElseThrow())) {
+					if (ConditionExecutor.testBiEntity(data.getJsonObject("bientity_condition"), entity.getBukkitEntity(), curLoc.getNearbyEntities(0.3, 0.3, 0.3).stream().filter(entity1 -> !entity1.equals(entity.getBukkitEntity())).findFirst().get()) && ConditionExecutor.testBiEntity(data.getJsonObject("match_bientity_condition"), entity.getBukkitEntity(), curLoc.getNearbyEntities(0.3, 0.3, 0.3).stream().filter(entity1 -> !entity1.equals(entity.getBukkitEntity())).findFirst().orElseThrow())) {
 						hasHit = true;
 						if (ConditionExecutor.testBiEntity(data.getJsonObject("hit_bientity_condition"), entity.getBukkitEntity(), curLoc.getNearbyEntities(0.3, 0.3, 0.3).stream().filter(entity1 -> !entity1.equals(entity.getBukkitEntity())).findFirst().orElseThrow())) {
 							break;

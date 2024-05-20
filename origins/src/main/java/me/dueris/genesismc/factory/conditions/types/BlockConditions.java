@@ -9,7 +9,6 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
-import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,15 +32,13 @@ import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiPredicate;
 
 public class BlockConditions {
 
-	public void prep() {
+	public void registerConditions() {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("material"), (condition, block) -> {
 			try {
 				Material mat = condition.getMaterial(condition.getString("material"));

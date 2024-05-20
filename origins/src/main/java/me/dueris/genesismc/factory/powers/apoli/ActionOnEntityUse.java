@@ -21,11 +21,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ActionOnEntityUse extends PowerType {
-	private static final ArrayList<Player> cooldownTick = new ArrayList<>();
 	private final FactoryJsonObject bientityAction;
 	private final FactoryJsonObject heldItemAction;
 	private final FactoryJsonObject resultItemAction;
@@ -62,7 +60,6 @@ public class ActionOnEntityUse extends PowerType {
 		Entity target = e.getRightClicked();
 
 		if (!getPlayers().contains(actor)) return;
-		if (cooldownTick.contains(actor)) return;
 
 		if (!isActive(actor)) return;
 		if (!ConditionExecutor.testItem(itemCondition, actor.getInventory().getItem(e.getHand()))) return;
@@ -73,7 +70,6 @@ public class ActionOnEntityUse extends PowerType {
 			pass = hands.asList().stream().map(FactoryElement::getString).map(String::toUpperCase).map(InteractionHand::valueOf).toList().contains(hand);
 		}
 		if (!pass) return;
-		cooldownTick.add(actor);
 		Actions.executeBiEntity(actor, target, bientityAction);
 		Actions.executeItem(actor.getActiveItem(), heldItemAction);
 		if (resultStack != null) {

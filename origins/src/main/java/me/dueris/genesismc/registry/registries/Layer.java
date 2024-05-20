@@ -163,7 +163,10 @@ public class Layer implements FactoryHolder {
 
 	public List<Origin> testChoosable(Entity entity) {
 		List<Origin> tested = new ArrayList<Origin>();
-		for (Origin origin : this.getOriginIdentifiers().stream().map(CraftApoli::getOrigin).toList()) {
+		for (Origin origin : this.getOriginIdentifiers().stream()
+			.map(CraftApoli::getOrigin)
+			.filter(origin -> !origin.getTag().equalsIgnoreCase("origins:empty"))
+			.toList()) {
 			if (origin.getUsesCondition()) {
 				if (ConditionExecutor.testEntity(origin.choosingCondition, (CraftEntity) entity)) {
 					tested.add(origin);

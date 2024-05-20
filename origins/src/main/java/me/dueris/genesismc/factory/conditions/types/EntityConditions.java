@@ -81,7 +81,7 @@ import java.util.function.BiPredicate;
 public class EntityConditions {
 	private final Location[] prevLoca = new Location[100000];
 
-	public void prep() {
+	public void registerConditions() {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("ability"), (condition, entity) -> {
 			if (entity instanceof Player p) {
 				String ability = condition.getString("ability").toLowerCase();
