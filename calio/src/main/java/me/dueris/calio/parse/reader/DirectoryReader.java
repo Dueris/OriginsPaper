@@ -1,7 +1,5 @@
 package me.dueris.calio.parse.reader;
 
-import me.dueris.calio.CraftCalio;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;

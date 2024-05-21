@@ -1,7 +1,5 @@
 package me.dueris.calio.parse.reader;
 
-import me.dueris.calio.CraftCalio;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -35,7 +33,6 @@ public class ZipFileReader implements FileReader {
 			return new ArrayList<>();
 		}
 
-		// Reset the enumeration to list all files after the check
 		entries = zipFile.entries();
 		while (entries.hasMoreElements()) {
 			ZipEntry entry = entries.nextElement();
