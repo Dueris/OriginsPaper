@@ -42,7 +42,7 @@ public class OriginLootCondition implements LootItemCondition {
 		CraftEntity var4 = entity.getBukkitEntity();
 		if (var4 instanceof Player player) {
 			NamespacedKey key = CraftNamespacedKey.fromMinecraft(this.originId);
-			Origin origin = (Origin) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(key);
+			Origin origin = GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(key);
 			return PowerHolderComponent.hasOrigin(player, origin.getTag());
 		} else {
 			return false;

@@ -5,11 +5,10 @@ import java.lang.reflect.Method;
 
 public class LaunchWarning {
 	public static void main(String[] args) {
+		System.out.println(getMessage());
 		if (System.console() == null && !isHeadless()) {
 			JOptionPane.showMessageDialog(null, getMessage(), "GenesisMC", JOptionPane.ERROR_MESSAGE);
 		}
-
-		System.out.println(getMessage());
 	}
 
 	public static boolean isHeadless() {

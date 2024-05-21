@@ -150,7 +150,6 @@ public class KeybindingUtils implements Listener {
 
 	@EventHandler
 	public void click(PlayerInteractEvent e) {
-		if (e.getHand() == EquipmentSlot.OFF_HAND) return;
 		if (e.getAction().isRightClick()) {
 			triggerExecution("key.use", e.getPlayer());
 			if (e.getItem() != null) {

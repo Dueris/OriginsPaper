@@ -1,7 +1,9 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import com.google.gson.JsonObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
@@ -21,19 +23,19 @@ public class ToggleNightVision extends PowerType implements KeyedPower {
 	public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
 	private final JsonKeybind key;
 
-	public ToggleNightVision(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject key) {
+	public ToggleNightVision(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryElement key) {
 		super(name, description, hidden, condition, loading_priority);
 		this.key = JsonKeybind.createJsonKeybind(key);
 	}
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("toggle_night_vision"))
-			.add("key", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+			.add("key", FactoryElement.class, new FactoryElement(new Gson().fromJson("{\"key\": \"key.origins.primary_active\"}", JsonElement.class)));
 	}
 
 	public void execute(Player p) {
 		in_continuous.putIfAbsent(p, new ArrayList<>());
-		String key = getJsonKey().getKey();
+		String key = getJsonKey().key();
 
 		new BukkitRunnable() {
 			@Override
@@ -63,7 +65,7 @@ public class ToggleNightVision extends PowerType implements KeyedPower {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			if (isActive(p)) {
-				if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), p)) {
+				if (KeybindingUtils.isKeyActive(getJsonKey().key(), p)) {
 					execute(p);
 				}
 			}
@@ -74,12 +76,12 @@ public class ToggleNightVision extends PowerType implements KeyedPower {
 	public void inContinuousFix(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
-			if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), p)) {
+			if (KeybindingUtils.isKeyActive(getJsonKey().key(), p)) {
 				in_continuous.putIfAbsent(p, new ArrayList<>());
-				if (in_continuous.get(p).contains(getJsonKey().getKey())) {
-					in_continuous.get(p).remove(getJsonKey().getKey());
+				if (in_continuous.get(p).contains(getJsonKey().key())) {
+					in_continuous.get(p).remove(getJsonKey().key());
 				} else {
-					in_continuous.get(p).add(getJsonKey().getKey());
+					in_continuous.get(p).add(getJsonKey().key());
 				}
 			}
 		}

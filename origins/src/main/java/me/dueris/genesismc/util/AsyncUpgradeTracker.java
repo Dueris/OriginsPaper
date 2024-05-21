@@ -54,7 +54,7 @@ public class AsyncUpgradeTracker implements Listener {
 
 							AdvancementProgress progress = player.getHandle().getAdvancements().getOrStartProgress(advancementHolder);
 							if (progress.isDone()) {
-								PowerHolderComponent.setOrigin(player, layer, (Origin) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(originToSet));
+								PowerHolderComponent.setOrigin(player, layer, GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(originToSet));
 								if (!announcement.equals(NO_ANNOUNCEMENT)) {
 									player.sendMessage(announcement);
 								}

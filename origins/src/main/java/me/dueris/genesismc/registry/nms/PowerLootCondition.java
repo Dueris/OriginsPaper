@@ -41,7 +41,7 @@ public class PowerLootCondition implements LootItemCondition {
 		CraftEntity var4 = entity.getBukkitEntity();
 		if (var4 instanceof Player player) {
 			NamespacedKey key = CraftNamespacedKey.fromMinecraft(this.powerId);
-			PowerType power = (PowerType) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(key);
+			PowerType power = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(key);
 			return PowerHolderComponent.hasPower(player, power.getTag());
 		} else {
 			return false;

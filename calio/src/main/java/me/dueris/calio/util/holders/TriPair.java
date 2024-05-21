@@ -1,13 +1,14 @@
 package me.dueris.calio.util.holders;
 
-public class TriPair {
-	public Object first;
-	public Object second;
-	public Object third;
+public class TriPair<T, S, B> {
+	public T first;
+	public S second;
+	public B third;
 
-	public TriPair(Object first, Object second, Object third) {
+	public TriPair(T first, S second, B third) {
 		this.first = first;
 		this.second = second;
 		this.third = third;
 	}
+
 }

@@ -10,10 +10,9 @@ import org.bukkit.NamespacedKey;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
 
 public class CalioJsonParser {
-	protected static HashMap<Pair<JsonObject, NamespacedKey>, Integer> newLoadingPrioritySortedMap = new HashMap<>();
 
 	public static FactoryHolder initilize(Pair<JsonObject, NamespacedKey> pair, AccessorKey accessorKey) {
 		NamespacedKey key = pair.getSecond();

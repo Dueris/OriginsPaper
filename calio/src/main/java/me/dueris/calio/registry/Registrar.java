@@ -13,9 +13,9 @@ import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 public class Registrar<T extends Registrable> {
+	private final Class<T> ofType;
 	public ConcurrentHashMap<NamespacedKey, T> rawRegistry = new ConcurrentHashMap<>();
 	private boolean frozen = false;
-	private Class<T> ofType;
 
 	public Registrar(Class<T> ofType) {
 		this.ofType = ofType;

@@ -15,6 +15,7 @@ import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.screen.OriginPage;
+import me.dueris.genesismc.screen.RandomOriginPage;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.commands.CommandSourceStack;
@@ -152,6 +153,39 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 								Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
 								Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
 								targets.forEach(player -> context.getSource().getBukkitEntity().sendMessage(net.kyori.adventure.text.Component.text("%player% has the following %layer% : %origin%".replace("%player%", player.getBukkitEntity().getName()).replace("%layer%", layer.getTag()).replace("%origin%", PowerHolderComponent.getOrigin(player.getBukkitEntity(), layer).getTag()))));
+								return SINGLE_SUCCESS;
+							})
+						)
+					)
+				).then(literal("random").requires(source -> source.hasPermission(2))
+					.executes(context -> {
+						if (!context.getSource().isPlayer()) return 0;
+						ServerPlayer player = context.getSource().getPlayer();
+						RandomOriginPage randomOriginPage = new RandomOriginPage();
+						CraftApoli.getLayersFromRegistry().forEach(layer -> randomOriginPage.onChoose(player, layer));
+						return SINGLE_SUCCESS;
+					})
+					.then(argument("targets", EntityArgument.players())
+						.executes(context -> {
+							Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
+							RandomOriginPage randomOriginPage = new RandomOriginPage();
+							targets.forEach(player -> CraftApoli.getLayersFromRegistry().forEach(layer -> randomOriginPage.onChoose(player, layer)));
+							return SINGLE_SUCCESS;
+						})
+						.then(argument("layer", ResourceLocationArgument.id())
+							.suggests((context, builder) -> {
+								commandProvidedLayers.forEach((layer) -> {
+									if (context.getInput().split(" ").length == 3 || (layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+										|| layer.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))) {
+										builder.suggest(layer.getTag());
+									}
+								});
+								return builder.buildFuture();
+							}).executes(context -> {
+								Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
+								Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
+								RandomOriginPage randomOriginPage = new RandomOriginPage();
+								targets.forEach(player -> randomOriginPage.onChoose(player, layer));
 								return SINGLE_SUCCESS;
 							})
 						)

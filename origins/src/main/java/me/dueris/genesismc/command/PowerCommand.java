@@ -1,16 +1,20 @@
 package me.dueris.genesismc.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import joptsimple.internal.Strings;
-import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.powers.apoli.Multiple;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.util.JsonTextFormatter;
 import me.dueris.genesismc.util.PowerUtils;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -44,7 +48,7 @@ public class PowerCommand {
 					return builder.buildFuture();
 				}).executes(context -> {
 					try {
-						PowerType power = ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).get(NamespacedKey.fromString(ResourceLocationArgument.getId(context, "power").getNamespace() + ":" + ResourceLocationArgument.getId(context, "power").getPath()));
+						PowerType power = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(ResourceLocationArgument.getId(context, "power").getNamespace() + ":" + ResourceLocationArgument.getId(context, "power").getPath()));
 						if (power == null) {
 							context.getSource().sendFailure(Component.literal("Power not found."));
 							return 1;
@@ -75,7 +79,7 @@ public class PowerCommand {
 					}).executes(context -> {
 						EntityArgument.getPlayers(context, "targets").forEach(player -> {
 							if (PowerHolderComponent.playerPowerMapping.get(player.getBukkitEntity()) != null) {
-								PowerType poweR = ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
+								PowerType poweR = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
 								ArrayList<PowerType> powersToEdit = new ArrayList<>(CraftApoli.getNestedPowerTypes(poweR));
 								powersToEdit.add(poweR);
 								for (PowerType power : powersToEdit) {
@@ -92,7 +96,7 @@ public class PowerCommand {
 						.executes(context -> {
 							EntityArgument.getPlayers(context, "targets").forEach(player -> {
 								if (PowerHolderComponent.playerPowerMapping.get(player.getBukkitEntity()) != null) {
-									PowerType poweR = ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
+									PowerType poweR = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
 									ArrayList<PowerType> powersToEdit = new ArrayList<>(CraftApoli.getNestedPowerTypes(poweR));
 									powersToEdit.add(poweR);
 									for (PowerType power : powersToEdit) {
@@ -144,31 +148,38 @@ public class PowerCommand {
 			)
 		).then(literal("list")
 			.then(argument("targets", EntityArgument.entities())
-				.executes(context -> {
-					for (ServerPlayer player : EntityArgument.getPlayers(context, "targets")) {
-						ConcurrentLinkedQueue<PowerType> allPowers = new ConcurrentLinkedQueue<>();
-						ArrayList<PowerType> powers = PowerHolderComponent.getPowers(player.getBukkitEntity());
-						if (!powers.isEmpty()) {
-							allPowers.addAll(powers);
-						}
-
-						if (allPowers.isEmpty()) {
-							context.getSource().sendFailure(Component.literal("Entity %name% does not have any powers".replace("%name%", player.getBukkitEntity().getName())));
-						} else {
-							String msg = "Entity %name% has %size% powers: [%powers%]".replace("%name%", player.getBukkitEntity().getName()).replace("%size%", String.valueOf(allPowers.size()));
-							final String[] powerString = {""};
-							allPowers.forEach((power) -> powerString[0] = powerString[0] + power.getTag() + ", ");
-							String finMsg = msg.replace("%powers%", powerString[0]);
-							context.getSource().sendSystemMessage(Component.literal(finMsg.replace(", ]", "]")));
-						}
-					}
-					return SINGLE_SUCCESS;
-				})
+				.executes(context -> list(context, false))
+				.then(argument("sub_powers", BoolArgumentType.bool())
+					.executes(context -> list(context, BoolArgumentType.getBool(context, "sub_powers"))))
 			)
 		);
 		addRemoveArg(main, "remove");
 		addRemoveArg(main, "revoke");
 		dispatcher.register(main);
+	}
+
+	private static int list(CommandContext<CommandSourceStack> context, boolean subPowers) throws CommandSyntaxException {
+		for (ServerPlayer player : EntityArgument.getPlayers(context, "targets")) {
+			ConcurrentLinkedQueue<PowerType> allPowers = new ConcurrentLinkedQueue<>();
+			ArrayList<PowerType> powers = PowerHolderComponent.getPowers(player.getBukkitEntity());
+			ArrayList<Multiple> multiples = PowerHolderComponent.getPowers(player.getBukkitEntity(), Multiple.class);
+			if (!subPowers)
+				powers.removeAll(Utils.collectValues(multiples.stream().map(Multiple::getSubPowers).toList()));
+			if (!powers.isEmpty()) {
+				allPowers.addAll(powers);
+			}
+
+			if (allPowers.isEmpty()) {
+				context.getSource().sendFailure(Component.literal("Entity %name% does not have any powers".replace("%name%", player.getBukkitEntity().getName())));
+			} else {
+				String msg = "Entity %name% has %size% powers: [%powers%]".replace("%name%", player.getBukkitEntity().getName()).replace("%size%", String.valueOf(allPowers.size()));
+				final String[] powerString = {""};
+				allPowers.forEach((power) -> powerString[0] = powerString[0] + power.getTag() + ", ");
+				String finMsg = msg.replace("%powers%", powerString[0]);
+				context.getSource().sendSystemMessage(Component.literal(finMsg.replace(", ]", "]")));
+			}
+		}
+		return SINGLE_SUCCESS;
 	}
 
 	private static void addRemoveArg(LiteralArgumentBuilder<CommandSourceStack> main, String name) {
@@ -187,7 +198,7 @@ public class PowerCommand {
 						NamespacedKey arg = CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power"));
 						CraftApoli.getLayersFromRegistry().forEach(layer -> {
 							try {
-								PowerUtils.removePower(context.getSource().getBukkitSender(), ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).get(arg), p.getBukkitEntity(), layer, context.getSource().isSilent());
+								PowerUtils.removePower(context.getSource().getBukkitSender(), GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(arg), p.getBukkitEntity(), layer, context.getSource().isSilent());
 							} catch (InstantiationException | IllegalAccessException e) {
 								throw new RuntimeException(e);
 							}
@@ -202,7 +213,7 @@ public class PowerCommand {
 							String layer = CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString();
 
 							try {
-								PowerUtils.removePower(context.getSource().getBukkitSender(), ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).get(arg), p.getBukkitEntity(), CraftApoli.getLayerFromTag(layer), context.getSource().isSilent());
+								PowerUtils.removePower(context.getSource().getBukkitSender(), GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(arg), p.getBukkitEntity(), CraftApoli.getLayerFromTag(layer), context.getSource().isSilent());
 							} catch (InstantiationException | IllegalAccessException e) {
 								throw new RuntimeException(e);
 							}

@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;

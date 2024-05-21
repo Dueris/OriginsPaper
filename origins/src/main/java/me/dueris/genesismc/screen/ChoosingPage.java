@@ -1,7 +1,6 @@
 package me.dueris.genesismc.screen;
 
 import me.dueris.calio.registry.Registrable;
-import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.Registries;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 
 public interface ChoosingPage extends Registrable {
 	static void registerInstances() {
-		((Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).values().stream()
+		GenesisMC.getPlugin().registry.retrieve(Registries.LAYER).values().stream()
 			.filter(Layer::isEnabled)
 			.forEach((Layer layer) -> {
 				ScreenNavigator.layerPages.put(layer, new ArrayList<>());
@@ -26,7 +25,7 @@ public interface ChoosingPage extends Registrable {
 					.filter(origin -> !origin.isUnchoosable())
 					.sorted(Comparator.comparingInt(Origin::getOrder))
 					.sorted(Comparator.comparingInt(Origin::getImpact))
-					.toList();
+					.collect(Collectors.toCollection(ArrayList::new));
 
 				Origin defaultOrigin = null;
 				if (!layer.getDefaultOrigin().asString().equalsIgnoreCase("origins:empty")) {
@@ -37,13 +36,13 @@ public interface ChoosingPage extends Registrable {
 
 				if (defaultOrigin != null) {
 					choosable.remove(defaultOrigin);
-					choosable.add(0, defaultOrigin);
+					choosable.addFirst(defaultOrigin);
 				}
 
 				ScreenNavigator.layerPages.get(layer).addAll(
 					choosable.stream()
 						.map(OriginPage::new)
-						.collect(Collectors.toList())
+						.toList()
 				);
 			});
 

@@ -1,10 +1,8 @@
 package me.dueris.calio.data;
 
 import com.google.common.base.Preconditions;
-
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
-
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,4 +68,5 @@ public class FactoryData {
 	public String toString() {
 		return "FactoryData :: [%N%] : DataDefiners: [%%%]".replace("%%%", this.providers.toString()).replace("%N%", identifier.asString());
 	}
+
 }

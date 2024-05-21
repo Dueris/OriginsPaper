@@ -16,7 +16,7 @@ public class ZipFileReader implements FileReader {
 	}
 
 	@Override
-	public List<String> listFiles() throws IOException {
+	public List<String> listFiles() {
 		List<String> fileList = new ArrayList<>();
 		Enumeration<? extends ZipEntry> entries = zipFile.entries();
 		while (entries.hasMoreElements()) {

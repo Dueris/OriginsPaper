@@ -74,7 +74,7 @@ public class Layer implements FactoryHolder {
 			.add("gui_title", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("missing_name", String.class, "Missing Name")
 			.add("missing_description", String.class, "Missing Description")
-			.add("allow_random", boolean.class, false)
+			.add("allow_random", boolean.class, true)
 			.add("allow_random_unchoosable", boolean.class, false)
 			.add("exclude_random", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()))
 			.add("default_origin", NamespacedKey.class, CraftApoli.emptyOrigin().getKey())
@@ -192,7 +192,7 @@ public class Layer implements FactoryHolder {
 		if (ScreenNavigator.orbChoosing.contains(entity)) return false; // Default origins dont apply on orb choosings
 		if (!getDefaultOrigin().asString().equalsIgnoreCase("origins:empty")) {
 			NamespacedKey identifier = getDefaultOrigin();
-			Origin origin = ((Registrar<Origin>) GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).get(identifier);
+			Origin origin = GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN).get(identifier);
 			if (origin != null && entity instanceof Player p) {
 				PowerHolderComponent.setOrigin(p, this, origin);
 				return true;
@@ -214,9 +214,8 @@ public class Layer implements FactoryHolder {
 	}
 
 	public List<Origin> getRandomOrigins() {
-		boolean overrideUnchoosable = isAllowRandomUnchoosable();
 		if (!this.isAllowRandom()) return new ArrayList<>();
-		return this.getOriginIdentifiers().stream().map(CraftApoli::getOrigin).filter(origin -> !origin.isUnchoosable() || overrideUnchoosable).filter(origin -> {
+		return this.getOriginIdentifiers().stream().map(CraftApoli::getOrigin).filter(origin -> !origin.isUnchoosable() || isAllowRandomUnchoosable()).filter(origin -> {
 			if (!this.getExcludeRandom().asList().isEmpty()) {
 				for (String identifier : this.getExcludeRandom().asList().stream().map(FactoryElement::getString).toList()) {
 					if (origin.getTag().equalsIgnoreCase(identifier)) return false;
@@ -228,7 +227,7 @@ public class Layer implements FactoryHolder {
 
 	@Override
 	public boolean canRegister() {
-		Registrar<Layer> registrar = (Registrar<Layer>) GenesisMC.getPlugin().registry.retrieve(Registries.LAYER);
+		Registrar<Layer> registrar = GenesisMC.getPlugin().registry.retrieve(Registries.LAYER);
 		AtomicBoolean merge = new AtomicBoolean(!isReplace() && registrar.rawRegistry.containsKey(this.tag));
 		if (merge.get()) {
 			List<Origin> originList = new ArrayList<>();

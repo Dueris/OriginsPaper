@@ -10,7 +10,6 @@ import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
-
 import org.bukkit.NamespacedKey;
 
 import java.lang.annotation.Annotation;
@@ -24,6 +23,7 @@ import java.util.Optional;
 
 // Note for devs: Optionals ALWAYS return an Optional of a JsonElement if found
 public class ConstructorCreator {
+
 	public static FactoryHolder invoke(Constructor<? extends FactoryHolder> constructor, FactoryData data, Pair<JsonObject, NamespacedKey> pair) throws InvocationTargetException, InstantiationException, IllegalAccessException {
 		JsonObject getter = pair.getFirst();
 		NamespacedKey tag = pair.getSecond();
@@ -147,4 +147,5 @@ public class ConstructorCreator {
 		}
 		return null;
 	}
+
 }

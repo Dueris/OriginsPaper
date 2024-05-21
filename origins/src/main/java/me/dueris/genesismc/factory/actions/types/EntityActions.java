@@ -6,7 +6,6 @@ import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
-import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -133,7 +132,7 @@ public class EntityActions {
 			((CraftEntity) entity).getHandle().gameEvent(BuiltInRegistries.GAME_EVENT.wrapAsHolder(CraftGameEvent.bukkitToMinecraft(GameEvent.getByKey(event))));
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("spawn_particles"), (action, entity) -> {
-			Particle particle = CalioDataTypes.particleEffect(action.getElement("particle").handle).getParticle();
+			Particle particle = CalioDataTypes.particleEffect(action.getElement("particle").handle).particle();
 			int count = action.getNumber("count").getInt();
 			float offset_x = action.getNumberOrDefault("offset_z", 0).getFloat();
 			float offset_y = action.getNumberOrDefault("offset_z", 0.5F).getFloat();
@@ -170,7 +169,7 @@ public class EntityActions {
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("remove_power"), (action, entity) -> {
 			if (entity instanceof Player p) {
-				PowerType powerContainer = ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).get(action.getNamespacedKey("power"));
+				PowerType powerContainer = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(action.getNamespacedKey("power"));
 				if (powerContainer != null) {
 					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("action")));
 				}

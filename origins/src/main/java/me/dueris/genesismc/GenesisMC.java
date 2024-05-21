@@ -62,18 +62,19 @@ import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 import static me.dueris.genesismc.factory.powers.apoli.RecipePower.parseRecipes;
-import static me.dueris.genesismc.util.ColorConstants.AQUA;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
 	public static final boolean isFolia = classExists("io.papermc.paper.threadedregions.RegionizedServer");
@@ -131,8 +132,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			PowerHolderComponent.setupPowers(p);
 			PlayerManager.originValidCheck(p);
 			PowerHolderComponent.assignPowers(p);
-			if (p.isOp())
-				p.sendMessage(Component.text("Origins Reloaded!").color(TextColor.fromHexString(AQUA)));
 		}
 	}
 
@@ -199,28 +198,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 				return "apoli";
 			}
 		});
-		JsonObjectRemapper.addObjectMapping("key", new Pair<Object, Object>() {
-			@Override
-			public Object left() {
-				return "primary";
-			}
-
-			@Override
-			public Object right() {
-				return new JSONObject(Map.of("key", "key.origins.primary_active"));
-			}
-		});
-		JsonObjectRemapper.addObjectMapping("key", new Pair<Object, Object>() {
-			@Override
-			public Object left() {
-				return "secondary";
-			}
-
-			@Override
-			public Object right() {
-				return new JSONObject(Map.of("key", "key.origins.secondary_active"));
-			}
-		});
 		// Our version of restricted_armor allows handling of both.
 		JsonObjectRemapper.typeAlias.put("apoli:conditioned_restrict_armor", "apoli:restrict_armor");
 		JsonObjectRemapper.typeAlias.put("apugli:edible_item", "apoli:edible_item");
@@ -271,7 +248,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			PowerType.registerAll();
 			// Start calio parser for data driven instances
 			final CraftCalio calio = CraftCalio.INSTANCE;
-			((Registrar<DatapackRepository>) this.registry.retrieve(Registries.PACK_SOURCE)).values().stream()
+			this.registry.retrieve(Registries.PACK_SOURCE).values().stream()
 				.map(DatapackRepository::getPath).forEach(calio::addDatapackPath);
 			calio.registerAccessor(
 				"powers", 0,
@@ -288,7 +265,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 				false, Layer.class,
 				Registries.LAYER
 			);
-			calio.start(OriginConfiguration.getConfiguration().getBoolean("debug"), loaderThreadPool);
+			calio.start(OriginConfiguration.getConfiguration().getBoolean("debug"));
 			BuiltinRegistry.bootstrap();
 			// End calio parsing
 		} catch (Throwable e) {
@@ -298,7 +275,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		debug(Component.text("  - Loaded @1 powers".replace("@1", String.valueOf(this.registry.retrieve(Registries.CRAFT_POWER).registrySize()))));
 		debug(Component.text("  - Loaded @4 layers".replace("@4", String.valueOf(this.registry.retrieve(Registries.LAYER).registrySize()))));
 		debug(Component.text("  - Loaded @2 origins = [".replace("@2", String.valueOf(this.registry.retrieve(Registries.ORIGIN).registrySize()))));
-		((Registrar<Origin>) this.registry.retrieve(Registries.ORIGIN)).forEach((u, o) -> debug(Component.text("     () -> {@3}".replace("@3", o.getTag()))));
+		this.registry.retrieve(Registries.ORIGIN).forEach((u, o) -> debug(Component.text("     () -> {@3}".replace("@3", o.getTag()))));
 		debug(Component.text("  ]"));
 		try {
 			NBTFixerUpper.runFixerUpper();
@@ -325,9 +302,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 		// Shutdown executor, we don't need it anymore
 		loaderThreadPool.shutdown();
-		OriginCommand.commandProvidedPowers.addAll(((Registrar<PowerType>) this.registry.retrieve(Registries.CRAFT_POWER)).values().stream().toList());
-		OriginCommand.commandProvidedOrigins.addAll(((Registrar<Origin>) this.registry.retrieve(Registries.ORIGIN)).values().stream().toList());
-		OriginCommand.commandProvidedLayers.addAll(((Registrar<Layer>) this.registry.retrieve(Registries.LAYER)).values().stream().filter(Layer::isEnabled).toList());
+		OriginCommand.commandProvidedPowers.addAll(this.registry.retrieve(Registries.CRAFT_POWER).values().stream().toList());
+		OriginCommand.commandProvidedOrigins.addAll(this.registry.retrieve(Registries.ORIGIN).values().stream().toList());
+		OriginCommand.commandProvidedLayers.addAll(this.registry.retrieve(Registries.LAYER).values().stream().filter(Layer::isEnabled).toList());
 
 		if (GenesisMC.server.getCommands().getDispatcher().getRoot().getChildren().stream().map(CommandNode::getName).toList().contains("origin")) {
 			// Already registered, lets change that ;)
@@ -375,7 +352,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new AsyncUpgradeTracker(), this);
 		getServer().getPluginManager().registerEvents(new PowerHolderComponent(), this);
 		getServer().getPluginManager().registerEvents(new CraftPehuki(), this);
-		((Registrar<PowerType>) this.registry.retrieve(Registries.CRAFT_POWER)).values().forEach(powerType -> {
+		this.registry.retrieve(Registries.CRAFT_POWER).values().forEach(powerType -> {
 			if (powerType != null) {
 				getServer().getPluginManager().registerEvents(powerType, this);
 			}

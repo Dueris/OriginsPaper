@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.RequiredInstance;
-import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -95,12 +94,12 @@ public class Resource extends PowerType implements ResourcePower {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				if (!power.getHudRender().getShouldRender()) {
+				if (!power.getHudRender().shouldRender()) {
 					bossBar.setVisible(false);
 					this.cancel();
 				} else {
-					if (!power.getHudRender().getCondition().isEmpty()) {
-						bossBar.setVisible(ConditionExecutor.testEntity(power.getHudRender().getCondition(), player));
+					if (!power.getHudRender().condition().isEmpty()) {
+						bossBar.setVisible(ConditionExecutor.testEntity(power.getHudRender().condition(), player));
 					} else {
 						bossBar.setVisible(true);
 					}
@@ -113,7 +112,7 @@ public class Resource extends PowerType implements ResourcePower {
 	@EventHandler
 	public void preLoad(ServerLoadEvent e) {
 		// We preload the bars and then display a clone of them to each player
-		((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).values().stream()
+		GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).values().stream()
 			.filter(p -> p.getType().equalsIgnoreCase(getType())).forEach(power -> {
 				Bar bar = new Bar((Resource) power, null);
 				serverLoadedBars.put(power.getTag(), bar);
@@ -236,11 +235,11 @@ public class Resource extends PowerType implements ResourcePower {
 		}
 
 		public static BarColor getBarColor(HudRender element) {
-			if (element != null && element.getSpriteLocation() != null) {
-				TextureLocation loc = ((Registrar<TextureLocation>) GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION))
-					.get(DataConverter.resolveTextureLocationNamespace(NamespacedKey.fromString(element.getSpriteLocation())));
+			if (element != null && element.spriteLocation() != null) {
+				TextureLocation loc = GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION)
+					.get(DataConverter.resolveTextureLocationNamespace(NamespacedKey.fromString(element.spriteLocation())));
 				if (loc == null) return BarColor.WHITE;
-				long index = (element.getBarIndex()) + 1;
+				long index = (element.barIndex()) + 1;
 				BarColor color = textureMap.get(loc.getKey().asString() + "/-/" + index);
 				return color != null ? color : BarColor.WHITE;
 			}

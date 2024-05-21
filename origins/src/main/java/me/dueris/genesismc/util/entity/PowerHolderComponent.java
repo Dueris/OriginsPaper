@@ -107,7 +107,7 @@ public class PowerHolderComponent implements Listener {
 			// setup powers
 			for (String dataPiece : layerData) {
 				if (layerData.length == 1) continue;
-				PowerType powerCon = (PowerType) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(dataPiece));
+				PowerType powerCon = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(dataPiece));
 				if (powerCon != null) {
 					if (powers.contains(powerCon)) continue;
 					powers.add(powerCon);
@@ -272,7 +272,7 @@ public class PowerHolderComponent implements Listener {
 	public static void applyPower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
 		NamespacedKey registryKey = power.getKey();
-		PowerType c = (PowerType) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(registryKey);
+		PowerType c = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(registryKey);
 		if (c != null) {
 			c.forPlayer(player);
 			if (!powersAppliedList.containsKey(player))
@@ -295,7 +295,7 @@ public class PowerHolderComponent implements Listener {
 	public static void removePower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
 		NamespacedKey registryKey = power.getKey();
-		PowerType c = (PowerType) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(registryKey);
+		PowerType c = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(registryKey);
 		if (c != null) {
 			powersAppliedList.get(player).remove(c);
 			c.removePlayer(player);

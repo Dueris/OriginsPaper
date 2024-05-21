@@ -1,7 +1,10 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
@@ -30,7 +33,7 @@ public class Launch extends PowerType implements CooldownPower, KeyedPower {
 	private final Sound sound;
 	private final JsonKeybind keybind;
 
-	public Launch(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int cooldown, float speed, FactoryJsonObject hudRender, Sound sound, FactoryJsonObject keybind) {
+	public Launch(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int cooldown, float speed, FactoryJsonObject hudRender, Sound sound, FactoryElement keybind) {
 		super(name, description, hidden, condition, loading_priority);
 		this.cooldown = cooldown;
 		this.speed = speed;
@@ -45,14 +48,14 @@ public class Launch extends PowerType implements CooldownPower, KeyedPower {
 			.add("speed", float.class, new RequiredInstance())
 			.add("hud_render", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("sound", Sound.class, new OptionalInstance())
-			.add("key", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+			.add("key", FactoryElement.class, new FactoryElement(new Gson().fromJson("{\"key\": \"key.origins.primary_active\"}", JsonElement.class)));
 	}
 
 	@EventHandler
 	public void inContinuousFix(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
-			if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), p)) {
+			if (KeybindingUtils.isKeyActive(getJsonKey().key(), p)) {
 				in_continuous.putIfAbsent(p, new ArrayList<>());
 			}
 		}
@@ -64,8 +67,8 @@ public class Launch extends PowerType implements CooldownPower, KeyedPower {
 		if (getPlayers().contains(p)) {
 			if (isActive(p)) {
 				if (!Cooldown.isInCooldown(p, this)) {
-					if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), p)) {
-						String key = getJsonKey().getKey();
+					if (KeybindingUtils.isKeyActive(getJsonKey().key(), p)) {
+						String key = getJsonKey().key();
 						final int[] times = {-1};
 						new BukkitRunnable() {
 							@Override

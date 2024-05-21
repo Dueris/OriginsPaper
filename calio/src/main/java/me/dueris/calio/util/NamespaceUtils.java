@@ -1,11 +1,6 @@
 package me.dueris.calio.util;
 
-import com.google.gson.JsonElement;
-import it.unimi.dsi.fastutil.Pair;
 import org.bukkit.NamespacedKey;
-
-import static me.dueris.calio.data.JsonObjectRemapper.typeAlias;
-import static me.dueris.calio.data.JsonObjectRemapper.typeMappings;
 
 public class NamespaceUtils {
 

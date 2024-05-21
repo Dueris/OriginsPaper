@@ -4,7 +4,6 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.RequiredInstance;
-import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.event.PowerUpdateEvent;
@@ -48,7 +47,7 @@ public class RecipePower extends PowerType {
 	}
 
 	public static void parseRecipes() {
-		for (PowerType powerContainer : ((Registrar<PowerType>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).values().stream().filter(powerContainer -> powerContainer.getType().equalsIgnoreCase("apoli:recipe")).toList()) {
+		for (PowerType powerContainer : GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).values().stream().filter(powerContainer -> powerContainer.getType().equalsIgnoreCase("apoli:recipe")).toList()) {
 			if (!(powerContainer instanceof RecipePower recipePower)) continue;
 			FactoryJsonObject recipe = recipePower.getRecipe();
 			if (recipe == null)

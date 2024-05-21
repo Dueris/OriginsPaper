@@ -30,6 +30,7 @@ import java.util.function.Function;
 
 public class CalioDataTypes {
 	public static HashMap<Class<?> /*ofType*/, Function<JsonElement, ?>> registries = new HashMap<>();
+
 	@SuppressWarnings("unchecked")
 	public static <T> T test(Class<T> ofType, JsonElement provider) {
 		if (ofType.equals(ItemStack.class)) return (T) itemStack(provider);

@@ -1,6 +1,5 @@
 package me.dueris.calio;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
@@ -13,6 +12,8 @@ import me.dueris.calio.data.annotations.RequiresPlugin;
 import me.dueris.calio.parse.CalioJsonParser;
 import me.dueris.calio.parse.reader.FileReader;
 import me.dueris.calio.parse.reader.FileReaderFactory;
+import me.dueris.calio.registry.Registrable;
+import me.dueris.calio.registry.RegistryKey;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.NamespacedKey;
 
@@ -58,78 +59,54 @@ public class CraftCalio {
 	 * @param debug      a boolean indicating whether debugging is enabled
 	 * @param threadPool an ExecutorService for managing threads
 	 */
-	public void start(boolean debug, ExecutorService threadPool) {
+	public void start(boolean debug) {
 		this.isDebugging = debug;
-		Runnable parser = () -> {
-			debug("Starting CraftCalio parser...");
-			// New Calio
-			this.keys.stream().sorted(Comparator.comparingInt(AccessorKey::getPriority)).forEach(accessorKey -> datapackDirectoriesToParse.forEach(root -> {
-				for (File datapack : root.listFiles()) {
-					try {
-						FileReader fileReader = FileReaderFactory.createFileReader(datapack.toPath());
-						if (fileReader == null) continue;
-						List<String> files = fileReader.listFiles();
-						HashMap<Pair<JsonObject, NamespacedKey>, Integer> newLoadingPrioritySortedMap = new HashMap<>();
-						for (String file : files) {
-							file = file.replace("/", "\\");
-							if ((file.startsWith("data\\")) && file.endsWith(".json")) {
-								String fixedJsonFile = file.substring(file.indexOf("data\\"));
-								String namespace = fixedJsonFile.split("\\\\")[1];
-								String name = fixedJsonFile.split("\\\\")[2].split("\\\\")[0];
-								String key = fixedJsonFile.split("\\\\")[fixedJsonFile.split("\\\\").length - 1].replace(".json", "");
-								if (accessorKey.getDirectory().equalsIgnoreCase(name)) {
-									try (InputStream is = fileReader.getFileStream(file.replace("\\", "/"));
-										 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-										StringBuilder line = new StringBuilder();
-										String newLine;
-										while ((newLine = br.readLine()) != null) {
-											line.append(newLine);
-										}
-										String finishedLine = line.toString().replace("\n", "");
-										JsonObject powerParser = JsonParser.parseReader(new StringReader(finishedLine)).getAsJsonObject();
-										NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
-										JsonObject remappedJsonObject = JsonObjectRemapper.remapJsonObject(powerParser, namespacedKey);
-										newLoadingPrioritySortedMap.put(new Pair<>(remappedJsonObject, namespacedKey), remappedJsonObject.has("loading_priority") ? remappedJsonObject.getAsJsonPrimitive("loading_priority").getAsInt() : 0);
+		debug("Starting CraftCalio parser...");
+		this.keys.stream().sorted(Comparator.comparingInt(AccessorKey::getPriority)).forEach(accessorKey -> datapackDirectoriesToParse.forEach(root -> {
+			for (File datapack : root.listFiles()) {
+				try {
+					FileReader fileReader = FileReaderFactory.createFileReader(datapack.toPath());
+					if (fileReader == null) continue;
+					List<String> files = fileReader.listFiles();
+					HashMap<Pair<JsonObject, NamespacedKey>, Integer> newLoadingPrioritySortedMap = new HashMap<>();
+					for (String file : files) {
+						file = file.replace("/", "\\");
+						if ((file.startsWith("data\\")) && file.endsWith(".json")) {
+							String fixedJsonFile = file.substring(file.indexOf("data\\"));
+							String namespace = fixedJsonFile.split("\\\\")[1];
+							String name = fixedJsonFile.split("\\\\")[2].split("\\\\")[0];
+							String key = fixedJsonFile.split("\\\\")[fixedJsonFile.split("\\\\").length - 1].replace(".json", "");
+							if (accessorKey.getDirectory().equalsIgnoreCase(name)) {
+								try (InputStream is = fileReader.getFileStream(file.replace("\\", "/"));
+									 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+									StringBuilder line = new StringBuilder();
+									String newLine;
+									while ((newLine = br.readLine()) != null) {
+										line.append(newLine);
 									}
+									String finishedLine = line.toString().replace("\n", "");
+									JsonObject powerParser = JsonParser.parseReader(new StringReader(finishedLine)).getAsJsonObject();
+									NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
+									JsonObject remappedJsonObject = JsonObjectRemapper.remapJsonObject(powerParser, namespacedKey);
+									newLoadingPrioritySortedMap.put(new Pair<>(remappedJsonObject, namespacedKey), remappedJsonObject.has("loading_priority") ? remappedJsonObject.getAsJsonPrimitive("loading_priority").getAsInt() : 0);
 								}
 							}
 						}
-
-						List<Map.Entry<Pair<JsonObject, NamespacedKey>, Integer>> list = new ArrayList<>(newLoadingPrioritySortedMap.entrySet());
-						Collections.sort(list, Map.Entry.comparingByValue());
-
-						for (Map.Entry<Pair<JsonObject, NamespacedKey>, Integer> entry : list) {
-							CalioJsonParser.initilize(entry.getKey(), accessorKey);
-						}
-
-						newLoadingPrioritySortedMap.clear();
-					} catch (IOException e) {
-						e.printStackTrace();
 					}
-				}
-			}));
-		};
-		if (threadPool != null) {
-			CompletableFuture future = CompletableFuture.runAsync(parser, threadPool);
-			try {
-				future.join();
-				future.get();
-			} catch (InterruptedException | ExecutionException e) {
-				this.getLogger().severe("An Error occured during parsing, printing stacktrace:");
-				e.printStackTrace();
-			}
-		} else {
-			parser.run();
-		}
-	}
 
-	/**
-	 * Starts the CraftCalio parser with optional debugging.
-	 *
-	 * @param debug a boolean indicating whether debug mode is enabled or disabled
-	 */
-	public void start(boolean debug) {
-		this.start(debug, null);
+					List<Map.Entry<Pair<JsonObject, NamespacedKey>, Integer>> list = new ArrayList<>(newLoadingPrioritySortedMap.entrySet());
+					Collections.sort(list, Map.Entry.comparingByValue());
+
+					for (Map.Entry<Pair<JsonObject, NamespacedKey>, Integer> entry : list) {
+						CalioJsonParser.initilize(entry.getKey(), accessorKey);
+					}
+
+					newLoadingPrioritySortedMap.clear();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}));
 	}
 
 	/**
@@ -172,16 +149,16 @@ public class CraftCalio {
 			this.types.put(identifier, new Pair<>(data, holder));
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ea) {
 			if (ea instanceof NoSuchMethodException) return;
-            ea.printStackTrace();
+			ea.printStackTrace();
 			throw new RuntimeException("An exception occured when registering FactoryHolder", ea);
 		}
 	}
 
-	public void registerAccessor(String directory, int priority, boolean useTypeDefiner, Class<? extends FactoryHolder> typeOf, NamespacedKey registryKey) {
+	public <T extends Registrable> void registerAccessor(String directory, int priority, boolean useTypeDefiner, Class<? extends FactoryHolder> typeOf, RegistryKey<T> registryKey) {
 		keys.add(new AccessorKey(directory, priority, useTypeDefiner, registryKey, typeOf));
 	}
 
-	public void registerAccessor(String directory, int priority, boolean useTypeDefiner, NamespacedKey registryKey) {
+	public <T extends Registrable> void registerAccessor(String directory, int priority, boolean useTypeDefiner, RegistryKey<T> registryKey) {
 		keys.add(new AccessorKey(directory, priority, useTypeDefiner, registryKey, null));
 	}
 }

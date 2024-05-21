@@ -1,7 +1,5 @@
 package me.dueris.calio.registry;
 
-import org.bukkit.NamespacedKey;
-
 public interface IRegistry {
 
 	/**
@@ -10,7 +8,7 @@ public interface IRegistry {
 	 * @param key the key used to retrieve the Registrar
 	 * @return the retrieved Registrar
 	 */
-	Registrar retrieve(NamespacedKey key);
+	<T extends Registrable> Registrar<T> retrieve(RegistryKey<T> key);
 
 	/**
 	 * Creates a new instance of the specified class using the provided constructor and arguments.
@@ -18,7 +16,7 @@ public interface IRegistry {
 	 * @param key       the namespaced key to create
 	 * @param registrar the registrar to use for creating the instance
 	 */
-	void create(NamespacedKey key, Registrar registrar);
+	<T extends Registrable> void create(RegistryKey<T> key, Registrar<T> registrar);
 
 	/**
 	 * Clears all the registries.

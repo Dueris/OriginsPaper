@@ -1,7 +1,10 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
@@ -54,7 +57,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 	private final FactoryJsonObject projectileAction;
 	private final FactoryJsonObject shooterAction;
 
-	public FireProjectile(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, NamespacedKey entityType, int cooldown, FactoryJsonObject hudRender, int count, int interval, int startDelay, float speed, float divergence, Sound sound, CompoundTag tag, FactoryJsonObject key, FactoryJsonObject projectileAction, FactoryJsonObject shooterAction) {
+	public FireProjectile(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, NamespacedKey entityType, int cooldown, FactoryJsonObject hudRender, int count, int interval, int startDelay, float speed, float divergence, Sound sound, CompoundTag tag, FactoryElement key, FactoryJsonObject projectileAction, FactoryJsonObject shooterAction) {
 		super(name, description, hidden, condition, loading_priority);
 		this.entityType = entityType;
 		this.cooldown = cooldown;
@@ -83,7 +86,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 			.add("divergence", float.class, 1.0F)
 			.add("sound", Sound.class, new OptionalInstance())
 			.add("tag", CompoundTag.class, new OptionalInstance())
-			.add("key", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("key", FactoryElement.class, new FactoryElement(new Gson().fromJson("{\"key\": \"key.origins.primary_active\"}", JsonElement.class)))
 			.add("projectile_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("shooter_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
 	}
@@ -102,13 +105,13 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 	public void inContinuousFix(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
-			if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), p)) {
+			if (KeybindingUtils.isKeyActive(getJsonKey().key(), p)) {
 				in_continuous.putIfAbsent(p, new ArrayList<>());
-				if (getJsonKey().isContinuous()) {
-					if (in_continuous.get(p).contains(getJsonKey().getKey())) {
-						in_continuous.get(p).remove(getJsonKey().getKey());
+				if (getJsonKey().continuous()) {
+					if (in_continuous.get(p).contains(getJsonKey().key())) {
+						in_continuous.get(p).remove(getJsonKey().key());
 					} else {
-						in_continuous.get(p).add(getJsonKey().getKey());
+						in_continuous.get(p).add(getJsonKey().key());
 					}
 				}
 			}
@@ -133,7 +136,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 		if (getPlayers().contains(p)) {
 			if (isActive(p)) {
 				if (!Cooldown.isInCooldown(p, this)) {
-					if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), p)) {
+					if (KeybindingUtils.isKeyActive(getJsonKey().key(), p)) {
 						// Slight random divergence
 						float divergence = providedDivergence + (float) ((Math.random() - 0.5) * 0.05);
 
@@ -145,9 +148,9 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 							type = EntityType.valueOf(entityType.asString().split(":")[1].toUpperCase());
 							enderian_pearl.remove(p);
 						}
-						String key = getJsonKey().getKey();
+						String key = getJsonKey().key();
 
-						boolean cont = !getJsonKey().isContinuous();
+						boolean cont = !getJsonKey().continuous();
 						ServerPlayer player = ((CraftPlayer) p).getHandle();
 						new BukkitRunnable() {
 							int shotsLeft = -count;

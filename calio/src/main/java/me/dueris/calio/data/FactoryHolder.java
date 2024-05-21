@@ -5,15 +5,15 @@ import org.bukkit.NamespacedKey;
 
 public interface FactoryHolder extends Registrable {
 	static FactoryData registerComponents(FactoryData data) {
-		return new FactoryData();
+		return data;
 	}
 
-	public FactoryHolder ofResourceLocation(NamespacedKey key);
+	FactoryHolder ofResourceLocation(NamespacedKey key);
 
-	public default void bootstrap() {
+	default void bootstrap() {
 	}
 
-	public default boolean canRegister() {
+	default boolean canRegister() {
 		return true;
 	}
 }

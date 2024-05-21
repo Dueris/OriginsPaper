@@ -3,13 +3,10 @@ package me.dueris.calio.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.util.NamespaceUtils;
 import org.bukkit.NamespacedKey;
 
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 

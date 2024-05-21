@@ -57,7 +57,7 @@ public class ParticlePower extends PowerType {
 	public void tick(Player player) {
 		if (Bukkit.getServer().getCurrentTick() % frequency == 0) {
 			if (isActive(player)) {
-				Particle particle = getEffect().getParticle();
+				Particle particle = getEffect().particle();
 				if (particle == null)
 					throw new IllegalStateException("Unable to create CraftBukkit particle instance");
 				boolean visible_while_invis = isVisibleWhileInvis();
@@ -67,7 +67,7 @@ public class ParticlePower extends PowerType {
 					player.getWorld().spawnParticle(
 						particle.builder().source(player).force(false).location(player.getLocation()).count(count).particle(),
 						new Location(player.getWorld(), player.getEyeLocation().getX(), player.getEyeLocation().getY() - 0.7, player.getEyeLocation().getZ()),
-						count, offsetX, offsetY, offsetZ, 0, effect.getDustOptions().orElse(null)
+						count, offsetX, offsetY, offsetZ, 0, effect.dustOptions().orElse(null)
 					);
 				}
 			}

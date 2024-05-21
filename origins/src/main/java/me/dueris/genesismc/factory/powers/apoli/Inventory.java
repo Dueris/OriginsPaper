@@ -1,7 +1,10 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
+import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
@@ -39,7 +42,7 @@ public class Inventory extends PowerType implements KeyedPower {
 	private final boolean recoverable;
 	private final JsonKeybind keybind;
 
-	public Inventory(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, String title, ContainerType containerType, boolean dropOnDeath, FactoryJsonObject dropOnDeathFilter, boolean recoverable, FactoryJsonObject key) {
+	public Inventory(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, String title, ContainerType containerType, boolean dropOnDeath, FactoryJsonObject dropOnDeathFilter, boolean recoverable, FactoryElement key) {
 		super(name, description, hidden, condition, loading_priority);
 		this.title = title;
 		this.containerType = containerType;
@@ -56,7 +59,7 @@ public class Inventory extends PowerType implements KeyedPower {
 			.add("drop_on_death", boolean.class, false)
 			.add("drop_on_death_filter", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("recoverable", boolean.class, true)
-			.add("key", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
+			.add("key", FactoryElement.class, new FactoryElement(new Gson().fromJson("{\"key\": \"key.origins.primary_active\"}", JsonElement.class)));
 	}
 
 	public static void saveInNbtIO(String tag, String data, Player player) {
@@ -191,7 +194,7 @@ public class Inventory extends PowerType implements KeyedPower {
 	public void keytrigger(KeybindTriggerEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			if (isActive(e.getPlayer())) {
-				if (KeybindingUtils.isKeyActive(getJsonKey().getKey(), e.getPlayer())) {
+				if (KeybindingUtils.isKeyActive(getJsonKey().key(), e.getPlayer())) {
 					ArrayList<ItemStack> vaultItems = getItems(e.getPlayer(), getTag());
 					org.bukkit.inventory.Inventory vault = containerType.createInventory(e.getPlayer(), Utils.createIfPresent(title));
 					vaultItems.forEach(vault::addItem);

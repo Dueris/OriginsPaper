@@ -1,7 +1,6 @@
 package me.dueris.genesismc.util;
 
 import me.dueris.calio.registry.Registrable;
-import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.Registries;
@@ -53,7 +52,7 @@ public class TextureLocation implements Registrable {
 			}
 		}
 
-		for (TextureLocation location : ((Registrar<TextureLocation>) GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION)).values()) {
+		for (TextureLocation location : GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION).values()) {
 			if (CraftApoli.datapacksInDir() == null) return;
 			for (File pack : CraftApoli.datapacksInDir()) {
 				if (pack == null) continue;
