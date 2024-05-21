@@ -15,6 +15,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.CraftRegistry;
@@ -83,6 +84,9 @@ public class ItemConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("fuel"), (condition, itemStack) -> itemStack.getType().isFuel()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("meat"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).is(ItemTags.MEAT)));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, itemStack) -> NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.getString("nbt")), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.saveOptional(GenesisMC.server.registryAccess()), true)));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("rarity"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).getRarity().equals(condition.getEnumValue("rarity", Rarity.class))));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("stackable"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).isStackable()));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("used_on_release"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).useOnRelease()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("ingredient"), (condition, itemStack) -> {
 			if (itemStack != null && itemStack.getType() != null) {
 				Predicate<FactoryJsonObject> returnPred = ingredientMap -> {

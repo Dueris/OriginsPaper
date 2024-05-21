@@ -33,6 +33,7 @@ import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockCollisions;
@@ -508,9 +509,24 @@ public class EntityConditions {
 			}
 			return comparison.compare(count, compareTo);
 		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("age"), (condition, entity) -> Comparison.fromString(condition.getString("comparison")).compare(entity.getTicksLived(), condition.getNumber("compare_to").getInt())));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("crawling"), (condition, entity) -> entity.getHandle().isVisuallyCrawling()));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("disables_shield"), (condition, entity) -> {
+			net.minecraft.world.entity.Entity nms = entity.getHandle();
+			return (nms instanceof Mob) ? ((Mob)nms).canDisableShield() : false;
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("has_ai"), (condition, entity) -> {
+			net.minecraft.world.entity.Entity nms = entity.getHandle();
+			return (nms instanceof Mob) ? !((Mob)nms).isNoAi() : false;
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("ridable_in_water"), (condition, entity) -> !entity.getHandle().dismountsUnderwater()));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("riptiding"), (condition, entity) -> {
+			net.minecraft.world.entity.Entity nms = entity.getHandle();
+			return (nms instanceof net.minecraft.world.entity.LivingEntity) ? ((net.minecraft.world.entity.LivingEntity)nms).isAutoSpinAttack() : false;
+		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, entity) -> {
 			NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag"));
-			TagKey key = TagKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, CraftNamespacedKey.toMinecraft(tag));
+			TagKey<net.minecraft.world.entity.EntityType<?>> key = TagKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, CraftNamespacedKey.toMinecraft(tag));
 			return CraftEntityType.bukkitToMinecraft(entity.getType()).is(key);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("living"), (condition, entity) -> !entity.isDead()));
@@ -646,7 +662,7 @@ public class EntityConditions {
 			double compare_to = condition.getNumber("compare_to").getFloat();
 			return Comparison.fromString(comparison).compare(entity.getWorld().getTime(), compare_to);
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("set_size"), (condition, entity) -> {
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_set_size"), (condition, entity) -> {
 			NamespacedKey key = condition.getNamespacedKey("set");
 			String comparison = condition.getString("comparison");
 			int compare_to = condition.getNumber("compare_to").getInt();

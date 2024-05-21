@@ -105,7 +105,7 @@ public class BiEntityConditions implements Listener {
 			float compare_to = condition.getNumber("compare_to").getFloat();
 			return Comparison.fromString(comparison).compare(pair.first().getHandle().position().distanceToSqr(pair.second().getHandle().position()), compare_to);
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_set"), (condition, pair) -> EntitySetPower.isInEntitySet(pair.second(), condition.getString("set"))));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_entity_set"), (condition, pair) -> EntitySetPower.isInEntitySet(pair.second(), condition.getString("set"))));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("can_see"), (condition, pair) -> PreventEntityRender.canSeeEntity(pair.first(), pair.second(), condition)));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("owner"), (condition, pair) -> {
 			if (pair.second() instanceof Tameable tameable) {

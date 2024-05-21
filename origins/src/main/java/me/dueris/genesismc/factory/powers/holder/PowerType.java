@@ -17,29 +17,12 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class PowerType implements Serializable, FactoryHolder, Listener {
-	@Serial
-	private static final long serialVersionUID = 2L;
-	public static List<NamespacedKey> allowedSkips = new ArrayList<>();
-	public static List<NamespacedKey> notPossibleTypes = new ArrayList<>();
-
-	static {
-		allowedSkips.add(new NamespacedKey("apoli", "model_color"));
-		notPossibleTypes.add(new NamespacedKey("apoli", "lava_vision")); // Not possible
-		notPossibleTypes.add(new NamespacedKey("apoli", "shader")); // Not possible
-		allowedSkips.add(new NamespacedKey("apoli", "modify_attribute")); // Not planned, use origins:attribute
-		notPossibleTypes.add(new NamespacedKey("apoli", "prevent_feature_render")); // Not possible
-		notPossibleTypes.add(new NamespacedKey("apoli", "modify_insomnia_ticks")); // Not possible
-		notPossibleTypes.add(new NamespacedKey("apoli", "modify_slipperiness"));
-	}
-
+public class PowerType implements FactoryHolder, Listener {
 	private final String name;
 	private final String description;
 	private final boolean hidden;

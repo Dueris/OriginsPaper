@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -40,14 +41,8 @@ public class BlockConditions {
 
 	public void registerConditions() {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("material"), (condition, block) -> {
-			try {
-				Material mat = condition.getMaterial(condition.getString("material"));
-				return block.getType().equals(mat);
-			} catch (Exception e) {
-				e.printStackTrace();
-				//yeah imma fail this silently for some weird out of bounds error
-				return false;
-			}
+			Material mat = condition.getMaterial(condition.getString("material"));
+			return block.getType().equals(mat);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, block) -> {
 			if (block == null || block.getNMS() == null) return false;
@@ -207,6 +202,29 @@ public class BlockConditions {
 			float compare_to = condition.getNumber("compare_to").getFloat();
 			return Comparison.fromString(comparison).compare(block.getBlockData().getMaterial().getSlipperiness(), compare_to);
 		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("piston_behavior"), (condition, block) -> block.getNMS().getPistonPushReaction().equals(condition.getEnumValue("behavior", PushReaction.class))));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("redstone_input"), (condition, block) -> {
+			Comparison comparison = Comparison.fromString(condition.getString("comparison"));
+			int compareTo = condition.getNumber("compare_to").getInt();
+			int receivedRedstonePower = ((CraftWorld)block.getWorld()).getHandle().getBestNeighborSignal(CraftLocation.toBlockPosition(block.getLocation()));
+			return comparison.compare(receivedRedstonePower, compareTo);
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("redstone_output"), (condition, block) -> {
+			Comparison comparison = Comparison.fromString(condition.getString("comparison"));
+			int compareTo = condition.getNumber("compare_to").getInt();
+			ServerLevel level = ((CraftWorld)block.getWorld()).getHandle();
+			BlockPos cachedBlockPos = CraftLocation.toBlockPosition(block.getLocation());
+
+			for (Direction direction : Direction.values()) {
+				int emittedRedstonePower = level.getSignal(cachedBlockPos, direction);
+				if (comparison.compare(emittedRedstonePower, compareTo)) {
+					return true;
+				}
+			}
+
+			return false;
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("requires_tool"), (condition, block) -> block.getNMS().requiresCorrectToolForDrops()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("movement_blocking"), (condition, block) -> block.getType().isCollidable()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("replacable"), (condition, block) -> block.getType().isAir() || block.isReplaceable()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("water_loggable"), (condition, block) -> block.getHandle().getBlockState(block.getPosition()).getBlock() instanceof LiquidBlockContainer));

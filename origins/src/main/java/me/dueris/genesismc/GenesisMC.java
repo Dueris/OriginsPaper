@@ -84,7 +84,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	public static GlowingEntitiesUtils glowingEntitiesUtils;
 	public static Metrics metrics;
 	public static ConditionExecutor conditionExecutor;
-	public static String apoliVersion = "1.12.8";
+	public static String apoliVersion = "2.12.0-alpha.1";
 	public static boolean placeholderapi = false;
 	public static File playerDataFolder;
 	public static boolean forceUseCurrentVersion = false;
@@ -202,6 +202,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		JsonObjectRemapper.typeAlias.put("apoli:conditioned_restrict_armor", "apoli:restrict_armor");
 		JsonObjectRemapper.typeAlias.put("apugli:edible_item", "apoli:edible_item");
 		JsonObjectRemapper.typeAlias.put("apoli:modify_attribute", "apoli:attribute");
+		JsonObjectRemapper.typeAlias.put("apoli:add_to_set", "apoli:add_to_entity_set");
+		JsonObjectRemapper.typeAlias.put("apoli:remove_from_set", "apoli:remove_from_entity_set");
+		JsonObjectRemapper.typeAlias.put("apoli:action_on_set", "apoli:action_on_entity_set");
+		JsonObjectRemapper.typeAlias.put("apoli:in_set", "apoli:in_entity_set");
+		JsonObjectRemapper.typeAlias.put("apoli:set_size", "apoli:entity_set_size");
 		ThreadFactory threadFactory = new NamedTickThreadFactory("OriginParsingPool");
 		placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
 		if (placeholderapi) new PlaceHolderAPI(this).register();

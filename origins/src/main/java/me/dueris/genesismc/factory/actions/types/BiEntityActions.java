@@ -29,11 +29,11 @@ public class BiEntityActions {
 			if (set) entityPair.right().setVelocity(vector);
 			else entityPair.right().setVelocity(entityPair.right().getVelocity().add(vector));
 		}));
-		register(new ActionFactory(GenesisMC.apoliIdentifier("remove_from_set"), (action, entityPair) -> {
+		register(new ActionFactory(GenesisMC.apoliIdentifier("remove_from_entity_set"), (action, entityPair) -> {
 			RemoveFromSetEvent ev = new RemoveFromSetEvent(entityPair.right(), action.getString("set"));
 			ev.callEvent();
 		}));
-		register(new ActionFactory(GenesisMC.apoliIdentifier("add_to_set"), (action, entityPair) -> {
+		register(new ActionFactory(GenesisMC.apoliIdentifier("add_to_entity_set"), (action, entityPair) -> {
 			AddToSetEvent ev = new AddToSetEvent(entityPair.right(), action.getString("set"));
 			ev.callEvent();
 		}));
