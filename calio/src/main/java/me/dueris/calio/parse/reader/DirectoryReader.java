@@ -1,5 +1,7 @@
 package me.dueris.calio.parse.reader;
 
+import me.dueris.calio.CraftCalio;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -17,11 +19,17 @@ public class DirectoryReader implements FileReader {
 	@Override
 	public List<String> listFiles() throws IOException {
 		List<String> fileList = new ArrayList<>();
+
+		if (!Files.exists(directory.resolve("pack.mcmeta"))) {
+			return new ArrayList<>();
+		}
+
 		Files.walk(directory).forEach(path -> {
 			if (Files.isRegularFile(path)) {
 				fileList.add(directory.relativize(path).toString());
 			}
 		});
+
 		return fileList;
 	}
 
@@ -31,3 +39,4 @@ public class DirectoryReader implements FileReader {
 		return Files.newInputStream(filePath);
 	}
 }
+
