@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
 
 import static me.dueris.genesismc.screen.ScreenNavigator.inChoosingLayer;
 

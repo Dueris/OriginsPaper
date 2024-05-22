@@ -511,16 +511,16 @@ public class EntityConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("crawling"), (condition, entity) -> entity.getHandle().isVisuallyCrawling()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("disables_shield"), (condition, entity) -> {
 			net.minecraft.world.entity.Entity nms = entity.getHandle();
-			return (nms instanceof Mob) ? ((Mob)nms).canDisableShield() : false;
+			return nms instanceof Mob && ((Mob) nms).canDisableShield();
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("has_ai"), (condition, entity) -> {
 			net.minecraft.world.entity.Entity nms = entity.getHandle();
-			return (nms instanceof Mob) ? !((Mob)nms).isNoAi() : false;
+			return nms instanceof Mob && !((Mob) nms).isNoAi();
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("ridable_in_water"), (condition, entity) -> !entity.getHandle().dismountsUnderwater()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("riptiding"), (condition, entity) -> {
 			net.minecraft.world.entity.Entity nms = entity.getHandle();
-			return (nms instanceof net.minecraft.world.entity.LivingEntity) ? ((net.minecraft.world.entity.LivingEntity)nms).isAutoSpinAttack() : false;
+			return nms instanceof net.minecraft.world.entity.LivingEntity && ((net.minecraft.world.entity.LivingEntity) nms).isAutoSpinAttack();
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, entity) -> {
 			NamespacedKey tag = NamespacedKey.fromString(condition.getString("tag"));

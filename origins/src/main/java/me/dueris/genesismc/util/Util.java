@@ -1,12 +1,14 @@
 package me.dueris.genesismc.util;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
-import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
@@ -342,8 +344,8 @@ public class Util {
 	}
 
 	public static String makeDescriptionId(String type, @Nullable ResourceLocation id) {
-        return id == null ? type + ".unregistered_sadface" : type + "." + id.getNamespace() + "." + id.getPath().replace('/', '.');
-    }
+		return id == null ? type + ".unregistered_sadface" : type + "." + id.getNamespace() + "." + id.getPath().replace('/', '.');
+	}
 
 	public static <T> List<T> collectValues(Collection<List<T>> collection) {
 		List<T> lC = new ArrayList<>();
@@ -392,14 +394,14 @@ public class Util {
 	}
 
 	public static <T> Optional<T> ifElse(Optional<T> optional, Consumer<T> presentAction, Runnable elseAction) {
-        if (optional.isPresent()) {
-            presentAction.accept(optional.get());
-        } else {
-            elseAction.run();
-        }
+		if (optional.isPresent()) {
+			presentAction.accept(optional.get());
+		} else {
+			elseAction.run();
+		}
 
-        return optional;
-    }
+		return optional;
+	}
 
 	public static JsonArray toJsonStringArray(List<String> strings) {
 		JsonArray array = new JsonArray();
@@ -522,66 +524,66 @@ public class Util {
 	}
 
 	private static <T extends Number> Map<String, BinaryOperator<T>> createOperationMappings(
-            BinaryOperator<T> addition,
-            BinaryOperator<T> subtraction,
-            BinaryOperator<T> multiplication,
-            BinaryOperator<T> division,
-            BinaryOperator<T> multiplyBase,
-            BinaryOperator<T> multiplyTotal) {
+		BinaryOperator<T> addition,
+		BinaryOperator<T> subtraction,
+		BinaryOperator<T> multiplication,
+		BinaryOperator<T> division,
+		BinaryOperator<T> multiplyBase,
+		BinaryOperator<T> multiplyTotal) {
 
-        Map<String, BinaryOperator<T>> operationMap = new HashMap<>();
-        operationMap.put("addition", addition);
-        operationMap.put("add", addition);
-        operationMap.put("subtraction", subtraction);
-        operationMap.put("subtract", subtraction);
-        operationMap.put("multiplication", multiplication);
-        operationMap.put("multiply", multiplication);
-        operationMap.put("division", division);
-        operationMap.put("divide", division);
-        operationMap.put("multiply_base", multiplyBase);
-        operationMap.put("multiply_total", multiplyTotal);
-        operationMap.put("set_total", (a, b) -> b);
-        operationMap.put("set", (a, b) -> b);
-        operationMap.put("add_base_early", addition);
-        operationMap.put("multiply_base_additive", multiplyBase);
-        operationMap.put("multiply_base_multiplicative", multiplyTotal);
-        operationMap.put("add_base_late", addition);
+		Map<String, BinaryOperator<T>> operationMap = new HashMap<>();
+		operationMap.put("addition", addition);
+		operationMap.put("add", addition);
+		operationMap.put("subtraction", subtraction);
+		operationMap.put("subtract", subtraction);
+		operationMap.put("multiplication", multiplication);
+		operationMap.put("multiply", multiplication);
+		operationMap.put("division", division);
+		operationMap.put("divide", division);
+		operationMap.put("multiply_base", multiplyBase);
+		operationMap.put("multiply_total", multiplyTotal);
+		operationMap.put("set_total", (a, b) -> b);
+		operationMap.put("set", (a, b) -> b);
+		operationMap.put("add_base_early", addition);
+		operationMap.put("multiply_base_additive", multiplyBase);
+		operationMap.put("multiply_base_multiplicative", multiplyTotal);
+		operationMap.put("add_base_late", addition);
 
-        return operationMap;
-    }
+		return operationMap;
+	}
 
-    public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
-        return createOperationMappings(
-                Double::sum,
-                (a, b) -> a - b,
-                (a, b) -> a * b,
-                (a, b) -> a / b,
-                (a, b) -> a + (a * b),
-                (a, b) -> a * (1 + b)
-        );
-    }
+	public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
+		return createOperationMappings(
+			Double::sum,
+			(a, b) -> a - b,
+			(a, b) -> a * b,
+			(a, b) -> a / b,
+			(a, b) -> a + (a * b),
+			(a, b) -> a * (1 + b)
+		);
+	}
 
-    public static Map<String, BinaryOperator<Integer>> getOperationMappingsInteger() {
-        return createOperationMappings(
-                Integer::sum,
-                (a, b) -> a - b,
-                (a, b) -> a * b,
-                (a, b) -> a / b,
-                (a, b) -> a + (a * b),
-                (a, b) -> a * (1 + b)
-        );
-    }
+	public static Map<String, BinaryOperator<Integer>> getOperationMappingsInteger() {
+		return createOperationMappings(
+			Integer::sum,
+			(a, b) -> a - b,
+			(a, b) -> a * b,
+			(a, b) -> a / b,
+			(a, b) -> a + (a * b),
+			(a, b) -> a * (1 + b)
+		);
+	}
 
-    public static Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
-        return createOperationMappings(
-                Float::sum,
-                (a, b) -> a - b,
-                (a, b) -> a * b,
-                (a, b) -> a / b,
-                (a, b) -> a + (a * b),
-                (a, b) -> a * (1 + b)
-        );
-    }
+	public static Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
+		return createOperationMappings(
+			Float::sum,
+			(a, b) -> a - b,
+			(a, b) -> a * b,
+			(a, b) -> a / b,
+			(a, b) -> a + (a * b),
+			(a, b) -> a * (1 + b)
+		);
+	}
 
 	public static List<Integer> fillMissingNumbers(List<Integer> numbers, int min, int max) {
 		Set<Integer> numberSet = new HashSet<>(numbers);
@@ -623,40 +625,40 @@ public class Util {
 	}
 
 	public static double slope(double[] p1, double[] p2) {
-        if (p2[0] - p1[0] == 0) throw new ArithmeticException("Line is vertical");
-        return (p2[1] - p1[1]) / (p2[0] - p1[0]);
-    }
+		if (p2[0] - p1[0] == 0) throw new ArithmeticException("Line is vertical");
+		return (p2[1] - p1[1]) / (p2[0] - p1[0]);
+	}
 
 	public static double[] rotatePoint(double[] point, double angle) {
-        double cosA = Math.cos(angle);
-        double sinA = Math.sin(angle);
-        return new double[]{
-            point[0] * cosA - point[1] * sinA,
-            point[0] * sinA + point[1] * cosA
-        };
-    }
+		double cosA = Math.cos(angle);
+		double sinA = Math.sin(angle);
+		return new double[]{
+			point[0] * cosA - point[1] * sinA,
+			point[0] * sinA + point[1] * cosA
+		};
+	}
 
 	public static double lerp(double start, double end, double t) {
-        return start + t * (end - start);
-    }
+		return start + t * (end - start);
+	}
 
 	public static int lcm(int a, int b) {
-        return Math.abs(a * b) / gcd(a, b);
-    }
+		return Math.abs(a * b) / gcd(a, b);
+	}
 
 	public static int gcd(int a, int b) {
-        while (b != 0) {
-            int t = b;
-            b = a % b;
-            a = t;
-        }
-        return a;
-    }
+		while (b != 0) {
+			int t = b;
+			b = a % b;
+			a = t;
+		}
+		return a;
+	}
 
 	public static long factorial(int n) {
-        if (n < 0) throw new IllegalArgumentException("n must be non-negative");
-        return (n == 0) ? 1 : n * factorial(n - 1);
-    }
+		if (n < 0) throw new IllegalArgumentException("n must be non-negative");
+		return (n == 0) ? 1 : n * factorial(n - 1);
+	}
 
 	public static int getArmorValue(ItemStack armorItem) {
 		net.minecraft.world.item.Item stack = CraftItemStack.asNMSCopy(armorItem).getItem();
@@ -726,6 +728,71 @@ public class Util {
 		}
 	}
 
+	public enum OS {
+		LINUX("linux"),
+		SOLARIS("solaris"),
+		WINDOWS("windows") {
+			@Override
+			protected String[] getOpenUrlArguments(URL url) {
+				return new String[]{"rundll32", "url.dll,FileProtocolHandler", url.toString()};
+			}
+		},
+		OSX("mac") {
+			@Override
+			protected String[] getOpenUrlArguments(URL url) {
+				return new String[]{"open", url.toString()};
+			}
+		},
+		UNKNOWN("unknown");
+
+		private final String telemetryName;
+
+		OS(final String name) {
+			this.telemetryName = name;
+		}
+
+		public void openUrl(URL url) {
+			throw new IllegalStateException("This method is not useful on dedicated servers."); // Paper - Fix warnings on build by removing client-only code
+		}
+
+		public void openUri(URI uri) {
+			try {
+				this.openUrl(uri.toURL());
+			} catch (MalformedURLException var3) {
+				Util.LOGGER.error("Couldn't open uri '{}'", uri, var3);
+			}
+		}
+
+		public void openFile(File file) {
+			try {
+				this.openUrl(file.toURI().toURL());
+			} catch (MalformedURLException var3) {
+				Util.LOGGER.error("Couldn't open file '{}'", file, var3);
+			}
+		}
+
+		protected String[] getOpenUrlArguments(URL url) {
+			String string = url.toString();
+			if ("file".equals(url.getProtocol())) {
+				string = string.replace("file:", "file://");
+			}
+
+			return new String[]{"xdg-open", string};
+		}
+
+		public void openUri(String uri) {
+			try {
+				this.openUrl(new URI(uri).toURL());
+			} catch (MalformedURLException | IllegalArgumentException | URISyntaxException var3) {
+				Util.LOGGER.error("Couldn't open uri '{}'", uri, var3);
+			}
+		}
+
+		public String telemetryName() {
+			return this.telemetryName;
+		}
+	}
+
 	public static class ParserUtils {
 		private static final Field JSON_READER_POS = net.minecraft.Util.make(() -> {
 			try {
@@ -781,69 +848,4 @@ public class Util {
 			}
 		}
 	}
-
-	public static enum OS {
-        LINUX("linux"),
-        SOLARIS("solaris"),
-        WINDOWS("windows") {
-            @Override
-            protected String[] getOpenUrlArguments(URL url) {
-                return new String[]{"rundll32", "url.dll,FileProtocolHandler", url.toString()};
-            }
-        },
-        OSX("mac") {
-            @Override
-            protected String[] getOpenUrlArguments(URL url) {
-                return new String[]{"open", url.toString()};
-            }
-        },
-        UNKNOWN("unknown");
-
-        private final String telemetryName;
-
-        OS(final String name) {
-            this.telemetryName = name;
-        }
-
-        public void openUrl(URL url) {
-            throw new IllegalStateException("This method is not useful on dedicated servers."); // Paper - Fix warnings on build by removing client-only code
-        }
-
-        public void openUri(URI uri) {
-            try {
-                this.openUrl(uri.toURL());
-            } catch (MalformedURLException var3) {
-                Util.LOGGER.error("Couldn't open uri '{}'", uri, var3);
-            }
-        }
-
-        public void openFile(File file) {
-            try {
-                this.openUrl(file.toURI().toURL());
-            } catch (MalformedURLException var3) {
-                Util.LOGGER.error("Couldn't open file '{}'", file, var3);
-            }
-        }
-
-        protected String[] getOpenUrlArguments(URL url) {
-            String string = url.toString();
-            if ("file".equals(url.getProtocol())) {
-                string = string.replace("file:", "file://");
-            }
-
-            return new String[]{"xdg-open", string};
-        }
-
-        public void openUri(String uri) {
-            try {
-                this.openUrl(new URI(uri).toURL());
-            } catch (MalformedURLException | IllegalArgumentException | URISyntaxException var3) {
-                Util.LOGGER.error("Couldn't open uri '{}'", uri, var3);
-            }
-        }
-
-        public String telemetryName() {
-            return this.telemetryName;
-        }
-    }
 }

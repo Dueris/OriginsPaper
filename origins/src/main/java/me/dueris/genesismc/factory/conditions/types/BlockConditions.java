@@ -206,13 +206,13 @@ public class BlockConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("redstone_input"), (condition, block) -> {
 			Comparison comparison = Comparison.fromString(condition.getString("comparison"));
 			int compareTo = condition.getNumber("compare_to").getInt();
-			int receivedRedstonePower = ((CraftWorld)block.getWorld()).getHandle().getBestNeighborSignal(CraftLocation.toBlockPosition(block.getLocation()));
+			int receivedRedstonePower = ((CraftWorld) block.getWorld()).getHandle().getBestNeighborSignal(CraftLocation.toBlockPosition(block.getLocation()));
 			return comparison.compare(receivedRedstonePower, compareTo);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("redstone_output"), (condition, block) -> {
 			Comparison comparison = Comparison.fromString(condition.getString("comparison"));
 			int compareTo = condition.getNumber("compare_to").getInt();
-			ServerLevel level = ((CraftWorld)block.getWorld()).getHandle();
+			ServerLevel level = ((CraftWorld) block.getWorld()).getHandle();
 			BlockPos cachedBlockPos = CraftLocation.toBlockPosition(block.getLocation());
 
 			for (Direction direction : Direction.values()) {

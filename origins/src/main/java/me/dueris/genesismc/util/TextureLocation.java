@@ -47,14 +47,14 @@ public class TextureLocation implements Registrable {
 
 						try {
 							Files.walk(texturesFolder.toPath())
-									.sorted(Comparator.reverseOrder())
-									.forEach(path -> {
-										if (path.toString().endsWith(".png")) {
-											String texturePath = path.toAbsolutePath().toString().replace(texturesFolder.getAbsolutePath(), "")
-													.replace("\\", "/");
-											textureRegistry.register(new TextureLocation(NamespacedKey.fromString(rootName + ":textures" + texturePath)));
-										}
-									});
+								.sorted(Comparator.reverseOrder())
+								.forEach(path -> {
+									if (path.toString().endsWith(".png")) {
+										String texturePath = path.toAbsolutePath().toString().replace(texturesFolder.getAbsolutePath(), "")
+											.replace("\\", "/");
+										textureRegistry.register(new TextureLocation(NamespacedKey.fromString(rootName + ":textures" + texturePath)));
+									}
+								});
 						} catch (IOException e) {
 							e.printStackTrace();
 						}

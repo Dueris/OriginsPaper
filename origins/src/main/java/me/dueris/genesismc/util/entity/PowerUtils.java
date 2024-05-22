@@ -4,7 +4,6 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.registries.Layer;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

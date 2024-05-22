@@ -3,6 +3,7 @@
   "hidden": true,
   "main": {
     "type": "origins:action_over_time",
+    "interval": 15,
     "hidden": true,
     "condition": {
       "type": "origins:and",

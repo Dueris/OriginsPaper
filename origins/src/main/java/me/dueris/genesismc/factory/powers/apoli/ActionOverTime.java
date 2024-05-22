@@ -28,7 +28,7 @@ public class ActionOverTime extends PowerType {
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("action_over_time"))
-			.add("interval", int.class, 1)
+			.add("interval", int.class, 20)
 			.add("rising_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("entity_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("falling_action", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
