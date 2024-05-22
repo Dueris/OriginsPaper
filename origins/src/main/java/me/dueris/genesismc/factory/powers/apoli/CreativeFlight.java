@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.genesismc.GravityPower;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
@@ -32,24 +33,21 @@ public class CreativeFlight extends PowerType {
 				p.setFlying(true);
 			}
 		} else {
-			if (PowerHolderComponent.hasPowerType(p, CreativeFlight.class) || PowerHolderComponent.isInPhantomForm(p)) {
-				if (!p.getAllowFlight()) {
-					p.setAllowFlight(true);
-				}
+			if (PowerHolderComponent.hasPowerType(p, CreativeFlight.class)) {
+				p.setAllowFlight(ConditionExecutor.testEntity(getCondition(), p) || m.equals(GameMode.SPECTATOR) || m.equals(GameMode.CREATIVE));
 			} else {
 				boolean a = m.equals(GameMode.SPECTATOR) || m.equals(GameMode.CREATIVE) ||
 					PowerHolderComponent.hasPowerType(p, ElytraFlightPower.class) || PowerHolderComponent.hasPowerType(p, GravityPower.class) ||
-					PowerHolderComponent.hasPowerType(p, Grounded.class) || PowerHolderComponent.hasPowerType(p, Swimming.class);
+					PowerHolderComponent.hasPowerType(p, Grounded.class) || PowerHolderComponent.hasPowerType(p, Swimming.class) || PowerHolderComponent.isInPhantomForm(p);
 				if (a && !p.getAllowFlight()) {
 					p.setAllowFlight(true);
 				} else if (!a && p.getAllowFlight()) {
 					p.setAllowFlight(false);
 				}
-
-				if (m.equals(GameMode.SPECTATOR)) {
-					p.setFlying(true);
-				}
 			}
+		}
+		if (m.equals(GameMode.SPECTATOR)) {
+			p.setFlying(true);
 		}
 		if (p.getChunk().isLoaded()) {
 			if (Phasing.inPhantomFormBlocks.contains(p)) {
