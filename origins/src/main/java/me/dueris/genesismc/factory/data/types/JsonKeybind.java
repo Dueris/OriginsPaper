@@ -10,7 +10,16 @@ public record JsonKeybind(String key, boolean continuous) {
 			FactoryJsonObject jsonObject = element.toJsonObject();
 			return new JsonKeybind(jsonObject.isPresent("key") ? jsonObject.getString("key") : "key.origins.primary_active", jsonObject.getBooleanOrDefault("continuous", false));
 		} else {
-			return new JsonKeybind(element.getString(), false);
+			String r = element.getString();
+			switch (r) {
+				case "primary" -> {
+					return new JsonKeybind("key.origins.primary_active", false);
+				}
+				case "secondary" -> {
+					return new JsonKeybind("key.origins.secondary_active", false);
+				}
+			}
+			return new JsonKeybind(r, false);
 		}
 	}
 

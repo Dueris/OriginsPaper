@@ -13,7 +13,7 @@ public class PowerUpdateEvent extends PlayerEvent {
 	private final boolean isNew;
 
 	public PowerUpdateEvent(@NotNull Player who, PowerType power, boolean removed, boolean isNew) {
-		super(who, true);
+		super(who, false);
 		this.power = power;
 		this.removed = removed;
 		this.isNew = isNew;

@@ -34,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
@@ -339,18 +338,15 @@ public class PowerHolderComponent implements Listener {
 
 	public static void unassignPowers(@NotNull Player player, Layer layer, boolean isNew) throws NotFoundException {
 		try {
-			CompletableFuture.runAsync(() -> {
-				if (layer == null) {
-					GenesisMC.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
-					return;
-				}
-				for (PowerType power : playerPowerMapping.get(player).get(layer)) {
-					removePower(player, power, false);
-				}
-			}).thenRun(() -> {
-				OriginDataContainer.unloadData(player);
-			}).get();
-		} catch (InterruptedException | ExecutionException e) {
+			if (layer == null) {
+				GenesisMC.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
+				return;
+			}
+			for (PowerType power : playerPowerMapping.get(player).get(layer)) {
+				removePower(player, power, false);
+			}
+			OriginDataContainer.unloadData(player);
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}
@@ -361,20 +357,17 @@ public class PowerHolderComponent implements Listener {
 
 	public static void assignPowers(@NotNull Player player, Layer layer, boolean isNew) throws InstantiationException, IllegalAccessException, NotFoundException, IllegalArgumentException, NoSuchFieldException, SecurityException {
 		try {
-			CompletableFuture.runAsync(() -> {
-				if (layer == null) {
-					GenesisMC.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
-					return;
-				}
-				for (PowerType power : playerPowerMapping.get(player).get(layer)) {
-					applyPower(player, power, false, isNew);
-				}
-			}).thenRun(() -> {
-				OriginDataContainer.loadData(player);
-				setupPowers(player);
-				hasPowers.add(player);
-			}).get();
-		} catch (InterruptedException | ExecutionException e) {
+			if (layer == null) {
+				GenesisMC.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
+				return;
+			}
+			for (PowerType power : playerPowerMapping.get(player).get(layer)) {
+				applyPower(player, power, false, isNew);
+			}
+			OriginDataContainer.loadData(player);
+			setupPowers(player);
+			hasPowers.add(player);
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}
