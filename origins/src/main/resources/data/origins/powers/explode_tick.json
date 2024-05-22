@@ -3,7 +3,7 @@
   "hidden": true,
   "main": {
     "type": "origins:action_over_time",
-    "interval": 15,
+    "interval": 1,
     "hidden": true,
     "condition": {
       "type": "origins:and",
@@ -37,7 +37,7 @@
     "type": "origins:resource",
     "hidden": true,
     "min": 0,
-    "max": 5,
+    "max": 50,
     "hud_render": {
       "sprite_location": "origins:textures/gui/community/spiderkolo/resource_bar_01.png",
       "bar_index": 0
