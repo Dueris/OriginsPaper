@@ -465,14 +465,12 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("glowing"), (condition, entity) -> entity.isGlowing()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("health"), (condition, entity) -> {
-			if (entity instanceof LivingEntity le) {
-				return Comparison.fromString(condition.getString("comparison")).compare(le.getHealth() * 2, condition.getNumber("compare_to").getFloat());
+			if (entity instanceof CraftLivingEntity le) {
+				return Comparison.fromString(condition.getString("comparison")).compare(le.getHandle().getHealth(), condition.getNumber("compare_to").getFloat());
 			}
 			return false;
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block"), (condition, entity) -> {
-			return ConditionExecutor.testBlock(condition.getJsonObject("block_condition"), entity.getLocation().getBlock());
-		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block"), (condition, entity) -> ConditionExecutor.testBlock(condition.getJsonObject("block_condition"), entity.getLocation().getBlock())));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_block_anywhere"), (condition, entity) -> {
 			int stopAt = -1;
 			Comparison comparison = Comparison.fromString(condition.getStringOrDefault("comparison", ">="));

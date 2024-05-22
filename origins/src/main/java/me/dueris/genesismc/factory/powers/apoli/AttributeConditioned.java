@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +52,7 @@ public class AttributeConditioned extends AttributeHandler implements Listener {
 				if (!applied.get(p)) {
 					for (Modifier modifier : getModifiers()) {
 						AttributeModifier attributeModifier = DataConverter.convertToAttributeModifier(modifier);
-						Attribute attribute = DataConverter.resolveAttribute(modifier.handle.getString("attribute"));
+						Attribute attribute = modifier.handle.isPresent("attribute") ? DataConverter.resolveAttribute(modifier.handle.getString("attribute")) : DataConverter.resolveAttribute(getAttribute());
 						p.getAttribute(attribute).addTransientModifier(attributeModifier);
 						modifiers.get(p).getSecond().add(new Pair<>(attributeModifier, attribute));
 					}

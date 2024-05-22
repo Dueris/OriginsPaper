@@ -109,7 +109,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		if (effect.isPresent("show_particles")) effect.getBooleanOrDefault("show_particles", false);
 		if (effect.isPresent("show_icon")) showIcon = effect.getBooleanOrDefault("show_icon", false);
 
-		return new PotionEffect(PotionEffectType.getByKey(new NamespacedKey(potionEffect.split(":")[0], potionEffect.split(":")[1])), duration, amplifier, isAmbient, showParticles, showIcon);
+		return new PotionEffect(PotionEffectType.getByKey(NamespacedKey.fromString(potionEffect)), duration, amplifier, isAmbient, showParticles, showIcon);
 	}
 
 	public static List<PotionEffect> parseAndReturnPotionEffects(FactoryJsonObject power) {

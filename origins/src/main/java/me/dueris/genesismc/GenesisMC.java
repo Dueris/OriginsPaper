@@ -201,7 +201,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		// Our version of restricted_armor allows handling of both.
 		JsonObjectRemapper.typeAlias.put("apoli:conditioned_restrict_armor", "apoli:restrict_armor");
 		JsonObjectRemapper.typeAlias.put("apugli:edible_item", "apoli:edible_item");
-		JsonObjectRemapper.typeAlias.put("apoli:modify_attribute", "apoli:attribute");
+		JsonObjectRemapper.typeAlias.put("apoli:modify_attribute", "apoli:conditioned_attribute");
 		JsonObjectRemapper.typeAlias.put("apoli:add_to_set", "apoli:add_to_entity_set");
 		JsonObjectRemapper.typeAlias.put("apoli:remove_from_set", "apoli:remove_from_entity_set");
 		JsonObjectRemapper.typeAlias.put("apoli:action_on_set", "apoli:action_on_entity_set");

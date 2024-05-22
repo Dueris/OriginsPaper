@@ -78,4 +78,9 @@ public class AttributeHandler extends PowerType {
 	public boolean updateHealth() {
 		return updateHealth;
 	}
+
+	@Nullable
+	public String getAttribute() {
+		return attribute;
+	}
 }

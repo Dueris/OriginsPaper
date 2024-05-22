@@ -33,7 +33,7 @@ public class DataConverter {
 
 	public static AttributeModifier.Operation convertToOperation(Modifier modifier) {
 		return switch (modifier.operation()) {
-			case "addition" -> AttributeModifier.Operation.ADD_NUMBER;
+			case "addition", "add_base_early", "add_base_late" -> AttributeModifier.Operation.ADD_NUMBER;
 			case "multiply_base" -> AttributeModifier.Operation.ADD_SCALAR;
 			case "multiply_total" -> AttributeModifier.Operation.MULTIPLY_SCALAR_1;
 			default -> throw new RuntimeException("Not a valid attribute operation!");

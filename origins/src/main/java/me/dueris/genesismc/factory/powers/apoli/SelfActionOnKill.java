@@ -34,15 +34,16 @@ public class SelfActionOnKill extends PowerType implements Listener, CooldownPow
 
 	@EventHandler
 	public void k(EntityDeathEvent e) {
-		Entity target = e.getEntity();
+		Entity dead = e.getEntity();
+		Player target = e.getEntity().getKiller();
 
-		if (!(target instanceof Player player)) return;
+		if (target == null) return;
 		if (!getPlayers().contains(target)) return;
 
-		if (Cooldown.isInCooldown(player, this)) return;
-		if (isActive(player)) {
+		if (Cooldown.isInCooldown(target, this)) return;
+		if (isActive(target)) {
 			Actions.executeEntity(target, entityAction);
-			Cooldown.addCooldown(player, cooldown, this);
+			Cooldown.addCooldown(target, cooldown, this);
 		}
 	}
 
