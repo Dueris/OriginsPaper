@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.data.types;
 
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
@@ -33,7 +33,7 @@ public enum ContainerType {
 	}
 
 	public Inventory createInventory(InventoryHolder holder, Optional<String> string) {
-		Component name = Component.text(Utils.getOrAbsent(string, "container.inventory"));
+		Component name = Component.text(Util.getOrAbsent(string, "container.inventory"));
 		return this == DOUBLE_CHEST ? Bukkit.createInventory(holder, this.getSize(), name) : this == CHEST ? Bukkit.createInventory(holder, this.getSize(), name) : Bukkit.createInventory(holder, this.bukkit, name);
 	}
 }

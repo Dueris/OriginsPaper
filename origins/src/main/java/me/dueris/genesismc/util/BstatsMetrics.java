@@ -41,7 +41,7 @@ import java.util.zip.GZIPOutputStream;
 
 import static me.dueris.genesismc.GenesisMC.metrics;
 
-public class Metrics {
+public class BstatsMetrics {
 
 	private final Plugin plugin;
 
@@ -54,7 +54,7 @@ public class Metrics {
 	 * @param serviceId The id of the service. It can be found at <a
 	 *                  href="https://bstats.org/what-is-my-plugin-id">What is my plugin id?</a>
 	 */
-	public Metrics(JavaPlugin plugin, int serviceId) {
+	public BstatsMetrics(JavaPlugin plugin, int serviceId) {
 		this.plugin = plugin;
 		// Get the config file
 		File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bStats");
@@ -106,30 +106,10 @@ public class Metrics {
 
 	public static void originPopularity(Player p) {
 		for (Origin origin : PowerHolderComponent.getOrigin(p).values()) {
-			metrics.addCustomChart(new Metrics.DrilldownPie("originPopularity", () -> {
+			metrics.addCustomChart(new BstatsMetrics.DrilldownPie("originPopularity", () -> {
 				Map<String, Map<String, Integer>> map = new HashMap<>();
 				Map<String, Integer> entry = new HashMap<>();
-				String originName = switch (origin.getTag()) {
-					case "origins:human" -> "Human";
-					case "origins:enderian" -> "Enderian";
-					case "origins:merling" -> "Merling";
-					case "origins:phantom" -> "Phantom";
-					case "origins:elytrian" -> "Elytrian";
-					case "origins:blazeborn" -> "Blazeborn";
-					case "origins:avian" -> "Avian";
-					case "origins:arachnid" -> "Arachnid";
-					case "origins:shulk" -> "Shulk";
-					case "origins:feline" -> "Feline";
-					case "origins:starborne" -> "Starborn";
-					case "origins:allay" -> "Allay";
-					case "origins:rabbit" -> "Rabbit";
-					case "origins:bumblebee" -> "Bee";
-					case "origins:sculkling" -> "Sculkling";
-					case "origins:creep" -> "Creep";
-					case "origins:slimeling" -> "Slimeling";
-					case "origins:piglin" -> "Piglin";
-					default -> "Custom Origin";
-				};
+				String originName = Util.getNameOrTag(origin);
 				entry.put(originName, 1);
 				map.put(originName, entry);
 				return map;

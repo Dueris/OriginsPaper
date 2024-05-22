@@ -13,7 +13,7 @@ import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.screen.ScreenNavigator;
 import me.dueris.genesismc.storage.OriginConfiguration;
 import me.dueris.genesismc.storage.OriginDataContainer;
-import me.dueris.genesismc.util.Metrics;
+import me.dueris.genesismc.util.BstatsMetrics;
 import me.dueris.genesismc.util.exception.PowerNotFoundException;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -213,7 +213,7 @@ public class PowerHolderComponent implements Listener {
 		setupPowers(player);
 
 		String originTag = origin.getTag();
-		if (!originTag.equals(CraftApoli.emptyOrigin().getTag())) Metrics.originPopularity(player);
+		if (!originTag.equals(CraftApoli.emptyOrigin().getTag())) BstatsMetrics.originPopularity(player);
 		new BukkitRunnable() {
 			@Override
 			public void run() {

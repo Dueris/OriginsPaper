@@ -6,7 +6,7 @@ import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
@@ -72,8 +72,8 @@ public class DamageOverTime extends PowerType {
 			if (isActive(p)) {
 				if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
 					NamespacedKey key = NamespacedKey.fromString(damageType);
-					DamageType dmgType = Utils.DAMAGE_REGISTRY.get(CraftNamespacedKey.toMinecraft(key));
-					((CraftPlayer) p).getHandle().hurt(Utils.getDamageSource(dmgType), damageVal);
+					DamageType dmgType = Util.DAMAGE_REGISTRY.get(CraftNamespacedKey.toMinecraft(key));
+					((CraftPlayer) p).getHandle().hurt(Util.getDamageSource(dmgType), damageVal);
 				}
 			}
 		}

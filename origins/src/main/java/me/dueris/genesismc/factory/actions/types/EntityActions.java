@@ -17,7 +17,7 @@ import me.dueris.genesismc.factory.powers.apoli.Toggle;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.RaycastUtils;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -47,7 +47,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 import static me.dueris.genesismc.factory.actions.Actions.*;
-import static me.dueris.genesismc.util.KeybindingUtils.addItems;
+import static me.dueris.genesismc.util.KeybindUtil.addItems;
 
 public class EntityActions {
 
@@ -113,7 +113,7 @@ public class EntityActions {
 			net.minecraft.world.entity.EntityType<?> entityType = CraftEntityType.bukkitToMinecraft(CraftEntityType.stringToBukkit(action.getString("entity_type")));
 			CompoundTag nbt = CalioDataTypes.compoundTag(action.getElement("tag").handle);
 
-			Optional<net.minecraft.world.entity.Entity> entityToSpawnOpt = Utils.getEntityWithPassengers(world, entityType, nbt, ((CraftEntity) entity).getHandle().position(), entity.getYaw(), entity.getPitch());
+			Optional<net.minecraft.world.entity.Entity> entityToSpawnOpt = Util.getEntityWithPassengers(world, entityType, nbt, ((CraftEntity) entity).getHandle().position(), entity.getYaw(), entity.getPitch());
 
 			if (entityToSpawnOpt.isEmpty()) return;
 			net.minecraft.world.entity.Entity entityToSpawn = entityToSpawnOpt.get();
@@ -124,7 +124,7 @@ public class EntityActions {
 		register(new ActionFactory(GenesisMC.apoliIdentifier("modify_death_ticks"), (action, entity) -> {
 			if (((CraftEntity) entity).getHandle() instanceof net.minecraft.world.entity.LivingEntity living) {
 				Modifier modifier = new Modifier(action.getJsonObject("modifier"));
-				living.deathTime = Math.round(Utils.getOperationMappingsFloat().get(modifier.operation()).apply(Integer.valueOf(living.deathTime).floatValue(), modifier.value()));
+				living.deathTime = Math.round(Util.getOperationMappingsFloat().get(modifier.operation()).apply(Integer.valueOf(living.deathTime).floatValue(), modifier.value()));
 			}
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("emit_game_event"), (action, entity) -> {
@@ -179,7 +179,7 @@ public class EntityActions {
 			float radius = action.getNumberOrDefault("radius", 3.0F).getFloat();
 			int waitTime = action.getNumberOrDefault("wait_time", 10).getInt();
 			float radiusOnUse = action.getNumberOrDefault("radius_on_use", -0.5F).getFloat();
-			List<PotionEffect> effects = Utils.parseAndReturnPotionEffects(action);
+			List<PotionEffect> effects = Util.parseAndReturnPotionEffects(action);
 
 			net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
 			ServerLevel level = (ServerLevel) nmsEntity.level();
@@ -191,7 +191,7 @@ public class EntityActions {
 			cloud.setRadiusOnUse(radiusOnUse);
 			cloud.setWaitTime(waitTime);
 			cloud.setRadiusPerTick(-cloud.getRadius() / (float) cloud.getDuration());
-			Utils.toMobEffectList(effects).forEach(cloud::addEffect);
+			Util.toMobEffectList(effects).forEach(cloud::addEffect);
 			// Color should be set automatically when the effects are added
 
 			level.addFreshEntity(cloud);
@@ -231,7 +231,7 @@ public class EntityActions {
 			}
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("clear_effect"), (action, entity) -> {
-			PotionEffectType potionEffectType = Utils.getPotionEffectType(action.getString("effect"));
+			PotionEffectType potionEffectType = Util.getPotionEffectType(action.getString("effect"));
 			if (entity instanceof LivingEntity living) {
 				if (living.hasPotionEffect(potionEffectType)) {
 					living.removePotionEffect(potionEffectType);
@@ -360,7 +360,7 @@ public class EntityActions {
 		register(new ActionFactory(GenesisMC.apoliIdentifier("raycast"), (action, entity) -> RaycastUtils.action(action, ((CraftEntity) entity).getHandle())));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("extinguish"), (action, entity) -> entity.setFireTicks(0)));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("play_sound"), (action, entity) -> {
-			Sound sound = Utils.parseSound(action.getString("sound"));
+			Sound sound = Util.parseSound(action.getString("sound"));
 			float volume = action.getNumberOrDefault("volume", 1.0).getFloat();
 			float pitch = action.getNumberOrDefault("pitch", 1.0).getFloat();
 			entity.getWorld().playSound(entity, sound, volume, pitch);
@@ -470,7 +470,7 @@ public class EntityActions {
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("apply_effect"), (action, entity) -> {
 			if (entity instanceof LivingEntity le) {
-				Utils.parseAndReturnPotionEffects(action).forEach(potionEffect -> le.addPotionEffect(potionEffect, true));
+				Util.parseAndReturnPotionEffects(action).forEach(potionEffect -> le.addPotionEffect(potionEffect, true));
 			}
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("area_of_effect"), (action, entity) -> {

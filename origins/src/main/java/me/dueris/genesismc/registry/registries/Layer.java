@@ -14,7 +14,7 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.screen.ScreenNavigator;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -242,7 +242,7 @@ public class Layer implements FactoryHolder {
 			Layer original = registrar.get(tag);
 			original.getOriginIdentifiers().stream().forEach(tag -> originList.add(CraftApoli.getOrigin(tag)));
 			original.origins.setEntries(
-				Utils.toJsonStringArray(originList.stream().map(Origin::getTag).toList()).asList().stream().map(FactoryElement::new).toList()
+				Util.toJsonStringArray(originList.stream().map(Origin::getTag).toList()).asList().stream().map(FactoryElement::new).toList()
 			);
 			return false;
 		} else {

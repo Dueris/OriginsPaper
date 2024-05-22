@@ -8,7 +8,7 @@ import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Modifier;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -49,7 +49,7 @@ public class ModifyEnchantmentLevel extends ModifierPower {
 				int result = 1;
 				float value = modifier.value();
 				String operation = modifier.operation();
-				BinaryOperator mathOperator = Utils.getOperationMappingsInteger().get(operation);
+				BinaryOperator mathOperator = Util.getOperationMappingsInteger().get(operation);
 				if (mathOperator != null) {
 					result = Integer.valueOf(String.valueOf(mathOperator.apply(0, value)));
 				}

@@ -10,7 +10,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import net.minecraft.core.component.DataComponents;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -70,7 +70,7 @@ public class ModifyFoodPower extends PowerType implements Listener {
 					if (jsonObject.isPresent("value")) {
 						Double val = jsonObject.getNumber("value").getDouble();
 						String operation = jsonObject.getString("operation");
-						BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
+						BinaryOperator mathOperator = Util.getOperationMappingsDouble().get(operation);
 						if (mathOperator != null && CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD) != null) {
 							double finalValue = (double) mathOperator.apply(Integer.valueOf(CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD).nutrition()).doubleValue(), val);
 							finalValue = finalValue - Integer.valueOf(CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD).nutrition()).doubleValue();
@@ -82,7 +82,7 @@ public class ModifyFoodPower extends PowerType implements Listener {
 					if (jsonObject.isPresent("value")) {
 						Double val = jsonObject.getNumber("value").getDouble();
 						String operation = jsonObject.getString("operation");
-						BinaryOperator mathOperator = Utils.getOperationMappingsDouble().get(operation);
+						BinaryOperator mathOperator = Util.getOperationMappingsDouble().get(operation);
 						if (mathOperator != null && CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD) != null) {
 							double finalValue = (double) mathOperator.apply(Float.valueOf(CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD).saturation()).doubleValue(), val);
 							finalValue = finalValue - Float.valueOf(CraftItemStack.asNMSCopy(e.getItem()).get(DataComponents.FOOD).saturation()).doubleValue();

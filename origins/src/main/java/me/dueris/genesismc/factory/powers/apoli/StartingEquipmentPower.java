@@ -7,7 +7,7 @@ import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -47,7 +47,7 @@ public class StartingEquipmentPower extends PowerType {
 		for (FactoryJsonObject jsonObject : stacks) {
 			ItemStack stack = jsonObject.asItemStack();
 			if (jsonObject.isPresent("slot")) {
-				Utils.addPositionedItemStack(p.getInventory(), stack, jsonObject.getNumber("slot").getInt());
+				Util.addPositionedItemStack(p.getInventory(), stack, jsonObject.getNumber("slot").getInt());
 			} else p.getInventory().addItem(stack);
 		}
 	}

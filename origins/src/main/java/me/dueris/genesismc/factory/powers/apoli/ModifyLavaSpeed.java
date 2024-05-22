@@ -8,7 +8,7 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import net.minecraft.world.level.material.FluidState;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -47,7 +47,7 @@ public class ModifyLavaSpeed extends PowerType {
 			if (state.getType().builtInRegistryHolder().key().location().equals(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString("minecraft:lava")))) {
 				float multiplyBy = 0.1F;
 				for (Modifier modifier : modifiers) {
-					Map<String, BinaryOperator<Float>> floatBinaryOperator = Utils.getOperationMappingsFloat();
+					Map<String, BinaryOperator<Float>> floatBinaryOperator = Util.getOperationMappingsFloat();
 					floatBinaryOperator.get(modifier.operation()).apply(multiplyBy, modifier.value() * 10);
 				}
 				p.setVelocity(p.getLocation().getDirection().multiply(multiplyBy));

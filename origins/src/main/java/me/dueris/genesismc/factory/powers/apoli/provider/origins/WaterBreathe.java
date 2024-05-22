@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -125,8 +125,8 @@ public class WaterBreathe implements Listener, PowerProvider {
 							finalDmg = 0.5f;
 						}
 					}
-					DamageType dmgType = Utils.DAMAGE_REGISTRY.get(new ResourceLocation("origins", "no_water_for_gills"));
-					((CraftPlayer) p).getHandle().hurt(Utils.getDamageSource(dmgType), finalDmg);
+					DamageType dmgType = Util.DAMAGE_REGISTRY.get(new ResourceLocation("origins", "no_water_for_gills"));
+					((CraftPlayer) p).getHandle().hurt(Util.getDamageSource(dmgType), finalDmg);
 				}
 			}
 		}

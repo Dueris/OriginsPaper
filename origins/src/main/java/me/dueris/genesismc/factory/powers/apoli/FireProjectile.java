@@ -14,8 +14,8 @@ import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.data.types.HudRender;
 import me.dueris.genesismc.factory.data.types.JsonKeybind;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.util.KeybindingUtils;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.KeybindUtil;
+import me.dueris.genesismc.util.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -105,7 +105,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 	public void inContinuousFix(KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
-			if (KeybindingUtils.isKeyActive(getJsonKey().key(), p)) {
+			if (KeybindUtil.isKeyActive(getJsonKey().key(), p)) {
 				in_continuous.putIfAbsent(p, new ArrayList<>());
 				if (getJsonKey().continuous()) {
 					if (in_continuous.get(p).contains(getJsonKey().key())) {
@@ -136,7 +136,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 		if (getPlayers().contains(p)) {
 			if (isActive(p)) {
 				if (!Cooldown.isInCooldown(p, this)) {
-					if (KeybindingUtils.isKeyActive(getJsonKey().key(), p)) {
+					if (KeybindUtil.isKeyActive(getJsonKey().key(), p)) {
 						// Slight random divergence
 						float divergence = providedDivergence + (float) ((Math.random() - 0.5) * 0.05);
 
@@ -158,7 +158,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 							@Override
 							public void run() {
 								if (shotsLeft >= 0) {
-									if ((!cont || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key)) {
+									if ((!cont || !KeybindUtil.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key)) {
 										Cooldown.addCooldown(p, cooldown, getSelf());
 										this.cancel();
 										return;
@@ -173,7 +173,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 									float yaw = player.getYRot();
 									float pitch = player.getXRot();
 
-									Entity entityToSpawn = Utils
+									Entity entityToSpawn = Util
 										.getEntityWithPassengers(serverWorld, CraftEntityType.bukkitToMinecraft(type), tag, player.position().add(0, player.getEyeHeight(player.getPose()), 0), yaw, pitch)
 										.orElse(null);
 

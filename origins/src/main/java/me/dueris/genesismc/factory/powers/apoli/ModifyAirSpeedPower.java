@@ -6,7 +6,7 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.data.types.Modifier;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,7 +27,7 @@ public class ModifyAirSpeedPower extends ModifierPower {
 	public void compute(Player p) {
 		float b = base.containsKey(p) ? base.get(p) : p.getFlySpeed();
 		for (Modifier modifier : getModifiers()) {
-			float f = Utils.getOperationMappingsFloat().get(modifier.operation()).apply(b, modifier.value());
+			float f = Util.getOperationMappingsFloat().get(modifier.operation()).apply(b, modifier.value());
 			if (f < 0) f = 0;
 			if (f > 1) f = 1;
 			p.setFlySpeed(f);

@@ -12,7 +12,7 @@ import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.data.types.HudRender;
 import me.dueris.genesismc.factory.data.types.JsonKeybind;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.util.KeybindingUtils;
+import me.dueris.genesismc.util.KeybindUtil;
 import org.bukkit.event.EventHandler;
 
 public class ActiveSelf extends PowerType implements KeyedPower, CooldownPower {
@@ -42,7 +42,7 @@ public class ActiveSelf extends PowerType implements KeyedPower, CooldownPower {
 		if (getPlayers().contains(e.getPlayer())) {
 			if (Cooldown.isInCooldown(e.getPlayer(), this)) return;
 			if (isActive(e.getPlayer())) {
-				if (KeybindingUtils.isKeyActive(getJsonKey().key(), e.getPlayer())) {
+				if (KeybindUtil.isKeyActive(getJsonKey().key(), e.getPlayer())) {
 					Actions.executeEntity(e.getPlayer(), entityAction);
 					if (cooldown > 1) {
 						Cooldown.addCooldown(e.getPlayer(), cooldown, this);

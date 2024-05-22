@@ -8,7 +8,7 @@ import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -72,7 +72,7 @@ public class ItemConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("armor_value"), (condition, itemStack) -> {
 			String comparison = condition.getString("comparison");
 			double compareTo = condition.getNumber("compare_to").getDouble();
-			double amt = Utils.getArmorValue(itemStack);
+			double amt = Util.getArmorValue(itemStack);
 			return Comparison.fromString(comparison).compare(amt, compareTo);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("amount"), (condition, itemStack) -> {
@@ -83,7 +83,7 @@ public class ItemConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("fuel"), (condition, itemStack) -> itemStack.getType().isFuel()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("meat"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).is(ItemTags.MEAT)));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, itemStack) -> NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.getString("nbt")), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.saveOptional(GenesisMC.server.registryAccess()), true)));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, itemStack) -> NbtUtils.compareNbt(Util.ParserUtils.parseJson(new StringReader(condition.getString("nbt")), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.saveOptional(GenesisMC.server.registryAccess()), true)));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("rarity"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).getRarity().equals(condition.getEnumValue("rarity", Rarity.class))));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("stackable"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).isStackable()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("used_on_release"), (condition, itemStack) -> CraftItemStack.asNMSCopy(itemStack).useOnRelease()));

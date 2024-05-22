@@ -12,7 +12,7 @@ import me.dueris.genesismc.factory.data.types.ResourceOperation;
 import me.dueris.genesismc.factory.data.types.Shape;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.RaycastUtils;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -176,7 +176,7 @@ public class BlockActions {
 			net.minecraft.world.entity.EntityType<?> entityType = CraftEntityType.bukkitToMinecraft(CraftEntityType.stringToBukkit(action.getString("entity_type")));
 			CompoundTag nbt = CalioDataTypes.compoundTag(action.getElement("tag").handle);
 
-			Optional<net.minecraft.world.entity.Entity> entityToSpawnOpt = Utils.getEntityWithPassengers(world, entityType, nbt, CraftLocation.toVec3D(location), Optional.empty(), Optional.empty());
+			Optional<net.minecraft.world.entity.Entity> entityToSpawnOpt = Util.getEntityWithPassengers(world, entityType, nbt, CraftLocation.toVec3D(location), Optional.empty(), Optional.empty());
 
 			if (entityToSpawnOpt.isEmpty()) return;
 			net.minecraft.world.entity.Entity entityToSpawn = entityToSpawnOpt.get();

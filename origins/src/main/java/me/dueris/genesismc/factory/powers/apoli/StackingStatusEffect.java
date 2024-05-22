@@ -7,7 +7,7 @@ import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -91,7 +91,7 @@ public class StackingStatusEffect extends PowerType {
 
 	public void apoli$StackingStatusEffectPower$applyEffects(LivingEntity entity) {
 		if (createdEffects.isEmpty()) {
-			createdEffects.addAll(effects.stream().map(Utils::parsePotionEffect).map(CraftPotionUtil::fromBukkit).toList());
+			createdEffects.addAll(effects.stream().map(Util::parsePotionEffect).map(CraftPotionUtil::fromBukkit).toList());
 		}
 		List<MobEffectInstance> effectInstances = createdEffects;
 		effectInstances.forEach(sei -> {

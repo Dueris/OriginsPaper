@@ -8,7 +8,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Modifier;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -48,7 +48,7 @@ public class ModifyDamageDealtPower extends ModifierPower implements Listener {
 
 	public static void runSetDMG(EntityDamageByEntityEvent e, String operation, float value) {
 		double damage = e.getDamage();
-		BinaryOperator<Float> floatOperator = Utils.getOperationMappingsFloat().get(operation);
+		BinaryOperator<Float> floatOperator = Util.getOperationMappingsFloat().get(operation);
 		if (floatOperator != null) {
 			float newDamage = floatOperator.apply((float) damage, value);
 			e.setDamage(newDamage);

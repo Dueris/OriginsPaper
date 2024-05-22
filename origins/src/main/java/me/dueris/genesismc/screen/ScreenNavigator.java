@@ -8,7 +8,7 @@ import me.dueris.genesismc.event.OrbInteractEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.storage.OriginConfiguration;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.entity.player.Player;
@@ -167,7 +167,7 @@ public class ScreenNavigator implements Listener {
 				if (e.getItem() != null) {
 					if ((isSimilarEnough(e.getItem(), OrbOfOrigins.orb)) && e.getItem().getItemMeta().getPersistentDataContainer().has(GenesisMC.identifier("origins"))) {
 						if (!((CraftPlayer) p).getHandle().getAbilities().instabuild) {
-							Utils.consumeItem(e.getItem());
+							Util.consumeItem(e.getItem());
 						}
 						for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 							PowerHolderComponent.setOrigin(p, layer, CraftApoli.emptyOrigin());

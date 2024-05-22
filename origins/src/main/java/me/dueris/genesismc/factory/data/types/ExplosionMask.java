@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.data.types;
 
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
@@ -40,13 +40,13 @@ public class ExplosionMask {
 
 		if (testFilters) {
 			this.blocks.forEach((block) -> {
-				Utils.computeIfObjectPresent("indestructible", getter, (rawObjCondition) -> {
+				Util.computeIfObjectPresent("indestructible", getter, (rawObjCondition) -> {
 					FactoryJsonObject condition = rawObjCondition.toJsonObject();
 					if (!ConditionExecutor.testBlock(condition, (CraftBlock) block)) {
 						finalBlocks.add(block);
 					}
 				});
-				Utils.computeIfObjectPresent("destructible", getter, (rawObjCondition) -> {
+				Util.computeIfObjectPresent("destructible", getter, (rawObjCondition) -> {
 					FactoryJsonObject condition = rawObjCondition.toJsonObject();
 					if (ConditionExecutor.testBlock(condition, (CraftBlock) block)) {
 						finalBlocks.add(block);

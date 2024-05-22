@@ -29,7 +29,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class KeybindingUtils implements Listener {
+public class KeybindUtil implements Listener {
 	public static HashMap<Player, ArrayList<String>> activeKeys = new HashMap<>();
 
 	public static String translateOriginRawKey(String string) {

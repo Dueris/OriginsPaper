@@ -5,7 +5,7 @@ import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.data.types.Modifier;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,7 +31,7 @@ public class ModifyExhaustionPower extends ModifierPower implements Listener {
 				for (Modifier modifier : getModifiers()) {
 					Float value = modifier.value();
 					String operation = modifier.operation();
-					BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
+					BinaryOperator mathOperator = Util.getOperationMappingsFloat().get(operation);
 					if (mathOperator != null) {
 						float result = (float) mathOperator.apply(e.getExhaustion(), value);
 						e.setExhaustion(result);

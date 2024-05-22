@@ -13,9 +13,9 @@ import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.util.JsonTextFormatter;
-import me.dueris.genesismc.util.PowerUtils;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
+import me.dueris.genesismc.util.entity.PowerUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
@@ -164,7 +164,7 @@ public class PowerCommand {
 			ArrayList<PowerType> powers = PowerHolderComponent.getPowers(player.getBukkitEntity());
 			ArrayList<Multiple> multiples = PowerHolderComponent.getPowers(player.getBukkitEntity(), Multiple.class);
 			if (!subPowers)
-				powers.removeAll(Utils.collectValues(multiples.stream().map(Multiple::getSubPowers).toList()));
+				powers.removeAll(Util.collectValues(multiples.stream().map(Multiple::getSubPowers).toList()));
 			if (!powers.isEmpty()) {
 				allPowers.addAll(powers);
 			}

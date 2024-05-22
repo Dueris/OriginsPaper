@@ -16,7 +16,7 @@ import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Reflector;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
@@ -292,7 +292,7 @@ public class EntityConditions {
 
 			NamespacedKey tag = condition.getNamespacedKey("fluid");
 			TagKey<Fluid> key = TagKey.create(net.minecraft.core.registries.Registries.FLUID, CraftNamespacedKey.toMinecraft(tag));
-			return Comparison.fromString(comparison).compare(Utils.apoli$getFluidHeightLoosely(entity.getHandle(), key), compare_to);
+			return Comparison.fromString(comparison).compare(Util.apoli$getFluidHeightLoosely(entity.getHandle(), key), compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("invisible"), (condition, entity) -> {
 			if (entity instanceof LivingEntity le) {
@@ -301,10 +301,10 @@ public class EntityConditions {
 			return false;
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("inventory"), (condition, entity) -> {
-			Utils.ProcessMode processMode = condition.getEnumValueOrDefault("process_mode", Utils.ProcessMode.class, Utils.ProcessMode.ITEMS);
+			Util.ProcessMode processMode = condition.getEnumValueOrDefault("process_mode", Util.ProcessMode.class, Util.ProcessMode.ITEMS);
 			Comparison comparison = condition.isPresent("comparison") ? Comparison.fromString(condition.getString("comparison")) : Comparison.GREATER_THAN;
 			int compareTo = condition.getNumber("compare_to").getInt();
-			int matches = Utils.checkInventory(condition, entity.getHandle(), null, processMode.getProcessor());
+			int matches = Util.checkInventory(condition, entity.getHandle(), null, processMode.getProcessor());
 			return comparison.compare(matches, compareTo);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_rain"), (condition, entity) -> entity.isInRain()));
@@ -323,7 +323,7 @@ public class EntityConditions {
 
 			return level.canSeeSky(blockPos);
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, entity) -> NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.getString("nbt")), CompoundTag.CODEC), entity.getHandle().saveWithoutId(new CompoundTag()), true)));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, entity) -> NbtUtils.compareNbt(Util.ParserUtils.parseJson(new StringReader(condition.getString("nbt")), CompoundTag.CODEC), entity.getHandle().saveWithoutId(new CompoundTag()), true)));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("sneaking"), (condition, entity) -> entity.isSneaking()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("resource"), (condition, entity) -> {
 			Optional<Resource.Bar> bar = Resource.getDisplayedBar(entity, condition.getString("resource"));
@@ -336,7 +336,7 @@ public class EntityConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("submerged_in"), (condition, entity) -> {
 			NamespacedKey tag = condition.getNamespacedKey("fluid");
 			TagKey<Fluid> key = TagKey.create(net.minecraft.core.registries.Registries.FLUID, CraftNamespacedKey.toMinecraft(tag));
-			return Utils.apoli$isSubmergedInLoosely(entity.getHandle(), key);
+			return Util.apoli$isSubmergedInLoosely(entity.getHandle(), key);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantment"), (condition, entity) -> {
 			if (entity instanceof Player player) {
@@ -631,9 +631,9 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("status_effect"), (condition, entity) -> {
 			if (entity instanceof LivingEntity le) {
-				if (entity != null && Utils.getPotionEffectType(condition.getString("effect")) != null) {
+				if (entity != null && Util.getPotionEffectType(condition.getString("effect")) != null) {
 					for (PotionEffect effect : le.getActivePotionEffects()) {
-						return effect.getType().equals(Utils.getPotionEffectType(condition.getString("effect")))
+						return effect.getType().equals(Util.getPotionEffectType(condition.getString("effect")))
 							&& effect.getAmplifier() >= condition.getNumberOrDefault("min_amplifier", 0).getInt()
 							&& effect.getAmplifier() <= condition.getNumberOrDefault("max_amplifier", Integer.MAX_VALUE).getInt()
 							&& effect.getDuration() >= condition.getNumberOrDefault("min_duration", 0).getInt()
@@ -729,7 +729,7 @@ public class EntityConditions {
 			}
 			return false;
 		}));
-		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_snow"), (condition, entity) -> Utils.inSnow(entity.getHandle().level(), entity.getHandle().blockPosition(), BlockPos.containing(entity.getHandle().blockPosition().getX(), entity.getHandle().getBoundingBox().maxY, entity.getHandle().blockPosition().getZ()))));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_snow"), (condition, entity) -> Util.inSnow(entity.getHandle().level(), entity.getHandle().blockPosition(), BlockPos.containing(entity.getHandle().blockPosition().getX(), entity.getHandle().getBoundingBox().maxY, entity.getHandle().blockPosition().getZ()))));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_thunderstorm"), (condition, entity) -> entity.isInRain() && entity.getWorld().isThundering()));
 	}
 

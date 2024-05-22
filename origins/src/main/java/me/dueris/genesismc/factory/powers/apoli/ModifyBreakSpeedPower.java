@@ -6,7 +6,7 @@ import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,7 +32,7 @@ public class ModifyBreakSpeedPower extends ModifierPower implements Listener {
 
 	public void compute(Player p) {
 		double b = p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getDefaultValue();
-		Arrays.stream(getModifiers()).forEach(modifier -> p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).setBaseValue(Utils.getOperationMappingsDouble().get(modifier.operation()).apply(b, modifier.value().doubleValue() * 100)));
+		Arrays.stream(getModifiers()).forEach(modifier -> p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).setBaseValue(Util.getOperationMappingsDouble().get(modifier.operation()).apply(b, modifier.value().doubleValue() * 100)));
 		base.put(p, b);
 	}
 

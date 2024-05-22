@@ -5,7 +5,7 @@ import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import me.dueris.genesismc.content.enchantment.WaterProtectionEnchantment;
 import me.dueris.genesismc.registry.nms.OriginLootCondition;
 import me.dueris.genesismc.registry.nms.PowerLootCondition;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -83,7 +83,7 @@ public class Bootstrap implements PluginBootstrap {
 			}
 		}
 		try {
-			CodeSource src = Utils.class.getProtectionDomain().getCodeSource();
+			CodeSource src = Util.class.getProtectionDomain().getCodeSource();
 			URL jar = src.getLocation();
 			ZipInputStream zip = new ZipInputStream(jar.openStream());
 			while (true) {

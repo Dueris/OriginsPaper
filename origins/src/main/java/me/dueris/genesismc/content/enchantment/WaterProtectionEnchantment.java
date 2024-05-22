@@ -1,8 +1,7 @@
 package me.dueris.genesismc.content.enchantment;
 
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -61,10 +60,10 @@ public class WaterProtectionEnchantment extends Enchantment {
 
 	@Override
 	public int getDamageProtection(int level, DamageSource source) {
-		DamageType dmgType = Utils.DAMAGE_REGISTRY.get(new ResourceLocation("origins", "water_protection"));
+		DamageType dmgType = Util.DAMAGE_REGISTRY.get(new ResourceLocation("origins", "water_protection"));
 		if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
 			return 0;
-		} else if (source == Utils.getDamageSource(dmgType)) {
+		} else if (source == Util.getDamageSource(dmgType)) {
 			return level;
 		}
 		return super.getDamageProtection(level, source);

@@ -3,7 +3,7 @@ package me.dueris.genesismc.screen;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.util.ComponentMultiLine;
+import me.dueris.genesismc.util.ComponentUtil;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -128,9 +128,9 @@ public class OriginPage implements ChoosingPage {
 					ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 
 					ItemMeta meta = originPower.getItemMeta();
-					meta.displayName(ComponentMultiLine.apply(powerContainers.get(0).getName()).decorate(TextDecoration.ITALIC.as(false).decoration()));
+					meta.displayName(ComponentUtil.apply(powerContainers.get(0).getName()));
 					Arrays.stream(ItemFlag.values()).toList().forEach(originPower::addItemFlags);
-					meta.lore(ComponentMultiLine.apply(cutStringIntoLines(powerContainers.get(0).getDescription())));
+					meta.lore(ComponentUtil.apply(cutStringIntoLines(powerContainers.get(0).getDescription())));
 					originPower.setItemMeta(meta);
 					Arrays.stream(ItemFlag.values()).toList().forEach(originPower::addItemFlags);
 

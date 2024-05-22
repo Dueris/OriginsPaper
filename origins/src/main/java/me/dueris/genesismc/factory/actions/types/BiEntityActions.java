@@ -8,7 +8,7 @@ import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -45,9 +45,9 @@ public class BiEntityActions {
 				amount = action.getNumber("amount").getFloat();
 
 			NamespacedKey key = NamespacedKey.fromString(action.getStringOrDefault("damage_type", "generic"));
-			DamageType dmgType = Utils.DAMAGE_REGISTRY.get(CraftNamespacedKey.toMinecraft(key));
+			DamageType dmgType = Util.DAMAGE_REGISTRY.get(CraftNamespacedKey.toMinecraft(key));
 			net.minecraft.world.entity.LivingEntity serverEn = ((CraftLivingEntity) entityPair.right()).getHandle();
-			serverEn.hurt(Utils.getDamageSource(dmgType), amount);
+			serverEn.hurt(Util.getDamageSource(dmgType), amount);
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("set_in_love"), (action, entityPair) -> {
 			if (entityPair.right() instanceof Animals targetAnimal) {

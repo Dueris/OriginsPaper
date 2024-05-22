@@ -7,7 +7,7 @@ import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.data.types.Modifier;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,7 +46,7 @@ public class ModifyVelocityPower extends ModifierPower implements Listener {
 				for (Modifier modifier : getModifiers()) {
 					Float value = modifier.value();
 					String operation = modifier.operation();
-					BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
+					BinaryOperator mathOperator = Util.getOperationMappingsFloat().get(operation);
 					for (String axis : identifiers) {
 						if (axis.equals("x")) {
 							vel.setX((float) mathOperator.apply(vel.getX(), value));

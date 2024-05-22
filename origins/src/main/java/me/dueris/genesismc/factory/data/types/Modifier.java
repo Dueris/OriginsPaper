@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.data.types;
 
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class Modifier {
 	public Float value() {
 		if (handle.isPresent("modifier")) {
 			Modifier modifier = new Modifier(handle.getJsonObject("modifier"));
-			Map<String, BinaryOperator<Float>> operators = Utils.getOperationMappingsFloat();
+			Map<String, BinaryOperator<Float>> operators = Util.getOperationMappingsFloat();
 			BinaryOperator<Float> operation = operators.get(modifier.operation());
 			return operation.apply(this.value(), modifier.value());
 		} else {

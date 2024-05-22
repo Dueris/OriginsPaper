@@ -5,7 +5,7 @@ import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.data.types.Modifier;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -29,7 +29,7 @@ public class ModifySwimSpeedPower extends ModifierPower {
 			!p.getLocation().getBlock().isLiquid() || !p.isSwimming()) return;
 		float multiplyBy = 0.6F;
 		for (Modifier modifier : getModifiers()) {
-			Map<String, BinaryOperator<Float>> floatBinaryOperator = Utils.getOperationMappingsFloat();
+			Map<String, BinaryOperator<Float>> floatBinaryOperator = Util.getOperationMappingsFloat();
 			floatBinaryOperator.get(modifier.operation()).apply(multiplyBy, modifier.value() * 10f);
 		}
 		p.setVelocity(p.getLocation().getDirection().multiply(multiplyBy));

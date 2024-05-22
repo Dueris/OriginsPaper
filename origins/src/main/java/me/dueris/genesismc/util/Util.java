@@ -15,13 +15,14 @@ import me.dueris.calio.data.factory.FactoryNumber;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import net.minecraft.Util;
+import me.dueris.genesismc.registry.registries.Origin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
@@ -37,6 +38,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.LogManager;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.CraftRegistry;
@@ -53,6 +55,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,11 +71,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-public class Utils extends Util { // Extend MC Utils for easy access to them
+public class Util {
 	public static Registry<DamageType> DAMAGE_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
 	public static MinecraftServer server = GenesisMC.server;
 	public static CraftServer bukkitServer = server.server;
 	public static HashMap<String, Material> KNOWN_MATERIALS = new HashMap<>();
+	public static org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger("GenesisMC");
 
 	static {
 		BuiltInRegistries.BLOCK.forEach(block -> {
@@ -160,20 +166,16 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
 	}
 
-	public static Pair<String, String> getNameOrTag(PowerType power) {
+	public static String getNameOrTag(PowerType power) {
 		String name = power.getName();
 		String tag = power.getTag();
-		return new Pair<String, String>() {
-			@Override
-			public String left() {
-				return !name.equals("craftapoli.name.not_found") ? name : tag;
-			}
+		return !name.equals("craftapoli.name.not_found") ? name : tag;
+	}
 
-			@Override
-			public String right() {
-				return power.getTag();
-			}
-		};
+	public static String getNameOrTag(Origin power) {
+		String name = power.getName();
+		String tag = power.getTag();
+		return !name.equals("craftapoli.name.not_found") ? name : tag;
 	}
 
 	public static List<MobEffectInstance> toMobEffectList(List<PotionEffect> effects) {
@@ -184,16 +186,16 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 
 	public static CraftFoodComponent parseProperties(FactoryJsonObject jsonObject) {
 		FoodProperties.Builder builder = new FoodProperties.Builder();
-		Utils.computeIfObjectPresent("hunger", jsonObject, value -> builder.nutrition(value.getNumber().getInt()));
-		Utils.computeIfObjectPresent("saturation", jsonObject, value -> builder.saturationModifier(value.getNumber().getFloat()));
+		Util.computeIfObjectPresent("hunger", jsonObject, value -> builder.nutrition(value.getNumber().getInt()));
+		Util.computeIfObjectPresent("saturation", jsonObject, value -> builder.saturationModifier(value.getNumber().getFloat()));
 		// Value removed in 1.20.5
         /* Utils.computeIfObjectPresent("meat", jsonObject, value -> {
             if (value.isBoolean() && value.getBoolean()) builder.meat();
         }); */
-		Utils.computeIfObjectPresent("always_edible", jsonObject, value -> {
+		Util.computeIfObjectPresent("always_edible", jsonObject, value -> {
 			if (value.isBoolean() && value.getBoolean()) builder.alwaysEdible();
 		});
-		Utils.computeIfObjectPresent("snack", jsonObject, value -> {
+		Util.computeIfObjectPresent("snack", jsonObject, value -> {
 			if (value.isBoolean() && value.getBoolean()) builder.fast();
 		});
 		List<PotionEffect> effects = parseAndReturnPotionEffects(jsonObject);
@@ -253,6 +255,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		return tag1.location().equals(tag2.location());
 	}
 
+	@SuppressWarnings("unchecked")
 	protected static Optional<Object2DoubleMap<TagKey<Fluid>>> getFluidHeightMap(Entity entity) {
 		try {
 			return Optional.of(Reflector.accessField("fluidHeight", Entity.class, entity, Object2DoubleMap.class));
@@ -262,6 +265,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected static Optional<Set<TagKey<Fluid>>> getSubmergedSet(Entity entity) {
 		try {
 			return Optional.of(Reflector.accessField("fluidOnEyes", Entity.class, entity, Set.class));
@@ -337,51 +341,15 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		return org.bukkit.Registry.EFFECT.get(key);
 	}
 
+	public static String makeDescriptionId(String type, @Nullable ResourceLocation id) {
+        return id == null ? type + ".unregistered_sadface" : type + "." + id.getNamespace() + "." + id.getPath().replace('/', '.');
+    }
+
 	public static <T> List<T> collectValues(Collection<List<T>> collection) {
 		List<T> lC = new ArrayList<>();
 		collection.forEach(lC::addAll);
 		return lC;
 	}
-
-	public static List<Integer> fillMissingNumbers(List<Integer> numbers, int min, int max) {
-		Set<Integer> numberSet = new HashSet<>(numbers);
-		for (int i = min; i <= max; i++) {
-			numberSet.add(i);
-		}
-
-		List<Integer> filledNumbers = new ArrayList<>(numberSet);
-		Collections.sort(filledNumbers);
-		return filledNumbers;
-	}
-
-	public static int[] missingNumbers(Integer[] array, int minRange, int maxRange) {
-		boolean[] found = new boolean[maxRange - minRange + 1];
-		int missingCount = 0;
-		for (int num : array) {
-			int adjustedIndex = num - minRange;
-			if (adjustedIndex >= 0 && adjustedIndex < found.length) {
-				found[adjustedIndex] = true;
-			}
-		}
-
-		for (boolean val : found) {
-			if (!val) {
-				missingCount++;
-			}
-		}
-
-		int[] missingNumbers = new int[missingCount];
-		int index = 0;
-		for (int i = minRange; i <= maxRange; i++) {
-			int adjustedIndex = i - minRange;
-			if (adjustedIndex >= 0 && adjustedIndex < found.length && !found[adjustedIndex]) {
-				missingNumbers[index++] = i;
-			}
-		}
-
-		return missingNumbers;
-	}
-
 
 	private static String getFileNameFromUrl(String fileUrl) {
 		String[] segments = fileUrl.split("/");
@@ -423,8 +391,17 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		return Optional.empty();
 	}
 
+	public static <T> Optional<T> ifElse(Optional<T> optional, Consumer<T> presentAction, Runnable elseAction) {
+        if (optional.isPresent()) {
+            presentAction.accept(optional.get());
+        } else {
+            elseAction.run();
+        }
+
+        return optional;
+    }
+
 	public static JsonArray toJsonStringArray(List<String> strings) {
-		Gson gson = new Gson();
 		JsonArray array = new JsonArray();
 		for (String s : strings) {
 			array.add(s);
@@ -511,7 +488,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 
 	public static void unpackOriginPack() {
 		try {
-			CodeSource src = Utils.class.getProtectionDomain().getCodeSource();
+			CodeSource src = Util.class.getProtectionDomain().getCodeSource();
 			URL jar = src.getLocation();
 			ZipInputStream zip = new ZipInputStream(jar.openStream());
 			while (true) {
@@ -544,6 +521,143 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 		}
 	}
 
+	private static <T extends Number> Map<String, BinaryOperator<T>> createOperationMappings(
+            BinaryOperator<T> addition,
+            BinaryOperator<T> subtraction,
+            BinaryOperator<T> multiplication,
+            BinaryOperator<T> division,
+            BinaryOperator<T> multiplyBase,
+            BinaryOperator<T> multiplyTotal) {
+
+        Map<String, BinaryOperator<T>> operationMap = new HashMap<>();
+        operationMap.put("addition", addition);
+        operationMap.put("add", addition);
+        operationMap.put("subtraction", subtraction);
+        operationMap.put("subtract", subtraction);
+        operationMap.put("multiplication", multiplication);
+        operationMap.put("multiply", multiplication);
+        operationMap.put("division", division);
+        operationMap.put("divide", division);
+        operationMap.put("multiply_base", multiplyBase);
+        operationMap.put("multiply_total", multiplyTotal);
+        operationMap.put("set_total", (a, b) -> b);
+        operationMap.put("set", (a, b) -> b);
+        operationMap.put("add_base_early", addition);
+        operationMap.put("multiply_base_additive", multiplyBase);
+        operationMap.put("multiply_base_multiplicative", multiplyTotal);
+        operationMap.put("add_base_late", addition);
+
+        return operationMap;
+    }
+
+    public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
+        return createOperationMappings(
+                Double::sum,
+                (a, b) -> a - b,
+                (a, b) -> a * b,
+                (a, b) -> a / b,
+                (a, b) -> a + (a * b),
+                (a, b) -> a * (1 + b)
+        );
+    }
+
+    public static Map<String, BinaryOperator<Integer>> getOperationMappingsInteger() {
+        return createOperationMappings(
+                Integer::sum,
+                (a, b) -> a - b,
+                (a, b) -> a * b,
+                (a, b) -> a / b,
+                (a, b) -> a + (a * b),
+                (a, b) -> a * (1 + b)
+        );
+    }
+
+    public static Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
+        return createOperationMappings(
+                Float::sum,
+                (a, b) -> a - b,
+                (a, b) -> a * b,
+                (a, b) -> a / b,
+                (a, b) -> a + (a * b),
+                (a, b) -> a * (1 + b)
+        );
+    }
+
+	public static List<Integer> fillMissingNumbers(List<Integer> numbers, int min, int max) {
+		Set<Integer> numberSet = new HashSet<>(numbers);
+		for (int i = min; i <= max; i++) {
+			numberSet.add(i);
+		}
+
+		List<Integer> filledNumbers = new ArrayList<>(numberSet);
+		Collections.sort(filledNumbers);
+		return filledNumbers;
+	}
+
+	public static int[] missingNumbers(Integer[] array, int minRange, int maxRange) {
+		boolean[] found = new boolean[maxRange - minRange + 1];
+		int missingCount = 0;
+		for (int num : array) {
+			int adjustedIndex = num - minRange;
+			if (adjustedIndex >= 0 && adjustedIndex < found.length) {
+				found[adjustedIndex] = true;
+			}
+		}
+
+		for (boolean val : found) {
+			if (!val) {
+				missingCount++;
+			}
+		}
+
+		int[] missingNumbers = new int[missingCount];
+		int index = 0;
+		for (int i = minRange; i <= maxRange; i++) {
+			int adjustedIndex = i - minRange;
+			if (adjustedIndex >= 0 && adjustedIndex < found.length && !found[adjustedIndex]) {
+				missingNumbers[index++] = i;
+			}
+		}
+
+		return missingNumbers;
+	}
+
+	public static double slope(double[] p1, double[] p2) {
+        if (p2[0] - p1[0] == 0) throw new ArithmeticException("Line is vertical");
+        return (p2[1] - p1[1]) / (p2[0] - p1[0]);
+    }
+
+	public static double[] rotatePoint(double[] point, double angle) {
+        double cosA = Math.cos(angle);
+        double sinA = Math.sin(angle);
+        return new double[]{
+            point[0] * cosA - point[1] * sinA,
+            point[0] * sinA + point[1] * cosA
+        };
+    }
+
+	public static double lerp(double start, double end, double t) {
+        return start + t * (end - start);
+    }
+
+	public static int lcm(int a, int b) {
+        return Math.abs(a * b) / gcd(a, b);
+    }
+
+	public static int gcd(int a, int b) {
+        while (b != 0) {
+            int t = b;
+            b = a % b;
+            a = t;
+        }
+        return a;
+    }
+
+	public static long factorial(int n) {
+        if (n < 0) throw new IllegalArgumentException("n must be non-negative");
+        return (n == 0) ? 1 : n * factorial(n - 1);
+    }
+
 	public static int getArmorValue(ItemStack armorItem) {
 		net.minecraft.world.item.Item stack = CraftItemStack.asNMSCopy(armorItem).getItem();
 		return stack instanceof ArmorItem item ? item.getDefense() : 0;
@@ -551,97 +665,6 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 
 	public static void consumeItem(ItemStack item) {
 		item.setAmount(item.getAmount() - 1);
-	}
-
-	// Math
-	public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
-		Map<String, BinaryOperator<Double>> operationMap = new HashMap<>();
-		operationMap.put("addition", Double::sum);
-		operationMap.put("add", Double::sum);
-		operationMap.put("subtraction", (a, b) -> a - b);
-		operationMap.put("subtract", (a, b) -> a - b);
-		operationMap.put("multiplication", (a, b) -> a * b);
-		operationMap.put("multiply", (a, b) -> a * b);
-		operationMap.put("division", (a, b) -> a / b);
-		operationMap.put("divide", (a, b) -> a / b);
-		operationMap.put("multiply_base", (a, b) -> a + (a * b));
-		operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-		operationMap.put("set_total", (a, b) -> b);
-		operationMap.put("set", (a, b) -> b);
-		operationMap.put("add_base_early", Double::sum);
-		operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
-		operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
-		operationMap.put("add_base_late", Double::sum);
-
-		Random random = new Random();
-
-		operationMap.put("add_random_max", (a, b) -> a + random.nextDouble(b));
-		operationMap.put("subtract_random_max", (a, b) -> a - random.nextDouble(b));
-		operationMap.put("multiply_random_max", (a, b) -> a * random.nextDouble(b));
-		operationMap.put("divide_random_max", (a, b) -> a / random.nextDouble(b));
-
-		return operationMap;
-	}
-
-	public static Map<String, BinaryOperator<Integer>> getOperationMappingsInteger() {
-		Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
-		operationMap.put("addition", Integer::sum);
-		operationMap.put("add", Integer::sum);
-		operationMap.put("subtraction", (a, b) -> a - b);
-		operationMap.put("subtract", (a, b) -> a - b);
-		operationMap.put("multiplication", (a, b) -> a * b);
-		operationMap.put("multiply", (a, b) -> a * b);
-		operationMap.put("division", (a, b) -> a / b);
-		operationMap.put("divide", (a, b) -> a / b);
-		operationMap.put("multiply_base", (a, b) -> a + (a * b));
-		operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-		operationMap.put("set_total", (a, b) -> b);
-		operationMap.put("set", (a, b) -> b);
-		operationMap.put("add_base_early", Integer::sum);
-		operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
-		operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
-		operationMap.put("add_base_late", Integer::sum);
-
-		Random random = new Random();
-
-		operationMap.put("add_random_max", (a, b) -> a + random.nextInt(b));
-		operationMap.put("subtract_random_max", (a, b) -> a - random.nextInt(b));
-		operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
-		operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
-
-		return operationMap;
-	}
-
-
-	public static Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
-		Map<String, BinaryOperator<Float>> operationMap = new HashMap<>();
-		operationMap.put("addition", Float::sum);
-		operationMap.put("add", Float::sum);
-		operationMap.put("subtraction", (a, b) -> a - b);
-		operationMap.put("subtract", (a, b) -> a - b);
-		operationMap.put("multiplication", (a, b) -> a * b);
-		operationMap.put("multiply", (a, b) -> a * b);
-		operationMap.put("division", (a, b) -> a / b);
-		operationMap.put("divide", (a, b) -> a / b);
-		operationMap.put("multiply_base", (a, b) -> a + (a * b));
-		operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-		operationMap.put("set_total", (a, b) -> b);
-		operationMap.put("set", (a, b) -> b);
-		operationMap.put("add_base_early", Float::sum);
-		operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
-		operationMap.put("multiply_total_additive", (a, b) -> a + (a * b));
-		operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
-		operationMap.put("multiply_total_multiplicative", (a, b) -> a * (1 + b));
-		operationMap.put("add_base_late", Float::sum);
-
-		Random random = new Random();
-
-		operationMap.put("add_random_max", (a, b) -> a + random.nextFloat(b));
-		operationMap.put("subtract_random_max", (a, b) -> a - random.nextFloat(b));
-		operationMap.put("multiply_random_max", (a, b) -> a * random.nextFloat(b));
-		operationMap.put("divide_random_max", (a, b) -> a / random.nextFloat(b));
-
-		return operationMap;
 	}
 
 	public static List<Integer> getSlots(FactoryJsonObject data) {
@@ -704,7 +727,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 	}
 
 	public static class ParserUtils {
-		private static final Field JSON_READER_POS = Util.make(() -> {
+		private static final Field JSON_READER_POS = net.minecraft.Util.make(() -> {
 			try {
 				Field field = JsonReader.class.getDeclaredField("pos");
 				field.setAccessible(true);
@@ -713,7 +736,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 				throw new IllegalStateException("Couldn't get field 'pos' for JsonReader", var1);
 			}
 		});
-		private static final Field JSON_READER_LINESTART = Util.make(() -> {
+		private static final Field JSON_READER_LINESTART = net.minecraft.Util.make(() -> {
 			try {
 				Field field = JsonReader.class.getDeclaredField("lineStart");
 				field.setAccessible(true);
@@ -731,6 +754,7 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 			}
 		}
 
+		@SuppressWarnings("unchecked")
 		public static <T> T parseJson(com.mojang.brigadier.StringReader stringReader, Codec<T> codec) {
 			JsonReader jsonReader = new JsonReader(new java.io.StringReader(stringReader.getRemaining()));
 			jsonReader.setLenient(true);
@@ -757,4 +781,69 @@ public class Utils extends Util { // Extend MC Utils for easy access to them
 			}
 		}
 	}
+
+	public static enum OS {
+        LINUX("linux"),
+        SOLARIS("solaris"),
+        WINDOWS("windows") {
+            @Override
+            protected String[] getOpenUrlArguments(URL url) {
+                return new String[]{"rundll32", "url.dll,FileProtocolHandler", url.toString()};
+            }
+        },
+        OSX("mac") {
+            @Override
+            protected String[] getOpenUrlArguments(URL url) {
+                return new String[]{"open", url.toString()};
+            }
+        },
+        UNKNOWN("unknown");
+
+        private final String telemetryName;
+
+        OS(final String name) {
+            this.telemetryName = name;
+        }
+
+        public void openUrl(URL url) {
+            throw new IllegalStateException("This method is not useful on dedicated servers."); // Paper - Fix warnings on build by removing client-only code
+        }
+
+        public void openUri(URI uri) {
+            try {
+                this.openUrl(uri.toURL());
+            } catch (MalformedURLException var3) {
+                Util.LOGGER.error("Couldn't open uri '{}'", uri, var3);
+            }
+        }
+
+        public void openFile(File file) {
+            try {
+                this.openUrl(file.toURI().toURL());
+            } catch (MalformedURLException var3) {
+                Util.LOGGER.error("Couldn't open file '{}'", file, var3);
+            }
+        }
+
+        protected String[] getOpenUrlArguments(URL url) {
+            String string = url.toString();
+            if ("file".equals(url.getProtocol())) {
+                string = string.replace("file:", "file://");
+            }
+
+            return new String[]{"xdg-open", string};
+        }
+
+        public void openUri(String uri) {
+            try {
+                this.openUrl(new URI(uri).toURL());
+            } catch (MalformedURLException | IllegalArgumentException | URISyntaxException var3) {
+                Util.LOGGER.error("Couldn't open uri '{}'", uri, var3);
+            }
+        }
+
+        public String telemetryName() {
+            return this.telemetryName;
+        }
+    }
 }

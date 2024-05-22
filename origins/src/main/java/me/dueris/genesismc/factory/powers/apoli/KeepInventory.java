@@ -10,7 +10,7 @@ import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -47,7 +47,7 @@ public class KeepInventory extends PowerType {
 			ItemStack[] stackedClone = player.getInventory().getContents();
 			ItemStack[] toDrop = new ItemStack[40];
 			if (slots != null) {
-				int[] a = Utils.missingNumbers(slots, 0, 40);
+				int[] a = Util.missingNumbers(slots, 0, 40);
 				int b = 0;
 				for (int i : a) {
 					toDrop[b++] = stackedClone[i];

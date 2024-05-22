@@ -13,8 +13,8 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.ContainerType;
 import me.dueris.genesismc.factory.data.types.JsonKeybind;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.util.KeybindingUtils;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.KeybindUtil;
+import me.dueris.genesismc.util.Util;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -194,9 +194,9 @@ public class Inventory extends PowerType implements KeyedPower {
 	public void keytrigger(KeybindTriggerEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			if (isActive(e.getPlayer())) {
-				if (KeybindingUtils.isKeyActive(getJsonKey().key(), e.getPlayer())) {
+				if (KeybindUtil.isKeyActive(getJsonKey().key(), e.getPlayer())) {
 					ArrayList<ItemStack> vaultItems = getItems(e.getPlayer(), getTag());
-					org.bukkit.inventory.Inventory vault = containerType.createInventory(e.getPlayer(), Utils.createIfPresent(title));
+					org.bukkit.inventory.Inventory vault = containerType.createInventory(e.getPlayer(), Util.createIfPresent(title));
 					vaultItems.forEach(vault::addItem);
 					e.getPlayer().openInventory(vault);
 				}

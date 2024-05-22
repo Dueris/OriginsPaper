@@ -10,7 +10,7 @@ import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.data.types.JsonKeybind;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.util.KeybindingUtils;
+import me.dueris.genesismc.util.KeybindUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -44,7 +44,7 @@ public class Toggle extends PowerType implements KeyedPower {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			in_continuous.putIfAbsent(p, new ArrayList<>());
-			if (KeybindingUtils.isKeyActive(getJsonKey().key(), p)) {
+			if (KeybindUtil.isKeyActive(getJsonKey().key(), p)) {
 				if (in_continuous.get(p).contains(getJsonKey().key())) {
 					in_continuous.get(p).remove(getJsonKey().key());
 				} else {
@@ -72,7 +72,7 @@ public class Toggle extends PowerType implements KeyedPower {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			if (isActive(p)) {
-				if (KeybindingUtils.isKeyActive(this.getJsonKey().key(), p)) {
+				if (KeybindUtil.isKeyActive(this.getJsonKey().key(), p)) {
 					execute(p, this);
 				}
 			}

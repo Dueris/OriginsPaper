@@ -17,7 +17,7 @@ import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.DataConverter;
 import me.dueris.genesismc.util.TextureLocation;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -218,7 +218,7 @@ public class Resource extends PowerType implements ResourcePower {
 		double oneInc;
 
 		Bar(Resource power, Player player) {
-			this.title = Utils.getNameOrTag(power).left();
+			this.title = Util.getNameOrTag(power);
 			this.power = power;
 			this.min = power.getMin();
 			this.max = power.getMax();
@@ -258,7 +258,7 @@ public class Resource extends PowerType implements ResourcePower {
 		}
 
 		public void change(int by, String operation, boolean updateMapped) {
-			Map<String, BinaryOperator<Double>> operator = Utils.getOperationMappingsDouble();
+			Map<String, BinaryOperator<Double>> operator = Util.getOperationMappingsDouble();
 			double change = oneInc * by;
 			this.renderedBar.setProgress(preVerifyProgress(operator.get(operation).apply(this.renderedBar.getProgress(), change)));
 			this.currentProgress = this.renderedBar.getProgress();

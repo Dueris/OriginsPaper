@@ -10,7 +10,7 @@ import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -82,10 +82,10 @@ public class EdibleItem extends PowerType {
 				Player p = e.getPlayer();
 				if (!ConditionExecutor.testItem(itemCondition, stack)) return;
 				if (!isActive(p)) return;
-				FoodComponent food = Utils.parseProperties(foodComponent);
+				FoodComponent food = Util.parseProperties(foodComponent);
 				float s = food.getEatSeconds();
 				Arrays.stream(modifiers).forEach(modifier -> {
-					Utils.getOperationMappingsFloat().get(modifier.operation()).apply(s, modifier.value());
+					Util.getOperationMappingsFloat().get(modifier.operation()).apply(s, modifier.value());
 				});
 				food.setEatSeconds(s);
 				ItemMeta meta = stack.getItemMeta();

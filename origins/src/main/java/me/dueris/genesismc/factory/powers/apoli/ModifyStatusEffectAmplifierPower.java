@@ -8,7 +8,7 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.data.types.Modifier;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,7 +43,7 @@ public class ModifyStatusEffectAmplifierPower extends ModifierPower implements L
 					for (Modifier modifier : getModifiers()) {
 						Float value = modifier.value();
 						String operation = modifier.operation();
-						BinaryOperator mathOperator = Utils.getOperationMappingsFloat().get(operation);
+						BinaryOperator mathOperator = Util.getOperationMappingsFloat().get(operation);
 						if (mathOperator != null) {
 							float result = (float) mathOperator.apply(effect.getAmplifier(), value);
 							effect.withAmplifier(Math.round(result));

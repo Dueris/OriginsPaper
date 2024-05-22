@@ -7,7 +7,7 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.data.types.HudRender;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarStyle;
@@ -42,7 +42,7 @@ public class Cooldown extends PowerType {
 		if (isInCooldown(player, power)) return; // Already in cooldown
 		KeyedBossBar bossBar = Bukkit.createBossBar(
 			NamespacedKey.fromString(power.getTag() + "_cooldown_" + player.getName().toLowerCase()),
-			Utils.getNameOrTag((PowerType) power).left(), Resource.Bar.getBarColor(power.getHudRender()), BarStyle.SEGMENTED_6);
+			Util.getNameOrTag((PowerType) power), Resource.Bar.getBarColor(power.getHudRender()), BarStyle.SEGMENTED_6);
 		bossBar.setProgress(start);
 		bossBar.setVisible(true);
 		bossBar.addPlayer(player);
@@ -70,7 +70,7 @@ public class Cooldown extends PowerType {
 
 	@Override
 	public void tick() {
-		Utils.collectValues(new ArrayList<>(cooldowns.values())).forEach((pair) -> {
+		Util.collectValues(new ArrayList<>(cooldowns.values())).forEach((pair) -> {
 			KeyedBossBar bar = pair.left();
 			if (!incrementGetter.containsKey(bar.getKey())) return;
 			double increment = incrementGetter.get(bar.getKey());

@@ -1,4 +1,4 @@
-package me.dueris.genesismc.util;
+package me.dueris.genesismc.util.entity;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
@@ -11,7 +11,6 @@ import me.dueris.genesismc.screen.GuiTicker;
 import me.dueris.genesismc.storage.OriginConfiguration;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.storage.nbt.NBTFixerUpper;
-import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.NamespacedKey;

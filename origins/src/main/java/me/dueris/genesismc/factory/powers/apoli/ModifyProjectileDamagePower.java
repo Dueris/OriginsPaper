@@ -8,7 +8,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Modifier;
-import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.Util;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -50,7 +50,7 @@ public class ModifyProjectileDamagePower extends ModifierPower implements Listen
 						for (Modifier modifier : getModifiers()) {
 							float value = modifier.value();
 							String operation = modifier.operation();
-							BinaryOperator<Double> mathOperator = Utils.getOperationMappingsDouble().get(operation);
+							BinaryOperator<Double> mathOperator = Util.getOperationMappingsDouble().get(operation);
 							if (mathOperator != null) {
 								ModifyDamageDealtPower.runSetDMG(e, operation, value);
 								Actions.executeEntity(e.getEntity(), targetAction);

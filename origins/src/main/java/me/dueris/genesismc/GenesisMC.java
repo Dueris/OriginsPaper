@@ -45,6 +45,7 @@ import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.storage.nbt.NBTFixerUpper;
 import me.dueris.genesismc.util.*;
 import me.dueris.genesismc.util.entity.GlowingEntitiesUtils;
+import me.dueris.genesismc.util.entity.PlayerManager;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -80,9 +81,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	public static final boolean isFolia = classExists("io.papermc.paper.threadedregions.RegionizedServer");
 	public static final boolean isExpandedScheduler = classExists("io.papermc.paper.threadedregions.scheduler.ScheduledTask");
 	public static List<Runnable> preShutdownTasks = new ArrayList<>();
-	public static EnumSet<Material> tool;
 	public static GlowingEntitiesUtils glowingEntitiesUtils;
-	public static Metrics metrics;
+	public static BstatsMetrics metrics;
 	public static ConditionExecutor conditionExecutor;
 	public static String apoliVersion = "2.12.0-alpha.1";
 	public static boolean placeholderapi = false;
@@ -99,7 +99,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	private static GenesisMC plugin;
 
 	static {
-		tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
 		versions.add("1.20.5");
 		versions.add("1.20.6");
 	}
@@ -151,7 +150,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable() {
 		plugin = this;
-		metrics = new Metrics(this, 18536);
+		metrics = new BstatsMetrics(this, 18536);
 		Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		System.out.println(); // Split new line
 		printComponent(Component.text("* Loading Version GenesisMC-{minecraftVersion-versionNumber} // CraftApoli-{apoliVersion}"
@@ -353,7 +352,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new VillagerTradeHook(), this);
 		getServer().getPluginManager().registerEvents(new OriginScheduler.MainTickerThread(), this);
 		getServer().getPluginManager().registerEvents(new StructureGeneration(), this);
-		getServer().getPluginManager().registerEvents(new KeybindingUtils(), this);
+		getServer().getPluginManager().registerEvents(new KeybindUtil(), this);
 		getServer().getPluginManager().registerEvents(new AsyncUpgradeTracker(), this);
 		getServer().getPluginManager().registerEvents(new PowerHolderComponent(), this);
 		getServer().getPluginManager().registerEvents(new CraftPehuki(), this);
@@ -372,25 +371,30 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			player.closeInventory(); // Ensure that all choosing players have closed inventories during reload
-			player.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(PowerHolderComponent.getOrigin(player), player));
-			PowerHolderComponent.unassignPowers(player);
-			OriginDataContainer.unloadData(player);
+		try {
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				player.closeInventory(); // Ensure that all choosing players have closed inventories during reload
+				player.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(PowerHolderComponent.getOrigin(player), player));
+				PowerHolderComponent.unassignPowers(player);
+				OriginDataContainer.unloadData(player);
+			}
+			preShutdownTasks.forEach(Runnable::run);
+			glowingEntitiesUtils.disable();
+			CraftApoli.unloadData();
+			PowerHolderComponent.playerPowerMapping.clear();
+			PowerHolderComponent.powersAppliedList.clear();
+			OriginCommand.commandProvidedLayers.clear();
+			OriginCommand.commandProvidedOrigins.clear();
+			OriginCommand.commandProvidedPowers.clear();
+			RecipePower.recipeMapping.clear();
+			RecipePower.tags.clear();
+			this.registry.clearRegistries();
+			scheduler.cancel();
+			AsyncTaskWorker.shutdown();
+		} catch (Throwable throwable) {
+			getLogger().severe("An unhandled exception occured when disabling GenesisMC!");
+			throwable(throwable, false);
 		}
-		preShutdownTasks.forEach(Runnable::run);
-		glowingEntitiesUtils.disable();
-		CraftApoli.unloadData();
-		PowerHolderComponent.playerPowerMapping.clear();
-		PowerHolderComponent.powersAppliedList.clear();
-		OriginCommand.commandProvidedLayers.clear();
-		OriginCommand.commandProvidedOrigins.clear();
-		OriginCommand.commandProvidedPowers.clear();
-		RecipePower.recipeMapping.clear();
-		RecipePower.tags.clear();
-		this.registry.clearRegistries();
-		scheduler.cancel();
-		AsyncTaskWorker.shutdown();
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
