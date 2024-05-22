@@ -106,8 +106,6 @@ public class TextureLocation implements Registrable {
 			}
 		}
 
-		textureMap.keySet().forEach(System.out::println);
-
 	}
 
 	public static int indexOfColor(Color[] array, Color targetColor) {
