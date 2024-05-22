@@ -278,7 +278,7 @@ public class PowerHolderComponent implements Listener {
 				powersAppliedList.put(player, new ConcurrentLinkedQueue<>(List.of(c)));
 			else powersAppliedList.get(player).add(c);
 			if (!suppress) {
-				if (OriginConfiguration.getConfiguration().getString("debug").equalsIgnoreCase("true"))
+				if (OriginConfiguration.getConfiguration().getBoolean("debug"))
 					Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
 			}
 			new PowerUpdateEvent(player, power, false, isNew).callEvent();
@@ -299,7 +299,7 @@ public class PowerHolderComponent implements Listener {
 			powersAppliedList.get(player).remove(c);
 			c.removePlayer(player);
 			if (!suppress) {
-				if (OriginConfiguration.getConfiguration().getString("debug").equalsIgnoreCase("true"))
+				if (OriginConfiguration.getConfiguration().getBoolean("debug"))
 					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
 			}
 			new PowerUpdateEvent(player, power, true, isNew).callEvent();
