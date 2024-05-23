@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.google.gson.JsonObject;
 import me.dueris.calio.data.FactoryData;
@@ -9,10 +8,12 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.RaycastUtils;
-import me.dueris.genesismc.util.entity.PowerHolderComponent;
+import me.dueris.genesismc.util.Util;
 import net.minecraft.Optionull;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.RemoteChatSession;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
+import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
 import org.bukkit.Bukkit;
@@ -21,6 +22,7 @@ import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -30,14 +32,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import org.geysermc.geyser.api.GeyserApi;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Java Packet Manipulation(JPM) code was made in contribution with Origins-Reborn author, cometcake575
@@ -50,25 +54,28 @@ import java.util.HashMap;
  */
 public class Phasing extends PowerType {
 	public static ArrayList<Player> inPhantomFormBlocks = new ArrayList<>();
-	public static HashMap<Player, Boolean> test = new HashMap<>();
-	public static AttributeModifier speedFix = new AttributeModifier("PhantomSpeedFix", 1, AttributeModifier.Operation.ADD_NUMBER);
+	public static HashMap<Player, Boolean> resynched = new HashMap<>();
+	public static HashMap<Player, HashMap<BlockPos, Integer>> sentBlockLocations = new HashMap<>();
+	public static AttributeModifier speedFixAttribute = new AttributeModifier("PhantomSpeedFix", 1, AttributeModifier.Operation.ADD_NUMBER);
 	private final FactoryJsonObject phaseDownCondition;
+	private final String renderType;
+	private final boolean blacklist;
+	private final FactoryJsonObject blockCondition;
 
-	public Phasing(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject phaseDownCondition) {
+	public Phasing(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject phaseDownCondition, String renderType, boolean blacklist, FactoryJsonObject blockCondition) {
 		super(name, description, hidden, condition, loading_priority);
 		this.phaseDownCondition = phaseDownCondition;
+		this.renderType = renderType;
+		this.blacklist = blacklist;
+		this.blockCondition = blockCondition;
 	}
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("phasing"))
-			.add("phase_down_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
-	}
-
-	protected static void sendJavaPacket(ServerPlayer player) {
-		GameType gamemode = GameType.SPECTATOR;
-		ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(player.getUUID(), player.getGameProfile(), true, 1, gamemode, player.getTabListDisplayName(), Optionull.map(player.getChatSession(), RemoteChatSession::asData));
-		ClientboundPlayerInfoUpdatePacket packet = new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE), entry);
-		player.connection.send(packet);
+			.add("phase_down_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
+			.add("render_type", String.class, "blindness")
+			.add("blacklist", boolean.class, false)
+			.add("block_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
 	}
 
 	protected static void resyncJavaPlayer(ServerPlayer player) {
@@ -81,15 +88,6 @@ public class Phasing extends PowerType {
 		player.connection.send(packet);
 	}
 
-	public static float getGameModeFloat(GameMode gameMode) {
-		return switch (gameMode) {
-			case CREATIVE -> 1.0f;
-			case SURVIVAL -> 0.0f;
-			case ADVENTURE -> 2.0f;
-			case SPECTATOR -> 3.0f;
-		};
-	}
-
 	public static boolean isBedrock(Player p) {
 		if (Bukkit.getPluginManager().isPluginEnabled("floodgate")) {
 			return GeyserApi.api().connectionByUuid(p.getUniqueId()) != null;
@@ -98,11 +96,52 @@ public class Phasing extends PowerType {
 		}
 	}
 
-	public void setInPhasingBlockForm(Player p) {
-		test.put(p, true);
+	public void sendPhasingPackets(Player p) {
+		resynched.put(p, true);
+		sentBlockLocations.putIfAbsent(p, new HashMap<>());
 		ServerPlayer player = ((CraftPlayer) p).getHandle();
 		inPhantomFormBlocks.add(p);
-		sendJavaPacket(player);
+		GameType gamemode = GameType.SPECTATOR;
+		ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(
+			player.getUUID(),
+			player.getGameProfile(),
+			true,
+			1,
+			gamemode,
+			player.getTabListDisplayName(),
+			Optionull.map(player.getChatSession(), RemoteChatSession::asData)
+		);
+		ClientboundPlayerInfoUpdatePacket packet = new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE), entry);
+		/* Shape.executeAtPositions(CraftLocation.toBlockPosition(p.getLocation()), Shape.SPHERE, 7, (blockPos) -> {
+			try {
+				Location location = CraftLocation.toBukkit(blockPos);
+				location.setWorld(p.getWorld());
+				BlockState state = p.getWorld().getBlockState(location);
+				if (sentBlockLocations.get(p).containsKey(blockPos) || !state.isCollidable()
+					|| ((blacklist && !ConditionExecutor.testBlock(blockCondition, state.getBlock())) || (!blacklist && ConditionExecutor.testBlock(blockCondition, state.getBlock())))
+				) return;
+
+				ServerLevel level = player.serverLevel();
+				Display.BlockDisplay blockDisplay = (Display.BlockDisplay) Util.getEntityWithPassengers(
+					level,
+					EntityType.BLOCK_DISPLAY,
+					Util.ParserUtils.parseJson(new StringReader(
+						"{id:\"minecraft:block_display\",NoGravity:1b,Silent:1b,HasVisualFire:0b,Glowing:0b,CustomNameVisible:0b,block_state:{Name:\"$A$\"}}"
+						.replace("$A$", level.getBlockState(blockPos).getBukkitMaterial().getKey().asString())), CompoundTag.CODEC),
+					CraftLocation.toVec3D(CraftLocation.toBukkit(blockPos)),
+					Optional.empty(),
+					Optional.empty()
+				).orElseThrow();
+				level.addFreshEntity(blockDisplay);
+				ClientboundAddEntityPacket addEntityPacket = new ClientboundAddEntityPacket(blockDisplay);
+				sentBlockLocations.get(p).put(blockPos, blockDisplay.getId());
+				player.connection.send(addEntityPacket);
+			} catch (Throwable throwable) {
+				GenesisMC.getPlugin().getLogger().severe("An unhandled exception occurred when sending visual updates!");
+				GenesisMC.getPlugin().throwable(throwable, false);
+			}
+		}); */
+		player.connection.send(packet);
 		p.setCollidable(false);
 		p.setAllowFlight(true);
 		p.setFlying(true);
@@ -156,37 +195,64 @@ public class Phasing extends PowerType {
 
 	@EventHandler
 	public void je(PlayerJoinEvent e) {
-		test.put(e.getPlayer(), false);
+		resynched.put(e.getPlayer(), false);
+	}
+
+	private Set<Block> getBlocksPlayerIsTouching(Player player) {
+		Set<Block> touchingBlocks = new HashSet<>();
+
+		Vector[] offsets = new Vector[]{
+			new Vector(0.55, 0, 0.55),
+			new Vector(0.55, 0, 0),
+			new Vector(0, 0, 0.55),
+			new Vector(-0.55, 0, -0.55),
+			new Vector(0, 0, -0.55),
+			new Vector(-0.55, 0, 0),
+			new Vector(0.55, 0, -0.55),
+			new Vector(-0.55, 0, 0.55),
+			new Vector(0, 0.5, 0),
+
+			new Vector(0.55, 0, 0.55),
+			new Vector(0.55, 0, 0),
+			new Vector(0, 0, 0.55),
+			new Vector(-0.55, 0, -0.55),
+			new Vector(0, 0, -0.55),
+			new Vector(-0.55, 0, 0),
+			new Vector(0.55, 0, -0.55),
+			new Vector(-0.55, 0, 0.55)
+		};
+
+		for (Vector offset : offsets) {
+			Block blockAtFeet = player.getLocation().add(offset).getBlock();
+			Block blockAtHead = player.getEyeLocation().add(offset).getBlock();
+
+			if (blockAtFeet.isCollidable() && ((blacklist && !ConditionExecutor.testBlock(blockCondition, blockAtFeet)) || (!blacklist && ConditionExecutor.testBlock(blockCondition, blockAtFeet)))) {
+				touchingBlocks.add(blockAtFeet);
+			}
+
+			if (blockAtHead.isCollidable() && ((blacklist && !ConditionExecutor.testBlock(blockCondition, blockAtHead)) || (!blacklist && ConditionExecutor.testBlock(blockCondition, blockAtHead)))) {
+				touchingBlocks.add(blockAtHead);
+			}
+		}
+
+		return touchingBlocks;
 	}
 
 	@Override
 	public void tick(Player p) {
 		if (isActive(p)) {
-			if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
-				p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
-				p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
-				p.getLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
-				p.getLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
-				p.getLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
-				p.getLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
-				p.getLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid() ||
-				p.getLocation().add(0, 0.5, 0).getBlock().isSolid() ||
-
-				p.getEyeLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
-				p.getEyeLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
-				p.getEyeLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
-				p.getEyeLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
-				p.getEyeLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
-				p.getEyeLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
-				p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
-				p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
-			) {
+			Set<Block> blocks = getBlocksPlayerIsTouching(p);
+			if (!blocks.isEmpty()) {
 				if (!isBedrock(p)) {
-					setInPhasingBlockForm(p);
+					sendPhasingPackets(p);
 				} else {
 					if (p.getGameMode() != GameMode.SPECTATOR) {
 						p.setGameMode(GameMode.SPECTATOR);
 					}
+				}
+
+				if (renderType.equalsIgnoreCase("blindness")) {
+					p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100000, 112, false, false, false));
 				}
 
 				p.setFlySpeed(0.03F);
@@ -204,15 +270,23 @@ public class Phasing extends PowerType {
 						p.setGameMode(gameMode);
 					}
 				}
+				if (renderType.equalsIgnoreCase("blindness")) {
+					p.removePotionEffect(PotionEffectType.BLINDNESS);
+				}
+				if (sentBlockLocations.get(p) != null) {
+					ClientboundRemoveEntitiesPacket removeEntitiesPacket = new ClientboundRemoveEntitiesPacket(Util.convertToIntArray(sentBlockLocations.get(p).values()));
+					((CraftPlayer) p).getHandle().connection.send(removeEntitiesPacket);
+					sentBlockLocations.clear();
+				}
 				p.setFlySpeed(0.1F);
 				inPhantomFormBlocks.remove(p);
 				p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
 			}
 		} else {
 			inPhantomFormBlocks.remove(p);
-			if (test.get(p) == null) {
-				test.put(p, false);
-			} else if (test.get(p)) {
+			if (resynched.get(p) == null) {
+				resynched.put(p, false);
+			} else if (resynched.get(p)) {
 				if (!isBedrock(p)) {
 					resyncJavaPlayer(((CraftPlayer) p).getHandle());
 				} else {
@@ -222,9 +296,17 @@ public class Phasing extends PowerType {
 					}
 					p.setGameMode(gameMode);
 				}
+				if (renderType.equalsIgnoreCase("blindness")) {
+					p.removePotionEffect(PotionEffectType.BLINDNESS);
+				}
+				if (sentBlockLocations.get(p) != null) {
+					ClientboundRemoveEntitiesPacket removeEntitiesPacket = new ClientboundRemoveEntitiesPacket(Util.convertToIntArray(sentBlockLocations.get(p).values()));
+					((CraftPlayer) p).getHandle().connection.send(removeEntitiesPacket);
+					sentBlockLocations.clear();
+				}
 				p.setFlySpeed(0.1F);
 				p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
-				test.put(p, false);
+				resynched.put(p, false);
 			}
 		}
 	}
@@ -243,25 +325,25 @@ public class Phasing extends PowerType {
 	public void fixMineSpeed(ServerTickEndEvent e) {
 		for (Player p : getPlayers()) {
 			if (inPhantomFormBlocks.contains(p)) {
-				if (!p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getModifiers().contains(speedFix)) {
-					p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).addModifier(speedFix);
+				if (!p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getModifiers().contains(speedFixAttribute)) {
+					p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).addModifier(speedFixAttribute);
 				}
 			} else {
-				if (p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getModifiers().contains(speedFix)) {
-					p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).removeModifier(speedFix);
+				if (p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getModifiers().contains(speedFixAttribute)) {
+					p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).removeModifier(speedFixAttribute);
 				}
 			}
 		}
 	}
 
 	@EventHandler
-	public void CancelSpectate(PlayerStartSpectatingEntityEvent e) {
-		Player p = e.getPlayer();
-		if (getPlayers().contains(p)) {
-			if (PowerHolderComponent.isInPhantomForm(p)) {
+	public void moveEvent(PlayerMoveEvent e) {
+		if (getPlayers().contains(e.getPlayer()) && inPhantomFormBlocks.contains(e.getPlayer())) {
+			if (e.getTo().getBlock().isCollidable() &&
+				!((blacklist && !ConditionExecutor.testBlock(blockCondition, e.getTo().getBlock())) || (!blacklist && ConditionExecutor.testBlock(blockCondition, e.getTo().getBlock())))) {
 				e.setCancelled(true);
+				e.setTo(e.getFrom());
 			}
-
 		}
 	}
 

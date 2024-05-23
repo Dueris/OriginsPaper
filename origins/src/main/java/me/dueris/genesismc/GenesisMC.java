@@ -271,6 +271,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			BuiltinRegistry.bootstrap();
 			// End calio parsing
 		} catch (Throwable e) {
+			this.getLogger().severe("An unhandled exception occurred when starting Genesis!");
 			throwable(e, true);
 		}
 
@@ -282,6 +283,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		try {
 			NBTFixerUpper.runFixerUpper();
 		} catch (Throwable e) {
+			this.getLogger().severe("An unhandled exception occurred when starting Genesis!");
 			throwable(e, false);
 		}
 
@@ -321,7 +323,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	}
 
 	public void throwable(Throwable throwable, boolean kill) {
-		this.getLogger().severe("An unhandled exception occurred when starting Genesis!");
 		String[] stacktrace = {"\n"};
 		Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
 		this.getLogger().severe(throwable.getMessage() + stacktrace[0]);
@@ -388,7 +389,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			RecipePower.tags.clear();
 			this.registry.clearRegistries();
 			scheduler.cancel();
-			AsyncTaskWorker.shutdown();
 		} catch (Throwable throwable) {
 			getLogger().severe("An unhandled exception occured when disabling GenesisMC!");
 			throwable(throwable, false);

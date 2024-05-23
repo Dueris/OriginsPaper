@@ -660,6 +660,12 @@ public class Util {
 		return (n == 0) ? 1 : n * factorial(n - 1);
 	}
 
+	public static int[] convertToIntArray(Collection<Integer> integers) {
+		return integers.stream()
+			.mapToInt(Integer::intValue)
+			.toArray();
+	}
+
 	public static int getArmorValue(ItemStack armorItem) {
 		net.minecraft.world.item.Item stack = CraftItemStack.asNMSCopy(armorItem).getItem();
 		return stack instanceof ArmorItem item ? item.getDefense() : 0;

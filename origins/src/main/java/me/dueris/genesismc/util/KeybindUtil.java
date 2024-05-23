@@ -162,6 +162,13 @@ public class KeybindUtil implements Listener {
 		}
 	}
 
+	@EventHandler
+	public void interactEvent(PlayerInteractEntityEvent e) {
+		ItemStack stack = e.getPlayer().getInventory().getItem(e.getHand());
+		if (stack != null && stack.getItemMeta() != null && stack.getItemMeta().getPersistentDataContainer().has(GenesisMC.identifier("origin_item_data")))
+			e.setCancelled(true);
+	}
+
 	private void resetKeybinds(Player p) {
 		if (activeKeys.containsKey(p)) {
 			activeKeys.get(p).clear();
