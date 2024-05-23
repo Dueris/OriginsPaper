@@ -39,7 +39,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import org.geysermc.geyser.api.GeyserApi;
+import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.util.*;
 
@@ -90,7 +90,7 @@ public class Phasing extends PowerType {
 
 	public static boolean isBedrock(Player p) {
 		if (Bukkit.getPluginManager().isPluginEnabled("floodgate")) {
-			return GeyserApi.api().connectionByUuid(p.getUniqueId()) != null;
+			return FloodgateApi.getInstance().isFloodgateId(p.getUniqueId());
 		} else {
 			return false;
 		}
