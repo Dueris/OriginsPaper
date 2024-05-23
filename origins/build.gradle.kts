@@ -16,7 +16,7 @@ dependencies {
     compileOnly("org.reflections:reflections:0.9.12") // - in DependencyLoader - shaded in calio
     compileOnly("org.mineskin:java-client:1.2.4-SNAPSHOT") // - in DependencyLoader
     // Optional Hook
-    compileOnly("org.geysermc.geyser:api:2.2.0-SNAPSHOT")
+    compileOnly("org.geysermc.floodgate:api:2.2.2-SNAPSHOT")
     compileOnly("net.skinsrestorer:skinsrestorer-api:15.0.4")
     compileOnly("me.clip:placeholderapi:2.11.4")
 
