@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.data.types;
 
+import com.google.common.base.Preconditions;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.util.Util;
@@ -15,6 +16,7 @@ public class Modifier {
 
 	public Modifier(FactoryJsonObject factoryJsonObject) {
 		this.handle = factoryJsonObject;
+		Preconditions.checkArgument(handle.isPresent("value"), "Value must be present!");
 	}
 
 	public static Modifier[] getModifiers(@Nullable FactoryJsonObject singular, @Nullable FactoryJsonArray plural) {

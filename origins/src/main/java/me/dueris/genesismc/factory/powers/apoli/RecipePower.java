@@ -52,7 +52,7 @@ public class RecipePower extends PowerType {
 			FactoryJsonObject recipe = recipePower.getRecipe();
 			if (recipe == null)
 				throw new IllegalArgumentException("Unable to find recipe data for power: " + recipePower.getTag());
-			NamespacedKey key = new NamespacedKey(recipe.getString("id").split(":")[0], recipe.getString("id").split(":")[1]);
+			NamespacedKey key = recipe.getString("id").contains(":") ? recipe.getNamespacedKey("id") : NamespacedKey.fromString(recipePower.getTag() + "_" + recipe.getString("id"));
 			String type = recipe.getString("type");
 			if (!type.startsWith("minecraft:")) {
 				type = "minecraft:" + type;
@@ -126,12 +126,13 @@ public class RecipePower extends PowerType {
 		if (getPlayers().contains(p)) {
 			for (RecipePower power : PowerHolderComponent.getPowers(p, RecipePower.class)) {
 				FactoryJsonObject recipe = power.getRecipe();
-				String id = recipe.getString("id");
+				NamespacedKey idKey = recipe.getString("id").contains(":") ? recipe.getNamespacedKey("id") : NamespacedKey.fromString(power.getTag() + "_" + recipe.getString("id"));
+				String id = idKey.asString();
 				if (taggedRegistry.containsKey(id)) {
 					if (recipeMapping.containsKey(p)) {
 						recipeMapping.get(p).add(id);
 					} else {
-						recipeMapping.put(p, List.of(id));
+						recipeMapping.put(p, new ArrayList<>(List.of(id)));
 					}
 				} else {
 					throw new IllegalStateException("Unable to locate recipe id. Bug?");

@@ -10,6 +10,7 @@ import me.dueris.genesismc.util.entity.GlowingEntitiesUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.craftbukkit.util.CraftLocation;
@@ -47,7 +48,8 @@ public class EntityGlowPower extends SelfGlow {
 						continue;
 					}
 					if (useTeams() && player.getTeam() != null) {
-						utils.setGlowing(entity.getBukkitEntity(), p, CraftChatMessage.getColor(player.getTeam().getColor()));
+						ChatColor color = CraftChatMessage.getColor(player.getTeam().getColor());
+						utils.setGlowing(entity.getBukkitEntity(), p, (color == null || color.toString().equalsIgnoreCase("§r")) ? ChatColor.WHITE : color);
 					} else {
 						Color awtColor = new Color(getRed(), getGreen(), getBlue());
 						utils.setGlowing(entity.getBukkitEntity(), p, translateBarColor(TextureLocation.convertToBarColor(awtColor)));

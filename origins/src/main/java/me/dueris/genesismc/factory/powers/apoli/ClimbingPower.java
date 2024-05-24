@@ -20,7 +20,6 @@ import java.util.ArrayList;
 public class ClimbingPower extends PowerType {
 	public static ArrayList<Player> active_climbing = new ArrayList<>();
 	private final boolean allowHolding;
-	public ArrayList<Player> holdingPlayers = new ArrayList<>();
 	public ArrayList<Player> allowedToClimb = new ArrayList<>();
 
 	public ClimbingPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, boolean allowHolding) {
@@ -37,24 +36,13 @@ public class ClimbingPower extends PowerType {
 		return active_climbing.contains(player);
 	}
 
-	public static ArrayList<Player> getActiveClimbingMap() {
-		return active_climbing;
-	}
-
 	@Override
 	public void tick(Player p) {
-		if (!p.isSneaking()) holdingPlayers.remove(p);
 		if (!((CraftWorld) p.getWorld()).getHandle().getBlockStates(((CraftPlayer) p).getHandle().getBoundingBox().inflate(0.1, 0, 0.1)).filter(state -> state.getBukkitMaterial().isCollidable()).toList().isEmpty()) {
 			if (isActive(p) && allowedToClimb.contains(p)) {
+				active_climbing.add(p);
 				p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 4, 2, false, false, false));
-				getActiveClimbingMap().add(p);
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						getActiveClimbingMap().remove(p);
-					}
-				}.runTaskLater(GenesisMC.getPlugin(), 2L);
-			}
+			} else active_climbing.remove(p);
 		}
 	}
 
@@ -72,36 +60,6 @@ public class ClimbingPower extends PowerType {
 					}
 				}
 			}.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
-		}
-	}
-
-	@EventHandler
-	public void latch(PlayerToggleSneakEvent e) {
-		Player p = e.getPlayer();
-		if (getPlayers().contains(p)) {
-			if (this.isAllowHolding()) {
-				final Location[] location = {p.getLocation()};
-				if (e.isSneaking() && getActiveClimbingMap().contains(p)) {
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							if (p.isSneaking()) {
-								if (location[0].getPitch() != p.getPitch() || location[0].getYaw() != p.getYaw()) {
-									float pitch = p.getPitch();
-									float yaw = p.getYaw();
-									Location updatedLocation = new Location(location[0].getWorld(), location[0].getX(), location[0].getY(), location[0].getZ(), yaw, pitch);
-									location[0] = updatedLocation;
-								}
-								p.teleportAsync(location[0]);
-								holdingPlayers.add(p);
-							} else {
-								holdingPlayers.remove(p);
-								cancel();
-							}
-						}
-					}.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
-				}
-			}
 		}
 	}
 

@@ -58,8 +58,8 @@ public class SelfGlow extends PowerType {
 			case PINK -> ChatColor.LIGHT_PURPLE;
 			case PURPLE -> ChatColor.DARK_PURPLE;
 			case RED -> ChatColor.RED;
-			case WHITE -> ChatColor.WHITE;
 			case YELLOW -> ChatColor.YELLOW;
+			default -> ChatColor.WHITE;
 		};
 	}
 
