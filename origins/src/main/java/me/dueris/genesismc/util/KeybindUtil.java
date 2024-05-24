@@ -204,15 +204,19 @@ public class KeybindUtil implements Listener {
 	public void onTransfer(InventoryClickEvent e) {
 		if (e.getClick().isKeyboardClick()) {
 			if (e.getView().getTopInventory().getType() == InventoryType.CRAFTING) return;
-			if (e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null) {
-				ItemStack transferred = e.getView().getBottomInventory().getItem(e.getHotbarButton());
-				if (transferred == null) return;
-				if (transferred.isSimilar(getPrimaryTrigger((Player) e.getWhoClicked()))) {
-					e.setCancelled(true);
+			try {
+				if (e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null) {
+					ItemStack transferred = e.getView().getBottomInventory().getItem(e.getHotbarButton());
+					if (transferred == null) return;
+					if (transferred.isSimilar(getPrimaryTrigger((Player) e.getWhoClicked()))) {
+						e.setCancelled(true);
+					}
+					if (transferred.isSimilar(getSecondaryTrigger((Player) e.getWhoClicked()))) {
+						e.setCancelled(true);
+					}
 				}
-				if (transferred.isSimilar(getSecondaryTrigger((Player) e.getWhoClicked()))) {
-					e.setCancelled(true);
-				}
+			} catch (Throwable t) {
+				// Silence
 			}
 
 			return;

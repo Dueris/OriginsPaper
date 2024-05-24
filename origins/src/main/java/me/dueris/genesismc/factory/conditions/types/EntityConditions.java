@@ -692,7 +692,7 @@ public class EntityConditions {
 			if (entity instanceof CraftPlayer player) {
 				ServerPlayer p = player.getHandle();
 				ServerPlayerGameMode interactionManager = p.gameMode;
-				boolean isMining = Boolean.TRUE.equals(Reflector.accessField("isDestroyingBlock", ServerPlayerGameMode.class, interactionManager, boolean.class));
+				boolean isMining = Boolean.TRUE.equals(Reflector.accessField("isDestroyingBlock", ServerPlayerGameMode.class, interactionManager, Boolean.class));
 				if (!isMining) {
 					return false;
 				}
