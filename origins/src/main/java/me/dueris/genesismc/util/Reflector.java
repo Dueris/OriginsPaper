@@ -44,26 +44,28 @@ public class Reflector {
 		}
 	}
 
-	public static void accessMethod$Invoke(String name, Class<?> sourceClass, Object invoker, Class<?>[] paramTypes, Object... args) {
+	public static Object accessMethod$Invoke(String name, Class<?> sourceClass, Object invoker, Class<?>[] paramTypes, Object... args) {
 		try {
 			Method method = accessMethod(name, sourceClass, paramTypes);
 			if (method != null) {
-				method.invoke(invoker, args);
+				return method.invoke(invoker, args);
 			}
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
-	public static void accessMethod$Invoke(String name, Class<?> sourceClass, Object invoker, Object... args) {
+	public static Object accessMethod$Invoke(String name, Class<?> sourceClass, Object invoker, Object... args) {
 		try {
 			Method method = accessMethod(name, sourceClass);
 			if (method != null) {
-				method.invoke(invoker, args);
+				return method.invoke(invoker, args);
 			}
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	@SuppressWarnings("deprecation")
