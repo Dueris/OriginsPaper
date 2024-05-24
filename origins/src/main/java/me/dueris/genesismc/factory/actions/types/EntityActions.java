@@ -164,14 +164,14 @@ public class EntityActions {
 					.replace("{name}", "@e[{data}]"
 						.replace("{data}", "x=" + entity.getLocation().getX() + ",y=" + entity.getLocation().getY() + ",z=" + entity.getLocation().getZ() + ",type=" + entity.getType().toString().toLowerCase() + ",x_rotation=" + entity.getLocation().getDirection().getX() + ",y_rotation=" + entity.getLocation().getDirection().getY())
 					);
-				RaycastUtils.executeNMSCommand(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), cmd);
+				RaycastUtils.executeNMSCommand(((CraftEntity) entity).getHandle(), ((CraftEntity) entity).getHandle().position(), cmd);
 			}
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("remove_power"), (action, entity) -> {
 			if (entity instanceof Player p) {
 				PowerType powerContainer = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(action.getNamespacedKey("power"));
 				if (powerContainer != null) {
-					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("power")));
+					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), ((CraftEntity) p).getHandle().position(), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("power")));
 				}
 			}
 		}));
@@ -179,7 +179,7 @@ public class EntityActions {
 			if (entity instanceof Player p) {
 				PowerType powerContainer = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(action.getNamespacedKey("power"));
 				if (powerContainer != null) {
-					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power grant {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("power")));
+					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), ((CraftEntity) p).getHandle().position(), "power grant {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("power")));
 				}
 			}
 		}));
@@ -187,7 +187,7 @@ public class EntityActions {
 			if (entity instanceof Player p) {
 				PowerType powerContainer = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(action.getNamespacedKey("power"));
 				if (powerContainer != null) {
-					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power revoke {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("power")));
+					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), ((CraftEntity) p).getHandle().position(), "power revoke {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("power")));
 				}
 			}
 		}));
@@ -470,7 +470,7 @@ public class EntityActions {
 			if (cmd.startsWith("scale") && cmd.endsWith(" @s")) {
 				cmd = cmd.replace(" @s", ""); // Remove any specified player arg
 			}
-			RaycastUtils.executeNMSCommand(((CraftEntity) entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), cmd);
+			RaycastUtils.executeNMSCommand(((CraftEntity) entity).getHandle(), ((CraftEntity) entity).getHandle().position(), cmd);
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("add_xp"), (action, entity) -> {
 			int points = 0;
