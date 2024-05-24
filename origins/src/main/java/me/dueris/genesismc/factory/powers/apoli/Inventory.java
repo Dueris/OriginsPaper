@@ -174,19 +174,17 @@ public class Inventory extends PowerType implements KeyedPower {
 		if (e.getPower() instanceof Inventory inventoryPower && e.getPower().getTag().equalsIgnoreCase(getTag())) {
 			PowerType power = e.getPower();
 			Player p = e.getPlayer();
-			GenesisMC.scheduler.parent.onMain(() -> {
-				ArrayList<ItemStack> vaultItems = getItems(p, power.getTag());
-				for (ItemStack item : new ArrayList<>(vaultItems)) {
-					if (item != null && item.getType() != Material.AIR) {
-						if (inventoryPower.recoverable) {
-							p.getWorld().dropItemNaturally(p.getLocation(), item);
-						}
-						vaultItems.remove(item);
+			ArrayList<ItemStack> vaultItems = getItems(p, power.getTag());
+			for (ItemStack item : new ArrayList<>(vaultItems)) {
+				if (item != null && item.getType() != Material.AIR) {
+					if (inventoryPower.recoverable) {
+						p.getWorld().dropItemNaturally(p.getLocation(), item);
 					}
+					vaultItems.remove(item);
 				}
+			}
 
-				storeItems(new ArrayList<>(), p, power.getTag());
-			});
+			storeItems(new ArrayList<>(), p, power.getTag());
 		}
 	}
 

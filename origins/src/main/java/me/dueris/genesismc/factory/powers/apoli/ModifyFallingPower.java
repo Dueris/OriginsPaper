@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
@@ -16,7 +17,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 public class ModifyFallingPower extends PowerType implements Listener {
-	private final float velocity;
+	private final Float velocity;
 	private final boolean takeFallDamage;
 
 	public ModifyFallingPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, float velocity, boolean takeFallDamage) {
@@ -27,7 +28,7 @@ public class ModifyFallingPower extends PowerType implements Listener {
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("modify_falling"))
-			.add("velocity", float.class, new RequiredInstance())
+			.add("velocity", float.class, new OptionalInstance())
 			.add("take_fall_damage", boolean.class, true);
 	}
 
@@ -39,13 +40,15 @@ public class ModifyFallingPower extends PowerType implements Listener {
 			@NotNull Vector velocityVal = p.getVelocity();
 			if (isActive(p)) {
 				if (velocityVal.getY() > 0D) return;
-				if (velocity < 0.08) {
-					// This way is a lot smoother and also updates the client preventing weird glitches
-					p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
-				} else {
-					Vector veloc = e.getPlayer().getVelocity();
-					veloc.setY(veloc.getY() * (1 + velocity));
-					e.getPlayer().setVelocity(veloc);
+				if (velocity != null) {
+					if (velocity < 0.08) {
+						// This way is a lot smoother and also updates the client preventing weird glitches
+						p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
+					} else {
+						Vector veloc = e.getPlayer().getVelocity();
+						veloc.setY(veloc.getY() * (1 + velocity));
+						e.getPlayer().setVelocity(veloc);
+					}
 				}
 			}
 		}

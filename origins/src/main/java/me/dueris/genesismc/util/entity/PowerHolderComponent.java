@@ -234,7 +234,7 @@ public class PowerHolderComponent implements Listener {
 	}
 
 	public static ConcurrentLinkedQueue<PowerType> getPowersApplied(Player p) {
-		return powersAppliedList.get(p);
+		return powersAppliedList.getOrDefault(p, new ConcurrentLinkedQueue<>()); // Default returned if the player has 0 powers
 	}
 
 	/**

@@ -70,9 +70,10 @@ public class CraftCalio {
 						file = file.replace("/", "\\");
 						if ((file.startsWith("data\\")) && file.endsWith(".json")) {
 							String fixedJsonFile = file.substring(file.indexOf("data\\"));
-							String namespace = fixedJsonFile.split("\\\\")[1];
+							String[] parts = fixedJsonFile.split("\\\\");
+							String namespace = parts[1];
 							String name = fixedJsonFile.split("\\\\")[2].split("\\\\")[0];
-							String key = fixedJsonFile.split("\\\\")[fixedJsonFile.split("\\\\").length - 1].replace(".json", "");
+							String key = fixedJsonFile.substring(fixedJsonFile.indexOf(namespace) + namespace.length() + 1).replace(".json", "").replace("\\", "/").replace(name + "/", "");
 							if (accessorKey.getDirectory().equalsIgnoreCase(name)) {
 								try (InputStream is = fileReader.getFileStream(file.replace("\\", "/"));
 									 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
