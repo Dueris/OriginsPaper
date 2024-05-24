@@ -5,9 +5,9 @@ name: "GenesisMC"
 version: 'mc1.20-1.0.0'
 main: "me.dueris.genesismc.GenesisMC"
 api-version: "1.20"
-authors: [ Dueris, Tye ]
+authors: [ Dueris ]
 folia-supported: false
-description: "Bringing the life and fun of the Origins mod to PaperMC"
+description: "A port of the Origins mod to PaperMC servers with Custom Origins support"
 website: "https://ko-fi.com/dueris"
 dependencies:
   server:

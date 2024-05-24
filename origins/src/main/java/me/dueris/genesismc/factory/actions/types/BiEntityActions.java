@@ -7,7 +7,6 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
 import me.dueris.genesismc.factory.data.types.Space;
-import me.dueris.genesismc.factory.data.types.VectorGetter;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Util;
 import net.minecraft.util.Mth;
@@ -92,6 +91,36 @@ public class BiEntityActions {
 		GenesisMC.getPlugin().registry.retrieve(Registries.BIENTITY_ACTION).register(factory);
 	}
 
+	public enum Reference {
+
+		POSITION((actor, target) -> target.position().subtract(actor.position())),
+		ROTATION((actor, target) -> {
+
+			float pitch = actor.getBukkitEntity().getPitch();
+			float yaw = actor.getBukkitEntity().getYaw();
+
+			float i = 0.017453292F;
+
+			float j = -Mth.sin(yaw * i) * Mth.cos(pitch * i);
+			float k = -Mth.sin(pitch * i);
+			float l = Mth.cos(yaw * i) * Mth.cos(pitch * i);
+
+			return new Vec3(j, k, l);
+
+		});
+
+		final BiFunction<net.minecraft.world.entity.Entity, net.minecraft.world.entity.Entity, Vec3> refFunction;
+
+		Reference(BiFunction<net.minecraft.world.entity.Entity, net.minecraft.world.entity.Entity, Vec3> refFunction) {
+			this.refFunction = refFunction;
+		}
+
+		public Vec3 apply(net.minecraft.world.entity.Entity actor, net.minecraft.world.entity.Entity target) {
+			return refFunction.apply(actor, target);
+		}
+
+	}
+
 	public static class ActionFactory implements Registrable {
 		NamespacedKey key;
 		BiConsumer<FactoryJsonObject, Pair<CraftEntity, CraftEntity>> test;
@@ -126,34 +155,5 @@ public class BiEntityActions {
 		public NamespacedKey getKey() {
 			return key;
 		}
-	}
-
-	public enum Reference {
-
-		POSITION((actor, target) -> target.position().subtract(actor.position())),
-		ROTATION((actor, target) -> {
-
-			float pitch = actor.getBukkitEntity().getPitch();
-			float yaw = actor.getBukkitEntity().getYaw();
-
-			float i = 0.017453292F;
-
-			float j = -Mth.sin(yaw * i) * Mth.cos(pitch * i);
-			float k = -Mth.sin(pitch * i);
-			float l =  Mth.cos(yaw * i) * Mth.cos(pitch * i);
-
-			return new Vec3(j, k, l);
-
-		});
-
-		final BiFunction<net.minecraft.world.entity.Entity, net.minecraft.world.entity.Entity, Vec3> refFunction;
-		Reference(BiFunction<net.minecraft.world.entity.Entity, net.minecraft.world.entity.Entity, Vec3> refFunction) {
-			this.refFunction = refFunction;
-		}
-
-		public Vec3 apply(net.minecraft.world.entity.Entity actor, net.minecraft.world.entity.Entity target) {
-			return refFunction.apply(actor, target);
-		}
-
 	}
 }

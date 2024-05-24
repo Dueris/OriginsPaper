@@ -7,9 +7,7 @@ import me.dueris.genesismc.util.entity.PowerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -17,8 +15,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class ItemStackPowerHolder implements Listener {
 	private static final NamespacedKey key = GenesisMC.apoliIdentifier("stored_powers");
@@ -59,13 +55,18 @@ public class ItemStackPowerHolder implements Listener {
 		return getPowers(stack).size();
 	}
 
+	public static List<PowerType> getPowers(ItemStack stack) {
+		return getTags(stack).stream().map(CraftApoli::getPowerFromTag).toList();
+	}
+
+	private static void saveTags(PersistentDataContainer container, List<String> tags) {
+		String serializedTags = String.join(",", tags);
+		container.set(key, PersistentDataType.STRING, serializedTags);
+	}
+
 	public void addPlayerToTagCheck(Player player, String tag) {
 		playersWithTags.computeIfAbsent(tag, k -> new HashSet<>()).add(player);
 		updatePlayerTagStatus(player, tag);
-	}
-
-	public static List<PowerType> getPowers(ItemStack stack) {
-		return getTags(stack).stream().map(CraftApoli::getPowerFromTag).toList();
 	}
 
 	public void removePlayerFromTagCheck(Player player, String tag) {
@@ -73,11 +74,6 @@ public class ItemStackPowerHolder implements Listener {
 		if (players != null) {
 			players.remove(player);
 		}
-	}
-
-	private static void saveTags(PersistentDataContainer container, List<String> tags) {
-		String serializedTags = String.join(",", tags);
-		container.set(key, PersistentDataType.STRING, serializedTags);
 	}
 
 	/**
@@ -121,7 +117,7 @@ public class ItemStackPowerHolder implements Listener {
 	}
 
 	private boolean checkEquippedItems(Player player, String tag) {
-		ItemStack[] equipment = new ItemStack[] {
+		ItemStack[] equipment = new ItemStack[]{
 			player.getInventory().getItemInMainHand(),
 			player.getInventory().getItemInOffHand(),
 			player.getInventory().getHelmet(),

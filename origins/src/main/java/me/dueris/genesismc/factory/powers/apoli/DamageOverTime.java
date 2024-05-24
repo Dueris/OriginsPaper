@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
@@ -17,9 +16,6 @@ import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public class DamageOverTime extends PowerType {
 	private final int interval;

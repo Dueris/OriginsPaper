@@ -2,8 +2,6 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.calio.data.types.OptionalInstance;
-import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;

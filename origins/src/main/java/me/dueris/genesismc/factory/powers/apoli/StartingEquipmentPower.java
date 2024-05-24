@@ -38,7 +38,6 @@ public class StartingEquipmentPower extends PowerType {
 		if (getPlayers().contains(e.getPlayer()) && e.isNew()) {
 			if (isActive(e.getPlayer())) {
 				runGiveItems(e.getPlayer());
-			} else {
 			}
 		}
 	}

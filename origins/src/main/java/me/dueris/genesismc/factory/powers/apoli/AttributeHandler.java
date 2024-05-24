@@ -55,11 +55,32 @@ public class AttributeHandler extends PowerType {
 		if (!getPlayers().contains(p)) return;
 		for (Modifier modifier : modifiers) {
 			try {
-				Attribute attributeModifier = attribute == null ? DataConverter.resolveAttribute(modifier.handle.getString("attribute")) : DataConverter.resolveAttribute(attribute);
-				AttributeModifier m = DataConverter.convertToAttributeModifier(modifier);
-				if (p.getAttribute(attributeModifier) != null) {
-					p.getAttribute(attributeModifier).addTransientModifier(m);
+				String attrName = modifier.handle.getString("attribute");
+				double nmsValue;
+				Attribute attributeModifier;
+
+				switch (attrName.toLowerCase()) {
+					case "reach-entity-attributes:reach":
+						nmsValue = DataConverter.attributeToBlockReach(modifier.value());
+						attributeModifier = Attribute.PLAYER_BLOCK_INTERACTION_RANGE;
+						break;
+					case "reach-entity-attributes:attack_range":
+						nmsValue = DataConverter.attributeToEntityReach(modifier.value());
+						attributeModifier = Attribute.PLAYER_ENTITY_INTERACTION_RANGE;
+						break;
+					default:
+						attributeModifier = attribute == null ?
+							DataConverter.resolveAttribute(attrName) :
+							DataConverter.resolveAttribute(attribute);
+						nmsValue = modifier.value();
 				}
+
+				AttributeModifier attrModifier = new AttributeModifier("unnamed", nmsValue, DataConverter.convertToOperation(modifier));
+
+				if (p.getAttribute(attributeModifier) != null) {
+					p.getAttribute(attributeModifier).addTransientModifier(attrModifier);
+				}
+
 				AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attributeModifier, this, e.isAsynchronous());
 				Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
 			} catch (Exception ev) {

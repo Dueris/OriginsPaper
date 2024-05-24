@@ -826,13 +826,12 @@ public class Util {
 				throw new IllegalStateException("Couldn't read position of JsonReader", var2);
 			}
 		}
-
-		@SuppressWarnings("unchecked")
+		
 		public static <T> T parseJson(com.mojang.brigadier.StringReader stringReader, Codec<T> codec) {
 			JsonReader jsonReader = new JsonReader(new java.io.StringReader(stringReader.getRemaining()));
 			jsonReader.setLenient(true);
 
-			Object var4;
+			T var4;
 			try {
 				JsonElement jsonElement = Streams.parse(jsonReader);
 				var4 = getOrThrow(codec.parse(JsonOps.INSTANCE, jsonElement), JsonParseException::new);
@@ -842,7 +841,7 @@ public class Util {
 				stringReader.setCursor(stringReader.getCursor() + getPos(jsonReader));
 			}
 
-			return (T) var4;
+			return var4;
 		}
 
 		public static <T, E extends Throwable> T getOrThrow(DataResult<T> result, Function<String, E> exceptionGetter) throws E {
