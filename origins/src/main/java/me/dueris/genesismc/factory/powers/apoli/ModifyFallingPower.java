@@ -28,7 +28,7 @@ public class ModifyFallingPower extends PowerType implements Listener {
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("modify_falling"))
-			.add("velocity", float.class, new OptionalInstance())
+			.add("velocity", float.class, 0F)
 			.add("take_fall_damage", boolean.class, true);
 	}
 
@@ -40,7 +40,7 @@ public class ModifyFallingPower extends PowerType implements Listener {
 			@NotNull Vector velocityVal = p.getVelocity();
 			if (isActive(p)) {
 				if (velocityVal.getY() > 0D) return;
-				if (velocity != null) {
+				if (velocity != null && velocity != 0F) {
 					if (velocity < 0.08) {
 						// This way is a lot smoother and also updates the client preventing weird glitches
 						p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));

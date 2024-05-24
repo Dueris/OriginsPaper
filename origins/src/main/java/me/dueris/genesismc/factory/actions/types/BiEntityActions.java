@@ -6,28 +6,54 @@ import me.dueris.calio.registry.Registrable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
+import me.dueris.genesismc.factory.data.types.Space;
 import me.dueris.genesismc.factory.data.types.VectorGetter;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Util;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+import org.apache.commons.lang3.function.TriConsumer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
+import org.joml.Vector3f;
 
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 public class BiEntityActions {
 
 	public void register() {
 		register(new ActionFactory(GenesisMC.apoliIdentifier("add_velocity"), (action, entityPair) -> {
-			boolean set = action.isPresent("set") && action.getBoolean("set");
-			Vector vector = VectorGetter.getVector(action);
+			net.minecraft.world.entity.Entity actor = entityPair.left().getHandle();
+			net.minecraft.world.entity.Entity target = entityPair.right().getHandle();
 
-			if (set) entityPair.right().setVelocity(vector);
-			else entityPair.right().setVelocity(entityPair.right().getVelocity().add(vector));
+			if ((actor == null || target == null) || (target instanceof Player && (!action.getBooleanOrDefault("server", true)))) {
+				return;
+			}
+			float xVal = action.getNumberOrDefault("x", 0.0F).getFloat();
+			float yVal = action.getNumberOrDefault("y", 0.0F).getFloat();
+			float zVal = action.getNumberOrDefault("z", 0.0F).getFloat();
+
+			Vector3f vec = new Vector3f(xVal, yVal, zVal);
+			TriConsumer<Float, Float, Float> method = action.getBooleanOrDefault("set", false) ? (x, y, z) -> {
+				target.getBukkitEntity().setVelocity(new Vector(x, y, z));
+			} : (x, y, z) -> {
+				target.getBukkitEntity().setVelocity(target.getBukkitEntity().getVelocity().add(new Vector(x, y, z)));
+			};
+
+			Reference reference = action.getEnumValueOrDefault("reference", Reference.class, Reference.POSITION);
+			Vec3 refVec = reference.apply(actor, target);
+
+			Space.transformVectorToBase(refVec, vec, actor.getBukkitEntity().getYaw(), true); // vector normalized by method
+			method.accept(vec.x, vec.y, vec.z);
+
+			target.hurtMarked = true;
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("remove_from_entity_set"), (action, entityPair) -> {
 			RemoveFromSetEvent ev = new RemoveFromSetEvent(entityPair.right(), action.getString("set"));
@@ -100,5 +126,34 @@ public class BiEntityActions {
 		public NamespacedKey getKey() {
 			return key;
 		}
+	}
+
+	public enum Reference {
+
+		POSITION((actor, target) -> target.position().subtract(actor.position())),
+		ROTATION((actor, target) -> {
+
+			float pitch = actor.getBukkitEntity().getPitch();
+			float yaw = actor.getBukkitEntity().getYaw();
+
+			float i = 0.017453292F;
+
+			float j = -Mth.sin(yaw * i) * Mth.cos(pitch * i);
+			float k = -Mth.sin(pitch * i);
+			float l =  Mth.cos(yaw * i) * Mth.cos(pitch * i);
+
+			return new Vec3(j, k, l);
+
+		});
+
+		final BiFunction<net.minecraft.world.entity.Entity, net.minecraft.world.entity.Entity, Vec3> refFunction;
+		Reference(BiFunction<net.minecraft.world.entity.Entity, net.minecraft.world.entity.Entity, Vec3> refFunction) {
+			this.refFunction = refFunction;
+		}
+
+		public Vec3 apply(net.minecraft.world.entity.Entity actor, net.minecraft.world.entity.Entity target) {
+			return refFunction.apply(actor, target);
+		}
+
 	}
 }

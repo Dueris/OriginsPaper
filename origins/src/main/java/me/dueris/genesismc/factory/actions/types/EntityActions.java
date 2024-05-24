@@ -171,7 +171,23 @@ public class EntityActions {
 			if (entity instanceof Player p) {
 				PowerType powerContainer = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(action.getNamespacedKey("power"));
 				if (powerContainer != null) {
-					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("action")));
+					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("power")));
+				}
+			}
+		}));
+		register(new ActionFactory(GenesisMC.apoliIdentifier("grant_power"), (action, entity) -> {
+			if (entity instanceof Player p) {
+				PowerType powerContainer = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(action.getNamespacedKey("power"));
+				if (powerContainer != null) {
+					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power grant {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("power")));
+				}
+			}
+		}));
+		register(new ActionFactory(GenesisMC.apoliIdentifier("revoke_power"), (action, entity) -> {
+			if (entity instanceof Player p) {
+				PowerType powerContainer = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(action.getNamespacedKey("power"));
+				if (powerContainer != null) {
+					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power revoke {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("power")));
 				}
 			}
 		}));

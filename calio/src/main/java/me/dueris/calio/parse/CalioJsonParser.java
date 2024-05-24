@@ -62,10 +62,11 @@ public class CalioJsonParser {
 			CraftCalio.INSTANCE.getLogger().severe(
 				"An unhandled exception was thrown when attempting to create new Registerable!");
 			CraftCalio.INSTANCE.getLogger().severe(
-				"Registry: {a} | Associated Namespace: {b} | Throwable: {c}"
+				"Registry: {a} | Associated Namespace: {b} | Type: {c} | Throwable: {d}"
 					.replace("{a}", accessorKey.getOfType().getSimpleName())
 					.replace("{b}", key.asString())
-					.replace("{c}", throwable.getMessage() == null ? "Null Message" : throwable.getMessage()) + stacktrace[0]
+					.replace("{c}", accessorKey.usesTypeDefiner() ? pair.getFirst().get("type").getAsString() : "No Type")
+					.replace("{d}", throwable.getMessage() == null ? "Null Message" : throwable.getMessage()) + stacktrace[0]
 			);
 		}
 		return null;

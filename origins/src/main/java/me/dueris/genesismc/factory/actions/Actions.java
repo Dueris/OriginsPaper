@@ -101,7 +101,7 @@ public class Actions {
 	}
 
 	public static void executeBiEntity(Entity actor, Entity target, FactoryJsonObject action) {
-		if (!action.isPresent("type") || action.isEmpty()) return;
+		if (!action.isPresent("type") || action.isEmpty() || target == actor) return;
 		String type = action.getString("type");
 		Pair<Entity, Entity> entityPair = new Pair<>() {
 			@Override

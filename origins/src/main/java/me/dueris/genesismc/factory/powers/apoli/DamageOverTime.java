@@ -27,11 +27,11 @@ public class DamageOverTime extends PowerType {
 	private final float damageEasy;
 	private final String damageType;
 
-	public DamageOverTime(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int interval, float damage, @Nullable float damageEasy, String damageType) {
+	public DamageOverTime(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int interval, float damage, float damageEasy, String damageType) {
 		super(name, description, hidden, condition, loading_priority);
 		this.interval = interval;
 		this.damage = damage;
-		this.damageEasy = Objects.isNull(damageEasy) ? damage : damageEasy;
+		this.damageEasy = damageEasy == -1F ? damage : damageEasy;
 		this.damageType = damageType;
 	}
 
@@ -39,7 +39,7 @@ public class DamageOverTime extends PowerType {
 		return PowerType.registerComponents(data).ofNamespace(GenesisMC.apoliIdentifier("damage_over_time"))
 			.add("interval", int.class, 20)
 			.add("damage", float.class, new RequiredInstance())
-			.add("damage_easy", float.class, new OptionalInstance())
+			.add("damage_easy", float.class, -1F)
 			.add("damage_type", String.class, "apoli:damage_over_time");
 	}
 
