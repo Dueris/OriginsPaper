@@ -25,11 +25,26 @@
   "food": {
     "type": "origins:prevent_item_use",
     "item_condition": {
-      "type": "origins:ingredient",
-      "ingredient": {
-        "tag": "origins:allow_bee_eat"
-      },
-      "inverted": true
+      "type": "origins:and",
+      "conditions": [
+        {
+          "type": "origins:ingredient",
+          "ingredient": {
+            "tag": "origins:allow_bee_eat"
+          },
+          "inverted": true
+        },
+        {
+          "type": "origins:food"
+        },
+        {
+          "type": "origins:ingredient",
+          "ingredient": {
+            "tag": "origins:ignore_diet"
+          },
+          "inverted": true
+        }
+      ]
     }
   },
   "name": "Bloom",
