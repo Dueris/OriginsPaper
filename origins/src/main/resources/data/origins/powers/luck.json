@@ -2,18 +2,21 @@
   "type": "origins:stacking_status_effect",
   "min_stacks": 0,
   "max_stacks": 1,
-  "duration_per_stack": 10,
-  "duration_per_stack": 10,
+  "duration_per_stack": 40,
   "effects": [
     {
       "effect": "minecraft:luck",
       "amplifier": 2,
-      "duration": 10
+      "duration": 40,
+      "is_ambient": false,
+      "show_particles": false
     },
     {
       "effect": "minecraft:hero_of_the_village",
       "amplifier": 1,
-      "duration": 10
+      "duration": 40,
+      "is_ambient": false,
+      "show_particles": false
     }
   ],
   "name": "Treasure Finder",

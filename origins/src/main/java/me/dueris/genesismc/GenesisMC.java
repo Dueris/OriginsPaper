@@ -295,9 +295,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 				GenesisMC.scheduler.tickAsyncScheduler();
 			}
 		}.runTaskTimerAsynchronously(GenesisMC.getPlugin(), 0, 1);
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			player.kick(Component.text("Origins is reloading! All players are kicked to ensure the server doesnt crash."));
-		}
 		WaterProtBook.init();
 		start();
 		patchPowers();
@@ -355,6 +352,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new AsyncUpgradeTracker(), this);
 		getServer().getPluginManager().registerEvents(new PowerHolderComponent(), this);
 		getServer().getPluginManager().registerEvents(new CraftPehuki(), this);
+		getServer().getPluginManager().registerEvents(new ItemStackPowerHolder().startTicking(), this);
 		this.registry.retrieve(Registries.CRAFT_POWER).values().forEach(powerType -> {
 			if (powerType != null) {
 				getServer().getPluginManager().registerEvents(powerType, this);
