@@ -107,14 +107,14 @@ public class Util {
 		int duration = 100;
 		int amplifier = 0;
 		boolean isAmbient = false;
-		boolean showParticles = true;
+		boolean showParticles = false;
 		boolean showIcon = true;
 
 		if (effect.isPresent("effect")) potionEffect = effect.getString("effect");
 		if (effect.isPresent("duration")) duration = effect.getNumber("duration").getInt();
 		if (effect.isPresent("amplifier")) amplifier = effect.getNumber("amplifier").getInt();
 		if (effect.isPresent("is_ambient")) isAmbient = effect.getBooleanOrDefault("is_ambient", true);
-		if (effect.isPresent("show_particles")) effect.getBooleanOrDefault("show_particles", false);
+		if (effect.isPresent("show_particles")) showParticles = effect.getBooleanOrDefault("show_particles", false);
 		if (effect.isPresent("show_icon")) showIcon = effect.getBooleanOrDefault("show_icon", false);
 
 		return new PotionEffect(PotionEffectType.getByKey(NamespacedKey.fromString(potionEffect)), duration, amplifier, isAmbient, showParticles, showIcon);
@@ -826,7 +826,7 @@ public class Util {
 				throw new IllegalStateException("Couldn't read position of JsonReader", var2);
 			}
 		}
-		
+
 		public static <T> T parseJson(com.mojang.brigadier.StringReader stringReader, Codec<T> codec) {
 			JsonReader jsonReader = new JsonReader(new java.io.StringReader(stringReader.getRemaining()));
 			jsonReader.setLenient(true);
