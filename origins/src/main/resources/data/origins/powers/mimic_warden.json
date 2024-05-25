@@ -20,30 +20,34 @@
     "command_along_ray": "function genesis:boom_command_step",
     "entity": true,
     "block": true,
+    "bientity_action": {
+      "type": "origins:and",
+      "actions": [
+        {
+          "type": "origins:target_action",
+          "action": {
+            "type": "origins:apply_effect",
+            "effect": {
+              "effect": "minecraft:darkness",
+              "duration": 100,
+              "amplifier": 2,
+              "is_ambient": false,
+              "show_particles": false
+            }
+          }
+        },
+        {
+          "type": "origins:add_velocity",
+          "z": 2.8
+        }
+      ]
+    },
     "before_action": {
       "type": "origins:and",
       "actions": [
         {
           "type": "origins:execute_command",
           "command": "playsound minecraft:entity.warden.sonic_boom master @s ~ ~ ~ 1 1"
-        },
-        {
-          "type": "origins:area_of_effect",
-          "radius": 8,
-          "shape": "sphere",
-          "bientity_action": {
-            "type": "origins:target_action",
-            "action": {
-              "type": "origins:apply_effect",
-              "effect": {
-                "effect": "minecraft:darkness",
-                "duration": 60,
-                "amplifier": 2,
-                "is_ambient": false,
-                "show_particles": false
-              }
-            }
-          }
         }
       ]
     }

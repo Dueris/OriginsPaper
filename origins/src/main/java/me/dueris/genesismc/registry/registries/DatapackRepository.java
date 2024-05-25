@@ -17,7 +17,7 @@ public class DatapackRepository implements Registrable {
 	}
 
 	@Override
-	public NamespacedKey getKey() {
+	public NamespacedKey key() {
 		return this.key;
 	}
 

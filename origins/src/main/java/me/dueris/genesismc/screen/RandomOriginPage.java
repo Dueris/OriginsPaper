@@ -101,7 +101,7 @@ public class RandomOriginPage implements ChoosingPage {
 	}
 
 	@Override
-	public NamespacedKey getKey() {
+	public NamespacedKey key() {
 		return GenesisMC.originIdentifier("random_page");
 	}
 }

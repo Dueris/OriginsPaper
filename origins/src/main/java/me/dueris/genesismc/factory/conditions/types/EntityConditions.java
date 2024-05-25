@@ -781,7 +781,7 @@ public class EntityConditions {
 		}
 
 		@Override
-		public NamespacedKey getKey() {
+		public NamespacedKey key() {
 			return key;
 		}
 	}

@@ -240,7 +240,7 @@ public class Resource extends PowerType implements ResourcePower {
 					.get(DataConverter.resolveTextureLocationNamespace(NamespacedKey.fromString(element.spriteLocation())));
 				if (loc == null) return BarColor.WHITE;
 				long index = (element.barIndex()) + 1;
-				BarColor color = textureMap.get(loc.getKey().asString() + "/-/" + index);
+				BarColor color = textureMap.get(loc.key().asString() + "/-/" + index);
 				return color != null ? color : BarColor.WHITE;
 			}
 			return BarColor.WHITE;

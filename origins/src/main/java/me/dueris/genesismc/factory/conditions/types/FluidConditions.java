@@ -41,7 +41,7 @@ public class FluidConditions {
 		}
 
 		@Override
-		public NamespacedKey getKey() {
+		public NamespacedKey key() {
 			return key;
 		}
 	}

@@ -250,10 +250,10 @@ public class PowerHolderComponent implements Listener {
 		List<NamespacedKey> keys = new ArrayList<>();
 		List<PowerType> duplicates = new ArrayList<>();
 		for (PowerType power : getPowersApplied(p)) {
-			if (keys.contains(power.getKey())) {
+			if (keys.contains(power.key())) {
 				duplicates.add(power);
 			} else {
-				keys.add(power.getKey());
+				keys.add(power.key());
 			}
 		}
 		duplicates.forEach(power -> getPowersApplied(p).remove(power));
@@ -269,7 +269,7 @@ public class PowerHolderComponent implements Listener {
 
 	public static void applyPower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
-		NamespacedKey registryKey = power.getKey();
+		NamespacedKey registryKey = power.key();
 		PowerType c = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(registryKey);
 		if (c != null) {
 			c.forPlayer(player);
@@ -292,7 +292,7 @@ public class PowerHolderComponent implements Listener {
 
 	public static void removePower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
-		NamespacedKey registryKey = power.getKey();
+		NamespacedKey registryKey = power.key();
 		PowerType c = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(registryKey);
 		if (c != null) {
 			powersAppliedList.get(player).remove(c);

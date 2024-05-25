@@ -44,8 +44,8 @@ public class Registrar<T extends Registrable> {
 	 */
 	public void registerOrThrow(T item) {
 		checkFrozen();
-		Preconditions.checkArgument(item.getKey() != null, "Registrable key cannot be null");
-		this.rawRegistry.put(item.getKey(), item);
+		Preconditions.checkArgument(item.key() != null, "Registrable key cannot be null");
+		this.rawRegistry.put(item.key(), item);
 	}
 
 	/**

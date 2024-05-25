@@ -77,7 +77,7 @@ public class Layer implements FactoryHolder {
 			.add("allow_random", boolean.class, true)
 			.add("allow_random_unchoosable", boolean.class, false)
 			.add("exclude_random", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()))
-			.add("default_origin", NamespacedKey.class, CraftApoli.emptyOrigin().getKey())
+			.add("default_origin", NamespacedKey.class, CraftApoli.emptyOrigin().key())
 			.add("auto_choose", boolean.class, false)
 			.add("hidden", boolean.class, false)
 			.add("loading_priority", int.class, 0);
@@ -93,7 +93,7 @@ public class Layer implements FactoryHolder {
 	}
 
 	@Override
-	public NamespacedKey getKey() {
+	public NamespacedKey key() {
 		return this.tag;
 	}
 

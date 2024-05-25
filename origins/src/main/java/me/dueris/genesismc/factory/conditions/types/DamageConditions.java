@@ -86,7 +86,7 @@ public class DamageConditions {
 		}
 
 		@Override
-		public NamespacedKey getKey() {
+		public NamespacedKey key() {
 			return key;
 		}
 	}

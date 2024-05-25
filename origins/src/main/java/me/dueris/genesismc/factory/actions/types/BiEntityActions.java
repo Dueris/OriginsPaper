@@ -152,7 +152,7 @@ public class BiEntityActions {
 		}
 
 		@Override
-		public NamespacedKey getKey() {
+		public NamespacedKey key() {
 			return key;
 		}
 	}

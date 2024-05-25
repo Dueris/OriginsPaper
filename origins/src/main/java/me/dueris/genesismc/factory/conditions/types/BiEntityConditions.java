@@ -147,7 +147,7 @@ public class BiEntityConditions implements Listener {
 		}
 
 		@Override
-		public NamespacedKey getKey() {
+		public NamespacedKey key() {
 			return key;
 		}
 	}

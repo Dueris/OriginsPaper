@@ -152,7 +152,7 @@ public class PowerType implements FactoryHolder, Listener {
 	}
 
 	@Override
-	public NamespacedKey getKey() {
+	public NamespacedKey key() {
 		return this.tag;
 	}
 }

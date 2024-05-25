@@ -44,7 +44,7 @@ public class Multiple extends PowerType {
 		getSource().keySet().forEach(k -> {
 			if (getSource().get(k).isJsonObject()) {
 				PowerType type = (PowerType) CalioJsonParser.initilize(
-					new Pair<>(getSource().get(k).getAsJsonObject(), NamespacedKey.fromString(this.getKey().asString() + "_" + k.toLowerCase())),
+					new Pair<>(getSource().get(k).getAsJsonObject(), NamespacedKey.fromString(this.key().asString() + "_" + k.toLowerCase())),
 					new AccessorKey("powers", this.getLoadingPriority(), true, Registries.CRAFT_POWER, PowerType.class)
 				);
 				if (type != null) {

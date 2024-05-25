@@ -9,5 +9,5 @@ public interface Registrable {
 	 *
 	 * @return the namespaced key
 	 */
-	NamespacedKey getKey();
+	NamespacedKey key();
 }

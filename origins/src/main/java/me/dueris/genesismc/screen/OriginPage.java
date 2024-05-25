@@ -88,8 +88,8 @@ public class OriginPage implements ChoosingPage {
 	}
 
 	@Override
-	public NamespacedKey getKey() {
-		return NamespacedKey.fromString(this.origin.getKey().asString() + "_page");
+	public NamespacedKey key() {
+		return NamespacedKey.fromString(this.origin.key().asString() + "_page");
 	}
 
 	@Override

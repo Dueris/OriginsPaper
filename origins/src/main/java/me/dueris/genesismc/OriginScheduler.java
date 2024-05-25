@@ -13,21 +13,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class OriginScheduler {
 	final Plugin plugin;
 	private final ConcurrentLinkedQueue<Runnable> mainThreadCalls = new ConcurrentLinkedQueue<>();
 
-	public void scheduleMainThreadCall(Runnable run){
-		mainThreadCalls.add(run);
-	}
-
 	public OriginScheduler(Plugin plugin) {
 		this.plugin = plugin;
+	}
+
+	public void scheduleMainThreadCall(Runnable run) {
+		mainThreadCalls.add(run);
 	}
 
 	public static class MainTickerThread extends BukkitRunnable implements Listener {
@@ -57,7 +55,7 @@ public class OriginScheduler {
 						Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
 						GenesisMC.getPlugin().getLogger().severe("An unhandled exception occurred when ticking a Power! [{a}]".replace("{a}", throwable.getClass().getSimpleName()));
 						String t = power.getType();
-						if (t == null) t = power.getKey().asString();
+						if (t == null) t = power.key().asString();
 						GenesisMC.getPlugin().getLogger().severe(
 							"Player: {a} | Power: {b} | CraftPower: {c} | Throwable: {d}"
 								.replace("{a}", p.getName())

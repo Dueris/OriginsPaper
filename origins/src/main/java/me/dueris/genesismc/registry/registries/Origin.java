@@ -148,7 +148,7 @@ public class Origin implements FactoryHolder {
 	}
 
 	@Override
-	public NamespacedKey getKey() {
+	public NamespacedKey key() {
 		return this.tag;
 	}
 }
