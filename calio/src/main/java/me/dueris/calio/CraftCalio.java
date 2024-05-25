@@ -152,11 +152,15 @@ public class CraftCalio {
 		}
 	}
 
+	public <T extends Registrable> void registerAccessor(String directory, int priority, boolean useTypeDefiner, Class<? extends FactoryHolder> typeOf, RegistryKey<T> registryKey, String defaultType) {
+		keys.add(new AccessorKey(directory, priority, useTypeDefiner, registryKey, typeOf, defaultType));
+	}
+
 	public <T extends Registrable> void registerAccessor(String directory, int priority, boolean useTypeDefiner, Class<? extends FactoryHolder> typeOf, RegistryKey<T> registryKey) {
-		keys.add(new AccessorKey(directory, priority, useTypeDefiner, registryKey, typeOf));
+		keys.add(new AccessorKey(directory, priority, useTypeDefiner, registryKey, typeOf, null));
 	}
 
 	public <T extends Registrable> void registerAccessor(String directory, int priority, boolean useTypeDefiner, RegistryKey<T> registryKey) {
-		keys.add(new AccessorKey(directory, priority, useTypeDefiner, registryKey, null));
+		keys.add(new AccessorKey(directory, priority, useTypeDefiner, registryKey, null, null));
 	}
 }

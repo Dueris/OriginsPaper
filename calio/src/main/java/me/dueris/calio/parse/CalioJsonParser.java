@@ -21,15 +21,16 @@ public class CalioJsonParser {
 			FactoryData data;
 			Class<? extends FactoryHolder> holder;
 			if (accessorKey.usesTypeDefiner()) {
-				if (!CraftCalio.INSTANCE.types.containsKey(NamespacedKey.fromString(pair.getFirst().get("type").getAsString()))) {
+				String type = pair.getFirst().has("type") ? pair.getFirst().get("type").getAsString() : accessorKey.getDefaultType();
+				if (!CraftCalio.INSTANCE.types.containsKey(NamespacedKey.fromString(type))) {
 					CraftCalio.INSTANCE.getLogger().severe("Unknown type was provided! : {a} | {b}"
 						.replace("{a}", NamespacedKey.fromString(pair.getFirst().get("type").getAsString()).asString())
 						.replace("{b}", key.asString())
 					);
 					return null;
 				} else {
-					data = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(pair.getFirst().get("type").getAsString())).getFirst();
-					holder = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(pair.getFirst().get("type").getAsString())).getSecond();
+					data = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(type)).getFirst();
+					holder = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(type)).getSecond();
 				}
 			} else {
 				// We gotta invoke the FactoryData manually

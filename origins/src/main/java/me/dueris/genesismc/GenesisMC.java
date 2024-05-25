@@ -255,7 +255,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			calio.registerAccessor(
 				"powers", 0,
 				true, PowerType.class,
-				Registries.CRAFT_POWER
+				Registries.CRAFT_POWER, "apoli:simple"
 			);
 			calio.registerAccessor(
 				"origins", 1,

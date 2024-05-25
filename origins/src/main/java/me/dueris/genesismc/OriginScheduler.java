@@ -13,11 +13,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class OriginScheduler {
 	final Plugin plugin;
+	private final ConcurrentLinkedQueue<Runnable> mainThreadCalls = new ConcurrentLinkedQueue<>();
+
+	public void scheduleMainThreadCall(Runnable run){
+		mainThreadCalls.add(run);
+	}
 
 	public OriginScheduler(Plugin plugin) {
 		this.plugin = plugin;
@@ -34,6 +41,8 @@ public class OriginScheduler {
 
 		@Override
 		public void run() {
+			this.parent.mainThreadCalls.forEach(Runnable::run);
+			this.parent.mainThreadCalls.clear();
 			for (PowerType power : CraftApoli.getPowersFromRegistry()) {
 				power.tick(); // Allow powers to add their own BukkitRunnables
 				if (!power.hasPlayers()) continue;

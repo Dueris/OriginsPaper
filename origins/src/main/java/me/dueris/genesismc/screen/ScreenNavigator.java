@@ -93,7 +93,7 @@ public class ScreenNavigator implements Listener {
 		);
 
 		gui.setContents(layerPages.get(layer).get(currentDisplayingPage.getInt(player)).createDisplay(player, layer));
-		player.getBukkitEntity().openInventory(gui);
+		GenesisMC.scheduler.parent.scheduleMainThreadCall(() -> player.getBukkitEntity().openInventory(gui));
 	}
 
 	public static void open(org.bukkit.entity.Player player, Layer layer, boolean inOrbChoosing) {
