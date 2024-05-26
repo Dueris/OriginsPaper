@@ -49,11 +49,8 @@ public class ModifyDamageTakenPower extends ModifierPower implements Listener {
 		if (e.isCancelled()) return;
 		if (e.getEntity() instanceof Player p && getPlayers().contains(p)) {
 			try {
-				if (!isActive(p)) return;
-				if (e instanceof EntityDamageByEntityEvent ev) {
-					if (!ConditionExecutor.testBiEntity(bientityCondition, (CraftEntity) ev.getDamager(), (CraftEntity) p))
-						return;
-				}
+				if (!isActive(p) || e instanceof EntityDamageByEntityEvent ev && !ConditionExecutor.testBiEntity(bientityCondition, (CraftEntity) ev.getDamager(), (CraftEntity) p))
+					return;
 				if (!ConditionExecutor.testDamage(damageCondition, e)) return;
 				for (Modifier modifier : getModifiers()) {
 					float value = modifier.value();
