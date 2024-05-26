@@ -43,7 +43,8 @@ public class OriginPage implements ChoosingPage {
 		p.getBukkitEntity().getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0);
 		p.getBukkitEntity().getAttribute(Attribute.GENERIC_LUCK).setBaseValue(0);
 		p.getBukkitEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-		p.getBukkitEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.10000000149011612F);
+		p.getBukkitEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(p.getBukkitEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getDefaultValue());
+		p.getBukkitEntity().getAttribute(Attribute.GENERIC_GRAVITY).setBaseValue(p.getBukkitEntity().getAttribute(Attribute.GENERIC_GRAVITY).getDefaultValue());
 	}
 
 	public static ItemStack itemProperties(ItemStack item, Component displayName, ItemFlag[] itemFlag, Enchantment enchantment, String lore) {
