@@ -276,10 +276,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		}
 
 		debug(Component.text("  - Loaded @1 powers".replace("@1", String.valueOf(this.registry.retrieve(Registries.CRAFT_POWER).registrySize()))));
-		debug(Component.text("  - Loaded @4 layers".replace("@4", String.valueOf(this.registry.retrieve(Registries.LAYER).registrySize()))));
-		debug(Component.text("  - Loaded @2 origins = [".replace("@2", String.valueOf(this.registry.retrieve(Registries.ORIGIN).registrySize()))));
-		this.registry.retrieve(Registries.ORIGIN).forEach((u, o) -> debug(Component.text("     () -> {@3}".replace("@3", o.getTag()))));
-		debug(Component.text("  ]"));
+		debug(Component.text("  - Loaded @2 layers".replace("@2", String.valueOf(this.registry.retrieve(Registries.LAYER).registrySize()))));
+		debug(Component.text("  - Loaded @3 origins".replace("@3", String.valueOf(this.registry.retrieve(Registries.ORIGIN).registrySize()))));
 		try {
 			NBTFixerUpper.runFixerUpper();
 		} catch (Throwable e) {
