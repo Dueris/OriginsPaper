@@ -55,6 +55,18 @@ public class FactoryData {
 		return this;
 	}
 
+	public FactoryData remove(String objName) {
+		FactoryDataDefiner toRemove = null;
+		for (FactoryDataDefiner provider : this.providers) {
+			if (provider.getObjName().equalsIgnoreCase(objName)) {
+				toRemove = provider;
+				break;
+			}
+		}
+		if (toRemove != null) this.providers.remove(toRemove);
+		return this;
+	}
+
 	public FactoryData ofNamespace(NamespacedKey identifier) {
 		this.identifier = identifier;
 		return this;

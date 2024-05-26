@@ -27,6 +27,7 @@ import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerLoadEvent;
@@ -109,11 +110,11 @@ public class Resource extends PowerType implements ResourcePower {
 		return bossBar;
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void preLoad(ServerLoadEvent e) {
 		// We preload the bars and then display a clone of them to each player
 		GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).values().stream()
-			.filter(p -> p.getType().equalsIgnoreCase(getType())).forEach(power -> {
+			.filter(p -> (p.getType().equalsIgnoreCase(getType()))).forEach(power -> {
 				Bar bar = new Bar((Resource) power, null);
 				serverLoadedBars.put(power.getTag(), bar);
 			});

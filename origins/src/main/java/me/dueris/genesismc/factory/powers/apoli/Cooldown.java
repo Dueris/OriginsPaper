@@ -7,16 +7,22 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.data.types.HudRender;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
+import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.server.ServerLoadEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static me.dueris.genesismc.factory.powers.apoli.Resource.serverLoadedBars;
 
 public class Cooldown extends PowerType {
 	private static final ConcurrentHashMap<NamespacedKey, Double> incrementGetter = new ConcurrentHashMap<>();
@@ -66,6 +72,14 @@ public class Cooldown extends PowerType {
 			if (pair.right().getTag().equalsIgnoreCase(power.getTag())) return true;
 		}
 		return false;
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void preLoad(ServerLoadEvent e) {
+		GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).values().stream()
+			.filter(p -> (p.getType().equalsIgnoreCase(getType()))).forEach(power -> {
+				serverLoadedBars.put(power.getTag(), null);
+			});
 	}
 
 	@Override

@@ -330,7 +330,10 @@ public class EntityConditions {
 			if (bar.isPresent()) {
 				return bar.get().meetsComparison(Comparison.fromString(condition.getString("comparison")), condition.getNumber("compare_to").getInt());
 			}
-			return false;
+			// We do a manual check of this as a backup for when people check for a non-functioning/displaying resource
+			// By checking the serverloaded bars(after we define that its not displayed) and seeing if the origin wants to check
+			// if its value is 0, then it would be true in apoli.
+			return Resource.serverLoadedBars.containsKey(condition.getString("resource")) && condition.getString("comparison").equalsIgnoreCase("==") && condition.getNumber("compare_to").getInt() == 0;
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("fall_flying"), (condition, entity) -> entity instanceof LivingEntity le && (((CraftLivingEntity) le).getHandle().isFallFlying() || le.isGliding())));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("submerged_in"), (condition, entity) -> {

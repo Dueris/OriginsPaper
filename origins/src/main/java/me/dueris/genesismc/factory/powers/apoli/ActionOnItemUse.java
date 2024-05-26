@@ -33,8 +33,8 @@ public class ActionOnItemUse extends PowerType {
 	@EventHandler
 	public void entityRightClick(PlayerInteractEvent e) {
 		Player player = e.getPlayer();
-		if (!getPlayers().contains(player) || !e.getAction().isRightClick() || !isActive(player) || e.getItem() == null)
-			return;
+		if (!getPlayers().contains(player) || !e.getAction().isRightClick() || e.getItem() == null) return;
+		if (!isActive(player)) return;
 		if (!ConditionExecutor.testItem(itemCondition, e.getItem())) return;
 		Actions.executeItem(e.getItem(), itemAction);
 		Actions.executeEntity(player, entityAction);
