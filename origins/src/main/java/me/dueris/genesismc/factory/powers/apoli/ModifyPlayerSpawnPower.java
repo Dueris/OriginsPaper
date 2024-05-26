@@ -9,6 +9,7 @@ import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
+import net.kyori.adventure.text.Component;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -32,10 +33,15 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -45,6 +51,8 @@ public class ModifyPlayerSpawnPower extends PowerType {
 	private final @Nullable ResourceLocation structure;
 	private final SpawnStrategy spawnStrategy;
 	private final float dimensionDistanceMultiplier;
+	private static final ArrayList<Player> suspended = new ArrayList<>();
+	private static final PotionEffect suspendedEffect = new PotionEffect(PotionEffectType.SLOWNESS, 5, 255, false, false, false);
 
 	public ModifyPlayerSpawnPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, NamespacedKey dimension, ResourceLocation biome, ResourceLocation structure, SpawnStrategy spawnStrategy, float dimensionDistanceMultiplier) {
 		super(name, description, hidden, condition, loading_priority);
@@ -62,6 +70,26 @@ public class ModifyPlayerSpawnPower extends PowerType {
 			.add("structure", ResourceLocation.class, new OptionalInstance())
 			.add("spawn_strategy", SpawnStrategy.class, SpawnStrategy.DEFAULT)
 			.add("dimension_distance_multiplier", float.class, 0.125F);
+	}
+
+	public static void suspendPlayer(Player player) {
+		suspended.add(player);
+		final int[] suspensionTime = {0};
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (suspended.contains(player)) {
+					suspensionTime[0]++;
+					player.sendActionBar(Component.text("Preparing modified spawn location..."));
+					player.addPotionEffect(suspendedEffect);
+					player.setInvulnerable(true);
+				} else {
+					player.setInvulnerable(false);
+					player.sendActionBar(Component.text("Modified spawn location finished in {} ticks".replace("{}", String.valueOf(suspensionTime[0]))));
+					cancel();
+				}
+			}
+		}.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
 	}
 
 	@EventHandler
@@ -84,6 +112,7 @@ public class ModifyPlayerSpawnPower extends PowerType {
 			e.getPlayer().teleport(e.getPlayer().getBedSpawnLocation());
 		} else {
 			this.teleportToModifiedSpawn(((CraftPlayer) e.getPlayer()).getHandle());
+			suspended.remove(e.getPlayer());
 		}
 	}
 

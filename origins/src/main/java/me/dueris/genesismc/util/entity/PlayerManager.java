@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PlayerManager implements Listener {
-
+	public static ArrayList<Player> firstJoin = new ArrayList<>();
 	public static ArrayList<Player> playersLeaving = new ArrayList<>();
 
 	public static void originValidCheck(Player p) {
@@ -75,6 +75,7 @@ public class PlayerManager implements Listener {
 			HashMap<Layer, Origin> origins = new HashMap<>();
 			for (Layer layer : CraftApoli.getLayersFromRegistry()) origins.put(layer, CraftApoli.emptyOrigin());
 			p.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(origins));
+			firstJoin.add(p);
 		}
 
 		// ---  translation system ---

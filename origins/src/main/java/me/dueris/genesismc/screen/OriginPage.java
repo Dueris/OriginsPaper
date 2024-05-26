@@ -1,9 +1,13 @@
 package me.dueris.genesismc.screen;
 
+import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.apoli.ModifyPlayerSpawnPower;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.util.ComponentUtil;
+import me.dueris.genesismc.util.entity.PlayerManager;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -18,6 +22,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -173,5 +178,19 @@ public class OriginPage implements ChoosingPage {
 	public void onChoose(Player player, Layer layer) {
 		PowerHolderComponent.setOrigin((org.bukkit.entity.Player) player.getBukkitEntity(), layer, this.origin);
 		player.getBukkitEntity().getOpenInventory().close();
+		org.bukkit.entity.Player bukkitEntity = (org.bukkit.entity.Player) player.getBukkitEntity();
+
+		if (PlayerManager.firstJoin.contains(bukkitEntity)) {
+			ModifyPlayerSpawnPower.suspendPlayer(bukkitEntity);
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					for (ModifyPlayerSpawnPower power : PowerHolderComponent.getPowers(bukkitEntity, ModifyPlayerSpawnPower.class)) {
+						power.runD(new PlayerPostRespawnEvent(bukkitEntity, bukkitEntity.getLocation(), false));
+					}
+					PlayerManager.firstJoin.remove(bukkitEntity);
+				}
+			}.runTaskLater(GenesisMC.getPlugin(), 4);
+		}
 	}
 }
