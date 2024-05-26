@@ -20,6 +20,10 @@
     "damage_condition": {
       "type": "origins:name",
       "name": "poison"
+    },
+    "modifier": {
+      "operation": "multiply_base_multiplicative",
+      "value": 0.35
     }
   },
   "hidden": false,
