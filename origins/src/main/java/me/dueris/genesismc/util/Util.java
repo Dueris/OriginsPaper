@@ -529,7 +529,10 @@ public class Util {
 		BinaryOperator<T> multiplication,
 		BinaryOperator<T> division,
 		BinaryOperator<T> multiplyBase,
-		BinaryOperator<T> multiplyTotal) {
+		BinaryOperator<T> multiplyTotal,
+		BinaryOperator<T> multiplyTotalAddictive,
+		BinaryOperator<T> minBase,
+		BinaryOperator<T> maxBase) {
 
 		Map<String, BinaryOperator<T>> operationMap = new HashMap<>();
 		operationMap.put("addition", addition);
@@ -548,6 +551,12 @@ public class Util {
 		operationMap.put("multiply_base_additive", multiplyBase);
 		operationMap.put("multiply_base_multiplicative", multiplyTotal);
 		operationMap.put("add_base_late", addition);
+		operationMap.put("multiply_total_additive", multiplyTotalAddictive);
+		operationMap.put("multiply_total_multiplicative", multiplyTotal);
+		operationMap.put("min_base", minBase);
+		operationMap.put("max_base", maxBase);
+		operationMap.put("min_total", minBase);
+		operationMap.put("max_total", maxBase);
 
 		return operationMap;
 	}
@@ -559,7 +568,10 @@ public class Util {
 			(a, b) -> a * b,
 			(a, b) -> a / b,
 			(a, b) -> a + (a * b),
-			(a, b) -> a * (1 + b)
+			(a, b) -> a * (1 + b),
+			(a, b) -> a * (a * b),
+			(a, b) -> (a > b) ? a : b,
+			(a, b) -> (a < b) ? a : b
 		);
 	}
 
@@ -570,7 +582,10 @@ public class Util {
 			(a, b) -> a * b,
 			(a, b) -> a / b,
 			(a, b) -> a + (a * b),
-			(a, b) -> a * (1 + b)
+			(a, b) -> a * (1 + b),
+			(a, b) -> a * (a * b),
+			(a, b) -> (a > b) ? a : b,
+			(a, b) -> (a < b) ? a : b
 		);
 	}
 
@@ -581,7 +596,10 @@ public class Util {
 			(a, b) -> a * b,
 			(a, b) -> a / b,
 			(a, b) -> a + (a * b),
-			(a, b) -> a * (1 + b)
+			(a, b) -> a * (1 + b),
+			(a, b) -> a * (a * b),
+			(a, b) -> (a > b) ? a : b,
+			(a, b) -> (a < b) ? a : b
 		);
 	}
 
