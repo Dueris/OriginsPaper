@@ -181,10 +181,12 @@ public class OriginPage implements ChoosingPage {
 		org.bukkit.entity.Player bukkitEntity = (org.bukkit.entity.Player) player.getBukkitEntity();
 
 		if (PlayerManager.firstJoin.contains(bukkitEntity)) {
-			ModifyPlayerSpawnPower.suspendPlayer(bukkitEntity);
 			new BukkitRunnable() {
 				@Override
 				public void run() {
+					if (PowerHolderComponent.hasPowerType(bukkitEntity, ModifyPlayerSpawnPower.class)) {
+						ModifyPlayerSpawnPower.suspendPlayer(bukkitEntity);
+					}
 					for (ModifyPlayerSpawnPower power : PowerHolderComponent.getPowers(bukkitEntity, ModifyPlayerSpawnPower.class)) {
 						power.runD(new PlayerPostRespawnEvent(bukkitEntity, bukkitEntity.getLocation(), false));
 					}
