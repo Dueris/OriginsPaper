@@ -33,6 +33,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -210,13 +211,27 @@ public class Resource extends PowerType implements ResourcePower {
 
 	public static class Bar {
 		String title;
-		Resource power;
+		ResourcePower power;
 		int min;
 		int max;
 		Double currentProgress; // Use lang class to use Number#intValue()
 		Integer mappedProgress;
 		KeyedBossBar renderedBar;
 		double oneInc;
+
+		Bar(CooldownPower power, @NotNull Player player) {
+			this.title = Util.getNameOrTag((PowerType) power);
+			this.power = power;
+			this.min = 0;
+			this.max = power.getCooldown();
+			this.currentProgress = Double.valueOf(power.getCooldown());
+			this.mappedProgress = power.getCooldown();
+			this.renderedBar = Resource.createRender(Util.getNameOrTag((PowerType) power), formatForFirstRender(this.currentProgress), power, player);
+			this.renderedBar.setVisible(true);
+			this.oneInc = 1.0 / this.max;
+			this.renderedBar.addPlayer(player);
+			change(power.getCooldown(), "set", false);
+		}
 
 		Bar(Resource power, Player player) {
 			this.title = Util.getNameOrTag(power);
@@ -248,7 +263,7 @@ public class Resource extends PowerType implements ResourcePower {
 		}
 
 		public Bar cloneForPlayer(Player player) {
-			return new Bar(this.power, player);
+			return new Bar((Resource) this.power, player);
 		}
 
 		public void delete() {
@@ -269,10 +284,12 @@ public class Resource extends PowerType implements ResourcePower {
 				this.mappedProgress = f;
 			}
 			this.renderedBar.getPlayers().forEach(entity -> {
-				if (this.renderedBar.getProgress() == 1.0) {
-					Actions.executeEntity(entity, this.power.getMaxAction());
-				} else if (this.renderedBar.getProgress() == 0.0) {
-					Actions.executeEntity(entity, this.power.getMinAction());
+				if (this.power instanceof Resource resource) {
+					if (this.renderedBar.getProgress() == 1.0) {
+						Actions.executeEntity(entity, resource.getMaxAction());
+					} else if (this.renderedBar.getProgress() == 0.0) {
+						Actions.executeEntity(entity, resource.getMinAction());
+					}
 				}
 			});
 		}
@@ -297,6 +314,18 @@ public class Resource extends PowerType implements ResourcePower {
 			if (e > 1) return 1.0;
 			if (e < 0) return 0.0;
 			return e;
+		}
+
+		public ResourcePower getPower() {
+			return power;
+		}
+
+		public Integer getMappedProgress() {
+			return mappedProgress;
+		}
+
+		public Double getCurrentProgress() {
+			return currentProgress;
 		}
 	}
 

@@ -501,7 +501,7 @@ public class EntityActions {
 					continue;
 				}
 
-				boolean run = !hasCondition || ConditionExecutor.testBiEntity(action.getJsonObject("bientity_condition"), (CraftEntity) entity, target.getBukkitEntity());
+				boolean run = !hasCondition || ConditionExecutor.testBiEntity(action.getJsonObject("bientity_condition"), entity, target.getBukkitEntity());
 				if (!run) {
 					continue;
 				}
@@ -524,7 +524,7 @@ public class EntityActions {
 			if (entity instanceof Player player) {
 				Arrays.stream(new String[]{"apoli:action_on_hit", "apoli:action_when_damage_taken", "apoli:action_when_hit",
 					"apoli:action_self", "apoli:attacker_action_when_hit", "apoli:self_action_on_hit",
-					"apoli:self_action_on_kill", "apoli:self_action_when_hit", "apoli:target_action_on_hit"}).forEach(type -> {
+					"apoli:self_action_on_kill", "apoli:self_action_when_hit", "apoli:target_action_on_hit", "apoli:cooldown"}).forEach(type -> {
 					for (PowerType powerContainer : PowerHolderComponent.getPowers(player, type)) {
 						if (powerContainer instanceof CooldownPower cooldownPower) {
 							Cooldown.addCooldown(player, cooldownPower.getCooldown(), cooldownPower);
