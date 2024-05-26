@@ -7,12 +7,14 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
 import net.minecraft.core.Holder;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.damage.CraftDamageType;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -63,9 +65,14 @@ public class DamageConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("amount"), (condition, event) -> {
 			String comparison = condition.getString("comparison");
-			Long compare_to = condition.getNumber("compare_to").getLong();
+			long compare_to = condition.getNumber("compare_to").getLong();
 			return Comparison.fromString(comparison).compare(event.getDamage(), compare_to);
 		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("explosive"), (condition, event) -> event.getDamageSource().getDamageType().equals(DamageType.EXPLOSION) || event.getDamageSource().getDamageType().equals(DamageType.PLAYER_EXPLOSION)));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("bypasses_armor"), (condition, event) -> GenesisMC.server.reloadableRegistries().get().registry(net.minecraft.core.registries.Registries.DAMAGE_TYPE).orElseThrow().wrapAsHolder(CraftDamageType.bukkitToMinecraft(event.getDamageSource().getDamageType())).is(DamageTypeTags.BYPASSES_ARMOR)));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("from_falling"), (condition, event) -> event.getCause().equals(DamageCause.FALL)));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("out_of_world"), (condition, event) -> event.getCause().equals(DamageCause.WORLD_BORDER)));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("unblockable"), (condition, event) -> GenesisMC.server.reloadableRegistries().get().registry(net.minecraft.core.registries.Registries.DAMAGE_TYPE).orElseThrow().wrapAsHolder(CraftDamageType.bukkitToMinecraft(event.getDamageSource().getDamageType())).is(DamageTypeTags.BYPASSES_SHIELD)));
 	}
 
 	private void register(ConditionFactory factory) {
