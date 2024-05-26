@@ -39,7 +39,6 @@ public class ModifyAirSpeedPower extends ModifierPower {
 	public void tick(Player p) {
 		if (Bukkit.getCurrentTick() % 10 == 0) {
 			if (!isActive(p)) {
-				p.setFlySpeed(base.get(p));
 				return;
 			}
 			compute(p);
