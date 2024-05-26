@@ -29,12 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class OriginPage implements ChoosingPage {
-	private final Origin origin;
-
-	public OriginPage(Origin origin) {
-		this.origin = origin;
-	}
+public record OriginPage(Origin origin) implements ChoosingPage {
 
 	public static void setAttributesToDefault(org.bukkit.entity.Player player) {
 		setAttributesToDefault(((CraftPlayer) player).getHandle());
@@ -85,9 +80,6 @@ public class OriginPage implements ChoosingPage {
 		return strings.stream().toList();
 	}
 
-	public Origin getOrigin() {
-		return this.origin;
-	}
 
 	public int getOrder() {
 		return this.origin.getOrder();
