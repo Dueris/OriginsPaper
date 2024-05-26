@@ -486,7 +486,7 @@ public class EntityActions {
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("apply_effect"), (action, entity) -> {
 			if (entity instanceof LivingEntity le) {
-				Util.parseAndReturnPotionEffects(action).forEach(potionEffect -> le.addPotionEffect(potionEffect, true));
+				Util.parseAndReturnPotionEffects(action).forEach(potionEffect -> le.addPotionEffect(potionEffect));
 			}
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("area_of_effect"), (action, entity) -> {

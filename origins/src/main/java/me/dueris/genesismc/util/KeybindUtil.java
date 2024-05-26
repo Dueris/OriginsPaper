@@ -221,26 +221,14 @@ public class KeybindUtil implements Listener {
 
 			return;
 		}
-		if (e.getView().getTopInventory().getType() != InventoryType.CRAFTING) {
-			if (e.getView().getTopInventory().getHolder() != null && e.getView().getTopInventory().getHolder().equals(e.getWhoClicked()))
-				return;
-			if (e.getCurrentItem() == null) return;
-			if (e.getCurrentItem().isSimilar(getPrimaryTrigger((Player) e.getWhoClicked()))) {
-				e.setCancelled(true);
-			}
-			if (e.getCurrentItem().isSimilar(getSecondaryTrigger((Player) e.getWhoClicked()))) {
-				e.setCancelled(true);
-			}
-		} else {
-			if (e.getView().getTopInventory().getHolder() != null && e.getView().getTopInventory().getHolder().equals(e.getWhoClicked()))
-				return;
-			if (e.getCurrentItem() == null) return;
-			if (e.getCurrentItem().isSimilar(getPrimaryTrigger((Player) e.getWhoClicked()))) {
-				e.setCancelled(true);
-			}
-			if (e.getCurrentItem().isSimilar(getSecondaryTrigger((Player) e.getWhoClicked()))) {
-				e.setCancelled(true);
-			}
+		if (e.getView().getTopInventory().getHolder() != null && e.getView().getTopInventory().getHolder().equals(e.getWhoClicked()))
+			return;
+		if (e.getCurrentItem() == null) return;
+		if (e.getCurrentItem().isSimilar(getPrimaryTrigger((Player) e.getWhoClicked()))) {
+			e.setCancelled(true);
+		}
+		if (e.getCurrentItem().isSimilar(getSecondaryTrigger((Player) e.getWhoClicked()))) {
+			e.setCancelled(true);
 		}
 	}
 
