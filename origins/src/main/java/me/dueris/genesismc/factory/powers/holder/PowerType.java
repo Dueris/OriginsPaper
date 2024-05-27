@@ -8,9 +8,11 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.FactoryHolder;
 import me.dueris.calio.data.annotations.SourceProvider;
 import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.apoli.provider.OriginSimpleContainer;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.*;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -73,6 +75,9 @@ public class PowerType implements FactoryHolder, Listener {
 		OriginSimpleContainer.registerPower(PiglinNoAttack.class);
 		OriginSimpleContainer.registerPower(ScareCreepers.class);
 		OriginSimpleContainer.registerPower(WaterBreathe.class);
+		OriginSimpleContainer.registerPower(SlimelingSizeChangers.AddSize.class);
+		OriginSimpleContainer.registerPower(SlimelingSizeChangers.RemoveSize.class);
+		Bukkit.getServer().getPluginManager().registerEvents(new SlimelingSizeChangers(), GenesisMC.getPlugin());
 	}
 
 	public String getName() {

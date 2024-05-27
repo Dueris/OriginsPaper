@@ -26,6 +26,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -100,8 +101,8 @@ public class ScreenNavigator implements Listener {
 		open(((CraftPlayer) player).getHandle(), layer, inOrbChoosing);
 	}
 
-	private static boolean isSimilarEnough(ItemStack a, ItemStack b) {
-		return a.getType().equals(b.getType()) && a.getItemMeta().displayName().equals(b.getItemMeta().displayName());
+	private static boolean isSimilarEnough(ItemStack a, ItemStack b, boolean cD) {
+		return a.getType().equals(b.getType()) && (!cD || ((a.displayName() != null && b.displayName() != null && a.getItemMeta().displayName().equals(b.getItemMeta().displayName()))));
 	}
 
 	@EventHandler
@@ -132,7 +133,7 @@ public class ScreenNavigator implements Listener {
 			if (layerPages.get(inChoosingLayer.get(getCraftPlayer(e.getWhoClicked()))).isEmpty()) return;
 			ChoosingPage page = layerPages.get(inChoosingLayer.get(getCraftPlayer(e.getWhoClicked())))
 				.get(currentDisplayingPage.getInt(getCraftPlayer(e.getWhoClicked())));
-			if (isSimilarEnough(e.getCurrentItem(), page.getChoosingStack(((CraftPlayer) e.getWhoClicked()).getHandle()))) { // 1.20.5 bug with ItemFlags
+			if (isSimilarEnough(e.getCurrentItem(), page.getChoosingStack(((CraftPlayer) e.getWhoClicked()).getHandle()), true)) { // 1.20.5 bug with ItemFlags
 				page.onChoose(((CraftPlayer) e.getWhoClicked()).getHandle(), inChoosingLayer.get(getCraftPlayer(e.getWhoClicked())));
 				new BukkitRunnable() {
 					@Override
@@ -163,7 +164,9 @@ public class ScreenNavigator implements Listener {
 		if (OriginConfiguration.getConfiguration().getBoolean("orb-of-origins")) {
 			if (e.getAction().isRightClick()) {
 				if (e.getItem() != null) {
-					if ((isSimilarEnough(e.getItem(), OrbOfOrigins.orb)) && e.getItem().getItemMeta().getPersistentDataContainer().has(GenesisMC.identifier("origins"))) {
+					if ((isSimilarEnough(e.getItem(), OrbOfOrigins.orb, false)) &&
+						e.getItem().getItemMeta().getPersistentDataContainer().has(GenesisMC.identifier("origins")) &&
+						e.getItem().getItemMeta().getPersistentDataContainer().get(GenesisMC.identifier("origins"), PersistentDataType.STRING).equalsIgnoreCase("orb_of_origin")) {
 						if (!((CraftPlayer) p).getHandle().getAbilities().instabuild) {
 							Util.consumeItem(e.getItem());
 						}

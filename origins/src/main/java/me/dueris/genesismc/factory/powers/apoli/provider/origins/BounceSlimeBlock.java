@@ -39,7 +39,7 @@ public class BounceSlimeBlock implements Listener, PowerProvider {
 				if (lastLocation.getY() > player.getY()) {
 					double coefficientOfRestitution = 0.45;
 					double reboundVelocity = -coefficientOfRestitution * -(lastLocation.getY() - player.getY());
-					if (reboundVelocity <= 0.2) return;
+					if (reboundVelocity <= 0.27) return;
 
 					if (!player.isOnGround() || player.isJumping() || player.isSprinting()) return;
 					player.setVelocity(new Vector(player.getVelocity().getX(), reboundVelocity, player.getVelocity().getZ()));
