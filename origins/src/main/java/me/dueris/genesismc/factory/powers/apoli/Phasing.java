@@ -16,10 +16,7 @@ import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
@@ -342,7 +339,9 @@ public class Phasing extends PowerType {
 			if (e.getTo().getBlock().isCollidable() &&
 				!((blacklist && !ConditionExecutor.testBlock(blockCondition, e.getTo().getBlock())) || (!blacklist && ConditionExecutor.testBlock(blockCondition, e.getTo().getBlock())))) {
 				e.setCancelled(true);
-				e.setTo(e.getFrom());
+				Location toSet = e.getFrom();
+				toSet.setDirection(e.getTo().getDirection());
+				e.setTo(toSet);
 			}
 		}
 	}
