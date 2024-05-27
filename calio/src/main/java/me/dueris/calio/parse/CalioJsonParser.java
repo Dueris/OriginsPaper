@@ -49,12 +49,14 @@ public class CalioJsonParser {
 			Constructor<? extends FactoryHolder> constructor = findConstructor(data, holder);
 			if (constructor != null) {
 				FactoryHolder created = ConstructorCreator.invoke(constructor, data, pair);
-				created.ofResourceLocation(pair.getSecond());
-				if (created.canRegister()) {
-					CalioRegistry.INSTANCE.retrieve(accessorKey.getRegistryKey()).registerOrThrow(created);
-					created.bootstrap();
+				if (created != null) {
+					created.ofResourceLocation(pair.getSecond());
+					if (created.canRegister()) {
+						CalioRegistry.INSTANCE.retrieve(accessorKey.getRegistryKey()).registerOrThrow(created);
+						created.bootstrap();
+					}
+					return created;
 				}
-				return created;
 			} else throw new IllegalStateException("Unable to find constructor for provided type!");
 		} catch (Throwable throwable) {
 			throwable.printStackTrace();

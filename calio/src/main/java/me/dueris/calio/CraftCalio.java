@@ -60,7 +60,7 @@ public class CraftCalio {
 		this.isDebugging = debug;
 		debug("Starting CraftCalio parser...");
 		this.keys.stream().sorted(Comparator.comparingInt(AccessorKey::getPriority)).forEach(accessorKey -> datapackDirectoriesToParse.forEach(root -> {
-			for (File datapack : root.listFiles()) {
+			packLoop: for (File datapack : root.listFiles()) {
 				try {
 					FileReader fileReader = FileReaderFactory.createFileReader(datapack.toPath());
 					if (fileReader == null) continue;
@@ -83,7 +83,13 @@ public class CraftCalio {
 										line.append(newLine);
 									}
 									String finishedLine = line.toString().replace("\n", "");
-									JsonObject powerParser = JsonParser.parseReader(new StringReader(finishedLine)).getAsJsonObject();
+									JsonObject powerParser;
+									try {
+										powerParser = JsonParser.parseReader(new StringReader(finishedLine)).getAsJsonObject();
+									} catch (Throwable throwable) {
+										getLogger().severe("An unhandled exception occurred when parsing a json file! Invalid syntax? The datapack will not be loaded.");
+										continue packLoop;
+									}
 									NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
 									JsonObject remappedJsonObject = JsonObjectRemapper.remapJsonObject(powerParser, namespacedKey);
 									newLoadingPrioritySortedMap.put(new Pair<>(remappedJsonObject, namespacedKey), remappedJsonObject.has("loading_priority") ? remappedJsonObject.getAsJsonPrimitive("loading_priority").getAsInt() : 0);
