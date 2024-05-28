@@ -76,7 +76,7 @@ tasks {
 
 tasks.register<Jar>("makePublisher") {
     dependsOn(tasks.shadowJar)
-    archiveFileName.set("genesis-v1.0.0-SNAPSHOT.jar")
+    archiveFileName.set("genesis-v1.0.1-SNAPSHOT.jar")
     from(sourceSets.main.get().output)
 }
 
@@ -105,7 +105,7 @@ publishing {
         artifact(tasks.getByName("makePublisher")) {
             groupId = "io.github.dueris"
             artifactId = "genesis"
-            version = "v1.0.0-SNAPSHOT"
+            version = "v1.0.1-SNAPSHOT"
         }
     }
     repositories {

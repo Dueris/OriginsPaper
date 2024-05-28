@@ -2,7 +2,6 @@ package me.dueris.genesismc;
 
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
-import me.dueris.genesismc.content.enchantment.WaterProtectionEnchantment;
 import me.dueris.genesismc.registry.nms.OriginLootCondition;
 import me.dueris.genesismc.registry.nms.PowerLootCondition;
 import me.dueris.genesismc.util.Util;
@@ -33,8 +32,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 // TODO: MachineMaker PluginDatapacks
+// TODO: WaterProtection Enchantment - 1.21
 public class Bootstrap implements PluginBootstrap {
-	public static WaterProtectionEnchantment waterProtection;
 	public static ArrayList<String> oldDV = new ArrayList<>();
 
 	static {
@@ -44,10 +43,6 @@ public class Bootstrap implements PluginBootstrap {
 		oldDV.add("Origins-GenesisMC[0_2_2]");
 		oldDV.add("Origins-GenesisMC[0_2_4]");
 		oldDV.add("Origins-GenesisMC[0_2_6]");
-	}
-
-	public static void registerEnchantment(String name, Enchantment enchantment) {
-		Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation("origins", name), enchantment);
 	}
 
 	public static void deleteDirectory(Path directory, boolean ignoreErrors) throws IOException {
@@ -153,15 +148,6 @@ public class Bootstrap implements PluginBootstrap {
 		} catch (Exception e) {
 			// ignore
 		}
-		// hurt by water damage type
-		EquipmentSlot[] slots = {EquipmentSlot.CHEST, EquipmentSlot.FEET, EquipmentSlot.HEAD, EquipmentSlot.LEGS};
-		WaterProtectionEnchantment waterProtection = new WaterProtectionEnchantment(
-			Enchantment.definition(
-				TagKey.create(Registries.ITEM, CraftNamespacedKey.toMinecraft(NamespacedKey.fromString("trimmable_armor"))),
-				1, 4, Enchantment.dynamicCost(1, 1), Enchantment.dynamicCost(1, 4), 4, slots
-			));
-		registerEnchantment("water_protection", waterProtection);
-		Bootstrap.waterProtection = waterProtection;
 		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, new ResourceLocation("apoli", "power"), PowerLootCondition.TYPE);
 		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, new ResourceLocation("origins", "origin"), OriginLootCondition.TYPE);
 	}

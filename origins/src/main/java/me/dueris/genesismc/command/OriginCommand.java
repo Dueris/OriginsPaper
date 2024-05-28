@@ -7,7 +7,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import javassist.NotFoundException;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.content.OrbOfOrigins;
-import me.dueris.genesismc.content.enchantment.AnvilHandler;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.apoli.RecipePower;
@@ -53,16 +52,11 @@ import static org.bukkit.Bukkit.getServer;
 public class OriginCommand extends BukkitRunnable implements Listener {
 
 	public static final HashMap<Player, Integer> playerPage = new HashMap<>();
-	public static EnumSet<Material> wearable;
 	@SuppressWarnings("FieldMayBeFinal")
 	public static HashMap<Player, ArrayList<Origin>> playerOrigins = new HashMap<>();
 	public static List<Origin> commandProvidedOrigins = new ArrayList<>();
 	public static List<Layer> commandProvidedLayers = new ArrayList<>();
 	public static List<PowerType> commandProvidedPowers = new ArrayList<>();
-
-	static {
-		wearable = EnumSet.of(Material.ENCHANTED_BOOK, Material.BOOK, Material.PUMPKIN, Material.CARVED_PUMPKIN, Material.ELYTRA, Material.TURTLE_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_BOOTS, Material.LEATHER_LEGGINGS, Material.LEATHER_HELMET, Material.CHAINMAIL_BOOTS, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_HELMET, Material.CHAINMAIL_LEGGINGS, Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS, Material.GOLDEN_HELMET, Material.GOLDEN_CHESTPLATE, Material.GOLDEN_LEGGINGS, Material.GOLDEN_BOOTS, Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS, Material.NETHERITE_HELMET, Material.NETHERITE_CHESTPLATE, Material.NETHERITE_LEGGINGS, Material.NETHERITE_BOOTS);
-	}
 
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 		dispatcher.register(
@@ -283,21 +277,6 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 							)
 						)
 					)
-				).then(literal("enchant").requires(source -> source.hasPermission(2))
-					.then(argument("targets", EntityArgument.players())
-						.then(literal("origins:water_protection")
-							.executes(context -> {
-								enchant(context.getSource(), EntityArgument.getPlayers(context, "targets").stream().toList(), 1);
-								return SINGLE_SUCCESS;
-							})
-							.then(argument("level", IntegerArgumentType.integer(1, 4))
-								.executes(context -> {
-									enchant(context.getSource(), EntityArgument.getPlayers(context, "targets").stream().toList(), IntegerArgumentType.getInteger(context, "level"));
-									return SINGLE_SUCCESS;
-								})
-							)
-						)
-					)
 				)
 		);
 	}
@@ -316,26 +295,6 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 		}
 
 
-	}
-
-	public static void enchant(CommandSourceStack sender, List<ServerPlayer> targets, int level) {
-		targets.removeIf(Objects::isNull);
-		for (ServerPlayer entity : targets) {
-			Player p = entity.getBukkitEntity();
-			if (!OriginCommand.wearable.contains(p.getInventory().getItemInMainHand().getType())) {
-				continue;
-			}
-
-			String romanLevel = AnvilHandler.numberToRomanNum(level);
-			ItemMeta meta = p.getInventory().getItemInMainHand().getItemMeta();
-			meta.setCustomModelData(level);
-			p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + romanLevel));
-			p.getInventory().getItemInMainHand().addEnchantment(AnvilHandler.bukkitEnchantment, level);
-			sender.getBukkitSender().sendMessage("Applied enchantment " +
-				ChatColor.GRAY + "{water_prot}".replace("{water_prot}", "Water Protection " + AnvilHandler.numberToRomanNum(level)) +
-				ChatColor.WHITE + " to {target}'s item".replace("{target}", p.getName())
-			);
-		}
 	}
 
 	@EventHandler

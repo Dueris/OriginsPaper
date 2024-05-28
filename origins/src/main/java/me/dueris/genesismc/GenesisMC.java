@@ -12,11 +12,6 @@ import me.dueris.genesismc.command.OriginCommand;
 import me.dueris.genesismc.command.PowerCommand;
 import me.dueris.genesismc.content.ContentTicker;
 import me.dueris.genesismc.content.OrbOfOrigins;
-import me.dueris.genesismc.content.WaterProtBook;
-import me.dueris.genesismc.content.enchantment.AnvilHandler;
-import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
-import me.dueris.genesismc.content.enchantment.generation.StructureGeneration;
-import me.dueris.genesismc.content.enchantment.generation.VillagerTradeHook;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.actions.types.BiEntityActions;
@@ -89,7 +84,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	public static OriginScheduler.MainTickerThread scheduler = null;
 	public static String version = Bukkit.getVersion().split("\\(MC: ")[1].replace(")", "");
 	public static boolean isCompatible = false;
-	public static String pluginVersion = "v1.0.0";
+	public static String pluginVersion = "v1.0.1";
 	public static String world_container;
 	public static ExecutorService loaderThreadPool;
 	public static ArrayList<String> versions = new ArrayList<>();
@@ -293,7 +288,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 				GenesisMC.scheduler.tickAsyncScheduler();
 			}
 		}.runTaskTimerAsynchronously(GenesisMC.getPlugin(), 0, 1);
-		WaterProtBook.init();
 		start();
 		patchPowers();
 		debug(Component.text("  - Power thread starting with {originScheduler}".replace("originScheduler", GenesisMC.scheduler.toString())));
@@ -335,17 +329,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	private void start() {
 		getServer().getPluginManager().registerEvents(this, this);
 		getServer().getPluginManager().registerEvents(new PlayerManager(), this);
-		getServer().getPluginManager().registerEvents(new EnchantTableHandler(), this);
-		getServer().getPluginManager().registerEvents(new AnvilHandler(), this);
 		getServer().getPluginManager().registerEvents(new ScreenNavigator(), this);
 		getServer().getPluginManager().registerEvents(new OriginCommand(), this);
 		getServer().getPluginManager().registerEvents(new ContentTicker(), this);
 		getServer().getPluginManager().registerEvents(new LogoutBugWorkaround(), this);
 		getServer().getPluginManager().registerEvents(new BounceSlimeBlock(), this);
 		getServer().getPluginManager().registerEvents(new BiEntityConditions(), this);
-		getServer().getPluginManager().registerEvents(new VillagerTradeHook(), this);
 		getServer().getPluginManager().registerEvents(new OriginScheduler.MainTickerThread(), this);
-		getServer().getPluginManager().registerEvents(new StructureGeneration(), this);
 		getServer().getPluginManager().registerEvents(new KeybindUtil(), this);
 		getServer().getPluginManager().registerEvents(new AsyncUpgradeTracker(), this);
 		getServer().getPluginManager().registerEvents(new PowerHolderComponent(), this);
