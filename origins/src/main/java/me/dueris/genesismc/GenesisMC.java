@@ -77,7 +77,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	public static GlowingEntitiesUtils glowingEntitiesUtils;
 	public static BstatsMetrics metrics;
 	public static ConditionExecutor conditionExecutor;
-	public static String apoliVersion = "2.12.0-alpha.1";
+	public static String apoliVersion = "2.12.0-alpha.3";
 	public static boolean placeholderapi = false;
 	public static File playerDataFolder;
 	public static boolean forceUseCurrentVersion = false;
