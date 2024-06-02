@@ -341,6 +341,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new PowerHolderComponent(), this);
 		getServer().getPluginManager().registerEvents(new CraftPehuki(), this);
 		getServer().getPluginManager().registerEvents(new ItemStackPowerHolder().startTicking(), this);
+		getServer().getPluginManager().registerEvents(EntityLinkedItemStack.getInstance(), this);
 		this.registry.retrieve(Registries.CRAFT_POWER).values().forEach(powerType -> {
 			if (powerType != null) {
 				getServer().getPluginManager().registerEvents(powerType, this);

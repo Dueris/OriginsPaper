@@ -7,26 +7,33 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.factory.data.types.Comparison;
 import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.util.EntityLinkedItemStack;
+import me.dueris.genesismc.util.Reflector;
 import me.dueris.genesismc.util.Util;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.enchantments.CraftEnchantment;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -127,6 +134,27 @@ public class ItemConditions {
 				}
 			}
 			return false;
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("item_cooldown"), (condition, item) -> {
+			net.minecraft.world.item.ItemStack nms = CraftItemStack.asNMSCopy(item);
+			Entity entity = ((CraftEntity) EntityLinkedItemStack.getInstance().getHolder(item)).getHandle();
+
+			if (nms.isEmpty() || !(entity instanceof Player player)) return false;
+			Item i = nms.getItem();
+			ItemCooldowns cooldowns = player.getCooldowns();
+			Map<Item, ItemCooldowns.CooldownInstance> instanceMap = cooldowns.cooldowns;
+			ItemCooldowns.CooldownInstance cooldownEntry = instanceMap.get(i);
+			return cooldownEntry != null &&
+				Comparison.fromString(condition.getString("comparison")).compare(cooldownEntry.endTime - Reflector.accessField("startTime", ItemCooldowns.CooldownInstance.class, cooldownEntry, int.class), condition.getNumber("compare_to").getInt());
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("relative_item_cooldown"), (condition, item) -> {
+			net.minecraft.world.item.ItemStack nms = CraftItemStack.asNMSCopy(item);
+			Entity entity = ((CraftEntity) EntityLinkedItemStack.getInstance().getHolder(item)).getHandle();
+
+			if (nms.isEmpty() || !(entity instanceof Player player)) return false;
+			Item i = nms.getItem();
+			ItemCooldowns cooldowns = player.getCooldowns();
+			return Comparison.fromString(condition.getString("comparison")).compare(cooldowns.getCooldownPercent(i, 0.0F), condition.getNumber("compare_to").getInt());
 		}));
 	}
 

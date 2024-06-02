@@ -3,11 +3,23 @@ package me.dueris.genesismc.factory.actions.types;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.data.types.Modifier;
 import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.util.EntityLinkedItemStack;
+import me.dueris.genesismc.util.Reflector;
+import me.dueris.genesismc.util.Util;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemCooldowns;
+import net.minecraft.world.item.ItemCooldowns.CooldownInstance;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class ItemActions {
@@ -23,6 +35,22 @@ public class ItemActions {
 			if (item.containsEnchantment(enchantment)) {
 				item.removeEnchantment(enchantment);
 			}
+		}));
+		register(new ActionFactory(GenesisMC.apoliIdentifier("modify_item_cooldown"), (action, item) -> {
+			net.minecraft.world.item.ItemStack nms = CraftItemStack.asNMSCopy(item);
+			Entity entity = ((CraftEntity) EntityLinkedItemStack.getInstance().getHolder(item)).getHandle();
+
+			if (nms.isEmpty() || !(entity instanceof Player player)) return;
+			Item i = nms.getItem();
+			ItemCooldowns cooldowns = player.getCooldowns();
+			Map<Item, CooldownInstance> instanceMap = cooldowns.cooldowns;
+			CooldownInstance cooldownEntry = instanceMap.get(i);
+			int duration = cooldownEntry != null ? cooldownEntry.endTime - Reflector.accessField("startTime", CooldownInstance.class, cooldownEntry, int.class) : 0;
+
+			for (Modifier modifier : Modifier.getModifiers(action.getJsonObject("modifier"), action.getJsonArray("modifiers"))) {
+				duration = Util.getOperationMappingsInteger().get(modifier.operation()).apply(duration, modifier.value().intValue());
+			}
+			cooldowns.addCooldown(i, duration);
 		}));
 	}
 
