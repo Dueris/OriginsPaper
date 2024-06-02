@@ -85,6 +85,13 @@ public class BiEntityActions {
 				targetTameable.setOwner(actorTamer);
 			}
 		}));
+		register(new ActionFactory(GenesisMC.apoliIdentifier("leash"), (action, entityPair) -> {
+			CraftEntity actor = entityPair.left();
+			CraftEntity target = entityPair.right();
+			if (target instanceof LivingEntity le && !le.isLeashed()) {
+				le.setLeashHolder(actor);
+			}
+		}));
 	}
 
 	private void register(BiEntityActions.ActionFactory factory) {
