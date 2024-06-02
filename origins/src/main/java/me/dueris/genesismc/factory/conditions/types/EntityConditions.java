@@ -658,6 +658,38 @@ public class EntityConditions {
 			}
 			return false;
 		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("entity_in_radius"), (condition, entity) -> {
+			FactoryJsonObject biEntityCondition = condition.getJsonObject("bientity_condition");
+			Shape shape = condition.getEnumValueOrDefault("shape", Shape.class, Shape.CUBE);
+
+			Comparison comparison = Comparison.fromString(condition.getString("comparison"));
+			int compareTo = condition.getNumber("compare_to").getInt();
+
+			double radius = condition.getNumber("radius").getDouble();
+			int countThreshold = switch (comparison) {
+				case EQUAL, LESS_THAN_OR_EQUAL, GREATER_THAN ->
+					compareTo + 1;
+				case LESS_THAN, GREATER_THAN_OR_EQUAL ->
+					compareTo;
+				default ->
+					-1;
+			};
+
+			int count = 0;
+			for (net.minecraft.world.entity.Entity target : Shape.getEntities(shape, entity.getHandle().level(), entity.getHandle().getPosition(1.0F), radius)) {
+
+				if (ConditionExecutor.testBiEntity(biEntityCondition, entity, target.getBukkitEntity())) {
+					++count;
+				}
+
+				if (count == countThreshold) {
+					break;
+				}
+
+			}
+
+			return comparison.compare(count, compareTo);
+		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("time_of_day"), (condition, entity) -> {
 			String comparison = condition.getString("comparison");
 			double compare_to = condition.getNumber("compare_to").getFloat();
