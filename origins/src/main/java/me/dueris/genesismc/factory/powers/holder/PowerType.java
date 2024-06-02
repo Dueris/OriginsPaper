@@ -135,8 +135,8 @@ public class PowerType implements FactoryHolder, Listener {
 	}
 
 	public void removePlayer(Player player) {
-		this.hasPlayers = false;
 		this.players.remove((CraftPlayer) player);
+		this.hasPlayers = !this.players.isEmpty();
 	}
 
 	public boolean isActive(Player player) {

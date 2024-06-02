@@ -2,6 +2,7 @@ package me.dueris.genesismc.screen;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import javassist.NotFoundException;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.event.OrbInteractEvent;
@@ -170,9 +171,14 @@ public class ScreenNavigator implements Listener {
 						if (!((CraftPlayer) p).getHandle().getAbilities().instabuild) {
 							Util.consumeItem(e.getItem());
 						}
-						for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+						CraftApoli.getLayersFromRegistry().forEach(layer -> {
+							try {
+								PowerHolderComponent.unassignPowers(p, layer);
+							} catch (NotFoundException ee) {
+								throw new RuntimeException(ee);
+							}
 							PowerHolderComponent.setOrigin(p, layer, CraftApoli.emptyOrigin());
-						}
+						});
 						OrbInteractEvent event = new OrbInteractEvent(p);
 						getServer().getPluginManager().callEvent(event);
 					}
