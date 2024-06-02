@@ -1,5 +1,7 @@
 package me.dueris.calio.parse.reader;
 
+import me.dueris.calio.CraftCalio;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,7 +14,7 @@ public class FileReaderFactory {
 		} else if (Files.isRegularFile(path) && (path.toString().endsWith(".zip") || path.toString().endsWith(".jar"))) {
 			return new ZipFileReader(new ZipFile(path.toFile()));
 		} else {
-			new IllegalArgumentException("Unsupported file type: " + path).printStackTrace();
+			CraftCalio.INSTANCE.getLogger().severe("Unknown file type! : " + path.toFile().getName());
 		}
 		return null;
 	}
