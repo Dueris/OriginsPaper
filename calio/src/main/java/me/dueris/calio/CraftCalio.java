@@ -60,7 +60,8 @@ public class CraftCalio {
 		this.isDebugging = debug;
 		debug("Starting CraftCalio parser...");
 		this.keys.stream().sorted(Comparator.comparingInt(AccessorKey::getPriority)).forEach(accessorKey -> datapackDirectoriesToParse.forEach(root -> {
-			packLoop: for (File datapack : root.listFiles()) {
+			packLoop:
+			for (File datapack : root.listFiles()) {
 				try {
 					FileReader fileReader = FileReaderFactory.createFileReader(datapack.toPath());
 					if (fileReader == null) continue;

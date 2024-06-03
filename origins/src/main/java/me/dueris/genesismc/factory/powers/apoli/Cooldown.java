@@ -11,7 +11,6 @@ import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -67,17 +66,17 @@ public class Cooldown extends PowerType implements CooldownPower {
 		});
 	}
 
-	@Override
-	public boolean isActive(Player player) {
-		return super.isActive(player) && isInCooldown(player, this);
-	}
-
 	public static boolean isInCooldown(Player player, ResourcePower power) {
 		cooldowns.putIfAbsent(player, new ArrayList<>());
 		for (Pair<KeyedBossBar, ResourcePower> pair : cooldowns.get(player)) {
 			if (pair.right().getTag().equalsIgnoreCase(power.getTag())) return true;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isActive(Player player) {
+		return super.isActive(player) && isInCooldown(player, this);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

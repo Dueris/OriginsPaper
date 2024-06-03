@@ -667,12 +667,9 @@ public class EntityConditions {
 
 			double radius = condition.getNumber("radius").getDouble();
 			int countThreshold = switch (comparison) {
-				case EQUAL, LESS_THAN_OR_EQUAL, GREATER_THAN ->
-					compareTo + 1;
-				case LESS_THAN, GREATER_THAN_OR_EQUAL ->
-					compareTo;
-				default ->
-					-1;
+				case EQUAL, LESS_THAN_OR_EQUAL, GREATER_THAN -> compareTo + 1;
+				case LESS_THAN, GREATER_THAN_OR_EQUAL -> compareTo;
+				default -> -1;
 			};
 
 			int count = 0;

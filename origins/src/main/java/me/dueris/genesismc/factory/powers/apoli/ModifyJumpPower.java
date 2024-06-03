@@ -9,7 +9,6 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.data.types.Modifier;
-import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.DataConverter;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -17,8 +16,6 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -46,13 +46,13 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ModifyPlayerSpawnPower extends PowerType {
+	private static final ArrayList<Player> suspended = new ArrayList<>();
+	private static final PotionEffect suspendedEffect = new PotionEffect(PotionEffectType.SLOWNESS, 5, 255, false, false, false);
 	private final NamespacedKey dimension;
 	private final @Nullable ResourceLocation biome;
 	private final @Nullable ResourceLocation structure;
 	private final SpawnStrategy spawnStrategy;
 	private final float dimensionDistanceMultiplier;
-	private static final ArrayList<Player> suspended = new ArrayList<>();
-	private static final PotionEffect suspendedEffect = new PotionEffect(PotionEffectType.SLOWNESS, 5, 255, false, false, false);
 
 	public ModifyPlayerSpawnPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, NamespacedKey dimension, ResourceLocation biome, ResourceLocation structure, SpawnStrategy spawnStrategy, float dimensionDistanceMultiplier) {
 		super(name, description, hidden, condition, loading_priority);

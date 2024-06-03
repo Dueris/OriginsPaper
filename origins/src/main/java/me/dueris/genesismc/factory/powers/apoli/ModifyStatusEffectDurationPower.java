@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import com.google.gson.JsonArray;
-import com.mojang.datafixers.util.Pair;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;

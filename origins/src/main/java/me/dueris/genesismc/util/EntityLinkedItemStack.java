@@ -1,11 +1,9 @@
 package me.dueris.genesismc.util;
 
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
-import me.dueris.genesismc.GenesisMC;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
