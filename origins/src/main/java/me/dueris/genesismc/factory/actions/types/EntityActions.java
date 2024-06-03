@@ -19,19 +19,30 @@ import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Util;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.advancements.AdvancementType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundAwardStatsPacket;
+import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import org.bukkit.*;
+import org.bukkit.advancement.Advancement;
 import org.bukkit.craftbukkit.CraftGameEvent;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftEntityType;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
@@ -40,9 +51,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.joml.Vector3f;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 
@@ -357,6 +370,48 @@ public class EntityActions {
 					projectile.setVelocity(direction.normalize().multiply(speed));
 					projectile.setGlowing(true);
 				}
+			}
+		}));
+		register(new ActionFactory(GenesisMC.apoliIdentifier("show_toast"), (action, entity) -> {
+			String title = action.getString("title");
+			String description = action.getString("description");
+			@Nullable ItemStack icon = action.isPresent("icon") ? action.getItemStack("icon") : new ItemStack(Material.PLAYER_HEAD);
+
+			if (entity instanceof CraftPlayer player) {
+				String advancement = "{\n" +
+					"    \"criteria\": {\n" +
+					"      \"trigger\": {\n" +
+					"        \"trigger\": \"minecraft:impossible\"\n" +
+					"      }\n" +
+					"    },\n" +
+					"    \"display\": {\n" +
+					"      \"icon\": {\n" +
+					"        \"id\": \"" + icon.getType().getKey().asString() + "\"\n" +
+					"      },\n" +
+					"      \"title\": {\n" +
+					"        \"text\": \"" + title + "\"\n" +
+					"      },\n" +
+					"      \"description\": {\n" +
+					"        \"text\": \"" + description +"\"\n" +
+					"      },\n" +
+					"      \"background\": \"minecraft:textures/gui/advancements/backgrounds/adventure.png\",\n" +
+					"      \"frame\": \"task\",\n" +
+					"      \"announce_to_chat\": false,\n" +
+					"      \"show_toast\": true,\n" +
+					"      \"hidden\": true\n" +
+					"    }\n" +
+					"  }";
+				Advancement possible = Bukkit.getAdvancement(GenesisMC.apoliIdentifier(title.replace(" ", "_").toLowerCase()));
+				Advancement a = possible == null ?
+					Bukkit.getUnsafe().loadAdvancement(GenesisMC.apoliIdentifier(title.replace(" ", "_").toLowerCase()), advancement) : possible;
+				// advancement loaded now
+				player.getAdvancementProgress(a).awardCriteria("trigger");
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						player.getAdvancementProgress(a).revokeCriteria("trigger");
+					}
+				}.runTaskLater(GenesisMC.getPlugin(), 5);
 			}
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("passanger_action"), (action, entity) -> {
