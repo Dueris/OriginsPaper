@@ -544,7 +544,7 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("biome"), (condition, entity) -> {
 			if (condition.isPresent("condition")) {
-				return ConditionExecutor.testBiome(condition.getJsonObject("condition"), entity.getLocation().getBlock().getBiome(), entity.getLocation());
+				return ConditionExecutor.testBiome(condition.getJsonObject("condition"), entity.getLocation().getBlock().getBiome(), entity.getLocation(), ((CraftWorld)entity.getWorld()).getHandle());
 			} else { // Assumed to be trying to get biome type
 				String key = condition.getString("biome");
 				if (key.contains(":")) {
