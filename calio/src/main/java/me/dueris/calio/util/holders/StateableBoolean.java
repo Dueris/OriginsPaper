@@ -2,10 +2,10 @@ package me.dueris.calio.util.holders;
 
 import java.util.Optional;
 
-public class TriBoolean {
+public class StateableBoolean {
 	private Boolean bool;
 
-	public TriBoolean(State state) {
+	public StateableBoolean(State state) {
 		switch (state) {
 			case TRUE -> {
 				bool = Boolean.TRUE;

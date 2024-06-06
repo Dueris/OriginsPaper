@@ -144,6 +144,8 @@ public class CraftCalio {
 				RequiresPlugin aN = holder.getAnnotation(RequiresPlugin.class);
 				if (!org.bukkit.Bukkit.getPluginManager().isPluginEnabled(aN.pluginName())) return;
 			}
+			ClassLoader classLoader = CraftCalio.class.getClassLoader();
+			classLoader.loadClass(holder.getName()); // Preload class
 			Method rC = holder.getDeclaredMethod("registerComponents", FactoryData.class);
 			if (rC == null)
 				throw new IllegalArgumentException("FactoryHolder doesn't have registerComponents method in it or its superclasses!");
@@ -152,22 +154,27 @@ public class CraftCalio {
 			if (identifier == null)
 				throw new IllegalArgumentException("Type identifier was not provided! FactoryHolder will not be loaded : " + holder.getSimpleName());
 			this.types.put(identifier, new Pair<>(data, holder));
-		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ea) {
+		} catch (ClassNotFoundException ea) {
+			throw new RuntimeException("Unable to resolve class during registration!", ea);
+		} catch (Throwable ea) {
 			if (ea instanceof NoSuchMethodException) return;
+			if (ea instanceof IllegalArgumentException) {
+				getLogger().severe("Type provider was not provided! FactoryHolder will not be loaded. : " + holder.getSimpleName());
+			}
 			ea.printStackTrace();
 			throw new RuntimeException("An exception occured when registering FactoryHolder", ea);
 		}
 	}
 
 	public <T extends Registrable> void registerAccessor(String directory, int priority, boolean useTypeDefiner, Class<? extends FactoryHolder> typeOf, RegistryKey<T> registryKey, String defaultType) {
-		keys.add(new AccessorKey(directory, priority, useTypeDefiner, registryKey, typeOf, defaultType));
+		keys.add(new AccessorKey<T>(directory, priority, useTypeDefiner, registryKey, typeOf, defaultType));
 	}
 
 	public <T extends Registrable> void registerAccessor(String directory, int priority, boolean useTypeDefiner, Class<? extends FactoryHolder> typeOf, RegistryKey<T> registryKey) {
-		keys.add(new AccessorKey(directory, priority, useTypeDefiner, registryKey, typeOf, null));
+		keys.add(new AccessorKey<T>(directory, priority, useTypeDefiner, registryKey, typeOf, null));
 	}
 
 	public <T extends Registrable> void registerAccessor(String directory, int priority, boolean useTypeDefiner, RegistryKey<T> registryKey) {
-		keys.add(new AccessorKey(directory, priority, useTypeDefiner, registryKey, null, null));
+		keys.add(new AccessorKey<T>(directory, priority, useTypeDefiner, registryKey, null, null));
 	}
 }

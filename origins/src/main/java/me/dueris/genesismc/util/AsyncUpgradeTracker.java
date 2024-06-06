@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AsyncUpgradeTracker implements Listener {
-	public static ConcurrentHashMap<Origin, TriPair/*String advancement, NamespacedKey identifier, String announcement*/> upgrades = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Origin, TriPair<String, NamespacedKey, String>/*String advancement, NamespacedKey identifier, String announcement*/> upgrades = new ConcurrentHashMap<>();
 	public static String NO_ANNOUNCEMENT = "no_announcement_found";
 
 	@EventHandler
@@ -33,13 +33,13 @@ public class AsyncUpgradeTracker implements Listener {
 			@Override
 			public void run() {
 				MinecraftServer server = GenesisMC.server;
-				for (Map.Entry<Origin, TriPair> entry : upgrades.entrySet()) {
+				for (Map.Entry<Origin, TriPair<String, NamespacedKey, String>> entry : upgrades.entrySet()) {
 					for (CraftPlayer player : ((CraftServer) Bukkit.getServer()).getOnlinePlayers()) {
 						for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 							if (PowerHolderComponent.getOrigin(player, layer).equals(entry.getKey())) {
-								String advancement = (String) entry.getValue().first;
-								NamespacedKey originToSet = (NamespacedKey) entry.getValue().second;
-								String announcement = (String) entry.getValue().third;
+								String advancement = entry.getValue().a();
+								NamespacedKey originToSet = entry.getValue().b();
+								String announcement = entry.getValue().c();
 
 								AdvancementHolder advancementHolder = server.getAdvancements().get(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(advancement)));
 								if (advancementHolder == null) {
