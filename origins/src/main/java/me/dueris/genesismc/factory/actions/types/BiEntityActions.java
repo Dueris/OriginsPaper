@@ -94,7 +94,7 @@ public class BiEntityActions {
 		}));
 	}
 
-	private void register(BiEntityActions.ActionFactory factory) {
+	public void register(BiEntityActions.ActionFactory factory) {
 		GenesisMC.getPlugin().registry.retrieve(Registries.BIENTITY_ACTION).register(factory);
 	}
 

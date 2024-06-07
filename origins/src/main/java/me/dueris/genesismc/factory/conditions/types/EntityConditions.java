@@ -765,7 +765,7 @@ public class EntityConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("in_thunderstorm"), (condition, entity) -> entity.isInRain() && entity.getWorld().isThundering()));
 	}
 
-	private void register(EntityConditions.ConditionFactory factory) {
+	public void register(EntityConditions.ConditionFactory factory) {
 		GenesisMC.getPlugin().registry.retrieve(Registries.ENTITY_CONDITION).register(factory);
 	}
 

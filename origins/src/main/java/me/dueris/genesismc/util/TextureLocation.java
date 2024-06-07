@@ -94,8 +94,8 @@ public record TextureLocation(NamespacedKey key) implements Registrable {
 									index++;
 								}
 
-							} catch (IOException e) {
-								e.printStackTrace();
+							} catch (Throwable e) {
+								if (e instanceof IOException) e.printStackTrace();
 							}
 						}
 					}

@@ -129,7 +129,7 @@ public class BiEntityConditions implements Listener {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("equal"), (condition, pair) -> pair.first() == pair.second()));
 	}
 
-	private void register(ConditionFactory factory) {
+	public void register(ConditionFactory factory) {
 		GenesisMC.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION).register(factory);
 	}
 

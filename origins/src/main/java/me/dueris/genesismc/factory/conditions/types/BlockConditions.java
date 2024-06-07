@@ -230,7 +230,7 @@ public class BlockConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("water_loggable"), (condition, block) -> block.getHandle().getBlockState(block.getPosition()).getBlock() instanceof LiquidBlockContainer));
 	}
 
-	private void register(ConditionFactory factory) {
+	public void register(ConditionFactory factory) {
 		GenesisMC.getPlugin().registry.retrieve(Registries.BLOCK_CONDITION).register(factory);
 	}
 

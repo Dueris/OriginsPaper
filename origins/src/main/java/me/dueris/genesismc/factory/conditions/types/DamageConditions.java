@@ -75,7 +75,7 @@ public class DamageConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("unblockable"), (condition, event) -> GenesisMC.server.reloadableRegistries().get().registry(net.minecraft.core.registries.Registries.DAMAGE_TYPE).orElseThrow().wrapAsHolder(CraftDamageType.bukkitToMinecraft(event.getDamageSource().getDamageType())).is(DamageTypeTags.BYPASSES_SHIELD)));
 	}
 
-	private void register(ConditionFactory factory) {
+	public void register(ConditionFactory factory) {
 		GenesisMC.getPlugin().registry.retrieve(Registries.DAMAGE_CONDITION).register(factory);
 	}
 

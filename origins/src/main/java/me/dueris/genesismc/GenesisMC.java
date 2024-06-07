@@ -179,26 +179,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 		}
 
 		debug(Component.text("* (-debugOrigins={true}) || BEGINNING DEBUG {"));
-		JsonObjectRemapper.typeMappings.add(new Pair<String, String>() {
-			@Override
-			public String left() {
-				return "origins";
-			}
-
-			@Override
-			public String right() {
-				return "apoli";
-			}
-		});
-		// Our version of restricted_armor allows handling of both.
-		JsonObjectRemapper.typeAlias.put("apoli:conditioned_restrict_armor", "apoli:restrict_armor");
-		JsonObjectRemapper.typeAlias.put("apugli:edible_item", "apoli:edible_item");
-		JsonObjectRemapper.typeAlias.put("apoli:modify_attribute", "apoli:conditioned_attribute");
-		JsonObjectRemapper.typeAlias.put("apoli:add_to_set", "apoli:add_to_entity_set");
-		JsonObjectRemapper.typeAlias.put("apoli:remove_from_set", "apoli:remove_from_entity_set");
-		JsonObjectRemapper.typeAlias.put("apoli:action_on_set", "apoli:action_on_entity_set");
-		JsonObjectRemapper.typeAlias.put("apoli:in_set", "apoli:in_entity_set");
-		JsonObjectRemapper.typeAlias.put("apoli:set_size", "apoli:entity_set_size");
 		ThreadFactory threadFactory = new NamedTickThreadFactory("OriginParsingPool");
 		placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
 		if (placeholderapi) new PlaceHolderAPI(this).register();
@@ -209,26 +189,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 		OriginDataContainer.loadData();
 		conditionExecutor = new ConditionExecutor();
-
-		this.registry = CalioRegistry.INSTANCE;
-		// Create new registry instances
-		this.registry.create(Registries.ORIGIN, new Registrar<Origin>(Origin.class));
-		this.registry.create(Registries.LAYER, new Registrar<Layer>(Layer.class));
-		this.registry.create(Registries.CRAFT_POWER, new Registrar<PowerType>(PowerType.class));
-		this.registry.create(Registries.FLUID_CONDITION, new Registrar<FluidConditions.ConditionFactory>(FluidConditions.ConditionFactory.class));
-		this.registry.create(Registries.ENTITY_CONDITION, new Registrar<EntityConditions.ConditionFactory>(EntityConditions.ConditionFactory.class));
-		this.registry.create(Registries.BIOME_CONDITION, new Registrar<BiomeConditions.ConditionFactory>(BiomeConditions.ConditionFactory.class));
-		this.registry.create(Registries.BIENTITY_CONDITION, new Registrar<BiEntityConditions.ConditionFactory>(BiEntityConditions.ConditionFactory.class));
-		this.registry.create(Registries.BLOCK_CONDITION, new Registrar<BlockConditions.ConditionFactory>(BlockConditions.ConditionFactory.class));
-		this.registry.create(Registries.ITEM_CONDITION, new Registrar<ItemConditions.ConditionFactory>(ItemConditions.ConditionFactory.class));
-		this.registry.create(Registries.DAMAGE_CONDITION, new Registrar<DamageConditions.ConditionFactory>(DamageConditions.ConditionFactory.class));
-		this.registry.create(Registries.ENTITY_ACTION, new Registrar<EntityActions.ActionFactory>(EntityActions.ActionFactory.class));
-		this.registry.create(Registries.ITEM_ACTION, new Registrar<ItemActions.ActionFactory>(ItemActions.ActionFactory.class));
-		this.registry.create(Registries.BLOCK_ACTION, new Registrar<BlockActions.ActionFactory>(BlockActions.ActionFactory.class));
-		this.registry.create(Registries.BIENTITY_ACTION, new Registrar<BiEntityActions.ActionFactory>(BiEntityActions.ActionFactory.class));
-		this.registry.create(Registries.TEXTURE_LOCATION, new Registrar<TextureLocation>(TextureLocation.class));
-		this.registry.create(Registries.PACK_SOURCE, new Registrar<DatapackRepository>(DatapackRepository.class));
-		this.registry.create(Registries.CHOOSING_PAGE, new Registrar<ChoosingPage>(ChoosingPage.class));
 
 		int avalibleJVMThreads = Runtime.getRuntime().availableProcessors() * 2;
 		int dynamic_thread_count = avalibleJVMThreads < 4 ? avalibleJVMThreads : Math.min(avalibleJVMThreads, OriginConfiguration.getConfiguration().getInt("max-loader-threads"));

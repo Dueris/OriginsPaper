@@ -221,7 +221,7 @@ public class BlockActions {
 		}));
 	}
 
-	private void register(BlockActions.ActionFactory factory) {
+	public void register(BlockActions.ActionFactory factory) {
 		GenesisMC.getPlugin().registry.retrieve(Registries.BLOCK_ACTION).register(factory);
 	}
 

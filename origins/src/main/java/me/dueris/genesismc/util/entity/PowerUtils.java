@@ -33,7 +33,6 @@ public class PowerUtils {
 		}
 	}
 
-	// New Rewrite
 	public static void grantPower(CommandSender executor, PowerType power, Player p, Layer layer, boolean suppress) throws InstantiationException, IllegalAccessException {
 		if (!PowerHolderComponent.playerPowerMapping.get(p).get(layer).contains(power)) {
 			PowerHolderComponent.playerPowerMapping.get(p).get(layer).add(power);

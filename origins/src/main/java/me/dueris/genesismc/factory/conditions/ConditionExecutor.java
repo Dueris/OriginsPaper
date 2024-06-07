@@ -27,22 +27,22 @@ import java.util.List;
 import java.util.Random;
 
 public class ConditionExecutor {
-	public static BiEntityConditions biEntityCondition = new BiEntityConditions();
-	public static BiomeConditions biomeCondition = new BiomeConditions();
-	public static BlockConditions blockCondition = new BlockConditions();
-	public static DamageConditions damageCondition = new DamageConditions();
-	public static EntityConditions entityCondition = new EntityConditions();
-	public static FluidConditions fluidCondition = new FluidConditions();
-	public static ItemConditions itemCondition = new ItemConditions();
+	public static BiEntityConditions biEntityConditions = new BiEntityConditions();
+	public static BiomeConditions biomeConditions = new BiomeConditions();
+	public static BlockConditions blockConditions = new BlockConditions();
+	public static DamageConditions damageConditions = new DamageConditions();
+	public static EntityConditions entityConditions = new EntityConditions();
+	public static FluidConditions fluidConditions = new FluidConditions();
+	public static ItemConditions itemConditions = new ItemConditions();
 
 	public static void registerAll() {
-		biEntityCondition.registerConditions();
-		biomeCondition.registerConditions();
-		blockCondition.registerConditions();
-		damageCondition.registerConditions();
-		entityCondition.registerConditions();
-		fluidCondition.registerConditions();
-		itemCondition.registerConditions();
+		biEntityConditions.registerConditions();
+		biomeConditions.registerConditions();
+		blockConditions.registerConditions();
+		damageConditions.registerConditions();
+		entityConditions.registerConditions();
+		fluidConditions.registerConditions();
+		itemConditions.registerConditions();
 
 		ConditionTypes.ConditionFactory.addMetaConditions();
 	}

@@ -54,7 +54,7 @@ public class ItemActions {
 		}));
 	}
 
-	private void register(ItemActions.ActionFactory factory) {
+	public void register(ItemActions.ActionFactory factory) {
 		GenesisMC.getPlugin().registry.retrieve(Registries.ITEM_ACTION).register(factory);
 	}
 

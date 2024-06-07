@@ -18,7 +18,6 @@ import net.minecraft.resources.ResourceLocation;
 import org.bukkit.NamespacedKey;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.*;

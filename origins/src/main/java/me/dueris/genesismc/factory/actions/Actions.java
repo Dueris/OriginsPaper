@@ -30,6 +30,10 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 public class Actions {
+	public static BiEntityActions bientityActions = new BiEntityActions();
+	public static BlockActions blockActions = new BlockActions();
+	public static EntityActions entityActions = new EntityActions();
+	public static ItemActions itemActions = new ItemActions();
 
 	public static HashMap<Entity, Boolean> resourceChangeTimeout = new HashMap<>();
 

@@ -581,7 +581,7 @@ public class EntityActions {
 		}));
 	}
 
-	private void register(EntityActions.ActionFactory factory) {
+	public void register(EntityActions.ActionFactory factory) {
 		GenesisMC.getPlugin().registry.retrieve(Registries.ENTITY_ACTION).register(factory);
 	}
 

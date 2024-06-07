@@ -23,7 +23,7 @@ public class FluidConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid"), (condition, fluid) -> fluid.builtInRegistryHolder().key().location().equals(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(condition.getString("fluid"))))));
 	}
 
-	private void register(ConditionFactory factory) {
+	public void register(ConditionFactory factory) {
 		GenesisMC.getPlugin().registry.retrieve(Registries.FLUID_CONDITION).register(factory);
 	}
 

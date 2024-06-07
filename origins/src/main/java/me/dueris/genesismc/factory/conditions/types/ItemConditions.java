@@ -158,7 +158,7 @@ public class ItemConditions {
 		}));
 	}
 
-	private void register(ConditionFactory factory) {
+	public void register(ConditionFactory factory) {
 		GenesisMC.getPlugin().registry.retrieve(Registries.ITEM_CONDITION).register(factory);
 	}
 
