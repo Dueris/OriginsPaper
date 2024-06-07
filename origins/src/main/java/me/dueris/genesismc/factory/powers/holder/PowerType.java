@@ -63,7 +63,7 @@ public class PowerType implements FactoryHolder, Listener {
 				return !clz.isAnnotation() && !clz.isInterface() && !clz.isEnum();
 			}).toList());
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("This would've been a zip error :P. Please tell us on discord if you see this ^-^");
 		}
 
 		holders.forEach(CraftCalio.INSTANCE::register);
