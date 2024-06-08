@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    implemnetation("io.github.Dueris:GenesisMC:mc1.20/6-v1.0.0")
+    implementation("io.github.Dueris:GenesisMC:mc1.20/6-v1.0.0")
 }
 ```
 
@@ -50,7 +50,7 @@ public class ApoliExamplePower extends PowerType {
 ```
 
 In Calio/Apoli, a PowerType is an extension of the FactoryHolder system which contains methods to create a valid instance for Calio to create the object. To create a FactoryHolder inside Calio during parsing, it reads the FactoryData provided by the FactoryHolder, which is defined by the method ``registerComponents(FactoryData data)``. FactoryData is the definition of a Constructor for the FactoryHolder. The first instance added is the first arg, the second being the second arg, etc. It also provides the key for the `"type"` field.
-With adding the constructor, it beecomes:
+With adding the constructor, it becomes:
 ```java
 public class ApoliExamplePower extends PowerType {
     public ApoliExamplePower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
