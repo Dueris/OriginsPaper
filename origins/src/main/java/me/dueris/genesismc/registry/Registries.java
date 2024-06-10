@@ -14,6 +14,7 @@ import me.dueris.genesismc.registry.registries.DatapackRepository;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.screen.ChoosingPage;
+import me.dueris.genesismc.util.LangFile;
 import me.dueris.genesismc.util.TextureLocation;
 
 public class Registries {
@@ -35,6 +36,7 @@ public class Registries {
 	public static final RegistryKey<BlockActions.ActionFactory> BLOCK_ACTION = new RegistryKey<>(BlockActions.ActionFactory.class, apoliIdentifier("block_action"));
 
 	public static final RegistryKey<TextureLocation> TEXTURE_LOCATION = new RegistryKey<>(TextureLocation.class, apoliIdentifier("texture_location"));
+	public static final RegistryKey<LangFile> LANG = new RegistryKey<>(LangFile.class, identifier("lang_file"));
 	public static final RegistryKey<DatapackRepository> PACK_SOURCE = new RegistryKey<>(DatapackRepository.class, apoliIdentifier("pack_source"));
 	public static final RegistryKey<ChoosingPage> CHOOSING_PAGE = new RegistryKey<>(ChoosingPage.class, originIdentifier("choosing_page"));
 

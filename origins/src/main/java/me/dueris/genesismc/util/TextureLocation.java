@@ -1,106 +1,55 @@
 package me.dueris.genesismc.util;
 
 import me.dueris.calio.registry.Registrable;
-import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.registry.Registries;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public record TextureLocation(NamespacedKey key) implements Registrable {
+public class TextureLocation implements Registrable {
 	public static HashMap<String, BarColor> textureMap = new HashMap<>();
+	private NamespacedKey key;
+	private BufferedImage image;
+	private List<BarColor> containedColors = new ArrayList<>();
 
-	public static void registerAll() throws IOException {
-		if (CraftApoli.datapacksInDir() == null) return;
-		for (File pack : CraftApoli.datapacksInDir()) {
-			if (pack == null) continue;
-			if (!pack.isDirectory()) continue;
-			if (pack.listFiles() == null) continue;
-			for (File folders : pack.listFiles()) {
-				if (folders == null) continue;
-				if (folders.getName().equalsIgnoreCase("assets")) {
-					for (File root : folders.listFiles()) {
-						String rootname = root.getName();
-						for (File file : root.listFiles()) {
-							if (file.getName().equalsIgnoreCase("textures")) {
-								Files.walk(file.toPath())
-									.sorted(Comparator.reverseOrder()) // Sort in reverse order
-									.forEach(path -> {
-										if (path.toString().endsWith(".png")) {
-											GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION).register(new TextureLocation(NamespacedKey.fromString(rootname + ":textures" + path.toAbsolutePath().toString().replace(file.getAbsolutePath(), "").replace("\\", "/"))));
-										}
-									});
-							}
-						}
-					}
-				}
-			}
+	public TextureLocation(NamespacedKey key, BufferedImage image) {
+		System.out.println(key.asString());
+		this.key = key;
+		this.image = image;
+		int height = image.getHeight();
+
+		Color[] originalPixels = new Color[height];
+		Color[] modifiedPixels = new Color[height];
+
+		for (int y = 0; y < height; y++) {
+			originalPixels[y] = new Color(image.getRGB(2, y));
 		}
 
-		for (TextureLocation location : GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION).values()) {
-			if (CraftApoli.datapacksInDir() == null) return;
-			for (File pack : CraftApoli.datapacksInDir()) {
-				if (pack == null) continue;
-				if (!pack.isDirectory()) continue;
-				if (pack.listFiles() == null) continue;
-				for (File folders : pack.listFiles()) {
-					if (folders.getName().equalsIgnoreCase("assets")) {
-						File mainRoot = new File(folders, location.key.asString().split(":")[0]);
-						if (!mainRoot.exists()) continue;
-						Path path = Path.of(mainRoot.getAbsolutePath() + File.separator + location.key.asString().split(":")[1]);
-						if (path.toFile().exists()) {
-							File resource = path.toFile();
-							try {
-								BufferedImage image = ImageIO.read(resource);
+		int currentIndex = 0;
+		while (currentIndex < height) {
+			if (currentIndex >= 180) break;
 
-								int width = image.getWidth();
-								int height = image.getHeight();
-
-								Color[] originalPixels = new Color[height];
-								Color[] modifiedPixels = new Color[height];
-
-								for (int y = 0; y < height; y++) {
-									originalPixels[y] = new Color(image.getRGB(2, y));
-								}
-
-								int currentIndex = 0;
-								while (currentIndex < height) {
-									if (currentIndex >= 180) break;
-
-									currentIndex += 2;
-									modifiedPixels[currentIndex] = originalPixels[currentIndex];
-									currentIndex += 9;
-									if (height - currentIndex <= 3) {
-										break;
-									}
-									modifiedPixels[currentIndex] = originalPixels[currentIndex];
-									currentIndex += 9;
-								}
-
-								int index = 0;
-								for (Color color : modifiedPixels) {
-									if (color == null) continue;
-									textureMap.put(location.key().asString() + "/-/" + index, convertToBarColor(color));
-									index++;
-								}
-
-							} catch (Throwable e) {
-								if (e instanceof IOException) e.printStackTrace();
-							}
-						}
-					}
-				}
+			currentIndex += 2;
+			modifiedPixels[currentIndex] = originalPixels[currentIndex];
+			currentIndex += 9;
+			if (height - currentIndex <= 3) {
+				break;
 			}
+			modifiedPixels[currentIndex] = originalPixels[currentIndex];
+			currentIndex += 9;
+		}
+
+		int index = 0;
+		for (Color color : modifiedPixels) {
+			if (color == null) continue;
+			BarColor c = convertToBarColor(color);
+			this.containedColors.add(c);
+			textureMap.put(key.key().asString() + "/-/" + index, c);
+			index++;
 		}
 	}
 
@@ -138,5 +87,9 @@ public record TextureLocation(NamespacedKey key) implements Registrable {
 		}
 	}
 
+	@Override
+	public NamespacedKey key() {
+		return this.key;
+	}
 
 }

@@ -47,7 +47,7 @@ public class Resource extends PowerType implements ResourcePower {
 
 	static {
 		GenesisMC.preShutdownTasks.add(() -> {
-			serverLoadedBars.values().forEach(Bar::delete);
+			serverLoadedBars.values().stream().filter(Objects::nonNull).forEach(Bar::delete);
 			currentlyDisplayed.forEach((player, list) -> list.forEach(Bar::delete));
 		});
 	}

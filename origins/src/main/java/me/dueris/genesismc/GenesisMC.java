@@ -5,6 +5,7 @@ import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.data.JsonObjectRemapper;
+import me.dueris.calio.data.AssetIdentifier.AssetType;
 import me.dueris.calio.registry.IRegistry;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.registry.impl.CalioRegistry;
@@ -144,6 +145,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	public void onEnable() {
 		plugin = this;
 		metrics = new BstatsMetrics(this, 18536);
+		this.registry = CalioRegistry.INSTANCE;
 		Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		System.out.println(); // Split new line
 		printComponent(Component.text("* Loading Version GenesisMC-{minecraftVersion-versionNumber} // CraftApoli-{apoliVersion}"
@@ -201,7 +203,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			// Register builtin instances
 			ConditionExecutor.registerAll();
 			Actions.registerAll();
-			TextureLocation.registerAll();
 			PowerType.registerAll();
 			// Start calio parser for data driven instances
 			final CraftCalio calio = CraftCalio.INSTANCE;
@@ -222,6 +223,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 				false, Layer.class,
 				Registries.LAYER
 			);
+			calio.registerAsset("textures", 0, "png", AssetType.IMAGE, Registries.TEXTURE_LOCATION);
+			calio.registerAsset("lang", 1, "json", AssetType.JSON, Registries.LANG);
 			calio.start(OriginConfiguration.getConfiguration().getBoolean("debug"));
 			BuiltinRegistry.bootstrap();
 			// End calio parsing

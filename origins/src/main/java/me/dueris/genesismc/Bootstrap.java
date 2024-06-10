@@ -26,6 +26,7 @@ import me.dueris.genesismc.registry.registries.DatapackRepository;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.screen.ChoosingPage;
+import me.dueris.genesismc.util.LangFile;
 import me.dueris.genesismc.util.TextureLocation;
 import me.dueris.genesismc.util.Util;
 import net.minecraft.core.Registry;
@@ -207,6 +208,7 @@ public class Bootstrap implements PluginBootstrap {
 		this.registry.create(Registries.BLOCK_ACTION, new Registrar<BlockActions.ActionFactory>(BlockActions.ActionFactory.class));
 		this.registry.create(Registries.BIENTITY_ACTION, new Registrar<BiEntityActions.ActionFactory>(BiEntityActions.ActionFactory.class));
 		this.registry.create(Registries.TEXTURE_LOCATION, new Registrar<TextureLocation>(TextureLocation.class));
+		this.registry.create(Registries.LANG, new Registrar<LangFile>(LangFile.class));
 		this.registry.create(Registries.PACK_SOURCE, new Registrar<DatapackRepository>(DatapackRepository.class));
 		this.registry.create(Registries.CHOOSING_PAGE, new Registrar<ChoosingPage>(ChoosingPage.class));
 	}

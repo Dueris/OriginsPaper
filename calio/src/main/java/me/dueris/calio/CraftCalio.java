@@ -4,9 +4,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
 import me.dueris.calio.data.AccessorKey;
+import me.dueris.calio.data.AssetIdentifier;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.FactoryHolder;
 import me.dueris.calio.data.JsonObjectRemapper;
+import me.dueris.calio.data.AssetIdentifier.AssetType;
 import me.dueris.calio.data.annotations.DontRegister;
 import me.dueris.calio.data.annotations.RequiresPlugin;
 import me.dueris.calio.parse.CalioJsonParser;
@@ -14,9 +16,11 @@ import me.dueris.calio.parse.reader.FileReader;
 import me.dueris.calio.parse.reader.FileReaderFactory;
 import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.registry.RegistryKey;
+import me.dueris.calio.registry.impl.CalioRegistry;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.NamespacedKey;
 
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
@@ -24,10 +28,13 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
+
 public class CraftCalio {
 	public static CraftCalio INSTANCE = new CraftCalio();
 	public final ConcurrentHashMap<NamespacedKey, Pair<FactoryData, Class<? extends FactoryHolder>>> types = new ConcurrentHashMap<>();
 	public final ArrayList<AccessorKey> keys = new ArrayList<>();
+	public final ArrayList<AssetIdentifier> assetKeys = new ArrayList<>();
 	private final List<File> datapackDirectoriesToParse = new ArrayList<>();
 	private boolean isDebugging;
 
@@ -58,6 +65,60 @@ public class CraftCalio {
 	public void start(boolean debug) {
 		this.isDebugging = debug;
 		debug("Starting CraftCalio parser...");
+		this.assetKeys.stream().sorted(Comparator.comparingInt(AssetIdentifier::priority)).forEach(assetKey -> {
+			datapackDirectoriesToParse.forEach(root -> {
+				packLoop: for (File datapack : root.listFiles()) {
+					try {
+						FileReader reader = FileReaderFactory.createFileReader(datapack.toPath());
+						if (reader == null) continue;
+						List<String> files = reader.listFiles();
+						for (String file : files) {
+							file = file.replace("/", "\\");
+							if ((file.startsWith("assets\\")) && file.endsWith(assetKey.fileType())) {
+								String fixedJsonFile = file.substring(file.indexOf("assets\\"));
+								String[] parts = fixedJsonFile.split("\\\\");
+								String namespace = parts[1];
+								String name = fixedJsonFile.split("\\\\")[2].split("\\\\")[0];
+								String key = assetKey.directory() + "/" + fixedJsonFile.substring(fixedJsonFile.indexOf(namespace) + namespace.length() + 1).replace("." + assetKey.fileType(), "").replace("\\", "/").replace(name + "/", "");
+								if (assetKey.directory().equalsIgnoreCase(name)) {
+									try (InputStream is = reader.getFileStream(file.replace("\\", "/"));
+										BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+										// Input stream made.
+										Class<? extends Registrable> toInvoke = assetKey.registryKey().type();
+										NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
+										switch (assetKey.assetType()) {
+											case JSON -> {
+												StringBuilder line = new StringBuilder();
+												String newLine;
+												while ((newLine = br.readLine()) != null) {
+													line.append(newLine);
+												}
+												String finishedLine = line.toString().replace("\n", "");
+												JsonObject assetParser;
+												try {
+													assetParser = JsonParser.parseReader(new StringReader(finishedLine)).getAsJsonObject();
+												} catch (Throwable throwable) {
+													getLogger().severe("An unhandled exception occurred when parsing a json file! Invalid syntax? The datapack will not be loaded.");
+													continue packLoop;
+												}
+												CalioRegistry.INSTANCE.retrieve(assetKey.registryKey()).register(toInvoke.getConstructor(NamespacedKey.class, JsonObject.class).newInstance(namespacedKey, assetParser));
+											}
+											case IMAGE -> {
+												CalioRegistry.INSTANCE.retrieve(assetKey.registryKey()).register(toInvoke.getConstructor(NamespacedKey.class, BufferedImage.class).newInstance(namespacedKey, ImageIO.read(is)));
+											}
+										}
+									} catch (Throwable throwable) {
+										throwable.printStackTrace();
+									}
+								}
+							}
+						}
+					} catch (Throwable throwable) {
+						throwable.printStackTrace();
+					}
+				}
+			});
+		});
 		this.keys.stream().sorted(Comparator.comparingInt(AccessorKey::getPriority)).forEach(accessorKey -> datapackDirectoriesToParse.forEach(root -> {
 			packLoop:
 			for (File datapack : root.listFiles()) {
@@ -175,5 +236,9 @@ public class CraftCalio {
 
 	public <T extends Registrable> void registerAccessor(String directory, int priority, boolean useTypeDefiner, RegistryKey<T> registryKey) {
 		keys.add(new AccessorKey<T>(directory, priority, useTypeDefiner, registryKey, null, null));
+	}
+
+	public <T extends Registrable> void registerAsset(String directory, int priority, String fileType, AssetType assetType, RegistryKey<T> registryKey) {
+		assetKeys.add(new AssetIdentifier<>(directory, priority, fileType, assetType, registryKey));
 	}
 }
