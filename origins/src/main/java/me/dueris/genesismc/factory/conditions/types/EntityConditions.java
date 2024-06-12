@@ -189,7 +189,7 @@ public class EntityConditions {
 			int radius = condition.getNumberOrDefault("radius", 15L).getInt();
 			Shape shape = condition.getEnumValueOrDefault("shape", Shape.class, Shape.CUBE);
 			String comparison = condition.getStringOrDefault("comparison", ">=");
-			float compare_to = condition.getNumber("compare_to").getFloat();
+			int compare_to = condition.getNumberOrDefault("compare_to", 1).getInt();
 
 			boolean hasCondition = condition.isPresent("block_condition");
 			float stopAt = -1;
@@ -544,7 +544,7 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("biome"), (condition, entity) -> {
 			if (condition.isPresent("condition")) {
-				return ConditionExecutor.testBiome(condition.getJsonObject("condition"), entity.getLocation().getBlock().getBiome(), entity.getLocation(), ((CraftWorld)entity.getWorld()).getHandle());
+				return ConditionExecutor.testBiome(condition.getJsonObject("condition"), entity.getLocation().getBlock().getBiome(), entity.getLocation(), ((CraftWorld) entity.getWorld()).getHandle());
 			} else { // Assumed to be trying to get biome type
 				String key = condition.getString("biome");
 				if (key.contains(":")) {

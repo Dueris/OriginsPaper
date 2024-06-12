@@ -12,12 +12,11 @@ import java.util.List;
 
 public class TextureLocation implements Registrable {
 	public static HashMap<String, BarColor> textureMap = new HashMap<>();
-	private NamespacedKey key;
-	private BufferedImage image;
-	private List<BarColor> containedColors = new ArrayList<>();
+	private final NamespacedKey key;
+	private final BufferedImage image;
+	private final List<BarColor> containedColors = new ArrayList<>();
 
 	public TextureLocation(NamespacedKey key, BufferedImage image) {
-		System.out.println(key.asString());
 		this.key = key;
 		this.image = image;
 		int height = image.getHeight();
