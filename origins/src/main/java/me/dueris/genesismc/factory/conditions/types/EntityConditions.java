@@ -194,17 +194,11 @@ public class EntityConditions {
 			boolean hasCondition = condition.isPresent("block_condition");
 			float stopAt = -1;
 			Comparison fixedComparison = Comparison.fromString(comparison);
-			switch (fixedComparison) {
-				case EQUAL:
-				case LESS_THAN_OR_EQUAL:
-				case GREATER_THAN:
-					stopAt = compare_to + 1;
-					break;
-				case LESS_THAN:
-				case GREATER_THAN_OR_EQUAL:
-					stopAt = compare_to;
-					break;
-			}
+			stopAt = switch (fixedComparison) {
+				case EQUAL, LESS_THAN_OR_EQUAL, GREATER_THAN -> compare_to + 1;
+				case LESS_THAN, GREATER_THAN_OR_EQUAL -> compare_to;
+				default -> stopAt;
+			};
 			int count = 0;
 			for (BlockPos pos : Shape.getPositions(CraftLocation.toBlockPosition(entity.getLocation()), shape, radius)) {
 				boolean run = true;
