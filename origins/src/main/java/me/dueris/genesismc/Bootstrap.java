@@ -3,7 +3,6 @@ package me.dueris.genesismc;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import it.unimi.dsi.fastutil.Pair;
-import me.dueris.calio.CraftCalio;
 import me.dueris.calio.data.JsonObjectRemapper;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.registry.impl.CalioRegistry;
@@ -11,13 +10,7 @@ import me.dueris.genesismc.factory.actions.types.BiEntityActions;
 import me.dueris.genesismc.factory.actions.types.BlockActions;
 import me.dueris.genesismc.factory.actions.types.EntityActions;
 import me.dueris.genesismc.factory.actions.types.ItemActions;
-import me.dueris.genesismc.factory.conditions.types.BiEntityConditions;
-import me.dueris.genesismc.factory.conditions.types.BiomeConditions;
-import me.dueris.genesismc.factory.conditions.types.BlockConditions;
-import me.dueris.genesismc.factory.conditions.types.DamageConditions;
-import me.dueris.genesismc.factory.conditions.types.EntityConditions;
-import me.dueris.genesismc.factory.conditions.types.FluidConditions;
-import me.dueris.genesismc.factory.conditions.types.ItemConditions;
+import me.dueris.genesismc.factory.conditions.types.*;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.nms.OriginLootCondition;
@@ -53,7 +46,6 @@ import java.util.zip.ZipInputStream;
 // TODO: WaterProtection Enchantment - 1.21
 public class Bootstrap implements PluginBootstrap {
 	public static ArrayList<String> oldDV = new ArrayList<>();
-	private CalioRegistry registry;
 
 	static {
 		oldDV.add("OriginsGenesis");
@@ -63,6 +55,8 @@ public class Bootstrap implements PluginBootstrap {
 		oldDV.add("Origins-GenesisMC[0_2_4]");
 		oldDV.add("Origins-GenesisMC[0_2_6]");
 	}
+
+	private CalioRegistry registry;
 
 	public static void deleteDirectory(Path directory, boolean ignoreErrors) throws IOException {
 		if (Files.exists(directory)) {
@@ -169,7 +163,7 @@ public class Bootstrap implements PluginBootstrap {
 		}
 		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, new ResourceLocation("apoli", "power"), PowerLootCondition.TYPE);
 		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, new ResourceLocation("origins", "origin"), OriginLootCondition.TYPE);
-	
+
 		JsonObjectRemapper.typeMappings.add(new Pair<String, String>() {
 			@Override
 			public String left() {

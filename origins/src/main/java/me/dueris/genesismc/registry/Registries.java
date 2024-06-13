@@ -1,9 +1,6 @@
 package me.dueris.genesismc.registry;
 
-import org.bukkit.NamespacedKey;
-
 import me.dueris.calio.registry.RegistryKey;
-import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.actions.types.BiEntityActions;
 import me.dueris.genesismc.factory.actions.types.BlockActions;
 import me.dueris.genesismc.factory.actions.types.EntityActions;
@@ -16,6 +13,7 @@ import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.screen.ChoosingPage;
 import me.dueris.genesismc.util.LangFile;
 import me.dueris.genesismc.util.TextureLocation;
+import org.bukkit.NamespacedKey;
 
 public class Registries {
 	public static final RegistryKey<Origin> ORIGIN = new RegistryKey<>(Origin.class, apoliIdentifier("origin"));
