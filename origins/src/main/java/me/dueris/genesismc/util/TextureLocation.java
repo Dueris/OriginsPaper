@@ -91,4 +91,7 @@ public class TextureLocation implements Registrable {
 		return this.key;
 	}
 
+	public BufferedImage getImage() {
+		return image;
+	}
 }

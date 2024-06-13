@@ -3,11 +3,7 @@ package me.dueris.calio;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
-import me.dueris.calio.data.AccessorKey;
-import me.dueris.calio.data.AssetIdentifier;
-import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.FactoryHolder;
-import me.dueris.calio.data.JsonObjectRemapper;
+import me.dueris.calio.data.*;
 import me.dueris.calio.data.AssetIdentifier.AssetType;
 import me.dueris.calio.data.annotations.DontRegister;
 import me.dueris.calio.data.annotations.RequiresPlugin;
@@ -20,6 +16,7 @@ import me.dueris.calio.registry.impl.CalioRegistry;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.NamespacedKey;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Method;
@@ -27,8 +24,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
 
 public class CraftCalio {
 	public static CraftCalio INSTANCE = new CraftCalio();
@@ -67,7 +62,8 @@ public class CraftCalio {
 		debug("Starting CraftCalio parser...");
 		this.assetKeys.stream().sorted(Comparator.comparingInt(AssetIdentifier::priority)).forEach(assetKey -> {
 			datapackDirectoriesToParse.forEach(root -> {
-				packLoop: for (File datapack : root.listFiles()) {
+				packLoop:
+				for (File datapack : root.listFiles()) {
 					try {
 						FileReader reader = FileReaderFactory.createFileReader(datapack.toPath());
 						if (reader == null) continue;
@@ -79,10 +75,10 @@ public class CraftCalio {
 								String[] parts = fixedJsonFile.split("\\\\");
 								String namespace = parts[1];
 								String name = fixedJsonFile.split("\\\\")[2].split("\\\\")[0];
-								String key = assetKey.directory() + "/" + fixedJsonFile.substring(fixedJsonFile.indexOf(namespace) + namespace.length() + 1).replace("." + assetKey.fileType(), "").replace("\\", "/").replace(name + "/", "");
+								String key = assetKey.directory() + "/" + fixedJsonFile.substring(fixedJsonFile.indexOf(namespace) + namespace.length() + 1).replace("\\", "/").replace(name + "/", "");
 								if (assetKey.directory().equalsIgnoreCase(name)) {
 									try (InputStream is = reader.getFileStream(file.replace("\\", "/"));
-										BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+										 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 										// Input stream made.
 										Class<? extends Registrable> toInvoke = assetKey.registryKey().type();
 										NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
