@@ -35,7 +35,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: Build ${{ github.run_number }}
-          tag_name: mc1.20/6-v1.0.0
+          tag_name: mc1.20/6-v1.0.2
           body: \"changes\"=${{ github.event.head_commit.message }}
           token: ${{ secrets.GIT_TOKEN }}
           files: build/libs/*.jar
