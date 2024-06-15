@@ -302,6 +302,12 @@ public class Util {
 			&& fromLoc.getBlockZ() == toLoc.getBlockZ());
 	}
 
+	public static String compileStrings(List<String> strings) {
+		StringBuilder builder = new StringBuilder();
+		strings.forEach(builder::append);
+		return builder.toString();
+	}
+
 	public static void downloadFileFromURL(String fileUrl) throws IOException {
 		URL url = new URL(fileUrl);
 		try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
