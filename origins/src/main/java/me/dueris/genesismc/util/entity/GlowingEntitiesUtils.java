@@ -737,8 +737,8 @@ public class GlowingEntitiesUtils implements Listener {
 				"a",
 				"b"),
 			V1_20_5_REMAPPED(
-				20,
-				5,
+				21,
+				0,
 				true,
 				"DATA_SHARED_FLAGS_ID",
 				"MARKER",
