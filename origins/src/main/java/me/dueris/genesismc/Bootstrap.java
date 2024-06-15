@@ -161,8 +161,8 @@ public class Bootstrap implements PluginBootstrap {
 		} catch (Exception e) {
 			// ignore
 		}
-		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, new ResourceLocation("apoli", "power"), PowerLootCondition.TYPE);
-		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, new ResourceLocation("origins", "origin"), OriginLootCondition.TYPE);
+		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, ResourceLocation.fromNamespaceAndPath("apoli", "power"), PowerLootCondition.TYPE);
+		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, ResourceLocation.fromNamespaceAndPath("origins", "origin"), OriginLootCondition.TYPE);
 
 		JsonObjectRemapper.typeMappings.add(new Pair<String, String>() {
 			@Override

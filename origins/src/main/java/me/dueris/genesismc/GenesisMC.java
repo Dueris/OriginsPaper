@@ -86,8 +86,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	private static GenesisMC plugin;
 
 	static {
-		versions.add("1.20.5");
-		versions.add("1.20.6");
+		versions.add("1.21");
 	}
 
 	public IRegistry registry;

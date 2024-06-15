@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "me.dueris"
-version = "mc1.20-v1.0.3"
+version = "mc1.21-v1.0.3"
 description = "Bringing the Origins Mod to PaperMC"
 
 dependencies {
@@ -45,7 +45,7 @@ tasks {
             "name" to project.name,
             "version" to project.version,
             "description" to project.description,
-            "apiVersion" to "1.20"
+            "apiVersion" to "1.21"
         )
         inputs.properties(props)
         filesMatching("paper-plugin.yml") {

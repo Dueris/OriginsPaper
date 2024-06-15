@@ -38,7 +38,7 @@ public class CraftCalio {
 	}
 
 	public static ResourceLocation nmsIdentifier(String namespace, String path) {
-		return new ResourceLocation(namespace, path);
+		return ResourceLocation.fromNamespaceAndPath(namespace, path);
 	}
 
 	/**

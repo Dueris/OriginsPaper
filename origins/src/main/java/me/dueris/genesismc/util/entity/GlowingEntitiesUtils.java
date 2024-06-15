@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 /**
  * A Spigot util to easily make entities glow.
  * <p>
- * <b>1.17 -> 1.20.6</b>
+ * <b>1.17 -> 1.21</b>
  *
  * @author SkytAsul
  * @version 1.3.4

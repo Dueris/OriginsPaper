@@ -346,14 +346,14 @@ public class EntityConditions {
 				switch (condition.getStringOrDefault("calculation", "sum")) {
 					case "sum":
 						for (net.minecraft.world.item.ItemStack stack : CraftEnchantment.bukkitToMinecraft(enchantment).getSlotItems(((CraftPlayer) player).getHandle()).values()) {
-							value += EnchantmentHelper.getItemEnchantmentLevel(CraftEnchantment.bukkitToMinecraft(enchantment), stack);
+							value += EnchantmentHelper.getItemEnchantmentLevel(CraftEnchantment.bukkitToMinecraftHolder(enchantment), stack);
 						}
 						break;
 					case "max":
 						int equippedEnchantmentLevel = 0;
 
 						for (net.minecraft.world.item.ItemStack stack : CraftEnchantment.bukkitToMinecraft(enchantment).getSlotItems(((CraftPlayer) player).getHandle()).values()) {
-							int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(CraftEnchantment.bukkitToMinecraft(enchantment), stack);
+							int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(CraftEnchantment.bukkitToMinecraftHolder(enchantment), stack);
 
 							if (enchantmentLevel > equippedEnchantmentLevel) {
 								equippedEnchantmentLevel = enchantmentLevel;

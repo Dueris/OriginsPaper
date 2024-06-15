@@ -11,7 +11,7 @@ plugins {
     id("io.github.goooler.shadow") version "8.1.7" apply true
 }
 
-val paperweightVersion: String = "1.20.6-R0.1-SNAPSHOT"
+val paperweightVersion: String = "1.21-R0.1-SNAPSHOT"
 
 allprojects {
     apply(plugin = "java")
@@ -70,7 +70,7 @@ tasks {
         }
     }
     runServer {
-        minecraftVersion("1.20.6")
+        minecraftVersion("1.21")
     }
 }
 
