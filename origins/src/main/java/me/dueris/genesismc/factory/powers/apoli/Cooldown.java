@@ -8,9 +8,9 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.data.types.HudRender;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.util.ModifiableFloatPair;
 import me.dueris.genesismc.util.Util;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,8 +25,8 @@ import static me.dueris.genesismc.factory.powers.apoli.Resource.currentlyDisplay
 import static me.dueris.genesismc.factory.powers.apoli.Resource.serverLoadedBars;
 
 public class Cooldown extends PowerType implements CooldownPower {
-	private static final ConcurrentHashMap<NamespacedKey, Double> incrementGetter = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Player, List<Pair<KeyedBossBar, ResourcePower>>> cooldowns = new ConcurrentHashMap<>();
+	private static final ConcurrentHashMap<KeyedBossBar, ModifiableFloatPair> timingsTracker = new ConcurrentHashMap<>();
 	private final HudRender hudRender;
 	private final int cooldown;
 
@@ -50,10 +50,9 @@ public class Cooldown extends PowerType implements CooldownPower {
 		cooldowns.putIfAbsent(player, new ArrayList<>());
 		if (isInCooldown(player, power)) return; // Already in cooldown
 		Resource.Bar bar = new Resource.Bar(power, player);
-		incrementGetter.put(bar.renderedBar.getKey(), 1.0 / amt);
 		Resource.currentlyDisplayed.putIfAbsent(player, new ArrayList<>());
 		Resource.currentlyDisplayed.get(player).add(bar);
-		cooldowns.get(player).add(new Pair<>() {
+		Pair<KeyedBossBar, ResourcePower> pair = new Pair<>() {
 			@Override
 			public KeyedBossBar left() {
 				return bar.renderedBar;
@@ -63,7 +62,9 @@ public class Cooldown extends PowerType implements CooldownPower {
 			public ResourcePower right() {
 				return power;
 			}
-		});
+		};
+		cooldowns.get(player).add(pair);
+		timingsTracker.put(pair.key(), new ModifiableFloatPair(amt, amt));
 	}
 
 	public static boolean isInCooldown(Player player, ResourcePower power) {
@@ -91,9 +92,10 @@ public class Cooldown extends PowerType implements CooldownPower {
 	public void tick() {
 		Util.collectValues(new ArrayList<>(cooldowns.values())).forEach((pair) -> {
 			KeyedBossBar bar = pair.left();
-			if (!incrementGetter.containsKey(bar.getKey())) return;
-			double increment = incrementGetter.get(bar.getKey());
-			if (bar.getProgress() - increment <= 0) {
+			ModifiableFloatPair floatPair = timingsTracker.get(bar);
+			float max = floatPair.a();
+			float cur = floatPair.setB(floatPair.b() - 1); // Decrease the tracker
+			if (cur <= 0) {
 				for (Player player : bar.getPlayers()) {
 					Resource.currentlyDisplayed.putIfAbsent(player, new ArrayList<>());
 					Resource.Bar b = null;
@@ -113,7 +115,7 @@ public class Cooldown extends PowerType implements CooldownPower {
 				Bukkit.getServer().removeBossBar(bar.getKey());
 				scheduleRemoval(pair);
 			} else {
-				bar.setProgress(bar.getProgress() - increment);
+				bar.setProgress(1 - (cur / max));
 			}
 		});
 	}
@@ -122,7 +124,6 @@ public class Cooldown extends PowerType implements CooldownPower {
 		for (Player p : cooldowns.keySet()) {
 			if (cooldowns.get(p).contains(pair)) {
 				cooldowns.get(p).remove(pair);
-				incrementGetter.remove(pair.left().getKey());
 				break;
 			}
 		}
