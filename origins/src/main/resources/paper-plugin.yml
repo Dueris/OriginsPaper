@@ -2,7 +2,7 @@ bootstrapper: "me.dueris.genesismc.Bootstrap"
 loader: "me.dueris.genesismc.DependencyLoader"
 load: POSTWORLD
 name: "GenesisMC"
-version: 'mc1.21-1.0.3'
+version: 'mc1.21-1.0.4'
 main: "me.dueris.genesismc.GenesisMC"
 api-version: "1.21"
 authors: [ Dueris ]

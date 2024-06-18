@@ -35,7 +35,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: Latest v1.0.2 dev
-          tag_name: mc1.21/0-v1.0.3
+          tag_name: mc1.21/0-v1.0.4
           body: \"changes\"=${{ github.event.head_commit.message }}
           token: ${{ secrets.GIT_TOKEN }}
           files: build/libs/*.jar

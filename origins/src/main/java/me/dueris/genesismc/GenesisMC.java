@@ -78,7 +78,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 	public static OriginScheduler.MainTickerThread scheduler = null;
 	public static String version = Bukkit.getVersion().split("\\(MC: ")[1].replace(")", "");
 	public static boolean isCompatible = false;
-	public static String pluginVersion = "v1.0.3";
+	public static String pluginVersion = "v1.0.4";
 	public static String world_container;
 	public static ExecutorService loaderThreadPool;
 	public static ArrayList<String> versions = new ArrayList<>();
