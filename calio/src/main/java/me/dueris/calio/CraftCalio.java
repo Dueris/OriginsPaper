@@ -1,7 +1,9 @@
 package me.dueris.calio;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.mojang.datafixers.util.Pair;
 import me.dueris.calio.data.*;
 import me.dueris.calio.data.AssetIdentifier.AssetType;
@@ -45,7 +47,6 @@ public class CraftCalio {
 	 * Add a datapack path to the list of directories to parse.
 	 *
 	 * @param path the path to be added
-	 * @return void
 	 */
 	public void addDatapackPath(Path path) {
 		datapackDirectoriesToParse.add(path.toFile());
@@ -54,8 +55,7 @@ public class CraftCalio {
 	/**
 	 * A method to start parsing with a provided debug mode and ExecutorService.
 	 *
-	 * @param debug      a boolean indicating whether debugging is enabled
-	 * @param threadPool an ExecutorService for managing threads
+	 * @param debug a boolean indicating whether debugging is enabled
 	 */
 	public void start(boolean debug) {
 		this.isDebugging = debug;
@@ -116,13 +116,13 @@ public class CraftCalio {
 			});
 		});
 		this.keys.stream().sorted(Comparator.comparingInt(AccessorKey::getPriority)).forEach(accessorKey -> datapackDirectoriesToParse.forEach(root -> {
-			packLoop:
 			for (File datapack : root.listFiles()) {
 				try {
 					FileReader fileReader = FileReaderFactory.createFileReader(datapack.toPath());
 					if (fileReader == null) continue;
 					List<String> files = fileReader.listFiles();
 					HashMap<Pair<JsonObject, NamespacedKey>, Integer> newLoadingPrioritySortedMap = new HashMap<>();
+					fileLoop:
 					for (String file : files) {
 						file = file.replace("/", "\\");
 						if ((file.startsWith("data\\")) && file.endsWith(".json")) {
@@ -140,12 +140,16 @@ public class CraftCalio {
 										line.append(newLine);
 									}
 									String finishedLine = line.toString().replace("\n", "");
+									if (isCorrupted(finishedLine)) {
+										getLogger().severe("The json file with ResourceLocation of \"{}\" is corrupted! Please contact the pack author.".replace("{}", namespace + ":" + key));
+										continue fileLoop;
+									}
 									JsonObject powerParser;
 									try {
 										powerParser = JsonParser.parseReader(new StringReader(finishedLine)).getAsJsonObject();
 									} catch (Throwable throwable) {
-										getLogger().severe("An unhandled exception occurred when parsing a json file! Invalid syntax? The datapack will not be loaded.");
-										continue packLoop;
+										getLogger().severe("An unhandled exception occurred when parsing a json file \"{}\"! Invalid syntax? The datapack will not be loaded.".replace("{}", namespace + ":" + key));
+										continue fileLoop;
 									}
 									NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
 									JsonObject remappedJsonObject = JsonObjectRemapper.remapJsonObject(powerParser, namespacedKey);
@@ -168,6 +172,18 @@ public class CraftCalio {
 				}
 			}
 		}));
+	}
+
+	private boolean isCorrupted(String finishedLine) {
+		try {
+			JsonElement jsonElement = JsonParser.parseString(finishedLine);
+			if (!jsonElement.isJsonObject()) {
+				return true;
+			}
+		} catch (JsonSyntaxException e) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -228,10 +244,6 @@ public class CraftCalio {
 
 	public <T extends Registrable> void registerAccessor(String directory, int priority, boolean useTypeDefiner, Class<? extends FactoryHolder> typeOf, RegistryKey<T> registryKey) {
 		keys.add(new AccessorKey<T>(directory, priority, useTypeDefiner, registryKey, typeOf, null));
-	}
-
-	public <T extends Registrable> void registerAccessor(String directory, int priority, boolean useTypeDefiner, RegistryKey<T> registryKey) {
-		keys.add(new AccessorKey<T>(directory, priority, useTypeDefiner, registryKey, null, null));
 	}
 
 	public <T extends Registrable> void registerAsset(String directory, int priority, String fileType, AssetType assetType, RegistryKey<T> registryKey) {
