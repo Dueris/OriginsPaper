@@ -6,7 +6,6 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
-import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
@@ -44,6 +43,18 @@ public class ActionOnCallback extends PowerType {
 			.add("entity_action_respawned", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
 	}
 
+	@Override
+	public void bootstrapApply(Player player) {
+		Actions.executeEntity(player, entityActionAdded);
+		Actions.executeEntity(player, entityActionGained);
+	}
+
+	@Override
+	public void bootstrapUnapply(Player player) {
+		Actions.executeEntity(player, entityActionRemoved);
+		Actions.executeEntity(player, entityActionLost);
+	}
+
 	@EventHandler
 	public void choose(OriginChangeEvent e) {
 		Player actor = e.getPlayer();
@@ -58,19 +69,6 @@ public class ActionOnCallback extends PowerType {
 				Actions.executeEntity(e.getPlayer(), entityActionChosen);
 			}
 		}.runTaskLater(GenesisMC.getPlugin(), 1);
-	}
-
-	@EventHandler
-	public void powerUpdate(PowerUpdateEvent e) {
-		Player player = e.getPlayer();
-		if (!getPlayers().contains(player) || !e.getPower().getTag().equalsIgnoreCase(getTag())) return;
-		if (e.isRemoved()) {
-			Actions.executeEntity(e.getPlayer(), entityActionRemoved);
-			Actions.executeEntity(e.getPlayer(), entityActionLost);
-		} else {
-			Actions.executeEntity(e.getPlayer(), entityActionAdded);
-			Actions.executeEntity(e.getPlayer(), entityActionGained);
-		}
 	}
 
 	@EventHandler

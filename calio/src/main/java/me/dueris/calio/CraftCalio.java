@@ -163,7 +163,7 @@ public class CraftCalio {
 					Collections.sort(list, Map.Entry.comparingByValue());
 
 					for (Map.Entry<Pair<JsonObject, NamespacedKey>, Integer> entry : list) {
-						CalioJsonParser.initilize(entry.getKey(), accessorKey);
+						CalioJsonParser.init(entry.getKey(), accessorKey);
 					}
 
 					newLoadingPrioritySortedMap.clear();

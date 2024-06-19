@@ -7,6 +7,7 @@ import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.*;
@@ -16,9 +17,11 @@ import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.factory.powers.apoli.Toggle;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.util.RaycastUtils;
 import me.dueris.genesismc.util.Util;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
+import me.dueris.genesismc.util.entity.PowerUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -181,24 +184,45 @@ public class EntityActions {
 		register(new ActionFactory(GenesisMC.apoliIdentifier("remove_power"), (action, entity) -> {
 			if (entity instanceof Player p) {
 				PowerType powerContainer = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(action.getNamespacedKey("power"));
-				if (powerContainer != null) {
-					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), ((CraftEntity) p).getHandle().position(), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("power")));
+				if (powerContainer == null) {
+					GenesisMC.getPlugin().getLogger().severe("Searched PowerType was null when attempting to revoke a power: {}".replace("{}", action.getString("power")));
+					return;
+				}
+				Layer layer = CraftApoli.getLayerFromTag(action.getString("source"));
+				try {
+					PowerUtils.removePower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
+				} catch (InstantiationException | IllegalAccessException e) {
+					throw new RuntimeException(e);
 				}
 			}
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("grant_power"), (action, entity) -> {
 			if (entity instanceof Player p) {
 				PowerType powerContainer = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(action.getNamespacedKey("power"));
-				if (powerContainer != null) {
-					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), ((CraftEntity) p).getHandle().position(), "power grant {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("power")));
+				if (powerContainer == null) {
+					GenesisMC.getPlugin().getLogger().severe("Searched PowerType was null when attempting to apply a new power: {}".replace("{}", action.getString("power")));
+					return;
+				}
+				Layer layer = CraftApoli.getLayerFromTag(action.getString("source"));
+				try {
+					PowerUtils.grantPower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
+				} catch (InstantiationException | IllegalAccessException e) {
+					throw new RuntimeException(e);
 				}
 			}
 		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("revoke_power"), (action, entity) -> {
 			if (entity instanceof Player p) {
 				PowerType powerContainer = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(action.getNamespacedKey("power"));
-				if (powerContainer != null) {
-					RaycastUtils.executeNMSCommand(((CraftEntity) p).getHandle(), ((CraftEntity) p).getHandle().position(), "power revoke {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.getString("power")));
+				if (powerContainer == null) {
+					GenesisMC.getPlugin().getLogger().severe("Searched PowerType was null when attempting to revoke a power: {}".replace("{}", action.getString("power")));
+					return;
+				}
+				Layer layer = CraftApoli.getLayerFromTag(action.getString("source"));
+				try {
+					PowerUtils.removePower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
+				} catch (InstantiationException | IllegalAccessException e) {
+					throw new RuntimeException(e);
 				}
 			}
 		}));

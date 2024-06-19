@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class CalioJsonParser {
 
-	public static FactoryHolder initilize(Pair<JsonObject, NamespacedKey> pair, AccessorKey accessorKey) {
+	public static FactoryHolder init(Pair<JsonObject, NamespacedKey> pair, AccessorKey accessorKey) {
 		NamespacedKey key = pair.getSecond();
 		if (accessorKey.getOfType() == null) return null;
 		try {
