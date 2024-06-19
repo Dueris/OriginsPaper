@@ -71,7 +71,6 @@ public class PowerType implements FactoryHolder, Listener {
 		// Apoli-Simple
 		OriginSimpleContainer.registerPower(BounceSlimeBlock.class);
 		OriginSimpleContainer.registerPower(LikeWater.class);
-		OriginSimpleContainer.registerPower(NoCobWebSlowdown.class);
 		OriginSimpleContainer.registerPower(PiglinNoAttack.class);
 		OriginSimpleContainer.registerPower(ScareCreepers.class);
 		OriginSimpleContainer.registerPower(WaterBreathe.class);

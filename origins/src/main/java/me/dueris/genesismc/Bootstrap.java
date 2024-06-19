@@ -10,7 +10,7 @@ import me.dueris.genesismc.util.Util;
 import me.dueris.genesismc.util.WrappedBootstrapContext;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.net.URL;
@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -30,6 +31,7 @@ import java.util.zip.ZipInputStream;
 public class Bootstrap implements PluginBootstrap {
 	public static ArrayList<String> oldDV = new ArrayList<>();
 	public static ArrayList<Consumer<WrappedBootstrapContext>> apiCalls = new ArrayList<>();
+	public static AtomicBoolean BOOTSTRAPPED = new AtomicBoolean(false);
 
 	static {
 		oldDV.add("OriginsGenesis");
@@ -136,19 +138,21 @@ public class Bootstrap implements PluginBootstrap {
 	}
 
 	@Override
-	public void bootstrap(@NotNull BootstrapContext bootContext) {
+	public void bootstrap(@Nullable BootstrapContext bootContext) {
 		WrappedBootstrapContext context = new WrappedBootstrapContext(bootContext);
-		NMSBootstrap.bootstrap(context);
-		for (Consumer<WrappedBootstrapContext> apiCall : apiCalls) {
-			apiCall.accept(context);
-		}
-		File packDir = new File(this.parseDatapackPath());
-		try {
-			copyOriginDatapack(packDir.toPath(), context);
-		} catch (Exception e) {
-			// ignore
-		} finally {
-			context.initRegistries(packDir.toPath());
+		if (bootContext != null) {
+			NMSBootstrap.bootstrap(context);
+			for (Consumer<WrappedBootstrapContext> apiCall : apiCalls) {
+				apiCall.accept(context);
+			}
+			File packDir = new File(this.parseDatapackPath());
+			try {
+				copyOriginDatapack(packDir.toPath(), context);
+			} catch (Exception e) {
+				// ignore
+			} finally {
+				context.initRegistries(packDir.toPath());
+			}
 		}
 
 		JsonObjectRemapper.typeMappings.add(new Pair<String, String>() {
@@ -193,6 +197,7 @@ public class Bootstrap implements PluginBootstrap {
 			Registries.PACK_SOURCE,
 			Registries.CHOOSING_PAGE
 		);
+		BOOTSTRAPPED.set(true);
 	}
 
 	public String parseDatapackPath() {

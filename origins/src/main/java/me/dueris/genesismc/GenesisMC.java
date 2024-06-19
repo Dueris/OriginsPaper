@@ -135,6 +135,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 	@Override
 	public void onEnable() {
+		if (!Bootstrap.BOOTSTRAPPED.get()) {
+			Bootstrap bootstrap = new Bootstrap();
+			bootstrap.bootstrap(null);
+		}
+		Bootstrap.BOOTSTRAPPED.set(false);
 		plugin = this;
 		metrics = new BstatsMetrics(this, 18536);
 		this.registry = CalioRegistry.INSTANCE;
