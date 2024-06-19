@@ -19,6 +19,7 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -152,7 +153,7 @@ public class KeybindUtil implements Listener {
 		if (e.getAction().isRightClick()) {
 			triggerExecution("key.use", e.getPlayer());
 			if (e.getItem() != null) {
-				if (e.getItem().getItemMeta() == null) return;
+				if (e.getItem().getItemMeta() == null && !e.getHand().equals(EquipmentSlot.HAND)) return;
 				if (e.getItem().getItemMeta().getPersistentDataContainer().has(GenesisMC.identifier("origin_item_data"))) { // Is keybind
 					triggerExecution(e.getItem().getItemMeta().getPersistentDataContainer().get(GenesisMC.identifier("origin_item_data"), PersistentDataType.STRING), e.getPlayer());
 				}

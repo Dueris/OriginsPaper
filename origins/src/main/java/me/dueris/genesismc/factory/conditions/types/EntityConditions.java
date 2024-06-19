@@ -19,6 +19,7 @@ import me.dueris.genesismc.util.Reflector;
 import me.dueris.genesismc.util.Util;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -77,6 +78,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiPredicate;
 
 public class EntityConditions {
@@ -680,6 +682,15 @@ public class EntityConditions {
 			}
 
 			return comparison.compare(count, compareTo);
+		}));
+		register(new ConditionFactory(GenesisMC.apoliIdentifier("command"), (condition, entity) -> {
+			net.minecraft.world.entity.Entity nmsEntity = entity.getHandle();
+			CommandSourceStack commandSourceStack = nmsEntity.createCommandSourceStack();
+			AtomicInteger comparing = new AtomicInteger();
+			commandSourceStack.withCallback((successful, returnValue) -> {
+				comparing.set(returnValue);
+			});
+			return Comparison.fromString(condition.getString("comparison")).compare(comparing.get(), condition.getNumber("compare_to").getInt());
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("time_of_day"), (condition, entity) -> {
 			String comparison = condition.getString("comparison");

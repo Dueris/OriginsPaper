@@ -204,7 +204,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 			// Start calio parser for data driven instances
 			final CraftCalio calio = CraftCalio.INSTANCE;
 			this.registry.retrieve(Registries.PACK_SOURCE).values().stream()
-				.map(DatapackRepository::getPath).forEach(calio::addDatapackPath);
+				.map(DatapackRepository::path).forEach(calio::addDatapackPath);
 			calio.registerAccessor(
 				"powers", 0,
 				true, PowerType.class,

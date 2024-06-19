@@ -25,15 +25,16 @@ public class Registrar<T extends Registrable> {
 	 * Registers an item in the registry.
 	 *
 	 * @param item the item to register
-	 * @return void
+	 * @return The item
 	 */
-	public void register(T item) {
+	public T register(T item) {
 		checkFrozen();
 		try {
 			registerOrThrow(item);
 		} catch (Exception e) {
 			// silent fail
 		}
+		return item;
 	}
 
 	/**

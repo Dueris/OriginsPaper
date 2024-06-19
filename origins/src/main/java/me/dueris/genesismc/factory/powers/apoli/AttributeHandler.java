@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AttributeHandler extends PowerType {
+	public static ConcurrentHashMap<Player, List<Pair<Attribute, AttributeModifier>>> playerModifiers = new ConcurrentHashMap<>();
 	private final Modifier[] modifiers;
 	private final boolean updateHealth;
 	private final @Nullable String attribute;
-	public static ConcurrentHashMap<Player, List<Pair<Attribute, AttributeModifier>>> playerModifiers = new ConcurrentHashMap<>();
 
 	public AttributeHandler(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, boolean updateHealth, FactoryJsonObject modifier, FactoryJsonArray modifiers, String attribute) {
 		super(name, description, hidden, condition, loading_priority);

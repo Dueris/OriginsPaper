@@ -42,7 +42,7 @@ import static me.dueris.genesismc.screen.ScreenNavigator.inChoosingLayer;
 public class PowerHolderComponent implements Listener {
 
 	// Power maps of every power based on each layer applied to the player
-	public static ConcurrentHashMap<Player, HashMap<Layer, ConcurrentLinkedQueue<PowerType>>> playerPowerMapping = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Player, ConcurrentHashMap<Layer, ConcurrentLinkedQueue<PowerType>>> playerPowerMapping = new ConcurrentHashMap<>();
 	// A list of CraftPowers to be ran on the player
 	public static ConcurrentHashMap<Player, ConcurrentLinkedQueue<PowerType>> powersAppliedList = new ConcurrentHashMap<>();
 	// A list of Players that have powers that should be run
@@ -97,7 +97,7 @@ public class PowerHolderComponent implements Listener {
 	public static void setupPowers(Player p) {
 		OriginDataContainer.loadData(p);
 		String[] layers = OriginDataContainer.getLayer(p).split("\n");
-		HashMap<Layer, ConcurrentLinkedQueue<PowerType>> map = new HashMap<>();
+		ConcurrentHashMap<Layer, ConcurrentLinkedQueue<PowerType>> map = new ConcurrentHashMap<>();
 		for (String layer : layers) {
 			String[] layerData = layer.split("\\|");
 			Layer layerContainer = CraftApoli.getLayerFromTag(layerData[0]);

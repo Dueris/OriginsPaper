@@ -8,13 +8,13 @@ import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
-import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.data.types.ContainerType;
 import me.dueris.genesismc.factory.data.types.JsonKeybind;
 import me.dueris.genesismc.factory.powers.holder.PowerType;
 import me.dueris.genesismc.util.KeybindUtil;
 import me.dueris.genesismc.util.Util;
+import me.dueris.genesismc.util.entity.PlayerManager;
 import me.dueris.genesismc.util.entity.PowerHolderComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -168,23 +168,20 @@ public class Inventory extends PowerType implements KeyedPower {
 		return items;
 	}
 
-	@EventHandler
-	public void MoveBackChange(PowerUpdateEvent e) {
-		if (!e.isRemoved()) return;
-		if (e.getPower() instanceof Inventory inventoryPower && e.getPower().getTag().equalsIgnoreCase(getTag())) {
-			PowerType power = e.getPower();
-			Player p = e.getPlayer();
-			ArrayList<ItemStack> vaultItems = getItems(p, power.getTag());
+	@Override
+	public void bootstrapUnapply(Player player) {
+		if (!PlayerManager.playersLeaving.contains(player)) {
+			ArrayList<ItemStack> vaultItems = getItems(player, getTag());
 			for (ItemStack item : new ArrayList<>(vaultItems)) {
 				if (item != null && item.getType() != Material.AIR) {
-					if (inventoryPower.recoverable) {
-						p.getWorld().dropItemNaturally(p.getLocation(), item);
+					if (recoverable) {
+						player.getWorld().dropItemNaturally(player.getLocation(), item);
 					}
 					vaultItems.remove(item);
 				}
 			}
 
-			storeItems(new ArrayList<>(), p, power.getTag());
+			storeItems(new ArrayList<>(), player, getTag());
 		}
 	}
 
@@ -205,7 +202,6 @@ public class Inventory extends PowerType implements KeyedPower {
 	@EventHandler
 	public void deathTIMEEE(PlayerDeathEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
-			Player p = e.getPlayer();
 			if (dropOnDeath) {
 				dropItems(e.getPlayer());
 			}

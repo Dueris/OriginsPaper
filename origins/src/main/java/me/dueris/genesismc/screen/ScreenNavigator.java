@@ -103,6 +103,9 @@ public class ScreenNavigator implements Listener {
 	}
 
 	private static boolean isSimilarEnough(ItemStack a, ItemStack b, boolean cD) {
+		if (b == null && a != null) return false;
+		if (a == null && b != null) return false;
+		if (a == null && b == null) return true;
 		return a.getType().equals(b.getType()) && (!cD || ((a.displayName() != null && b.displayName() != null && a.getItemMeta().displayName().equals(b.getItemMeta().displayName()))));
 	}
 
