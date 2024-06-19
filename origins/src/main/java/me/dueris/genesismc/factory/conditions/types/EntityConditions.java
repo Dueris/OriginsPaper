@@ -322,7 +322,13 @@ public class EntityConditions {
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("resource"), (condition, entity) -> {
 			Optional<Resource.Bar> bar = Resource.getDisplayedBar(entity, condition.getString("resource"));
 			if (bar.isPresent()) {
+				if (condition.getString("resource").equalsIgnoreCase("axolotlsorgins:ram_attack_tackleres")) {
+					System.out.println("dufhwoh823u" + bar.get().meetsComparison(Comparison.fromString(condition.getString("comparison")), condition.getNumber("compare_to").getInt()));
+				}
 				return bar.get().meetsComparison(Comparison.fromString(condition.getString("comparison")), condition.getNumber("compare_to").getInt());
+			}
+			if (condition.getString("resource").equalsIgnoreCase("axolotlsorgins:ram_attack_tackleres")) {
+				System.out.println(Resource.serverLoadedBars.containsKey(condition.getString("resource")) && condition.getString("comparison").equalsIgnoreCase("==") && condition.getNumber("compare_to").getInt() == 0);
 			}
 			// We do a manual check of this as a backup for when people check for a non-functioning/displaying resource
 			// By checking the serverloaded bars(after we define that its not displayed) and seeing if the origin wants to check
