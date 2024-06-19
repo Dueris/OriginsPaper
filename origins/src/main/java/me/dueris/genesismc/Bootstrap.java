@@ -22,13 +22,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 // TODO: MachineMaker PluginDatapacks
-// TODO: WaterProtection Enchantment - 1.21
 public class Bootstrap implements PluginBootstrap {
 	public static ArrayList<String> oldDV = new ArrayList<>();
+	public static ArrayList<Consumer<WrappedBootstrapContext>> apiCalls = new ArrayList<>();
 
 	static {
 		oldDV.add("OriginsGenesis");
@@ -138,6 +139,9 @@ public class Bootstrap implements PluginBootstrap {
 	public void bootstrap(@NotNull BootstrapContext bootContext) {
 		WrappedBootstrapContext context = new WrappedBootstrapContext(bootContext);
 		NMSBootstrap.bootstrap(context);
+		for (Consumer<WrappedBootstrapContext> apiCall : apiCalls) {
+			apiCall.accept(context);
+		}
 		File packDir = new File(this.parseDatapackPath());
 		try {
 			copyOriginDatapack(packDir.toPath(), context);
