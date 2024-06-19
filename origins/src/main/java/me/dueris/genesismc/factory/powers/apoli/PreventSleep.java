@@ -60,8 +60,8 @@ public class PreventSleep extends PowerType {
 					player.setBedSpawnLocation(blockLocation);
 				}
 
-				player.sendMessage(message.equalsIgnoreCase("origins.avian_sleep_fail") ? "You need fresh air to sleep" :
-					message.equalsIgnoreCase("text.apoli.cannot_sleep") ? "You cannot sleep" : "text.apoli.cannot_sleep");
+				player.sendMessage(message.replace("origins.avian_sleep_fail", "You need fresh air to sleep")
+					.replace("text.apoli.cannot_sleep", "You cannot sleep"));
 				e.setCancelled(true);
 			}
 		}

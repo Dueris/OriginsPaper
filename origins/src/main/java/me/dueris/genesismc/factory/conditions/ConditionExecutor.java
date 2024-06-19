@@ -136,7 +136,7 @@ public class ConditionExecutor {
 			if (con != null) {
 				return getPossibleInvert(invert, con.test(condition, entityPair));
 			} else {
-				return getPossibleInvert(invert, true); // Condition null or not found.
+				return getPossibleInvert(invert, false); // Condition null or not found.
 			}
 		}
 		return false;
@@ -210,7 +210,7 @@ public class ConditionExecutor {
 			if (con != null) {
 				return getPossibleInvert(invert, con.test(condition, new oshi.util.tuples.Pair<Biome, BlockPos>(nmsBiome, CraftLocation.toBlockPosition(blockPos))));
 			} else {
-				return getPossibleInvert(invert, true); // Condition null or not found.
+				return getPossibleInvert(invert, false); // Condition null or not found.
 			}
 		}
 		return false;
@@ -281,7 +281,7 @@ public class ConditionExecutor {
 			if (con != null) {
 				return getPossibleInvert(invert, con.test(condition, block));
 			} else {
-				return getPossibleInvert(invert, true); // Condition null or not found.
+				return getPossibleInvert(invert, false); // Condition null or not found.
 			}
 		}
 		return false;
@@ -347,7 +347,7 @@ public class ConditionExecutor {
 			if (con != null) {
 				return getPossibleInvert(invert, con.test(condition, event));
 			} else {
-				return getPossibleInvert(invert, true); // Condition null or not found.
+				return getPossibleInvert(invert, false); // Condition null or not found.
 			}
 		}
 		return false;
@@ -417,7 +417,7 @@ public class ConditionExecutor {
 			if (con != null) {
 				return getPossibleInvert(invert, con.test(condition, entity));
 			} else {
-				return getPossibleInvert(invert, true); // Condition null or not found.
+				return getPossibleInvert(invert, false); // Condition null or not found.
 			}
 		}
 		return false;
@@ -483,7 +483,7 @@ public class ConditionExecutor {
 			if (con != null) {
 				return getPossibleInvert(invert, con.test(condition, itemStack));
 			} else {
-				return getPossibleInvert(invert, true); // Condition null or not found.
+				return getPossibleInvert(invert, false); // Condition null or not found.
 			}
 		}
 		return false;
@@ -549,7 +549,7 @@ public class ConditionExecutor {
 			if (con != null) {
 				return getPossibleInvert(invert, con.test(condition, fluid));
 			} else {
-				return getPossibleInvert(invert, true); // Condition null or not found.
+				return getPossibleInvert(invert, false); // Condition null or not found.
 			}
 		}
 		return false;
