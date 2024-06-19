@@ -1,6 +1,7 @@
 package me.dueris.genesismc.util;
 
 import me.dueris.genesismc.GenesisMC;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -13,10 +14,22 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class LogoutBugWorkaround implements Listener {
+	static {
+		GenesisMC.preShutdownTasks.add(() -> {
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "logoutWorkaroundLocation"), PersistentDataType.STRING, formatLocation(p.getLocation()));
+			}
+		});
+	}
+
+	public static String formatLocation(Location location) {
+		return location.x() + "//" + location.getY() + "//" + location.getZ() + "//" + location.getYaw() + "//" + location.getPitch();
+	}
+
 	@EventHandler
 	public void logout(PlayerQuitEvent e) {
 		Player p = e.getPlayer();
-		p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "logoutWorkaroundLocation"), PersistentDataType.STRING, this.formatLocation(p.getLocation()));
+		p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "logoutWorkaroundLocation"), PersistentDataType.STRING, formatLocation(p.getLocation()));
 	}
 
 	@EventHandler
@@ -63,9 +76,5 @@ public class LogoutBugWorkaround implements Listener {
 		if (e.getCause().equals(PlayerTeleportEvent.TeleportCause.END_PORTAL)) {
 			e.setTo(new Location(e.getTo().getWorld(), e.getTo().getX(), 51, e.getTo().getZ(), e.getTo().getYaw(), e.getTo().getPitch()));
 		}
-	}
-
-	public String formatLocation(Location location) {
-		return location.x() + "//" + location.getY() + "//" + location.getZ() + "//" + location.getYaw() + "//" + location.getPitch();
 	}
 }

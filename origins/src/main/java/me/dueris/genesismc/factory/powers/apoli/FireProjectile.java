@@ -187,9 +187,10 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 
 									if (entityToSpawn instanceof Projectile projectileToSpawn) {
 										if (projectileToSpawn instanceof AbstractHurtingProjectile explosiveProjectileToSpawn) {
-											explosiveProjectileToSpawn.xPower = rotationVector.x * speed;
-											explosiveProjectileToSpawn.yPower = rotationVector.y * speed;
-											explosiveProjectileToSpawn.zPower = rotationVector.z * speed;
+											Vec3 vector = new Vec3(rotationVector.x * speed, rotationVector.y * speed, rotationVector.z * speed);
+											explosiveProjectileToSpawn.assignDirectionalMovement(
+												vector, vector.length()
+											);
 										}
 
 										projectileToSpawn.setOwner(player);

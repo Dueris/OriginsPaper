@@ -34,6 +34,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Equipable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -288,11 +289,23 @@ public class Util {
 			&& world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, blockPos).getY() < blockPos.getY();
 	}
 
+	public static EquipmentSlot getEquipmentSlotForItem(net.minecraft.world.item.ItemStack stack) {
+		Equipable equipable = Equipable.get(stack);
+
+		return equipable != null ? equipable.getEquipmentSlot() : EquipmentSlot.MAINHAND;
+	}
+
 	public static boolean hasChangedBlockCoordinates(final Location fromLoc, final Location toLoc) {
 		return !(fromLoc.getWorld().equals(toLoc.getWorld())
 			&& fromLoc.getBlockX() == toLoc.getBlockX()
 			&& fromLoc.getBlockY() == toLoc.getBlockY()
 			&& fromLoc.getBlockZ() == toLoc.getBlockZ());
+	}
+
+	public static String compileStrings(List<String> strings) {
+		StringBuilder builder = new StringBuilder();
+		strings.forEach(builder::append);
+		return builder.toString();
 	}
 
 	public static void downloadFileFromURL(String fileUrl) throws IOException {

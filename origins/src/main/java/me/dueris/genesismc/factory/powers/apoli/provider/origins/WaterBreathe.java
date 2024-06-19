@@ -125,7 +125,7 @@ public class WaterBreathe implements Listener, PowerProvider {
 							finalDmg = 0.5f;
 						}
 					}
-					DamageType dmgType = Util.DAMAGE_REGISTRY.get(new ResourceLocation("origins", "no_water_for_gills"));
+					DamageType dmgType = Util.DAMAGE_REGISTRY.get(ResourceLocation.fromNamespaceAndPath("origins", "no_water_for_gills"));
 					((CraftPlayer) p).getHandle().hurt(Util.getDamageSource(dmgType), finalDmg);
 				}
 			}

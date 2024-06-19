@@ -11,7 +11,7 @@ plugins {
     id("io.github.goooler.shadow") version "8.1.7" apply true
 }
 
-val paperweightVersion: String = "1.20.6-R0.1-SNAPSHOT"
+val paperweightVersion: String = "1.21-R0.1-SNAPSHOT"
 
 allprojects {
     apply(plugin = "java")
@@ -70,13 +70,13 @@ tasks {
         }
     }
     runServer {
-        minecraftVersion("1.20.6")
+        minecraftVersion("1.21")
     }
 }
 
 tasks.register<Jar>("makePublisher") {
     dependsOn(tasks.shadowJar)
-    archiveFileName.set("genesis-v1.0.2-SNAPSHOT.jar")
+    archiveFileName.set("genesis-v1.0.4-SNAPSHOT.jar")
     from(sourceSets.main.get().output)
 }
 
@@ -105,7 +105,7 @@ publishing {
         artifact(tasks.getByName("makePublisher")) {
             groupId = "io.github.dueris"
             artifactId = "genesis"
-            version = "v1.0.2-SNAPSHOT"
+            version = "v1.0.4-SNAPSHOT"
         }
     }
     repositories {

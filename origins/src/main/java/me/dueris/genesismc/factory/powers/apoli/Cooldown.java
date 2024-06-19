@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.data.FactoryData;
@@ -18,15 +19,18 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.server.ServerLoadEvent;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static me.dueris.genesismc.factory.powers.apoli.Resource.currentlyDisplayed;
 import static me.dueris.genesismc.factory.powers.apoli.Resource.serverLoadedBars;
 
 public class Cooldown extends PowerType implements CooldownPower {
-	public static ConcurrentHashMap<Player, List<Pair<KeyedBossBar, ResourcePower>>> cooldowns = new ConcurrentHashMap<>();
 	private static final ConcurrentHashMap<KeyedBossBar, ModifiableFloatPair> timingsTracker = new ConcurrentHashMap<>();
+	private static final Set<String> ticked = new HashSet<>();
+	public static ConcurrentHashMap<Player, List<Pair<KeyedBossBar, ResourcePower>>> cooldowns = new ConcurrentHashMap<>();
 	private final HudRender hudRender;
 	private final int cooldown;
 
@@ -88,13 +92,23 @@ public class Cooldown extends PowerType implements CooldownPower {
 			});
 	}
 
+	@EventHandler
+	public void serverTickEnd(ServerTickEndEvent e) {
+		ticked.clear();
+	}
+
 	@Override
 	public void tick() {
 		Util.collectValues(new ArrayList<>(cooldowns.values())).forEach((pair) -> {
 			KeyedBossBar bar = pair.left();
+			String keyString = bar.getKey().asString();
+			if (ticked.contains(keyString)) {
+				return;
+			}
+			ticked.add(keyString);
 			ModifiableFloatPair floatPair = timingsTracker.get(bar);
 			float max = floatPair.a();
-			float cur = floatPair.setB(floatPair.b() - 1); // Decrease the tracker
+			float cur = floatPair.setB(floatPair.b() - 1);
 			if (cur <= 0) {
 				for (Player player : bar.getPlayers()) {
 					Resource.currentlyDisplayed.putIfAbsent(player, new ArrayList<>());
@@ -127,6 +141,8 @@ public class Cooldown extends PowerType implements CooldownPower {
 				break;
 			}
 		}
+
+		timingsTracker.remove(pair.key());
 	}
 
 	@Override

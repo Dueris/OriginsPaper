@@ -10,6 +10,7 @@ import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.EntityLinkedItemStack;
 import me.dueris.genesismc.util.Reflector;
 import me.dueris.genesismc.util.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -17,7 +18,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.Item;
@@ -55,14 +55,14 @@ public class ItemConditions {
 			if (slot == null) {
 				return Equipable.get(nms) != null;
 			}
-			return LivingEntity.getEquipmentSlotForItem(nms) == slot;
+			return Util.getEquipmentSlotForItem(nms) == slot;
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("is_damageable"), (condition, itemStack) -> CraftItemStack.asCraftCopy(itemStack).handle.isDamageableItem()));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("fireproof"), (condition, itemStack) -> CraftItemStack.asCraftCopy(itemStack).handle.has(DataComponents.FIRE_RESISTANT)));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantment"), (condition, itemStack) -> {
 			Enchantment enchantment = CraftRegistry.ENCHANTMENT.get(NamespacedKey.fromString(condition.getString("enchantment")));
 			if (enchantment != null) {
-				net.minecraft.world.item.enchantment.Enchantment nmsEnchantment = CraftEnchantment.bukkitToMinecraft(enchantment);
+				Holder<net.minecraft.world.item.enchantment.Enchantment> nmsEnchantment = CraftEnchantment.bukkitToMinecraftHolder(enchantment);
 				Comparison comparison = Comparison.fromString(condition.getString("comparison"));
 				int compare_to = condition.getNumber("compare_to").getInt();
 

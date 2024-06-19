@@ -7,8 +7,8 @@ import me.dueris.calio.data.types.RequiredInstance;
  * Implementation of a TriPair object
  */
 public class FactoryDataDefiner<T> {
-	private String key;
-	private Class<T> type;
+	private final String key;
+	private final Class<T> type;
 	private Object defaultVal;
 
 	public FactoryDataDefiner(String objName, Class<T> type, T defaultVal) {
@@ -28,7 +28,7 @@ public class FactoryDataDefiner<T> {
 	}
 
 	public Class<T> getType() {
-		return (Class<T>) this.type;
+		return this.type;
 	}
 
 	public String getObjName() {

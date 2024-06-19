@@ -109,6 +109,12 @@ public class PowerType implements FactoryHolder, Listener {
 	public void tick() {
 	}
 
+	public void bootstrapUnapply(Player player) {
+	}
+
+	public void bootstrapApply(Player player) {
+	}
+
 	public String getType() {
 		try {
 			return ((FactoryData) getClass().getDeclaredMethod("registerComponents", FactoryData.class).invoke(null, new FactoryData())).getIdentifier().asString();

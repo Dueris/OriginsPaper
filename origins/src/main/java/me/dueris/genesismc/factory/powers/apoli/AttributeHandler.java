@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.mojang.datafixers.util.Pair;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
@@ -19,11 +20,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerEvent;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AttributeHandler extends PowerType {
 	private final Modifier[] modifiers;
 	private final boolean updateHealth;
 	private final @Nullable String attribute;
+	public static ConcurrentHashMap<Player, List<Pair<Attribute, AttributeModifier>>> playerModifiers = new ConcurrentHashMap<>();
 
 	public AttributeHandler(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, boolean updateHealth, FactoryJsonObject modifier, FactoryJsonArray modifiers, String attribute) {
 		super(name, description, hidden, condition, loading_priority);
@@ -50,9 +55,20 @@ public class AttributeHandler extends PowerType {
 		}
 	}
 
+	@Override
+	public void bootstrapUnapply(Player player) {
+		if (playerModifiers.containsKey(player)) {
+			playerModifiers.get(player).forEach(pair -> {
+				if (player.getAttribute(pair.getFirst()) == null) return;
+				player.getAttribute(pair.getFirst()).removeModifier(pair.getSecond());
+			});
+		}
+	}
+
 	protected void runAttributeModifyPower(PlayerEvent e) {
 		Player p = e.getPlayer();
 		if (!getPlayers().contains(p)) return;
+		playerModifiers.putIfAbsent(p, new ArrayList<>());
 		for (Modifier modifier : modifiers) {
 			try {
 				String attrName = modifier.handle.getString("attribute");
@@ -79,6 +95,7 @@ public class AttributeHandler extends PowerType {
 
 				if (p.getAttribute(attributeModifier) != null) {
 					p.getAttribute(attributeModifier).addTransientModifier(attrModifier);
+					playerModifiers.get(p).add(new Pair<>(attributeModifier, attrModifier));
 				}
 
 				AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attributeModifier, this, e.isAsynchronous());

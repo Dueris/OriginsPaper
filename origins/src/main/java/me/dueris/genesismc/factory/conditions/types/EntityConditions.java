@@ -346,14 +346,14 @@ public class EntityConditions {
 				switch (condition.getStringOrDefault("calculation", "sum")) {
 					case "sum":
 						for (net.minecraft.world.item.ItemStack stack : CraftEnchantment.bukkitToMinecraft(enchantment).getSlotItems(((CraftPlayer) player).getHandle()).values()) {
-							value += EnchantmentHelper.getItemEnchantmentLevel(CraftEnchantment.bukkitToMinecraft(enchantment), stack);
+							value += EnchantmentHelper.getItemEnchantmentLevel(CraftEnchantment.bukkitToMinecraftHolder(enchantment), stack);
 						}
 						break;
 					case "max":
 						int equippedEnchantmentLevel = 0;
 
 						for (net.minecraft.world.item.ItemStack stack : CraftEnchantment.bukkitToMinecraft(enchantment).getSlotItems(((CraftPlayer) player).getHandle()).values()) {
-							int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(CraftEnchantment.bukkitToMinecraft(enchantment), stack);
+							int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(CraftEnchantment.bukkitToMinecraftHolder(enchantment), stack);
 
 							if (enchantmentLevel > equippedEnchantmentLevel) {
 								equippedEnchantmentLevel = enchantmentLevel;
@@ -614,7 +614,7 @@ public class EntityConditions {
 				}
 			}
 			String comparison = condition.getStringOrDefault("comparison", ">=");
-			int compare_to = condition.getNumber("compare_to").getInt();
+			int compare_to = condition.getNumberOrDefault("compare_to", 1).getInt();
 			return Comparison.fromString(comparison).compare(count, compare_to);
 		}));
 		register(new ConditionFactory(GenesisMC.apoliIdentifier("saturation_level"), (condition, entity) -> {
@@ -698,12 +698,17 @@ public class EntityConditions {
 				condition.getNamespacedKey("predicate")
 			);
 			ReloadableServerRegistries.Holder holder = entity.getHandle().getServer().reloadableRegistries();
+			LootItemCondition predicate;
 
-			LootItemCondition predicate = holder.get().registry(net.minecraft.core.registries.Registries.PREDICATE).stream()
-				.flatMap(Registry::holders)
-				.filter(regHolder -> regHolder.key().location().equals(location))
-				.map(Holder.Reference::value)
-				.findFirst().orElseThrow();
+			try {
+				predicate = holder.get().registry(net.minecraft.core.registries.Registries.PREDICATE).stream()
+					.flatMap(Registry::holders)
+					.filter(regHolder -> regHolder.key().location().equals(location))
+					.map(Holder.Reference::value)
+					.findFirst().orElseThrow();
+			} catch (Throwable throwable) {
+				return false;
+			}
 
 			LootParams params = new LootParams.Builder(level)
 				.withParameter(LootContextParams.ORIGIN, entity.getHandle().position())

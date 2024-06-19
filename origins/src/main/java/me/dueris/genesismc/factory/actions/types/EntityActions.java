@@ -88,6 +88,13 @@ public class EntityActions {
 				bar.change(change, operation);
 			});
 		}));
+		register(new ActionFactory(GenesisMC.apoliIdentifier("set_resource"), (action, entity) -> {
+			Optional<Resource.Bar> resourceBar = Resource.getDisplayedBar(entity, action.getString("resource"));
+			resourceBar.ifPresent((bar) -> {
+				int val = action.getNumber("value").getInt();
+				bar.change(val, "set");
+			});
+		}));
 		register(new ActionFactory(GenesisMC.apoliIdentifier("modify_resource"), (action, entity) -> {
 			Optional<Resource.Bar> resourceBar = Resource.getDisplayedBar(entity, action.getString("resource"));
 			resourceBar.ifPresent((bar) -> {

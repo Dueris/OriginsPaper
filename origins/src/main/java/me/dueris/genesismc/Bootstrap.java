@@ -4,27 +4,10 @@ import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.data.JsonObjectRemapper;
-import me.dueris.calio.registry.Registrar;
-import me.dueris.calio.registry.impl.CalioRegistry;
-import me.dueris.genesismc.factory.actions.types.BiEntityActions;
-import me.dueris.genesismc.factory.actions.types.BlockActions;
-import me.dueris.genesismc.factory.actions.types.EntityActions;
-import me.dueris.genesismc.factory.actions.types.ItemActions;
-import me.dueris.genesismc.factory.conditions.types.*;
-import me.dueris.genesismc.factory.powers.holder.PowerType;
+import me.dueris.genesismc.content.NMSBootstrap;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.registry.nms.OriginLootCondition;
-import me.dueris.genesismc.registry.nms.PowerLootCondition;
-import me.dueris.genesismc.registry.registries.DatapackRepository;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.screen.ChoosingPage;
-import me.dueris.genesismc.util.LangFile;
-import me.dueris.genesismc.util.TextureLocation;
 import me.dueris.genesismc.util.Util;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import me.dueris.genesismc.util.WrappedBootstrapContext;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -39,13 +22,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 // TODO: MachineMaker PluginDatapacks
-// TODO: WaterProtection Enchantment - 1.21
 public class Bootstrap implements PluginBootstrap {
 	public static ArrayList<String> oldDV = new ArrayList<>();
+	public static ArrayList<Consumer<WrappedBootstrapContext>> apiCalls = new ArrayList<>();
 
 	static {
 		oldDV.add("OriginsGenesis");
@@ -55,8 +39,6 @@ public class Bootstrap implements PluginBootstrap {
 		oldDV.add("Origins-GenesisMC[0_2_4]");
 		oldDV.add("Origins-GenesisMC[0_2_6]");
 	}
-
-	private CalioRegistry registry;
 
 	public static void deleteDirectory(Path directory, boolean ignoreErrors) throws IOException {
 		if (Files.exists(directory)) {
@@ -75,7 +57,7 @@ public class Bootstrap implements PluginBootstrap {
 		}
 	}
 
-	public static void copyOriginDatapack(Path datapackPath) {
+	public static void copyOriginDatapack(Path datapackPath, WrappedBootstrapContext context) {
 		for (String string : oldDV) {
 			if (Files.exists(datapackPath)) {
 				String path = Path.of(datapackPath + File.separator + string).toAbsolutePath().toString();
@@ -87,7 +69,7 @@ public class Bootstrap implements PluginBootstrap {
 			} else {
 				File file = new File(datapackPath.toAbsolutePath().toString());
 				file.mkdirs();
-				copyOriginDatapack(datapackPath);
+				copyOriginDatapack(datapackPath, context);
 			}
 		}
 		try {
@@ -154,15 +136,20 @@ public class Bootstrap implements PluginBootstrap {
 	}
 
 	@Override
-	public void bootstrap(@NotNull BootstrapContext context) {
+	public void bootstrap(@NotNull BootstrapContext bootContext) {
+		WrappedBootstrapContext context = new WrappedBootstrapContext(bootContext);
+		NMSBootstrap.bootstrap(context);
+		for (Consumer<WrappedBootstrapContext> apiCall : apiCalls) {
+			apiCall.accept(context);
+		}
+		File packDir = new File(this.parseDatapackPath());
 		try {
-			File packDir = new File(this.parseDatapackPath());
-			copyOriginDatapack(packDir.toPath());
+			copyOriginDatapack(packDir.toPath(), context);
 		} catch (Exception e) {
 			// ignore
+		} finally {
+			context.initRegistries(packDir.toPath());
 		}
-		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, new ResourceLocation("apoli", "power"), PowerLootCondition.TYPE);
-		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, new ResourceLocation("origins", "origin"), OriginLootCondition.TYPE);
 
 		JsonObjectRemapper.typeMappings.add(new Pair<String, String>() {
 			@Override
@@ -185,26 +172,27 @@ public class Bootstrap implements PluginBootstrap {
 		JsonObjectRemapper.typeAlias.put("apoli:in_set", "apoli:in_entity_set");
 		JsonObjectRemapper.typeAlias.put("apoli:set_size", "apoli:entity_set_size");
 
-		this.registry = CalioRegistry.INSTANCE;
 		// Create new registry instances
-		this.registry.create(Registries.ORIGIN, new Registrar<Origin>(Origin.class));
-		this.registry.create(Registries.LAYER, new Registrar<Layer>(Layer.class));
-		this.registry.create(Registries.CRAFT_POWER, new Registrar<PowerType>(PowerType.class));
-		this.registry.create(Registries.FLUID_CONDITION, new Registrar<FluidConditions.ConditionFactory>(FluidConditions.ConditionFactory.class));
-		this.registry.create(Registries.ENTITY_CONDITION, new Registrar<EntityConditions.ConditionFactory>(EntityConditions.ConditionFactory.class));
-		this.registry.create(Registries.BIOME_CONDITION, new Registrar<BiomeConditions.ConditionFactory>(BiomeConditions.ConditionFactory.class));
-		this.registry.create(Registries.BIENTITY_CONDITION, new Registrar<BiEntityConditions.ConditionFactory>(BiEntityConditions.ConditionFactory.class));
-		this.registry.create(Registries.BLOCK_CONDITION, new Registrar<BlockConditions.ConditionFactory>(BlockConditions.ConditionFactory.class));
-		this.registry.create(Registries.ITEM_CONDITION, new Registrar<ItemConditions.ConditionFactory>(ItemConditions.ConditionFactory.class));
-		this.registry.create(Registries.DAMAGE_CONDITION, new Registrar<DamageConditions.ConditionFactory>(DamageConditions.ConditionFactory.class));
-		this.registry.create(Registries.ENTITY_ACTION, new Registrar<EntityActions.ActionFactory>(EntityActions.ActionFactory.class));
-		this.registry.create(Registries.ITEM_ACTION, new Registrar<ItemActions.ActionFactory>(ItemActions.ActionFactory.class));
-		this.registry.create(Registries.BLOCK_ACTION, new Registrar<BlockActions.ActionFactory>(BlockActions.ActionFactory.class));
-		this.registry.create(Registries.BIENTITY_ACTION, new Registrar<BiEntityActions.ActionFactory>(BiEntityActions.ActionFactory.class));
-		this.registry.create(Registries.TEXTURE_LOCATION, new Registrar<TextureLocation>(TextureLocation.class));
-		this.registry.create(Registries.LANG, new Registrar<LangFile>(LangFile.class));
-		this.registry.create(Registries.PACK_SOURCE, new Registrar<DatapackRepository>(DatapackRepository.class));
-		this.registry.create(Registries.CHOOSING_PAGE, new Registrar<ChoosingPage>(ChoosingPage.class));
+		context.createRegistries(
+			Registries.ORIGIN,
+			Registries.LAYER,
+			Registries.CRAFT_POWER,
+			Registries.FLUID_CONDITION,
+			Registries.ENTITY_CONDITION,
+			Registries.BIOME_CONDITION,
+			Registries.BIENTITY_CONDITION,
+			Registries.BLOCK_CONDITION,
+			Registries.ITEM_CONDITION,
+			Registries.DAMAGE_CONDITION,
+			Registries.ENTITY_ACTION,
+			Registries.ITEM_ACTION,
+			Registries.BLOCK_ACTION,
+			Registries.BIENTITY_ACTION,
+			Registries.TEXTURE_LOCATION,
+			Registries.LANG,
+			Registries.PACK_SOURCE,
+			Registries.CHOOSING_PAGE
+		);
 	}
 
 	public String parseDatapackPath() {

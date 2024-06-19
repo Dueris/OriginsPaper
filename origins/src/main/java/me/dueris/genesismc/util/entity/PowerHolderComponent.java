@@ -276,6 +276,7 @@ public class PowerHolderComponent implements Listener {
 			if (!powersAppliedList.containsKey(player))
 				powersAppliedList.put(player, new ConcurrentLinkedQueue<>(List.of(c)));
 			else powersAppliedList.get(player).add(c);
+			c.bootstrapApply(player);
 			if (!suppress) {
 				if (OriginConfiguration.getConfiguration().getBoolean("debug"))
 					Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
@@ -295,6 +296,7 @@ public class PowerHolderComponent implements Listener {
 		NamespacedKey registryKey = power.key();
 		PowerType c = GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(registryKey);
 		if (c != null) {
+			c.bootstrapUnapply(player);
 			powersAppliedList.get(player).remove(c);
 			c.removePlayer(player);
 			if (!suppress) {
