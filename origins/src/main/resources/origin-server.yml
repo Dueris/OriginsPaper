@@ -1,4 +1,4 @@
-# GenesisMC - PolyForm Shield
+# OriginsPaper - PolyForm Shield
 # DO NOT CHANGE PATH OF CONFIGS, THIS WILL CAUSE ERRORS.
 
 # ~~~~~~~~~~~~~~~~~
@@ -11,7 +11,7 @@ debug: false
 # Determines if the Orb Of Origins can be crafted.
 orb-of-origins: true
 
-# Tells the server if it should add Genesis data reparse to the tick scheduler
+# Tells the server if it should add OriginsPaper data reparse to the tick scheduler
 # If enabled, the value "tickRate" will be used and after that selected amount of ticks,
 # the origindata will reload. This could have unintended concequences and could be dangerous.
 # The following issues are possible to occur:

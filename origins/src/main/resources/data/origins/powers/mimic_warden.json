@@ -17,7 +17,7 @@
     "distance": 12,
     "command_at_hit": "execute as @e[distance=..2] run damage @s 6",
     "command_step": 2.5,
-    "command_along_ray": "function genesis:boom_command_step",
+    "command_along_ray": "function originspaper:boom_command_step",
     "entity": true,
     "block": true,
     "bientity_action": {

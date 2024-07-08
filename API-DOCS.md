@@ -2,13 +2,13 @@
 
 ## Introduction
 
-Welcome to the **GenesisMC** API documentation. This document provides instructions on how to interact with GenesisMC's
+Welcome to the **OriginsPaper** API documentation. This document provides instructions on how to interact with OriginsPaper's
 codebase for external plugin use, or contributing.
 
 ## Adding the API to Gradle Kotlin Script
 
 Just add the repository where the API is hosted to your `build.gradle.kts` file and the dependency. Ensure you have
-paperweight installed aswell, because GenesisMC uses NMS and CraftBukkit instances throughout the plugin and API
+paperweight installed aswell, because OriginsPaper uses NMS and CraftBukkit instances throughout the plugin and API
 
 ```kotlin
 repositories {
@@ -19,32 +19,32 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.Dueris:GenesisMC:mc1.21/0-v1.0.0")
+    implementation("io.github.Dueris:OriginsPaper:mc1.21/0-v1.0.0")
 }
 ```
 
-## Setting up GenesisMC hooking
+## Setting up OriginsPaper hooking
 
-Setting up GenesisMC to hook into it is quite simple, and doesnt require much work at all.
+Setting up OriginsPaper to hook into it is quite simple, and doesnt require much work at all.
 
-GenesisMC starts the Calio parser during its init process, meaning you need to add it to your dependencies list inside
+OriginsPaper starts the Calio parser during its init process, meaning you need to add it to your dependencies list inside
 your `paper-plugin.yml` file. This guide will go over how to create new PowerTypes, Conditions, Actions, and how to even
-replace/remove instances of them within Genesis.
+replace/remove instances of them within OriginsPaper.
 What your depend list should look like:
 
 ```yaml
 dependencies:
   server:
-    GenesisMC:
+    OriginsPaper:
       load: AFTER
       required: true
 ```
 
-### WARNING: You must have GenesisMC load AFTER your plugin or else your PowerTypes and others will not be registered properly and Calio will not recognize your instances.
+### WARNING: You must have OriginsPaper load AFTER your plugin or else your PowerTypes and others will not be registered properly and Calio will not recognize your instances.
 
 ## Creating a new PowerType
 
-The Power system in Genesis works closely to the Apoli PowerType system, where each PowerType instance is a
+The Power system in OriginsPaper works closely to the Apoli PowerType system, where each PowerType instance is a
 representation of a Power json inside the datapack. For example:
 
 I have a power in ``data/dueris/powers/test.json`` with the `"type"` field as `"apoli:test"`, and a PowerType of the
@@ -124,7 +124,7 @@ public class ApoliExamplePower extends PowerType {
 By default, a PowerType is an implementation of a Listener instance, so there is no need to
 add `implements org.bukkit.Listener` to your class. However, if you are creating an external plugin, you will need to
 register your Class as a Listener with Bukkit, as Calio doesnt do this automagically. If you are contributing, then
-there is no need because during registration of the Power, GenesisMC takes care of this.
+there is no need because during registration of the Power, OriginsPaper takes care of this.
 
 Now that we have created our PowerType, lets register it. Its as simple as adding calling this method:
 
@@ -216,7 +216,7 @@ In this tutorial, we are going to add a new entity condition that checks if the 
 
 To register a Condition, you must first go through the ConditionExecutor to access the conditions `register` method.
 Each Condition class has its respective ConditionFactory class. A ConditionFactory is a builder for creating,
-registering, and calling Conditions. Conditions in GenesisMC are defined by a NamepacedKey as the associated type, and a
+registering, and calling Conditions. Conditions in OriginsPaper are defined by a NamepacedKey as the associated type, and a
 Predicate to define if the condition is true or not. Each Condition type category has its own ConditionFactory.
 
 ```java
@@ -248,7 +248,7 @@ equals(GameMode.SPECTATOR);
 		}));
 ```
 
-Now we have a fully functioning condition added to the plugin! GenesisMC should automagically setup the rest of the
+Now we have a fully functioning condition added to the plugin! OriginsPaper should automagically setup the rest of the
 registration to allow any origin to test the condition.
 
 ## Actions
@@ -310,7 +310,7 @@ Entity entity = /*your entity instance*/;
 List<PowerType> phasingPowers = PowerHolderComponent.getPowers(entity, "apoli:phasing"); // Returns all the powers of the phasing powertype
 ```
 
-2, is by providing the PowerType *class* inside the source. This way allows GenesisMC to return that PowerType instance
+2, is by providing the PowerType *class* inside the source. This way allows OriginsPaper to return that PowerType instance
 instead of the raw PowerType aswell, and is a lot faster than the 1st way. Lets do the same example as before, but with
 the other method.
 
@@ -381,7 +381,7 @@ Setting an origin is quite simple, and requires an Origin and Layer to set it:
 ```java
 Player player = /*your player instance*/;
 /**
- * Sets the origin on the default layer provided by Origins/GenesisMC
+ * Sets the origin on the default layer provided by Origins/OriginsPaper
  */
 PowerHolderComponent.
 
@@ -390,7 +390,7 @@ setOrigin(player, CraftApoli.getOriginFromTag("origins:elytrian"),CraftApoli.
 getLayerFromTag("origins:origin"));
 
 /**
- * Sets the origin on ALL layers in the GenesisMC registrar
+ * Sets the origin on ALL layers in the OriginsPaper registrar
  */
 	for(
 Layer layer :CraftApoli.
@@ -402,7 +402,7 @@ setOrigin(player, CraftApoli.getOriginFromTag("origins:elytrian"),layer);
 	}
 ```
 
-To get the Origin on a Player, there are a few ways. In GenesisMC, each Layer for the player has an assigned Origin to
+To get the Origin on a Player, there are a few ways. In OriginsPaper, each Layer for the player has an assigned Origin to
 it in a Map inside the PowerHolderComponent. To get a specific layer, you can provide a Layer argument to
 the `getOrigin` method and return that specific origin. If the Layer isnt specified, it will return the full Layer ->
 Origin Map.
@@ -420,5 +420,5 @@ Map<Layer, Origin> layerToOriginMap = PowerHolderComponent.getOrigin(player);
 Origin originsOrigin = PowerHolderComponent.getOrigin(player, CraftApoli.getLayerFromTag("origins:origin"));
 ```
 
-And thats it! That should cover everything important that you need to know for the GenesisMC CraftApoli system. Ping
+And thats it! That should cover everything important that you need to know for the OriginsPaper CraftApoli system. Ping
 @dueris in the discord server if you have any questions regarding the API or specific functionalities of the plugin.

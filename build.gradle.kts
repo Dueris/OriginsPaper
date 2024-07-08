@@ -50,7 +50,7 @@ tasks {
         doLast {
             val targetJarDirectory: Path = projectDir.toPath().toAbsolutePath().resolve("build/libs")
             val subProject: Project = project("origins")
-            println("Loading GenesisMC version-build : ".plus(subProject.version))
+            println("Loading OriginsPaper version-build : ".plus(subProject.version))
             if (!targetJarDirectory.isDirectory()) error("Target path is not a directory?!")
 
             Files.createDirectories(targetJarDirectory)
@@ -64,7 +64,7 @@ tasks {
             Files.copy(
                 file("origins/build/libs/origins-".plus(subProject.version).plus("-all").plus(".jar")).toPath()
                     .toAbsolutePath(),
-                targetJarDirectory.resolve("genesis-".plus(subProject.version).plus(".jar")),
+                targetJarDirectory.resolve("origins-".plus(subProject.version).plus(".jar")),
                 StandardCopyOption.REPLACE_EXISTING
             )
         }
@@ -76,7 +76,7 @@ tasks {
 
 tasks.register<Jar>("makePublisher") {
     dependsOn(tasks.shadowJar)
-    archiveFileName.set("genesis-v1.0.4-SNAPSHOT.jar")
+    archiveFileName.set("originspaper-v1.0.4-SNAPSHOT.jar")
     from(sourceSets.main.get().output)
 }
 
@@ -101,10 +101,10 @@ fun findOriginsFile(path: String): File? {
 }
 
 publishing {
-    publications.create<MavenPublication>("genesismc") {
+    publications.create<MavenPublication>("originspaper") {
         artifact(tasks.getByName("makePublisher")) {
             groupId = "io.github.dueris"
-            artifactId = "genesis"
+            artifactId = "originspaper"
             version = "v1.0.4-SNAPSHOT"
         }
     }

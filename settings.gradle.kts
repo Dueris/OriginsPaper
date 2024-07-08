@@ -1,6 +1,6 @@
 import java.util.*
 
-"genesis".also { rootProject.name = it }
+"originspaper".also { rootProject.name = it }
 for (name in listOf("origins", "calio")) {
     val projName = name.lowercase(Locale.ENGLISH)
     include(projName)

@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "me.dueris"
-version = "mc1.21-v1.0.4"
+version = "1.21-v1.0.4"
 description = "Bringing the Origins Mod to PaperMC"
 
 dependencies {
@@ -26,7 +26,7 @@ tasks {
     jar {
         manifest {
             attributes(
-                "Main-Class" to "me.dueris.genesismc.util.LaunchWarning"
+                "Main-Class" to "me.dueris.originspaper.util.LaunchWarning"
             )
         }
     }
@@ -56,15 +56,15 @@ tasks {
 
 tasks.register<Jar>("makePublisher") {
     dependsOn(tasks.shadowJar)
-    archiveFileName.set("genesis-v1.0.4-SNAPSHOT.jar")
+    archiveFileName.set("originspaper-v1.0.4-SNAPSHOT.jar")
     from(sourceSets.main.get().output)
 }
 
 publishing {
-    publications.create<MavenPublication>("genesismc") {
+    publications.create<MavenPublication>("originspaper") {
         artifact(tasks.getByName("makePublisher")) {
             groupId = "io.github.dueris"
-            artifactId = "genesis"
+            artifactId = "originspaper"
             version = "v1.0.4-SNAPSHOT"
         }
     }

@@ -1,9 +1,9 @@
-bootstrapper: "me.dueris.genesismc.Bootstrap"
-loader: "me.dueris.genesismc.DependencyLoader"
+bootstrapper: "me.dueris.originspaper.Bootstrap"
+loader: "me.dueris.originspaper.DependencyLoader"
 load: POSTWORLD
-name: "GenesisMC"
+name: "OriginsPaper"
 version: 'mc1.21-1.0.4'
-main: "me.dueris.genesismc.GenesisMC"
+main: "me.dueris.originspaper.OriginsPaper"
 api-version: "1.21"
 authors: [ Dueris ]
 folia-supported: false
