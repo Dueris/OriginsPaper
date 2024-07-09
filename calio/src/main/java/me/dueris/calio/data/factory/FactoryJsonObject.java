@@ -82,7 +82,8 @@ public class FactoryJsonObject {
 			}
 		}
 		if (def == null) {
-			throw new IllegalArgumentException("Provided JsonValue from key \"{key}\" was not an instanceof enum \"{enum}\"");
+			throw new IllegalArgumentException("Provided JsonValue from key \"{key}\" was not an instanceof enum \"{enum}\""
+				.replace("{key}", value).replace("{enum}", enumClass.getSimpleName()));
 		} else return def;
 	}
 

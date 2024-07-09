@@ -4,7 +4,6 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.factory.conditions.ConditionExecutor;
-import me.dueris.originspaper.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
@@ -66,24 +65,34 @@ public class ExplosionMask {
 		this.explosion.explode(); // Setup explosion stuff -- includes iterator for explosions
 		this.fire = getter.getBooleanOrDefault("create_fire", false);
 		this.blocks = createBlockList(this.explosion.getToBlow(), this.level);
-		List<Block> finalBlocks = new ArrayList<>(this.blocks);
+		List<Block> finalBlocks = new ArrayList<>();
+
 		boolean testFilters = getter.isPresent("indestructible") || getter.isPresent("destructible");
 
 		if (testFilters) {
 			this.blocks.forEach((block) -> {
-				Util.computeIfObjectPresent("indestructible", getter, (rawObjCondition) -> {
-					FactoryJsonObject condition = rawObjCondition.toJsonObject();
-					if (!ConditionExecutor.testBlock(condition, (CraftBlock) block)) {
-						finalBlocks.add(block);
-					}
-				});
-				Util.computeIfObjectPresent("destructible", getter, (rawObjCondition) -> {
-					FactoryJsonObject condition = rawObjCondition.toJsonObject();
+				boolean addBlock = true;
+
+				if (getter.isPresent("indestructible")) {
+					FactoryJsonObject condition = getter.getJsonObject("indestructible");
 					if (ConditionExecutor.testBlock(condition, (CraftBlock) block)) {
-						finalBlocks.add(block);
+						addBlock = false;
 					}
-				});
+				}
+
+				if (getter.isPresent("destructible")) {
+					FactoryJsonObject condition = getter.getJsonObject("destructible");
+					if (!ConditionExecutor.testBlock(condition, (CraftBlock) block)) {
+						addBlock = false;
+					}
+				}
+
+				if (addBlock) {
+					finalBlocks.add(block);
+				}
 			});
+		} else {
+			finalBlocks.addAll(this.blocks);
 		}
 
 		this.explosion.clearToBlow();
@@ -94,6 +103,7 @@ public class ExplosionMask {
 		}
 		return this;
 	}
+
 
 	public void destroyBlocks() {
 		this.explosion.finalizeExplosion(false);
@@ -115,8 +125,6 @@ public class ExplosionMask {
 		boolean flag1 = this.explosion.interactsWithBlocks();
 
 		if (flag1) {
-			System.out.println("sdkhf");
-			this.level.getProfiler().push("explosion_blocks");
 			List<Pair<ItemStack, BlockPos>> list = new ArrayList();
 
 			net.minecraft.Util.shuffle(this.explosion.getToBlow(), this.level.random);
@@ -189,8 +197,6 @@ public class ExplosionMask {
 
 				net.minecraft.world.level.block.Block.popResource(this.level, pair.getSecond(), pair.getFirst());
 			}
-
-			this.level.getProfiler().pop();
 		}
 
 		if (this.fire) {
