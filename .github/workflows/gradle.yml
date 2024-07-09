@@ -34,8 +34,8 @@ jobs:
         if: "!contains(github.event.head_commit.message, '--skip') && !contains(github.event.head_commit.commit.message, '--skip')"
         uses: softprops/action-gh-release@v1
         with:
-          name: Latest v1.0.2 dev
-          tag_name: mc1.21/0-v1.0.4
+          name: Latest v1.1.0 dev
+          tag_name: mc1.21/0-v1.1.0
           body: \"changes\"=${{ github.event.head_commit.message }}
           token: ${{ secrets.GIT_TOKEN }}
           files: build/libs/*.jar
