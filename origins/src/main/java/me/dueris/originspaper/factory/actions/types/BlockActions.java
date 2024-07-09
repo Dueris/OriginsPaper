@@ -1,21 +1,13 @@
 package me.dueris.originspaper.factory.actions.types;
 
-import me.dueris.calio.data.CalioDataTypes;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.actions.Actions;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.data.types.DestructionType;
 import me.dueris.originspaper.factory.data.types.ExplosionMask;
-import me.dueris.originspaper.factory.data.types.ResourceOperation;
-import me.dueris.originspaper.factory.data.types.Shape;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.util.RaycastUtils;
-import me.dueris.originspaper.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Explosion;
@@ -23,20 +15,10 @@ import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.entity.CraftEntityType;
-import org.bukkit.craftbukkit.util.CraftLocation;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collection;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.BiConsumer;
 
 public class BlockActions {
@@ -46,101 +28,7 @@ public class BlockActions {
 		enumValue.ifPresent(v -> world.setBlockAndUpdate(pos, originalState.setValue(property, v)));
 	}
 
-	public static void iterateAndChangeBlocks(World world, int centerX, int centerY, int centerZ,
-											  Material targetMaterial1, float initialChance, float chanceDecrease,
-											  Material targetMaterial2, float thresholdPercentage) {
-		Random random = new Random();
-
-		for (int radius = 0; radius < 20; radius++) {
-			for (int x = centerX - radius; x <= centerX + radius; x++) {
-				for (int z = centerZ - radius; z <= centerZ + radius; z++) {
-					Block block = world.getHighestBlockAt(x, z);
-					if (block.getType().isSolid()) {
-						float chance = initialChance - radius * chanceDecrease;
-						if (chance <= 0.0f) {
-							break;
-						}
-						if (random.nextFloat() <= chance) {
-							block.setType(targetMaterial1);
-						}
-					}
-				}
-			}
-
-			int totalBlocks = (2 * radius + 1) * (2 * radius + 1);
-			int changedBlocks = totalBlocks - world.getHighestBlockYAt(centerX, centerZ);
-
-			float percentage = (float) changedBlocks / totalBlocks;
-
-			if (percentage < thresholdPercentage) {
-				for (int x = centerX - radius; x <= centerX + radius; x++) {
-					for (int z = centerZ - radius; z <= centerZ + radius; z++) {
-						Block block = world.getHighestBlockAt(x, z);
-						block.setType(targetMaterial2);
-					}
-				}
-				for (int x = centerX - radius; x <= centerX + radius; x++) {
-					for (int z = centerZ - radius; z <= centerZ + radius; z++) {
-						Block block = world.getBlockAt(x, centerY + 1, z);
-						block.setType(targetMaterial2);
-					}
-				}
-				break;
-			}
-		}
-	}
-
 	public void register() {
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("add_block"), (action, location) -> {
-			if (action.isPresent("block")) {
-				Material block = action.getMaterial("block");
-				location.getWorld().getBlockAt(location).setType(block);
-			}
-		}));
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("area_of_effect"), (action, location) -> {
-			ServerLevel level = ((CraftWorld) location.getWorld()).getHandle();
-			BlockPos pos = CraftLocation.toBlockPosition(location);
-
-			int radius = action.getNumber("radius").getInt();
-			Shape shape = action.getEnumValue("shape", Shape.class);
-			boolean hasCondition = action.isPresent("block_condition");
-
-			for (BlockPos blockPos : Shape.getPositions(pos, shape, radius)) {
-				boolean run = true;
-				if (hasCondition) {
-					if (!ConditionExecutor.testBlock(action.getJsonObject("block_condition"), CraftBlock.at(level, blockPos))) {
-						run = false;
-					}
-				}
-				if (run) {
-					Actions.executeBlock(new Location(location.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ()), action.getJsonObject("block_action"));
-				}
-			}
-		}));
-		register(new ActionFactory(OriginsPaper.identifier("grow_sculk"), (action, location) -> {
-			location.getBlock().setType(Material.SCULK_CATALYST);
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					int centerX = location.getBlockX();
-					int centerY = location.getBlockY();
-					int centerZ = location.getBlockZ();
-					Material sculkStage1 = Material.SCULK;
-					float initialChance = 0.8f;
-					float chanceDecrease = 0.05f;
-					Material sculkStage2 = Material.SCULK_VEIN;
-					float thresholdPercentage = 0.2f;
-
-					World world = location.getWorld();
-
-					iterateAndChangeBlocks(world, centerX, centerY, centerX, sculkStage1, initialChance, chanceDecrease, sculkStage2, thresholdPercentage);
-				}
-			}.runTaskLater(OriginsPaper.getPlugin(), 1);
-		}));
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("bonemeal"), (action, location) -> {
-			Block block = location.getWorld().getBlockAt(location);
-			block.applyBoneMeal(BlockFace.UP);
-		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("explode"), (action, location) -> {
 			float explosionPower = action.getNumber("power").getFloat();
 			String destruction_type = "break";
@@ -168,56 +56,6 @@ public class BlockActions {
 				SoundEvents.GENERIC_EXPLODE
 			);
 			ExplosionMask.getExplosionMask(explosion, level).apply(action, true);
-		}));
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("execute_command"), (action, location) -> RaycastUtils.executeNMSCommand(null, CraftLocation.toVec3D(location), action.getString("command"))));
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("set_block"), (action, location) -> location.getBlock().setType(action.getMaterial("block"))));
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("spawn_entity"), (action, location) -> {
-			ServerLevel world = ((CraftWorld) location.getWorld()).getHandle();
-			net.minecraft.world.entity.EntityType<?> entityType = CraftEntityType.bukkitToMinecraft(CraftEntityType.stringToBukkit(action.getString("entity_type")));
-			CompoundTag nbt = CalioDataTypes.compoundTag(action.getElement("tag").handle);
-
-			Optional<net.minecraft.world.entity.Entity> entityToSpawnOpt = Util.getEntityWithPassengers(world, entityType, nbt, CraftLocation.toVec3D(location), Optional.empty(), Optional.empty());
-
-			if (entityToSpawnOpt.isEmpty()) return;
-			net.minecraft.world.entity.Entity entityToSpawn = entityToSpawnOpt.get();
-			world.addFreshEntity(entityToSpawn);
-			Actions.executeEntity(entityToSpawn.getBukkitEntity(), action.getJsonObject("entity_action"));
-		}));
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("modify_block_state"), (action, location) -> {
-			ServerLevel level = ((CraftWorld) location.getBlock().getWorld()).getHandle();
-			BlockState state = level.getBlockState(CraftLocation.toBlockPosition(location));
-			Collection<Property<?>> properties = state.getProperties();
-			String desiredPropertyName = action.getString("property");
-			Property<?> property = null;
-			for (Property<?> p : properties) {
-				if (p.getName().equals(desiredPropertyName)) {
-					property = p;
-					break;
-				}
-			}
-			if (property != null) {
-				if (action.getBooleanOrDefault("cycle", false)) {
-					level.setBlockAndUpdate(CraftLocation.toBlockPosition(location), state.cycle(property));
-				} else {
-					Object value = state.getValue(property);
-					if (action.isPresent("enum") && value instanceof Enum) {
-						modifyEnumState(level, CraftLocation.toBlockPosition(location), state, property, action.getString("enum"));
-					} else if (action.isPresent("value") && value instanceof Boolean) {
-						level.setBlockAndUpdate(CraftLocation.toBlockPosition(location), state.setValue((Property<Boolean>) property, action.getBoolean("value")));
-					} else if (action.isPresent("operation") && action.isPresent("change") && value instanceof Integer newValue) {
-						ResourceOperation op = action.getString("operation").equalsIgnoreCase("ADD") ? ResourceOperation.ADD : ResourceOperation.SET;
-						int opValue = action.getNumber("change").getInt();
-						switch (op) {
-							case ADD -> newValue += opValue;
-							case SET -> newValue = opValue;
-						}
-						Property<Integer> integerProperty = (Property<Integer>) property;
-						if (integerProperty.getPossibleValues().contains(newValue)) {
-							level.setBlockAndUpdate(CraftLocation.toBlockPosition(location), state.setValue(integerProperty, newValue));
-						}
-					}
-				}
-			}
 		}));
 	}
 

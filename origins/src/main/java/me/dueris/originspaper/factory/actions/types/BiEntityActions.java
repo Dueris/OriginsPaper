@@ -6,21 +6,12 @@ import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.AddToSetEvent;
 import me.dueris.originspaper.event.RemoveFromSetEvent;
-import me.dueris.originspaper.factory.data.types.Space;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.util.Util;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.lang3.function.TriConsumer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.craftbukkit.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
-import org.bukkit.entity.*;
-import org.bukkit.util.Vector;
-import org.joml.Vector3f;
+import org.bukkit.entity.Entity;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -28,32 +19,6 @@ import java.util.function.BiFunction;
 public class BiEntityActions {
 
 	public void register() {
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("add_velocity"), (action, entityPair) -> {
-			net.minecraft.world.entity.Entity actor = entityPair.left().getHandle();
-			net.minecraft.world.entity.Entity target = entityPair.right().getHandle();
-
-			if ((actor == null || target == null) || (target instanceof Player && (!action.getBooleanOrDefault("server", true)))) {
-				return;
-			}
-			float xVal = action.getNumberOrDefault("x", 0.0F).getFloat();
-			float yVal = action.getNumberOrDefault("y", 0.0F).getFloat();
-			float zVal = action.getNumberOrDefault("z", 0.0F).getFloat();
-
-			Vector3f vec = new Vector3f(xVal, yVal, zVal);
-			TriConsumer<Float, Float, Float> method = action.getBooleanOrDefault("set", false) ? (x, y, z) -> {
-				target.getBukkitEntity().setVelocity(new Vector(x, y, z));
-			} : (x, y, z) -> {
-				target.getBukkitEntity().setVelocity(target.getBukkitEntity().getVelocity().add(new Vector(x, y, z)));
-			};
-
-			Reference reference = action.getEnumValueOrDefault("reference", Reference.class, Reference.POSITION);
-			Vec3 refVec = reference.apply(actor, target);
-
-			Space.transformVectorToBase(refVec, vec, actor.getBukkitEntity().getYaw(), true); // vector normalized by method
-			method.accept(vec.x, vec.y, vec.z);
-
-			target.hurtMarked = true;
-		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("remove_from_entity_set"), (action, entityPair) -> {
 			RemoveFromSetEvent ev = new RemoveFromSetEvent(entityPair.right(), action.getString("set"));
 			ev.callEvent();
@@ -61,36 +26,6 @@ public class BiEntityActions {
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("add_to_entity_set"), (action, entityPair) -> {
 			AddToSetEvent ev = new AddToSetEvent(entityPair.right(), action.getString("set"));
 			ev.callEvent();
-		}));
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("damage"), (action, entityPair) -> {
-			if (entityPair.right().isDead() || !(entityPair.right() instanceof LivingEntity)) return;
-			float amount = 0.0f;
-
-			if (action.isPresent("amount"))
-				amount = action.getNumber("amount").getFloat();
-
-			NamespacedKey key = NamespacedKey.fromString(action.getStringOrDefault("damage_type", "generic"));
-			DamageType dmgType = Util.DAMAGE_REGISTRY.get(CraftNamespacedKey.toMinecraft(key));
-			net.minecraft.world.entity.LivingEntity serverEn = ((CraftLivingEntity) entityPair.right()).getHandle();
-			serverEn.hurt(Util.getDamageSource(dmgType), amount);
-		}));
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("set_in_love"), (action, entityPair) -> {
-			if (entityPair.right() instanceof Animals targetAnimal) {
-				targetAnimal.setLoveModeTicks(600);
-			}
-		}));
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("mount"), (action, entityPair) -> entityPair.right().addPassenger(entityPair.left())));
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("tame"), (action, entityPair) -> {
-			if (entityPair.right() instanceof Tameable targetTameable && entityPair.left() instanceof AnimalTamer actorTamer) {
-				targetTameable.setOwner(actorTamer);
-			}
-		}));
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("leash"), (action, entityPair) -> {
-			CraftEntity actor = entityPair.left();
-			CraftEntity target = entityPair.right();
-			if (target instanceof LivingEntity le && !le.isLeashed()) {
-				le.setLeashHolder(actor);
-			}
 		}));
 	}
 
