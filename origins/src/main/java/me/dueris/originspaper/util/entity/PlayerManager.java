@@ -67,6 +67,13 @@ public class PlayerManager implements Listener {
 		Player p = e.getPlayer();
 		PowerHolderComponent.powersAppliedList.putIfAbsent(p, new ConcurrentLinkedQueue<>());
 		//set origins to null if none present
+		for (NamespacedKey key : p.getPersistentDataContainer().getKeys()) {
+			if (key.asString().equalsIgnoreCase("genesismc:originlayer")) {
+				p.getPersistentDataContainer().set(OriginsPaper.identifier("originLayer"), PersistentDataType.STRING, p.getPersistentDataContainer().get(key, PersistentDataType.STRING));
+				p.getPersistentDataContainer().remove(key);
+			}
+
+		}
 		if (
 			!p.getPersistentDataContainer().has(OriginsPaper.identifier("originLayer"), PersistentDataType.STRING) ||
 				p.getPersistentDataContainer().get(OriginsPaper.identifier("originLayer"), PersistentDataType.STRING) == null ||

@@ -71,7 +71,7 @@ public class JsonObjectRemapper {
 				}
 
 				for (Pair<String, String> pair : typeMappings) {
-					if (key.equalsIgnoreCase("type") && g.startsWith(pair.left())) {
+					if (key.equalsIgnoreCase("type") && g.split(":")[0].equalsIgnoreCase(pair.left())) {
 						g = pair.right() + ":" + g.split(":")[1];
 					}
 				}

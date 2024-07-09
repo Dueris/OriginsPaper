@@ -2,6 +2,7 @@ package me.dueris.originspaper;
 
 import com.mojang.brigadier.tree.CommandNode;
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
+import io.papermc.paper.plugin.configuration.PluginMeta;
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.data.AssetIdentifier.AssetType;
 import me.dueris.calio.registry.IRegistry;
@@ -42,6 +43,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -54,6 +57,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,17 +83,12 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 	public static OriginScheduler.MainTickerThread scheduler = null;
 	public static String version = Bukkit.getVersion().split("\\(MC: ")[1].replace(")", "");
 	public static boolean isCompatible = false;
-	public static String pluginVersion = "v1.0.4";
+	public static String pluginVersion;
 	public static String world_container;
 	public static ExecutorService loaderThreadPool;
 	public static ArrayList<String> versions = new ArrayList<>();
 	public static MinecraftServer server;
 	private static OriginsPaper plugin;
-
-	static {
-		versions.add("1.21");
-	}
-
 	public IRegistry registry;
 
 	public static OriginScheduler.MainTickerThread getScheduler() {
@@ -133,6 +133,29 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		}
 	}
 
+	public void finalizePreboot() {
+		PluginMeta meta = this.getPluginMeta();
+		if (meta == null) {
+			throw new RuntimeException("PluginMeta was null?");
+		}
+
+		pluginVersion = meta.getVersion().split("-")[1];
+		// parse the plugin, get the meta yml, read the extra data
+		try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream("paper-plugin.yml")) {
+			byte[] bytes = stream.readAllBytes();
+			String contents = new String(bytes, StandardCharsets.UTF_8);
+
+			YamlConfiguration yamlConfiguration = new YamlConfiguration();
+			yamlConfiguration.loadFromString(contents);
+
+			versions.add(yamlConfiguration.get("supportedVer").toString());
+		} catch (IOException | InvalidConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+
+		metrics = new BstatsMetrics(this, 18536);
+	}
+
 	@Override
 	public void onEnable() {
 		if (!Bootstrap.BOOTSTRAPPED.get()) {
@@ -141,7 +164,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		}
 		Bootstrap.BOOTSTRAPPED.set(false);
 		plugin = this;
-		metrics = new BstatsMetrics(this, 18536);
+		this.finalizePreboot();
 		this.registry = CalioRegistry.INSTANCE;
 		Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		System.out.println(); // Split new line

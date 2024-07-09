@@ -13,6 +13,21 @@ plugins {
 
 val paperweightVersion: String = "1.21-R0.1-SNAPSHOT"
 
+extra["mcMajorVer"] = "21"
+extra["mcMinorVer"] = "0"
+extra["pluginVer"] = "v1.1.0"
+
+val mcMajorVer = extra["mcMajorVer"] as String
+val mcMinorVer = extra["mcMinorVer"] as String
+val pluginVer = extra["pluginVer"] as String
+
+val mcVer = "1.$mcMajorVer" + if (mcMinorVer == "0") "" else ".$mcMinorVer"
+extra["mcVer"] = mcVer
+extra["fullVer"] = "mc$mcVer-$pluginVer"
+
+println("Loading plugin version: $pluginVer")
+println("Loading minecraft version: $mcVer")
+
 allprojects {
     apply(plugin = "java")
     apply(plugin = "maven-publish")
@@ -42,6 +57,24 @@ allprojects {
         maven("https://repo.codemc.org/repository/maven-releases/")
         maven("https://jitpack.io")
     }
+
+    tasks {
+        processResources {
+            val props = mapOf(
+                "mcVer" to mcVer,
+                "pluginVer" to pluginVer,
+                "fullVer" to "mc$mcVer-$pluginVer",
+                "apiVer" to "1.$mcMajorVer"
+            )
+            inputs.properties(props)
+            filesMatching("paper-plugin.yml") {
+                expand(props)
+            }
+
+            filteringCharset = Charsets.UTF_8.name()
+        }
+    }
+
 }
 
 tasks {
@@ -50,7 +83,7 @@ tasks {
         doLast {
             val targetJarDirectory: Path = projectDir.toPath().toAbsolutePath().resolve("build/libs")
             val subProject: Project = project("origins")
-            println("Loading OriginsPaper version-build : ".plus(subProject.version))
+            println("Loading OriginsPaper version-build: $pluginVer")
             if (!targetJarDirectory.isDirectory()) error("Target path is not a directory?!")
 
             Files.createDirectories(targetJarDirectory)
@@ -62,21 +95,20 @@ tasks {
                 }
             }
             Files.copy(
-                file("origins/build/libs/origins-".plus(subProject.version).plus("-all").plus(".jar")).toPath()
-                    .toAbsolutePath(),
-                targetJarDirectory.resolve("origins-".plus(subProject.version).plus(".jar")),
+                file("origins/build/libs/origins-${subProject.version}-all.jar").toPath().toAbsolutePath(),
+                targetJarDirectory.resolve("originspaper-mc$mcVer-$pluginVer.jar"),
                 StandardCopyOption.REPLACE_EXISTING
             )
         }
     }
     runServer {
-        minecraftVersion("1.21")
+        minecraftVersion(mcVer)
     }
 }
 
 tasks.register<Jar>("makePublisher") {
     dependsOn(tasks.shadowJar)
-    archiveFileName.set("originspaper-v1.0.4-SNAPSHOT.jar")
+    archiveFileName.set("originspaper-$pluginVer-SNAPSHOT.jar")
     from(sourceSets.main.get().output)
 }
 
@@ -105,7 +137,7 @@ publishing {
         artifact(tasks.getByName("makePublisher")) {
             groupId = "io.github.dueris"
             artifactId = "originspaper"
-            version = "v1.0.4-SNAPSHOT"
+            version = "$pluginVer-SNAPSHOT"
         }
     }
     repositories {

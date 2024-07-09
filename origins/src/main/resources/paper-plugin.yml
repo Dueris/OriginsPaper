@@ -2,9 +2,9 @@ bootstrapper: "me.dueris.originspaper.Bootstrap"
 loader: "me.dueris.originspaper.DependencyLoader"
 load: POSTWORLD
 name: "OriginsPaper"
-version: 'mc1.21-1.0.4'
+version: "${fullVer}"
 main: "me.dueris.originspaper.OriginsPaper"
-api-version: "1.21"
+api-version: "${apiVer}"
 authors: [ Dueris ]
 folia-supported: false
 description: "A port of the Origins mod to PaperMC servers with Custom Origins support"
@@ -23,3 +23,5 @@ dependencies:
     SkinsRestorer:
       load: BEFORE
       required: false
+
+supportedVer: "${mcVer}"

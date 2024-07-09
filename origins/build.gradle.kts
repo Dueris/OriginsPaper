@@ -3,8 +3,10 @@ plugins {
 }
 
 group = "me.dueris"
-version = "1.21-v1.0.4"
+version = "${rootProject.extra["mcVer"]}-${rootProject.extra["pluginVer"]}"
 description = "Bringing the Origins Mod to PaperMC"
+
+println("Loaded subproject \"${project.name}\" with version {$version}")
 
 dependencies {
     // Project
@@ -39,19 +41,7 @@ tasks {
     javadoc {
         options.encoding = Charsets.UTF_8.name()
     }
-    processResources {
-        filteringCharset = Charsets.UTF_8.name()
-        val props = mapOf(
-            "name" to project.name,
-            "version" to project.version,
-            "description" to project.description,
-            "apiVersion" to "1.21"
-        )
-        inputs.properties(props)
-        filesMatching("paper-plugin.yml") {
-            expand(props)
-        }
-    }
+
 }
 
 tasks.register<Jar>("makePublisher") {

@@ -153,16 +153,16 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 						boolean cont = !getJsonKey().continuous();
 						ServerPlayer player = ((CraftPlayer) p).getHandle();
 						new BukkitRunnable() {
-							int shotsLeft = -count;
+							int shotsLeft = (-count) + 1;
 
 							@Override
 							public void run() {
-								if (shotsLeft >= 0) {
+								if (shotsLeft > 0) {
 									if ((!cont || !KeybindUtil.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key)) {
 										Cooldown.addCooldown(p, cooldown, getSelf());
 										this.cancel();
-										return;
 									}
+									return;
 								}
 								addCooldownPatch(p);
 
