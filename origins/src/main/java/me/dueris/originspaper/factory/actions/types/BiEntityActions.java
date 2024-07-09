@@ -6,26 +6,86 @@ import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.AddToSetEvent;
 import me.dueris.originspaper.event.RemoveFromSetEvent;
+import me.dueris.originspaper.factory.data.types.Space;
 import me.dueris.originspaper.registry.Registries;
+import me.dueris.originspaper.util.Util;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import org.apache.commons.lang3.function.TriConsumer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.joml.Vector3f;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
+// Left is the actor, right is the target.
 public class BiEntityActions {
 
 	public void register() {
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("remove_from_entity_set"), (action, entityPair) -> {
-			RemoveFromSetEvent ev = new RemoveFromSetEvent(entityPair.right(), action.getString("set"));
+		register(new ActionFactory(OriginsPaper.apoliIdentifier("remove_from_entity_set"), (data, entityPair) -> {
+			RemoveFromSetEvent ev = new RemoveFromSetEvent(entityPair.right(), data.getString("set"));
 			ev.callEvent();
 		}));
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("add_to_entity_set"), (action, entityPair) -> {
-			AddToSetEvent ev = new AddToSetEvent(entityPair.right(), action.getString("set"));
+		register(new ActionFactory(OriginsPaper.apoliIdentifier("add_to_entity_set"), (data, entityPair) -> {
+			AddToSetEvent ev = new AddToSetEvent(entityPair.right(), data.getString("set"));
 			ev.callEvent();
+		}));
+		register(new ActionFactory(OriginsPaper.apoliIdentifier("damage"), (data, entityPair) -> {
+			if (entityPair.right().isDead() || !(entityPair.right() instanceof LivingEntity)) return;
+			float amount = 0.0f;
+
+			if (data.isPresent("amount"))
+				amount = data.getNumber("amount").getFloat();
+
+			NamespacedKey key = NamespacedKey.fromString(data.getStringOrDefault("damage_type", "generic"));
+			DamageType dmgType = Util.DAMAGE_REGISTRY.get(CraftNamespacedKey.toMinecraft(key));
+			net.minecraft.world.entity.LivingEntity serverEn = ((CraftLivingEntity) entityPair.right()).getHandle();
+			serverEn.hurt(Util.getDamageSource(dmgType), amount);
+		}));
+		register(new ActionFactory(OriginsPaper.apoliIdentifier("add_velocity"), (data, entityPair) -> {
+			net.minecraft.world.entity.Entity actor = entityPair.left().getHandle();
+			net.minecraft.world.entity.Entity target = entityPair.right().getHandle();
+
+			if ((actor == null || target == null)) {
+				return;
+			}
+
+			Vector3f vec = new Vector3f(data.getNumberOrDefault("x", 0F).getFloat(), data.getNumberOrDefault("y", 0F).getFloat(), data.getNumberOrDefault("z", 0F).getFloat());
+			TriConsumer<Float, Float, Float> method = data.getBooleanOrDefault("set", false) ? target::setDeltaMovement : target::push;
+
+			Reference reference = data.getEnumValueOrDefault("reference", Reference.class, Reference.POSITION);
+			Vec3 refVec = reference.apply(actor, target);
+
+			Space.transformVectorToBase(refVec, vec, actor.getYRot(), true);
+			method.accept(vec.x, vec.y, vec.z);
+
+			target.hurtMarked = true;
+		}));
+		register(new ActionFactory(OriginsPaper.apoliIdentifier("mount"), (data, entityPair) -> {
+			entityPair.right().addPassenger(entityPair.left());
+		}));
+		register(new ActionFactory(OriginsPaper.apoliIdentifier("set_in_love"), (data, entityPair) -> {
+			if (entityPair.right().getHandle() instanceof Animal targetAnimal && entityPair.left().getHandle() instanceof Player actorPlayer) {
+				targetAnimal.setInLove(actorPlayer);
+			}
+		}));
+		register(new ActionFactory(OriginsPaper.apoliIdentifier("tame"), (data, entityPair) -> {
+			if (!(entityPair.right().getHandle() instanceof TamableAnimal tameableTarget) || !(entityPair.left().getHandle() instanceof Player actorPlayer)) {
+				return;
+			}
+
+			if (!tameableTarget.isTame()) {
+				tameableTarget.tame(actorPlayer);
+			}
 		}));
 	}
 
@@ -38,8 +98,8 @@ public class BiEntityActions {
 		POSITION((actor, target) -> target.position().subtract(actor.position())),
 		ROTATION((actor, target) -> {
 
-			float pitch = actor.getBukkitEntity().getPitch();
-			float yaw = actor.getBukkitEntity().getYaw();
+			float pitch = actor.getXRot();
+			float yaw = actor.getYRot();
 
 			float i = 0.017453292F;
 
