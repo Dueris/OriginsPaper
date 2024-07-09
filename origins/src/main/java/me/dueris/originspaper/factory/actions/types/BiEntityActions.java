@@ -6,11 +6,13 @@ import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.AddToSetEvent;
 import me.dueris.originspaper.event.RemoveFromSetEvent;
+import me.dueris.originspaper.factory.data.types.Modifier;
 import me.dueris.originspaper.factory.data.types.Space;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.util.Util;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
@@ -18,12 +20,10 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.function.TriConsumer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.craftbukkit.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.joml.Vector3f;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
@@ -40,16 +40,37 @@ public class BiEntityActions {
 			ev.callEvent();
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("damage"), (data, entityPair) -> {
-			if (entityPair.right().isDead() || !(entityPair.right() instanceof LivingEntity)) return;
-			float amount = 0.0f;
+			net.minecraft.world.entity.Entity actor = entityPair.left().getHandle();
+			net.minecraft.world.entity.Entity target = entityPair.right().getHandle();
 
-			if (data.isPresent("amount"))
-				amount = data.getNumber("amount").getFloat();
+			if (actor == null || target == null) {
+				return;
+			}
 
-			NamespacedKey key = NamespacedKey.fromString(data.getStringOrDefault("damage_type", "generic"));
-			DamageType dmgType = Util.DAMAGE_REGISTRY.get(CraftNamespacedKey.toMinecraft(key));
-			net.minecraft.world.entity.LivingEntity serverEn = ((CraftLivingEntity) entityPair.right()).getHandle();
-			serverEn.hurt(Util.getDamageSource(dmgType), amount);
+			Float damageAmount = data.getNumber("amount").getFloat();
+			List<Modifier> modifiers = List.of(Modifier.getModifiers(data.getJsonObject("modifier"), data.getJsonArray("modifiers")));
+
+			if (!modifiers.isEmpty() && target instanceof LivingEntity) {
+				for (Modifier modifier : modifiers) {
+					damageAmount = Util.getOperationMappingsFloat().get(modifier.operation()).apply(damageAmount, modifier.value());
+				}
+			}
+
+			try {
+				// "source" field is not supported in OriginsPaper, given it is depreciated.
+				DamageSource source;
+				if (data.isPresent("damage_type")) {
+					source = Util.getDamageSource(Util.DAMAGE_REGISTRY.get(data.getResourceLocation("damage_type")));
+				} else {
+					source = actor.level().damageSources().generic();
+				}
+				if (data.isPresent("source") && !data.isPresent("damage_type")) {
+					OriginsPaper.getPlugin().getLogger().warning("A \"source\" field was provided in the bientity_action \"apoli:damage\", please use the \"damage_type\" field instead.");
+				}
+				target.hurt(source, damageAmount);
+			} catch (Throwable t) {
+				OriginsPaper.getPlugin().getLogger().severe("Error trying to deal damage via the `damage` bi-entity action: " + t.getMessage());
+			}
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("add_velocity"), (data, entityPair) -> {
 			net.minecraft.world.entity.Entity actor = entityPair.left().getHandle();

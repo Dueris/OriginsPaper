@@ -1,5 +1,6 @@
 package me.dueris.calio.data.factory;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.core.Registry;
@@ -31,7 +32,7 @@ public class FactoryJsonObject {
 	}
 
 	public FactoryJsonArray getJsonArray(String key) {
-		return new FactoryJsonArray(this.handle.get(key).getAsJsonArray());
+		return isPresent(key) ? new FactoryJsonArray(this.handle.get(key).getAsJsonArray()) : new FactoryJsonArray(new JsonArray());
 	}
 
 	public boolean isJsonObject(String key) {

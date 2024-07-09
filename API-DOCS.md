@@ -2,7 +2,8 @@
 
 ## Introduction
 
-Welcome to the **OriginsPaper** API documentation. This document provides instructions on how to interact with OriginsPaper's
+Welcome to the **OriginsPaper** API documentation. This document provides instructions on how to interact with
+OriginsPaper's
 codebase for external plugin use, or contributing.
 
 ## Adding the API to Gradle Kotlin Script
@@ -19,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.Dueris:OriginsPaper:mc1.21/0-v1.0.0")
+    implementation("io.github.Dueris:OriginsPaper:mc1.21~0-v1.1.0")
 }
 ```
 
@@ -27,7 +28,8 @@ dependencies {
 
 Setting up OriginsPaper to hook into it is quite simple, and doesnt require much work at all.
 
-OriginsPaper starts the Calio parser during its init process, meaning you need to add it to your dependencies list inside
+OriginsPaper starts the Calio parser during its init process, meaning you need to add it to your dependencies list
+inside
 your `paper-plugin.yml` file. This guide will go over how to create new PowerTypes, Conditions, Actions, and how to even
 replace/remove instances of them within OriginsPaper.
 What your depend list should look like:
@@ -216,7 +218,8 @@ In this tutorial, we are going to add a new entity condition that checks if the 
 
 To register a Condition, you must first go through the ConditionExecutor to access the conditions `register` method.
 Each Condition class has its respective ConditionFactory class. A ConditionFactory is a builder for creating,
-registering, and calling Conditions. Conditions in OriginsPaper are defined by a NamepacedKey as the associated type, and a
+registering, and calling Conditions. Conditions in OriginsPaper are defined by a NamepacedKey as the associated type,
+and a
 Predicate to define if the condition is true or not. Each Condition type category has its own ConditionFactory.
 
 ```java
@@ -310,7 +313,8 @@ Entity entity = /*your entity instance*/;
 List<PowerType> phasingPowers = PowerHolderComponent.getPowers(entity, "apoli:phasing"); // Returns all the powers of the phasing powertype
 ```
 
-2, is by providing the PowerType *class* inside the source. This way allows OriginsPaper to return that PowerType instance
+2, is by providing the PowerType *class* inside the source. This way allows OriginsPaper to return that PowerType
+instance
 instead of the raw PowerType aswell, and is a lot faster than the 1st way. Lets do the same example as before, but with
 the other method.
 
@@ -402,7 +406,8 @@ setOrigin(player, CraftApoli.getOriginFromTag("origins:elytrian"),layer);
 	}
 ```
 
-To get the Origin on a Player, there are a few ways. In OriginsPaper, each Layer for the player has an assigned Origin to
+To get the Origin on a Player, there are a few ways. In OriginsPaper, each Layer for the player has an assigned Origin
+to
 it in a Map inside the PowerHolderComponent. To get a specific layer, you can provide a Layer argument to
 the `getOrigin` method and return that specific origin. If the Layer isnt specified, it will return the full Layer ->
 Origin Map.

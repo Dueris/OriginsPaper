@@ -21,7 +21,7 @@ public class Modifier {
 
 	public static Modifier[] getModifiers(@Nullable FactoryJsonObject singular, @Nullable FactoryJsonArray plural) {
 		List<Modifier> modifiers = new ArrayList<>();
-		if (singular != null) modifiers.add(new Modifier(singular));
+		if (singular != null && !singular.isEmpty()) modifiers.add(new Modifier(singular));
 		if (plural != null && !plural.asList().isEmpty())
 			modifiers.addAll(plural.asJsonObjectList().stream().map(Modifier::new).toList());
 		return modifiers.toArray(new Modifier[0]);
