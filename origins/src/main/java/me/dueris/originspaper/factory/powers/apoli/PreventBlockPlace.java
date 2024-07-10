@@ -51,7 +51,7 @@ public class PreventBlockPlace extends PowerType implements Listener {
 				return;
 			e.setCancelled(true);
 			Actions.executeEntity(e.getPlayer(), entityAction);
-			Actions.executeItem(e.getItemInHand(), heldItemAction);
+			Actions.executeItem(e.getItemInHand(), e.getPlayer().getWorld(), heldItemAction);
 			Actions.executeBlock(e.getBlockAgainst().getLocation(), placeOnAction);
 			Actions.executeBlock(e.getBlockPlaced().getLocation(), placeToAction);
 		}

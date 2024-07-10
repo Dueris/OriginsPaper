@@ -34,7 +34,7 @@ public class ActionOnItemPickup extends PowerType {
 		if (this.getPlayers().contains(p)) {
 			if (!ConditionExecutor.testItem(itemCondition, e.getItem().getItemStack()) || !isActive(p)) return;
 			ItemStack clone = e.getItem().getItemStack().clone();
-			Actions.executeItem(clone, itemAction);
+			Actions.executeItem(clone, e.getPlayer().getWorld(), itemAction);
 			// Needs to update the ItemEntity
 			e.getItem().setItemStack(clone);
 		}

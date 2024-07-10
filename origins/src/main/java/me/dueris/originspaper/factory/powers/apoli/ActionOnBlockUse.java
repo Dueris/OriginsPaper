@@ -81,9 +81,9 @@ public class ActionOnBlockUse extends PowerType {
 			if (!pass) return;
 			Actions.executeBlock(e.getClickedBlock().getLocation(), blockAction);
 			Actions.executeEntity(actor, entityAction);
-			Actions.executeItem(e.getItem(), heldItemAction);
+			Actions.executeItem(e.getItem(), e.getPlayer().getWorld(), heldItemAction);
 			if (resultStack != null) {
-				Actions.executeItem(resultStack, resultItemAction);
+				Actions.executeItem(resultStack, e.getPlayer().getWorld(), resultItemAction);
 				actor.getInventory().addItem(resultStack);
 			}
 		}

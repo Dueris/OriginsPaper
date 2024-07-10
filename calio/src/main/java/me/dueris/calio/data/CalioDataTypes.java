@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
-import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
@@ -13,11 +12,16 @@ import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.ParticleEffect;
 import net.minecraft.Util;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.stats.Stat;
+import net.minecraft.stats.StatType;
 import net.minecraft.world.item.Item;
 import org.bukkit.*;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -42,6 +46,7 @@ public class CalioDataTypes {
 		if (ofType.equals(Vector.class)) return (T) vector(provider);
 		if (ofType.equals(Sound.class)) return (T) sound(provider);
 		if (ofType.equals(Material.class)) return (T) material(provider);
+		if (ofType.equals(Stat.class)) return (T) stat(provider);
 		if (ofType.isEnum()) {
 			return (T) getEnumValue(provider, (Class<Enum>) ofType);
 		}
@@ -49,6 +54,22 @@ public class CalioDataTypes {
 			return (T) registries.get(ofType).apply(provider);
 		}
 		return null;
+	}
+
+	public static Stat stat(JsonElement element) {
+		ResourceLocation type = CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(element.getAsJsonObject().get("type").getAsString()));
+		ResourceLocation id = CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(element.getAsJsonObject().get("id").getAsString()));
+
+		StatType searchedType = BuiltInRegistries.STAT_TYPE.get(type);
+		if (searchedType != null) {
+			Registry statRegistry = searchedType.getRegistry();
+			if (statRegistry.containsKey(id)) {
+				return searchedType.get(statRegistry.get(id));
+			} else
+				throw new IllegalArgumentException("Desired stat \"" + id + "\" does not exist in stat type \"" + BuiltInRegistries.STAT_TYPE.getKey(searchedType) + "\"");
+		} else {
+			throw new IllegalArgumentException("Provided \"type\" field was not found in the STAT_TYPE registry \"{}\"".replace("{}", type.toString()));
+		}
 	}
 
 	public static Material material(JsonElement element) {
@@ -95,6 +116,7 @@ public class CalioDataTypes {
 		FactoryElement element = new FactoryElement(raw);
 		Particle particle = null;
 		Optional<Particle.DustOptions> data = Optional.empty();
+		Optional<BlockData> blockData = Optional.empty();
 		boolean containsParams = !(element.isString()) && element.isJsonObject() && element.toJsonObject().isPresent("params");
 		if (element.isString()) {
 			particle = Particle.valueOf(ensureCorrectNamespace(element.getString()).split(":")[1].toUpperCase()); // Directly parse it
@@ -104,17 +126,19 @@ public class CalioDataTypes {
 		}
 		if (containsParams) {
 			String provided = element.toJsonObject().getStringOrDefault("params", "");
-			if (provided.contains(" ")) {
+			if (provided.contains(" ") && !particle.equals(Particle.BLOCK)) {
 				String[] splitArgs = provided.split(" ");
 				float arg1 = Float.parseFloat(splitArgs[0]);
 				float arg2 = Float.parseFloat(splitArgs[1]);
 				float arg3 = Float.parseFloat(splitArgs[2]);
 				float size = Float.parseFloat(splitArgs[3]);
 				data = Optional.of(new Particle.DustOptions(Color.fromRGB(calculateParticleValue(arg1), calculateParticleValue(arg2), calculateParticleValue(arg3)), size));
+			} else if (particle.equals(Particle.BLOCK)) {
+				blockData = Optional.of(material(element.toJsonObject().getElement("params").handle).createBlockData());
 			}
 		}
 
-		return new ParticleEffect(particle, data);
+		return new ParticleEffect(particle, data, blockData);
 	}
 
 	private static int calculateParticleValue(float value) {
@@ -143,7 +167,9 @@ public class CalioDataTypes {
 
 	public static CompoundTag compoundTag(JsonElement element) {
 		if (element == null) return new CompoundTag();
-		return ParserUtils.parseJson(new StringReader(element.getAsString()), CompoundTag.CODEC);
+		return Codec.withAlternative(CompoundTag.CODEC, TagParser.LENIENT_CODEC)
+			.parse(JsonOps.INSTANCE, element)
+			.getOrThrow();
 	}
 
 	private static <T extends Enum<T>> T getEV(Class<T> enumClass, String value) {

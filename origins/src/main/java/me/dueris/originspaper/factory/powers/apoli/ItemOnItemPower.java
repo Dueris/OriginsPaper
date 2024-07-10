@@ -62,13 +62,13 @@ public class ItemOnItemPower extends PowerType {
 						ConditionExecutor.testItem(onItemCondition, e.getCurrentItem());
 				if (pass) {
 					if (resultStack != null) {
-						Actions.executeItem(resultStack, resultItemAction);
+						Actions.executeItem(resultStack, p.getWorld(), resultItemAction);
 						for (int i = 0; i < resultFromOnStack; i++) {
 							p.getInventory().addItem(resultStack);
 						}
 					}
-					Actions.executeItem(e.getCursor(), usingItemAction);
-					Actions.executeItem(e.getCurrentItem(), onItemAction);
+					Actions.executeItem(e.getCursor(), p.getWorld(), usingItemAction);
+					Actions.executeItem(e.getCurrentItem(), p.getWorld(), onItemAction);
 					Actions.executeEntity(e.getWhoClicked(), entityAction);
 				}
 			}

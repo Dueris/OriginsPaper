@@ -64,11 +64,11 @@ public class EdibleItem extends PowerType {
 				@Override
 				public void run() {
 					if (resultStack != null) {
-						Actions.executeItem(resultStack, resultItemAction);
+						Actions.executeItem(resultStack, e.getPlayer().getWorld(), resultItemAction);
 						e.getPlayer().getInventory().addItem(resultStack);
 					}
 					Actions.executeEntity(e.getPlayer(), entityAction);
-					Actions.executeItem(e.getItem(), itemAction);
+					Actions.executeItem(e.getItem(), e.getPlayer().getWorld(), itemAction);
 				}
 			}.runTaskLater(OriginsPaper.getPlugin(), 1);
 		}

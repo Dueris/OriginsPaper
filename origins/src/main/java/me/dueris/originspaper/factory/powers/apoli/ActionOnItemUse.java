@@ -38,7 +38,7 @@ public class ActionOnItemUse extends PowerType {
 			return;
 		if (!isActive(player)) return;
 		if (!ConditionExecutor.testItem(itemCondition, e.getItem())) return;
-		Actions.executeItem(e.getItem(), itemAction);
+		Actions.executeItem(e.getItem(), e.getPlayer().getWorld(), itemAction);
 		Actions.executeEntity(player, entityAction);
 	}
 

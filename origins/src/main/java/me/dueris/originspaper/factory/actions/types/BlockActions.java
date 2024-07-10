@@ -51,16 +51,16 @@ public class BlockActions {
 	}
 
 	public void register() {
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("explode"), (action, location) -> {
-			float explosionPower = action.getNumber("power").getFloat();
+		register(new ActionFactory(OriginsPaper.apoliIdentifier("explode"), (data, location) -> {
+			float explosionPower = data.getNumber("power").getFloat();
 			String destruction_type = "break";
 			boolean create_fire = false;
 			ServerLevel level = ((CraftWorld) location.getWorld()).getHandle();
 
-			if (action.isPresent("destruction_type"))
-				destruction_type = action.getString("destruction_type");
-			if (action.isPresent("create_fire"))
-				create_fire = action.getBoolean("create_fire");
+			if (data.isPresent("destruction_type"))
+				destruction_type = data.getString("destruction_type");
+			if (data.isPresent("create_fire"))
+				create_fire = data.getBoolean("create_fire");
 
 			Explosion explosion = new Explosion(
 				level,
@@ -77,7 +77,7 @@ public class BlockActions {
 				ParticleTypes.EXPLOSION_EMITTER,
 				SoundEvents.GENERIC_EXPLODE
 			);
-			ExplosionMask.getExplosionMask(explosion, level).apply(action, true);
+			ExplosionMask.getExplosionMask(explosion, level).apply(data, true);
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("offset"), (data, block) -> {
 			FactoryJsonObject blockAction = data.getJsonObject("action");
@@ -200,7 +200,7 @@ public class BlockActions {
 				return;
 			}
 			EntityType<?> entityType = CraftRegistry.getMinecraftRegistry().registry(net.minecraft.core.registries.Registries.ENTITY_TYPE).get().get(data.getResourceLocation("entity_type"));
-			CompoundTag entityNbt = CalioDataTypes.compoundTag(data.isPresent("tag") ? data.getElement("tag").handle : null);
+			CompoundTag entityNbt = data.transformWithCalio("tag", CalioDataTypes::compoundTag, new CompoundTag());
 
 			Entity entityToSpawn = Util.getEntityWithPassengers(
 				serverWorld,

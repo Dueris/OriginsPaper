@@ -1,6 +1,7 @@
 package me.dueris.calio.data.factory;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.core.Registry;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class FactoryJsonObject {
@@ -164,5 +166,14 @@ public class FactoryJsonObject {
 			amt = this.getNumber("amount").getInt();
 		}
 		return new ItemStack(Material.valueOf(NamespacedKey.fromString(materialVal).asString().split(":")[1].toUpperCase()), amt);
+	}
+
+	public <T> T transformWithCalio(String key, Function<JsonElement, T> transformer) {
+		return transformWithCalio(key, transformer, null);
+	}
+
+	public <T> T transformWithCalio(String key, Function<JsonElement, T> transformer, T def) {
+		if (!isPresent(key)) return def;
+		return transformer.apply(this.handle.get(key));
 	}
 }

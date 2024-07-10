@@ -61,7 +61,7 @@ public class ModifyCraftingPower extends PowerType implements Listener {
 						e.getInventory().setResult(result);
 					}
 					Actions.executeEntity(p, entityAction);
-					Actions.executeItem(e.getInventory().getResult(), itemAction);
+					Actions.executeItem(e.getInventory().getResult(), p.getWorld(), itemAction);
 					Actions.executeBlock(e.getInventory().getLocation(), blockAction);
 				}
 			}

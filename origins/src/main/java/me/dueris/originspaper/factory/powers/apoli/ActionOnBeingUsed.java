@@ -69,9 +69,9 @@ public class ActionOnBeingUsed extends PowerType {
 		if (!(ConditionExecutor.testBiEntity(bientityCondition, (CraftEntity) actor, (CraftEntity) target) && ConditionExecutor.testItem(itemCondition, actor.getInventory().getItem(e.getHand()))))
 			return;
 
-		Actions.executeItem(actor.getInventory().getItem(e.getHand()), heldItemAction);
+		Actions.executeItem(actor.getInventory().getItem(e.getHand()), actor.getWorld(), heldItemAction);
 		if (resultStack != null) {
-			Actions.executeItem(resultStack, resultItemAction);
+			Actions.executeItem(resultStack, actor.getWorld(), resultItemAction);
 			player.getInventory().addItem(resultStack);
 		}
 		Actions.executeBiEntity(actor, target, bientityAction);

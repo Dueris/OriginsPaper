@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
@@ -13,13 +14,15 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.calio.data.factory.FactoryNumber;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.factory.actions.Actions;
 import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.registries.Origin;
+import net.minecraft.commands.arguments.SlotArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -27,16 +30,24 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Equipable;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
@@ -70,6 +81,7 @@ import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -616,15 +628,13 @@ public class Util {
 		);
 	}
 
-	public static List<Integer> fillMissingNumbers(List<Integer> numbers, int min, int max) {
+	public static void fillMissingNumbers(List<Integer> numbers, int min, int max) {
 		Set<Integer> numberSet = new HashSet<>(numbers);
 		for (int i = min; i <= max; i++) {
-			numberSet.add(i);
+			if (!numberSet.contains(i)) {
+				numbers.add(i);
+			}
 		}
-
-		List<Integer> filledNumbers = new ArrayList<>(numberSet);
-		Collections.sort(filledNumbers);
-		return filledNumbers;
 	}
 
 	public static int[] missingNumbers(Integer[] array, int minRange, int maxRange) {
@@ -702,26 +712,118 @@ public class Util {
 		return stack instanceof ArmorItem item ? item.getDefense() : 0;
 	}
 
+	public static boolean attemptToTeleport(Entity entity, ServerLevel serverWorld, double destX, double destY, double destZ, double offsetX, double offsetY, double offsetZ, double areaHeight, boolean loadedChunksOnly, Heightmap.Types heightmap, Predicate<BlockInWorld> landingBlockCondition, Predicate<Entity> landingCondition) {
+
+		BlockPos.MutableBlockPos blockPos = BlockPos.containing(destX, destY, destZ).mutable();
+		boolean foundSurface = false;
+
+		if (heightmap != null) {
+
+			blockPos.set(serverWorld.getHeightmapPos(heightmap, blockPos).below());
+
+			if (landingBlockCondition.test(new BlockInWorld(serverWorld, blockPos, true))) {
+				blockPos.set(blockPos.above());
+				foundSurface = true;
+			}
+
+		} else {
+
+			for (double decrements = 0; decrements < areaHeight / 2; ++decrements) {
+
+				blockPos.set(blockPos.below());
+
+				if (landingBlockCondition.test(new BlockInWorld(serverWorld, blockPos, true))) {
+
+					blockPos.set(blockPos.above());
+					foundSurface = true;
+
+					break;
+
+				}
+
+			}
+
+		}
+
+		destX = offsetX == 0 ? destX : Mth.floor(destX) + offsetX;
+		destY = blockPos.getY() + offsetY;
+		destZ = offsetZ == 0 ? destZ : Mth.floor(destZ) + offsetZ;
+
+		blockPos.set(destX, destY, destZ);
+
+		if (!foundSurface) {
+			return false;
+		}
+
+		double prevX = entity.getX();
+		double prevY = entity.getY();
+		double prevZ = entity.getZ();
+
+		ChunkPos chunkPos = new ChunkPos(blockPos);
+		if (!serverWorld.hasChunk(chunkPos.x, chunkPos.z)) {
+
+			if (loadedChunksOnly) {
+				return false;
+			}
+
+			serverWorld.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkPos, 0, entity.getId());
+			serverWorld.getChunk(chunkPos.x, chunkPos.z);
+
+		}
+
+		entity.teleportTo(destX, destY, destZ);
+
+		if (!landingCondition.test(entity)) {
+			entity.teleportTo(prevX, prevY, prevZ);
+			return false;
+		}
+
+		if (entity instanceof PathfinderMob pathAwareEntity) {
+			pathAwareEntity.getNavigation().stop();
+		}
+
+		return true;
+
+	}
+
 	public static void consumeItem(ItemStack item) {
 		item.setAmount(item.getAmount() - 1);
 	}
 
+	public static ArgumentWrapper<Integer> wrappedIntegerSlot(String slot) {
+		try {
+			Integer t = SlotArgument.slot().parse(new com.mojang.brigadier.StringReader(slot));
+			return new ArgumentWrapper<>(t, slot);
+		} catch (CommandSyntaxException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+
 	public static List<Integer> getSlots(FactoryJsonObject data) {
-		FactoryJsonArray slots = null;
+		List<Integer> slotsList = new ArrayList<>();
 		if (data.isPresent("slots")) {
-			slots = data.getJsonArray("slots");
+			for (FactoryElement element : data.getJsonArray("slots").asList) {
+				ArgumentWrapper<Integer> wrapped = wrappedIntegerSlot(element.getString());
+				slotsList.add(wrapped.get());
+			}
 		}
-		if (!data.isPresent("slot")) {
-			return new ArrayList<>();
+		if (data.isPresent("slot")) {
+			ArgumentWrapper<Integer> wrapped = wrappedIntegerSlot(data.getString("slot"));
+			slotsList.add(wrapped.get());
 		}
-		return slots == null ? List.of(data.getNumber("slot").getInt()) : slots.asList().stream().map(FactoryElement::getNumber).map(FactoryNumber::getInt).toList();
+
+		if (slotsList.isEmpty()) {
+			System.out.println("j208fopkdsfcsdcv");
+			fillMissingNumbers(slotsList, 0, 40);
+		}
+		return slotsList;
 	}
 
 	public static int checkInventory(FactoryJsonObject data, Entity entity, @Nullable me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, Function<net.minecraft.world.item.ItemStack, Integer> processor) {
 		FactoryJsonObject itemCondition = data.getJsonObject("item_condition");
 		List<Integer> slots = getSlots(data);
 		if (slots.isEmpty()) {
-			slots = fillMissingNumbers(slots, 0, 40);
+			fillMissingNumbers(slots, 0, 40);
 		}
 
 		int matches = 0;
@@ -748,6 +850,195 @@ public class Util {
 
 	public static SlotAccess getStackReference(Entity entity, @Nullable me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, int slot) {
 		return entity.getSlot(slot);
+	}
+
+	public static SlotAccess createStackReference(net.minecraft.world.item.ItemStack startingStack) {
+		return new SlotAccess() {
+
+			net.minecraft.world.item.ItemStack stack = startingStack;
+
+			@Override
+			public net.minecraft.world.item.ItemStack get() {
+				return stack;
+			}
+
+			@Override
+			public boolean set(net.minecraft.world.item.ItemStack stack) {
+				this.stack = stack;
+				return true;
+			}
+
+		};
+	}
+
+	public static void throwItem(Entity thrower, net.minecraft.world.item.ItemStack itemStack, boolean throwRandomly, boolean retainOwnership) {
+
+		if (itemStack.isEmpty()) {
+			return;
+		}
+
+		if (thrower instanceof Player playerEntity && playerEntity.level().isClientSide) {
+			playerEntity.swing(InteractionHand.MAIN_HAND);
+		}
+
+		double yOffset = thrower.getEyeY() - 0.30000001192092896D;
+		ItemEntity itemEntity = new ItemEntity(thrower.level(), thrower.getX(), yOffset, thrower.getZ(), itemStack);
+		itemEntity.setPickUpDelay(40);
+
+		Random random = new Random();
+
+		float f;
+		float g;
+
+		if (retainOwnership) itemEntity.setThrower(thrower);
+		if (throwRandomly) {
+			f = random.nextFloat() * 0.5F;
+			g = random.nextFloat() * 6.2831855F;
+			itemEntity.setDeltaMovement(-Mth.sin(g) * f, 0.20000000298023224D, Mth.cos(g) * f);
+		} else {
+			f = 0.3F;
+			g = Mth.sin(thrower.getXRot() * 0.017453292F);
+			float h = Mth.cos(thrower.getXRot() * 0.017453292F);
+			float i = Mth.sin(thrower.getYRot() * 0.017453292F);
+			float j = Mth.cos(thrower.getYRot() * 0.017453292F);
+			float k = random.nextFloat() * 6.2831855F;
+			float l = 0.02F * random.nextFloat();
+			itemEntity.setDeltaMovement(
+				(double) (-i * h * f) + Math.cos(k) * (double) l,
+				(-g * f + 0.1F + (random.nextFloat() - random.nextFloat()) * 0.1F),
+				(double) (j * h * f) + Math.sin(k) * (double) l
+			);
+		}
+
+		thrower.level().addFreshEntity(itemEntity);
+
+	}
+
+	public static void modifyInventory(FactoryJsonObject data, Entity entity, me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, Function<net.minecraft.world.item.ItemStack, Integer> processor, int limit) {
+		if (limit <= 0) {
+			limit = Integer.MAX_VALUE;
+		}
+
+		List<Integer> slots = getSlots(data);
+
+		FactoryJsonObject entityAction = data.getJsonObject("entity_action");
+		FactoryJsonObject itemCondition = data.getJsonObject("item_condition");
+		FactoryJsonObject itemAction = data.getJsonObject("item_action");
+
+		int processedItems = 0;
+		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
+
+		modifyingItemsLoop:
+		for (int slot : slots) {
+
+			SlotAccess stack = getStackReference(entity, inventoryPower, slot);
+			if (!(itemCondition == null || ConditionExecutor.testItem(itemCondition, stack.get().getBukkitStack()))) {
+				continue;
+			}
+
+			int amount = processor.apply(stack.get());
+			for (int i = 0; i < amount; i++) {
+
+				if (entityAction != null && !entityAction.isEmpty()) {
+					Actions.executeEntity(entity.getBukkitEntity(), entityAction);
+				}
+
+				Actions.executeItem(stack.get().getBukkitStack(), entity.getBukkitEntity().getWorld(), itemAction);
+				++processedItems;
+
+				if (processedItems >= limit) {
+					break modifyingItemsLoop;
+				}
+
+			}
+
+		}
+
+	}
+
+	public static void replaceInventory(FactoryJsonObject data, Entity entity, me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower) {
+
+		List<Integer> slots = getSlots(data);
+
+		FactoryJsonObject entityAction = data.getJsonObject("entity_action");
+		FactoryJsonObject itemCondition = data.getJsonObject("item_condition");
+		FactoryJsonObject itemAction = data.getJsonObject("item_action");
+
+		net.minecraft.world.item.ItemStack replacementStack = CraftItemStack.asNMSCopy(data.getItemStack("stack"));
+		boolean mergeNbt = data.getBooleanOrDefault("merge_nbt", false);
+
+		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
+		for (int slot : slots) {
+
+			SlotAccess stackReference = getStackReference(entity, inventoryPower, slot);
+			net.minecraft.world.item.ItemStack stack = stackReference.get();
+
+			if (!(itemCondition == null || ConditionExecutor.testItem(itemCondition, stack.getBukkitStack()))) {
+				continue;
+			}
+
+			if (entityAction != null && !entityAction.isEmpty()) {
+				Actions.executeEntity(entity.getBukkitEntity(), entityAction);
+			}
+
+			net.minecraft.world.item.ItemStack stackAfterReplacement = replacementStack.copy();
+			if (mergeNbt) {
+				CompoundTag orgNbt = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).getUnsafe();
+				CustomData.update(DataComponents.CUSTOM_DATA, stackAfterReplacement, repNbt -> repNbt.merge(orgNbt));
+			}
+
+			stackReference.set(stackAfterReplacement);
+			if (itemAction != null && !itemAction.isEmpty()) {
+				Actions.executeItem(stack.getBukkitStack(), entity.getBukkitEntity().getWorld(), itemAction);
+			}
+
+		}
+
+	}
+
+	public static void dropInventory(FactoryJsonObject data, Entity entity, me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower) {
+
+		List<Integer> slots = getSlots(data);
+		if (slots.isEmpty()) {
+			fillMissingNumbers(slots, 0, 40);
+		}
+
+		int amount = data.getNumberOrDefault("amount", 0).getInt();
+		boolean throwRandomly = data.getBooleanOrDefault("throw_randomly", false);
+		boolean retainOwnership = data.getBooleanOrDefault("retain_ownership", true);
+
+		FactoryJsonObject entityAction = data.getJsonObject("entity_action");
+		FactoryJsonObject itemCondition = data.getJsonObject("item_condition");
+		FactoryJsonObject itemAction = data.getJsonObject("item_action");
+
+		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
+		for (int slot : slots) {
+
+			SlotAccess stack = getStackReference(entity, inventoryPower, slot);
+			if (!(itemCondition == null || ConditionExecutor.testItem(itemCondition, stack.get().getBukkitStack()))) {
+				continue;
+			}
+
+			if (entityAction != null && !entityAction.isEmpty()) {
+				Actions.executeEntity(entity.getBukkitEntity(), entityAction);
+			}
+
+			if (itemAction != null && !itemAction.isEmpty()) {
+				Actions.executeItem(stack.get().getBukkitStack(), entity.getBukkitEntity().getWorld(), itemAction);
+			}
+
+			net.minecraft.world.item.ItemStack newStack = stack.get();
+			net.minecraft.world.item.ItemStack droppedStack = net.minecraft.world.item.ItemStack.EMPTY;
+			if (amount != 0) {
+				int newAmount = amount < 0 ? amount * -1 : amount;
+				droppedStack = newStack.split(newAmount);
+			}
+
+			throwItem(entity, droppedStack.isEmpty() ? stack.get() : droppedStack, throwRandomly, retainOwnership);
+			stack.set(droppedStack.isEmpty() ? net.minecraft.world.item.ItemStack.EMPTY : newStack);
+
+		}
+
 	}
 
 	public enum ProcessMode {

@@ -14,6 +14,7 @@ import me.dueris.originspaper.registry.Registries;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -168,30 +169,30 @@ public class Actions {
 		}
 	}
 
-	public static void executeItem(ItemStack item, FactoryJsonObject action) {
+	public static void executeItem(ItemStack item, World world, FactoryJsonObject action) {
 		if (!action.isPresent("type") || action == null || action.isEmpty()) return;
 		String type = action.getString("type");
 		if (testMetaAction(action, new String[]{})) {
 			switch (type) {
-				case "apoli:and" -> and(action, actionn -> executeItem(item, actionn));
+				case "apoli:and" -> and(action, actionn -> executeItem(item, world, actionn));
 
-				case "apoli:chance" -> chance(action, actionn -> executeItem(item, actionn));
+				case "apoli:chance" -> chance(action, actionn -> executeItem(item, world, actionn));
 
-				case "apoli:choice" -> choice(action, actionn -> executeItem(item, actionn));
+				case "apoli:choice" -> choice(action, actionn -> executeItem(item, world, actionn));
 
-				case "apoli:delay" -> delay(action, actionn -> executeItem(item, actionn));
+				case "apoli:delay" -> delay(action, actionn -> executeItem(item, world, actionn));
 
 				case "apoli:nothing" -> {
 				} // Literally does nothing
 
-				case "apoli:side" -> side(action, actionn -> executeItem(item, actionn));
+				case "apoli:side" -> side(action, actionn -> executeItem(item, world, actionn));
 
 				case "apoli:if_else" -> {
 					boolean bool = ConditionExecutor.testItem(action.getJsonObject("condition"), item);
 					if (bool) {
-						executeItem(item, action.getJsonObject("if_action"));
+						executeItem(item, world, action.getJsonObject("if_action"));
 					} else {
-						executeItem(item, action.getJsonObject("else_action"));
+						executeItem(item, world, action.getJsonObject("else_action"));
 					}
 				}
 				case "apoli:if_else_list" -> {
@@ -199,7 +200,7 @@ public class Actions {
 						for (FactoryJsonObject arrayObject : action.getJsonArray("actions").asJsonObjectList()) {
 							if (arrayObject.isPresent("condition") && arrayObject.isPresent("action")) {
 								if (ConditionExecutor.testItem(arrayObject.getJsonObject("condition"), item)) {
-									executeItem(item, arrayObject.getJsonObject("action"));
+									executeItem(item, world, arrayObject.getJsonObject("action"));
 								}
 							}
 						}
@@ -210,7 +211,7 @@ public class Actions {
 			Registrar<ItemActions.ActionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_ACTION);
 			ItemActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.getString("type")));
 			if (action != null) {
-				finAction.test(action, item);
+				finAction.test(action, item, world);
 			}
 		}
 	}
@@ -257,7 +258,7 @@ public class Actions {
 			Registrar<EntityActions.ActionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.ENTITY_ACTION);
 			EntityActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.getString("type")));
 			if (finAction != null) {
-				finAction.test(action, entity);
+				finAction.test(action, (CraftEntity) entity);
 			}
 		}
 	}

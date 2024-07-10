@@ -37,7 +37,7 @@ public class PreventItemPickup extends PowerType implements Listener {
 		if (this.getPlayers().contains(p)) {
 			boolean shouldCancel = ConditionExecutor.testItem(itemCondition, e.getItem().getItemStack());
 			if (shouldCancel) e.setCancelled(true);
-			Actions.executeItem(e.getItem().getItemStack(), itemAction);
+			Actions.executeItem(e.getItem().getItemStack(), e.getPlayer().getWorld(), itemAction);
 			Actions.executeBiEntity(p, e.getItem(), bientityActionItem);
 		}
 	}

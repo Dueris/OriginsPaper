@@ -71,10 +71,10 @@ public class ActionOnEntityUse extends PowerType {
 		}
 		if (!pass) return;
 		Actions.executeBiEntity(actor, target, bientityAction);
-		Actions.executeItem(actor.getActiveItem(), heldItemAction);
+		Actions.executeItem(actor.getActiveItem(), e.getPlayer().getWorld(), heldItemAction);
 		if (resultStack != null) {
 			actor.getInventory().addItem(resultStack);
-			Actions.executeItem(actor.getActiveItem(), resultItemAction);
+			Actions.executeItem(actor.getActiveItem(), e.getPlayer().getWorld(), resultItemAction);
 		}
 	}
 

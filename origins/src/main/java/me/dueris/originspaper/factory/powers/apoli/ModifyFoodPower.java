@@ -95,7 +95,7 @@ public class ModifyFoodPower extends PowerType implements Listener {
 					e.setReplacement(replaceStack);
 				}
 				Actions.executeEntity(player, entityAction);
-				Actions.executeItem(e.getItem(), itemAction);
+				Actions.executeItem(e.getItem(), e.getPlayer().getWorld(), itemAction);
 
 				if (shouldPreventEffects && !e.isCancelled()) {
 					preventEffects.add(player);

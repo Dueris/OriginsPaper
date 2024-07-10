@@ -81,11 +81,11 @@ public class ActionOnBlockPlace extends PowerType {
 			if (!directions.contains(direction)) return;
 			if (!pass) return;
 			Actions.executeEntity(e.getPlayer(), entityAction);
-			Actions.executeItem(e.getItemInHand(), heldItemAction);
+			Actions.executeItem(e.getItemInHand(), e.getPlayer().getWorld(), heldItemAction);
 			Actions.executeBlock(e.getBlockAgainst().getLocation(), placeOnAction);
 			Actions.executeBlock(e.getBlockPlaced().getLocation(), placeToAction);
 			if (resultStack != null) {
-				Actions.executeItem(resultStack, resultItemAction);
+				Actions.executeItem(resultStack, e.getPlayer().getWorld(), resultItemAction);
 				e.getPlayer().getInventory().addItem(resultStack);
 			}
 		}

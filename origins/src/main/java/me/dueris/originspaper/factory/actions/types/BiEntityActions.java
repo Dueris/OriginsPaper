@@ -12,7 +12,9 @@ import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.util.Util;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Leashable;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
@@ -106,6 +108,18 @@ public class BiEntityActions {
 
 			if (!tameableTarget.isTame()) {
 				tameableTarget.tame(actorPlayer);
+			}
+		}));
+		register(new ActionFactory(OriginsPaper.apoliIdentifier("leash"), (data, entityPair) -> {
+			net.minecraft.world.entity.Entity actor = entityPair.left().getHandle();
+			net.minecraft.world.entity.Entity target = entityPair.right().getHandle();
+
+			if (actor == null || !(target instanceof Mob mobTarget) || !(mobTarget instanceof Leashable leashable)) {
+				return;
+			}
+
+			if (!mobTarget.isLeashed()) {
+				mobTarget.setLeashedTo(actor, true);
 			}
 		}));
 	}
