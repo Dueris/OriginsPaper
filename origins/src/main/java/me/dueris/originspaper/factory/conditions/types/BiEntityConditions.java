@@ -80,7 +80,6 @@ public class BiEntityConditions implements Listener {
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("owner"), (data, pair) -> {
 			Entity actor = pair.left().getHandle();
 			Entity target = pair.right().getHandle();
-			System.out.println(actor.getType());
 
 			if (actor == null || target == null) {
 				return false;
