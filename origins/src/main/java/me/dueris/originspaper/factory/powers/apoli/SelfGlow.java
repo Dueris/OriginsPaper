@@ -78,7 +78,7 @@ public class SelfGlow extends PowerType {
 						utils.unsetGlowing(p, receiver.getBukkitEntity());
 						continue;
 					}
-					if (!ConditionExecutor.testBiEntity(bientityCondition, entity.getBukkitEntity(), p)) {
+					if (!ConditionExecutor.testBiEntity(bientityCondition, p, entity.getBukkitEntity())) {
 						utils.unsetGlowing(p, receiver.getBukkitEntity());
 						continue;
 					}

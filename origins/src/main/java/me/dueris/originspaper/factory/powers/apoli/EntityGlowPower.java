@@ -43,7 +43,7 @@ public class EntityGlowPower extends SelfGlow {
 						utils.unsetGlowing(entity.getBukkitEntity(), p);
 						continue;
 					}
-					if (!ConditionExecutor.testBiEntity(getBientityCondition(), entity.getBukkitEntity(), p)) {
+					if (!ConditionExecutor.testBiEntity(getBientityCondition(), p, entity.getBukkitEntity())) {
 						utils.unsetGlowing(entity.getBukkitEntity(), p);
 						continue;
 					}
