@@ -9,12 +9,9 @@ import me.dueris.originspaper.factory.conditions.types.*;
 import me.dueris.originspaper.registry.Registries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.biome.Biome;
-import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.block.CraftBiome;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.util.CraftLocation;
@@ -142,7 +139,7 @@ public class ConditionExecutor {
 		return false;
 	}
 
-	public static boolean testBiome(FactoryJsonObject condition, org.bukkit.block.Biome biome, Location blockPos, ServerLevel level) {
+	public static boolean testBiome(FactoryJsonObject condition, BlockPos blockPos, ServerLevel level) {
 		if (condition == null || condition.isEmpty()) return true; // Empty condition, do nothing
 		if (isMetaCondition(condition)) {
 			String type = condition.getString("type");
@@ -156,7 +153,7 @@ public class ConditionExecutor {
 							Registrar<BiomeConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.BIOME_CONDITION);
 							BiomeConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
 							if (con != null) {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBiome(obj, biome, blockPos, level)));
+								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBiome(obj, blockPos, level)));
 							} else {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true)); // Condition null or not found.
 							}
@@ -176,7 +173,7 @@ public class ConditionExecutor {
 							Registrar<BiomeConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.BIOME_CONDITION);
 							BiomeConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
 							if (con != null) {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBiome(obj, biome, blockPos, level)));
+								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBiome(obj, blockPos, level)));
 							} else {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true)); // Condition null or not found.
 							}
@@ -196,19 +193,11 @@ public class ConditionExecutor {
 			}
 		} else {
 			// return the condition
-			Biome nmsBiome = CraftBiome.bukkitToMinecraft(biome);
-			if (nmsBiome == null) {
-				BlockPos nmsPos = CraftLocation.toBlockPosition(blockPos);
-				nmsBiome = level.getBiome(nmsPos).value();
-				if (nmsBiome == null) {
-					throw new RuntimeException("Unable to convert biome to NMS equivalent!");
-				}
-			}
 			Registrar<BiomeConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.BIOME_CONDITION);
 			BiomeConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(condition.getString("type")));
 			boolean invert = condition.getBooleanOrDefault("inverted", false);
 			if (con != null) {
-				return getPossibleInvert(invert, con.test(condition, new oshi.util.tuples.Pair<Biome, BlockPos>(nmsBiome, CraftLocation.toBlockPosition(blockPos))));
+				return getPossibleInvert(invert, con.test(condition, level.getBiomeManager().getBiome(blockPos)));
 			} else {
 				return getPossibleInvert(invert, false); // Condition null or not found.
 			}

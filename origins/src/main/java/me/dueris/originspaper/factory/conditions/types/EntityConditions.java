@@ -1,16 +1,23 @@
 package me.dueris.originspaper.factory.conditions.types;
 
+import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.data.types.Comparison;
 import me.dueris.originspaper.factory.powers.apoli.Resource;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -52,6 +59,28 @@ public class EntityConditions {
 			// By checking the serverloaded bars(after we define that its not displayed) and seeing if the origin wants to check
 			// if its value is 0, then it would be true in apoli.
 			return Resource.serverLoadedBars.containsKey(condition.getString("resource")) && condition.getString("comparison").equalsIgnoreCase("==") && condition.getNumber("compare_to").getInt() == 0;
+		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("biome"), (data, entity) -> {
+			BlockPos blockPos = entity.getHandle().blockPosition();
+			ServerLevel level = (ServerLevel) entity.getHandle().level();
+			Biome biome = level.getBiome(blockPos).value();
+			FactoryJsonObject condition = data.getJsonObject("condition");
+			if (data.isPresent("biome") || data.isPresent("biomes")) {
+				ResourceLocation biomeId = entity.getHandle().level().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BIOME).getKey(biome);
+				if (data.isPresent("biome") && biomeId.equals(data.getResourceLocation("biome"))) {
+					return condition == null || condition.isEmpty() || ConditionExecutor.testBiome(condition, blockPos, level);
+				}
+				if (data.isPresent("biomes") && (
+					data.getJsonArray("biomes").asList.stream()
+						.map(FactoryElement::getString)
+						.map(NamespacedKey::fromString)
+						.map(CraftNamespacedKey::toMinecraft).toList()
+				).contains(biomeId)) {
+					return condition == null || condition.isEmpty() || ConditionExecutor.testBiome(condition, blockPos, level);
+				}
+				return false;
+			}
+			return condition == null || condition.isEmpty() || ConditionExecutor.testBiome(condition, blockPos, level);
 		}));
 	}
 
