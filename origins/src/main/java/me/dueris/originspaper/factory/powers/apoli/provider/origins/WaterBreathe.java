@@ -8,7 +8,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffects;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
@@ -23,8 +26,8 @@ import java.util.ArrayList;
 public class WaterBreathe implements Listener, PowerProvider {
 	private static final ArrayList<Player> originsExecuting = new ArrayList<>();
 	public static ArrayList<Player> outofAIR = new ArrayList<>();
-	protected static NamespacedKey powerReference = OriginsPaper.originIdentifier("water_breathing");
-	private static final String cachedPowerRefrenceString = powerReference.asString();
+	protected static ResourceLocation powerReference = OriginsPaper.originIdentifier("water_breathing");
+	private static final String cachedPowerRefrenceString = powerReference.toString();
 
 	public static boolean isInBreathableWater(Player player) {
 		Block block = player.getEyeLocation().getBlock();

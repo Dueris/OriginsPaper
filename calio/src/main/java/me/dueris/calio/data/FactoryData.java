@@ -3,14 +3,14 @@ package me.dueris.calio.data;
 import com.google.common.base.Preconditions;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class FactoryData {
 	private final ConcurrentLinkedQueue<FactoryDataDefiner> providers;
-	private NamespacedKey identifier;
+	private ResourceLocation identifier;
 
 	public FactoryData() {
 		this.providers = new ConcurrentLinkedQueue<>();
@@ -67,18 +67,18 @@ public class FactoryData {
 		return this;
 	}
 
-	public FactoryData ofNamespace(NamespacedKey identifier) {
+	public FactoryData ofNamespace(ResourceLocation identifier) {
 		this.identifier = identifier;
 		return this;
 	}
 
-	public NamespacedKey getIdentifier() {
+	public ResourceLocation getIdentifier() {
 		return identifier;
 	}
 
 	@Override
 	public String toString() {
-		return "FactoryData :: [%N%] : DataDefiners: [%%%]".replace("%%%", this.providers.toString()).replace("%N%", identifier.asString());
+		return "FactoryData :: [%N%] : DataDefiners: [%%%]".replace("%%%", this.providers.toString()).replace("%N%", identifier.toString());
 	}
 
 }

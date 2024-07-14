@@ -13,8 +13,10 @@ import me.dueris.originspaper.storage.OriginDataContainer;
 import me.dueris.originspaper.storage.nbt.NBTFixerUpper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -41,11 +43,11 @@ public class PlayerManager implements Listener {
 		for (Layer layer : origins.keySet()) {
 			if (layer == null) continue; // Layer was removed
 			for (String tag : layer.getOriginIdentifiers()) {
-				NamespacedKey fixedKey = NamespacedKey.fromString(tag);
+				ResourceLocation fixedKey = ResourceLocation.parse(tag);
 				if (OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(fixedKey) == null) {
 					// Layer not in registry, cry.
 					origins.replace(layer, CraftApoli.emptyOrigin());
-					p.sendMessage(Component.text("Your origin, \"%originName%\" was not found on the registry in the layer, \"%layerName%\".".replace("%originName%", fixedKey.asString()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString("#fb5454")));
+					p.sendMessage(Component.text("Your origin, \"%originName%\" was not found on the registry in the layer, \"%layerName%\".".replace("%originName%", fixedKey.toString()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString("#fb5454")));
 				}
 			}
 		}
@@ -59,7 +61,11 @@ public class PlayerManager implements Listener {
 			}
 			origins.put(layer, CraftApoli.emptyOrigin());
 		}
-		p.getPersistentDataContainer().set(OriginsPaper.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
+		p.getPersistentDataContainer().set(identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
+	}
+
+	private static NamespacedKey identifier(String id) {
+		return new NamespacedKey(OriginsPaper.getPlugin(), id);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -69,53 +75,53 @@ public class PlayerManager implements Listener {
 		//set origins to null if none present
 		for (NamespacedKey key : p.getPersistentDataContainer().getKeys()) {
 			if (key.asString().equalsIgnoreCase("genesismc:originlayer")) {
-				p.getPersistentDataContainer().set(OriginsPaper.identifier("originLayer"), PersistentDataType.STRING, p.getPersistentDataContainer().get(key, PersistentDataType.STRING));
+				p.getPersistentDataContainer().set(identifier("originLayer"), PersistentDataType.STRING, p.getPersistentDataContainer().get(key, PersistentDataType.STRING));
 				p.getPersistentDataContainer().remove(key);
 			}
 
 		}
 		if (
-			!p.getPersistentDataContainer().has(OriginsPaper.identifier("originLayer"), PersistentDataType.STRING) ||
-				p.getPersistentDataContainer().get(OriginsPaper.identifier("originLayer"), PersistentDataType.STRING) == null ||
-				p.getPersistentDataContainer().get(OriginsPaper.identifier("originLayer"), PersistentDataType.STRING).equalsIgnoreCase("")
+			!p.getPersistentDataContainer().has(identifier("originLayer"), PersistentDataType.STRING) ||
+				p.getPersistentDataContainer().get(identifier("originLayer"), PersistentDataType.STRING) == null ||
+				p.getPersistentDataContainer().get(identifier("originLayer"), PersistentDataType.STRING).equalsIgnoreCase("")
 		) {
 			HashMap<Layer, Origin> origins = new HashMap<>();
 			for (Layer layer : CraftApoli.getLayersFromRegistry()) origins.put(layer, CraftApoli.emptyOrigin());
-			p.getPersistentDataContainer().set(OriginsPaper.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(origins));
+			p.getPersistentDataContainer().set(identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(origins));
 			firstJoin.add(p);
 		}
 
 		// ---  translation system ---
 
-		if (!p.getPersistentDataContainer().has(OriginsPaper.identifier("insideBlock"), PersistentDataType.BOOLEAN)) {
-			p.getPersistentDataContainer().set(OriginsPaper.identifier("insideBlock"), PersistentDataType.BOOLEAN, false);
+		if (!p.getPersistentDataContainer().has(identifier("insideBlock"), PersistentDataType.BOOLEAN)) {
+			p.getPersistentDataContainer().set(identifier("insideBlock"), PersistentDataType.BOOLEAN, false);
 		}
 
 		//default playerdata values
 		PersistentDataContainer data = p.getPersistentDataContainer();
-		if (data.has(OriginsPaper.identifier("shulker-box"), PersistentDataType.STRING)) {
-			String save = data.get(OriginsPaper.identifier("shulker-box"), PersistentDataType.STRING);
+		if (data.has(identifier("shulker-box"), PersistentDataType.STRING)) {
+			String save = data.get(identifier("shulker-box"), PersistentDataType.STRING);
 			PersistentDataContainer container = p.getPersistentDataContainer();
-			container.set(OriginsPaper.apoliIdentifier("inventorydata_" + "origins:inventory".replace(":", "_").replace("/", "_").replace("\\", "_")), PersistentDataType.STRING, save);
+			container.set(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("inventorydata_" + "origins:inventory".replace(":", "_").replace("/", "_").replace("\\", "_"))), PersistentDataType.STRING, save);
 			p.saveData();
-			data.remove(OriginsPaper.identifier("shulker-box"));
+			data.remove(identifier("shulker-box"));
 		}
-		if (!p.getPersistentDataContainer().has(OriginsPaper.identifier("can-explode"), PersistentDataType.INTEGER)) {
-			p.getPersistentDataContainer().set(OriginsPaper.identifier("can-explode"), PersistentDataType.INTEGER, 1);
+		if (!p.getPersistentDataContainer().has(identifier("can-explode"), PersistentDataType.INTEGER)) {
+			p.getPersistentDataContainer().set(identifier("can-explode"), PersistentDataType.INTEGER, 1);
 		}
-		if (!p.getPersistentDataContainer().has(OriginsPaper.identifier("in-phantomform"), PersistentDataType.BOOLEAN)) {
-			p.getPersistentDataContainer().set(OriginsPaper.identifier("in-phantomform"), PersistentDataType.BOOLEAN, false);
+		if (!p.getPersistentDataContainer().has(identifier("in-phantomform"), PersistentDataType.BOOLEAN)) {
+			p.getPersistentDataContainer().set(identifier("in-phantomform"), PersistentDataType.BOOLEAN, false);
 		}
-		if (!p.getPersistentDataContainer().has(OriginsPaper.identifier("toggle"), PersistentDataType.INTEGER)) {
-			p.getPersistentDataContainer().set(OriginsPaper.identifier("toggle"), PersistentDataType.INTEGER, 1);
+		if (!p.getPersistentDataContainer().has(identifier("toggle"), PersistentDataType.INTEGER)) {
+			p.getPersistentDataContainer().set(identifier("toggle"), PersistentDataType.INTEGER, 1);
 		}
 
 		try {
-			if (!p.getPersistentDataContainer().has(OriginsPaper.identifier("modified-skin-url"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(OriginsPaper.identifier("modified-skin-url"), PersistentDataType.STRING) == null) {
-				p.getPersistentDataContainer().set(OriginsPaper.identifier("modified-skin-url"), PersistentDataType.STRING, p.getPlayerProfile().getTextures().getSkin().getFile());
+			if (!p.getPersistentDataContainer().has(identifier("modified-skin-url"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(identifier("modified-skin-url"), PersistentDataType.STRING) == null) {
+				p.getPersistentDataContainer().set(identifier("modified-skin-url"), PersistentDataType.STRING, p.getPlayerProfile().getTextures().getSkin().getFile());
 			}
-			if (!p.getPersistentDataContainer().has(OriginsPaper.identifier("original-skin-url"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(OriginsPaper.identifier("original-skin-url"), PersistentDataType.STRING) == null) {
-				p.getPersistentDataContainer().set(OriginsPaper.identifier("original-skin-url"), PersistentDataType.STRING, p.getPlayerProfile().getTextures().getSkin().getFile());
+			if (!p.getPersistentDataContainer().has(identifier("original-skin-url"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(identifier("original-skin-url"), PersistentDataType.STRING) == null) {
+				p.getPersistentDataContainer().set(identifier("original-skin-url"), PersistentDataType.STRING, p.getPlayerProfile().getTextures().getSkin().getFile());
 			}
 		} catch (Exception vv) {
 			//silence code - offline mode fucks things
@@ -143,16 +149,16 @@ public class PlayerManager implements Listener {
 		}.runTaskLater(OriginsPaper.getPlugin(), OriginConfiguration.getConfiguration().getInt("choosing_delay"));
 
 		// Update powers for 1.0.0 update
-		if (!p.getPersistentDataContainer().has(OriginsPaper.identifier("updated")) && !PowerHolderComponent.getOrigin(p, CraftApoli.getLayerFromTag("origins:origin")).equals(CraftApoli.emptyOrigin())) {
+		if (!p.getPersistentDataContainer().has(identifier("updated")) && !PowerHolderComponent.getOrigin(p, CraftApoli.getLayerFromTag("origins:origin")).equals(CraftApoli.emptyOrigin())) {
 			PowerHolderComponent.setOrigin(p, CraftApoli.getLayerFromTag("origins:origin"), PowerHolderComponent.getOrigin(p, CraftApoli.getLayerFromTag("origins:origin")));
-			p.getPersistentDataContainer().set(OriginsPaper.identifier("updated"), PersistentDataType.BOOLEAN, true);
+			p.getPersistentDataContainer().set(identifier("updated"), PersistentDataType.BOOLEAN, true);
 		}
 	}
 
 	@EventHandler
 	public void playerQuitHandler(PlayerQuitEvent e) {
 		playersLeaving.add(e.getPlayer());
-		e.getPlayer().getPersistentDataContainer().set(OriginsPaper.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(PowerHolderComponent.getOrigin(e.getPlayer()), e.getPlayer()));
+		e.getPlayer().getPersistentDataContainer().set(identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(PowerHolderComponent.getOrigin(e.getPlayer()), e.getPlayer()));
 		PowerHolderComponent.unassignPowers(e.getPlayer());
 		OriginDataContainer.unloadData(e.getPlayer());
 		playersLeaving.remove(e.getPlayer());

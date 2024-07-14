@@ -11,6 +11,8 @@ import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.data.types.Modifier;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.util.Util;
+import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -31,6 +33,7 @@ public class EdibleItem extends PowerType {
 	private final FactoryJsonObject foodComponent;
 	private final ItemStack resultStack;
 	private final Modifier[] modifiers;
+	private final NamespacedKey EDIBLE_ITEM_MODIFIED_KEY = CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("edible_item_modified"));
 
 	public EdibleItem(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject entityAction, FactoryJsonObject itemAction, FactoryJsonObject resultItemAction, FactoryJsonObject itemCondition, FactoryJsonObject foodComponent, ItemStack resultStack, FactoryJsonObject consumingTimeModifier, FactoryJsonArray consumingTimeModifiers) {
 		super(name, description, hidden, condition, loading_priority);
@@ -78,7 +81,7 @@ public class EdibleItem extends PowerType {
 	public void setFoodable(PlayerItemHeldEvent e) {
 		ItemStack stack = e.getPlayer().getInventory().getItem(e.getNewSlot());
 		if (stack != null) {
-			if (getPlayers().contains(e.getPlayer()) && !stack.getItemMeta().getPersistentDataContainer().has(OriginsPaper.apoliIdentifier("edible_item_modified"))) {
+			if (getPlayers().contains(e.getPlayer()) && !stack.getItemMeta().getPersistentDataContainer().has(EDIBLE_ITEM_MODIFIED_KEY)) {
 				Player p = e.getPlayer();
 				if (!ConditionExecutor.testItem(itemCondition, stack)) return;
 				if (!isActive(p)) return;
@@ -89,16 +92,16 @@ public class EdibleItem extends PowerType {
 				});
 				food.setEatSeconds(s);
 				ItemMeta meta = stack.getItemMeta();
-				meta.getPersistentDataContainer().set(OriginsPaper.apoliIdentifier("edible_item_modified"), PersistentDataType.BOOLEAN, true);
+				meta.getPersistentDataContainer().set(EDIBLE_ITEM_MODIFIED_KEY, PersistentDataType.BOOLEAN, true);
 				meta.setFood(food);
 				stack.setItemMeta(meta);
 				return;
 			}
 
-			if (stack.getItemMeta().getPersistentDataContainer().has(OriginsPaper.apoliIdentifier("edible_item_modified"))) {
+			if (stack.getItemMeta().getPersistentDataContainer().has(EDIBLE_ITEM_MODIFIED_KEY)) {
 				ItemMeta meta = stack.getItemMeta();
 				meta.setFood(null);
-				meta.getPersistentDataContainer().remove(OriginsPaper.apoliIdentifier("edible_item_modified"));
+				meta.getPersistentDataContainer().remove(EDIBLE_ITEM_MODIFIED_KEY);
 				stack.setItemMeta(meta);
 			}
 		}

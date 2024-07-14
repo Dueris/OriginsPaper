@@ -3,11 +3,12 @@ package me.dueris.originspaper.factory.powers.apoli.provider.origins;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.powers.apoli.provider.PowerProvider;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,8 +20,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ScareCreepers implements Listener, PowerProvider {
-	protected static NamespacedKey powerReference = OriginsPaper.originIdentifier("scare_creepers");
-	private final NamespacedKey hitByPlayerKey = new NamespacedKey(OriginsPaper.getPlugin(), "hit-by-player");
+	protected static ResourceLocation powerReference = OriginsPaper.originIdentifier("scare_creepers");
+	private final ResourceLocation hitByPlayerKey = OriginsPaper.identifier("hit-by-player");
 
 	@EventHandler
 	public void load(EntitySpawnEvent event) {
@@ -43,8 +44,8 @@ public class ScareCreepers implements Listener, PowerProvider {
 			(PathfinderMob) ((CraftEntity) creeper).getHandle(), net.minecraft.world.entity.player.Player.class, 6, 1, 1.2,
 			livingEntity -> {
 				if (livingEntity.getBukkitEntity() instanceof Player player) {
-					if (PowerHolderComponent.hasPower(player, powerReference.asString())) {
-						String data = creeper.getPersistentDataContainer().get(hitByPlayerKey, PersistentDataType.STRING);
+					if (PowerHolderComponent.hasPower(player, powerReference.toString())) {
+						String data = creeper.getPersistentDataContainer().get(CraftNamespacedKey.fromMinecraft(hitByPlayerKey), PersistentDataType.STRING);
 						if (data == null) {
 							return true;
 						}
@@ -68,7 +69,7 @@ public class ScareCreepers implements Listener, PowerProvider {
 			} else {
 				return;
 			}
-			event.getEntity().getPersistentDataContainer().set(hitByPlayerKey, PersistentDataType.STRING, player.getName());
+			event.getEntity().getPersistentDataContainer().set(CraftNamespacedKey.fromMinecraft(hitByPlayerKey), PersistentDataType.STRING, player.getName());
 		}
 	}
 
@@ -79,7 +80,7 @@ public class ScareCreepers implements Listener, PowerProvider {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						String data = event.getEntity().getPersistentDataContainer().get(hitByPlayerKey, PersistentDataType.STRING);
+						String data = event.getEntity().getPersistentDataContainer().get(CraftNamespacedKey.fromMinecraft(hitByPlayerKey), PersistentDataType.STRING);
 						if (data == null) {
 							event.setCancelled(true);
 							return;

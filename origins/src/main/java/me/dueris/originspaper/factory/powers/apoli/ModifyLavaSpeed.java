@@ -9,13 +9,12 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.data.types.Modifier;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.util.Util;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.FluidState;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.util.CraftLocation;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +43,7 @@ public class ModifyLavaSpeed extends PowerType {
 		CraftBlock nmsBlockAccessor = CraftBlock.at(((CraftWorld) p.getWorld()).getHandle(), CraftLocation.toBlockPosition(p.getLocation()));
 		if (nmsBlockAccessor.getNMS().getFluidState() != null) {
 			FluidState state = nmsBlockAccessor.getNMSFluid();
-			if (state.getType().builtInRegistryHolder().key().location().equals(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString("minecraft:lava")))) {
+			if (state.getType().builtInRegistryHolder().key().location().equals(ResourceLocation.parse("minecraft:lava"))) {
 				float multiplyBy = 0.1F;
 				for (Modifier modifier : modifiers) {
 					Map<String, BinaryOperator<Float>> floatBinaryOperator = Util.getOperationMappingsFloat();

@@ -17,6 +17,8 @@ import me.dueris.originspaper.util.Util;
 import me.dueris.originspaper.util.entity.PlayerManager;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -76,7 +78,7 @@ public class Inventory extends PowerType implements KeyedPower {
 //        inventoryData.putString(tag, data);
 //        p.load(compoundRoot);
 		PersistentDataContainer container = player.getPersistentDataContainer();
-		container.set(OriginsPaper.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING, data);
+		container.set(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("inventorydata_" + format(tag))), PersistentDataType.STRING, data);
 		player.saveData();
 	}
 
@@ -94,10 +96,11 @@ public class Inventory extends PowerType implements KeyedPower {
 //            return originData.getCompound("InventoryData").getString(tag);
 //        }
 		PersistentDataContainer container = player.getPersistentDataContainer();
-		if (!container.has(OriginsPaper.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING)) {
+		NamespacedKey formattedTag = CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("inventorydata_" + format(tag)));
+		if (!container.has(formattedTag, PersistentDataType.STRING)) {
 			return "";
 		}
-		return container.get(OriginsPaper.apoliIdentifier("inventorydata_" + format(tag)), PersistentDataType.STRING);
+		return container.get(formattedTag, PersistentDataType.STRING);
 	}
 
 	private static String format(String tag) {

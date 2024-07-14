@@ -16,7 +16,7 @@ import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.screen.ScreenNavigator;
 import me.dueris.originspaper.util.Util;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -37,16 +37,16 @@ public class Layer implements FactoryHolder {
 	private final boolean allowRandom;
 	private final boolean allowRandomUnchoosable;
 	private final FactoryJsonArray excludeRandom;
-	private final NamespacedKey defaultOrigin;
+	private final ResourceLocation defaultOrigin;
 	private final boolean autoChoose;
 	private final boolean hidden;
 	private final int loadingPriority;
 	private boolean tagSet;
-	private NamespacedKey tag;
+	private ResourceLocation tag;
 	private String cachedTagString;
 
 	public Layer(int order, FactoryJsonArray origins, boolean enabled, boolean replace, String name, FactoryJsonObject guiTitle, String missingName, String missingDescription,
-				 boolean allowRandom, boolean allowRandomUnchoosable, FactoryJsonArray excludeRandom, NamespacedKey defaultOrigin, boolean autoChoose, boolean hidden, int loadingPriority
+				 boolean allowRandom, boolean allowRandomUnchoosable, FactoryJsonArray excludeRandom, ResourceLocation defaultOrigin, boolean autoChoose, boolean hidden, int loadingPriority
 	) {
 		this.order = order;
 		this.origins = origins;
@@ -77,23 +77,23 @@ public class Layer implements FactoryHolder {
 			.add("allow_random", boolean.class, true)
 			.add("allow_random_unchoosable", boolean.class, false)
 			.add("exclude_random", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()))
-			.add("default_origin", NamespacedKey.class, CraftApoli.emptyOrigin().key())
+			.add("default_origin", ResourceLocation.class, CraftApoli.emptyOrigin().key())
 			.add("auto_choose", boolean.class, false)
 			.add("hidden", boolean.class, false)
 			.add("loading_priority", int.class, 0);
 	}
 
 	@Override
-	public FactoryHolder ofResourceLocation(NamespacedKey key) {
+	public FactoryHolder ofResourceLocation(ResourceLocation key) {
 		if (this.tagSet) return this;
 		tagSet = true;
 		this.tag = key;
-		this.cachedTagString = key.asString();
+		this.cachedTagString = key.toString();
 		return this;
 	}
 
 	@Override
-	public NamespacedKey key() {
+	public ResourceLocation key() {
 		return this.tag;
 	}
 
@@ -145,7 +145,7 @@ public class Layer implements FactoryHolder {
 		return excludeRandom;
 	}
 
-	public NamespacedKey getDefaultOrigin() {
+	public ResourceLocation getDefaultOrigin() {
 		return defaultOrigin;
 	}
 
@@ -190,8 +190,8 @@ public class Layer implements FactoryHolder {
 		}
 
 		if (ScreenNavigator.orbChoosing.contains(entity)) return false; // Default origins dont apply on orb choosings
-		if (!getDefaultOrigin().asString().equalsIgnoreCase("origins:empty")) {
-			NamespacedKey identifier = getDefaultOrigin();
+		if (!getDefaultOrigin().toString().equalsIgnoreCase("origins:empty")) {
+			ResourceLocation identifier = getDefaultOrigin();
 			Origin origin = OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(identifier);
 			if (origin != null && entity instanceof Player p) {
 				PowerHolderComponent.setOrigin(p, this, origin);

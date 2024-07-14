@@ -10,7 +10,7 @@ import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -24,9 +24,9 @@ import java.util.Optional;
 // Note for devs: Optionals ALWAYS return an Optional of a JsonElement if found
 public class ConstructorCreator {
 
-	public static FactoryHolder invoke(Constructor<? extends FactoryHolder> constructor, FactoryData data, Pair<JsonObject, NamespacedKey> pair) throws InvocationTargetException, InstantiationException, IllegalAccessException {
+	public static FactoryHolder invoke(Constructor<? extends FactoryHolder> constructor, FactoryData data, Pair<JsonObject, ResourceLocation> pair) throws InvocationTargetException, InstantiationException, IllegalAccessException {
 		JsonObject getter = pair.getFirst();
-		NamespacedKey tag = pair.getSecond();
+		ResourceLocation tag = pair.getSecond();
 		List<Object> invoker = new ArrayList<>();
 		for (FactoryDataDefiner provider : data.getProviders()) {
 			if (getter.has(provider.getObjName())) {
@@ -43,7 +43,7 @@ public class ConstructorCreator {
 				if (provider.getDefaultValue() instanceof RequiredInstance) {
 					throw new IllegalArgumentException("Instance of \"{a}\" is required in registerable: {b}"
 						.replace("{a}", provider.getObjName())
-						.replace("{b}", tag.asString())
+						.replace("{b}", tag.toString())
 					);
 				} else if (provider.getDefaultValue() instanceof OptionalInstance) {
 					invoker.add(null);

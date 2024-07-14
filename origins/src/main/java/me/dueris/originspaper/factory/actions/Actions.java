@@ -11,9 +11,9 @@ import me.dueris.originspaper.factory.actions.types.EntityActions;
 import me.dueris.originspaper.factory.actions.types.ItemActions;
 import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.registry.Registries;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.block.CraftBlock;
@@ -162,7 +162,7 @@ public class Actions {
 			}
 		} else {
 			Registrar<BiEntityActions.ActionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.BIENTITY_ACTION);
-			BiEntityActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.getString("type")));
+			BiEntityActions.ActionFactory finAction = factory.get(ResourceLocation.parse(action.getString("type")));
 			if (finAction != null) {
 				finAction.test(action, entityPair);
 			}
@@ -209,7 +209,7 @@ public class Actions {
 			}
 		} else {
 			Registrar<ItemActions.ActionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_ACTION);
-			ItemActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.getString("type")));
+			ItemActions.ActionFactory finAction = factory.get(ResourceLocation.parse(action.getString("type")));
 			if (action != null) {
 				finAction.test(action, item, world);
 			}
@@ -256,7 +256,7 @@ public class Actions {
 			}
 		} else {
 			Registrar<EntityActions.ActionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.ENTITY_ACTION);
-			EntityActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.getString("type")));
+			EntityActions.ActionFactory finAction = factory.get(ResourceLocation.parse(action.getString("type")));
 			if (finAction != null) {
 				finAction.test(action, (CraftEntity) entity);
 			}
@@ -306,7 +306,7 @@ public class Actions {
 			}
 		} else {
 			Registrar<BlockActions.ActionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.BLOCK_ACTION);
-			BlockActions.ActionFactory finAction = factory.get(NamespacedKey.fromString(action.getString("type")));
+			BlockActions.ActionFactory finAction = factory.get(ResourceLocation.parse(action.getString("type")));
 			if (finAction != null) {
 				finAction.test(action, location);
 			}

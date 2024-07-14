@@ -17,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -169,8 +170,8 @@ public class ScreenNavigator implements Listener {
 			if (e.getAction().isRightClick()) {
 				if (e.getItem() != null) {
 					if ((isSimilarEnough(e.getItem(), OrbOfOrigins.orb, false)) &&
-						e.getItem().getItemMeta().getPersistentDataContainer().has(OriginsPaper.identifier("origins")) &&
-						e.getItem().getItemMeta().getPersistentDataContainer().get(OriginsPaper.identifier("origins"), PersistentDataType.STRING).equalsIgnoreCase("orb_of_origin")) {
+						e.getItem().getItemMeta().getPersistentDataContainer().has(CraftNamespacedKey.fromMinecraft(OriginsPaper.identifier("origins"))) &&
+						e.getItem().getItemMeta().getPersistentDataContainer().get(CraftNamespacedKey.fromMinecraft(OriginsPaper.identifier("origins")), PersistentDataType.STRING).equalsIgnoreCase("orb_of_origin")) {
 						if (!((CraftPlayer) p).getHandle().getAbilities().instabuild) {
 							Util.consumeItem(e.getItem());
 						}

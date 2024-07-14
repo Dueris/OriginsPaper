@@ -1,6 +1,7 @@
 package me.dueris.originspaper.factory.powers.apoli;
 
 import com.google.gson.JsonArray;
+import me.dueris.calio.data.CalioDataTypes;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
@@ -9,7 +10,8 @@ import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.data.types.Modifier;
 import me.dueris.originspaper.util.Util;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -28,14 +30,14 @@ public class ModifyStatusEffectAmplifierPower extends ModifierPower implements L
 	private final List<PotionEffectType> statusEffects;
 	private final HashMap<Player, List<PotionEffectType>> applied = new HashMap<>();
 
-	public ModifyStatusEffectAmplifierPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject modifier, FactoryJsonArray modifiers, NamespacedKey statusEffect, FactoryJsonArray statusEffects) {
+	public ModifyStatusEffectAmplifierPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject modifier, FactoryJsonArray modifiers, ResourceLocation statusEffect, FactoryJsonArray statusEffects) {
 		super(name, description, hidden, condition, loading_priority, modifier, modifiers);
-		this.statusEffects = statusEffect == null ? statusEffects.asList().stream().map(FactoryElement::getString).map(NamespacedKey::fromString).map(PotionEffectType::getByKey).toList() : List.of(PotionEffectType.getByKey(statusEffect));
+		this.statusEffects = statusEffect == null ? statusEffects.asList().stream().map(FactoryElement::handle).map(CalioDataTypes::potionEffectType).toList() : List.of(PotionEffectType.getByKey(CraftNamespacedKey.fromMinecraft(statusEffect)));
 	}
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return ModifierPower.registerComponents(data).ofNamespace(OriginsPaper.apoliIdentifier("modify_status_effect_amplifier"))
-			.add("status_effect", NamespacedKey.class, new OptionalInstance())
+			.add("status_effect", ResourceLocation.class, new OptionalInstance())
 			.add("status_effects", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()));
 	}
 

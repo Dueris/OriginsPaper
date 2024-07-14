@@ -28,9 +28,9 @@ public interface ChoosingPage extends Registrable {
 					.collect(Collectors.toCollection(ArrayList::new));
 
 				Origin defaultOrigin = null;
-				if (!layer.getDefaultOrigin().asString().equalsIgnoreCase("origins:empty")) {
+				if (!layer.getDefaultOrigin().toString().equalsIgnoreCase("origins:empty")) {
 					defaultOrigin = choosable.stream()
-						.filter(origin -> origin.getTag().equalsIgnoreCase(layer.getDefaultOrigin().asString()))
+						.filter(origin -> origin.getTag().equalsIgnoreCase(layer.getDefaultOrigin().toString()))
 						.findFirst().orElse(null);
 				}
 

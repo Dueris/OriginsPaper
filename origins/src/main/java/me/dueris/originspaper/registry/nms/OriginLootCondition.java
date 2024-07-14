@@ -13,9 +13,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
-import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,8 +39,7 @@ public class OriginLootCondition implements LootItemCondition {
 		Entity entity = context.getParam(LootContextParams.THIS_ENTITY);
 		CraftEntity var4 = entity.getBukkitEntity();
 		if (var4 instanceof Player player) {
-			NamespacedKey key = CraftNamespacedKey.fromMinecraft(this.originId);
-			Origin origin = OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(key);
+			Origin origin = OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(this.originId);
 			return PowerHolderComponent.hasOrigin(player, origin.getTag());
 		} else {
 			return false;

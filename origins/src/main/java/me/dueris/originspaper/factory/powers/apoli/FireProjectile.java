@@ -17,6 +17,7 @@ import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.util.KeybindUtil;
 import me.dueris.originspaper.util.Util;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -25,7 +26,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.entity.CraftEntityType;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -43,7 +43,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 	public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
 	public static ArrayList<Player> enderian_pearl = new ArrayList<>();
 	public static ArrayList<Player> in_cooldown_patch = new ArrayList<>();
-	private final NamespacedKey entityType;
+	private final ResourceLocation entityType;
 	private final int cooldown;
 	private final HudRender hudRender;
 	private final int count;
@@ -57,7 +57,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 	private final FactoryJsonObject projectileAction;
 	private final FactoryJsonObject shooterAction;
 
-	public FireProjectile(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, NamespacedKey entityType, int cooldown, FactoryJsonObject hudRender, int count, int interval, int startDelay, float speed, float divergence, Sound sound, CompoundTag tag, FactoryElement key, FactoryJsonObject projectileAction, FactoryJsonObject shooterAction) {
+	public FireProjectile(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, ResourceLocation entityType, int cooldown, FactoryJsonObject hudRender, int count, int interval, int startDelay, float speed, float divergence, Sound sound, CompoundTag tag, FactoryElement key, FactoryJsonObject projectileAction, FactoryJsonObject shooterAction) {
 		super(name, description, hidden, condition, loading_priority);
 		this.entityType = entityType;
 		this.cooldown = cooldown;
@@ -76,7 +76,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(OriginsPaper.apoliIdentifier("fire_projectile"))
-			.add("entity_type", NamespacedKey.class, new RequiredInstance())
+			.add("entity_type", ResourceLocation.class, new RequiredInstance())
 			.add("cooldown", int.class, 1)
 			.add("hud_render", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("count", int.class, 1)
@@ -141,11 +141,11 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 						float divergence = providedDivergence + (float) ((Math.random() - 0.5) * 0.05);
 
 						EntityType type;
-						if (entityType.asString().equalsIgnoreCase("origins:enderian_pearl")) {
+						if (entityType.toString().equalsIgnoreCase("origins:enderian_pearl")) {
 							type = EntityType.ENDER_PEARL;
 							enderian_pearl.add(p);
 						} else {
-							type = EntityType.valueOf(entityType.asString().split(":")[1].toUpperCase());
+							type = EntityType.valueOf(entityType.toString().split(":")[1].toUpperCase());
 							enderian_pearl.remove(p);
 						}
 						String key = getJsonKey().key();
@@ -259,7 +259,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 		return hudRender;
 	}
 
-	public NamespacedKey getEntityType() {
+	public ResourceLocation getEntityType() {
 		return entityType;
 	}
 

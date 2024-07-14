@@ -6,7 +6,7 @@ import me.dueris.calio.CraftCalio;
 import me.dueris.calio.data.*;
 import me.dueris.calio.data.annotations.RequiresPlugin;
 import me.dueris.calio.registry.impl.CalioRegistry;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -14,23 +14,23 @@ import java.util.Arrays;
 
 public class CalioJsonParser {
 
-	public static FactoryHolder init(Pair<JsonObject, NamespacedKey> pair, AccessorKey accessorKey) {
-		NamespacedKey key = pair.getSecond();
+	public static FactoryHolder init(Pair<JsonObject, ResourceLocation> pair, AccessorKey accessorKey) {
+		ResourceLocation key = pair.getSecond();
 		if (accessorKey.getOfType() == null) return null;
 		try {
 			FactoryData data;
 			Class<? extends FactoryHolder> holder;
 			if (accessorKey.usesTypeDefiner()) {
 				String type = pair.getFirst().has("type") ? pair.getFirst().get("type").getAsString() : accessorKey.getDefaultType();
-				if (!CraftCalio.INSTANCE.types.containsKey(NamespacedKey.fromString(type))) {
+				if (!CraftCalio.INSTANCE.types.containsKey(ResourceLocation.parse(type))) {
 					CraftCalio.INSTANCE.getLogger().severe("Unknown type was provided! : {a} | {b}"
-						.replace("{a}", NamespacedKey.fromString(pair.getFirst().get("type").getAsString()).asString())
-						.replace("{b}", key.asString())
+						.replace("{a}", ResourceLocation.parse(pair.getFirst().get("type").getAsString()).toString())
+						.replace("{b}", key.toString())
 					);
 					return null;
 				} else {
-					data = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(type)).getFirst();
-					holder = CraftCalio.INSTANCE.types.get(NamespacedKey.fromString(type)).getSecond();
+					data = CraftCalio.INSTANCE.types.get(ResourceLocation.parse(type)).getFirst();
+					holder = CraftCalio.INSTANCE.types.get(ResourceLocation.parse(type)).getSecond();
 				}
 			} else {
 				// We gotta invoke the FactoryData manually
@@ -67,7 +67,7 @@ public class CalioJsonParser {
 			CraftCalio.INSTANCE.getLogger().severe(
 				"Registry: {a} | Associated Namespace: {b} | Type: {c} | Throwable: {d}"
 					.replace("{a}", accessorKey.getOfType().getSimpleName())
-					.replace("{b}", key.asString())
+					.replace("{b}", key.toString())
 					.replace("{c}", accessorKey.usesTypeDefiner() ? pair.getFirst().get("type").getAsString() : "No Type")
 					.replace("{d}", throwable.getMessage() == null ? "Null Message" : throwable.getMessage()) + stacktrace[0]
 			);

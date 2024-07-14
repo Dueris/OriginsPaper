@@ -3,16 +3,16 @@ package me.dueris.originspaper.util;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import me.dueris.calio.registry.Registrable;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class LangFile implements Registrable {
-	private final NamespacedKey key;
+	private final ResourceLocation key;
 	private final Map<String, String> langMap; // KEY -> OUTPUT // EX: "origin.origins.human.name" -> "Human"
 
-	public LangFile(NamespacedKey key, JsonObject json) {
+	public LangFile(ResourceLocation key, JsonObject json) {
 		this.key = key;
 		Map<String, String> foundLang = new HashMap<>();
 		for (String jsonKey : json.keySet()) {
@@ -24,7 +24,7 @@ public class LangFile implements Registrable {
 	}
 
 	@Override
-	public NamespacedKey key() {
+	public ResourceLocation key() {
 		return this.key;
 	}
 

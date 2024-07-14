@@ -1,7 +1,7 @@
 package me.dueris.originspaper.util;
 
 import me.dueris.calio.registry.Registrable;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.boss.BarColor;
 
 import java.awt.*;
@@ -12,11 +12,11 @@ import java.util.List;
 
 public class TextureLocation implements Registrable {
 	public static HashMap<String, BarColor> textureMap = new HashMap<>();
-	private final NamespacedKey key;
+	private final ResourceLocation key;
 	private final BufferedImage image;
 	private final List<BarColor> containedColors = new ArrayList<>();
 
-	public TextureLocation(NamespacedKey key, BufferedImage image) {
+	public TextureLocation(ResourceLocation key, BufferedImage image) {
 		this.key = key;
 		this.image = image;
 		int height = image.getHeight();
@@ -47,7 +47,7 @@ public class TextureLocation implements Registrable {
 			if (color == null) continue;
 			BarColor c = convertToBarColor(color);
 			this.containedColors.add(c);
-			textureMap.put(key.key().asString() + "/-/" + index, c);
+			textureMap.put(key.toString() + "/-/" + index, c);
 			index++;
 		}
 	}
@@ -87,7 +87,7 @@ public class TextureLocation implements Registrable {
 	}
 
 	@Override
-	public NamespacedKey key() {
+	public ResourceLocation key() {
 		return this.key;
 	}
 

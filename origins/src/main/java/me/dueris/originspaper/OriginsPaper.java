@@ -39,13 +39,14 @@ import me.dueris.originspaper.util.entity.PlayerManager;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -95,16 +96,16 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		return scheduler;
 	}
 
-	public static NamespacedKey identifier(String path) {
-		return new NamespacedKey(getPlugin(), path);
+	public static ResourceLocation identifier(String path) {
+		return ResourceLocation.fromNamespaceAndPath("originspaper", path);
 	}
 
-	public static NamespacedKey originIdentifier(String path) {
-		return new NamespacedKey("origins", path);
+	public static ResourceLocation originIdentifier(String path) {
+		return ResourceLocation.fromNamespaceAndPath("origins", path);
 	}
 
-	public static NamespacedKey apoliIdentifier(String path) {
-		return new NamespacedKey("apoli", path);
+	public static ResourceLocation apoliIdentifier(String path) {
+		return ResourceLocation.fromNamespaceAndPath("apoli", path);
 	}
 
 	public static File getTmpFolder() {
@@ -323,7 +324,6 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new AsyncUpgradeTracker(), this);
 		getServer().getPluginManager().registerEvents(new PowerHolderComponent(), this);
 		getServer().getPluginManager().registerEvents(new CraftPehuki(), this);
-		getServer().getPluginManager().registerEvents(new ItemStackPowerHolder().startTicking(), this);
 		getServer().getPluginManager().registerEvents(EntityLinkedItemStack.getInstance(), this);
 		this.registry.retrieve(Registries.CRAFT_POWER).values().forEach(powerType -> {
 			if (powerType != null) {
@@ -343,7 +343,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		try {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				player.closeInventory(); // Ensure that all choosing players have closed inventories during reload
-				player.getPersistentDataContainer().set(OriginsPaper.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(PowerHolderComponent.getOrigin(player), player));
+				player.getPersistentDataContainer().set(CraftNamespacedKey.fromMinecraft(OriginsPaper.identifier("originLayer")), PersistentDataType.STRING, CraftApoli.toSaveFormat(PowerHolderComponent.getOrigin(player), player));
 				PowerHolderComponent.unassignPowers(player);
 				OriginDataContainer.unloadData(player);
 			}

@@ -3,7 +3,7 @@ package me.dueris.originspaper.factory.powers.apoli.provider.origins;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.powers.apoli.provider.PowerProvider;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PiglinNoAttack implements Listener, PowerProvider {
-	protected static NamespacedKey powerReference = OriginsPaper.originIdentifier("piglin_brothers");
+	protected static ResourceLocation powerReference = OriginsPaper.originIdentifier("piglin_brothers");
 	static ArrayList<EntityType> piglinValid = new ArrayList<>();
 
 	static {
@@ -45,7 +45,7 @@ public class PiglinNoAttack implements Listener, PowerProvider {
 	@EventHandler
 	public void target(EntityTargetEvent e) {
 		if (piglinValid.contains(e.getEntity().getType())) {
-			if (PowerHolderComponent.hasPower(e.getTarget(), powerReference.asString())) {
+			if (PowerHolderComponent.hasPower(e.getTarget(), powerReference.toString())) {
 				if (!cooldowns.containsKey(e.getTarget())) {
 					cooldowns.put((Player) e.getTarget(), new HashMap<>());
 				}
@@ -59,7 +59,7 @@ public class PiglinNoAttack implements Listener, PowerProvider {
 	@EventHandler
 	public void damageEntity(EntityDamageByEntityEvent e) {
 		if (piglinValid.contains(e.getEntity().getType())) {
-			if (PowerHolderComponent.hasPower(e.getDamager(), powerReference.asString())) {
+			if (PowerHolderComponent.hasPower(e.getDamager(), powerReference.toString())) {
 				Player p = (Player) e.getDamager();
 				HashMap<Entity, Integer> map = new HashMap<>();
 				map.put(e.getEntity(), 600);

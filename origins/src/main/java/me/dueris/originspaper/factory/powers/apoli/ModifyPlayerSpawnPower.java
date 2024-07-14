@@ -29,10 +29,10 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.function.TriFunction;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -48,13 +48,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ModifyPlayerSpawnPower extends PowerType {
 	private static final ArrayList<Player> suspended = new ArrayList<>();
 	private static final PotionEffect suspendedEffect = new PotionEffect(PotionEffectType.SLOWNESS, 5, 255, false, false, false);
-	private final NamespacedKey dimension;
+	private final ResourceLocation dimension;
 	private final @Nullable ResourceLocation biome;
 	private final @Nullable ResourceLocation structure;
 	private final SpawnStrategy spawnStrategy;
 	private final float dimensionDistanceMultiplier;
 
-	public ModifyPlayerSpawnPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, NamespacedKey dimension, ResourceLocation biome, ResourceLocation structure, SpawnStrategy spawnStrategy, float dimensionDistanceMultiplier) {
+	public ModifyPlayerSpawnPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, ResourceLocation dimension, ResourceLocation biome, ResourceLocation structure, SpawnStrategy spawnStrategy, float dimensionDistanceMultiplier) {
 		super(name, description, hidden, condition, loading_priority);
 		this.dimension = dimension;
 		this.biome = biome;
@@ -65,7 +65,7 @@ public class ModifyPlayerSpawnPower extends PowerType {
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(OriginsPaper.apoliIdentifier("modify_player_spawn"))
-			.add("dimension", NamespacedKey.class, new RequiredInstance())
+			.add("dimension", ResourceLocation.class, new RequiredInstance())
 			.add("biome", ResourceLocation.class, new OptionalInstance())
 			.add("structure", ResourceLocation.class, new OptionalInstance())
 			.add("spawn_strategy", SpawnStrategy.class, SpawnStrategy.DEFAULT)
@@ -117,7 +117,7 @@ public class ModifyPlayerSpawnPower extends PowerType {
 	}
 
 	private ResourceKey<Level> getDimension() {
-		return ((CraftWorld) Bukkit.getWorld(dimension)).getHandle().dimension();
+		return ((CraftWorld) Bukkit.getWorld(CraftNamespacedKey.fromMinecraft(dimension))).getHandle().dimension();
 	}
 
 	public void teleportToModifiedSpawn(Entity entity) {

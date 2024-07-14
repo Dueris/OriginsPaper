@@ -18,6 +18,7 @@ import net.skinsrestorer.api.storage.PlayerStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.util.CraftLocation;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.persistence.PersistentDataType;
@@ -76,10 +77,10 @@ public class ModelColor extends PowerType {
 							}
 							String url = skin.data.texture.url;
 							url = formatUrl(url);
-							p.getPersistentDataContainer().set(OriginsPaper.identifier("modified-skin-url"), PersistentDataType.STRING, url);
+							p.getPersistentDataContainer().set(CraftNamespacedKey.fromMinecraft(OriginsPaper.identifier("modified-skin-url")), PersistentDataType.STRING, url);
 						});
 
-						p.getPersistentDataContainer().set(OriginsPaper.identifier("original-skin-url"), PersistentDataType.STRING, currentSkinURL);
+						p.getPersistentDataContainer().set(CraftNamespacedKey.fromMinecraft(OriginsPaper.identifier("original-skin-url")), PersistentDataType.STRING, currentSkinURL);
 						p.saveData();
 					} catch (IOException e) {
 						throw new RuntimeException("An exception occurred when attempting to apply model changes to a player", e);
@@ -124,7 +125,7 @@ public class ModelColor extends PowerType {
 					ModelColorAPI api = ModelColorAPI.create(Bukkit.getPluginsFolder().getAbsolutePath() + File.separator + "OriginsPaper" + File.separator + "skins");
 					SkinsRestorer skinsRestorer = SkinsRestorerProvider.get();
 					applyModelTransformer(api, skinsRestorer, e.getPlayer());
-					String url = e.getPlayer().getPersistentDataContainer().get(OriginsPaper.identifier("modified-skin-url"), PersistentDataType.STRING);
+					String url = e.getPlayer().getPersistentDataContainer().get(CraftNamespacedKey.fromMinecraft(OriginsPaper.identifier("modified-skin-url")), PersistentDataType.STRING);
 					String SPACE = " ";
 					RaycastUtils.executeNMSCommand(((CraftEntity) e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "skin set " + url + SPACE + e.getPlayer().getName() + SPACE + getSlim(e.getPlayer()));
 				}

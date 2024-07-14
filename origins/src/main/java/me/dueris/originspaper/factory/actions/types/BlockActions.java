@@ -19,6 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -34,7 +35,6 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.util.CraftLocation;
@@ -227,10 +227,10 @@ public class BlockActions {
 	}
 
 	public static class ActionFactory implements Registrable {
-		NamespacedKey key;
+		ResourceLocation key;
 		BiConsumer<FactoryJsonObject, Location> test;
 
-		public ActionFactory(NamespacedKey key, BiConsumer<FactoryJsonObject, Location> test) {
+		public ActionFactory(ResourceLocation key, BiConsumer<FactoryJsonObject, Location> test) {
 			this.key = key;
 			this.test = test;
 		}
@@ -246,7 +246,7 @@ public class BlockActions {
 		}
 
 		@Override
-		public NamespacedKey key() {
+		public ResourceLocation key() {
 			return key;
 		}
 	}

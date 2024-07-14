@@ -10,9 +10,9 @@ import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -38,7 +38,7 @@ public class CraftApoli {
 		"Empty", "No Origin", 0,
 		new ItemStack(Material.BEDROCK), true, new FactoryJsonArray(new JsonArray()),
 		new FactoryJsonArray(new JsonArray()), 0, 0
-	).ofResourceLocation(NamespacedKey.fromString("origins:empty"));
+	).ofResourceLocation(ResourceLocation.parse("origins:empty"));
 
 	public static Collection<Layer> getLayersFromRegistry() {
 		return layerValues;
@@ -61,13 +61,17 @@ public class CraftApoli {
 	public static Layer getLayerFromTag(String layerTag) {
 		for (Layer l : layerRegistrar.values())
 			if (l.getTag().equals(layerTag)) return l;
-		return layerRegistrar.get(new NamespacedKey("origins", "origin"));
+		return layerRegistrar.get(ResourceLocation.fromNamespaceAndPath("origins", "origin"));
 	}
 
 	public static PowerType getPowerFromTag(String powerTag) {
 		for (PowerType p : powerRegistrar.values())
 			if (p.getTag().equals(powerTag)) return p;
 		return null;
+	}
+
+	public static PowerType getPowersFromResourceLocation(ResourceLocation location) {
+		return getPowerFromTag(location.toString());
 	}
 
 	/**
@@ -148,7 +152,7 @@ public class CraftApoli {
 				String[] layers = originData.split("\n");
 				for (String layer : layers) {
 					String[] layerData = layer.split("\\|");
-					if (layerRegistrar.get(NamespacedKey.fromString(layerData[0])).equals(originLayer)) {
+					if (layerRegistrar.get(ResourceLocation.parse(layerData[0])).equals(originLayer)) {
 						return CraftApoli.getOrigin(layerData[1]);
 					}
 				}
@@ -174,7 +178,7 @@ public class CraftApoli {
 				String[] layers = originData.split("\n");
 				for (String layer : layers) {
 					String[] layerData = layer.split("\\|");
-					Layer layerContainer = layerRegistrar.get(NamespacedKey.fromString(layerData[0]));
+					Layer layerContainer = layerRegistrar.get(ResourceLocation.parse(layerData[0]));
 					Origin originContainer = CraftApoli.getOrigin(layerData[1]);
 					containedOrigins.put(layerContainer, originContainer);
 				}

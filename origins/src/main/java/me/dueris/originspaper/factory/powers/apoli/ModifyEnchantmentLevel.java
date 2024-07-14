@@ -9,7 +9,8 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.data.types.Modifier;
 import me.dueris.originspaper.util.Util;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,9 +21,9 @@ import java.util.function.BinaryOperator;
 
 public class ModifyEnchantmentLevel extends ModifierPower {
 	private final FactoryJsonObject itemCondition;
-	private final NamespacedKey enchantment;
+	private final ResourceLocation enchantment;
 
-	public ModifyEnchantmentLevel(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject modifier, FactoryJsonArray modifiers, FactoryJsonObject itemCondition, NamespacedKey enchantment) {
+	public ModifyEnchantmentLevel(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject modifier, FactoryJsonArray modifiers, FactoryJsonObject itemCondition, ResourceLocation enchantment) {
 		super(name, description, hidden, condition, loading_priority, modifier, modifiers);
 		this.itemCondition = itemCondition;
 		this.enchantment = enchantment;
@@ -31,7 +32,7 @@ public class ModifyEnchantmentLevel extends ModifierPower {
 	public static FactoryData registerComponents(FactoryData data) {
 		return ModifierPower.registerComponents(data).ofNamespace(OriginsPaper.apoliIdentifier("modify_enchantment_level"))
 			.add("item_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
-			.add("enchantment", NamespacedKey.class, new RequiredInstance());
+			.add("enchantment", ResourceLocation.class, new RequiredInstance());
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class ModifyEnchantmentLevel extends ModifierPower {
 			if (!isActive(p)) continue;
 			if (!ConditionExecutor.testItem(itemCondition, item)) continue;
 			for (Modifier modifier : getModifiers()) {
-				Enchantment enchant = Enchantment.getByKey(enchantment);
+				Enchantment enchant = Enchantment.getByKey(CraftNamespacedKey.fromMinecraft(enchantment));
 				if (item.containsEnchantment(enchant)) {
 					item.removeEnchantment(enchant);
 				}

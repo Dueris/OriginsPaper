@@ -45,8 +45,8 @@ public class KeybindUtil implements Listener {
 		for (ItemStack item : player.getInventory().getContents()) {
 			if (item == null) continue;
 			if (item.getItemMeta() == null) continue;
-			if (item.getItemMeta().getPersistentDataContainer().has(OriginsPaper.identifier("origin_item_data"))) {
-				if (item.getItemMeta().getPersistentDataContainer().get(OriginsPaper.identifier("origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase("key.origins.primary_active")) {
+			if (item.getItemMeta().getPersistentDataContainer().has(identifier("origin_item_data"))) {
+				if (item.getItemMeta().getPersistentDataContainer().get(identifier("origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase("key.origins.primary_active")) {
 					return item;
 				}
 			}
@@ -57,8 +57,8 @@ public class KeybindUtil implements Listener {
 	public static ItemStack getSecondaryTrigger(Player player) {
 		for (ItemStack item : player.getInventory().getContents()) {
 			if (item == null) continue;
-			if (item.getItemMeta().getPersistentDataContainer().has(OriginsPaper.identifier("origin_item_data"))) {
-				if (item.getItemMeta().getPersistentDataContainer().get(OriginsPaper.identifier("origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase("key.origins.secondary_active")) {
+			if (item.getItemMeta().getPersistentDataContainer().has(identifier("origin_item_data"))) {
+				if (item.getItemMeta().getPersistentDataContainer().get(identifier("origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase("key.origins.secondary_active")) {
 					return item;
 				}
 			}
@@ -96,7 +96,7 @@ public class KeybindUtil implements Listener {
 		itemMeta.addEnchant(Enchantment.INFINITY, 1, true);
 		itemMeta.setCustomModelData(id);
 		itemMeta.setDisplayName(ChatColor.GRAY + "Keybind : " + keybindType);
-		itemMeta.getPersistentDataContainer().set(OriginsPaper.identifier("origin_item_data"), PersistentDataType.STRING, valueKEY);
+		itemMeta.getPersistentDataContainer().set(identifier("origin_item_data"), PersistentDataType.STRING, valueKEY);
 		itemMeta.getPersistentDataContainer().set(new NamespacedKey(OriginsPaper.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
 		itemStack.setItemMeta(itemMeta);
 		return itemStack;
@@ -143,6 +143,10 @@ public class KeybindUtil implements Listener {
 		return false;
 	}
 
+	private static NamespacedKey identifier(String id) {
+		return new NamespacedKey(OriginsPaper.getPlugin(), id);
+	}
+
 	@EventHandler
 	public void jump(PlayerJumpEvent e) {
 		triggerExecution("key.jump", e.getPlayer());
@@ -154,8 +158,8 @@ public class KeybindUtil implements Listener {
 			triggerExecution("key.use", e.getPlayer());
 			if (e.getItem() != null) {
 				if (e.getItem().getItemMeta() == null && !e.getHand().equals(EquipmentSlot.HAND)) return;
-				if (e.getItem().getItemMeta().getPersistentDataContainer().has(OriginsPaper.identifier("origin_item_data"))) { // Is keybind
-					triggerExecution(e.getItem().getItemMeta().getPersistentDataContainer().get(OriginsPaper.identifier("origin_item_data"), PersistentDataType.STRING), e.getPlayer());
+				if (e.getItem().getItemMeta().getPersistentDataContainer().has(identifier("origin_item_data"))) { // Is keybind
+					triggerExecution(e.getItem().getItemMeta().getPersistentDataContainer().get(identifier("origin_item_data"), PersistentDataType.STRING), e.getPlayer());
 				}
 			}
 		} else {
@@ -166,7 +170,7 @@ public class KeybindUtil implements Listener {
 	@EventHandler
 	public void interactEvent(PlayerInteractEntityEvent e) {
 		ItemStack stack = e.getPlayer().getInventory().getItem(e.getHand());
-		if (stack != null && stack.getItemMeta() != null && stack.getItemMeta().getPersistentDataContainer().has(OriginsPaper.identifier("origin_item_data")))
+		if (stack != null && stack.getItemMeta() != null && stack.getItemMeta().getPersistentDataContainer().has(identifier("origin_item_data")))
 			e.setCancelled(true);
 	}
 
@@ -265,7 +269,7 @@ public class KeybindUtil implements Listener {
 
 	@EventHandler
 	public void deathDropCancel(PlayerDeathEvent e) {
-		e.getDrops().removeIf(itemStack -> itemStack.getItemMeta().getPersistentDataContainer().has(OriginsPaper.identifier("origin_item_data")));
+		e.getDrops().removeIf(itemStack -> itemStack.getItemMeta().getPersistentDataContainer().has(identifier("origin_item_data")));
 	}
 
 	@EventHandler
@@ -280,14 +284,14 @@ public class KeybindUtil implements Listener {
 
 	@EventHandler
 	public void onInventoryMoveItem(InventoryMoveItemEvent event) {
-		if (!event.getSource().equals(event.getDestination()) && event.getItem().getItemMeta().getPersistentDataContainer().has(OriginsPaper.identifier("origin_item_data"))) {
+		if (!event.getSource().equals(event.getDestination()) && event.getItem().getItemMeta().getPersistentDataContainer().has(identifier("origin_item_data"))) {
 			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void preventDrop(PlayerDropItemEvent e) {
-		if (e.getItemDrop().getItemStack().getItemMeta().getPersistentDataContainer().has(OriginsPaper.identifier("origin_item_data"))) {
+		if (e.getItemDrop().getItemStack().getItemMeta().getPersistentDataContainer().has(identifier("origin_item_data"))) {
 			e.setCancelled(true);
 			new BukkitRunnable() {
 				@Override

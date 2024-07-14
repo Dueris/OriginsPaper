@@ -25,6 +25,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
@@ -139,6 +140,10 @@ public class CalioDataTypes {
 		}
 
 		return new ParticleEffect(particle, data, blockData);
+	}
+
+	public static PotionEffectType potionEffectType(JsonElement raw) {
+		return PotionEffectType.getByKey(NamespacedKey.fromString(raw.getAsString()));
 	}
 
 	private static int calculateParticleValue(float value) {

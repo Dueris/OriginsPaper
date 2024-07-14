@@ -10,10 +10,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -101,7 +101,7 @@ public class RandomOriginPage implements ChoosingPage {
 	}
 
 	@Override
-	public NamespacedKey key() {
+	public ResourceLocation key() {
 		return OriginsPaper.originIdentifier("random_page");
 	}
 }

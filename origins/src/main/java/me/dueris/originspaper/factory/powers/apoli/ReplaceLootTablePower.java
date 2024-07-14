@@ -6,6 +6,7 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -17,6 +18,7 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftLootTable;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.util.CraftLocation;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -66,9 +68,10 @@ public class ReplaceLootTablePower extends PowerType {
 		if ((e.getEntity().getKiller() != null)) {
 			Player p = e.getEntity().getKiller();
 			String key = "minecraft:entities/" + e.getEntityType().getKey().getKey();
-			if (Bukkit.getLootTable(NamespacedKey.fromString(key)) != null) {
+			NamespacedKey k = CraftNamespacedKey.fromMinecraft(ResourceLocation.parse(key));
+			if (Bukkit.getLootTable(k) != null) {
 				if (getPlayers().contains(p) && ConditionExecutor.testBiEntity(bientityCondition, p, e.getEntity())) {
-					modifyLoot(e.getDrops(), NamespacedKey.fromString(key), e.getEntity().getWorld(), e.getEntity().getLocation());
+					modifyLoot(e.getDrops(), k, e.getEntity().getWorld(), e.getEntity().getLocation());
 				}
 			}
 		}
@@ -101,7 +104,7 @@ public class ReplaceLootTablePower extends PowerType {
 			if (canPass) {
 				// Clear current loottable
 				items.clear();
-				NamespacedKey replaceWith = replace.getNamespacedKey(toReplaceRaw);
+				NamespacedKey replaceWith = CraftNamespacedKey.fromMinecraft(replace.getResourceLocation(toReplaceRaw));
 				if (Bukkit.getLootTable(replaceWith) != null) {
 					// Modify loot table
 					@NotNull LootTable l = Bukkit.getLootTable(replaceWith);

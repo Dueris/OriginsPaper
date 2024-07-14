@@ -60,4 +60,8 @@ public class FactoryElement {
 	public FactoryElement deepCopy() {
 		return new FactoryElement(this.handle);
 	}
+
+	public JsonElement handle() {
+		return handle;
+	}
 }

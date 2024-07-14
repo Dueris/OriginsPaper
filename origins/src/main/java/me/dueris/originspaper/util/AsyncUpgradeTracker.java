@@ -9,12 +9,11 @@ import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerLoadEvent;
@@ -24,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AsyncUpgradeTracker implements Listener {
-	public static ConcurrentHashMap<Origin, TriPair<String, NamespacedKey, String>/*String advancement, NamespacedKey identifier, String announcement*/> upgrades = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Origin, TriPair<String, ResourceLocation, String>/*String advancement, NamespacedKey identifier, String announcement*/> upgrades = new ConcurrentHashMap<>();
 	public static String NO_ANNOUNCEMENT = "no_announcement_found";
 
 	@EventHandler
@@ -33,15 +32,15 @@ public class AsyncUpgradeTracker implements Listener {
 			@Override
 			public void run() {
 				MinecraftServer server = OriginsPaper.server;
-				for (Map.Entry<Origin, TriPair<String, NamespacedKey, String>> entry : upgrades.entrySet()) {
+				for (Map.Entry<Origin, TriPair<String, ResourceLocation, String>> entry : upgrades.entrySet()) {
 					for (CraftPlayer player : ((CraftServer) Bukkit.getServer()).getOnlinePlayers()) {
 						for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 							if (PowerHolderComponent.getOrigin(player, layer).equals(entry.getKey())) {
 								String advancement = entry.getValue().a();
-								NamespacedKey originToSet = entry.getValue().b();
+								ResourceLocation originToSet = entry.getValue().b();
 								String announcement = entry.getValue().c();
 
-								AdvancementHolder advancementHolder = server.getAdvancements().get(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(advancement)));
+								AdvancementHolder advancementHolder = server.getAdvancements().get(ResourceLocation.parse(advancement));
 								if (advancementHolder == null) {
 									OriginsPaper.getPlugin().getLogger().severe("Advancement \"{}\" did not exist but was referenced in the an origin upgrade!".replace("{}", advancement));
 								}

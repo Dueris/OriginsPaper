@@ -16,9 +16,11 @@ import me.dueris.originspaper.storage.OriginDataContainer;
 import me.dueris.originspaper.util.BstatsMetrics;
 import me.dueris.originspaper.util.exception.PowerNotFoundException;
 import net.md_5.bungee.api.ChatColor;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -105,7 +107,7 @@ public class PowerHolderComponent implements Listener {
 			// setup powers
 			for (String dataPiece : layerData) {
 				if (layerData.length == 1) continue;
-				PowerType powerCon = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(dataPiece));
+				PowerType powerCon = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(ResourceLocation.parse(dataPiece));
 				if (powerCon != null) {
 					if (powers.contains(powerCon)) continue;
 					powers.add(powerCon);
@@ -230,7 +232,7 @@ public class PowerHolderComponent implements Listener {
 	}
 
 	public static boolean isInPhantomForm(Player player) {
-		return player.getPersistentDataContainer().has(new NamespacedKey(OriginsPaper.getPlugin(), "in-phantomform")) ? player.getPersistentDataContainer().get(new NamespacedKey(OriginsPaper.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN) : false;
+		return player.getPersistentDataContainer().has(CraftNamespacedKey.fromString("originspaper:in-phantomform")) ? player.getPersistentDataContainer().get(CraftNamespacedKey.fromString("originspaper:in-phantomform"), PersistentDataType.BOOLEAN) : false;
 	}
 
 	public static ConcurrentLinkedQueue<PowerType> getPowersApplied(Player p) {
@@ -247,7 +249,7 @@ public class PowerHolderComponent implements Listener {
 	 * @param p
 	 */
 	public static void checkForDuplicates(Player p) {
-		List<NamespacedKey> keys = new ArrayList<>();
+		List<ResourceLocation> keys = new ArrayList<>();
 		List<PowerType> duplicates = new ArrayList<>();
 		for (PowerType power : getPowersApplied(p)) {
 			if (keys.contains(power.key())) {
@@ -269,7 +271,7 @@ public class PowerHolderComponent implements Listener {
 
 	public static void applyPower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
-		NamespacedKey registryKey = power.key();
+		ResourceLocation registryKey = power.key();
 		PowerType c = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(registryKey);
 		if (c != null) {
 			c.forPlayer(player);
@@ -283,7 +285,7 @@ public class PowerHolderComponent implements Listener {
 			}
 			new PowerUpdateEvent(player, power, false, isNew).callEvent();
 		} else {
-			throw new PowerNotFoundException(registryKey.asString());
+			throw new PowerNotFoundException(registryKey.toString());
 		}
 	}
 
@@ -293,7 +295,7 @@ public class PowerHolderComponent implements Listener {
 
 	public static void removePower(Player player, PowerType power, boolean suppress, boolean isNew) {
 		if (power == null) return;
-		NamespacedKey registryKey = power.key();
+		ResourceLocation registryKey = power.key();
 		PowerType c = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(registryKey);
 		if (c != null) {
 			c.bootstrapUnapply(player);
@@ -305,7 +307,7 @@ public class PowerHolderComponent implements Listener {
 			}
 			new PowerUpdateEvent(player, power, true, isNew).callEvent();
 		} else {
-			throw new PowerNotFoundException(registryKey.asString());
+			throw new PowerNotFoundException(registryKey.toString());
 		}
 	}
 

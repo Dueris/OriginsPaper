@@ -30,6 +30,7 @@ import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.commands.arguments.selector.EntitySelectorParser;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -54,7 +55,6 @@ import org.apache.logging.log4j.util.TriConsumer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.CraftSound;
@@ -64,10 +64,10 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.potion.CraftPotionUtil;
 import org.bukkit.craftbukkit.util.CraftLocation;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.joml.Vector3f;
 
@@ -118,7 +118,7 @@ public class EntityActions {
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("remove_power"), (data, entity) -> {
 			if (entity instanceof Player p) {
-				PowerType powerContainer = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(data.getNamespacedKey("power"));
+				PowerType powerContainer = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(data.getResourceLocation("power"));
 				if (powerContainer == null) {
 					OriginsPaper.getPlugin().getLogger().severe("Searched PowerType was null when attempting to revoke a power: {}".replace("{}", data.getString("power")));
 					return;
@@ -133,7 +133,7 @@ public class EntityActions {
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("grant_power"), (data, entity) -> {
 			if (entity instanceof Player p) {
-				PowerType powerContainer = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(data.getNamespacedKey("power"));
+				PowerType powerContainer = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(data.getResourceLocation("power"));
 				if (powerContainer == null) {
 					OriginsPaper.getPlugin().getLogger().severe("Searched PowerType was null when attempting to apply a new power: {}".replace("{}", data.getString("power")));
 					return;
@@ -148,7 +148,7 @@ public class EntityActions {
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("revoke_power"), (data, entity) -> {
 			if (entity instanceof Player p) {
-				PowerType powerContainer = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(data.getNamespacedKey("power"));
+				PowerType powerContainer = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(data.getResourceLocation("power"));
 				if (powerContainer == null) {
 					OriginsPaper.getPlugin().getLogger().severe("Searched PowerType was null when attempting to revoke a power: {}".replace("{}", data.getString("power")));
 					return;
@@ -163,10 +163,10 @@ public class EntityActions {
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("revoke_all_powers"), (data, entity) -> {
 			if (entity instanceof Player p) {
-				for (NamespacedKey powerKey : PowerHolderComponent.getPowers(p).stream().map(PowerType::key).toList()) {
+				for (ResourceLocation powerKey : PowerHolderComponent.getPowers(p).stream().map(PowerType::key).toList()) {
 					PowerType powerContainer = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(powerKey);
 					if (powerContainer == null) {
-						OriginsPaper.getPlugin().getLogger().severe("Searched PowerType was null when attempting to revoke a power: {}".replace("{}", powerKey.asString()));
+						OriginsPaper.getPlugin().getLogger().severe("Searched PowerType was null when attempting to revoke a power: {}".replace("{}", powerKey.toString()));
 						return;
 					}
 					Layer layer = CraftApoli.getLayerFromTag(data.getString("source"));
@@ -235,9 +235,9 @@ public class EntityActions {
 					"      \"hidden\": true\n" +
 					"    }\n" +
 					"  }";
-				Advancement possible = Bukkit.getAdvancement(OriginsPaper.apoliIdentifier(title.replace(" ", "_").toLowerCase()));
+				Advancement possible = Bukkit.getAdvancement(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier(title.replace(" ", "_").toLowerCase())));
 				Advancement a = possible == null ?
-					Bukkit.getUnsafe().loadAdvancement(OriginsPaper.apoliIdentifier(title.replace(" ", "_").toLowerCase()), advancement) : possible;
+					Bukkit.getUnsafe().loadAdvancement(possible.getKey(), advancement) : possible;
 				// advancement loaded now
 				player.getAdvancementProgress(a).awardCriteria("trigger");
 				new BukkitRunnable() {
@@ -319,7 +319,7 @@ public class EntityActions {
 			if (entity.getHandle() instanceof LivingEntity le) {
 				if (data.isPresent("effect")) {
 					le.removeEffect(CraftPotionUtil.fromBukkit((data.isJsonObject("effect") ? Util.parsePotionEffect(data.getJsonObject("effect")) :
-						new PotionEffect(PotionEffectType.getByKey(data.getNamespacedKey("effect")), 100, 0))).getEffect());
+						new PotionEffect(data.getPotionEffectType("effect"), 100, 0))).getEffect());
 				} else {
 					le.removeAllEffects();
 				}
@@ -853,10 +853,10 @@ public class EntityActions {
 	}
 
 	public static class ActionFactory implements Registrable {
-		NamespacedKey key;
+		ResourceLocation key;
 		BiConsumer<FactoryJsonObject, CraftEntity> test;
 
-		public ActionFactory(NamespacedKey key, BiConsumer<FactoryJsonObject, CraftEntity> test) {
+		public ActionFactory(ResourceLocation key, BiConsumer<FactoryJsonObject, CraftEntity> test) {
 			this.key = key;
 			this.test = test;
 		}
@@ -872,7 +872,7 @@ public class EntityActions {
 		}
 
 		@Override
-		public NamespacedKey key() {
+		public ResourceLocation key() {
 			return key;
 		}
 	}

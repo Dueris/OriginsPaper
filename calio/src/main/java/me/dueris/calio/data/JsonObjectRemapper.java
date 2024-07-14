@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.util.NamespaceUtils;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,11 +47,11 @@ public class JsonObjectRemapper {
 	 * @param obj              the JSON object to be remapped
 	 * @param currentNamespace the current namespace used for dynamic namespace remapping
 	 */
-	public static JsonObject remapJsonObject(JsonObject obj, NamespacedKey currentNamespace) {
+	public static JsonObject remapJsonObject(JsonObject obj, ResourceLocation currentNamespace) {
 		JsonObject objectReturnable = new JsonObject();
 		for (String key : obj.keySet()) {
 			if (objectReturnable.has(key))
-				throw new IllegalStateException("JsonFile has duplicate value: (key=\"{k}\", namespace=\"{n}\"".replace("{k}", key).replace("{n}", currentNamespace.asString()));
+				throw new IllegalStateException("JsonFile has duplicate value: (key=\"{k}\", namespace=\"{n}\"".replace("{k}", key).replace("{n}", currentNamespace.toString()));
 			JsonElement valueInst = obj.get(key);
 			// Object mappings
 			for (String keyName : objectMappings.keySet()) {
@@ -67,7 +67,7 @@ public class JsonObjectRemapper {
 			if (valueInst.isJsonPrimitive() && valueInst.getAsJsonPrimitive().isString()) {
 				String g = valueInst.getAsJsonPrimitive().getAsString();
 				if (g.contains(":") && g.contains("*")) {
-					g = NamespaceUtils.getDynamicNamespace(currentNamespace.asString(), g).asString();
+					g = NamespaceUtils.getDynamicNamespace(currentNamespace.toString(), g).toString();
 				}
 
 				for (Pair<String, String> pair : typeMappings) {

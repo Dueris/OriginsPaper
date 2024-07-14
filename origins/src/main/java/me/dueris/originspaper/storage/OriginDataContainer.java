@@ -2,6 +2,7 @@ package me.dueris.originspaper.storage;
 
 import me.dueris.originspaper.OriginsPaper;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -20,7 +21,7 @@ public class OriginDataContainer {
 		dataContainer.put(
 			player,
 			player.getPersistentDataContainer().get(
-				OriginsPaper.identifier("originLayer"),
+				CraftNamespacedKey.fromMinecraft(OriginsPaper.identifier("originLayer")),
 				PersistentDataType.STRING
 			)
 		);

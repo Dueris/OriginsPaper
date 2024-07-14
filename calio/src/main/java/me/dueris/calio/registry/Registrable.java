@@ -1,6 +1,7 @@
 package me.dueris.calio.registry;
 
-import org.bukkit.NamespacedKey;
+
+import net.minecraft.resources.ResourceLocation;
 
 public interface Registrable {
 
@@ -9,5 +10,5 @@ public interface Registrable {
 	 *
 	 * @return the namespaced key
 	 */
-	NamespacedKey key();
+	ResourceLocation key();
 }

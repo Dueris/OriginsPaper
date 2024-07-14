@@ -13,7 +13,8 @@ import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.screen.ChoosingPage;
 import me.dueris.originspaper.util.LangFile;
 import me.dueris.originspaper.util.TextureLocation;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
+
 
 public class Registries {
 	public static final RegistryKey<Origin> ORIGIN = new RegistryKey<>(Origin.class, apoliIdentifier("origin"));
@@ -38,15 +39,15 @@ public class Registries {
 	public static final RegistryKey<DatapackRepository> PACK_SOURCE = new RegistryKey<>(DatapackRepository.class, apoliIdentifier("pack_source"));
 	public static final RegistryKey<ChoosingPage> CHOOSING_PAGE = new RegistryKey<>(ChoosingPage.class, originIdentifier("choosing_page"));
 
-	public static NamespacedKey identifier(String path) {
-		return new NamespacedKey("originspaper", path);
+	public static ResourceLocation identifier(String path) {
+		return ResourceLocation.fromNamespaceAndPath("originspaper", path);
 	}
 
-	public static NamespacedKey originIdentifier(String path) {
-		return new NamespacedKey("origins", path);
+	public static ResourceLocation originIdentifier(String path) {
+		return ResourceLocation.fromNamespaceAndPath("origins", path);
 	}
 
-	public static NamespacedKey apoliIdentifier(String path) {
-		return new NamespacedKey("apoli", path);
+	public static ResourceLocation apoliIdentifier(String path) {
+		return ResourceLocation.fromNamespaceAndPath("apoli", path);
 	}
 }

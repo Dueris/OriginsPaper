@@ -11,8 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
-import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 
 import java.util.function.BiPredicate;
 
@@ -26,7 +24,7 @@ public class BiomeConditions {
 			return Comparison.fromString(data.getString("comparison")).compare(biome.value().getBaseTemperature(), data.getNumber("compare_to").getFloat());
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("category"), (data, biome) -> {
-			ResourceLocation tagId = CraftNamespacedKey.toMinecraft(OriginsPaper.apoliIdentifier("category/" + data.getString("category")));
+			ResourceLocation tagId = OriginsPaper.apoliIdentifier("category/" + data.getString("category"));
 			TagKey<Biome> biomeTag = TagKey.create(net.minecraft.core.registries.Registries.BIOME, tagId);
 			return biome.is(biomeTag);
 		}));
@@ -64,10 +62,10 @@ public class BiomeConditions {
 	}
 
 	public class ConditionFactory implements Registrable {
-		NamespacedKey key;
+		ResourceLocation key;
 		BiPredicate<FactoryJsonObject, Holder<Biome>> test;
 
-		public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, Holder<Biome>> test) {
+		public ConditionFactory(ResourceLocation key, BiPredicate<FactoryJsonObject, Holder<Biome>> test) {
 			this.key = key;
 			this.test = test;
 		}
@@ -77,7 +75,7 @@ public class BiomeConditions {
 		}
 
 		@Override
-		public NamespacedKey key() {
+		public ResourceLocation key() {
 			return key;
 		}
 	}

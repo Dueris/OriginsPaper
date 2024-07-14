@@ -16,7 +16,6 @@ import me.dueris.calio.registry.Registrable;
 import me.dueris.calio.registry.RegistryKey;
 import me.dueris.calio.registry.impl.CalioRegistry;
 import net.minecraft.resources.ResourceLocation;
-import org.bukkit.NamespacedKey;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -29,19 +28,11 @@ import java.util.logging.Logger;
 
 public class CraftCalio {
 	public static CraftCalio INSTANCE = new CraftCalio();
-	public final ConcurrentHashMap<NamespacedKey, Pair<FactoryData, Class<? extends FactoryHolder>>> types = new ConcurrentHashMap<>();
+	public final ConcurrentHashMap<ResourceLocation, Pair<FactoryData, Class<? extends FactoryHolder>>> types = new ConcurrentHashMap<>();
 	public final ArrayList<AccessorKey> keys = new ArrayList<>();
 	public final ArrayList<AssetIdentifier> assetKeys = new ArrayList<>();
 	private final List<File> datapackDirectoriesToParse = new ArrayList<>();
 	private boolean isDebugging;
-
-	public static NamespacedKey bukkitIdentifier(String namespace, String path) {
-		return NamespacedKey.fromString(namespace + ":" + path);
-	}
-
-	public static ResourceLocation nmsIdentifier(String namespace, String path) {
-		return ResourceLocation.fromNamespaceAndPath(namespace, path);
-	}
 
 	/**
 	 * Add a datapack path to the list of directories to parse.
@@ -81,7 +72,7 @@ public class CraftCalio {
 										 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 										// Input stream made.
 										Class<? extends Registrable> toInvoke = assetKey.registryKey().type();
-										NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
+										ResourceLocation namespacedKey = ResourceLocation.fromNamespaceAndPath(namespace, key);
 										switch (assetKey.assetType()) {
 											case JSON -> {
 												StringBuilder line = new StringBuilder();
@@ -97,10 +88,10 @@ public class CraftCalio {
 													getLogger().severe("An unhandled exception occurred when parsing a json file! Invalid syntax? The datapack will not be loaded.");
 													continue packLoop;
 												}
-												CalioRegistry.INSTANCE.retrieve(assetKey.registryKey()).register(toInvoke.getConstructor(NamespacedKey.class, JsonObject.class).newInstance(namespacedKey, assetParser));
+												CalioRegistry.INSTANCE.retrieve(assetKey.registryKey()).register(toInvoke.getConstructor(ResourceLocation.class, JsonObject.class).newInstance(namespacedKey, assetParser));
 											}
 											case IMAGE -> {
-												CalioRegistry.INSTANCE.retrieve(assetKey.registryKey()).register(toInvoke.getConstructor(NamespacedKey.class, BufferedImage.class).newInstance(namespacedKey, ImageIO.read(is)));
+												CalioRegistry.INSTANCE.retrieve(assetKey.registryKey()).register(toInvoke.getConstructor(ResourceLocation.class, BufferedImage.class).newInstance(namespacedKey, ImageIO.read(is)));
 											}
 										}
 									} catch (Throwable throwable) {
@@ -121,7 +112,7 @@ public class CraftCalio {
 					FileReader fileReader = FileReaderFactory.createFileReader(datapack.toPath());
 					if (fileReader == null) continue;
 					List<String> files = fileReader.listFiles();
-					HashMap<Pair<JsonObject, NamespacedKey>, Integer> newLoadingPrioritySortedMap = new HashMap<>();
+					HashMap<Pair<JsonObject, ResourceLocation>, Integer> newLoadingPrioritySortedMap = new HashMap<>();
 					fileLoop:
 					for (String file : files) {
 						file = file.replace("/", "\\");
@@ -151,7 +142,7 @@ public class CraftCalio {
 										getLogger().severe("An unhandled exception occurred when parsing a json file \"{}\"! Invalid syntax? The datapack will not be loaded.".replace("{}", namespace + ":" + key));
 										continue fileLoop;
 									}
-									NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
+									ResourceLocation namespacedKey = ResourceLocation.fromNamespaceAndPath(namespace, key);
 									JsonObject remappedJsonObject = JsonObjectRemapper.remapJsonObject(powerParser, namespacedKey);
 									newLoadingPrioritySortedMap.put(new Pair<>(remappedJsonObject, namespacedKey), remappedJsonObject.has("loading_priority") ? remappedJsonObject.getAsJsonPrimitive("loading_priority").getAsInt() : 0);
 								}
@@ -159,10 +150,10 @@ public class CraftCalio {
 						}
 					}
 
-					List<Map.Entry<Pair<JsonObject, NamespacedKey>, Integer>> list = new ArrayList<>(newLoadingPrioritySortedMap.entrySet());
+					List<Map.Entry<Pair<JsonObject, ResourceLocation>, Integer>> list = new ArrayList<>(newLoadingPrioritySortedMap.entrySet());
 					Collections.sort(list, Map.Entry.comparingByValue());
 
-					for (Map.Entry<Pair<JsonObject, NamespacedKey>, Integer> entry : list) {
+					for (Map.Entry<Pair<JsonObject, ResourceLocation>, Integer> entry : list) {
 						CalioJsonParser.init(entry.getKey(), accessorKey);
 					}
 
@@ -222,7 +213,7 @@ public class CraftCalio {
 			if (rC == null)
 				throw new IllegalArgumentException("FactoryHolder doesn't have registerComponents method in it or its superclasses!");
 			FactoryData data = (FactoryData) rC.invoke(null, new FactoryData());
-			NamespacedKey identifier = data.getIdentifier();
+			ResourceLocation identifier = data.getIdentifier();
 			if (identifier == null)
 				throw new IllegalArgumentException("Type identifier was not provided! FactoryHolder will not be loaded : " + holder.getSimpleName());
 			this.types.put(identifier, new Pair<>(data, holder));

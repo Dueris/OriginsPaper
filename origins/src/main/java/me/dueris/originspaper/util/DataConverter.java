@@ -1,7 +1,7 @@
 package me.dueris.originspaper.util;
 
 import me.dueris.originspaper.factory.data.types.Modifier;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 
@@ -21,14 +21,14 @@ public class DataConverter {
 		return Attribute.valueOf(att.toUpperCase().split(":")[1]);
 	}
 
-	public static NamespacedKey resolveTextureLocationNamespace(NamespacedKey key) {
-		if (key.asString().equalsIgnoreCase("origins:resource_bar.png"))
-			return NamespacedKey.fromString("origins:textures/gui/resource_bar.png");
+	public static ResourceLocation resolveTextureLocationNamespace(ResourceLocation key) {
+		if (key.toString().equalsIgnoreCase("origins:resource_bar.png"))
+			return ResourceLocation.parse("origins:textures/gui/resource_bar.png");
 		return key;
 	}
 
 	private static String fixNamespace(String input) {
-		return input.contains(":") ? input : NamespacedKey.fromString(input).asString();
+		return input.contains(":") ? input : ResourceLocation.parse(input).toString();
 	}
 
 	private static String fixAttributeNamespace(String input) {

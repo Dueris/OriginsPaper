@@ -1,6 +1,7 @@
 package me.dueris.calio.registry;
 
-import org.bukkit.NamespacedKey;
 
-public record RegistryKey<T extends Registrable>(Class<T> type, NamespacedKey namespacedKey) {
+import net.minecraft.resources.ResourceLocation;
+
+public record RegistryKey<T extends Registrable>(Class<T> type, ResourceLocation namespacedKey) {
 }

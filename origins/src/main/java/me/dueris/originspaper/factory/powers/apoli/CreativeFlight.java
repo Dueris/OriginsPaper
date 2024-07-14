@@ -7,8 +7,9 @@ import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.factory.powers.originspaper.GravityPower;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.GameMode;
-import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -26,9 +27,9 @@ public class CreativeFlight extends PowerType {
 	@Override
 	public void tickAsync(Player p) {
 		GameMode m = p.getGameMode();
-		NamespacedKey insideBlock = new NamespacedKey(OriginsPaper.getPlugin(), "insideBlock");
+		ResourceLocation insideBlock = OriginsPaper.identifier("insideBlock");
 		PersistentDataContainer container = p.getPersistentDataContainer();
-		if (Boolean.TRUE.equals(container.get(insideBlock, PersistentDataType.BOOLEAN))) {
+		if (Boolean.TRUE.equals(container.get(CraftNamespacedKey.fromMinecraft(insideBlock), PersistentDataType.BOOLEAN))) {
 			if (p.getAllowFlight()) {
 				p.setFlying(true);
 			}
@@ -51,9 +52,9 @@ public class CreativeFlight extends PowerType {
 		}
 		if (p.getChunk().isLoaded()) {
 			if (Phasing.inPhantomFormBlocks.contains(p)) {
-				container.set(insideBlock, PersistentDataType.BOOLEAN, true);
+				container.set(CraftNamespacedKey.fromMinecraft(insideBlock), PersistentDataType.BOOLEAN, true);
 			} else {
-				container.set(insideBlock, PersistentDataType.BOOLEAN, false);
+				container.set(CraftNamespacedKey.fromMinecraft(insideBlock), PersistentDataType.BOOLEAN, false);
 			}
 		}
 	}

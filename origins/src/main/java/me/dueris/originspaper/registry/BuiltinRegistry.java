@@ -6,7 +6,8 @@ import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.registry.registries.Layer;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
+
 
 public class BuiltinRegistry {
 	private static final Layer[] builtinLayers;
@@ -16,7 +17,7 @@ public class BuiltinRegistry {
 			new Layer(0, new FactoryJsonArray(new JsonArray()), false,
 				false, "Command Layer", new FactoryJsonObject(new JsonObject()), "Missing",
 				"Missing", false, false, new FactoryJsonArray(new JsonArray()),
-				NamespacedKey.fromString("origins:empty"), false, true, 0)
+				ResourceLocation.parse("origins:empty"), false, true, 0)
 		};
 	}
 

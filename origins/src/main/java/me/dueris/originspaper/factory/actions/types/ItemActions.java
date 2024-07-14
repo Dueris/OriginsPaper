@@ -17,11 +17,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -73,7 +71,7 @@ public class ItemActions {
 				locations.add(data.getResourceLocation("enchantment"));
 			}
 			if (data.isPresent("enchantments")) {
-				locations.addAll(data.getJsonArray("enchantments").asList.stream().map(FactoryElement::getString).map(NamespacedKey::fromString).map(CraftNamespacedKey::toMinecraft).toList());
+				locations.addAll(data.getJsonArray("enchantments").asList.stream().map(FactoryElement::getString).map(ResourceLocation::parse).toList());
 			}
 
 			for (ResourceLocation location : locations) {
@@ -121,10 +119,10 @@ public class ItemActions {
 	}
 
 	public static class ActionFactory implements Registrable {
-		NamespacedKey key;
+		ResourceLocation key;
 		BiConsumer<FactoryJsonObject, Pair<ServerLevel, ItemStack>> test;
 
-		public ActionFactory(NamespacedKey key, BiConsumer<FactoryJsonObject, Pair<ServerLevel, ItemStack>> test) {
+		public ActionFactory(ResourceLocation key, BiConsumer<FactoryJsonObject, Pair<ServerLevel, ItemStack>> test) {
 			this.key = key;
 			this.test = test;
 		}
@@ -140,7 +138,7 @@ public class ItemActions {
 		}
 
 		@Override
-		public NamespacedKey key() {
+		public ResourceLocation key() {
 			return key;
 		}
 	}

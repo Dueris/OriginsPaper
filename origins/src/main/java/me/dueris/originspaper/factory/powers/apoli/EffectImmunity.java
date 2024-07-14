@@ -7,7 +7,7 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
@@ -15,18 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EffectImmunity extends PowerType {
-	private final List<NamespacedKey> effects;
+	private final List<ResourceLocation> effects;
 	private final boolean inverted;
 
-	public EffectImmunity(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, NamespacedKey effect, FactoryJsonArray effects, boolean inverted) {
+	public EffectImmunity(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, ResourceLocation effect, FactoryJsonArray effects, boolean inverted) {
 		super(name, description, hidden, condition, loading_priority);
-		this.effects = effect == null ? effects.asList().stream().map(FactoryElement::getString).map(NamespacedKey::fromString).toList() : List.of(effect);
+		this.effects = effect == null ? effects.asList().stream().map(FactoryElement::getString).map(ResourceLocation::parse).toList() : List.of(effect);
 		this.inverted = inverted;
 	}
 
 	public static FactoryData registerComponents(FactoryData data) {
 		return PowerType.registerComponents(data).ofNamespace(OriginsPaper.apoliIdentifier("effect_immunity"))
-			.add("effect", NamespacedKey.class, new OptionalInstance())
+			.add("effect", ResourceLocation.class, new OptionalInstance())
 			.add("effects", FactoryJsonArray.class, new OptionalInstance())
 			.add("inverted", boolean.class, false);
 	}
@@ -52,7 +52,7 @@ public class EffectImmunity extends PowerType {
 		return inverted;
 	}
 
-	public List<NamespacedKey> getEffects() {
+	public List<ResourceLocation> getEffects() {
 		return effects;
 	}
 }

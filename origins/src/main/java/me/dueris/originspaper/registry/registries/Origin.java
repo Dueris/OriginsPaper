@@ -11,8 +11,6 @@ import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.storage.OriginConfiguration;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ public class Origin implements FactoryHolder {
 	private final List<ResourceLocation> powerIdentifiers = new ArrayList<>();
 	protected FactoryJsonObject choosingCondition;
 	private boolean tagSet = false;
-	private NamespacedKey tag = null;
+	private ResourceLocation tag = null;
 	private String cachedTag = null;
 	private boolean isDisabled;
 
@@ -46,7 +44,7 @@ public class Origin implements FactoryHolder {
 		this.icon = icon;
 		this.order = order;
 		this.loadingPriority = loading_priority;
-		this.powerIdentifiers.addAll(powers.asList().stream().map(FactoryElement::getString).map(NamespacedKey::fromString).filter(Objects::nonNull).map(CraftNamespacedKey::toMinecraft).toList());
+		this.powerIdentifiers.addAll(powers.asList().stream().map(FactoryElement::getString).map(ResourceLocation::parse).filter(Objects::nonNull).toList());
 	}
 
 	public static FactoryData registerComponents(FactoryData data) {
@@ -120,18 +118,18 @@ public class Origin implements FactoryHolder {
 	}
 
 	public String getTag() {
-		return this.tag.asString();
+		return this.tag.toString();
 	}
 
 	/**
 	 * @return An array containing all the origin powers.
 	 */
 	public ArrayList<PowerType> getPowerContainers() {
-		return new ArrayList<>(this.powerIdentifiers.stream().map(CraftNamespacedKey::fromMinecraft).map(NamespacedKey::asString).map(CraftApoli::getPowerFromTag).toList());
+		return new ArrayList<>(this.powerIdentifiers.stream().map(CraftApoli::getPowersFromResourceLocation).toList());
 	}
 
 	public List<String> getPowers() {
-		return new ArrayList<>(this.powerIdentifiers.stream().map(CraftNamespacedKey::fromMinecraft).map(NamespacedKey::asString).toList());
+		return getPowerContainers().stream().map(PowerType::getTag).toList();
 	}
 
 	private void setDisabled() {
@@ -139,16 +137,16 @@ public class Origin implements FactoryHolder {
 	}
 
 	@Override
-	public Origin ofResourceLocation(NamespacedKey key) {
+	public Origin ofResourceLocation(ResourceLocation key) {
 		if (this.tagSet) return this;
 		tagSet = true;
 		this.tag = key;
-		this.cachedTag = key.asString();
+		this.cachedTag = key.toString();
 		return this;
 	}
 
 	@Override
-	public NamespacedKey key() {
+	public ResourceLocation key() {
 		return this.tag;
 	}
 }

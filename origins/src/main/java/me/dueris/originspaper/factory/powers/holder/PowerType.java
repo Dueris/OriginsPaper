@@ -12,8 +12,8 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.powers.apoli.provider.OriginSimpleContainer;
 import me.dueris.originspaper.factory.powers.apoli.provider.origins.*;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -35,7 +35,7 @@ public class PowerType implements FactoryHolder, Listener {
 	@SourceProvider
 	public JsonObject sourceObject; // Gets initialized on creation via CraftCalio
 	protected boolean tagSet = false;
-	private NamespacedKey tag = null;
+	private ResourceLocation tag = null;
 	private String cachedTagString = null;
 	private boolean hasPlayers = false;
 
@@ -116,7 +116,7 @@ public class PowerType implements FactoryHolder, Listener {
 
 	public String getType() {
 		try {
-			return ((FactoryData) getClass().getDeclaredMethod("registerComponents", FactoryData.class).invoke(null, new FactoryData())).getIdentifier().asString();
+			return ((FactoryData) getClass().getDeclaredMethod("registerComponents", FactoryData.class).invoke(null, new FactoryData())).getIdentifier().toString();
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			throw new RuntimeException("Unable to invoke type-getters!", e);
 		}
@@ -153,16 +153,16 @@ public class PowerType implements FactoryHolder, Listener {
 	}
 
 	@Override
-	public PowerType ofResourceLocation(NamespacedKey key) {
+	public PowerType ofResourceLocation(ResourceLocation key) {
 		if (this.tagSet) return this;
 		tagSet = true;
 		this.tag = key;
-		this.cachedTagString = key.asString();
+		this.cachedTagString = key.toString();
 		return this;
 	}
 
 	@Override
-	public NamespacedKey key() {
+	public ResourceLocation key() {
 		return this.tag;
 	}
 }

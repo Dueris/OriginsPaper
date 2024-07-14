@@ -10,8 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
 import java.util.Set;
@@ -121,16 +121,16 @@ public class FactoryJsonObject {
 		return this.handle.asMap().values().stream().map(FactoryElement::fromJson).collect(Collectors.toUnmodifiableList());
 	}
 
-	public NamespacedKey getNamespacedKey(String key) {
+	private NamespacedKey getBukkitNamespacedKey(String key) {
 		return NamespacedKey.fromString(this.getString(key));
 	}
 
 	public ResourceLocation getResourceLocation(String key) {
-		return CraftNamespacedKey.toMinecraft(this.getNamespacedKey(key));
+		return ResourceLocation.parse(this.getString(key));
 	}
 
 	public Material getMaterial(String key) {
-		NamespacedKey a = this.getNamespacedKey(key);
+		NamespacedKey a = this.getBukkitNamespacedKey(key);
 		return Material.matchMaterial(a.asString());
 	}
 
@@ -154,6 +154,10 @@ public class FactoryJsonObject {
 		}
 		if (inst != null && inst.isString()) return new ItemStack(this.getMaterial(key));
 		return new ItemStack(Material.PLAYER_HEAD, 1);
+	}
+
+	public PotionEffectType getPotionEffectType(String key) {
+		return PotionEffectType.getByKey(getBukkitNamespacedKey(key));
 	}
 
 	public ItemStack asItemStack() {

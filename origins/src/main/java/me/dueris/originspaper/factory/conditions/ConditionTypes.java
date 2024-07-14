@@ -3,7 +3,7 @@ package me.dueris.originspaper.factory.conditions;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.types.*;
 import me.dueris.originspaper.util.Reflector;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public enum ConditionTypes {
 				try {
 					Class factoryInstance = Class.forName(c.getName() + "$ConditionFactory");
 					for (String name : names) {
-						Object inst = factoryInstance.getConstructor(c, NamespacedKey.class, BiPredicate.class).newInstance(c.newInstance(), OriginsPaper.apoliIdentifier(name), new BiPredicate() {
+						Object inst = factoryInstance.getConstructor(c, ResourceLocation.class, BiPredicate.class).newInstance(c.newInstance(), OriginsPaper.apoliIdentifier(name), new BiPredicate() {
 							@Override
 							public boolean test(Object o, Object o2) {
 								throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");

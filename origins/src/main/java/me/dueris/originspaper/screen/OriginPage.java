@@ -12,9 +12,9 @@ import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
@@ -86,8 +86,8 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 	}
 
 	@Override
-	public NamespacedKey key() {
-		return NamespacedKey.fromString(this.origin.key().asString() + "_page");
+	public ResourceLocation key() {
+		return ResourceLocation.parse(this.origin.key().toString() + "_page");
 	}
 
 	@Override

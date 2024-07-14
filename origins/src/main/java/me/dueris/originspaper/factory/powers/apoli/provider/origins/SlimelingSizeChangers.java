@@ -7,8 +7,8 @@ import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.powers.apoli.provider.PowerProvider;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import me.dueris.originspaper.util.entity.PowerUtils;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,15 +51,15 @@ public class SlimelingSizeChangers implements Listener {
 	}
 
 	public static class AddSize implements Listener, PowerProvider {
-		protected static NamespacedKey powerReference = OriginsPaper.originIdentifier("slimeling_addsize");
+		protected static ResourceLocation powerReference = OriginsPaper.originIdentifier("slimeling_addsize");
 
 		@EventHandler(priority = EventPriority.HIGHEST)
 		public void powerGrant(PowerUpdateEvent e) {
-			if (!e.isRemoved() && (e.getPower().getTag().equalsIgnoreCase(powerReference.asString()) || e.getPower().getTag().equalsIgnoreCase("origins:slime_skin"))) {
+			if (!e.isRemoved() && (e.getPower().getTag().equalsIgnoreCase(powerReference.toString()) || e.getPower().getTag().equalsIgnoreCase("origins:slime_skin"))) {
 				Player p = e.getPlayer();
 				double curSize = p.getAttribute(Attribute.GENERIC_SCALE).getBaseValue();
 				double healthScale = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-				if (e.getPower().getTag().equalsIgnoreCase(powerReference.asString())) {
+				if (e.getPower().getTag().equalsIgnoreCase(powerReference.toString())) {
 					if (curSize < 1.33) {
 						curSize = Math.min(1.33, curSize + 0.1);
 					}
@@ -90,15 +90,15 @@ public class SlimelingSizeChangers implements Listener {
 	}
 
 	public static class RemoveSize implements Listener, PowerProvider {
-		protected static NamespacedKey powerReference = OriginsPaper.originIdentifier("slimeling_removesize");
+		protected static ResourceLocation powerReference = OriginsPaper.originIdentifier("slimeling_removesize");
 
 		@EventHandler(priority = EventPriority.HIGHEST)
 		public void powerGrant(PowerUpdateEvent e) {
-			if (!e.isRemoved() && (e.getPower().getTag().equalsIgnoreCase(powerReference.asString()) || e.getPower().getTag().equalsIgnoreCase("origins:slime_skin"))) {
+			if (!e.isRemoved() && (e.getPower().getTag().equalsIgnoreCase(powerReference.toString()) || e.getPower().getTag().equalsIgnoreCase("origins:slime_skin"))) {
 				Player p = e.getPlayer();
 				double curSize = p.getAttribute(Attribute.GENERIC_SCALE).getBaseValue();
 				double healthScale = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-				if (e.getPower().getTag().equalsIgnoreCase(powerReference.asString())) {
+				if (e.getPower().getTag().equalsIgnoreCase(powerReference.toString())) {
 					if (curSize > 0.66) {
 						curSize = Math.max(0.66, curSize - 0.1);
 					}

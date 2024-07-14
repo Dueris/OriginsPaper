@@ -12,9 +12,9 @@ import me.dueris.originspaper.factory.powers.apoli.EntitySetPower;
 import me.dueris.originspaper.factory.powers.apoli.PreventEntityRender;
 import me.dueris.originspaper.registry.Registries;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.event.Listener;
 
@@ -183,10 +183,10 @@ public class BiEntityConditions implements Listener {
 	}
 
 	public class ConditionFactory implements Registrable {
-		NamespacedKey key;
+		ResourceLocation key;
 		BiPredicate<FactoryJsonObject, Pair<CraftEntity, CraftEntity>> test;
 
-		public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, Pair<CraftEntity, CraftEntity>> test) {
+		public ConditionFactory(ResourceLocation key, BiPredicate<FactoryJsonObject, Pair<CraftEntity, CraftEntity>> test) {
 			this.key = key;
 			this.test = test;
 		}
@@ -196,7 +196,7 @@ public class BiEntityConditions implements Listener {
 		}
 
 		@Override
-		public NamespacedKey key() {
+		public ResourceLocation key() {
 			return key;
 		}
 	}

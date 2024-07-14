@@ -4,7 +4,7 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.registry.Registries;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.BiPredicate;
@@ -20,10 +20,10 @@ public class ItemConditions {
 	}
 
 	public class ConditionFactory implements Registrable {
-		NamespacedKey key;
+		ResourceLocation key;
 		BiPredicate<FactoryJsonObject, ItemStack> test;
 
-		public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, ItemStack> test) {
+		public ConditionFactory(ResourceLocation key, BiPredicate<FactoryJsonObject, ItemStack> test) {
 			this.key = key;
 			this.test = test;
 		}
@@ -33,7 +33,7 @@ public class ItemConditions {
 		}
 
 		@Override
-		public NamespacedKey key() {
+		public ResourceLocation key() {
 			return key;
 		}
 	}

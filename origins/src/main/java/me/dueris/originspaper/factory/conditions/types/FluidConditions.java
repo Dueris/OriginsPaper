@@ -4,8 +4,8 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.registry.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
-import org.bukkit.NamespacedKey;
 
 import java.util.function.BiPredicate;
 
@@ -19,10 +19,10 @@ public class FluidConditions {
 	}
 
 	public class ConditionFactory implements Registrable {
-		NamespacedKey key;
+		ResourceLocation key;
 		BiPredicate<FactoryJsonObject, Fluid> test;
 
-		public ConditionFactory(NamespacedKey key, BiPredicate<FactoryJsonObject, Fluid> test) {
+		public ConditionFactory(ResourceLocation key, BiPredicate<FactoryJsonObject, Fluid> test) {
 			this.key = key;
 			this.test = test;
 		}
@@ -32,7 +32,7 @@ public class FluidConditions {
 		}
 
 		@Override
-		public NamespacedKey key() {
+		public ResourceLocation key() {
 			return key;
 		}
 	}

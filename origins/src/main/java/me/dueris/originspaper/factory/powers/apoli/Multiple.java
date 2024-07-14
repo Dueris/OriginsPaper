@@ -9,7 +9,7 @@ import me.dueris.calio.parse.CalioJsonParser;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class Multiple extends PowerType {
 		getSource().keySet().forEach(k -> {
 			if (getSource().get(k).isJsonObject()) {
 				PowerType type = (PowerType) CalioJsonParser.init(
-					new Pair<>(getSource().get(k).getAsJsonObject(), NamespacedKey.fromString(this.key().asString() + "_" + k.toLowerCase())),
+					new Pair<>(getSource().get(k).getAsJsonObject(), ResourceLocation.parse(this.key().toString() + "_" + k.toLowerCase())),
 					new AccessorKey("powers", this.getLoadingPriority(), true, Registries.CRAFT_POWER, PowerType.class)
 				);
 				if (type != null) {

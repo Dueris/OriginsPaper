@@ -1,6 +1,7 @@
 package me.dueris.calio.util;
 
-import org.bukkit.NamespacedKey;
+
+import net.minecraft.resources.ResourceLocation;
 
 public class NamespaceUtils {
 
@@ -15,8 +16,8 @@ public class NamespaceUtils {
 	 * @param dynamicNamespace the dynamic namespace as a string
 	 * @return a NamespacedKey object representing the dynamic namespace
 	 */
-	public static NamespacedKey getDynamicNamespace(String currentNamespace, String dynamicNamespace) {
-		if (currentNamespace == null) return NamespacedKey.fromString(dynamicNamespace);
+	public static ResourceLocation getDynamicNamespace(String currentNamespace, String dynamicNamespace) {
+		if (currentNamespace == null) return ResourceLocation.parse(dynamicNamespace);
 		if (dynamicNamespace.contains("*") && currentNamespace.contains(":")) {
 			String[] split = dynamicNamespace.split(":");
 			String namespace = split[0];
@@ -29,7 +30,7 @@ public class NamespaceUtils {
 			}
 			return getNamespaceStringAsBukkit(namespace + ":" + path);
 		}
-		return NamespacedKey.fromString(dynamicNamespace);
+		return ResourceLocation.parse(dynamicNamespace);
 	}
 
 	/**
@@ -38,7 +39,7 @@ public class NamespaceUtils {
 	 * @param key the string key to be converted
 	 * @return the NamespacedKey object created from the string key
 	 */
-	public static NamespacedKey getNamespaceStringAsBukkit(String key) {
-		return NamespacedKey.fromString(key);
+	public static ResourceLocation getNamespaceStringAsBukkit(String key) {
+		return ResourceLocation.parse(key);
 	}
 }

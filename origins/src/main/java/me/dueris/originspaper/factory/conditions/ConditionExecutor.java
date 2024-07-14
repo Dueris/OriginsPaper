@@ -8,8 +8,8 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.types.*;
 import me.dueris.originspaper.registry.Registries;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.block.CraftBlock;
@@ -85,7 +85,7 @@ public class ConditionExecutor {
 						if (object.isJsonObject()) {
 							FactoryJsonObject obj = object.toJsonObject();
 							Registrar<BiEntityConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION);
-							BiEntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
+							BiEntityConditions.ConditionFactory con = factory.get(ResourceLocation.parse(obj.getString("type")));
 							if (con != null) {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBiEntity(obj, (CraftEntity) entityPair.first(), (CraftEntity) entityPair.second())));
 							} else {
@@ -105,7 +105,7 @@ public class ConditionExecutor {
 						if (object.isJsonObject()) {
 							FactoryJsonObject obj = object.toJsonObject();
 							Registrar<BiEntityConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION);
-							BiEntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
+							BiEntityConditions.ConditionFactory con = factory.get(ResourceLocation.parse(obj.getString("type")));
 							if (con != null) {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBiEntity(obj, (CraftEntity) entityPair.first(), (CraftEntity) entityPair.second())));
 							} else {
@@ -128,7 +128,7 @@ public class ConditionExecutor {
 		} else {
 			// return the condition
 			Registrar<BiEntityConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION);
-			BiEntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(condition.getString("type")));
+			BiEntityConditions.ConditionFactory con = factory.get(ResourceLocation.parse(condition.getString("type")));
 			boolean invert = condition.getBooleanOrDefault("inverted", false);
 			if (con != null) {
 				return getPossibleInvert(invert, con.test(condition, entityPair));
@@ -151,7 +151,7 @@ public class ConditionExecutor {
 						if (object.isJsonObject()) {
 							FactoryJsonObject obj = object.toJsonObject();
 							Registrar<BiomeConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.BIOME_CONDITION);
-							BiomeConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
+							BiomeConditions.ConditionFactory con = factory.get(ResourceLocation.parse(obj.getString("type")));
 							if (con != null) {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBiome(obj, blockPos, level)));
 							} else {
@@ -171,7 +171,7 @@ public class ConditionExecutor {
 						if (object.isJsonObject()) {
 							FactoryJsonObject obj = object.toJsonObject();
 							Registrar<BiomeConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.BIOME_CONDITION);
-							BiomeConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
+							BiomeConditions.ConditionFactory con = factory.get(ResourceLocation.parse(obj.getString("type")));
 							if (con != null) {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBiome(obj, blockPos, level)));
 							} else {
@@ -194,7 +194,7 @@ public class ConditionExecutor {
 		} else {
 			// return the condition
 			Registrar<BiomeConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.BIOME_CONDITION);
-			BiomeConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(condition.getString("type")));
+			BiomeConditions.ConditionFactory con = factory.get(ResourceLocation.parse(condition.getString("type")));
 			boolean invert = condition.getBooleanOrDefault("inverted", false);
 			if (con != null) {
 				return getPossibleInvert(invert, con.test(condition, level.getBiomeManager().getBiome(blockPos)));
@@ -222,7 +222,7 @@ public class ConditionExecutor {
 						if (object.isJsonObject()) {
 							FactoryJsonObject obj = object.toJsonObject();
 							Registrar<BlockConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.BLOCK_CONDITION);
-							BlockConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
+							BlockConditions.ConditionFactory con = factory.get(ResourceLocation.parse(obj.getString("type")));
 							if (con != null) {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBlock(obj, block)));
 							} else {
@@ -242,7 +242,7 @@ public class ConditionExecutor {
 						if (object.isJsonObject()) {
 							FactoryJsonObject obj = object.toJsonObject();
 							Registrar<BlockConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.BLOCK_CONDITION);
-							BlockConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
+							BlockConditions.ConditionFactory con = factory.get(ResourceLocation.parse(obj.getString("type")));
 							if (con != null) {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBlock(obj, block)));
 							} else {
@@ -265,7 +265,7 @@ public class ConditionExecutor {
 		} else {
 			// return the condition
 			Registrar<BlockConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.BLOCK_CONDITION);
-			BlockConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(condition.getString("type")));
+			BlockConditions.ConditionFactory con = factory.get(ResourceLocation.parse(condition.getString("type")));
 			boolean invert = condition.getBooleanOrDefault("inverted", false);
 			if (con != null) {
 				return getPossibleInvert(invert, con.test(condition, block));
@@ -288,7 +288,7 @@ public class ConditionExecutor {
 						if (object.isJsonObject()) {
 							FactoryJsonObject obj = object.toJsonObject();
 							Registrar<DamageConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.DAMAGE_CONDITION);
-							DamageConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
+							DamageConditions.ConditionFactory con = factory.get(ResourceLocation.parse(obj.getString("type")));
 							if (con != null) {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testDamage(obj, event)));
 							} else {
@@ -308,7 +308,7 @@ public class ConditionExecutor {
 						if (object.isJsonObject()) {
 							FactoryJsonObject obj = object.toJsonObject();
 							Registrar<DamageConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.DAMAGE_CONDITION);
-							DamageConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
+							DamageConditions.ConditionFactory con = factory.get(ResourceLocation.parse(obj.getString("type")));
 							if (con != null) {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testDamage(obj, event)));
 							} else {
@@ -331,7 +331,7 @@ public class ConditionExecutor {
 		} else {
 			// return the condition
 			Registrar<DamageConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.DAMAGE_CONDITION);
-			DamageConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(condition.getString("type")));
+			DamageConditions.ConditionFactory con = factory.get(ResourceLocation.parse(condition.getString("type")));
 			boolean invert = condition.getBooleanOrDefault("inverted", false);
 			if (con != null) {
 				return getPossibleInvert(invert, con.test(condition, event));
@@ -358,7 +358,7 @@ public class ConditionExecutor {
 						if (object.isJsonObject()) {
 							FactoryJsonObject obj = object.toJsonObject();
 							Registrar<EntityConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.ENTITY_CONDITION);
-							EntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
+							EntityConditions.ConditionFactory con = factory.get(ResourceLocation.parse(obj.getString("type")));
 							if (con != null) {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testEntity(obj, entity)));
 							} else {
@@ -378,7 +378,7 @@ public class ConditionExecutor {
 						if (object.isJsonObject()) {
 							FactoryJsonObject obj = object.toJsonObject();
 							Registrar<EntityConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.ENTITY_CONDITION);
-							EntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
+							EntityConditions.ConditionFactory con = factory.get(ResourceLocation.parse(obj.getString("type")));
 							if (con != null) {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testEntity(obj, entity)));
 							} else {
@@ -401,7 +401,7 @@ public class ConditionExecutor {
 		} else {
 			// return the condition
 			Registrar<EntityConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.ENTITY_CONDITION);
-			EntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(condition.getString("type")));
+			EntityConditions.ConditionFactory con = factory.get(ResourceLocation.parse(condition.getString("type")));
 			boolean invert = condition.getBooleanOrDefault("inverted", false);
 			if (con != null) {
 				return getPossibleInvert(invert, con.test(condition, entity));
@@ -424,7 +424,7 @@ public class ConditionExecutor {
 						if (object.isJsonObject()) {
 							FactoryJsonObject obj = object.toJsonObject();
 							Registrar<ItemConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_CONDITION);
-							ItemConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
+							ItemConditions.ConditionFactory con = factory.get(ResourceLocation.parse(obj.getString("type")));
 							if (con != null) {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testItem(obj, itemStack)));
 							} else {
@@ -444,7 +444,7 @@ public class ConditionExecutor {
 						if (object.isJsonObject()) {
 							FactoryJsonObject obj = object.toJsonObject();
 							Registrar<ItemConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_CONDITION);
-							ItemConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
+							ItemConditions.ConditionFactory con = factory.get(ResourceLocation.parse(obj.getString("type")));
 							if (con != null) {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testItem(obj, itemStack)));
 							} else {
@@ -467,7 +467,7 @@ public class ConditionExecutor {
 		} else {
 			// return the condition
 			Registrar<ItemConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_CONDITION);
-			ItemConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(condition.getString("type")));
+			ItemConditions.ConditionFactory con = factory.get(ResourceLocation.parse(condition.getString("type")));
 			boolean invert = condition.getBooleanOrDefault("inverted", false);
 			if (con != null) {
 				return getPossibleInvert(invert, con.test(condition, itemStack));
@@ -490,7 +490,7 @@ public class ConditionExecutor {
 						if (object.isJsonObject()) {
 							FactoryJsonObject obj = object.toJsonObject();
 							Registrar<FluidConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.FLUID_CONDITION);
-							FluidConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
+							FluidConditions.ConditionFactory con = factory.get(ResourceLocation.parse(obj.getString("type")));
 							if (con != null) {
 								cons.add(testFluid(obj, fluid));
 							} else {
@@ -510,7 +510,7 @@ public class ConditionExecutor {
 						if (object.isJsonObject()) {
 							FactoryJsonObject obj = object.toJsonObject();
 							Registrar<FluidConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.FLUID_CONDITION);
-							FluidConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.getString("type")));
+							FluidConditions.ConditionFactory con = factory.get(ResourceLocation.parse(obj.getString("type")));
 							if (con != null) {
 								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testFluid(obj, fluid)));
 							} else {
@@ -533,7 +533,7 @@ public class ConditionExecutor {
 		} else {
 			// return the condition
 			Registrar<FluidConditions.ConditionFactory> factory = OriginsPaper.getPlugin().registry.retrieve(Registries.FLUID_CONDITION);
-			FluidConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(condition.getString("type")));
+			FluidConditions.ConditionFactory con = factory.get(ResourceLocation.parse(condition.getString("type")));
 			boolean invert = condition.getBooleanOrDefault("inverted", false);
 			if (con != null) {
 				return getPossibleInvert(invert, con.test(condition, fluid));

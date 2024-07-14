@@ -10,9 +10,11 @@ import me.dueris.originspaper.event.PowerUpdateEvent;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -52,7 +54,7 @@ public class RecipePower extends PowerType {
 			FactoryJsonObject recipe = recipePower.getRecipe();
 			if (recipe == null)
 				throw new IllegalArgumentException("Unable to find recipe data for power: " + recipePower.getTag());
-			NamespacedKey key = recipe.getString("id").contains(":") ? recipe.getNamespacedKey("id") : NamespacedKey.fromString(recipePower.getTag() + "_" + recipe.getString("id"));
+			NamespacedKey key = CraftNamespacedKey.fromMinecraft(recipe.getString("id").contains(":") ? recipe.getResourceLocation("id") : ResourceLocation.parse(recipePower.getTag() + "_" + recipe.getString("id")));
 			String type = recipe.getString("type");
 			if (!type.startsWith("minecraft:")) {
 				type = "minecraft:" + type;
@@ -126,7 +128,7 @@ public class RecipePower extends PowerType {
 		if (getPlayers().contains(p)) {
 			for (RecipePower power : PowerHolderComponent.getPowers(p, RecipePower.class)) {
 				FactoryJsonObject recipe = power.getRecipe();
-				NamespacedKey idKey = recipe.getString("id").contains(":") ? recipe.getNamespacedKey("id") : NamespacedKey.fromString(power.getTag() + "_" + recipe.getString("id"));
+				NamespacedKey idKey = CraftNamespacedKey.fromMinecraft(recipe.getString("id").contains(":") ? recipe.getResourceLocation("id") : ResourceLocation.parse(power.getTag() + "_" + recipe.getString("id")));
 				String id = idKey.asString();
 				if (taggedRegistry.containsKey(id)) {
 					if (recipeMapping.containsKey(p)) {
@@ -171,7 +173,7 @@ public class RecipePower extends PowerType {
 		}
 		if (cancel && !key.startsWith("minecraft:")) { // Assumed to be a minecraft key if it has that namespace, so allow that to pass.
 			if (key.equalsIgnoreCase("origins:orb_of_origins")) return;
-			if (Bukkit.getRecipe(NamespacedKey.fromString(key)) != null) return;
+			if (Bukkit.getRecipe(CraftNamespacedKey.fromMinecraft(ResourceLocation.parse(key))) != null) return;
 			e.getInventory().setResult(null);
 		}
 	}

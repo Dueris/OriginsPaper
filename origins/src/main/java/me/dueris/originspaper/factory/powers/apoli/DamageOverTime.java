@@ -6,13 +6,12 @@ import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.util.Util;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
-import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -21,9 +20,9 @@ public class DamageOverTime extends PowerType {
 	private final int interval;
 	private final float damage;
 	private final float damageEasy;
-	private final NamespacedKey damageType;
+	private final ResourceLocation damageType;
 
-	public DamageOverTime(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int interval, float damage, float damageEasy, NamespacedKey damageType) {
+	public DamageOverTime(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int interval, float damage, float damageEasy, ResourceLocation damageType) {
 		super(name, description, hidden, condition, loading_priority);
 		this.interval = interval;
 		this.damage = damage;
@@ -36,7 +35,7 @@ public class DamageOverTime extends PowerType {
 			.add("interval", int.class, 20)
 			.add("damage", float.class, new RequiredInstance())
 			.add("damage_easy", float.class, -1F)
-			.add("damage_type", NamespacedKey.class, NamespacedKey.fromString("apoli:damage_over_time"));
+			.add("damage_type", ResourceLocation.class, ResourceLocation.parse("apoli:damage_over_time"));
 	}
 
 	@EventHandler
@@ -67,7 +66,7 @@ public class DamageOverTime extends PowerType {
 
 			if (isActive(p)) {
 				if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
-					DamageType dmgType = Util.DAMAGE_REGISTRY.get(CraftNamespacedKey.toMinecraft(damageType));
+					DamageType dmgType = Util.DAMAGE_REGISTRY.get(damageType);
 					((CraftPlayer) p).getHandle().hurt(Util.getDamageSource(dmgType), damageVal);
 				}
 			}
@@ -86,7 +85,7 @@ public class DamageOverTime extends PowerType {
 		return interval;
 	}
 
-	public NamespacedKey getDamageType() {
+	public ResourceLocation getDamageType() {
 		return damageType;
 	}
 }

@@ -3,10 +3,10 @@ package me.dueris.originspaper.factory.powers.apoli.provider.origins;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.powers.apoli.provider.PowerProvider;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.GameEvent;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.block.CraftBiome;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 public class BounceSlimeBlock implements Listener, PowerProvider {
 	public static HashMap<Player, Location> lastLoc = new HashMap<>();
-	protected static NamespacedKey powerReference = OriginsPaper.originIdentifier("slime_block_bounce");
+	protected static ResourceLocation powerReference = OriginsPaper.originIdentifier("slime_block_bounce");
 
 	@EventHandler
 	public void gameEvent(GenericGameEvent event) {
@@ -30,7 +30,7 @@ public class BounceSlimeBlock implements Listener, PowerProvider {
 				me.dueris.originspaper.event.PlayerHitGroundEvent playerHitGroundEvent = new me.dueris.originspaper.event.PlayerHitGroundEvent(player);
 				Bukkit.getPluginManager().callEvent(playerHitGroundEvent);
 				if (player.isSneaking()) return;
-				if (!PowerHolderComponent.hasPower(player, powerReference.asString())) return;
+				if (!PowerHolderComponent.hasPower(player, powerReference.toString())) return;
 				if (!lastLoc.containsKey(player)) return;
 				if (CraftBiome.bukkitToMinecraft(player.getLocation().getBlock().getBiome()).getTemperature(CraftLocation.toBlockPosition(player.getLocation())) < 0.2)
 					return;

@@ -20,8 +20,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class PowerCommand {
 					return builder.buildFuture();
 				}).executes(context -> {
 					try {
-						PowerType power = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(ResourceLocationArgument.getId(context, "power").getNamespace() + ":" + ResourceLocationArgument.getId(context, "power").getPath()));
+						PowerType power = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(ResourceLocation.parse(ResourceLocationArgument.getId(context, "power").getNamespace() + ":" + ResourceLocationArgument.getId(context, "power").getPath()));
 						if (power == null) {
 							context.getSource().sendFailure(Component.literal("Power not found."));
 							return 1;
@@ -79,7 +79,7 @@ public class PowerCommand {
 					}).executes(context -> {
 						EntityArgument.getPlayers(context, "targets").forEach(player -> {
 							if (PowerHolderComponent.playerPowerMapping.get(player.getBukkitEntity()) != null) {
-								PowerType poweR = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
+								PowerType poweR = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(ResourceLocationArgument.getId(context, "power"));
 								ArrayList<PowerType> powersToEdit = new ArrayList<>(CraftApoli.getNestedPowerTypes(poweR));
 								powersToEdit.add(poweR);
 								for (PowerType power : powersToEdit) {
@@ -96,7 +96,7 @@ public class PowerCommand {
 						.executes(context -> {
 							EntityArgument.getPlayers(context, "targets").forEach(player -> {
 								if (PowerHolderComponent.playerPowerMapping.get(player.getBukkitEntity()) != null) {
-									PowerType poweR = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
+									PowerType poweR = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(ResourceLocationArgument.getId(context, "power"));
 									ArrayList<PowerType> powersToEdit = new ArrayList<>(CraftApoli.getNestedPowerTypes(poweR));
 									powersToEdit.add(poweR);
 									for (PowerType power : powersToEdit) {
@@ -195,7 +195,7 @@ public class PowerCommand {
 					return builder.buildFuture();
 				}).executes(context -> {
 					EntityArgument.getPlayers(context, "targets").forEach(p -> {
-						NamespacedKey arg = CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power"));
+						ResourceLocation arg = ResourceLocationArgument.getId(context, "power");
 						CraftApoli.getLayersFromRegistry().forEach(layer -> {
 							try {
 								PowerUtils.removePower(context.getSource().getBukkitSender(), OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(arg), p.getBukkitEntity(), layer, context.getSource().isSilent());
@@ -209,7 +209,7 @@ public class PowerCommand {
 				}).then(argument("layer", ResourceLocationArgument.id())
 					.executes(context -> {
 						EntityArgument.getPlayers(context, "targets").forEach(p -> {
-							NamespacedKey arg = CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power"));
+							ResourceLocation arg = ResourceLocationArgument.getId(context, "power");
 							String layer = CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString();
 
 							try {

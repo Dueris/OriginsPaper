@@ -19,11 +19,13 @@ import me.dueris.originspaper.util.DataConverter;
 import me.dueris.originspaper.util.TextureLocation;
 import me.dueris.originspaper.util.Util;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.KeyedBossBar;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -88,9 +90,9 @@ public class Resource extends PowerType implements ResourcePower {
 	}
 
 	protected static KeyedBossBar createRender(String title, double currentProgress, ResourcePower power, Player player) {
-		NamespacedKey f = NamespacedKey.fromString(power.getTag() + "_bar_server_loaded");
+		ResourceLocation f = ResourceLocation.parse(power.getTag() + "_bar_server_loaded");
 		KeyedBossBar bossBar = Bukkit.createBossBar(
-			player == null ? f : NamespacedKey.fromString(power.getTag() + "_bar_" + player.getName().toLowerCase()),
+			player == null ? CraftNamespacedKey.fromMinecraft(f) : NamespacedKey.fromString(power.getTag() + "_bar_" + player.getName().toLowerCase()),
 			title, Bar.getBarColor(power.getHudRender()), BarStyle.SEGMENTED_6);
 		bossBar.setProgress(currentProgress);
 		new BukkitRunnable() {
@@ -155,7 +157,7 @@ public class Resource extends PowerType implements ResourcePower {
 			cooldownBuilder.append(",");
 		}
 		cooldownBuilder.append("]");
-		p.getPersistentDataContainer().set(OriginsPaper.apoliIdentifier("current_cooldowns"), PersistentDataType.STRING, new String(cooldownBuilder).replace(",]", "]"));
+		p.getPersistentDataContainer().set(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("current_cooldowns")), PersistentDataType.STRING, new String(cooldownBuilder).replace(",]", "]"));
 		if (currentlyDisplayed.containsKey(p)) {
 			currentlyDisplayed.get(p).forEach(Bar::delete);
 			currentlyDisplayed.get(p).clear();
@@ -169,8 +171,8 @@ public class Resource extends PowerType implements ResourcePower {
 	@EventHandler
 	public void join(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
-		if (p.getPersistentDataContainer().has(OriginsPaper.apoliIdentifier("current_cooldowns"))) {
-			String encoded = p.getPersistentDataContainer().get(OriginsPaper.apoliIdentifier("current_cooldowns"), PersistentDataType.STRING);
+		if (p.getPersistentDataContainer().has(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("current_cooldowns")))) {
+			String encoded = p.getPersistentDataContainer().get(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("current_cooldowns")), PersistentDataType.STRING);
 			encoded = encoded.replace("[", "").replace("]", "");
 			if (encoded.equalsIgnoreCase("")) return;
 			Arrays.stream(encoded.split(",")).forEach(key -> {
@@ -253,10 +255,10 @@ public class Resource extends PowerType implements ResourcePower {
 		public static BarColor getBarColor(HudRender element) {
 			if (element != null && element.spriteLocation() != null) {
 				TextureLocation loc = OriginsPaper.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION)
-					.get(DataConverter.resolveTextureLocationNamespace(NamespacedKey.fromString(element.spriteLocation())));
+					.get(DataConverter.resolveTextureLocationNamespace(ResourceLocation.parse(element.spriteLocation())));
 				if (loc == null) return BarColor.WHITE;
 				long index = (element.barIndex()) + 1;
-				BarColor color = textureMap.get(loc.key().asString() + "/-/" + index);
+				BarColor color = textureMap.get(loc.key().toString() + "/-/" + index);
 				return color != null ? color : BarColor.WHITE;
 			}
 			return BarColor.WHITE;

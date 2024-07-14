@@ -55,7 +55,7 @@ public class OriginScheduler {
 						Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
 						OriginsPaper.getPlugin().getLogger().severe("An unhandled exception occurred when ticking a Power! [{a}]".replace("{a}", throwable.getClass().getSimpleName()));
 						String t = power.getType();
-						if (t == null) t = power.key().asString();
+						if (t == null) t = power.key().toString();
 						OriginsPaper.getPlugin().getLogger().severe(
 							"Player: {a} | Power: {b} | CraftPower: {c} | Throwable: {d}"
 								.replace("{a}", p.getName())

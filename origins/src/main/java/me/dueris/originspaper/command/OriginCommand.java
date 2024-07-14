@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import javassist.NotFoundException;
-import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.content.OrbOfOrigins;
 import me.dueris.originspaper.event.OriginChangeEvent;
 import me.dueris.originspaper.factory.CraftApoli;
@@ -21,10 +20,10 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftInventoryCustom;
@@ -100,7 +99,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 									}
 									targets.forEach(player -> {
 										PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, origin);
-										player.getBukkitEntity().getPersistentDataContainer().set(new NamespacedKey(OriginsPaper.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
+										player.getBukkitEntity().getPersistentDataContainer().set(CraftNamespacedKey.fromMinecraft(ResourceLocation.fromNamespaceAndPath("originspaper", "in-phantomform")), PersistentDataType.BOOLEAN, false);
 										OriginChangeEvent originChangeEvent = new OriginChangeEvent(player.getBukkitEntity(), origin, false);
 										getServer().getPluginManager().callEvent(originChangeEvent);
 									});

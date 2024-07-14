@@ -2,7 +2,7 @@ package me.dueris.calio.registry;
 
 import com.google.common.base.Preconditions;
 import me.dueris.calio.registry.exceptions.UnmodifiableRegistryException;
-import org.bukkit.NamespacedKey;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 
 public class Registrar<T extends Registrable> {
 	private final Class<T> ofType;
-	public ConcurrentHashMap<NamespacedKey, T> rawRegistry = new ConcurrentHashMap<>();
+	public ConcurrentHashMap<ResourceLocation, T> rawRegistry = new ConcurrentHashMap<>();
 	private boolean frozen = false;
 
 	public Registrar(Class<T> ofType) {
@@ -55,7 +55,7 @@ public class Registrar<T extends Registrable> {
 	 * @param currentKey the namespaced key of the entry to be replaced
 	 * @param newValue   the new value to replace the entry with
 	 */
-	public void replaceEntry(NamespacedKey currentKey, T newValue) {
+	public void replaceEntry(ResourceLocation currentKey, T newValue) {
 		if (this.containsRegistrable(newValue)) return;
 		if (this.rawRegistry.containsKey(currentKey)) {
 			this.rawRegistry.remove(currentKey);
@@ -76,7 +76,7 @@ public class Registrar<T extends Registrable> {
 	 * @param key the key to retrieve the value for
 	 * @return the value associated with the given key, or null if the key is not found
 	 */
-	public T get(NamespacedKey key) {
+	public T get(ResourceLocation key) {
 		return this.rawRegistry.get(key);
 	}
 
@@ -95,7 +95,7 @@ public class Registrar<T extends Registrable> {
 	 *
 	 * @param key the key to be removed from the registry
 	 */
-	public void removeFromRegistry(NamespacedKey key) {
+	public void removeFromRegistry(ResourceLocation key) {
 		this.rawRegistry.remove(key);
 	}
 
@@ -106,7 +106,7 @@ public class Registrar<T extends Registrable> {
 	 * @param key the key for which the value is to be retrieved
 	 * @return an Optional containing the value associated with the given key, or an empty Optional if the key is not present
 	 */
-	public Optional<T> getOptional(NamespacedKey key) {
+	public Optional<T> getOptional(ResourceLocation key) {
 		return this.rawRegistry.containsKey(key) ? Optional.of(this.get(key)) : Optional.empty();
 	}
 
@@ -146,7 +146,7 @@ public class Registrar<T extends Registrable> {
 	 *                 which takes a namespaced key and the corresponding value as input
 	 * @return void
 	 */
-	public void forEach(BiConsumer<NamespacedKey, T> consumer) {
+	public void forEach(BiConsumer<ResourceLocation, T> consumer) {
 		this.rawRegistry.forEach(consumer);
 	}
 
