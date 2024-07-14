@@ -443,7 +443,10 @@ public class EntityConditions {
 			}
 
 			ResourceKey<LootItemCondition> predicateKey = ResourceKey.create(net.minecraft.core.registries.Registries.PREDICATE, data.getResourceLocation("predicate"));
-			LootItemCondition predicate = serverWorld.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.PREDICATE).getOrThrow(predicateKey);
+			LootItemCondition predicate = serverWorld.getServer().reloadableRegistries()
+				.get()
+				.registryOrThrow(net.minecraft.core.registries.Registries.PREDICATE)
+				.getOrThrow(predicateKey);
 
 			LootParams lootContextParameterSet = new LootParams.Builder(serverWorld)
 				.withParameter(LootContextParams.ORIGIN, entity.getHandle().position())
