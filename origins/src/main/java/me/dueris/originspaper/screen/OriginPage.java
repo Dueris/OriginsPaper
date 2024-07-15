@@ -118,8 +118,8 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 				stacks.add(getChoosingStack(player));
 			} else if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33) || (i == 39 || i == 40 || i == 41)) {
 				while (!powerContainers.isEmpty() && (powerContainers.get(0).isHidden()
-					|| (powerContainers.get(0).getName().equalsIgnoreCase("No Name")
-					&& powerContainers.get(0).getDescription().equalsIgnoreCase("No Description")))) {
+					|| (powerContainers.get(0).getName().equalsIgnoreCase("craftapoli.name.not_found")
+					&& powerContainers.get(0).getDescription().equalsIgnoreCase("craftapoli.description.not_found")))) {
 					powerContainers.remove(0);
 				}
 				if (!powerContainers.isEmpty()) {

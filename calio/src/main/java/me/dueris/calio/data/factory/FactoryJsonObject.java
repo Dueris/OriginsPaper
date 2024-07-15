@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -188,5 +189,9 @@ public class FactoryJsonObject {
 
 	public <T> Holder<T> registryEntry(String key, ResourceKey<Registry<T>> registryResourceKey) {
 		return MinecraftServer.getServer().registryAccess().registry(registryResourceKey).get().getHolder(this.getResourceLocation(key)).orElseThrow();
+	}
+
+	public <T> ResourceKey<T> resourceKey(String key, ResourceKey<Registry<T>> registry) {
+		return ResourceKey.create(registry, this.getResourceLocation(key));
 	}
 }

@@ -47,10 +47,12 @@ public class Cooldown extends PowerType implements CooldownPower {
 	}
 
 	public static void addCooldown(Player player, int amt, CooldownPower power) {
+		if (amt <= 1) return;
 		addCooldown(player, amt, power, 1.0);
 	}
 
 	protected static void addCooldown(Player player, int amt, CooldownPower power, double start) {
+		if (amt <= 1) return;
 		cooldowns.putIfAbsent(player, new ArrayList<>());
 		if (isInCooldown(player, power)) return; // Already in cooldown
 		Resource.Bar bar = new Resource.Bar(power, player);
