@@ -27,7 +27,7 @@ public class CreativeFlight extends PowerType {
 	@Override
 	public void tickAsync(Player p) {
 		GameMode m = p.getGameMode();
-		ResourceLocation insideBlock = OriginsPaper.identifier("insideBlock");
+		ResourceLocation insideBlock = OriginsPaper.identifier("insideblock");
 		PersistentDataContainer container = p.getPersistentDataContainer();
 		if (Boolean.TRUE.equals(container.get(CraftNamespacedKey.fromMinecraft(insideBlock), PersistentDataType.BOOLEAN))) {
 			if (p.getAllowFlight()) {

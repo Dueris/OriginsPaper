@@ -124,8 +124,9 @@ public class PowerHolderComponent implements Listener {
 		playerPowerMapping.put(p, map);
 	}
 
-	public static <T extends PowerType> ArrayList<T> getPowers(Player p, Class<T> typeOf) {
+	public static <T extends PowerType> ArrayList<T> getPowers(Entity p, Class<T> typeOf) {
 		ArrayList<T> powers = new ArrayList<>();
+		if (!(p instanceof Player)) return powers;
 		if (playerPowerMapping.get(p) == null) return powers;
 		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 			if (layer == null) continue;
@@ -280,8 +281,7 @@ public class PowerHolderComponent implements Listener {
 			else powersAppliedList.get(player).add(c);
 			c.bootstrapApply(player);
 			if (!suppress) {
-				if (OriginConfiguration.getConfiguration().getBoolean("debug"))
-					Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
+				Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
 			}
 			new PowerUpdateEvent(player, power, false, isNew).callEvent();
 		} else {
@@ -302,8 +302,7 @@ public class PowerHolderComponent implements Listener {
 			powersAppliedList.get(player).remove(c);
 			c.removePlayer(player);
 			if (!suppress) {
-				if (OriginConfiguration.getConfiguration().getBoolean("debug"))
-					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
+				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
 			}
 			new PowerUpdateEvent(player, power, true, isNew).callEvent();
 		} else {

@@ -152,6 +152,24 @@ public class PowerCommand {
 				.then(argument("sub_powers", BoolArgumentType.bool())
 					.executes(context -> list(context, BoolArgumentType.getBool(context, "sub_powers"))))
 			)
+		).then(literal("clear")
+			.then(argument("targets", EntityArgument.entities())
+				.executes(context -> {
+					EntityArgument.getPlayers(context, "targets").forEach(p -> {
+						for (PowerType power : PowerHolderComponent.getPowers(p.getBukkitEntity())) {
+							CraftApoli.getLayersFromRegistry().forEach(layer -> {
+								try {
+									PowerUtils.removePower(context.getSource().getBukkitSender(), power, p.getBukkitEntity(), layer, context.getSource().isSilent());
+								} catch (InstantiationException | IllegalAccessException e) {
+									throw new RuntimeException(e);
+								}
+							});
+						}
+					});
+
+					return SINGLE_SUCCESS;
+				})
+			)
 		);
 		addRemoveArg(main, "remove");
 		addRemoveArg(main, "revoke");

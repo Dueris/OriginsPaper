@@ -813,7 +813,6 @@ public class Util {
 		}
 
 		if (slotsList.isEmpty()) {
-			System.out.println("j208fopkdsfcsdcv");
 			fillMissingNumbers(slotsList, 0, 40);
 		}
 		return slotsList;

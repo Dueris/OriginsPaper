@@ -93,8 +93,8 @@ public class PlayerManager implements Listener {
 
 		// ---  translation system ---
 
-		if (!p.getPersistentDataContainer().has(identifier("insideBlock"), PersistentDataType.BOOLEAN)) {
-			p.getPersistentDataContainer().set(identifier("insideBlock"), PersistentDataType.BOOLEAN, false);
+		if (!p.getPersistentDataContainer().has(identifier("insideblock"), PersistentDataType.BOOLEAN)) {
+			p.getPersistentDataContainer().set(identifier("insideblock"), PersistentDataType.BOOLEAN, false);
 		}
 
 		//default playerdata values

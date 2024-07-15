@@ -253,7 +253,7 @@ public class Phasing extends PowerType {
 				}
 
 				p.setFlySpeed(0.03F);
-				p.getPersistentDataContainer().set(new NamespacedKey(OriginsPaper.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
+				p.getPersistentDataContainer().set(new NamespacedKey(OriginsPaper.getPlugin(), "insideblock"), PersistentDataType.BOOLEAN, true);
 
 			} else {
 				if (!isBedrock(p)) {
@@ -277,7 +277,7 @@ public class Phasing extends PowerType {
 				}
 				p.setFlySpeed(0.1F);
 				inPhantomFormBlocks.remove(p);
-				p.getPersistentDataContainer().set(new NamespacedKey(OriginsPaper.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
+				p.getPersistentDataContainer().set(new NamespacedKey(OriginsPaper.getPlugin(), "insideblock"), PersistentDataType.BOOLEAN, false);
 			}
 		} else {
 			inPhantomFormBlocks.remove(p);
@@ -302,7 +302,7 @@ public class Phasing extends PowerType {
 					sentBlockLocations.clear();
 				}
 				p.setFlySpeed(0.1F);
-				p.getPersistentDataContainer().set(new NamespacedKey(OriginsPaper.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
+				p.getPersistentDataContainer().set(new NamespacedKey(OriginsPaper.getPlugin(), "insideblock"), PersistentDataType.BOOLEAN, false);
 				resynched.put(p, false);
 			}
 		}

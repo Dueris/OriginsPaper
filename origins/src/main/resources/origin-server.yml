@@ -5,9 +5,6 @@
 #  Plugin configs
 # ~~~~~~~~~~~~~~~~~
 
-# Enables debug information, when making a bug report, please include a screenshot of the startup while this is "true".
-debug: false
-
 # Determines if the Orb Of Origins can be crafted.
 orb-of-origins: true
 

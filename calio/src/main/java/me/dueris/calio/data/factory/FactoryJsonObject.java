@@ -4,9 +4,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -179,5 +182,9 @@ public class FactoryJsonObject {
 	public <T> T transformWithCalio(String key, Function<JsonElement, T> transformer, T def) {
 		if (!isPresent(key)) return def;
 		return transformer.apply(this.handle.get(key));
+	}
+
+	public <T> Holder<T> registryEntry(String key, ResourceKey<Registry<T>> registryResourceKey) {
+		return MinecraftServer.getServer().registryAccess().registry(registryResourceKey).get().getHolder(this.getResourceLocation(key)).orElseThrow();
 	}
 }

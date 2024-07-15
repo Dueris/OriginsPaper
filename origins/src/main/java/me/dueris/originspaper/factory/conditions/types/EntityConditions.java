@@ -6,14 +6,20 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionExecutor;
+import me.dueris.originspaper.factory.conditions.types.entity.RaycastCondition;
 import me.dueris.originspaper.factory.data.types.Comparison;
 import me.dueris.originspaper.factory.data.types.Shape;
 import me.dueris.originspaper.factory.data.types.VectorGetter;
+import me.dueris.originspaper.factory.powers.apoli.ElytraFlightPower;
 import me.dueris.originspaper.factory.powers.apoli.Resource;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
+import me.dueris.originspaper.util.Reflector;
 import me.dueris.originspaper.util.Util;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
@@ -25,19 +31,29 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockCollisions;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -57,11 +73,10 @@ import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 public class EntityConditions {
 	private static final ArrayList<Object> previousWarnings = new ArrayList<>();
@@ -166,7 +181,7 @@ public class EntityConditions {
 			return Comparison.fromString(data.getString("comparison")).compare(entity.getHandle().level().getDayTime() % 24000L, data.getNumber("compare_to").getInt());
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("fall_flying"), (data, entity) -> {
-			return entity.getHandle() instanceof LivingEntity && ((LivingEntity) entity.getHandle()).isFallFlying();
+			return (entity.getHandle() instanceof LivingEntity && ((LivingEntity) entity.getHandle()).isFallFlying()) || ElytraFlightPower.getGlidingPlayers().contains(entity.getUniqueId());
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("exposed_to_sun"), (data, entity) -> {
 			Level world = entity.getHandle().level();
@@ -208,6 +223,22 @@ public class EntityConditions {
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("sprinting"), (data, entity) -> {
 			return entity.getHandle().isSprinting();
 		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("status_effect"), (data, entity) -> {
+			if (!(entity.getHandle() instanceof LivingEntity livingEntity)) {
+				return false;
+			}
+
+			MobEffectInstance statusEffectInstance = livingEntity.getEffect(data.registryEntry("effect", net.minecraft.core.registries.Registries.MOB_EFFECT));
+			if (statusEffectInstance == null) {
+				return false;
+			}
+
+			int duration = statusEffectInstance.getDuration();
+			int amplifier = statusEffectInstance.getAmplifier();
+
+			return (duration <= data.getNumberOrDefault("max_duration", Integer.MAX_VALUE).getInt() && duration >= data.getNumberOrDefault("min_duration", -1).getInt())
+				&& (amplifier <= data.getNumberOrDefault("max_amplifier", Integer.MAX_VALUE).getInt() && amplifier >= data.getNumberOrDefault("min_amplifier", 0).getInt());
+		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("submerged_in"), (data, entity) -> {
 			return Util.apoli$isSubmergedInLoosely(entity.getHandle(), data.getTagKey("fluid", net.minecraft.core.registries.Registries.FLUID));
 		}));
@@ -216,13 +247,13 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("food_level"), (data, entity) -> {
 			if (entity.getHandle() instanceof net.minecraft.world.entity.player.Player) {
-				return (data.getEnumValue("comparison", Comparison.class).compare(((net.minecraft.world.entity.player.Player) entity.getHandle()).getFoodData().getFoodLevel(), data.getNumber("compare_to").getInt()));
+				return (Comparison.fromString(data.getString("comparison")).compare(((net.minecraft.world.entity.player.Player) entity.getHandle()).getFoodData().getFoodLevel(), data.getNumber("compare_to").getInt()));
 			}
 			return false;
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("saturation_level"), (data, entity) -> {
 			if (entity.getHandle() instanceof net.minecraft.world.entity.player.Player) {
-				return (data.getEnumValue("comparison", Comparison.class).compare(((net.minecraft.world.entity.player.Player) entity.getHandle()).getFoodData().getSaturationLevel(), data.getNumber("compare_to").getFloat()));
+				return (Comparison.fromString(data.getString("comparison")).compare(((net.minecraft.world.entity.player.Player) entity.getHandle()).getFoodData().getSaturationLevel(), data.getNumber("compare_to").getFloat()));
 			}
 			return false;
 		}));
@@ -270,7 +301,8 @@ public class EntityConditions {
 			}
 			int count = 0;
 			for (BlockPos pos : Shape.getPositions(entity.getHandle().blockPosition(), data.getEnumValueOrDefault("shape", Shape.class, Shape.CUBE), data.getNumber("radius").getInt())) {
-				if (blockCondition.isEmpty() || ConditionExecutor.testBlock(blockCondition, entity.getWorld().getBlockAt(CraftLocation.toBukkit(pos)))) {
+				if ((blockCondition.isEmpty() || ConditionExecutor.testBlock(blockCondition, entity.getWorld().getBlockAt(CraftLocation.toBukkit(pos))))
+				&& !entity.getWorld().getBlockAt(CraftLocation.toBukkit(pos)).getType().isAir()) {
 					count++;
 					if (count == stopAt) {
 						break;
@@ -280,7 +312,7 @@ public class EntityConditions {
 			return comparison.compare(count, compareTo);
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("distance_from_coordinates"), (data, entity) -> {
-			boolean scaleReferenceToDimension = data.getBoolean("scale_reference_to_dimension"),
+			boolean scaleReferenceToDimension = data.getBooleanOrDefault("scale_reference_to_dimension", true),
 				setResultOnWrongDimension = data.isPresent("result_on_wrong_dimension"),
 				resultOnWrongDimension = setResultOnWrongDimension && data.getBoolean("result_on_wrong_dimension");
 			double x = 0, y = 0, z = 0;
@@ -292,7 +324,7 @@ public class EntityConditions {
 			double currentDimensionCoordinateScale = world.dimensionType().coordinateScale();
 
 			// Get the reference's scaled coordinates
-			switch (data.getString("reference")) {
+			switch (data.getStringOrDefault("reference", "world_origin")) {
 				case "player_spawn":
 //                 if (entity instanceof ServerPlayerEntity) { // null instance of AnyClass is always false so the block case is covered
 //
@@ -336,10 +368,10 @@ public class EntityConditions {
 
 			// Get the distance to these coordinates
 			double distance,
-				xDistance = data.getBoolean("ignore_x") ? 0 : Math.abs(pos.x() - x),
-				yDistance = data.getBoolean("ignore_y") ? 0 : Math.abs(pos.y() - y),
-				zDistance = data.getBoolean("ignore_z") ? 0 : Math.abs(pos.z() - z);
-			if (data.getBoolean("scale_distance_to_dimension")) {
+				xDistance = data.getBooleanOrDefault("ignore_x", false) ? 0 : Math.abs(pos.x() - x),
+				yDistance = data.getBooleanOrDefault("ignore_y", false) ? 0 : Math.abs(pos.y() - y),
+				zDistance = data.getBooleanOrDefault("ignore_z", false) ? 0 : Math.abs(pos.z() - z);
+			if (data.getBooleanOrDefault("scale_distance_to_dimension", false)) {
 				xDistance *= currentDimensionCoordinateScale;
 				zDistance *= currentDimensionCoordinateScale;
 			}
@@ -520,7 +552,12 @@ public class EntityConditions {
 			return itemCondition == null || itemCondition.isEmpty() || ConditionExecutor.testItem(itemCondition, stackInHand.getBukkitStack());
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("moving"), (data, entity) -> {
-			return isEntityMoving(entity);
+			boolean horizontal = data.getBooleanOrDefault("horizontally", true);
+			boolean vertical = data.getBooleanOrDefault("vertically", true);
+			if (vertical && horizontal) return isEntityMoving(entity);
+			if (vertical && !horizontal) return isEntityMovingVertical(entity);
+			if (!vertical && horizontal) return isEntityMovingHorizontal(entity);
+			return !isEntityMoving(entity);
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("enchantment"), (data, entity) -> {
 			int value = 0;
@@ -623,9 +660,178 @@ public class EntityConditions {
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("exists"), (data, entity) -> {
 			return entity != null;
 		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("creative_flying"), (data, entity) -> {
+			return entity.getHandle() instanceof net.minecraft.world.entity.player.Player && ((net.minecraft.world.entity.player.Player)entity.getHandle()).getAbilities().flying;
+		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("ability"), (data, entity) -> {
+			boolean enabled = false;
+			if(entity.getHandle() instanceof net.minecraft.world.entity.player.Player && !entity.getHandle().level().isClientSide) {
+				switch (data.getResourceLocation("ability").toString()) {
+					case "minecraft:flying": enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().flying;
+					case "minecraft:instabuild": enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().instabuild;
+					case "minecraft:invulnerable": enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().invulnerable;
+					case "minecraft:mayBuild": enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().mayBuild;
+					case "minecraft:mayfly": enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().mayfly;
+						break;
+					default:
+						throw new IllegalStateException("Unexpected value: " + data.getResourceLocation("ability").toString());
+				}
+			}
+			return enabled;
+		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("raycast"), (data, entity) -> {
+			return RaycastCondition.condition(data, entity.getHandle());
+		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("elytra_flight_possible"), (data, entity) -> {
+			if(!(entity.getHandle() instanceof LivingEntity livingEntity)) {
+				return false;
+			}
+			boolean ability = true;
+			if(data.getBooleanOrDefault("check_ability", true)) {
+				ItemStack equippedChestItem = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
+				ability = equippedChestItem.is(Items.ELYTRA) && ElytraItem.isFlyEnabled(equippedChestItem);
+				if (!ability && PowerHolderComponent.hasPowerType(entity, ElytraFlightPower.class) && entity instanceof Player player) {
+					for (ElytraFlightPower power : PowerHolderComponent.getPowers(entity, ElytraFlightPower.class)) {
+						if (power.isActive(player)) {
+							ability = true;
+							break;
+						}
+					}
+				}
+			}
+			boolean state = true;
+			if(data.getBoolean("check_state")) {
+				state = !livingEntity.onGround() && !livingEntity.isFallFlying() && !livingEntity.isInWater() && !livingEntity.hasEffect(MobEffects.LEVITATION);
+			}
+			return ability && state;
+		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("inventory"), (data, entity) -> {
+			Util.ProcessMode processMode = data.getEnumValueOrDefault("process_mode", Util.ProcessMode.class, Util.ProcessMode.ITEMS);
+			Comparison comparison = Comparison.fromString(data.getString("comparison"));
+
+			int compareTo = data.getNumberOrDefault("compare_to", 0).getInt();
+			int matches = 0;
+
+			if (true) {
+				matches += Util.checkInventory(data, entity.getHandle(), null, processMode.getProcessor());
+			}
+
+			return comparison.compare(matches, compareTo);
+		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("in_snow"), (data, entity) -> {
+			BlockPos downBlockPos = entity.getHandle().blockPosition();
+			BlockPos upBlockPos = BlockPos.containing(downBlockPos.getX(), entity.getHandle().getBoundingBox().maxY, downBlockPos.getX());
+
+			return Util.inSnow(entity.getHandle().level(), downBlockPos, upBlockPos);
+		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("in_thunderstorm"), (data, entity) -> {
+			BlockPos downBlockPos = entity.getHandle().blockPosition();
+			BlockPos upBlockPos = BlockPos.containing(downBlockPos.getX(), entity.getHandle().getBoundingBox().maxY, downBlockPos.getX());
+
+			return Util.inThunderstorm(entity.getHandle().level(), downBlockPos, upBlockPos);
+		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("advancement"), (data, entity) -> {
+			if (!(entity.getHandle() instanceof net.minecraft.world.entity.player.Player playerEntity)) {
+				return false;
+			}
+
+			MinecraftServer server = playerEntity.getServer();
+			ResourceLocation advancementId = data.getResourceLocation("advancement");
+
+			if (server != null) {
+
+				AdvancementHolder advancementEntry = server.getAdvancements().get(advancementId);
+				if (advancementEntry == null) {
+					OriginsPaper.getPlugin().getLog4JLogger().warn("Advancement \"{}\" did not exist, but was referenced in an \"advancement\" entity condition!", advancementId);
+					return false;
+				}
+
+				return ((ServerPlayer) playerEntity)
+					.getAdvancements()
+					.getOrStartProgress(advancementEntry)
+					.isDone();
+
+			}
+
+			return false;
+		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("using_effective_tool"), (data, entity) -> {
+			if (!(entity.getHandle() instanceof net.minecraft.world.entity.player.Player playerEntity)) {
+				return false;
+			}
+
+			if (playerEntity instanceof ServerPlayer serverPlayerEntity) {
+
+				ServerPlayerGameMode interactionManager = serverPlayerEntity.gameMode;
+				boolean isMining = Boolean.TRUE.equals(Reflector.accessField("isDestroyingBlock", ServerPlayerGameMode.class, interactionManager, Boolean.class));
+				if (!isMining) {
+					return false;
+				}
+				BlockState miningBlockState = entity.getHandle().level().getBlockState(Reflector.accessField("destroyPos", ServerPlayerGameMode.class, interactionManager, BlockPos.class));
+				return playerEntity.hasCorrectToolForDrops(miningBlockState);
+
+			} else {
+				return false;
+			}
+		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("gamemode"), (data, entity) -> {
+			GameType type = data.getEnumValue("gamemode", GameType.class);
+			return entity.getHandle() instanceof ServerPlayer && ((ServerPlayer) entity.getHandle()).gameMode.getGameModeForPlayer().equals(type);
+		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("glowing"), (data, entity) -> {
+			return entity.getHandle().isCurrentlyGlowing();
+		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("entity_in_radius"), (data, entity) -> {
+			FactoryJsonObject biEntityCondition = data.getJsonObject("bientity_condition");
+			Shape shape = data.getEnumValueOrDefault("shape", Shape.class, Shape.CUBE);
+
+			Comparison comparison = Comparison.fromString(data.getString("comparison"));
+			int compareTo = data.getNumberOrDefault("compare_to", 1).getInt();
+
+			double radius = data.getNumber("radius").getDouble();
+			int countThreshold = switch (comparison) {
+				case EQUAL, LESS_THAN_OR_EQUAL, GREATER_THAN ->
+					compareTo + 1;
+				case LESS_THAN, GREATER_THAN_OR_EQUAL ->
+					compareTo;
+				default ->
+					-1;
+			};
+
+			int count = 0;
+			for (net.minecraft.world.entity.Entity target : Shape.getEntities(shape, entity.getHandle().level(), entity.getHandle().getPosition(1.0F), radius)) {
+
+				if (ConditionExecutor.testBiEntity(biEntityCondition, entity, target.getBukkitEntity())) {
+					++count;
+				}
+
+				if (count == countThreshold) {
+					break;
+				}
+
+			}
+
+			return comparison.compare(count, compareTo);
+		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("has_command_tag"), (data, entity) -> {
+			Set<String> commandTags = entity.getHandle().getTags();
+			Set<String> specifiedCommandTags = new HashSet<>();
+
+			if (data.isPresent("command_tag")) {
+				specifiedCommandTags.add(data.getString("command_tag"));
+			}
+
+			if (data.isPresent("command_tags")) {
+				specifiedCommandTags.addAll(data.getJsonArray("command_tags").asList.stream().map(FactoryElement::getString).toList());
+			}
+
+			return specifiedCommandTags.isEmpty()
+				? !commandTags.isEmpty()
+				: !Collections.disjoint(commandTags, specifiedCommandTags);
+		}));
 	}
 
-	public void register(EntityConditions.ConditionFactory factory) {
+	public void register(ConditionFactory factory) {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.ENTITY_CONDITION).register(factory);
 	}
 

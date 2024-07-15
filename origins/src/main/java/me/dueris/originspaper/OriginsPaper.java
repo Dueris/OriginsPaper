@@ -43,6 +43,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.CraftServer;
@@ -246,7 +247,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 			);
 			calio.registerAsset("textures", 0, "png", AssetType.IMAGE, Registries.TEXTURE_LOCATION);
 			calio.registerAsset("lang", 1, "json", AssetType.JSON, Registries.LANG);
-			calio.start(OriginConfiguration.getConfiguration().getBoolean("debug"));
+			calio.start(true);
 			BuiltinRegistry.bootstrap();
 			// End calio parsing
 		} catch (Throwable e) {
@@ -307,7 +308,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 	}
 
 	public void debug(Component component) {
-		if (OriginConfiguration.getConfiguration().getBoolean("debug")) printComponent(component);
+		printComponent(component);
 	}
 
 	private void start() {
@@ -343,7 +344,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		try {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				player.closeInventory(); // Ensure that all choosing players have closed inventories during reload
-				player.getPersistentDataContainer().set(CraftNamespacedKey.fromMinecraft(OriginsPaper.identifier("originLayer")), PersistentDataType.STRING, CraftApoli.toSaveFormat(PowerHolderComponent.getOrigin(player), player));
+				player.getPersistentDataContainer().set(new NamespacedKey(this, "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(PowerHolderComponent.getOrigin(player), player));
 				PowerHolderComponent.unassignPowers(player);
 				OriginDataContainer.unloadData(player);
 			}
