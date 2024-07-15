@@ -11,7 +11,6 @@ import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.screen.ScreenNavigator;
-import me.dueris.originspaper.storage.OriginConfiguration;
 import me.dueris.originspaper.storage.OriginDataContainer;
 import me.dueris.originspaper.util.BstatsMetrics;
 import me.dueris.originspaper.util.exception.PowerNotFoundException;

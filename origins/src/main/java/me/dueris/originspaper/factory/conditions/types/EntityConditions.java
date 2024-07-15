@@ -17,9 +17,7 @@ import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.util.Reflector;
 import me.dueris.originspaper.util.Util;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
@@ -34,7 +32,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -76,28 +73,27 @@ import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 public class EntityConditions {
 	private static final ArrayList<Object> previousWarnings = new ArrayList<>();
 	private final Location[] prevLoca = new Location[100000];
 
-	private static void warnOnce(String warning, Object key) {
+	public static void warnOnce(String warning, Object key) {
 		if (!previousWarnings.contains(key)) {
 			previousWarnings.add(key);
 			OriginsPaper.getPlugin().getLog4JLogger().warn(warning);
 		}
 	}
 
-	private static void warnOnce(String warning) {
+	public static void warnOnce(String warning) {
 		warnOnce(warning, warning);
 	}
 
-	private static boolean compareOutOfBounds(Comparison comparison) {
+	public static boolean compareOutOfBounds(Comparison comparison) {
 		return comparison == Comparison.NOT_EQUAL || comparison == Comparison.GREATER_THAN || comparison == Comparison.GREATER_THAN_OR_EQUAL;
 	}
 
-	private static <T> T warnCouldNotGetObject(String object, String from, T assumption) {
+	public static <T> T warnCouldNotGetObject(String object, String from, T assumption) {
 		warnOnce("Could not retrieve " + object + " from " + from + " for distance_from_spawn condition, assuming " + assumption + " for condition.");
 		return assumption;
 	}
@@ -302,7 +298,7 @@ public class EntityConditions {
 			int count = 0;
 			for (BlockPos pos : Shape.getPositions(entity.getHandle().blockPosition(), data.getEnumValueOrDefault("shape", Shape.class, Shape.CUBE), data.getNumber("radius").getInt())) {
 				if ((blockCondition.isEmpty() || ConditionExecutor.testBlock(blockCondition, entity.getWorld().getBlockAt(CraftLocation.toBukkit(pos))))
-				&& !entity.getWorld().getBlockAt(CraftLocation.toBukkit(pos)).getType().isAir()) {
+					&& !entity.getWorld().getBlockAt(CraftLocation.toBukkit(pos)).getType().isAir()) {
 					count++;
 					if (count == stopAt) {
 						break;
@@ -661,17 +657,22 @@ public class EntityConditions {
 			return entity != null;
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("creative_flying"), (data, entity) -> {
-			return entity.getHandle() instanceof net.minecraft.world.entity.player.Player && ((net.minecraft.world.entity.player.Player)entity.getHandle()).getAbilities().flying;
+			return entity.getHandle() instanceof net.minecraft.world.entity.player.Player && ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().flying;
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("ability"), (data, entity) -> {
 			boolean enabled = false;
-			if(entity.getHandle() instanceof net.minecraft.world.entity.player.Player && !entity.getHandle().level().isClientSide) {
+			if (entity.getHandle() instanceof net.minecraft.world.entity.player.Player && !entity.getHandle().level().isClientSide) {
 				switch (data.getResourceLocation("ability").toString()) {
-					case "minecraft:flying": enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().flying;
-					case "minecraft:instabuild": enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().instabuild;
-					case "minecraft:invulnerable": enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().invulnerable;
-					case "minecraft:mayBuild": enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().mayBuild;
-					case "minecraft:mayfly": enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().mayfly;
+					case "minecraft:flying":
+						enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().flying;
+					case "minecraft:instabuild":
+						enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().instabuild;
+					case "minecraft:invulnerable":
+						enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().invulnerable;
+					case "minecraft:mayBuild":
+						enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().mayBuild;
+					case "minecraft:mayfly":
+						enabled = ((net.minecraft.world.entity.player.Player) entity.getHandle()).getAbilities().mayfly;
 						break;
 					default:
 						throw new IllegalStateException("Unexpected value: " + data.getResourceLocation("ability").toString());
@@ -683,11 +684,11 @@ public class EntityConditions {
 			return RaycastCondition.condition(data, entity.getHandle());
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("elytra_flight_possible"), (data, entity) -> {
-			if(!(entity.getHandle() instanceof LivingEntity livingEntity)) {
+			if (!(entity.getHandle() instanceof LivingEntity livingEntity)) {
 				return false;
 			}
 			boolean ability = true;
-			if(data.getBooleanOrDefault("check_ability", true)) {
+			if (data.getBooleanOrDefault("check_ability", true)) {
 				ItemStack equippedChestItem = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
 				ability = equippedChestItem.is(Items.ELYTRA) && ElytraItem.isFlyEnabled(equippedChestItem);
 				if (!ability && PowerHolderComponent.hasPowerType(entity, ElytraFlightPower.class) && entity instanceof Player player) {
@@ -700,7 +701,7 @@ public class EntityConditions {
 				}
 			}
 			boolean state = true;
-			if(data.getBoolean("check_state")) {
+			if (data.getBoolean("check_state")) {
 				state = !livingEntity.onGround() && !livingEntity.isFallFlying() && !livingEntity.isInWater() && !livingEntity.hasEffect(MobEffects.LEVITATION);
 			}
 			return ability && state;
@@ -790,12 +791,9 @@ public class EntityConditions {
 
 			double radius = data.getNumber("radius").getDouble();
 			int countThreshold = switch (comparison) {
-				case EQUAL, LESS_THAN_OR_EQUAL, GREATER_THAN ->
-					compareTo + 1;
-				case LESS_THAN, GREATER_THAN_OR_EQUAL ->
-					compareTo;
-				default ->
-					-1;
+				case EQUAL, LESS_THAN_OR_EQUAL, GREATER_THAN -> compareTo + 1;
+				case LESS_THAN, GREATER_THAN_OR_EQUAL -> compareTo;
+				default -> -1;
 			};
 
 			int count = 0;

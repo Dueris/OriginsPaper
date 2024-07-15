@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -15,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Set;
@@ -32,10 +32,12 @@ public class FactoryJsonObject {
 		return this.handle.isEmpty();
 	}
 
+	@NotNull
 	public FactoryJsonObject getJsonObject(String key) {
 		return isPresent(key) ? new FactoryJsonObject(this.handle.get(key).getAsJsonObject()) : new FactoryJsonObject(new JsonObject());
 	}
 
+	@NotNull
 	public FactoryJsonArray getJsonArray(String key) {
 		return isPresent(key) ? new FactoryJsonArray(this.handle.get(key).getAsJsonArray()) : new FactoryJsonArray(new JsonArray());
 	}

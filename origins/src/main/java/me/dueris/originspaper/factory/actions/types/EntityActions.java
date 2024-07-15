@@ -409,7 +409,7 @@ public class EntityActions {
 			if (server != null) {
 				boolean validOutput = !(entity.getHandle() instanceof ServerPlayer) || ((ServerPlayer) entity.getHandle()).connection != null;
 				CommandSourceStack source = new CommandSourceStack(
-					CommandSource.NULL,
+					OriginsPaper.showCommandOutput && validOutput ? entity.getHandle() : CommandSource.NULL,
 					entity.getHandle().position(),
 					entity.getHandle().getRotationVector(),
 					entity.getHandle().level() instanceof ServerLevel ? (ServerLevel) entity.getHandle().level() : null,

@@ -48,7 +48,7 @@ public class ActionOnBlockBreak extends PowerType {
 
 		if (!getPlayers().contains(actor)) return;
 
-		if (!(ConditionExecutor.testBlock(blockCondition, (CraftBlock) e.getBlock()))) return;
+		if (!ConditionExecutor.testBlock(blockCondition, (CraftBlock) e.getBlock())) return;
 		boolean pass = true;
 		if (isOnlyWhenHarvested()) {
 			pass = ((CraftPlayer) actor).getHandle().hasCorrectToolForDrops(((CraftBlock) e.getBlock()).getNMS());

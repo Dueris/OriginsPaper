@@ -100,7 +100,7 @@ public class BlockActions {
 			if (server != null) {
 				String blockName = ((CraftWorld) block.getWorld()).getHandle().getBlockState(CraftLocation.toBlockPosition(block)).getBlock().getDescriptionId();
 				CommandSourceStack source = new CommandSourceStack(
-					CommandSource.NULL,
+					OriginsPaper.showCommandOutput ? server : CommandSource.NULL,
 					new Vec3(CraftLocation.toBlockPosition(block).getX() + 0.5, CraftLocation.toBlockPosition(block).getY() + 0.5, CraftLocation.toBlockPosition(block).getZ() + 0.5),
 					new Vec2(0, 0),
 					((CraftWorld) block.getWorld()).getHandle(),

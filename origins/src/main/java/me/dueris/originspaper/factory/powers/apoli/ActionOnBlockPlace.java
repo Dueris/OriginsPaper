@@ -18,6 +18,7 @@ import org.bukkit.craftbukkit.CraftEquipmentSlot;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 
@@ -68,26 +69,32 @@ public class ActionOnBlockPlace extends PowerType {
 	@EventHandler
 	public void blockPlace(BlockPlaceEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
-			if (!isActive(e.getPlayer())) return;
-			if (!ConditionExecutor.testItem(itemCondition, e.getItemInHand())) return;
-			if (!ConditionExecutor.testBlock(placeToCondition, e.getBlockPlaced())) return;
-			if (!ConditionExecutor.testBlock(placeOnCondition, e.getBlockAgainst())) return;
-			boolean pass = false;
-			if (e.getHand().isHand()) {
-				InteractionHand hand = CraftEquipmentSlot.getHand(e.getHand());
-				pass = hands.asList().stream().map(FactoryElement::getString).map(String::toUpperCase).map(InteractionHand::valueOf).toList().contains(hand);
-			}
-			BlockFace direction = e.getPlayer().getTargetBlockFace(6);
-			if (!directions.contains(direction)) return;
-			if (!pass) return;
-			Actions.executeEntity(e.getPlayer(), entityAction);
-			Actions.executeItem(e.getItemInHand(), e.getPlayer().getWorld(), heldItemAction);
-			Actions.executeBlock(e.getBlockAgainst().getLocation(), placeOnAction);
-			Actions.executeBlock(e.getBlockPlaced().getLocation(), placeToAction);
-			if (resultStack != null) {
-				Actions.executeItem(resultStack, e.getPlayer().getWorld(), resultItemAction);
-				e.getPlayer().getInventory().addItem(resultStack);
-			}
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					if (e.isCancelled()) return;
+					if (!isActive(e.getPlayer())) return;
+					if (!ConditionExecutor.testItem(itemCondition, e.getItemInHand())) return;
+					if (!ConditionExecutor.testBlock(placeToCondition, e.getBlockPlaced())) return;
+					if (!ConditionExecutor.testBlock(placeOnCondition, e.getBlockAgainst())) return;
+					boolean pass = true;
+					if (e.getHand().isHand()) {
+						InteractionHand hand = CraftEquipmentSlot.getHand(e.getHand());
+						pass = hands.asList().stream().map(FactoryElement::getString).map(String::toUpperCase).map(InteractionHand::valueOf).toList().contains(hand);
+					}
+					BlockFace direction = e.getPlayer().getTargetBlockFace(6);
+					if (!directions.contains(direction)) return;
+					if (!pass) return;
+					Actions.executeEntity(e.getPlayer(), entityAction);
+					Actions.executeItem(e.getItemInHand(), e.getPlayer().getWorld(), heldItemAction);
+					Actions.executeBlock(e.getBlockAgainst().getLocation(), placeOnAction);
+					Actions.executeBlock(e.getBlockPlaced().getLocation(), placeToAction);
+					if (resultStack != null) {
+						Actions.executeItem(resultStack, e.getPlayer().getWorld(), resultItemAction);
+						e.getPlayer().getInventory().addItem(resultStack);
+					}
+				}
+			}.runTaskLater(OriginsPaper.getPlugin(), 2);
 		}
 	}
 

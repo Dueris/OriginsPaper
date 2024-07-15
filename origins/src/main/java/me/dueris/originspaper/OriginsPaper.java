@@ -47,7 +47,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -80,6 +79,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 	public static ConditionExecutor conditionExecutor;
 	public static String apoliVersion = "2.12.0-alpha.3";
 	public static boolean placeholderapi = false;
+	public static boolean showCommandOutput = false;
 	public static File playerDataFolder;
 	public static boolean forceUseCurrentVersion = false;
 	public static OriginScheduler.MainTickerThread scheduler = null;
@@ -181,6 +181,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		glowingEntitiesUtils = new GlowingEntitiesUtils(this);
 		try {
 			OriginConfiguration.load();
+			OriginsPaper.showCommandOutput = OriginConfiguration.getConfiguration().getBoolean("show-command-output");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
