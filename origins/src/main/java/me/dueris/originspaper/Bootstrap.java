@@ -177,6 +177,7 @@ public class Bootstrap implements PluginBootstrap {
 		JsonObjectRemapper.typeAlias.put("apoli:in_set", "apoli:in_entity_set");
 		JsonObjectRemapper.typeAlias.put("apoli:set_size", "apoli:entity_set_size");
 		JsonObjectRemapper.typeAlias.put("apoli:distance_from_spawn", "apoli:distance_from_coordinates");
+		JsonObjectRemapper.typeAlias.put("apoli:custom_data", "apoli:nbt");
 
 		// Create new registry instances
 		context.createRegistries(

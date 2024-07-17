@@ -11,11 +11,13 @@ import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
+import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+// TODO: make damage type work without modifying player velocity
 public class DamageOverTime extends PowerType {
 	private final int interval;
 	private final float damage;
@@ -66,8 +68,7 @@ public class DamageOverTime extends PowerType {
 
 			if (isActive(p)) {
 				if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
-					DamageType dmgType = Util.DAMAGE_REGISTRY.get(damageType);
-					((CraftPlayer) p).getHandle().hurt(Util.getDamageSource(dmgType), damageVal);
+					p.damage(damageVal);
 				}
 			}
 		}

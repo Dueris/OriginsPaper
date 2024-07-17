@@ -105,10 +105,14 @@ public class Util {
 	}
 
 	public static DamageSource getDamageSource(DamageType type) {
+		return getDamageSource(type, null);
+	}
+
+	public static DamageSource getDamageSource(DamageType type, Entity attacker) {
 		DamageSource source = null;
 		for (ResourceKey<DamageType> dkey : DAMAGE_REGISTRY.registryKeySet()) {
 			if (DAMAGE_REGISTRY.get(dkey).equals(type)) {
-				source = new DamageSource(DAMAGE_REGISTRY.getHolderOrThrow(dkey));
+				source = new DamageSource(DAMAGE_REGISTRY.getHolderOrThrow(dkey), attacker, attacker, attacker == null ? null : attacker.position());
 				break;
 			}
 		}

@@ -494,8 +494,8 @@ public class EntityConditions {
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("in_block_anywhere"), (data, entity) -> {
 			FactoryJsonObject blockCondition = data.getJsonObject("block_condition");
 			int stopAt = -1;
-			Comparison comparison = Comparison.fromString(data.getString("comparison"));
-			int compareTo = data.getNumber("compare_to").getInt();
+			Comparison comparison = Comparison.fromString(data.getStringOrDefault("comparison", ">="));
+			int compareTo = data.getNumberOrDefault("compare_to", 1).getInt();
 			switch (comparison) {
 				case EQUAL:
 				case LESS_THAN_OR_EQUAL:

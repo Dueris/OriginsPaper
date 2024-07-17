@@ -7,12 +7,9 @@
       "type": "origins:or",
       "conditions": [
         {
-          "type": "origins:exposed_to_sun"
-        },
-        {
-          "type": "origins:light_level",
-          "comparison": ">",
-          "compare_to": 6
+          "type": "origins:brightness",
+          "comparison": ">=",
+          "compare_to": 0.03
         }
       ]
     },
@@ -23,7 +20,7 @@
     "effects": [
       {
         "effect": "minecraft:slowness",
-        "amplifier": 1,
+        "amplifier": 0,
         "duration": 40,
         "is_ambient": false,
         "show_particles": false

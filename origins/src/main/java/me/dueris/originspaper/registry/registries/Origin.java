@@ -129,7 +129,7 @@ public class Origin implements FactoryHolder {
 	}
 
 	public List<String> getPowers() {
-		return getPowerContainers().stream().map(PowerType::getTag).toList();
+		return getPowerContainers().stream().filter(Objects::nonNull).map(PowerType::getTag).toList();
 	}
 
 	private void setDisabled() {

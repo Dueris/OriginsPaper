@@ -132,7 +132,7 @@ public class BlockConditions {
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("in_tag"), (data, block) -> {
 			Block nms = block.getNMS().getBlock();
-			return nms.defaultBlockState().is((TagKey<Block>) data.getTagKey("tag", net.minecraft.core.registries.Registries.BLOCK));
+			return nms.defaultBlockState().is(data.getTagKey("tag", net.minecraft.core.registries.Registries.BLOCK));
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("adjacent"), (data, block) -> {
 			FactoryJsonObject adjacentCondition = data.getJsonObject("adjacent_condition");

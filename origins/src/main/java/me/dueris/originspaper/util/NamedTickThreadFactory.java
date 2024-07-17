@@ -1,7 +1,7 @@
 package me.dueris.originspaper.util;
 
+import ca.spottedleaf.moonrise.common.util.TickThread;
 import com.mojang.logging.LogUtils;
-import io.papermc.paper.util.TickThread;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 

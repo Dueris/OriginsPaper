@@ -14,10 +14,9 @@
   },
   "entity_action": {
     "type": "origins:raycast",
-    "distance": 12,
-    "command_at_hit": "execute as @e[distance=..2] run damage @s 6",
+    "distance": 16,
     "command_step": 2.5,
-    "command_along_ray": "function originspaper:boom_command_step",
+    "command_along_ray": "particle minecraft:sonic_boom ~ ~ ~ 0.2 0.2 0.2 0 2 force",
     "entity": true,
     "block": true,
     "bientity_action": {
@@ -38,7 +37,12 @@
         },
         {
           "type": "origins:add_velocity",
-          "z": 2.8
+          "z": 3
+        },
+        {
+          "type": "origins:damage",
+          "damage_type": "minecraft:sonic_boom",
+          "amount": 15
         }
       ]
     },
@@ -46,8 +50,9 @@
       "type": "origins:and",
       "actions": [
         {
-          "type": "origins:execute_command",
-          "command": "playsound minecraft:entity.warden.sonic_boom master @s ~ ~ ~ 1 1"
+          "type": "origins:play_sound",
+          "category": "master",
+          "sound": "minecraft:entity.warden.sonic_boom"
         }
       ]
     }

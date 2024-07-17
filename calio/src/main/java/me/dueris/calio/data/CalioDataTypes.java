@@ -1,5 +1,6 @@
 package me.dueris.calio.data;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -14,12 +15,17 @@ import me.dueris.calio.data.types.ParticleEffect;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.StatType;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.CraftRegistry;
@@ -28,10 +34,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class CalioDataTypes {
 	public static HashMap<Class<?> /*ofType*/, Function<JsonElement, ?>> registries = new HashMap<>();
@@ -76,6 +87,43 @@ public class CalioDataTypes {
 	public static Material material(JsonElement element) {
 		NamespacedKey a = bukkitIdentifier(element);
 		return Material.matchMaterial(a.asString());
+	}
+
+	public static Ingredient ingredient(JsonElement element) {
+		List<Ingredient.Value> entries = new ArrayList<>();
+		if (element.isJsonObject()) {
+			initValues(element.getAsJsonObject(), entries);
+		} else if (element.isJsonArray()) {
+			JsonArray array = element.getAsJsonArray();
+			array.asList().stream().map(JsonElement::getAsJsonObject).forEach(object -> {
+				initValues(object, entries);
+			});
+		}
+		return fromValues(entries.stream());
+	}
+
+	private static void initValues(JsonObject object, List<Ingredient.Value> entries) {
+		if (object.has("item")) {
+			entries.add(new Ingredient.ItemValue(MinecraftServer.getServer().registryAccess().registry(Registries.ITEM).get().get(ResourceLocation.parse(object.get("item").getAsString())).getDefaultInstance()));
+		}
+		if (object.has("tag")) {
+			try {
+				Class<?> tagValueClass = Class.forName("net.minecraft.world.item.crafting.Ingredient$TagValue");
+				Constructor constructor = tagValueClass.getDeclaredConstructor(TagKey.class);
+				constructor.setAccessible(true);
+				Object tagValueInst = constructor.newInstance(TagKey.create(Registries.ITEM, ResourceLocation.parse(object.get("tag").getAsString())));
+				entries.add((Ingredient.Value) tagValueInst);
+			} catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
+					 InstantiationException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
+	private static Ingredient fromValues(Stream<? extends Ingredient.Value> entries) {
+		Ingredient recipeitemstack = new Ingredient(entries);
+
+		return recipeitemstack.isEmpty() ? Ingredient.EMPTY : recipeitemstack;
 	}
 
 	public static Vector vector(JsonElement element) {

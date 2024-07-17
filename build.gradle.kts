@@ -6,7 +6,7 @@ import kotlin.io.path.isDirectory
 plugins {
     `java-library`
     `maven-publish`
-    id("io.papermc.paperweight.userdev") version "1.7.1" apply true
+    id("io.papermc.paperweight.userdev") version "1.7.2-SNAPSHOT" apply true
     id("xyz.jpenilla.run-paper") version "2.2.3"
     id("io.github.goooler.shadow") version "8.1.7" apply true
 }
