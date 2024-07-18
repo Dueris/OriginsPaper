@@ -145,16 +145,14 @@ public class ExplosionMask {
 			List<org.bukkit.block.Block> bukkitBlocks;
 
 			if (explode != null) {
-				EntityExplodeEvent event = new EntityExplodeEvent(explode, location, blockList, this.explosion.yield);
-				this.level.getCraftServer().getPluginManager().callEvent(event);
+				EntityExplodeEvent event = CraftEventFactory.callEntityExplodeEvent(this.explosion.source, blockList, this.explosion.yield, this.explosion.getBlockInteraction());
 				this.explosion.wasCanceled = event.isCancelled();
 				bukkitBlocks = event.blockList();
 				this.explosion.yield = event.getYield();
 			} else {
 				org.bukkit.block.Block block = location.getBlock();
-				org.bukkit.block.BlockState blockState = (level.damageSources().generic().getDirectBlockState() != null) ? level.damageSources().generic().getDirectBlockState() : block.getState();
-				BlockExplodeEvent event = new BlockExplodeEvent(block, blockState, blockList, this.explosion.yield);
-				this.level.getCraftServer().getPluginManager().callEvent(event);
+				org.bukkit.block.BlockState blockState = block.getState();
+				BlockExplodeEvent event = CraftEventFactory.callBlockExplodeEvent(block, blockState, blockList, this.explosion.yield, this.explosion.getBlockInteraction());
 				this.explosion.wasCanceled = event.isCancelled();
 				bukkitBlocks = event.blockList();
 				this.explosion.yield = event.getYield();
