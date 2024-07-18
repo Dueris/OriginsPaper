@@ -418,7 +418,12 @@ public class EntityActions {
 					entity.getHandle().getDisplayName(),
 					entity.getHandle().level().getServer(),
 					entity.getHandle());
-				server.getCommands().performPrefixedCommand(source, data.getString("command"));
+				String cmd = data.getString("command");
+				// Fix the command to support our pehuki implementation
+				if (cmd.replace("/", "").startsWith("scale")) {
+					cmd = cmd.replace("@s", entity.getName());
+				}
+				server.getCommands().performPrefixedCommand(source, cmd);
 			}
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("feed"), (data, entity) -> {
