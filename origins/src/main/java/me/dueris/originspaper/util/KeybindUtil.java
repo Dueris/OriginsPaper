@@ -35,7 +35,8 @@ public class KeybindUtil implements Listener {
 	public static HashMap<Player, ArrayList<String>> activeKeys = new HashMap<>();
 
 	private static void clearOldData(Player player) {
-		for (ItemStack itemStack : new ArrayList<>(List.of(player.getInventory().getContents()))) {
+		for (ItemStack itemStack : player.getInventory().getContents().clone()) {
+			if (itemStack == null) continue;
 			if (itemStack.getPersistentDataContainer().getKeys().contains(new NamespacedKey("genesismc","origin_item_data"))) {
 				player.getInventory().remove(itemStack);
 			}
