@@ -103,6 +103,7 @@ public class Resource extends PowerType implements ResourcePower {
 					this.cancel();
 				} else {
 					if (!power.getHudRender().condition().isEmpty()) {
+						if (player == null) return;
 						bossBar.setVisible(ConditionExecutor.testEntity(power.getHudRender().condition(), player));
 					} else {
 						bossBar.setVisible(true);

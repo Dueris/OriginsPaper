@@ -81,8 +81,7 @@ public class RandomOriginPage implements ChoosingPage {
 
 	@Override
 	public ItemStack getChoosingStack(Player player) {
-		if (OrbOfOrigins.orb == null) OrbOfOrigins.init();
-		ItemStack orb = OrbOfOrigins.orb;
+		ItemStack orb = OrbOfOrigins.orb == null ? OrbOfOrigins.createOrb() : OrbOfOrigins.orb;
 		ItemMeta meta = orb.getItemMeta();
 		meta.displayName(Component.text("Random Origin").color(TextColor.color(0x28A7B5)));
 		orb.setItemMeta(meta);
