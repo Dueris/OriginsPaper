@@ -421,7 +421,9 @@ public class EntityActions {
 				String cmd = data.getString("command");
 				// Fix the command to support our pehuki implementation
 				if (cmd.replace("/", "").startsWith("scale")) {
-					cmd = cmd.replace("@s", entity.getName());
+					if (cmd.contains("@s")) {
+						cmd.replace(" @s", "");
+					}
 				}
 				server.getCommands().performPrefixedCommand(source, cmd);
 			}

@@ -29,9 +29,18 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class KeybindUtil implements Listener {
 	public static HashMap<Player, ArrayList<String>> activeKeys = new HashMap<>();
+
+	private static void clearOldData(Player player) {
+		for (ItemStack itemStack : new ArrayList<>(List.of(player.getInventory().getContents()))) {
+			if (itemStack.getPersistentDataContainer().getKeys().contains(new NamespacedKey("genesismc","origin_item_data"))) {
+				player.getInventory().remove(itemStack);
+			}
+		}
+	}
 
 	public static String translateOriginRawKey(String string) {
 		if (string.contains("key.origins.primary_active"))
@@ -259,6 +268,7 @@ public class KeybindUtil implements Listener {
 
 	@EventHandler
 	public void jointhing(PlayerJoinEvent e) {
+		clearOldData(e.getPlayer());
 		if (!hasOriginDataTriggerPrimary(e.getPlayer().getInventory())) {
 			addPrimaryItem(e.getPlayer());
 		}

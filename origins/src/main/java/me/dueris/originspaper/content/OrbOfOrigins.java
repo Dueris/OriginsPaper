@@ -54,7 +54,9 @@ public class OrbOfOrigins {
 			sr.setIngredient('7', Material.valueOf(getOrbConfiguration().get("crafting.bottom.left").toString()));
 			sr.setIngredient('8', Material.valueOf(getOrbConfiguration().get("crafting.bottom.middle").toString()));
 			sr.setIngredient('9', Material.valueOf(getOrbConfiguration().get("crafting.bottom.right").toString()));
-			Bukkit.getServer().addRecipe(sr);
+			try {
+				Bukkit.getServer().addRecipe(sr);
+			} catch (Throwable ignore) {}
 
 			RecipePower.taggedRegistry.put(sr.key().asString(), sr);
 			return sr.getResult().clone();
