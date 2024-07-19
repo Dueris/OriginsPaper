@@ -536,6 +536,11 @@ public class EntityConditions {
 			return entity.getHandle() instanceof OwnableEntity tameable
 				&& tameable.getOwnerUUID() != null;
 		}));
+		register(new ConditionFactory(OriginsPaper.apoliIdentifier("equipped_item"), (data, entity) -> {
+			if (!(entity.getHandle() instanceof LivingEntity livingEntity)) return false;
+			return ConditionExecutor.testItem(data.getJsonObject("item_condition"),
+				livingEntity.getItemBySlot(data.getEnumValueOrDefault("equipment_slot", EquipmentSlot.class, EquipmentSlot.MAINHAND)).getBukkitStack());
+		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("using_item"), (data, entity) -> {
 			if (!(entity.getHandle() instanceof LivingEntity livingEntity) || !livingEntity.isUsingItem()) {
 				return false;
