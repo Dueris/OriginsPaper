@@ -28,4 +28,7 @@ public class LangFile implements Registrable {
 		return this.key;
 	}
 
+	public Map<String, String> getLangMap() {
+		return langMap;
+	}
 }

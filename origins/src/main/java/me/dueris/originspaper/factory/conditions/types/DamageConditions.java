@@ -48,6 +48,7 @@ public class DamageConditions {
 			return false;
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("attacker"), (data, damageEvent) -> {
+			if (damageEvent.getDamageSource() == null || damageEvent.getDamageSource().getDirectEntity() == null) return false;
 			Entity attacker = new DamageSource(nmsDamageSource(damageEvent).typeHolder(), ((CraftEntity) damageEvent.getDamageSource().getDirectEntity()).getHandle()).getEntity();
 			if (attacker instanceof LivingEntity) {
 				return !data.isPresent("entity_condition") || ConditionExecutor.testEntity(data.getJsonObject("entity_condition"), attacker.getBukkitEntity());
