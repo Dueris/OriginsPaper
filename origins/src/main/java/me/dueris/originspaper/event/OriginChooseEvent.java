@@ -6,7 +6,6 @@ import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class OriginChooseEvent extends PlayerEvent {
-
 	private static final HandlerList handlers = new HandlerList();
 
 	public OriginChooseEvent(@NotNull Player who) {
@@ -17,7 +16,6 @@ public class OriginChooseEvent extends PlayerEvent {
 		return handlers;
 	}
 
-	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}

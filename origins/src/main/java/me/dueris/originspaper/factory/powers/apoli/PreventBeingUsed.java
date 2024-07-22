@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class PreventBeingUsed extends PowerType implements Listener {
 	private final FactoryJsonObject itemCondition;
@@ -25,7 +26,7 @@ public class PreventBeingUsed extends PowerType implements Listener {
 	}
 
 	@EventHandler
-	public void run(PlayerInteractEvent e) {
+	public void run(@NotNull PlayerInteractEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			Player p = e.getPlayer();
 			if (isActive(p) && ConditionExecutor.testItem(itemCondition, e.getItem())) {

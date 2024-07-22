@@ -18,6 +18,7 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerEvent;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class AttributeHandler extends PowerType {
 	}
 
 	@EventHandler
-	public void powerUpdate(PowerUpdateEvent e) {
+	public void powerUpdate(@NotNull PowerUpdateEvent e) {
 		if (!e.getPower().getTag().equalsIgnoreCase(getTag())) return;
 		Player p = e.getPlayer();
 		OriginPage.setAttributesToDefault(p);
@@ -65,7 +66,7 @@ public class AttributeHandler extends PowerType {
 		}
 	}
 
-	protected void runAttributeModifyPower(PlayerEvent e) {
+	protected void runAttributeModifyPower(@NotNull PlayerEvent e) {
 		Player p = e.getPlayer();
 		if (!getPlayers().contains(p)) return;
 		playerModifiers.putIfAbsent(p, new ArrayList<>());

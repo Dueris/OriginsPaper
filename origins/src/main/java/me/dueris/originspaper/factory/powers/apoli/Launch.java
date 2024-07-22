@@ -21,6 +21,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -52,7 +53,7 @@ public class Launch extends PowerType implements CooldownPower, KeyedPower {
 	}
 
 	@EventHandler
-	public void inContinuousFix(KeybindTriggerEvent e) {
+	public void inContinuousFix(@NotNull KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			if (KeybindUtil.isKeyActive(getJsonKey().key(), p)) {
@@ -62,7 +63,7 @@ public class Launch extends PowerType implements CooldownPower, KeyedPower {
 	}
 
 	@EventHandler
-	public void keybindToggle(KeybindTriggerEvent e) {
+	public void keybindToggle(@NotNull KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			if (isActive(p)) {

@@ -1,10 +1,10 @@
 package me.dueris.calio.data.types;
 
 import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.block.data.BlockData;
 
 import java.util.Optional;
 
-public record ParticleEffect(Particle particle, Optional<Particle.DustOptions> dustOptions,
-							 Optional<BlockData> blockData) {
+public record ParticleEffect(Particle particle, Optional<DustOptions> dustOptions, Optional<BlockData> blockData) {
 }

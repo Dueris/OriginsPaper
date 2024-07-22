@@ -13,6 +13,7 @@ import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 
@@ -45,7 +46,7 @@ public class PreventSleep extends PowerType {
 	}
 
 	@EventHandler
-	public void runD(PlayerInteractEvent e) {
+	public void runD(@NotNull PlayerInteractEvent e) {
 		if (e.getClickedBlock() == null) return;
 		if (e.getAction().isLeftClick()) return;
 		if (!getPlayers().contains(e.getPlayer())) return;

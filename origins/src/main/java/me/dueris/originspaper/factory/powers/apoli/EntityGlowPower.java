@@ -15,6 +15,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.Set;
@@ -30,7 +31,7 @@ public class EntityGlowPower extends SelfGlow {
 	}
 
 	@Override
-	public void tick(Player p) {
+	public void tick(@NotNull Player p) {
 		ServerPlayer player = ((CraftPlayer) p).getHandle();
 		ServerLevel level = (ServerLevel) player.level();
 		Set<Entity> entities = Shape.getEntities(Shape.SPHERE, level, CraftLocation.toVec3D(p.getLocation()), 60);

@@ -8,7 +8,5 @@
   "condition": {
     "type": "origins:sprinting"
   },
-  "name": "Strong Ankles",
-  "description": "You are able to jump higher by jumping while sprinting",
   "hidden": false
 }

@@ -13,7 +13,5 @@
     "key": "key.origins.primary_active",
     "continuous": false
   },
-  "name": "Teleportation",
-  "description": "Whenever you want, you may throw an ender pearl which deals no damage, allowing you to teleport",
   "hidden": false
 }

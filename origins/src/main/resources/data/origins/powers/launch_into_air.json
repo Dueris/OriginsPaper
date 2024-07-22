@@ -11,7 +11,5 @@
     "key": "key.origins.primary_active",
     "continuous": true
   },
-  "name": "Gift of the Winds",
-  "description": "Every 30 seconds you are able to launch about 20 blocks up into the air",
   "hidden": false
 }

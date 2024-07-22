@@ -11,6 +11,7 @@ import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.EquipmentSlot;
+import org.jetbrains.annotations.NotNull;
 
 public class RestrictArmor extends PowerType {
 	private final FactoryJsonObject head;
@@ -35,7 +36,7 @@ public class RestrictArmor extends PowerType {
 	}
 
 	@EventHandler
-	public void tickArmorChange(PlayerArmorChangeEvent e) {
+	public void tickArmorChange(@NotNull PlayerArmorChangeEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			if (isActive(p)) {

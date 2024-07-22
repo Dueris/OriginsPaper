@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class StartingEquipmentPower extends PowerType {
 	}
 
 	@EventHandler
-	public void runGive(PowerUpdateEvent e) {
+	public void runGive(@NotNull PowerUpdateEvent e) {
 		if (!e.getPower().getType().equalsIgnoreCase(getType())) return;
 		if (getPlayers().contains(e.getPlayer()) && e.isNew()) {
 			if (isActive(e.getPlayer())) {
@@ -52,7 +53,7 @@ public class StartingEquipmentPower extends PowerType {
 	}
 
 	@EventHandler
-	public void runRespawn(PlayerRespawnEvent e) {
+	public void runRespawn(@NotNull PlayerRespawnEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			if (isActive(e.getPlayer()) && recurrent) {
 				runGiveItems(e.getPlayer());

@@ -1,8 +1,6 @@
 {
   "type": "origins:stacking_status_effect",
   "hidden": false,
-  "name": "Charged",
-  "description": "During thunderstorms, you are significantly stronger",
   "min_stacks": 0,
   "max_stacks": 1,
   "duration_per_stack": 60,

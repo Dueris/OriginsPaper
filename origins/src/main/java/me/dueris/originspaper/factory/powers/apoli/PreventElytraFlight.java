@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class PreventElytraFlight extends PowerType implements Listener {
 	private final FactoryJsonObject entityAction;
@@ -25,7 +26,7 @@ public class PreventElytraFlight extends PowerType implements Listener {
 	}
 
 	@EventHandler
-	public void run(EntityToggleGlideEvent e) {
+	public void run(@NotNull EntityToggleGlideEvent e) {
 		if (e.getEntity() instanceof Player p) {
 			if (getPlayers().contains(p)) {
 				if (isActive(p)) {

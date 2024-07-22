@@ -4,7 +4,7 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.entity.Player;
 
 public class TestPower extends PowerType {
@@ -16,19 +16,17 @@ public class TestPower extends PowerType {
 	}
 
 	public static FactoryData registerComponents(FactoryData data) {
-		return PowerType.registerComponents(data)
-			.ofNamespace(OriginsPaper.apoliIdentifier("testing"))
-			.add("test", String.class, "AHHHH");
+		return PowerType.registerComponents(data).ofNamespace(OriginsPaper.apoliIdentifier("testing")).add("test", String.class, "AHHHH");
 	}
 
 	public String getTest() {
-		return test;
+		return this.test;
 	}
 
 	@Override
 	public void tick(Player player) {
 		System.out.println(this.test + " WOW. players: [");
-		this.getPlayers().stream().map(CraftPlayer::getName).forEach(System.out::println);
+		this.getPlayers().stream().map(CraftHumanEntity::getName).forEach(System.out::println);
 		System.out.println("]");
 	}
 }

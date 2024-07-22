@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class ActionOnEntityUse extends PowerType {
 	}
 
 	@EventHandler
-	public void entityRightClickEntity(PlayerInteractEntityEvent e) {
+	public void entityRightClickEntity(@NotNull PlayerInteractEntityEvent e) {
 		Player actor = e.getPlayer();
 		Entity target = e.getRightClicked();
 

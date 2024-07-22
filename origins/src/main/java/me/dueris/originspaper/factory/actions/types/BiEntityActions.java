@@ -1,8 +1,8 @@
 package me.dueris.originspaper.factory.actions.types;
 
-import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.registry.Registrable;
+import me.dueris.calio.util.holders.Pair;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.AddToSetEvent;
 import me.dueris.originspaper.event.RemoveFromSetEvent;
@@ -22,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.function.TriConsumer;
 import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.entity.Entity;
 import org.joml.Vector3f;
 
 import java.util.List;
@@ -34,16 +33,16 @@ public class BiEntityActions {
 
 	public void register() {
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("remove_from_entity_set"), (data, entityPair) -> {
-			RemoveFromSetEvent ev = new RemoveFromSetEvent(entityPair.right(), data.getString("set"));
+			RemoveFromSetEvent ev = new RemoveFromSetEvent(entityPair.second(), data.getString("set"));
 			ev.callEvent();
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("add_to_entity_set"), (data, entityPair) -> {
-			AddToSetEvent ev = new AddToSetEvent(entityPair.right(), data.getString("set"));
+			AddToSetEvent ev = new AddToSetEvent(entityPair.second(), data.getString("set"));
 			ev.callEvent();
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("damage"), (data, entityPair) -> {
-			net.minecraft.world.entity.Entity actor = entityPair.left().getHandle();
-			net.minecraft.world.entity.Entity target = entityPair.right().getHandle();
+			net.minecraft.world.entity.Entity actor = entityPair.first().getHandle();
+			net.minecraft.world.entity.Entity target = entityPair.second().getHandle();
 
 			if (actor == null || target == null) {
 				return;
@@ -75,8 +74,8 @@ public class BiEntityActions {
 			}
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("add_velocity"), (data, entityPair) -> {
-			net.minecraft.world.entity.Entity actor = entityPair.left().getHandle();
-			net.minecraft.world.entity.Entity target = entityPair.right().getHandle();
+			net.minecraft.world.entity.Entity actor = entityPair.first().getHandle();
+			net.minecraft.world.entity.Entity target = entityPair.second().getHandle();
 
 			if ((actor == null || target == null)) {
 				return;
@@ -94,15 +93,15 @@ public class BiEntityActions {
 			target.hurtMarked = true;
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("mount"), (data, entityPair) -> {
-			entityPair.right().addPassenger(entityPair.left());
+			entityPair.second().addPassenger(entityPair.first());
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("set_in_love"), (data, entityPair) -> {
-			if (entityPair.right().getHandle() instanceof Animal targetAnimal && entityPair.left().getHandle() instanceof Player actorPlayer) {
+			if (entityPair.second().getHandle() instanceof Animal targetAnimal && entityPair.first().getHandle() instanceof Player actorPlayer) {
 				targetAnimal.setInLove(actorPlayer);
 			}
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("tame"), (data, entityPair) -> {
-			if (!(entityPair.right().getHandle() instanceof TamableAnimal tameableTarget) || !(entityPair.left().getHandle() instanceof Player actorPlayer)) {
+			if (!(entityPair.second().getHandle() instanceof TamableAnimal tameableTarget) || !(entityPair.first().getHandle() instanceof Player actorPlayer)) {
 				return;
 			}
 
@@ -111,8 +110,8 @@ public class BiEntityActions {
 			}
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("leash"), (data, entityPair) -> {
-			net.minecraft.world.entity.Entity actor = entityPair.left().getHandle();
-			net.minecraft.world.entity.Entity target = entityPair.right().getHandle();
+			net.minecraft.world.entity.Entity actor = entityPair.first().getHandle();
+			net.minecraft.world.entity.Entity target = entityPair.second().getHandle();
 
 			if (actor == null || !(target instanceof Mob mobTarget) || !(mobTarget instanceof Leashable leashable)) {
 				return;
@@ -167,21 +166,10 @@ public class BiEntityActions {
 			this.test = test;
 		}
 
-		public void test(FactoryJsonObject action, Pair<Entity, Entity> tester) {
+		public void test(FactoryJsonObject action, Pair<CraftEntity, CraftEntity> tester) {
 			if (action == null || action.isEmpty()) return; // Dont execute empty actions
 			try {
-				Pair<CraftEntity, CraftEntity> newTester = new Pair<>() {
-					@Override
-					public CraftEntity left() {
-						return (CraftEntity) tester.left();
-					}
-
-					@Override
-					public CraftEntity right() {
-						return (CraftEntity) tester.right();
-					}
-				};
-				test.accept(action, newTester);
+				test.accept(action, tester);
 			} catch (Exception e) {
 				OriginsPaper.getPlugin().getLogger().severe("An Error occurred while running an action: " + e.getMessage());
 				e.printStackTrace();

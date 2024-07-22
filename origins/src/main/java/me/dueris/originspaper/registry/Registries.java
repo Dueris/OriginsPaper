@@ -14,7 +14,8 @@ import me.dueris.originspaper.screen.ChoosingPage;
 import me.dueris.originspaper.util.LangFile;
 import me.dueris.originspaper.util.TextureLocation;
 import net.minecraft.resources.ResourceLocation;
-
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 public class Registries {
 	public static final RegistryKey<Origin> ORIGIN = new RegistryKey<>(Origin.class, apoliIdentifier("origin"));
@@ -39,15 +40,18 @@ public class Registries {
 	public static final RegistryKey<DatapackRepository> PACK_SOURCE = new RegistryKey<>(DatapackRepository.class, apoliIdentifier("pack_source"));
 	public static final RegistryKey<ChoosingPage> CHOOSING_PAGE = new RegistryKey<>(ChoosingPage.class, originIdentifier("choosing_page"));
 
-	public static ResourceLocation identifier(String path) {
+	@Contract("_ -> new")
+	public static @NotNull ResourceLocation identifier(String path) {
 		return ResourceLocation.fromNamespaceAndPath("originspaper", path);
 	}
 
-	public static ResourceLocation originIdentifier(String path) {
+	@Contract("_ -> new")
+	public static @NotNull ResourceLocation originIdentifier(String path) {
 		return ResourceLocation.fromNamespaceAndPath("origins", path);
 	}
 
-	public static ResourceLocation apoliIdentifier(String path) {
+	@Contract("_ -> new")
+	public static @NotNull ResourceLocation apoliIdentifier(String path) {
 		return ResourceLocation.fromNamespaceAndPath("apoli", path);
 	}
 }

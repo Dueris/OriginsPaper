@@ -13,38 +13,35 @@ public class FactoryJsonArray {
 
 	public FactoryJsonArray(JsonArray array) {
 		this.handle = array;
-		this.asList = this.handle.asList().stream()
-			.map(FactoryElement::fromJson)
-			.collect(Collectors.toList());
+		this.asList = this.handle.asList().stream().map(FactoryElement::fromJson).collect(Collectors.toList());
 	}
 
 	public FactoryElement[] asArray() {
-		return asList.toArray(new FactoryElement[0]);
+		return this.asList.toArray(new FactoryElement[0]);
 	}
 
 	public void setEntries(List<FactoryElement> elements) {
-		asList.clear();
-		asList.addAll(elements);
+		this.asList.clear();
+		this.asList.addAll(elements);
 	}
 
 	public List<FactoryElement> asList() {
-		return asList;
+		return this.asList;
 	}
 
 	public List<FactoryJsonObject> asJsonObjectList() {
-		return asList.stream().map(FactoryElement::toJsonObject)
-			.collect(Collectors.toList());
+		return this.asList.stream().map(FactoryElement::toJsonObject).collect(Collectors.toList());
 	}
 
 	public List<FactoryNumber> asLongList() {
-		return asList.stream().map(FactoryElement::getNumber).toList();
+		return this.asList.stream().map(FactoryElement::getNumber).toList();
 	}
 
 	public Iterator<FactoryElement> iterator() {
-		return asList.iterator();
+		return this.asList.iterator();
 	}
 
 	public void forEach(Consumer<FactoryElement> consumer) {
-		asList.forEach(consumer);
+		this.asList.forEach(consumer);
 	}
 }

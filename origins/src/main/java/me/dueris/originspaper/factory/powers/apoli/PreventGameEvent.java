@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.GenericGameEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -31,7 +32,7 @@ public class PreventGameEvent extends PowerType implements Listener {
 	}
 
 	@EventHandler
-	public void event(GenericGameEvent e) {
+	public void event(@NotNull GenericGameEvent e) {
 		if (e.getEntity() == null) return;
 		if (e.getEntity() instanceof Player p) {
 			if (!getPlayers().contains(p)) return;

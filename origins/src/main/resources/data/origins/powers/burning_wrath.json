@@ -8,7 +8,5 @@
     "value": 3,
     "operation": "addition"
   },
-  "name": "Burning Wrath",
-  "description": "When on fire, you deal additional damage with your attacks",
   "hidden": false
 }

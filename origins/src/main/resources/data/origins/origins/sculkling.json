@@ -11,8 +11,6 @@
   "icon": {
     "item": "minecraft:echo_shard"
   },
-  "name": "Skulkling",
-  "description": "Often found lurking in the Deep Dark, these creatures are dangerous, but weak when exposed to light",
   "order": 0,
   "impact": 3
 }

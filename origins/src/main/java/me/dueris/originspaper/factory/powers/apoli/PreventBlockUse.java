@@ -10,6 +10,7 @@ import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class PreventBlockUse extends PowerType implements Listener {
 	private final FactoryJsonObject blockCondition;
@@ -25,7 +26,7 @@ public class PreventBlockUse extends PowerType implements Listener {
 	}
 
 	@EventHandler
-	public void run(PlayerInteractEvent e) {
+	public void run(@NotNull PlayerInteractEvent e) {
 		if (e.getClickedBlock() == null) return;
 		if (getPlayers().contains(e.getPlayer())) {
 			if (ConditionExecutor.testBlock(blockCondition, (CraftBlock) e.getClickedBlock()) && isActive(e.getPlayer())) {

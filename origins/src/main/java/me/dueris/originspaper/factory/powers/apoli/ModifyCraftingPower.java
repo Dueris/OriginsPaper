@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ModifyCraftingPower extends PowerType implements Listener {
 	private final String recipe;
@@ -44,7 +45,7 @@ public class ModifyCraftingPower extends PowerType implements Listener {
 	}
 
 	@EventHandler
-	public void runD(PrepareItemCraftEvent e) {
+	public void runD(@NotNull PrepareItemCraftEvent e) {
 		Player p = (Player) e.getInventory().getHolder();
 		if (getPlayers().contains(p)) {
 			if (e.getRecipe() == null) return;

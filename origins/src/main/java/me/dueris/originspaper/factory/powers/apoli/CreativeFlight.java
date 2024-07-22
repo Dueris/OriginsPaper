@@ -13,6 +13,7 @@ import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
 public class CreativeFlight extends PowerType {
 
@@ -25,7 +26,7 @@ public class CreativeFlight extends PowerType {
 	}
 
 	@Override
-	public void tickAsync(Player p) {
+	public void tickAsync(@NotNull Player p) {
 		GameMode m = p.getGameMode();
 		ResourceLocation insideBlock = OriginsPaper.identifier("insideblock");
 		PersistentDataContainer container = p.getPersistentDataContainer();

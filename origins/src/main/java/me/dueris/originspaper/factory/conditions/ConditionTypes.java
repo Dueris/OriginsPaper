@@ -22,25 +22,39 @@ public enum ConditionTypes {
 	public static class ConditionFactory {
 		public static void addMetaConditions() {
 			List<Class> classes = new ArrayList<>();
-			String[] names = {"and", "or", "chance", "constant", "not"};
-			classes.addAll(List.of(BiEntityConditions.class, BiomeConditions.class, BlockConditions.class, DamageConditions.class, EntityConditions.class, FluidConditions.class, ItemConditions.class));
-			classes.forEach(c -> {
-				try {
-					Class factoryInstance = Class.forName(c.getName() + "$ConditionFactory");
-					for (String name : names) {
-						Object inst = factoryInstance.getConstructor(c, ResourceLocation.class, BiPredicate.class).newInstance(c.newInstance(), OriginsPaper.apoliIdentifier(name), new BiPredicate() {
-							@Override
-							public boolean test(Object o, Object o2) {
-								throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
-							}
-						});
-						Reflector.accessMethod$Invoke("register", c, c.newInstance(), new Class[]{inst.getClass()}, inst);
+			String[] names = new String[]{"and", "or", "chance", "constant", "not"};
+			classes.addAll(
+				List.of(
+					BiEntityConditions.class,
+					BiomeConditions.class,
+					BlockConditions.class,
+					DamageConditions.class,
+					EntityConditions.class,
+					FluidConditions.class,
+					ItemConditions.class
+				)
+			);
+			classes.forEach(
+				c -> {
+					try {
+						Class factoryInstance = Class.forName(c.getName() + "$ConditionFactory");
+
+						for (String name : names) {
+							Object inst = factoryInstance.getConstructor(c, ResourceLocation.class, BiPredicate.class)
+								.newInstance(c.newInstance(), OriginsPaper.apoliIdentifier(name), new BiPredicate() {
+									@Override
+									public boolean test(Object o, Object o2) {
+										throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+									}
+								});
+							Reflector.accessMethod$Invoke("register", (Class<?>) c, c.newInstance(), new Class[]{inst.getClass()}, inst);
+						}
+					} catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+							 InvocationTargetException | ClassNotFoundException var8) {
+						throw new RuntimeException(var8);
 					}
-				} catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
-						 IllegalAccessException | InvocationTargetException e) {
-					throw new RuntimeException(e);
 				}
-			});
+			);
 		}
 	}
 }

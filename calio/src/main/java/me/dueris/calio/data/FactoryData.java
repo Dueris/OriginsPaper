@@ -9,22 +9,21 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class FactoryData {
-	private final ConcurrentLinkedQueue<FactoryDataDefiner> providers;
+	private final ConcurrentLinkedQueue<FactoryDataDefiner> providers = new ConcurrentLinkedQueue<>();
 	private ResourceLocation identifier;
-
-	public FactoryData() {
-		this.providers = new ConcurrentLinkedQueue<>();
-	}
 
 	@NotNull
 	public FactoryDataDefiner[] getProviders() {
-		return providers.toArray(new FactoryDataDefiner[0]);
+		return this.providers.toArray(new FactoryDataDefiner[0]);
 	}
 
 	public Object retrieve(String dataKey) {
 		for (FactoryDataDefiner definer : this.providers) {
-			if (definer.getObjName().equalsIgnoreCase(dataKey)) return definer.getDefaultValue();
+			if (definer.getObjName().equalsIgnoreCase(dataKey)) {
+				return definer.getDefaultValue();
+			}
 		}
+
 		return null;
 	}
 
@@ -37,33 +36,38 @@ public class FactoryData {
 	public <T> FactoryData add(String objName, Class<T> type, T defaultVal) {
 		Preconditions.checkArgument(objName != null);
 		Preconditions.checkArgument(type != null);
-		this.providers.add(new FactoryDataDefiner(objName, type, defaultVal));
+		this.providers.add(new FactoryDataDefiner<>(objName, type, defaultVal));
 		return this;
 	}
 
 	public <T> FactoryData add(String objName, Class<T> type, RequiredInstance defaultVal) {
 		Preconditions.checkArgument(objName != null);
 		Preconditions.checkArgument(type != null);
-		this.providers.add(new FactoryDataDefiner(objName, type, defaultVal));
+		this.providers.add(new FactoryDataDefiner<>(objName, type, defaultVal));
 		return this;
 	}
 
 	public <T> FactoryData add(String objName, Class<T> type, OptionalInstance defaultVal) {
 		Preconditions.checkArgument(objName != null);
 		Preconditions.checkArgument(type != null);
-		this.providers.add(new FactoryDataDefiner(objName, type, defaultVal));
+		this.providers.add(new FactoryDataDefiner<>(objName, type, defaultVal));
 		return this;
 	}
 
 	public FactoryData remove(String objName) {
 		FactoryDataDefiner toRemove = null;
+
 		for (FactoryDataDefiner provider : this.providers) {
 			if (provider.getObjName().equalsIgnoreCase(objName)) {
 				toRemove = provider;
 				break;
 			}
 		}
-		if (toRemove != null) this.providers.remove(toRemove);
+
+		if (toRemove != null) {
+			this.providers.remove(toRemove);
+		}
+
 		return this;
 	}
 
@@ -73,12 +77,11 @@ public class FactoryData {
 	}
 
 	public ResourceLocation getIdentifier() {
-		return identifier;
+		return this.identifier;
 	}
 
 	@Override
 	public String toString() {
-		return "FactoryData :: [%N%] : DataDefiners: [%%%]".replace("%%%", this.providers.toString()).replace("%N%", identifier.toString());
+		return "FactoryData :: [%N%] : DataDefiners: [%%%]".replace("%%%", this.providers.toString()).replace("%N%", this.identifier.toString());
 	}
-
 }

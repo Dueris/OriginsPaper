@@ -5,7 +5,5 @@
     "type": "origins:in_tag",
     "tag": "origins:natural_stone"
   },
-  "name": "Strong Arms",
-  "description": "You are strong enough to break natural stones without using a pickaxe",
   "hidden": false
 }

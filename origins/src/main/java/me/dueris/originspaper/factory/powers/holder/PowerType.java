@@ -18,6 +18,7 @@ import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class PowerType implements FactoryHolder, Listener {
 	private final ConcurrentLinkedQueue<CraftPlayer> players = new ConcurrentLinkedQueue<>();
 	private final List<FactoryJsonObject> conditions = new ArrayList<>();
 	@SourceProvider
-	public JsonObject sourceObject; // Gets initialized on creation via CraftCalio
+	public JsonObject sourceObject;
 	protected boolean tagSet = false;
 	private ResourceLocation tag = null;
 	private String cachedTagString = null;
@@ -48,9 +49,9 @@ public class PowerType implements FactoryHolder, Listener {
 		this.addCondition(condition);
 	}
 
-	public static FactoryData registerComponents(FactoryData data) {
-		return data.add("name", String.class, "craftapoli.name.not_found")
-			.add("description", String.class, "craftapoli.description.not_found")
+	public static FactoryData registerComponents(@NotNull FactoryData data) {
+		return data.add("name", String.class, "power.$namespace.$path.name")
+			.add("description", String.class, "power.$namespace.$path.description")
 			.add("hidden", boolean.class, false)
 			.add("condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("loading_priority", int.class, 1);
@@ -58,17 +59,38 @@ public class PowerType implements FactoryHolder, Listener {
 
 	public static void registerAll() {
 		List<Class<FactoryHolder>> holders = new ArrayList<>();
-		try (ScanResult result = new ClassGraph().whitelistPackages("me.dueris.originspaper.factory.powers").enableClassInfo().scan()) {
-			holders.addAll(result.getSubclasses(PowerType.class).loadClasses(FactoryHolder.class).stream().filter(clz -> {
-				return !clz.isAnnotation() && !clz.isInterface() && !clz.isEnum();
-			}).toList());
-		} catch (Exception e) {
+
+		try {
+			ScanResult result = new ClassGraph().whitelistPackages("me.dueris.originspaper.factory.powers").enableClassInfo().scan();
+
+			try {
+				holders.addAll(
+					result.getSubclasses(PowerType.class)
+						.loadClasses(FactoryHolder.class)
+						.stream()
+						.filter(clz -> !clz.isAnnotation() && !clz.isInterface() && !clz.isEnum())
+						.toList()
+				);
+			} catch (Throwable var5) {
+				if (result != null) {
+					try {
+						result.close();
+					} catch (Throwable var4) {
+						var5.addSuppressed(var4);
+					}
+				}
+
+				throw var5;
+			}
+
+			if (result != null) {
+				result.close();
+			}
+		} catch (Exception var6) {
 			System.out.println("This would've been a zip error :P. Please tell us on discord if you see this ^-^");
 		}
 
 		holders.forEach(CraftCalio.INSTANCE::register);
-
-		// Apoli-Simple
 		OriginSimpleContainer.registerPower(BounceSlimeBlock.class);
 		OriginSimpleContainer.registerPower(LikeWater.class);
 		OriginSimpleContainer.registerPower(PiglinNoAttack.class);
@@ -80,23 +102,23 @@ public class PowerType implements FactoryHolder, Listener {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public boolean isHidden() {
-		return hidden;
+		return this.hidden;
 	}
 
 	public FactoryJsonObject getCondition() {
-		return condition;
+		return this.condition;
 	}
 
 	public int getLoadingPriority() {
-		return loadingPriority;
+		return this.loadingPriority;
 	}
 
 	public void tick(Player player) {
@@ -116,22 +138,24 @@ public class PowerType implements FactoryHolder, Listener {
 
 	public String getType() {
 		try {
-			return ((FactoryData) getClass().getDeclaredMethod("registerComponents", FactoryData.class).invoke(null, new FactoryData())).getIdentifier().toString();
-		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-			throw new RuntimeException("Unable to invoke type-getters!", e);
+			return ((FactoryData) this.getClass().getDeclaredMethod("registerComponents", FactoryData.class).invoke(null, new FactoryData()))
+				.getIdentifier()
+				.toString();
+		} catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException var2) {
+			throw new RuntimeException("Unable to invoke type-getters!", var2);
 		}
 	}
 
 	public ConcurrentLinkedQueue<CraftPlayer> getPlayers() {
-		return players;
+		return this.players;
 	}
 
 	public String getTag() {
-		return cachedTagString;
+		return this.cachedTagString;
 	}
 
 	public boolean hasPlayers() {
-		return hasPlayers;
+		return this.hasPlayers;
 	}
 
 	public void forPlayer(Player player) {
@@ -145,20 +169,22 @@ public class PowerType implements FactoryHolder, Listener {
 	}
 
 	public boolean isActive(Player player) {
-		return conditions.stream().allMatch(condition -> ConditionExecutor.testEntity(condition, (CraftEntity) player));
+		return this.conditions.stream().allMatch(condition -> ConditionExecutor.testEntity(condition, (CraftEntity) player));
 	}
 
 	public void addCondition(FactoryJsonObject condition) {
 		this.conditions.add(condition);
 	}
 
-	@Override
 	public PowerType ofResourceLocation(ResourceLocation key) {
-		if (this.tagSet) return this;
-		tagSet = true;
-		this.tag = key;
-		this.cachedTagString = key.toString();
-		return this;
+		if (this.tagSet) {
+			return this;
+		} else {
+			this.tagSet = true;
+			this.tag = key;
+			this.cachedTagString = key.toString();
+			return this;
+		}
 	}
 
 	@Override

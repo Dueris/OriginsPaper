@@ -18,69 +18,67 @@ public class PlaceHolderAPI extends PlaceholderExpansion {
 		this.plugin = plugin;
 	}
 
-	@Override
-	public @NotNull String getIdentifier() {
+	@NotNull
+	public String getIdentifier() {
 		return "origins";
 	}
 
-	@Override
-	public @NotNull String getAuthor() {
+	@NotNull
+	public String getAuthor() {
 		return "dueris";
 	}
 
-	@Override
-	public @NotNull String getVersion() {
+	@NotNull
+	public String getVersion() {
 		return OriginsPaper.pluginVersion;
 	}
 
-	@Override
-	public @Nullable String getRequiredPlugin() {
+	@Nullable
+	public String getRequiredPlugin() {
 		return "OriginsPaper";
 	}
 
-	@Override
 	public boolean persist() {
 		return true;
 	}
 
-	@Override
 	public boolean canRegister() {
 		return true;
 	}
 
-	@Override
-	public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
-		return onPlaceholderRequest(player.getPlayer(), params);
+	@Nullable
+	public String onRequest(@NotNull OfflinePlayer player, @NotNull String params) {
+		return this.onPlaceholderRequest(player.getPlayer(), params);
 	}
 
-	@Override
-	public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
+	@Nullable
+	public String onPlaceholderRequest(Player player, @NotNull String params) {
 		if (params.equalsIgnoreCase("player_origin")) {
 			String done = "";
 			StringBuilder builder = new StringBuilder(done);
+
 			for (Origin origin : PowerHolderComponent.getOrigin(player).values()) {
 				builder.append(origin.getTag() + "//");
 			}
+
 			return done;
-		}
-		if (params.equalsIgnoreCase("player_layer")) {
+		} else if (!params.equalsIgnoreCase("player_layer")) {
+			if (params.equalsIgnoreCase("player_origin_data")) {
+				return OriginDataContainer.getLayer(player);
+			} else if (params.equalsIgnoreCase("all_origins")) {
+				return CraftApoli.getOriginsFromRegistry().toString();
+			} else {
+				return params.equalsIgnoreCase("all_layers") ? CraftApoli.getLayersFromRegistry().toString() : "wtf";
+			}
+		} else {
 			String done = "";
 			StringBuilder builder = new StringBuilder(done);
+
 			for (Origin origin : PowerHolderComponent.getOrigin(player).values()) {
 				builder.append(origin.getTag() + "//");
 			}
+
 			return done;
 		}
-		if (params.equalsIgnoreCase("player_origin_data")) {
-			return OriginDataContainer.getLayer(player);
-		}
-		if (params.equalsIgnoreCase("all_origins")) {
-			return CraftApoli.getOriginsFromRegistry().toString();
-		}
-		if (params.equalsIgnoreCase("all_layers")) {
-			return CraftApoli.getLayersFromRegistry().toString();
-		}
-
-		return "wtf"; // Unkown placeholder
 	}
 }

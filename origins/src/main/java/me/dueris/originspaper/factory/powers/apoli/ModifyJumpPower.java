@@ -16,6 +16,7 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +38,7 @@ public class ModifyJumpPower extends ModifierPower implements Listener {
 	}
 
 	@EventHandler
-	public void onJump(PlayerJumpEvent e) {
+	public void onJump(@NotNull PlayerJumpEvent e) {
 		if (getPlayers().contains(e.getPlayer()) && isActive(e.getPlayer())) {
 			Actions.executeEntity(e.getPlayer(), entityAction);
 		}

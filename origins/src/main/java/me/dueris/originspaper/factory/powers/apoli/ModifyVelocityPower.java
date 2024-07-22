@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class ModifyVelocityPower extends ModifierPower implements Listener {
 	}
 
 	@EventHandler
-	public void velocityModify(PlayerVelocityEvent e) {
+	public void velocityModify(@NotNull PlayerVelocityEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			Player p = e.getPlayer();
 			if (isActive(p)) {

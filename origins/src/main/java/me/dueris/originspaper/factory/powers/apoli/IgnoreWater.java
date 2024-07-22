@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class IgnoreWater extends PowerType {
 
@@ -22,7 +23,7 @@ public class IgnoreWater extends PowerType {
 	}
 
 	@Override
-	public void tick(Player p) {
+	public void tick(@NotNull Player p) {
 		if (p.isInWaterOrBubbleColumn() && getPlayers().contains(p)) {
 			p.setSprinting(false);
 			p.getAttribute(Attribute.GENERIC_GRAVITY).setBaseValue(0.628);
@@ -30,7 +31,7 @@ public class IgnoreWater extends PowerType {
 	}
 
 	@EventHandler
-	public void jumpVelocity(PlayerJumpEvent e) {
+	public void jumpVelocity(@NotNull PlayerJumpEvent e) {
 		Player p = e.getPlayer();
 		if (p.isInWaterOrBubbleColumn() && getPlayers().contains(p)) {
 			p.setVelocity(p.getVelocity().add(new Vector(0, 24, 0)));

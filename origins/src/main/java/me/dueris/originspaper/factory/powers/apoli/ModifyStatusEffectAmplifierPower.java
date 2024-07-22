@@ -20,6 +20,7 @@ import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +43,7 @@ public class ModifyStatusEffectAmplifierPower extends ModifierPower implements L
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void modify(EntityPotionEffectEvent e) {
+	public void modify(@NotNull EntityPotionEffectEvent e) {
 		if (e.getEntity() instanceof Player p) {
 			if (!getPlayers().contains(p)) return;
 			if (isActive(p)) {

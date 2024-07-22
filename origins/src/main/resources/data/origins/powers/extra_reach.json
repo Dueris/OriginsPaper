@@ -12,7 +12,5 @@
       "operation": "addition"
     }
   ],
-  "name": "Slender Body",
-  "description": "You can reach blocks and entities further away",
   "hidden": false
 }

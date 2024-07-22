@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftWorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class Overlay extends PowerType {
 	private static final CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
@@ -21,19 +22,19 @@ public class Overlay extends PowerType {
 		return PowerType.registerComponents(data).ofNamespace(OriginsPaper.apoliIdentifier("overlay"));
 	}
 
-	public static void initializeOverlay(Player player) {
+	public static void initializeOverlay(@NotNull Player player) {
 		border.setCenter(player.getWorld().getWorldBorder().getCenter());
 		border.setSize(player.getWorld().getWorldBorder().getSize());
 		border.setWarningDistance(999999999);
 		player.setWorldBorder(border);
 	}
 
-	public static void deactivateOverlay(Player player) {
+	public static void deactivateOverlay(@NotNull Player player) {
 		player.setWorldBorder(player.getWorld().getWorldBorder());
 	}
 
 	@EventHandler
-	public void remove(PowerUpdateEvent e) {
+	public void remove(@NotNull PowerUpdateEvent e) {
 		if (e.isRemoved() && e.getPower().getType().equals(getType())) {
 			deactivateOverlay(e.getPlayer());
 		}

@@ -11,7 +11,5 @@
     "item": "minecraft:shulker_shell"
   },
   "order": 4,
-  "impact": 1,
-  "name": "Shulk",
-  "description": "Related to Shulkers, the bodies of the Shulk are outfitted with a protective shell-like skin"
+  "impact": 1
 }

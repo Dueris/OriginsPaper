@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class PreventEntityUse extends PowerType implements Listener {
 
@@ -29,7 +30,7 @@ public class PreventEntityUse extends PowerType implements Listener {
 	}
 
 	@EventHandler
-	public void OnClickREACH(PlayerInteractEntityEvent e) {
+	public void OnClickREACH(@NotNull PlayerInteractEntityEvent e) {
 		Player p = e.getPlayer();
 		if (isActive(p) && ConditionExecutor.testBiEntity(bientityCondition, p, e.getRightClicked()) && ConditionExecutor.testItem(itemCondition, e.getPlayer().getInventory().getItem(e.getHand()))) {
 			e.setCancelled(true);

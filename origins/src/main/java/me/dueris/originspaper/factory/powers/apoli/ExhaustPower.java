@@ -8,6 +8,7 @@ import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class ExhaustPower extends PowerType {
 	private final int interval;
@@ -26,7 +27,7 @@ public class ExhaustPower extends PowerType {
 	}
 
 	@Override
-	public void tick(Player p) {
+	public void tick(@NotNull Player p) {
 		if (p.getTicksLived() % interval == 0) {
 			if (isActive(p)) {
 				if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))

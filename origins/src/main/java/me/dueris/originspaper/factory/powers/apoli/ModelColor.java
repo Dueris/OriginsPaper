@@ -8,7 +8,7 @@ import me.dueris.modelcolor.colortransformers.OriginsTransformer;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.PowerUpdateEvent;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
-import me.dueris.originspaper.util.RaycastUtils;
+import me.dueris.originspaper.util.console.OriginConsoleSender;
 import net.skinsrestorer.api.PropertyUtils;
 import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.SkinsRestorerProvider;
@@ -23,6 +23,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.profile.PlayerTextures;
+import org.jetbrains.annotations.NotNull;
 import org.mineskin.MineskinClient;
 import org.mineskin.data.Skin;
 
@@ -104,14 +105,14 @@ public class ModelColor extends PowerType {
 		return r;
 	}
 
-	public String formatUrl(String url) {
+	public String formatUrl(@NotNull String url) {
 		if (!url.startsWith("http://textures.minecraft.net")) {
 			return "http://textures.minecraft.net" + url;
 		}
 		return url;
 	}
 
-	public String getSlim(Player p) {
+	public String getSlim(@NotNull Player p) {
 		return p.getPlayerProfile().getTextures().getSkinModel().equals(PlayerTextures.SkinModel.CLASSIC) ? "CLASSIC" : "SLIM";
 	}
 
@@ -120,14 +121,14 @@ public class ModelColor extends PowerType {
 		if (Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")) {
 			if (e.getPower().getTag().equalsIgnoreCase(getTag())) {
 				if (e.isRemoved()) {
-					RaycastUtils.executeNMSCommand(((CraftEntity) e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "skin clear " + e.getPlayer().getName());
+					OriginConsoleSender.NMSSender.executeNMSCommand(((CraftEntity) e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "skin clear " + e.getPlayer().getName());
 				} else {
 					ModelColorAPI api = ModelColorAPI.create(Bukkit.getPluginsFolder().getAbsolutePath() + File.separator + "OriginsPaper" + File.separator + "skins");
 					SkinsRestorer skinsRestorer = SkinsRestorerProvider.get();
 					applyModelTransformer(api, skinsRestorer, e.getPlayer());
 					String url = e.getPlayer().getPersistentDataContainer().get(CraftNamespacedKey.fromMinecraft(OriginsPaper.identifier("modified-skin-url")), PersistentDataType.STRING);
 					String SPACE = " ";
-					RaycastUtils.executeNMSCommand(((CraftEntity) e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "skin set " + url + SPACE + e.getPlayer().getName() + SPACE + getSlim(e.getPlayer()));
+					OriginConsoleSender.NMSSender.executeNMSCommand(((CraftEntity) e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "skin set " + url + SPACE + e.getPlayer().getName() + SPACE + getSlim(e.getPlayer()));
 				}
 			}
 		}

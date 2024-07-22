@@ -10,7 +10,5 @@
   },
   "interval": 20,
   "burn_duration": 6,
-  "hidden": false,
-  "name": "Melting Skin",
-  "description": "You burn in hot biomes"
+  "hidden": false
 }

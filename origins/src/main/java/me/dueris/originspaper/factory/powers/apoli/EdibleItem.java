@@ -22,6 +22,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -59,7 +60,7 @@ public class EdibleItem extends PowerType {
 	}
 
 	@EventHandler
-	public void actions(PlayerItemConsumeEvent e) {
+	public void actions(@NotNull PlayerItemConsumeEvent e) {
 		if (e.getItem() != null && getPlayers().contains(e.getPlayer())) {
 			if (!ConditionExecutor.testItem(itemCondition, e.getItem())) return;
 			if (!isActive(e.getPlayer())) return;
@@ -78,7 +79,7 @@ public class EdibleItem extends PowerType {
 	}
 
 	@EventHandler
-	public void setFoodable(PlayerItemHeldEvent e) {
+	public void setFoodable(@NotNull PlayerItemHeldEvent e) {
 		ItemStack stack = e.getPlayer().getInventory().getItem(e.getNewSlot());
 		if (stack != null) {
 			if (getPlayers().contains(e.getPlayer()) && !stack.getItemMeta().getPersistentDataContainer().has(EDIBLE_ITEM_MODIFIED_KEY)) {

@@ -19,6 +19,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class ActionOnBlockPlace extends PowerType {
 	}
 
 	@EventHandler
-	public void blockPlace(BlockPlaceEvent e) {
+	public void blockPlace(@NotNull BlockPlaceEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			new BukkitRunnable() {
 				@Override

@@ -9,6 +9,7 @@ import me.dueris.originspaper.factory.data.types.EntityGroup;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -27,7 +28,7 @@ public class EntityGroupManager extends PowerType {
 	}
 
 	@EventHandler
-	public void modifyFromPower(PowerUpdateEvent e) {
+	public void modifyFromPower(@NotNull PowerUpdateEvent e) {
 		if (e.getPower().getTag().equalsIgnoreCase(getTag())) {
 			if (e.isRemoved() && modifiedEntityGroups.containsKey(e.getPlayer())) {
 				modifiedEntityGroups.remove(e.getPlayer());

@@ -34,15 +34,15 @@ public class FactoryElement {
 	}
 
 	public boolean isString() {
-		return isGsonPrimative() && this.handle.getAsJsonPrimitive().isString();
+		return this.isGsonPrimative() && this.handle.getAsJsonPrimitive().isString();
 	}
 
 	public boolean isBoolean() {
-		return isGsonPrimative() && this.handle.getAsJsonPrimitive().isBoolean();
+		return this.isGsonPrimative() && this.handle.getAsJsonPrimitive().isBoolean();
 	}
 
 	public boolean isNumber() {
-		return isGsonPrimative() && this.handle.getAsJsonPrimitive().isNumber();
+		return this.isGsonPrimative() && this.handle.getAsJsonPrimitive().isNumber();
 	}
 
 	public FactoryNumber getNumber() {
@@ -62,6 +62,6 @@ public class FactoryElement {
 	}
 
 	public JsonElement handle() {
-		return handle;
+		return this.handle;
 	}
 }

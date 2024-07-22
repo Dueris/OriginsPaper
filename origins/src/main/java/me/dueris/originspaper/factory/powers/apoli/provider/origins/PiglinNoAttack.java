@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public class PiglinNoAttack implements Listener, PowerProvider {
 	}
 
 	@EventHandler
-	public void target(EntityTargetEvent e) {
+	public void target(@NotNull EntityTargetEvent e) {
 		if (piglinValid.contains(e.getEntity().getType())) {
 			if (PowerHolderComponent.hasPower(e.getTarget(), powerReference.toString())) {
 				if (!cooldowns.containsKey(e.getTarget())) {
@@ -57,7 +58,7 @@ public class PiglinNoAttack implements Listener, PowerProvider {
 	}
 
 	@EventHandler
-	public void damageEntity(EntityDamageByEntityEvent e) {
+	public void damageEntity(@NotNull EntityDamageByEntityEvent e) {
 		if (piglinValid.contains(e.getEntity().getType())) {
 			if (PowerHolderComponent.hasPower(e.getDamager(), powerReference.toString())) {
 				Player p = (Player) e.getDamager();

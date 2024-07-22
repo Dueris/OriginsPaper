@@ -20,7 +20,5 @@
     "comparison": ">",
     "compare_to": 1
   },
-  "name": "Need for Mobility",
-  "description": "You cannot wear any heavy armor (armor with protection values higher than chainmail)",
   "hidden": false
 }

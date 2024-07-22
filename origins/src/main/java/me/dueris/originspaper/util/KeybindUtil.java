@@ -29,7 +29,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class KeybindUtil implements Listener {
 	public static HashMap<Player, ArrayList<String>> activeKeys = new HashMap<>();
@@ -37,7 +36,7 @@ public class KeybindUtil implements Listener {
 	private static void clearOldData(Player player) {
 		for (ItemStack itemStack : player.getInventory().getContents().clone()) {
 			if (itemStack == null) continue;
-			if (itemStack.getPersistentDataContainer().getKeys().contains(new NamespacedKey("genesismc","origin_item_data"))) {
+			if (itemStack.getPersistentDataContainer().getKeys().contains(new NamespacedKey("genesismc", "origin_item_data"))) {
 				player.getInventory().remove(itemStack);
 			}
 		}

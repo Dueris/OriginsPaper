@@ -6,9 +6,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
+import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DataResult.Error;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import me.dueris.calio.data.factory.FactoryElement;
@@ -21,6 +23,7 @@ import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.registries.Origin;
 import net.minecraft.commands.arguments.SlotArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -40,19 +43,23 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.food.FoodProperties.Builder;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Equipable;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.CraftRegistry;
@@ -62,9 +69,10 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.inventory.components.CraftFoodComponent;
 import org.bukkit.craftbukkit.potion.CraftPotionUtil;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -91,16 +99,17 @@ public class Util {
 	public static MinecraftServer server = OriginsPaper.server;
 	public static CraftServer bukkitServer = server.server;
 	public static HashMap<String, Material> KNOWN_MATERIALS = new HashMap<>();
-	public static org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger("OriginsPaper");
+	public static Logger LOGGER = LogManager.getLogger("OriginsPaper");
 
 	static {
 		BuiltInRegistries.BLOCK.forEach(block -> {
 			String k = CraftBlockType.minecraftToBukkit(block).getKey().asString();
 			if (k.contains(":")) {
-				KNOWN_MATERIALS.put(k, block.defaultBlockState().getBukkitMaterial()); // With minecraft: namespace
+				KNOWN_MATERIALS.put(k, block.defaultBlockState().getBukkitMaterial());
 				k = k.split(":")[1];
 			}
-			KNOWN_MATERIALS.put(k, block.defaultBlockState().getBukkitMaterial()); // Without minecraft: namespace
+
+			KNOWN_MATERIALS.put(k, block.defaultBlockState().getBukkitMaterial());
 		});
 	}
 
@@ -110,12 +119,14 @@ public class Util {
 
 	public static DamageSource getDamageSource(DamageType type, Entity attacker) {
 		DamageSource source = null;
+
 		for (ResourceKey<DamageType> dkey : DAMAGE_REGISTRY.registryKeySet()) {
 			if (DAMAGE_REGISTRY.get(dkey).equals(type)) {
 				source = new DamageSource(DAMAGE_REGISTRY.getHolderOrThrow(dkey), attacker, attacker, attacker == null ? null : attacker.position());
 				break;
 			}
 		}
+
 		return source;
 	}
 
@@ -126,13 +137,29 @@ public class Util {
 		boolean isAmbient = false;
 		boolean showParticles = false;
 		boolean showIcon = true;
+		if (effect.isPresent("effect")) {
+			potionEffect = effect.getString("effect");
+		}
 
-		if (effect.isPresent("effect")) potionEffect = effect.getString("effect");
-		if (effect.isPresent("duration")) duration = effect.getNumber("duration").getInt();
-		if (effect.isPresent("amplifier")) amplifier = effect.getNumber("amplifier").getInt();
-		if (effect.isPresent("is_ambient")) isAmbient = effect.getBooleanOrDefault("is_ambient", true);
-		if (effect.isPresent("show_particles")) showParticles = effect.getBooleanOrDefault("show_particles", false);
-		if (effect.isPresent("show_icon")) showIcon = effect.getBooleanOrDefault("show_icon", false);
+		if (effect.isPresent("duration")) {
+			duration = effect.getNumber("duration").getInt();
+		}
+
+		if (effect.isPresent("amplifier")) {
+			amplifier = effect.getNumber("amplifier").getInt();
+		}
+
+		if (effect.isPresent("is_ambient")) {
+			isAmbient = effect.getBooleanOrDefault("is_ambient", true);
+		}
+
+		if (effect.isPresent("show_particles")) {
+			showParticles = effect.getBooleanOrDefault("show_particles", false);
+		}
+
+		if (effect.isPresent("show_icon")) {
+			showIcon = effect.getBooleanOrDefault("show_icon", false);
+		}
 
 		return new PotionEffect(PotionEffectType.getByKey(NamespacedKey.fromString(potionEffect)), duration, amplifier, isAmbient, showParticles, showIcon);
 	}
@@ -141,7 +168,6 @@ public class Util {
 		List<PotionEffect> effectList = new ArrayList<>();
 		FactoryJsonObject singleEffect = power.isPresent("effect") ? power.getJsonObject("effect") : new FactoryJsonObject(new JsonObject());
 		List<FactoryJsonObject> effects = (power.isPresent("effects") ? power.getJsonArray("effects") : new FactoryJsonArray(new JsonArray())).asJsonObjectList();
-
 		if (singleEffect != null && !singleEffect.isEmpty()) {
 			effects.add(singleEffect);
 		}
@@ -149,10 +175,11 @@ public class Util {
 		for (FactoryJsonObject effect : effects) {
 			effectList.add(parsePotionEffect(effect));
 		}
+
 		return effectList;
 	}
 
-	public static void addPositionedItemStack(Inventory inventory, ItemStack stack, int slot) {
+	public static void addPositionedItemStack(Inventory inventory, org.bukkit.inventory.ItemStack stack, int slot) {
 		int maxSlots = inventory.getSize();
 		if (slot < 0 || slot > maxSlots) {
 			OriginsPaper.getPlugin().getLogger().warning("Invalid slot number provided!");
@@ -181,41 +208,42 @@ public class Util {
 		return CraftRegistry.SOUNDS.get(NamespacedKey.fromString(sound));
 	}
 
-	public static Registry<?> getRegistry(ResourceKey<Registry<?>> registry) {
+	public static @NotNull Registry<?> getRegistry(ResourceKey<Registry<?>> registry) {
 		return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
 	}
 
-	public static String getNameOrTag(PowerType power) {
+	public static String getNameOrTag(@NotNull PowerType power) {
 		String name = power.getName();
 		String tag = power.getTag();
 		return !name.equals("craftapoli.name.not_found") ? name : tag;
 	}
 
-	public static String getNameOrTag(Origin power) {
+	public static String getNameOrTag(@NotNull Origin power) {
 		String name = power.getName();
 		String tag = power.getTag();
 		return !name.equals("craftapoli.name.not_found") ? name : tag;
 	}
 
-	public static List<MobEffectInstance> toMobEffectList(List<PotionEffect> effects) {
+	public static @NotNull List<MobEffectInstance> toMobEffectList(@NotNull List<PotionEffect> effects) {
 		List<MobEffectInstance> ret = new ArrayList<>();
 		effects.forEach(effect -> ret.add(CraftPotionUtil.fromBukkit(effect)));
 		return ret;
 	}
 
-	public static CraftFoodComponent parseProperties(FactoryJsonObject jsonObject) {
-		FoodProperties.Builder builder = new FoodProperties.Builder();
-		Util.computeIfObjectPresent("hunger", jsonObject, value -> builder.nutrition(value.getNumber().getInt()));
-		Util.computeIfObjectPresent("saturation", jsonObject, value -> builder.saturationModifier(value.getNumber().getFloat()));
-		// Value removed in 1.20.5
-        /* Utils.computeIfObjectPresent("meat", jsonObject, value -> {
-            if (value.isBoolean() && value.getBoolean()) builder.meat();
-        }); */
-		Util.computeIfObjectPresent("always_edible", jsonObject, value -> {
-			if (value.isBoolean() && value.getBoolean()) builder.alwaysEdible();
+	@Contract("_ -> new")
+	public static @NotNull CraftFoodComponent parseProperties(FactoryJsonObject jsonObject) {
+		Builder builder = new Builder();
+		computeIfObjectPresent("hunger", jsonObject, value -> builder.nutrition(value.getNumber().getInt()));
+		computeIfObjectPresent("saturation", jsonObject, value -> builder.saturationModifier(value.getNumber().getFloat()));
+		computeIfObjectPresent("always_edible", jsonObject, value -> {
+			if (value.isBoolean() && value.getBoolean()) {
+				builder.alwaysEdible();
+			}
 		});
-		Util.computeIfObjectPresent("snack", jsonObject, value -> {
-			if (value.isBoolean() && value.getBoolean()) builder.fast();
+		computeIfObjectPresent("snack", jsonObject, value -> {
+			if (value.isBoolean() && value.getBoolean()) {
+				builder.fast();
+			}
 		});
 		List<PotionEffect> effects = parseAndReturnPotionEffects(jsonObject);
 		effects.forEach(potionEffect -> {
@@ -253,72 +281,63 @@ public class Util {
 	}
 
 	public static boolean apoli$isSubmergedInLoosely(Entity entity, TagKey<Fluid> tag) {
-		if (tag == null) return false;
-		Optional<Set<TagKey<Fluid>>> submergedSet = getSubmergedSet(entity);
-		if (submergedSet.isPresent() && submergedSet.get() != null) {
-			return submergedSet.get().contains(tag);
+		if (tag == null) {
+			return false;
+		} else {
+			Optional<Set<TagKey<Fluid>>> submergedSet = getSubmergedSet(entity);
+			return submergedSet.isPresent() && submergedSet.get() != null && submergedSet.get().contains(tag);
 		}
-		return false;
 	}
 
 	public static <T> boolean areTagsEqual(TagKey<T> tag1, TagKey<T> tag2) {
 		if (tag1 == tag2) {
 			return true;
-		}
-		if (tag1 == null || tag2 == null) {
+		} else if (tag1 != null && tag2 != null) {
+			return tag1.registry().equals(tag2.registry()) && tag1.location().equals(tag2.location());
+		} else {
 			return false;
 		}
-		if (!tag1.registry().equals(tag2.registry())) {
-			return false;
-		}
-		return tag1.location().equals(tag2.location());
 	}
 
-	@SuppressWarnings("unchecked")
 	protected static Optional<Object2DoubleMap<TagKey<Fluid>>> getFluidHeightMap(Entity entity) {
 		try {
 			return Optional.of(Reflector.accessField("fluidHeight", Entity.class, entity, Object2DoubleMap.class));
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception var2) {
+			var2.printStackTrace();
 			return Optional.empty();
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	protected static Optional<Set<TagKey<Fluid>>> getSubmergedSet(Entity entity) {
 		try {
 			return Optional.of(Reflector.accessField("fluidOnEyes", Entity.class, entity, Set.class));
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception var2) {
+			var2.printStackTrace();
 			return Optional.empty();
 		}
 	}
 
 	public static boolean inThunderstorm(Level world, BlockPos... blockPositions) {
-		return Arrays.stream(blockPositions)
-			.anyMatch(blockPos -> world.isThundering() && isRainingAndExposed(world, blockPos));
+		return Arrays.stream(blockPositions).anyMatch(blockPos -> world.isThundering() && isRainingAndExposed(world, blockPos));
 	}
 
-	private static boolean isRainingAndExposed(Level world, BlockPos blockPos) {
-		return world.isRaining()
-			&& world.canSeeSky(blockPos)
-			&& world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, blockPos).getY() < blockPos.getY();
+	private static boolean isRainingAndExposed(@NotNull Level world, BlockPos blockPos) {
+		return world.isRaining() && world.canSeeSky(blockPos) && world.getHeightmapPos(Types.MOTION_BLOCKING, blockPos).getY() < blockPos.getY();
 	}
 
-	public static EquipmentSlot getEquipmentSlotForItem(net.minecraft.world.item.ItemStack stack) {
+	public static EquipmentSlot getEquipmentSlotForItem(ItemStack stack) {
 		Equipable equipable = Equipable.get(stack);
-
 		return equipable != null ? equipable.getEquipmentSlot() : EquipmentSlot.MAINHAND;
 	}
 
-	public static boolean hasChangedBlockCoordinates(final Location fromLoc, final Location toLoc) {
-		return !(fromLoc.getWorld().equals(toLoc.getWorld())
-			&& fromLoc.getBlockX() == toLoc.getBlockX()
-			&& fromLoc.getBlockY() == toLoc.getBlockY()
-			&& fromLoc.getBlockZ() == toLoc.getBlockZ());
+	public static boolean hasChangedBlockCoordinates(@NotNull Location fromLoc, @NotNull Location toLoc) {
+		return !fromLoc.getWorld().equals(toLoc.getWorld())
+			|| fromLoc.getBlockX() != toLoc.getBlockX()
+			|| fromLoc.getBlockY() != toLoc.getBlockY()
+			|| fromLoc.getBlockZ() != toLoc.getBlockZ();
 	}
 
-	public static String compileStrings(List<String> strings) {
+	public static @NotNull String compileStrings(@NotNull List<String> strings) {
 		StringBuilder builder = new StringBuilder();
 		strings.forEach(builder::append);
 		return builder.toString();
@@ -326,11 +345,11 @@ public class Util {
 
 	public static void downloadFileFromURL(String fileUrl) throws IOException {
 		URL url = new URL(fileUrl);
+
 		try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
 			Path savePath = Path.of(System.getProperty("user.home"), "Downloads");
 			Files.createDirectories(savePath);
-
-			String fileName = url.getFile().substring(url.getFile().lastIndexOf('/') + 1);
+			String fileName = url.getFile().substring(url.getFile().lastIndexOf(47) + 1);
 			Path filePath = savePath.resolve(fileName);
 			Files.copy(in, filePath, StandardCopyOption.REPLACE_EXISTING);
 		}
@@ -338,10 +357,10 @@ public class Util {
 
 	public static void downloadFileFromURL(String fileUrl, String saveDirectory) throws IOException {
 		URL url = new URL(fileUrl);
+
 		try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
 			Path savePath = Path.of(saveDirectory);
 			Files.createDirectories(savePath);
-
 			Path filePath = savePath.resolve(getFileNameFromUrl(fileUrl));
 			Files.copy(in, filePath, StandardCopyOption.REPLACE_EXISTING);
 		}
@@ -349,80 +368,72 @@ public class Util {
 
 	public static void downloadFileFromURL(String fileUrl, String saveDirectory, String fileName) throws IOException {
 		URL url = new URL(fileUrl);
+
 		try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
 			Path savePath = Path.of(saveDirectory);
 			Files.createDirectories(savePath);
-
 			Path filePath = savePath.resolve(fileName);
 			Files.copy(in, filePath, StandardCopyOption.REPLACE_EXISTING);
 		}
 	}
 
 	public static PotionEffectType getPotionEffectType(String key) {
-		if (key == null) {
-			return null;
-		}
-		return org.bukkit.Registry.EFFECT.get(NamespacedKey.fromString(key));
+		return key == null ? null : org.bukkit.Registry.EFFECT.get(NamespacedKey.fromString(key));
 	}
 
 	public static PotionEffectType getPotionEffectType(NamespacedKey key) {
-		if (key == null) {
-			return null;
-		}
-		return org.bukkit.Registry.EFFECT.get(key);
+		return key == null ? null : org.bukkit.Registry.EFFECT.get(key);
 	}
 
-	public static String makeDescriptionId(String type, @Nullable ResourceLocation id) {
+	public static @NotNull String makeDescriptionId(String type, @Nullable ResourceLocation id) {
 		return id == null ? type + ".unregistered_sadface" : type + "." + id.getNamespace() + "." + id.getPath().replace('/', '.');
 	}
 
-	public static <T> List<T> collectValues(Collection<List<T>> collection) {
+	public static <T> @NotNull List<T> collectValues(@NotNull Collection<List<T>> collection) {
 		List<T> lC = new ArrayList<>();
 		collection.forEach(lC::addAll);
 		return lC;
 	}
 
-	private static String getFileNameFromUrl(String fileUrl) {
+	@Contract(pure = true)
+	private static String getFileNameFromUrl(@NotNull String fileUrl) {
 		String[] segments = fileUrl.split("/");
 		return segments[segments.length - 1];
 	}
 
-	public static void printValues(ConfigurationSection section, String indent) {
+	public static void printValues(@NotNull ConfigurationSection section, String indent) {
 		StringBuilder values = new StringBuilder();
 
 		for (String key : section.getKeys(false)) {
 			String path = section.getCurrentPath() + "|" + key;
 			Object value = section.get(key);
-
 			if (value instanceof ConfigurationSection subsection) {
-				// If the value is another section, recursively print its values
 				printValues(subsection, indent + "  ");
 			} else {
-				// Append the key and value to the StringBuilder
 				values.append(indent).append(path).append(": ").append(value).append("  ");
 			}
 		}
 
-		// Print the concatenated values
 		Bukkit.getLogger().info(values.toString());
 	}
 
-	public static void computeIfObjectPresent(String key, FactoryJsonObject object, Consumer<FactoryElement> function) {
+	public static void computeIfObjectPresent(String key, @NotNull FactoryJsonObject object, Consumer<FactoryElement> function) {
 		if (object.isPresent(key)) {
 			function.accept(object.getElement(key));
 		}
 	}
 
-	public static <T> T getOrAbsent(Optional<T> optional, T absent) {
+	@Contract(value = "_, !null -> !null", pure = true)
+	public static <T> T getOrAbsent(@NotNull Optional<T> optional, T absent) {
 		return optional.orElse(absent);
 	}
 
 	public static <T> Optional<T> createIfPresent(T instance) {
-		if (instance != null) return Optional.of(instance);
-		return Optional.empty();
+		return instance != null ? Optional.of(instance) : Optional.empty();
 	}
 
-	public static <T> Optional<T> ifElse(Optional<T> optional, Consumer<T> presentAction, Runnable elseAction) {
+	@Contract("_, _, _ -> param1")
+	public static <T> @NotNull Optional<T> ifElse(@NotNull Optional<T> optional, Consumer<T> presentAction, Runnable elseAction) {
 		if (optional.isPresent()) {
 			presentAction.accept(optional.get());
 		} else {
@@ -432,11 +443,13 @@ public class Util {
 		return optional;
 	}
 
-	public static JsonArray toJsonStringArray(List<String> strings) {
+	public static @NotNull JsonArray toJsonStringArray(@NotNull List<String> strings) {
 		JsonArray array = new JsonArray();
+
 		for (String s : strings) {
 			array.add(s);
 		}
+
 		return array;
 	}
 
@@ -489,6 +502,7 @@ public class Util {
 		try {
 			ZipFile zipFile = new ZipFile(zipFilePath);
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
 			while (entries.hasMoreElements()) {
 				ZipEntry zipEntry = entries.nextElement();
 				String entryName = zipEntry.getName();
@@ -500,17 +514,21 @@ public class Util {
 					if (parent != null && !parent.exists()) {
 						parent.mkdirs();
 					}
+
 					InputStream inputStream = zipFile.getInputStream(zipEntry);
 					FileOutputStream outputStream = new FileOutputStream(entryFile);
 					byte[] buffer = new byte[1024];
+
 					int length;
 					while ((length = inputStream.read(buffer)) > 0) {
 						outputStream.write(buffer, 0, length);
 					}
+
 					outputStream.close();
 					inputStream.close();
 				}
 			}
+
 			zipFile.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -552,7 +570,7 @@ public class Util {
 		}
 	}
 
-	private static <T extends Number> Map<String, BinaryOperator<T>> createOperationMappings(
+	private static <T extends Number> @NotNull Map<String, BinaryOperator<T>> createOperationMappings(
 		BinaryOperator<T> addition,
 		BinaryOperator<T> subtraction,
 		BinaryOperator<T> multiplication,
@@ -566,6 +584,8 @@ public class Util {
 		Map<String, BinaryOperator<T>> operationMap = new HashMap<>();
 		operationMap.put("addition", addition);
 		operationMap.put("add", addition);
+		operationMap.put("add_value", addition);
+		operationMap.put("subtract_value", addition);
 		operationMap.put("subtraction", subtraction);
 		operationMap.put("subtract", subtraction);
 		operationMap.put("multiplication", multiplication);
@@ -586,54 +606,54 @@ public class Util {
 		operationMap.put("max_base", maxBase);
 		operationMap.put("min_total", minBase);
 		operationMap.put("max_total", maxBase);
-
 		return operationMap;
 	}
 
-	public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
+	public static @NotNull Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
 		return createOperationMappings(
 			Double::sum,
 			(a, b) -> a - b,
 			(a, b) -> a * b,
 			(a, b) -> a / b,
-			(a, b) -> a + (a * b),
-			(a, b) -> a * (1 + b),
-			(a, b) -> a * (a * b),
-			(a, b) -> (a > b) ? a : b,
-			(a, b) -> (a < b) ? a : b
+			(a, b) -> a + a * b,
+			(a, b) -> a * (1.0 + b),
+			(a, b) -> a * a * b,
+			(a, b) -> a > b ? a : b,
+			(a, b) -> a < b ? a : b
 		);
 	}
 
-	public static Map<String, BinaryOperator<Integer>> getOperationMappingsInteger() {
+	public static @NotNull Map<String, BinaryOperator<Integer>> getOperationMappingsInteger() {
 		return createOperationMappings(
 			Integer::sum,
 			(a, b) -> a - b,
 			(a, b) -> a * b,
 			(a, b) -> a / b,
-			(a, b) -> a + (a * b),
+			(a, b) -> a + a * b,
 			(a, b) -> a * (1 + b),
-			(a, b) -> a * (a * b),
-			(a, b) -> (a > b) ? a : b,
-			(a, b) -> (a < b) ? a : b
+			(a, b) -> a * a * b,
+			(a, b) -> a > b ? a : b,
+			(a, b) -> a < b ? a : b
 		);
 	}
 
-	public static Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
+	public static @NotNull Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
 		return createOperationMappings(
 			Float::sum,
 			(a, b) -> a - b,
 			(a, b) -> a * b,
 			(a, b) -> a / b,
-			(a, b) -> a + (a * b),
-			(a, b) -> a * (1 + b),
-			(a, b) -> a * (a * b),
-			(a, b) -> (a > b) ? a : b,
-			(a, b) -> (a < b) ? a : b
+			(a, b) -> a + a * b,
+			(a, b) -> a * (1.0F + b),
+			(a, b) -> a * a * b,
+			(a, b) -> a > b ? a : b,
+			(a, b) -> a < b ? a : b
 		);
 	}
 
 	public static void fillMissingNumbers(List<Integer> numbers, int min, int max) {
 		Set<Integer> numberSet = new HashSet<>(numbers);
+
 		for (int i = min; i <= max; i++) {
 			if (!numberSet.contains(i)) {
 				numbers.add(i);
@@ -641,10 +661,15 @@ public class Util {
 		}
 	}
 
-	public static int[] missingNumbers(Integer[] array, int minRange, int maxRange) {
+	@Contract(pure = true)
+	public static int @NotNull [] missingNumbers(Integer @NotNull [] array, int minRange, int maxRange) {
 		boolean[] found = new boolean[maxRange - minRange + 1];
 		int missingCount = 0;
-		for (int num : array) {
+		Integer[] missingNumbers = array;
+		int index = array.length;
+
+		for (int i = 0; i < index; i++) {
+			int num = missingNumbers[i];
 			int adjustedIndex = num - minRange;
 			if (adjustedIndex >= 0 && adjustedIndex < found.length) {
 				found[adjustedIndex] = true;
@@ -657,30 +682,33 @@ public class Util {
 			}
 		}
 
-		int[] missingNumbers = new int[missingCount];
-		int index = 0;
-		for (int i = minRange; i <= maxRange; i++) {
-			int adjustedIndex = i - minRange;
+		int[] missingNumbersx = new int[missingCount];
+		index = 0;
+
+		for (int ix = minRange; ix <= maxRange; ix++) {
+			int adjustedIndex = ix - minRange;
 			if (adjustedIndex >= 0 && adjustedIndex < found.length && !found[adjustedIndex]) {
-				missingNumbers[index++] = i;
+				missingNumbersx[index++] = ix;
 			}
 		}
 
-		return missingNumbers;
+		return missingNumbersx;
 	}
 
-	public static double slope(double[] p1, double[] p2) {
-		if (p2[0] - p1[0] == 0) throw new ArithmeticException("Line is vertical");
-		return (p2[1] - p1[1]) / (p2[0] - p1[0]);
+	@Contract(pure = true)
+	public static double slope(double @NotNull [] p1, double @NotNull [] p2) {
+		if (p2[0] - p1[0] == 0.0) {
+			throw new ArithmeticException("Line is vertical");
+		} else {
+			return (p2[1] - p1[1]) / (p2[0] - p1[0]);
+		}
 	}
 
-	public static double[] rotatePoint(double[] point, double angle) {
+	@Contract("_, _ -> new")
+	public static double @NotNull [] rotatePoint(double @NotNull [] point, double angle) {
 		double cosA = Math.cos(angle);
 		double sinA = Math.sin(angle);
-		return new double[]{
-			point[0] * cosA - point[1] * sinA,
-			point[0] * sinA + point[1] * cosA
-		};
+		return new double[]{point[0] * cosA - point[1] * sinA, point[0] * sinA + point[1] * cosA};
 	}
 
 	public static double lerp(double start, double end, double t) {
@@ -697,6 +725,7 @@ public class Util {
 			b = a % b;
 			a = t;
 		}
+
 		return a;
 	}
 
@@ -705,48 +734,35 @@ public class Util {
 		return (n == 0) ? 1 : n * factorial(n - 1);
 	}
 
-	public static int[] convertToIntArray(Collection<Integer> integers) {
-		return integers.stream()
-			.mapToInt(Integer::intValue)
-			.toArray();
+	public static int[] convertToIntArray(@NotNull Collection<Integer> integers) {
+		return integers.stream().mapToInt(Integer::intValue).toArray();
 	}
 
-	public static int getArmorValue(ItemStack armorItem) {
-		net.minecraft.world.item.Item stack = CraftItemStack.asNMSCopy(armorItem).getItem();
-		return stack instanceof ArmorItem item ? item.getDefense() : 0;
+	public static int getArmorValue(org.bukkit.inventory.ItemStack armorItem) {
+		return CraftItemStack.asNMSCopy(armorItem).getItem() instanceof ArmorItem item ? item.getDefense() : 0;
 	}
 
 	public static boolean attemptToTeleport(Entity entity, ServerLevel serverWorld, double destX, double destY, double destZ, double offsetX, double offsetY, double offsetZ, double areaHeight, boolean loadedChunksOnly, Heightmap.Types heightmap, Predicate<BlockInWorld> landingBlockCondition, Predicate<Entity> landingCondition) {
 
 		BlockPos.MutableBlockPos blockPos = BlockPos.containing(destX, destY, destZ).mutable();
 		boolean foundSurface = false;
-
 		if (heightmap != null) {
-
 			blockPos.set(serverWorld.getHeightmapPos(heightmap, blockPos).below());
-
 			if (landingBlockCondition.test(new BlockInWorld(serverWorld, blockPos, true))) {
 				blockPos.set(blockPos.above());
 				foundSurface = true;
 			}
-
 		} else {
 
 			for (double decrements = 0; decrements < areaHeight / 2; ++decrements) {
 
 				blockPos.set(blockPos.below());
-
 				if (landingBlockCondition.test(new BlockInWorld(serverWorld, blockPos, true))) {
-
 					blockPos.set(blockPos.above());
 					foundSurface = true;
-
 					break;
-
 				}
-
 			}
-
 		}
 
 		destX = offsetX == 0 ? destX : Mth.floor(destX) + offsetX;
@@ -754,7 +770,6 @@ public class Util {
 		destZ = offsetZ == 0 ? destZ : Mth.floor(destZ) + offsetZ;
 
 		blockPos.set(destX, destY, destZ);
-
 		if (!foundSurface) {
 			return false;
 		}
@@ -790,20 +805,21 @@ public class Util {
 
 	}
 
-	public static void consumeItem(ItemStack item) {
+	public static void consumeItem(org.bukkit.inventory.@NotNull ItemStack item) {
 		item.setAmount(item.getAmount() - 1);
 	}
 
-	public static ArgumentWrapper<Integer> wrappedIntegerSlot(String slot) {
+	@Contract("_ -> new")
+	public static @NotNull ArgumentWrapper<Integer> wrappedIntegerSlot(String slot) {
 		try {
-			Integer t = SlotArgument.slot().parse(new com.mojang.brigadier.StringReader(slot));
+			Integer t = SlotArgument.slot().parse(new StringReader(slot));
 			return new ArgumentWrapper<>(t, slot);
-		} catch (CommandSyntaxException e) {
-			throw new RuntimeException(e.getMessage());
+		} catch (CommandSyntaxException var2) {
+			throw new RuntimeException(var2.getMessage());
 		}
 	}
 
-	public static List<Integer> getSlots(FactoryJsonObject data) {
+	public static @NotNull List<Integer> getSlots(@NotNull FactoryJsonObject data) {
 		List<Integer> slotsList = new ArrayList<>();
 		if (data.isPresent("slots")) {
 			for (FactoryElement element : data.getJsonArray("slots").asList) {
@@ -811,6 +827,7 @@ public class Util {
 				slotsList.add(wrapped.get());
 			}
 		}
+
 		if (data.isPresent("slot")) {
 			ArgumentWrapper<Integer> wrapped = wrappedIntegerSlot(data.getString("slot"));
 			slotsList.add(wrapped.get());
@@ -819,6 +836,7 @@ public class Util {
 		if (slotsList.isEmpty()) {
 			fillMissingNumbers(slotsList, 0, 40);
 		}
+
 		return slotsList;
 	}
 
@@ -830,51 +848,45 @@ public class Util {
 		}
 
 		int matches = 0;
-		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
+		slots.removeIf(slotx -> slotNotWithinBounds(entity, inventoryPower, slotx));
 
 		for (int slot : slots) {
-
 			SlotAccess stackReference = getStackReference(entity, inventoryPower, slot);
-			net.minecraft.world.item.ItemStack stack = stackReference.get();
-
-			if ((itemCondition == null && !stack.isEmpty()) || (itemCondition == null || ConditionExecutor.testItem(itemCondition, stack.getBukkitStack())) && !stack.getBukkitStack().getType().isAir()) {
+			ItemStack stack = stackReference.get();
+			if (itemCondition == null && !stack.isEmpty()
+				|| (itemCondition == null || ConditionExecutor.testItem(itemCondition, stack.getBukkitStack())) && !stack.getBukkitStack().getType().isAir()) {
 				matches += processor.apply(stack);
 			}
-
 		}
 
 		return matches;
-
 	}
 
-	public static boolean slotNotWithinBounds(Entity entity, @Nullable me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, int slot) {
+	public static boolean slotNotWithinBounds(@NotNull Entity entity, @Nullable me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, int slot) {
 		return entity.getSlot(slot) == SlotAccess.NULL;
 	}
 
-	public static SlotAccess getStackReference(Entity entity, @Nullable me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, int slot) {
+	public static @NotNull SlotAccess getStackReference(@NotNull Entity entity, @Nullable me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, int slot) {
 		return entity.getSlot(slot);
 	}
 
-	public static SlotAccess createStackReference(net.minecraft.world.item.ItemStack startingStack) {
+	@Contract(value = "_ -> new", pure = true)
+	public static @NotNull SlotAccess createStackReference(final ItemStack startingStack) {
 		return new SlotAccess() {
+			ItemStack stack = startingStack;
 
-			net.minecraft.world.item.ItemStack stack = startingStack;
-
-			@Override
-			public net.minecraft.world.item.ItemStack get() {
-				return stack;
+			public ItemStack get() {
+				return this.stack;
 			}
 
-			@Override
-			public boolean set(net.minecraft.world.item.ItemStack stack) {
+			public boolean set(ItemStack stack) {
 				this.stack = stack;
 				return true;
 			}
-
 		};
 	}
 
-	public static void throwItem(Entity thrower, net.minecraft.world.item.ItemStack itemStack, boolean throwRandomly, boolean retainOwnership) {
+	public static void throwItem(Entity thrower, net.minecraft.world.item.@NotNull ItemStack itemStack, boolean throwRandomly, boolean retainOwnership) {
 
 		if (itemStack.isEmpty()) {
 			return;
@@ -923,11 +935,9 @@ public class Util {
 		}
 
 		List<Integer> slots = getSlots(data);
-
 		FactoryJsonObject entityAction = data.getJsonObject("entity_action");
 		FactoryJsonObject itemCondition = data.getJsonObject("item_condition");
 		FactoryJsonObject itemAction = data.getJsonObject("item_action");
-
 		int processedItems = 0;
 		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
 
@@ -960,19 +970,15 @@ public class Util {
 	}
 
 	public static void replaceInventory(FactoryJsonObject data, Entity entity, me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower) {
-
 		List<Integer> slots = getSlots(data);
-
 		FactoryJsonObject entityAction = data.getJsonObject("entity_action");
 		FactoryJsonObject itemCondition = data.getJsonObject("item_condition");
 		FactoryJsonObject itemAction = data.getJsonObject("item_action");
-
-		net.minecraft.world.item.ItemStack replacementStack = CraftItemStack.asNMSCopy(data.getItemStack("stack"));
+		ItemStack replacementStack = CraftItemStack.asNMSCopy(data.getItemStack("stack"));
 		boolean mergeNbt = data.getBooleanOrDefault("merge_nbt", false);
+		slots.removeIf(slotx -> slotNotWithinBounds(entity, inventoryPower, slotx));
 
-		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
 		for (int slot : slots) {
-
 			SlotAccess stackReference = getStackReference(entity, inventoryPower, slot);
 			net.minecraft.world.item.ItemStack stack = stackReference.get();
 
@@ -1000,7 +1006,6 @@ public class Util {
 	}
 
 	public static void dropInventory(FactoryJsonObject data, Entity entity, me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower) {
-
 		List<Integer> slots = getSlots(data);
 		if (slots.isEmpty()) {
 			fillMissingNumbers(slots, 0, 40);
@@ -1009,14 +1014,12 @@ public class Util {
 		int amount = data.getNumberOrDefault("amount", 0).getInt();
 		boolean throwRandomly = data.getBooleanOrDefault("throw_randomly", false);
 		boolean retainOwnership = data.getBooleanOrDefault("retain_ownership", true);
-
 		FactoryJsonObject entityAction = data.getJsonObject("entity_action");
 		FactoryJsonObject itemCondition = data.getJsonObject("item_condition");
 		FactoryJsonObject itemAction = data.getJsonObject("item_action");
+		slots.removeIf(slotx -> slotNotWithinBounds(entity, inventoryPower, slotx));
 
-		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
 		for (int slot : slots) {
-
 			SlotAccess stack = getStackReference(entity, inventoryPower, slot);
 			if (!(itemCondition == null || ConditionExecutor.testItem(itemCondition, stack.get().getBukkitStack()))) {
 				continue;
@@ -1044,19 +1047,33 @@ public class Util {
 
 	}
 
-	public enum ProcessMode {
-		STACKS(stack -> 1),
-		ITEMS(net.minecraft.world.item.ItemStack::getCount);
+	public enum Calculation {
+		SUM {
+			@Override
+			public int queryLevel(ItemStack stack, Holder<Enchantment> enchantmentEntry, boolean useModifications, int totalLevel) {
+				return stack.getEnchantments().getLevel(enchantmentEntry);
+			}
+		},
+		MAX {
+			@Override
+			public int queryLevel(ItemStack stack, Holder<Enchantment> enchantmentEntry, boolean useModifications, int totalLevel) {
+				int potentialLevel = stack.getEnchantments().getLevel(enchantmentEntry);
+				return potentialLevel >= totalLevel ? potentialLevel : 0;
+			}
+		};
 
-		private final Function<net.minecraft.world.item.ItemStack, Integer> processor;
+		public int queryTotalLevel(LivingEntity entity, @NotNull Holder<Enchantment> enchantmentEntry, boolean useModifications) {
+			Enchantment enchantment = enchantmentEntry.value();
+			int totalLevel = 0;
 
-		ProcessMode(Function<net.minecraft.world.item.ItemStack, Integer> processor) {
-			this.processor = processor;
+			for (ItemStack stack : enchantment.getSlotItems(entity).values()) {
+				totalLevel += this.queryLevel(stack, enchantmentEntry, useModifications, totalLevel);
+			}
+
+			return totalLevel;
 		}
 
-		public Function<net.minecraft.world.item.ItemStack, Integer> getProcessor() {
-			return processor;
-		}
+		public abstract int queryLevel(ItemStack var1, Holder<Enchantment> var2, boolean var3, int var4);
 	}
 
 	public enum OS {
@@ -1083,10 +1100,10 @@ public class Util {
 		}
 
 		public void openUrl(URL url) {
-			throw new IllegalStateException("This method is not useful on dedicated servers."); // Paper - Fix warnings on build by removing client-only code
+			throw new IllegalStateException("This method is not useful on dedicated servers.");
 		}
 
-		public void openUri(URI uri) {
+		public void openUri(@NotNull URI uri) {
 			try {
 				this.openUrl(uri.toURL());
 			} catch (MalformedURLException var3) {
@@ -1094,7 +1111,7 @@ public class Util {
 			}
 		}
 
-		public void openFile(File file) {
+		public void openFile(@NotNull File file) {
 			try {
 				this.openUrl(file.toURI().toURL());
 			} catch (MalformedURLException var3) {
@@ -1102,7 +1119,7 @@ public class Util {
 			}
 		}
 
-		protected String[] getOpenUrlArguments(URL url) {
+		protected String[] getOpenUrlArguments(@NotNull URL url) {
 			String string = url.toString();
 			if ("file".equals(url.getProtocol())) {
 				string = string.replace("file:", "file://");
@@ -1114,7 +1131,7 @@ public class Util {
 		public void openUri(String uri) {
 			try {
 				this.openUrl(new URI(uri).toURL());
-			} catch (MalformedURLException | IllegalArgumentException | URISyntaxException var3) {
+			} catch (IllegalArgumentException | URISyntaxException | MalformedURLException var3) {
 				Util.LOGGER.error("Couldn't open uri '{}'", uri, var3);
 			}
 		}
@@ -1124,14 +1141,29 @@ public class Util {
 		}
 	}
 
+	public enum ProcessMode {
+		STACKS(stack -> 1),
+		ITEMS(ItemStack::getCount);
+
+		private final Function<ItemStack, Integer> processor;
+
+		ProcessMode(Function<ItemStack, Integer> processor) {
+			this.processor = processor;
+		}
+
+		public Function<ItemStack, Integer> getProcessor() {
+			return this.processor;
+		}
+	}
+
 	public static class ParserUtils {
 		private static final Field JSON_READER_POS = net.minecraft.Util.make(() -> {
 			try {
 				Field field = JsonReader.class.getDeclaredField("pos");
 				field.setAccessible(true);
 				return field;
-			} catch (NoSuchFieldException var1) {
-				throw new IllegalStateException("Couldn't get field 'pos' for JsonReader", var1);
+			} catch (NoSuchFieldException var11) {
+				throw new IllegalStateException("Couldn't get field 'pos' for JsonReader", var11);
 			}
 		});
 		private static final Field JSON_READER_LINESTART = net.minecraft.Util.make(() -> {
@@ -1139,8 +1171,8 @@ public class Util {
 				Field field = JsonReader.class.getDeclaredField("lineStart");
 				field.setAccessible(true);
 				return field;
-			} catch (NoSuchFieldException var1) {
-				throw new IllegalStateException("Couldn't get field 'lineStart' for JsonReader", var1);
+			} catch (NoSuchFieldException var11) {
+				throw new IllegalStateException("Couldn't get field 'lineStart' for JsonReader", var11);
 			}
 		});
 
@@ -1152,7 +1184,7 @@ public class Util {
 			}
 		}
 
-		public static <T> T parseJson(com.mojang.brigadier.StringReader stringReader, Codec<T> codec) {
+		public static <T> T parseJson(@NotNull StringReader stringReader, @NotNull Codec<T> codec) {
 			JsonReader jsonReader = new JsonReader(new java.io.StringReader(stringReader.getRemaining()));
 			jsonReader.setLenient(true);
 
@@ -1160,8 +1192,8 @@ public class Util {
 			try {
 				JsonElement jsonElement = Streams.parse(jsonReader);
 				var4 = getOrThrow(codec.parse(JsonOps.INSTANCE, jsonElement), JsonParseException::new);
-			} catch (StackOverflowError var8) {
-				throw new JsonParseException(var8);
+			} catch (StackOverflowError var81) {
+				throw new JsonParseException(var81);
 			} finally {
 				stringReader.setCursor(stringReader.getCursor() + getPos(jsonReader));
 			}
@@ -1169,8 +1201,8 @@ public class Util {
 			return var4;
 		}
 
-		public static <T, E extends Throwable> T getOrThrow(DataResult<T> result, Function<String, E> exceptionGetter) throws E {
-			Optional<DataResult.Error<T>> optional = result.error();
+		public static <T, E extends Throwable> T getOrThrow(@NotNull DataResult<T> result, Function<String, E> exceptionGetter) throws E {
+			Optional<Error<T>> optional = result.error();
 			if (optional.isPresent()) {
 				throw exceptionGetter.apply(optional.get().message());
 			} else {

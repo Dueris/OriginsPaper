@@ -1,34 +1,44 @@
 package me.dueris.originspaper.util;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import me.dueris.calio.registry.Registrable;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static me.dueris.originspaper.OriginsPaper.LANGUAGE;
 
 public class LangFile implements Registrable {
+	public static final Map<String, Map<String, String>> langMap = new ConcurrentHashMap<>();
 	private final ResourceLocation key;
-	private final Map<String, String> langMap; // KEY -> OUTPUT // EX: "origin.origins.human.name" -> "Human"
 
 	public LangFile(ResourceLocation key, JsonObject json) {
 		this.key = key;
 		Map<String, String> foundLang = new HashMap<>();
+
 		for (String jsonKey : json.keySet()) {
 			if (json.get(jsonKey).isJsonPrimitive() && json.get(jsonKey).getAsJsonPrimitive().isString()) {
 				foundLang.put(jsonKey, json.get(jsonKey).getAsString());
 			}
 		}
-		this.langMap = ImmutableMap.copyOf(foundLang);
+
+		langMap.put(key.getPath().replace(".json", "").replace("lang/", ""), foundLang);
+	}
+
+	public static String transform(String original) {
+		System.out.println(original);
+
+		if (langMap.get(LANGUAGE).containsKey(original)) {
+			return langMap.get(LANGUAGE).get(original);
+		}
+
+		return original;
 	}
 
 	@Override
 	public ResourceLocation key() {
 		return this.key;
-	}
-
-	public Map<String, String> getLangMap() {
-		return langMap;
 	}
 }

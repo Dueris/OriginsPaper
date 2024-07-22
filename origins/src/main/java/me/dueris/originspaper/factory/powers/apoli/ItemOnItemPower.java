@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemOnItemPower extends PowerType {
 
@@ -52,7 +53,7 @@ public class ItemOnItemPower extends PowerType {
 	}
 
 	@EventHandler
-	public void itemOnItem(InventoryClickEvent e) {
+	public void itemOnItem(@NotNull InventoryClickEvent e) {
 		if (e.getCursor() != null && e.getCurrentItem() != null) { // Valid event
 			Player p = (Player) e.getWhoClicked();
 			if (p.getGameMode().equals(GameMode.CREATIVE)) return;

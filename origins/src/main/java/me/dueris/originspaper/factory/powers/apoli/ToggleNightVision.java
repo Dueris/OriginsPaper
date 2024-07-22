@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,7 +62,7 @@ public class ToggleNightVision extends PowerType implements KeyedPower {
 	}
 
 	@EventHandler
-	public void keybindToggle(KeybindTriggerEvent e) {
+	public void keybindToggle(@NotNull KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			if (isActive(p)) {
@@ -73,7 +74,7 @@ public class ToggleNightVision extends PowerType implements KeyedPower {
 	}
 
 	@EventHandler
-	public void inContinuousFix(KeybindTriggerEvent e) {
+	public void inContinuousFix(@NotNull KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			if (KeybindUtil.isKeyActive(getJsonKey().key(), p)) {

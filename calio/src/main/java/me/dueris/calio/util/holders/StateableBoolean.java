@@ -7,15 +7,14 @@ public class StateableBoolean {
 
 	public StateableBoolean(State state) {
 		switch (state) {
-			case TRUE -> {
-				bool = Boolean.TRUE;
-			}
-			case FALSE -> {
-				bool = Boolean.FALSE;
-			}
-			default -> {
-				bool = null;
-			}
+			case TRUE:
+				this.bool = Boolean.TRUE;
+				break;
+			case FALSE:
+				this.bool = Boolean.FALSE;
+				break;
+			default:
+				this.bool = null;
 		}
 	}
 
@@ -28,8 +27,7 @@ public class StateableBoolean {
 	}
 
 	public Optional<Boolean> getOptional() {
-		if (this.bool == null) return Optional.empty();
-		else return Optional.of(this.bool);
+		return this.bool == null ? Optional.empty() : Optional.of(this.bool);
 	}
 
 	public void set(boolean bool) {

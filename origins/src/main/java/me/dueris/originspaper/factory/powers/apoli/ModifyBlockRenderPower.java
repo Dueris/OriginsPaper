@@ -23,6 +23,7 @@ import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class ModifyBlockRenderPower extends PowerType implements Listener {
 	}
 
 	@EventHandler
-	public void chunkLoad(PlayerChunkLoadEvent e) {
+	public void chunkLoad(@NotNull PlayerChunkLoadEvent e) {
 		Player p = e.getPlayer();
 		if (!getPlayers().contains(p)) return;
 		final ChunkManagerWorld worldChunkAccessor = new ChunkManagerWorld(e.getWorld());
@@ -67,7 +68,7 @@ public class ModifyBlockRenderPower extends PowerType implements Listener {
 	}
 
 	@Override
-	public void tick(Player p) {
+	public void tick(@NotNull Player p) {
 		Map<Position, BlockData> updates = new ConcurrentHashMap<>();
 		BlockData toSend = block.createBlockData();
 		ServerLevel level = ((CraftWorld) p.getWorld()).getHandle();

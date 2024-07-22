@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDamageEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class ModifyBreakSpeedPower extends ModifierPower implements Listener {
 			.add("block_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
 	}
 
-	public void compute(Player p) {
+	public void compute(@NotNull Player p) {
 		double b = p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getDefaultValue();
 		Arrays.stream(getModifiers()).forEach(modifier -> p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).setBaseValue(Util.getOperationMappingsDouble().get(modifier.operation()).apply(b, modifier.value().doubleValue() * 100)));
 		base.put(p, b);

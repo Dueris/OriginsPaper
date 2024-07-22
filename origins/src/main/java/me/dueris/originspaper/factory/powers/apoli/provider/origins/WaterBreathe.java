@@ -20,6 +20,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityAirChangeEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -29,7 +30,7 @@ public class WaterBreathe implements Listener, PowerProvider {
 	protected static ResourceLocation powerReference = OriginsPaper.originIdentifier("water_breathing");
 	private static final String cachedPowerRefrenceString = powerReference.toString();
 
-	public static boolean isInBreathableWater(Player player) {
+	public static boolean isInBreathableWater(@NotNull Player player) {
 		Block block = player.getEyeLocation().getBlock();
 		Material material = block.getType();
 		if (block.getType().equals(Material.WATER)) {
@@ -43,7 +44,7 @@ public class WaterBreathe implements Listener, PowerProvider {
 	}
 
 	@EventHandler
-	public void interuptMinecraft(EntityAirChangeEvent e) {
+	public void interuptMinecraft(@NotNull EntityAirChangeEvent e) {
 		if (e.getEntity() instanceof Player player) {
 			if (PowerHolderComponent.hasPower(player, cachedPowerRefrenceString)) {
 				if (!originsExecuting.contains(player)) {
@@ -55,7 +56,7 @@ public class WaterBreathe implements Listener, PowerProvider {
 	}
 
 	@EventHandler
-	public void drinkWater(PlayerItemConsumeEvent e) {
+	public void drinkWater(@NotNull PlayerItemConsumeEvent e) {
 		if (PowerHolderComponent.hasPower(e.getPlayer(), cachedPowerRefrenceString) && e.getItem().getType().equals(Material.POTION)) {
 			originsExecuting.add(e.getPlayer());
 			e.getPlayer().setRemainingAir(e.getPlayer().getRemainingAir() + 60);
@@ -64,7 +65,7 @@ public class WaterBreathe implements Listener, PowerProvider {
 	}
 
 	@Override
-	public void tick(Player p) {
+	public void tick(@NotNull Player p) {
 		if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
 		if (PowerHolderComponent.hasPower(p, cachedPowerRefrenceString)) {
 			originsExecuting.add(p);

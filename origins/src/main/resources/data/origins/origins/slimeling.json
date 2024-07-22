@@ -9,8 +9,6 @@
   "icon": {
     "item": "minecraft:slime_ball"
   },
-  "name": "Slimeling",
-  "description": "Part Human, part Slime. Very unpleasant to touch",
   "order": 0,
   "impact": 2
 }

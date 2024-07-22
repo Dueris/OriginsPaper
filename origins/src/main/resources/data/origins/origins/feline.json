@@ -12,7 +12,5 @@
     "item": "minecraft:orange_wool"
   },
   "order": 0,
-  "impact": 2,
-  "name": "Feline",
-  "description": "With their cat-like appearance, the Feline scare creepers away. With the dexterity of cats, they always land safely on their feet"
+  "impact": 2
 }

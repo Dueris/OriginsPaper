@@ -7,5 +7,5 @@ import java.util.List;
 public interface FileReader {
 	List<String> listFiles() throws IOException;
 
-	InputStream getFileStream(String name) throws IOException;
+	InputStream getFileStream(String var1) throws IOException;
 }

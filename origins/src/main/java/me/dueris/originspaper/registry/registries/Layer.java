@@ -20,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,12 +66,12 @@ public class Layer implements FactoryHolder {
 		this.loadingPriority = loadingPriority;
 	}
 
-	public static FactoryData registerComponents(FactoryData data) {
+	public static FactoryData registerComponents(@NotNull FactoryData data) {
 		return data.add("order", int.class, 0)
 			.add("origins", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()))
 			.add("enabled", boolean.class, true)
 			.add("replace", boolean.class, false)
-			.add("name", String.class, "craftapoli.layer.name.not_found")
+			.add("name", String.class, "layer.$namespace.$path.name")
 			.add("gui_title", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("missing_name", String.class, "Missing Name")
 			.add("missing_description", String.class, "Missing Description")
@@ -85,11 +86,14 @@ public class Layer implements FactoryHolder {
 
 	@Override
 	public FactoryHolder ofResourceLocation(ResourceLocation key) {
-		if (this.tagSet) return this;
-		tagSet = true;
-		this.tag = key;
-		this.cachedTagString = key.toString();
-		return this;
+		if (this.tagSet) {
+			return this;
+		} else {
+			this.tagSet = true;
+			this.tag = key;
+			this.cachedTagString = key.toString();
+			return this;
+		}
 	}
 
 	@Override
@@ -98,74 +102,76 @@ public class Layer implements FactoryHolder {
 	}
 
 	public String getTag() {
-		return cachedTagString;
+		return this.cachedTagString;
 	}
 
 	public int getOrder() {
-		return order;
+		return this.order;
 	}
 
 	public FactoryJsonArray getOrigins() {
-		return origins;
+		return this.origins;
 	}
 
 	public boolean isEnabled() {
-		return enabled;
+		return this.enabled;
 	}
 
 	public boolean isReplace() {
-		return replace;
+		return this.replace;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public FactoryJsonObject getGuiTitle() {
-		return guiTitle;
+		return this.guiTitle;
 	}
 
 	public String getMissingName() {
-		return missingName;
+		return this.missingName;
 	}
 
 	public String getMissingDescription() {
-		return missingDescription;
+		return this.missingDescription;
 	}
 
 	public boolean isAllowRandom() {
-		return allowRandom;
+		return this.allowRandom;
 	}
 
 	public boolean isAllowRandomUnchoosable() {
-		return allowRandomUnchoosable;
+		return this.allowRandomUnchoosable;
 	}
 
 	public FactoryJsonArray getExcludeRandom() {
-		return excludeRandom;
+		return this.excludeRandom;
 	}
 
 	public ResourceLocation getDefaultOrigin() {
-		return defaultOrigin;
+		return this.defaultOrigin;
 	}
 
 	public boolean isAutoChoose() {
-		return autoChoose;
+		return this.autoChoose;
 	}
 
 	public boolean isHidden() {
-		return hidden;
+		return this.hidden;
 	}
 
 	public int getLoadingPriority() {
-		return loadingPriority;
+		return this.loadingPriority;
 	}
 
 	public List<Origin> testChoosable(Entity entity) {
-		List<Origin> tested = new ArrayList<Origin>();
-		for (Origin origin : this.getOriginIdentifiers().stream()
+		List<Origin> tested = new ArrayList<>();
+
+		for (Origin origin : this.getOriginIdentifiers()
+			.stream()
 			.map(CraftApoli::getOrigin)
-			.filter(origin -> !origin.getTag().equalsIgnoreCase("origins:empty"))
+			.filter(originx -> !originx.getTag().equalsIgnoreCase("origins:empty"))
 			.toList()) {
 			if (origin.getUsesCondition()) {
 				if (ConditionExecutor.testEntity(origin.choosingCondition, (CraftEntity) entity)) {
@@ -175,35 +181,36 @@ public class Layer implements FactoryHolder {
 				tested.add(origin);
 			}
 		}
+
 		return tested;
 	}
 
 	public boolean testDefaultOrigin(Entity entity) {
-		boolean autoChoose = isAutoChoose();
-		if (autoChoose) {
-			if (entity instanceof Player p) {
-				FactoryElement element = getOrigins().asList().get(0);
-				String identifier = element.getString();
-				PowerHolderComponent.setOrigin(p, this, CraftApoli.getOrigin(identifier));
-				return true;
+		boolean autoChoose = this.isAutoChoose();
+		if (autoChoose && entity instanceof Player p) {
+			FactoryElement element = this.getOrigins().asList().get(0);
+			String identifier = element.getString();
+			PowerHolderComponent.setOrigin(p, this, CraftApoli.getOrigin(identifier));
+			return true;
+		} else if (ScreenNavigator.orbChoosing.contains(entity)) {
+			return false;
+		} else {
+			if (!this.getDefaultOrigin().toString().equalsIgnoreCase("origins:empty")) {
+				ResourceLocation identifier = this.getDefaultOrigin();
+				Origin origin = OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(identifier);
+				if (origin != null && entity instanceof Player p) {
+					PowerHolderComponent.setOrigin(p, this, origin);
+					return true;
+				}
 			}
-		}
 
-		if (ScreenNavigator.orbChoosing.contains(entity)) return false; // Default origins dont apply on orb choosings
-		if (!getDefaultOrigin().toString().equalsIgnoreCase("origins:empty")) {
-			ResourceLocation identifier = getDefaultOrigin();
-			Origin origin = OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(identifier);
-			if (origin != null && entity instanceof Player p) {
-				PowerHolderComponent.setOrigin(p, this, origin);
-				return true;
-			}
+			return false;
 		}
-		return false;
 	}
 
 	public List<String> getOriginIdentifiers() {
 		List<String> identifiers = new ArrayList<>();
-		getOrigins().asList().stream().forEach(element -> {
+		this.getOrigins().asList().stream().forEach(element -> {
 			if (element.isJsonObject()) {
 				identifiers.addAll(element.toJsonObject().getJsonArray("origins").asList().stream().map(FactoryElement::getString).toList());
 			} else if (element.isString()) {
@@ -214,24 +221,34 @@ public class Layer implements FactoryHolder {
 	}
 
 	public List<Origin> getRandomOrigins() {
-		if (!this.isAllowRandom()) return new ArrayList<>();
-		return this.getOriginIdentifiers().stream().map(CraftApoli::getOrigin).filter(origin -> !origin.isUnchoosable() || isAllowRandomUnchoosable()).filter(origin -> {
-			if (!this.getExcludeRandom().asList().isEmpty()) {
-				for (String identifier : this.getExcludeRandom().asList().stream().map(FactoryElement::getString).toList()) {
-					if (origin.getTag().equalsIgnoreCase(identifier)) return false;
+		return !this.isAllowRandom()
+			? new ArrayList<>()
+			: this.getOriginIdentifiers()
+			.stream()
+			.map(CraftApoli::getOrigin)
+			.filter(origin -> !origin.isUnchoosable() || this.isAllowRandomUnchoosable())
+			.filter(origin -> {
+				if (!this.getExcludeRandom().asList().isEmpty()) {
+					for (String identifier : this.getExcludeRandom().asList().stream().map(FactoryElement::getString).toList()) {
+						if (origin.getTag().equalsIgnoreCase(identifier)) {
+							return false;
+						}
+					}
 				}
-			}
-			return true; // It passes
-		}).toList();
+
+				return true;
+			})
+			.toList();
 	}
 
 	@Override
 	public boolean canRegister() {
 		Registrar<Layer> registrar = OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER);
-		AtomicBoolean merge = new AtomicBoolean(!isReplace() && registrar.rawRegistry.containsKey(this.tag));
+		AtomicBoolean merge = new AtomicBoolean(!this.isReplace() && registrar.rawRegistry.containsKey(this.tag));
 		if (merge.get()) {
 			List<Origin> originList = new ArrayList<>();
-			for (FactoryElement element : getOrigins().asList()) {
+
+			for (FactoryElement element : this.getOrigins().asList()) {
 				Origin origin = CraftApoli.getOrigin(element.getString());
 				if (!origin.equals(CraftApoli.emptyOrigin())) {
 					originList.add(origin);
@@ -239,16 +256,17 @@ public class Layer implements FactoryHolder {
 					CraftCalio.INSTANCE.getLogger().severe("Origin not found inside layer");
 				}
 			}
-			Layer original = registrar.get(tag);
+
+			Layer original = registrar.get(this.tag);
 			original.getOriginIdentifiers().stream().forEach(tag -> originList.add(CraftApoli.getOrigin(tag)));
-			original.origins.setEntries(
-				Util.toJsonStringArray(originList.stream().map(Origin::getTag).toList()).asList().stream().map(FactoryElement::new).toList()
-			);
+			original.origins
+				.setEntries(Util.toJsonStringArray(originList.stream().map(Origin::getTag).toList()).asList().stream().map(FactoryElement::new).toList());
 			return false;
 		} else {
-			for (FactoryElement element : getOrigins().asArray()) {
-				if (element.isJsonObject()) {
-					FactoryJsonObject jsonObject = element.toJsonObject();
+			for (FactoryElement elementx : this.getOrigins().asArray()) {
+				if (elementx.isJsonObject()) {
+					FactoryJsonObject jsonObject = elementx.toJsonObject();
+
 					for (String elementString : this.getOriginIdentifiers()) {
 						Origin origin = CraftApoli.getOrigin(elementString);
 						if (!origin.equals(CraftApoli.emptyOrigin())) {
@@ -259,7 +277,8 @@ public class Layer implements FactoryHolder {
 					}
 				}
 			}
+
+			return true;
 		}
-		return true;
 	}
 }

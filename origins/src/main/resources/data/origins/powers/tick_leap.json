@@ -39,7 +39,7 @@
     "type": "origins:resource",
     "hidden": true,
     "min": 0,
-    "max": 5,
+    "max": 4,
     "hud_render": {
       "sprite_location": "origins:textures/gui/resource_bar.png",
       "bar_index": 6,
@@ -88,8 +88,6 @@
     "key": {
       "key": "key.origins.primary_active"
     },
-    "name": "Big Leap",
-    "description": "You can leap in the direction you are looking to",
     "hidden": false
   }
 }

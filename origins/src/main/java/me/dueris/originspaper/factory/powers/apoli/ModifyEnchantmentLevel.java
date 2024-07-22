@@ -14,6 +14,7 @@ import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -36,7 +37,7 @@ public class ModifyEnchantmentLevel extends ModifierPower {
 	}
 
 	@Override
-	public void tick(Player p) {
+	public void tick(@NotNull Player p) {
 		HashSet<ItemStack> items = new HashSet<>(Arrays.stream(p.getInventory().getArmorContents()).toList());
 		items.add(p.getInventory().getItemInMainHand());
 		for (ItemStack item : items) {

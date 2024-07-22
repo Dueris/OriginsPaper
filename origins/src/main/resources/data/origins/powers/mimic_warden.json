@@ -1,6 +1,4 @@
 {
-  "name": "Carrier of Echos",
-  "description": "You can emmit a sonic boom every 60 seconds, only if you have enough energy to sprint",
   "hidden": false,
   "type": "origins:active_self",
   "cooldown": 600,

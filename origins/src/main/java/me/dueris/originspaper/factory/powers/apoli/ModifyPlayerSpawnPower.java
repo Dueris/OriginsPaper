@@ -39,6 +39,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public class ModifyPlayerSpawnPower extends PowerType {
 	}
 
 	@EventHandler
-	public void powerRemove(PowerUpdateEvent e) {
+	public void powerRemove(@NotNull PowerUpdateEvent e) {
 		if (e.isRemoved() && e.getPower().getType().equals(getType())) {
 			// Apoli remap start
 			ServerPlayer ServerPlayer = ((CraftPlayer) e.getPlayer()).getHandle();
@@ -106,7 +107,7 @@ public class ModifyPlayerSpawnPower extends PowerType {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void runD(PlayerPostRespawnEvent e) {
+	public void runD(@NotNull PlayerPostRespawnEvent e) {
 		if (!getPlayers().contains(e.getPlayer())) return;
 		if (e.getPlayer().getBedSpawnLocation() != null) {
 			e.getPlayer().teleport(e.getPlayer().getBedSpawnLocation());
@@ -116,7 +117,7 @@ public class ModifyPlayerSpawnPower extends PowerType {
 		}
 	}
 
-	private ResourceKey<Level> getDimension() {
+	private @NotNull ResourceKey<Level> getDimension() {
 		return ((CraftWorld) Bukkit.getWorld(CraftNamespacedKey.fromMinecraft(dimension))).getHandle().dimension();
 	}
 
@@ -207,7 +208,7 @@ public class ModifyPlayerSpawnPower extends PowerType {
 		}
 	}
 
-	private Optional<Pair<BlockPos, Structure>> getStructurePos(ServerLevel world) {
+	private @NotNull Optional<Pair<BlockPos, Structure>> getStructurePos(ServerLevel world) {
 		Registry<Structure> structureRegistry = CraftRegistry.getMinecraftRegistry().registry(Registries.STRUCTURE).get();
 		ResourceKey<Structure> stRk = OriginsPaper.server.registryAccess().registry(Registries.STRUCTURE).get().getResourceKey(structureRegistry.get(structure)).get();
 		HolderSet<Structure> structureHolderSet = null;
@@ -248,7 +249,7 @@ public class ModifyPlayerSpawnPower extends PowerType {
 
 	}
 
-	private Optional<Vec3> getValidSpawn(ServerLevel targetDimension, BlockPos startPos, int range, Entity entity) {
+	private Optional<Vec3> getValidSpawn(@NotNull ServerLevel targetDimension, @NotNull BlockPos startPos, int range, Entity entity) {
 		//  The 'direction' vector that determines the direction of the iteration
 		int dx = 1;
 		int dz = 0;

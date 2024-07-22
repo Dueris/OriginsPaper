@@ -25,7 +25,5 @@
       }
     ]
   },
-  "name": "Light the Fuse",
-  "description": "Upon catching fire, you explode.",
   "hidden": true
 }

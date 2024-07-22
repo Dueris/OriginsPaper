@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class ModifyHarvestPower extends PowerType implements Listener {
 
@@ -34,7 +35,7 @@ public class ModifyHarvestPower extends PowerType implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void runD(BlockBreakEvent e) {
+	public void runD(@NotNull BlockBreakEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			if (p.getGameMode().equals(GameMode.CREATIVE)) return;

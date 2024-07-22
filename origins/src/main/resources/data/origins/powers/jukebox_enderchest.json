@@ -14,7 +14,5 @@
       "block": "minecraft:jukebox"
     }
   },
-  "name": "Jukebox Stash",
-  "description": "Stand on a Jukebox to open a personal stash inside the jukebox",
   "hidden": false
 }

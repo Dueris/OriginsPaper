@@ -1,9 +1,17 @@
 package me.dueris.originspaper;
 
+import com.mojang.brigadier.CommandDispatcher;
+import io.papermc.paper.command.brigadier.ApiMirrorRootNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.PaperCommands;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
-import it.unimi.dsi.fastutil.Pair;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.handler.configuration.PrioritizedLifecycleEventHandlerConfiguration;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import me.dueris.calio.data.JsonObjectRemapper;
+import me.dueris.calio.util.holders.Pair;
+import me.dueris.originspaper.command.Commands;
 import me.dueris.originspaper.content.NMSBootstrap;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.util.Util;
@@ -27,13 +35,11 @@ import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-// TODO: MachineMaker PluginDatapacks
 public class Bootstrap implements PluginBootstrap {
 	public static ArrayList<String> oldDV = new ArrayList<>();
 	public static ArrayList<Consumer<WrappedBootstrapContext>> apiCalls = new ArrayList<>();
 	public static AtomicBoolean BOOTSTRAPPED = new AtomicBoolean(false);
 
-	//TODO: Unsure of what this does so i'm leaving it as it
 	static {
 		oldDV.add("OriginsGenesis");
 		oldDV.add("Origins-Genesis");
@@ -64,25 +70,29 @@ public class Bootstrap implements PluginBootstrap {
 		for (String string : oldDV) {
 			if (Files.exists(datapackPath)) {
 				String path = Path.of(datapackPath + File.separator + string).toAbsolutePath().toString();
+
 				try {
 					deleteDirectory(Path.of(path), true);
-				} catch (IOException e) {
-					// Something happened when deleting, ignore.
-				}
+				} catch (IOException ignore) {}
 			} else {
 				File file = new File(datapackPath.toAbsolutePath().toString());
 				file.mkdirs();
 				copyOriginDatapack(datapackPath, context);
 			}
 		}
+
 		try {
 			CodeSource src = Util.class.getProtectionDomain().getCodeSource();
 			URL jar = src.getLocation();
 			ZipInputStream zip = new ZipInputStream(jar.openStream());
+
 			while (true) {
 				ZipEntry entry = zip.getNextEntry();
-				if (entry == null)
+				if (entry == null) {
+					zip.close();
 					break;
+				}
+
 				String name = entry.getName();
 
 				if (!name.startsWith("minecraft/")) continue;
@@ -126,11 +136,13 @@ public class Bootstrap implements PluginBootstrap {
 		Path propPath = Paths.get("server.properties");
 		if (propPath.toFile().exists()) {
 			Properties properties = new Properties();
+
 			try (FileInputStream input = new FileInputStream(propPath.toFile())) {
 				properties.load(input);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
 			System.out.println(properties.keySet());
 			return properties.getProperty("level-name", "world");
 		} else {
@@ -143,31 +155,30 @@ public class Bootstrap implements PluginBootstrap {
 		WrappedBootstrapContext context = new WrappedBootstrapContext(bootContext);
 		if (bootContext != null) {
 			NMSBootstrap.bootstrap(context);
+
 			for (Consumer<WrappedBootstrapContext> apiCall : apiCalls) {
 				apiCall.accept(context);
 			}
-			File packDir = new File(this.parseDatapackPath());
+
+			File packDir = null;
+
 			try {
+				packDir = new File(this.parseDatapackPath());
 				copyOriginDatapack(packDir.toPath(), context);
-			} catch (Exception e) {
-				// ignore
+			} catch (Exception ignored) {
 			} finally {
-				context.initRegistries(packDir.toPath());
+				if (packDir != null) {
+					context.initRegistries(packDir.toPath());
+				}
 			}
 		}
 
-		JsonObjectRemapper.typeMappings.add(new Pair<String, String>() {
-			@Override
-			public String left() {
-				return "origins";
-			}
-
-			@Override
-			public String right() {
-				return "apoli";
-			}
-		});
-		// Our version of restricted_armor allows handling of both.
+		LifecycleEventManager<BootstrapContext> lifecycleManager = context.context().getLifecycleManager();
+		lifecycleManager.registerEventHandler(((PrioritizedLifecycleEventHandlerConfiguration) LifecycleEvents.COMMANDS.newHandler(event -> {
+			CommandDispatcher<CommandSourceStack> commands = PaperCommands.INSTANCE.getDispatcher();
+			Commands.bootstrap(((ApiMirrorRootNode) commands.getRoot()).getDispatcher());
+		})).priority(10));
+		JsonObjectRemapper.typeMappings.add(new Pair<>("origins", "apoli"));
 		JsonObjectRemapper.typeAlias.put("apoli:conditioned_restrict_armor", "apoli:restrict_armor");
 		JsonObjectRemapper.typeAlias.put("apugli:edible_item", "apoli:edible_item");
 		JsonObjectRemapper.typeAlias.put("apoli:modify_attribute", "apoli:conditioned_attribute");
@@ -203,19 +214,11 @@ public class Bootstrap implements PluginBootstrap {
 		BOOTSTRAPPED.set(true);
 	}
 
-	public String parseDatapackPath() {
-		try {
-			org.bukkit.configuration.file.YamlConfiguration bukkitConfiguration = YamlConfiguration.loadConfiguration(Paths.get("bukkit.yml").toFile());
-			File container;
-			container = new File(bukkitConfiguration.getString("settings.world-container", "."));
-			String s = Optional.ofNullable(
-				levelNameProp()
-			).orElse("world");
-			Path datapackFolder = Paths.get(container.getAbsolutePath() + File.separator + s + File.separator + "datapacks");
-			return datapackFolder.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+	public String parseDatapackPath() throws Exception {
+		YamlConfiguration bukkitConfiguration = YamlConfiguration.loadConfiguration(Paths.get("bukkit.yml").toFile());
+		File container = new File(bukkitConfiguration.getString("settings.world-container", "."));
+		String s = Optional.ofNullable(levelNameProp()).orElse("world");
+		Path datapackFolder = Paths.get(container.getAbsolutePath() + File.separator + s + File.separator + "datapacks");
+		return datapackFolder.toString();
 	}
 }

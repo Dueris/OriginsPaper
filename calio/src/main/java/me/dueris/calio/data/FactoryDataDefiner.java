@@ -3,9 +3,6 @@ package me.dueris.calio.data;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
 
-/**
- * Implementation of a TriPair object
- */
 public class FactoryDataDefiner<T> {
 	private final String key;
 	private final Class<T> type;

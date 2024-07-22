@@ -12,7 +12,5 @@
     "item": "minecraft:carrot"
   },
   "order": 0,
-  "impact": 1,
-  "name": "Rabbit",
-  "description": "These furry bunnies are extremely good jumpers and have amazing agility"
+  "impact": 1
 }

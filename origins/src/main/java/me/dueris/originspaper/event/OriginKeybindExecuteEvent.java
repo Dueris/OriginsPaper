@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class OriginKeybindExecuteEvent extends PlayerEvent {
 	private static final HandlerList handlers = new HandlerList();
-
 	static String key_type;
 	static ItemStack item;
 
@@ -30,7 +29,6 @@ public class OriginKeybindExecuteEvent extends PlayerEvent {
 		return item;
 	}
 
-	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}

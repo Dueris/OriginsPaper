@@ -12,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class SelfActionOnHit extends PowerType implements CooldownPower {
 	private final FactoryJsonObject entityAction;
@@ -39,7 +40,7 @@ public class SelfActionOnHit extends PowerType implements CooldownPower {
 	}
 
 	@EventHandler
-	public void s(EntityDamageByEntityEvent e) {
+	public void s(@NotNull EntityDamageByEntityEvent e) {
 		Entity target = e.getDamager();
 
 		if (!(target instanceof Player player)) return;

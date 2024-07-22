@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.jetbrains.annotations.NotNull;
 
 public class ActionOnItemUse extends PowerType {
 	private final FactoryJsonObject itemCondition;
@@ -32,7 +33,7 @@ public class ActionOnItemUse extends PowerType {
 	}
 
 	@EventHandler
-	public void entityRightClick(PlayerInteractEvent e) {
+	public void entityRightClick(@NotNull PlayerInteractEvent e) {
 		Player player = e.getPlayer();
 		if (!getPlayers().contains(player) || !e.getAction().isRightClick() || e.getItem() == null || !e.getHand().equals(EquipmentSlot.HAND))
 			return;

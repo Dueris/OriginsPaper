@@ -23,6 +23,8 @@ import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,11 +42,12 @@ public class ExplosionMask {
 		this.level = level;
 	}
 
-	public static ExplosionMask getExplosionMask(Explosion explosion, ServerLevel level) {
+	@Contract(value = "_, _ -> new", pure = true)
+	public static @NotNull ExplosionMask getExplosionMask(Explosion explosion, ServerLevel level) {
 		return new ExplosionMask(explosion, level);
 	}
 
-	private static void addOrAppendStack(List<Pair<ItemStack, BlockPos>> stacks, ItemStack stack, BlockPos pos) {
+	private static void addOrAppendStack(List<Pair<ItemStack, BlockPos>> stacks, @NotNull ItemStack stack, BlockPos pos) {
 		if (stack.isEmpty()) return;
 		for (int i = 0; i < stacks.size(); ++i) {
 			Pair<ItemStack, BlockPos> pair = stacks.get(i);
@@ -61,7 +64,7 @@ public class ExplosionMask {
 		stacks.add(Pair.of(stack, pos));
 	}
 
-	public ExplosionMask apply(FactoryJsonObject getter, boolean destroyAfterMask) {
+	public ExplosionMask apply(@NotNull FactoryJsonObject getter, boolean destroyAfterMask) {
 		this.explosion.explode(); // Setup explosion stuff -- includes iterator for explosions
 		this.fire = getter.getBooleanOrDefault("create_fire", false);
 		this.blocks = createBlockList(this.explosion.getToBlow(), this.level);
@@ -209,7 +212,7 @@ public class ExplosionMask {
 		}
 	}
 
-	private List<Block> createBlockList(List<BlockPos> blockPos, ServerLevel level) {
+	private @NotNull List<Block> createBlockList(@NotNull List<BlockPos> blockPos, ServerLevel level) {
 		List<Block> blocks = new ArrayList<>();
 		blockPos.forEach(pos -> {
 			blocks.add(level.getWorld().getBlockAt(pos.getX(), pos.getY(), pos.getZ()));
@@ -217,7 +220,7 @@ public class ExplosionMask {
 		return blocks;
 	}
 
-	private List<BlockPos> createBlockPosList(List<Block> blocks) {
+	private @NotNull List<BlockPos> createBlockPosList(@NotNull List<Block> blocks) {
 		List<BlockPos> positions = new ArrayList<>();
 		blocks.forEach(block -> {
 			positions.add(CraftLocation.toBlockPosition(block.getLocation()));

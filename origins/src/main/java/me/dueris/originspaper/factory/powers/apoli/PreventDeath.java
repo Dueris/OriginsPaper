@@ -10,6 +10,7 @@ import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class PreventDeath extends PowerType implements Listener {
 	private final FactoryJsonObject damageCondition;
@@ -28,7 +29,7 @@ public class PreventDeath extends PowerType implements Listener {
 	}
 
 	@EventHandler
-	public void run(PlayerDeathEvent e) {
+	public void run(@NotNull PlayerDeathEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			if (isActive(e.getPlayer()) && ConditionExecutor.testDamage(damageCondition, e.getEntity().getLastDamageCause())) {
 				e.setCancelled(true);

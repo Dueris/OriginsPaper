@@ -34,6 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,7 +103,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 	}
 
 	@EventHandler
-	public void inContinuousFix(KeybindTriggerEvent e) {
+	public void inContinuousFix(@NotNull KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			if (KeybindUtil.isKeyActive(getJsonKey().key(), p)) {
@@ -119,7 +120,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 	}
 
 	@EventHandler
-	public void teleportDamgeOff(PlayerTeleportEvent e) {
+	public void teleportDamgeOff(@NotNull PlayerTeleportEvent e) {
 		Player p = e.getPlayer();
 		if (enderian_pearl.contains(e.getPlayer()) && e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
 			e.setCancelled(true);
@@ -130,7 +131,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 	}
 
 	@EventHandler
-	public void keybindPress(KeybindTriggerEvent e) {
+	public void keybindPress(@NotNull KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
 		if (doubleFirePatch.contains(p)) return;
 		if (getPlayers().contains(p)) {

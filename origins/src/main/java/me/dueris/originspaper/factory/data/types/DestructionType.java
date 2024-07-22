@@ -23,9 +23,6 @@ public enum DestructionType {
 
 	public Explosion.BlockInteraction getNMS() {
 		switch (this) {
-			case DESTROY -> {
-				return Explosion.BlockInteraction.DESTROY_WITH_DECAY;
-			}
 			case NONE -> {
 				return Explosion.BlockInteraction.KEEP;
 			}

@@ -16,7 +16,6 @@ public class OrbInteractEvent extends PlayerEvent {
 		return handlers;
 	}
 
-	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}

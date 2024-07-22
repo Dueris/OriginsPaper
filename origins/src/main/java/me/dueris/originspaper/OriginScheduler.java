@@ -25,50 +25,62 @@ public class OriginScheduler {
 	}
 
 	public void scheduleMainThreadCall(Runnable run) {
-		mainThreadCalls.add(run);
+		this.mainThreadCalls.add(run);
 	}
 
 	public static class MainTickerThread extends BukkitRunnable implements Listener {
 		private final CreativeFlight flight = new CreativeFlight("creative_flight", "description", true, null, 0);
 		public OriginScheduler parent = new OriginScheduler(OriginsPaper.getPlugin());
 
-		@Override
 		public String toString() {
 			return "OriginSchedulerTree$run()";
 		}
 
-		@Override
 		public void run() {
 			this.parent.mainThreadCalls.forEach(Runnable::run);
 			this.parent.mainThreadCalls.clear();
+
 			for (PowerType power : CraftApoli.getPowersFromRegistry()) {
-				power.tick(); // Allow powers to add their own BukkitRunnables
-				if (!power.hasPlayers()) continue;
-				for (Player p : power.getPlayers()) {
-					if (Bukkit.getServer().getCurrentTick() % 20 == 0) {
-						PowerHolderComponent.checkForDuplicates(p);
-					}
-					try {
-						power.tick(p);
-					} catch (Throwable throwable) {
-						String[] stacktrace = {"\n"};
-						Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] += ("\tat " + string + "\n"));
-						OriginsPaper.getPlugin().getLogger().severe("An unhandled exception occurred when ticking a Power! [{a}]".replace("{a}", throwable.getClass().getSimpleName()));
-						String t = power.getType();
-						if (t == null) t = power.key().toString();
-						OriginsPaper.getPlugin().getLogger().severe(
-							"Player: {a} | Power: {b} | CraftPower: {c} | Throwable: {d}"
-								.replace("{a}", p.getName())
-								.replace("{b}", power.getTag())
-								.replace("{c}", t)
-								.replace("{d}", throwable.getMessage() == null ? throwable.getClass().getSimpleName() : throwable.getMessage()) + stacktrace[0]
-						);
+				power.tick();
+				if (power.hasPlayers()) {
+					for (Player p : power.getPlayers()) {
+						if (Bukkit.getServer().getCurrentTick() % 20 == 0) {
+							PowerHolderComponent.checkForDuplicates(p);
+						}
+
+						try {
+							power.tick(p);
+						} catch (Throwable var8) {
+							String[] stacktrace = new String[]{"\n"};
+							Arrays.stream(var8.getStackTrace())
+								.map(StackTraceElement::toString)
+								.forEach(string -> stacktrace[0] = stacktrace[0] + "\tat " + string + "\n");
+							OriginsPaper.getPlugin()
+								.getLogger()
+								.severe("An unhandled exception occurred when ticking a Power! [{a}]".replace("{a}", var8.getClass().getSimpleName()));
+							String t = power.getType();
+							if (t == null) {
+								t = power.key().toString();
+							}
+
+							OriginsPaper.getPlugin()
+								.getLogger()
+								.severe(
+									"Player: {a} | Power: {b} | CraftPower: {c} | Throwable: {d}"
+										.replace("{a}", p.getName())
+										.replace("{b}", power.getTag())
+										.replace("{c}", t)
+										.replace("{d}", var8.getMessage() == null ? var8.getClass().getSimpleName() : var8.getMessage())
+										+ stacktrace[0]
+								);
+						}
 					}
 				}
 			}
 
 			for (PowerProvider provider : OriginSimpleContainer.registeredPowers) {
 				provider.tick();
+
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					provider.tick(p);
 				}
@@ -77,18 +89,17 @@ public class OriginScheduler {
 
 		public void tickAsyncScheduler() {
 			for (Player p : PowerHolderComponent.hasPowers) {
-				ConcurrentLinkedQueue<PowerType> applied = PowerHolderComponent.getPowersApplied(p);
-				for (PowerType c : applied) {
+				for (PowerType c : PowerHolderComponent.getPowersApplied(p)) {
 					c.tickAsync(p);
 				}
 			}
+
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				flight.tickAsync(p);
+				this.flight.tickAsync(p);
 				if (!PowerHolderComponent.hasPowerType(p, GravityPower.class) && !PowerHolderComponent.hasPower(p, "origins:like_water")) {
 					p.setGravity(true);
 				}
 			}
 		}
 	}
-
 }

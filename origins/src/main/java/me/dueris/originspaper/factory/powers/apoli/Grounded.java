@@ -21,6 +21,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 public class Grounded extends PowerType {
 
@@ -33,7 +34,7 @@ public class Grounded extends PowerType {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void doubleJump(PlayerToggleFlightEvent e) {
+	public void doubleJump(@NotNull PlayerToggleFlightEvent e) {
 		Player p = e.getPlayer();
 		if (!getPlayers().contains(p) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
 		if (isActive(p)) {
@@ -55,14 +56,14 @@ public class Grounded extends PowerType {
 		}
 	}
 
-	public float entity$getBlockJumpFactor(Entity entity) {
+	public float entity$getBlockJumpFactor(@NotNull Entity entity) {
 		float l = entity.level().getBlockState(entity.blockPosition()).getBlock().getJumpFactor();
 		float l9 = entity.level().getBlockState(this.entity$getOnPos(entity, 0.500001F)).getBlock().getJumpFactor();
 
 		return (double) l == 1.0D ? l9 : l;
 	}
 
-	public BlockPos entity$getOnPos(Entity entity, float offset) {
+	public BlockPos entity$getOnPos(@NotNull Entity entity, float offset) {
 		if (entity.mainSupportingBlockPos.isPresent() && entity.level().getChunkIfLoadedImmediately(entity.mainSupportingBlockPos.get()) != null) {
 			BlockPos bp = entity.mainSupportingBlockPos.get();
 
@@ -77,7 +78,7 @@ public class Grounded extends PowerType {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void negateFallDamage(EntityDamageEvent e) {
+	public void negateFallDamage(@NotNull EntityDamageEvent e) {
 		if (!(e.getEntity() instanceof Player p)) return;
 		if (!getPlayers().contains(p) || !(e.getCause().equals(EntityDamageEvent.DamageCause.FALL) && !e.isCancelled()))
 			return;

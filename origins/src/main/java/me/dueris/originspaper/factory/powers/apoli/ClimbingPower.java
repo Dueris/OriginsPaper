@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -35,7 +36,7 @@ public class ClimbingPower extends PowerType {
 	}
 
 	@Override
-	public void tick(Player p) {
+	public void tick(@NotNull Player p) {
 		if (!((CraftWorld) p.getWorld()).getHandle().getBlockStates(((CraftPlayer) p).getHandle().getBoundingBox().inflate(0.1, 0, 0.1)).filter(state -> state.getBukkitMaterial().isCollidable()).toList().isEmpty()) {
 			if (isActive(p) && allowedToClimb.contains(p)) {
 				active_climbing.add(p);
@@ -45,7 +46,7 @@ public class ClimbingPower extends PowerType {
 	}
 
 	@EventHandler
-	public void jump(PlayerJumpEvent e) {
+	public void jump(@NotNull PlayerJumpEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			Player p = e.getPlayer();
 			allowedToClimb.add(p);

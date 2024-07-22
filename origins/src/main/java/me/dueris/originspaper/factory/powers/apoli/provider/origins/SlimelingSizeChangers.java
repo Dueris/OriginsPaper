@@ -16,6 +16,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 public class SlimelingSizeChangers implements Listener {
 
@@ -43,7 +44,7 @@ public class SlimelingSizeChangers implements Listener {
 	}
 
 	@EventHandler
-	public void respawn(PlayerPostRespawnEvent e) {
+	public void respawn(@NotNull PlayerPostRespawnEvent e) {
 		Player p = e.getPlayer();
 		if (!PowerHolderComponent.hasPower(p, "origins:slime_skin")) return;
 		p.getAttribute(Attribute.GENERIC_SCALE).setBaseValue(1);
@@ -54,7 +55,7 @@ public class SlimelingSizeChangers implements Listener {
 		protected static ResourceLocation powerReference = OriginsPaper.originIdentifier("slimeling_addsize");
 
 		@EventHandler(priority = EventPriority.HIGHEST)
-		public void powerGrant(PowerUpdateEvent e) {
+		public void powerGrant(@NotNull PowerUpdateEvent e) {
 			if (!e.isRemoved() && (e.getPower().getTag().equalsIgnoreCase(powerReference.toString()) || e.getPower().getTag().equalsIgnoreCase("origins:slime_skin"))) {
 				Player p = e.getPlayer();
 				double curSize = p.getAttribute(Attribute.GENERIC_SCALE).getBaseValue();
@@ -93,7 +94,7 @@ public class SlimelingSizeChangers implements Listener {
 		protected static ResourceLocation powerReference = OriginsPaper.originIdentifier("slimeling_removesize");
 
 		@EventHandler(priority = EventPriority.HIGHEST)
-		public void powerGrant(PowerUpdateEvent e) {
+		public void powerGrant(@NotNull PowerUpdateEvent e) {
 			if (!e.isRemoved() && (e.getPower().getTag().equalsIgnoreCase(powerReference.toString()) || e.getPower().getTag().equalsIgnoreCase("origins:slime_skin"))) {
 				Player p = e.getPlayer();
 				double curSize = p.getAttribute(Attribute.GENERIC_SCALE).getBaseValue();

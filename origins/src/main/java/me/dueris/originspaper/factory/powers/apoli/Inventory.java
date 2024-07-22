@@ -29,6 +29,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -64,7 +65,7 @@ public class Inventory extends PowerType implements KeyedPower {
 			.add("key", FactoryElement.class, new FactoryElement(new Gson().fromJson("{\"key\": \"key.origins.primary_active\"}", JsonElement.class)));
 	}
 
-	public static void saveInNbtIO(String tag, String data, Player player) {
+	public static void saveInNbtIO(String tag, String data, @NotNull Player player) {
 //        ServerPlayer p = ((CraftPlayer) player).getHandle();
 //        CompoundTag compoundRoot = p.saveWithoutId(new CompoundTag());
 //        if (!compoundRoot.contains("OriginData")) {
@@ -82,7 +83,7 @@ public class Inventory extends PowerType implements KeyedPower {
 		player.saveData();
 	}
 
-	private static String getInNbtIO(String tag, Player player) {
+	private static String getInNbtIO(String tag, @NotNull Player player) {
 //        ServerPlayer p = ((CraftPlayer) player).getHandle();
 //        CompoundTag compoundRoot = p.saveWithoutId(new CompoundTag());
 //        if (!compoundRoot.contains("OriginData")) {
@@ -103,11 +104,11 @@ public class Inventory extends PowerType implements KeyedPower {
 		return container.get(formattedTag, PersistentDataType.STRING);
 	}
 
-	private static String format(String tag) {
+	private static @NotNull String format(@NotNull String tag) {
 		return tag.replace(" ", "_").replace(":", "_").replace("/", "_").replace("\\", "_");
 	}
 
-	public static void storeItems(List<ItemStack> items, Player p, String tag) {
+	public static void storeItems(@NotNull List<ItemStack> items, @NotNull Player p, String tag) {
 		PersistentDataContainer data = p.getPersistentDataContainer();
 
 		if (items.size() == 0) {
@@ -142,7 +143,7 @@ public class Inventory extends PowerType implements KeyedPower {
 		}
 	}
 
-	public static ArrayList<ItemStack> getItems(Player p, String tag) {
+	public static @NotNull ArrayList<ItemStack> getItems(Player p, String tag) {
 		ArrayList<ItemStack> items = new ArrayList<>();
 
 		String encodedItems = getInNbtIO(tag, p);
@@ -189,7 +190,7 @@ public class Inventory extends PowerType implements KeyedPower {
 	}
 
 	@EventHandler
-	public void keytrigger(KeybindTriggerEvent e) {
+	public void keytrigger(@NotNull KeybindTriggerEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			if (isActive(e.getPlayer())) {
 				if (KeybindUtil.isKeyActive(getJsonKey().key(), e.getPlayer())) {
@@ -203,7 +204,7 @@ public class Inventory extends PowerType implements KeyedPower {
 	}
 
 	@EventHandler
-	public void deathTIMEEE(PlayerDeathEvent e) {
+	public void deathTIMEEE(@NotNull PlayerDeathEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			if (dropOnDeath) {
 				dropItems(e.getPlayer());
@@ -224,7 +225,7 @@ public class Inventory extends PowerType implements KeyedPower {
 	}
 
 	@EventHandler
-	public void onInventoryClose(InventoryCloseEvent e) {
+	public void onInventoryClose(@NotNull InventoryCloseEvent e) {
 		Player p = (Player) e.getPlayer();
 
 		for (Inventory power : PowerHolderComponent.getPowers(p, Inventory.class)) {
@@ -240,7 +241,7 @@ public class Inventory extends PowerType implements KeyedPower {
 
 	}
 
-	private boolean matches(InventoryView inventory, Inventory power) {
+	private boolean matches(@NotNull InventoryView inventory, @NotNull Inventory power) {
 		String title = power.getTitle();
 		return inventory.getTitle().equalsIgnoreCase(title) && inventory.getTopInventory().getType().equals(power.getContainerType().getBukkit());
 	}

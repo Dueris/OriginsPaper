@@ -26,7 +26,5 @@
     },
     "hidden": true
   },
-  "hidden": false,
-  "name": "Sprint",
-  "description": "Every 30 seconds you can sprint for 15 seconds unless your in a thunderstorm"
+  "hidden": false
 }

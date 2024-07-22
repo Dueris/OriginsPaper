@@ -45,7 +45,7 @@ public class ScreenNavigator implements Listener {
 	public static HashMap<Player, Layer> inChoosingLayer = new HashMap<>();
 	public static ArrayList<Player> orbChoosing = new ArrayList<>();
 	public static HashMap<Layer, List<ChoosingPage>> layerPages = new HashMap<>();
-	public static Object2IntMap<Player> currentDisplayingPage = new Object2IntOpenHashMap<>();
+	public static Object2IntMap<Player> currentDisplayingPage = new Object2IntOpenHashMap();
 	public static HashMap<ItemStack, BiConsumer<Player, Layer>> itemActions = new HashMap<>();
 	public static ArrayList<HumanEntity> tickCooldown = new ArrayList<>();
 
@@ -55,25 +55,23 @@ public class ScreenNavigator implements Listener {
 		nmeta.setDisplayName("Next Origin");
 		next.setItemMeta(nmeta);
 		NEXT_ITEMSTACK = next;
-
 		ItemStack back = new ItemStack(Material.ARROW);
 		ItemMeta bmeta = next.getItemMeta();
 		bmeta.setDisplayName("Previous Origin");
 		back.setItemMeta(bmeta);
 		BACK_ITEMSTACK = back;
-
 		itemActions.put(NEXT_ITEMSTACK, (player, layer) -> {
-			if (currentDisplayingPage.getInt(player) >= (layerPages.get(layer).size() - 1)) { // Go to beginning
+			if (currentDisplayingPage.getInt(player) >= layerPages.get(layer).size() - 1) {
 				currentDisplayingPage.put(player, 0);
 				player.getBukkitEntity().getOpenInventory().getTopInventory().setContents(layerPages.get(layer).get(0).createDisplay(player, layer));
-			} else { // Increment
+			} else {
 				int nextPage = currentDisplayingPage.getInt(player) + 1;
 				currentDisplayingPage.put(player, nextPage);
 				player.getBukkitEntity().getOpenInventory().getTopInventory().setContents(layerPages.get(layer).get(nextPage).createDisplay(player, layer));
 			}
 		});
 		itemActions.put(BACK_ITEMSTACK, (player, layer) -> {
-			if (currentDisplayingPage.getInt(player) <= 0) { // Set to top/end
+			if (currentDisplayingPage.getInt(player) <= 0) {
 				int top = layerPages.get(layer).size() - 1;
 				currentDisplayingPage.put(player, top);
 				player.getBukkitEntity().getOpenInventory().getTopInventory().setContents(layerPages.get(layer).get(top).createDisplay(player, layer));
@@ -88,13 +86,19 @@ public class ScreenNavigator implements Listener {
 	public static void open(Player player, Layer layer, boolean inOrbChoosing) {
 		inChoosingLayer.put(player, layer);
 		currentDisplayingPage.put(player, 0);
-		if (inOrbChoosing) orbChoosing.add(player);
+		if (inOrbChoosing) {
+			orbChoosing.add(player);
+		}
 
-		@NotNull Inventory gui = Bukkit.createInventory(player.getBukkitEntity(), 54,
-			Component.text(!layer.getGuiTitle().isEmpty() ? layer.getGuiTitle().getStringOrDefault("choose_origin", "Choosing - " + layer.getTag()) :
-				"Choosing - " + (!layer.getName().equalsIgnoreCase("craftapoli.layer.name.not_found") ? layer.getName() : layer.getTag()))
+		Inventory gui = Bukkit.createInventory(
+			player.getBukkitEntity(),
+			54,
+			Component.text(
+				!layer.getGuiTitle().isEmpty()
+					? layer.getGuiTitle().getStringOrDefault("choose_origin", "Choosing - " + layer.getTag())
+					: "Choosing - " + (layer.getTag())
+			)
 		);
-
 		gui.setContents(layerPages.get(layer).get(currentDisplayingPage.getInt(player)).createDisplay(player, layer));
 		OriginsPaper.scheduler.parent.scheduleMainThreadCall(() -> player.getBukkitEntity().openInventory(gui));
 	}
@@ -104,24 +108,28 @@ public class ScreenNavigator implements Listener {
 	}
 
 	private static boolean isSimilarEnough(ItemStack a, ItemStack b, boolean cD) {
-		if (b == null && a != null) return false;
-		if (a == null && b != null) return false;
-		if (a == null && b == null) return true;
-		return a.getType().equals(b.getType()) && (!cD || ((a.displayName() != null && b.displayName() != null && a.getItemMeta().displayName().equals(b.getItemMeta().displayName()))));
+		if (b == null && a != null) {
+			return false;
+		} else if (a == null && b != null) {
+			return false;
+		} else {
+			return a == null && b == null || a.getType().equals(b.getType())
+				&& (!cD || a.displayName() != null && b.displayName() != null && a.getItemMeta().displayName().equals(b.getItemMeta().displayName()));
+		}
 	}
 
 	@EventHandler
-	public void inventoryClose(InventoryCloseEvent e) {
-		if (inChoosingLayer.containsKey(getCraftPlayer(e.getPlayer()))) {
-			new BukkitRunnable() {
-				@Override
+	public void inventoryClose(final @NotNull InventoryCloseEvent e) {
+		if (inChoosingLayer.containsKey(this.getCraftPlayer(e.getPlayer()))) {
+			(new BukkitRunnable() {
 				public void run() {
-					if (e.getInventory().getType().equals(InventoryType.CRAFTING))
-						return; // Fixes IllegalArgumentException on player leave
-					if (!inChoosingLayer.containsKey(getCraftPlayer(e.getPlayer()))) return; // Check again just in case
-					e.getPlayer().openInventory(e.getInventory());
+					if (!e.getInventory().getType().equals(InventoryType.CRAFTING)) {
+						if (ScreenNavigator.inChoosingLayer.containsKey(ScreenNavigator.this.getCraftPlayer(e.getPlayer()))) {
+							e.getPlayer().openInventory(e.getInventory());
+						}
+					}
 				}
-			}.runTaskLater(OriginsPaper.getPlugin(), 1);
+			}).runTaskLater(OriginsPaper.getPlugin(), 1L);
 		}
 	}
 
@@ -130,8 +138,8 @@ public class ScreenNavigator implements Listener {
 	}
 
 	@EventHandler
-	public void clickAction(InventoryClickEvent e) {
-		if (inChoosingLayer.containsKey(getCraftPlayer(e.getWhoClicked())) && e.getCurrentItem() != null) {
+	public void clickAction(final @NotNull InventoryClickEvent e) {
+		if (inChoosingLayer.containsKey(this.getCraftPlayer(e.getWhoClicked())) && e.getCurrentItem() != null) {
 			e.setCancelled(true);
 			if (tickCooldown.contains(e.getWhoClicked())) return;
 			e.getWhoClicked().getWorld().playSound(e.getWhoClicked().getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
@@ -143,7 +151,7 @@ public class ScreenNavigator implements Listener {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						inChoosingLayer.remove(getCraftPlayer(e.getWhoClicked()));
+						ScreenNavigator.inChoosingLayer.remove(ScreenNavigator.this.getCraftPlayer(e.getWhoClicked()));
 						e.getWhoClicked().closeInventory();
 					}
 				}.runTaskLater(OriginsPaper.getPlugin(), 1);
@@ -164,7 +172,7 @@ public class ScreenNavigator implements Listener {
 	}
 
 	@EventHandler
-	public void onOrbClick(PlayerInteractEvent e) {
+	public void onOrbClick(@NotNull PlayerInteractEvent e) {
 		org.bukkit.entity.Player p = e.getPlayer();
 		if (OriginConfiguration.getConfiguration().getBoolean("orb-of-origins")) {
 			if (e.getAction().isRightClick()) {

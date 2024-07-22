@@ -21,7 +21,6 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -45,7 +44,6 @@ import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
@@ -259,16 +257,15 @@ public class EntityConditions {
 					entity.getWorld().getBlockAt(CraftLocation.toBukkit(BlockPos.containing(entity.getX(), entity.getHandle().getBoundingBox().minY - 0.5000001D, entity.getZ())))));
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("attribute"), (data, entity) -> {
-			double attrValue = 0F;
-			if (entity.getHandle() instanceof LivingEntity living) {
-				AttributeInstance attributeInstance = living.getAttribute(
-					living.level().registryAccess().registry(net.minecraft.core.registries.Registries.ATTRIBUTE).get().getHolder(data.getResourceLocation("attribute")).get()
-				);
+			double attributeValue = 0.0;
+			if (entity.getHandle() instanceof LivingEntity livingEntity) {
+				AttributeInstance attributeInstance = livingEntity.getAttribute(data.registryEntry("attribute", net.minecraft.core.registries.Registries.ATTRIBUTE));
 				if (attributeInstance != null) {
-					attrValue = attributeInstance.getValue();
+					attributeValue = attributeInstance.getValue();
 				}
 			}
-			return Comparison.fromString(data.getString("comparison")).compare(attrValue, data.getNumber("compare_to").getDouble());
+
+			return Comparison.fromString(data.getString("comparison")).compare(attributeValue, data.getNumber("compare_to").getDouble());
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("swimming"), (data, entity) -> {
 			return entity.getHandle().isSwimming();
@@ -561,33 +558,17 @@ public class EntityConditions {
 			return !isEntityMoving(entity);
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("enchantment"), (data, entity) -> {
-			int value = 0;
-			if (entity.getHandle() instanceof LivingEntity le) {
-
-				Registry<Enchantment> enchantmentRegistry = entity.getHandle().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
-
-				ResourceKey<Enchantment> enchantmentKey = ResourceKey.create(net.minecraft.core.registries.Registries.ENCHANTMENT, data.getResourceLocation("enchantment"));
-				Enchantment enchantment = enchantmentRegistry.getOrThrow(enchantmentKey);
-
-				Holder<Enchantment> enchantmentEntry = enchantmentRegistry.wrapAsHolder(enchantment);
-
-				String calculation = data.getStringOrDefault("calculation", "sum");
-
-				switch (calculation) {
-					case "sum":
-						for (ItemStack stack : enchantment.getSlotItems(le).values()) {
-							value += EnchantmentHelper.getItemEnchantmentLevel(enchantmentEntry, stack);
-						}
-						break;
-					case "max":
-						value = EnchantmentHelper.getEnchantmentLevel(enchantmentEntry, le);
-						break;
-					default:
-						OriginsPaper.getPlugin().getLog4JLogger().error("Error in \"enchantment\" entity condition, undefined calculation type: \"{}\".", calculation);
-						break;
-				}
+			Registry<Enchantment> enchantmentRegistry = entity.getHandle().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
+			ResourceKey<Enchantment> enchantmentKey = data.resourceKey("enchantment", net.minecraft.core.registries.Registries.ENCHANTMENT);
+			Util.Calculation calculation = data.getEnumValueOrDefault("calculation", Util.Calculation.class, Util.Calculation.SUM);
+			int enchantmentLevel = 0;
+			if (entity.getHandle() instanceof LivingEntity livingEntity) {
+				enchantmentLevel = calculation.queryTotalLevel(
+					livingEntity, enchantmentRegistry.getHolder(enchantmentKey).orElseThrow(), false
+				);
 			}
-			return Comparison.fromString(data.getString("comparison")).compare(value, data.getNumber("compare_to").getInt());
+
+			return Comparison.fromString(data.getString("comparison")).compare(enchantmentLevel, data.getNumber("compare_to").getInt());
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("riding"), (data, entity) -> {
 			if (entity.getHandle().isPassenger()) {

@@ -18,7 +18,6 @@ public class RemoveFromSetEvent extends Event {
 		return handlers;
 	}
 
-	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}

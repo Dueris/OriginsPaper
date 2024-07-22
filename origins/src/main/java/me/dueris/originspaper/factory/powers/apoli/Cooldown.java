@@ -2,9 +2,9 @@ package me.dueris.originspaper.factory.powers.apoli;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
+import me.dueris.calio.util.holders.Pair;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.data.types.HudRender;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
@@ -58,25 +58,15 @@ public class Cooldown extends PowerType implements CooldownPower {
 		Resource.Bar bar = new Resource.Bar(power, player);
 		Resource.currentlyDisplayed.putIfAbsent(player, new ArrayList<>());
 		Resource.currentlyDisplayed.get(player).add(bar);
-		Pair<KeyedBossBar, ResourcePower> pair = new Pair<>() {
-			@Override
-			public KeyedBossBar left() {
-				return bar.renderedBar;
-			}
-
-			@Override
-			public ResourcePower right() {
-				return power;
-			}
-		};
+		Pair<KeyedBossBar, ResourcePower> pair = new Pair<>(bar.renderedBar, power);
 		cooldowns.get(player).add(pair);
-		timingsTracker.put(pair.key(), new ModifiableFloatPair(amt, amt));
+		timingsTracker.put(pair.first(), new ModifiableFloatPair(amt, amt));
 	}
 
 	public static boolean isInCooldown(Player player, ResourcePower power) {
 		cooldowns.putIfAbsent(player, new ArrayList<>());
 		for (Pair<KeyedBossBar, ResourcePower> pair : cooldowns.get(player)) {
-			if (pair.right().getTag().equalsIgnoreCase(power.getTag())) return true;
+			if (pair.second().getTag().equalsIgnoreCase(power.getTag())) return true;
 		}
 		return false;
 	}
@@ -102,7 +92,7 @@ public class Cooldown extends PowerType implements CooldownPower {
 	@Override
 	public void tick() {
 		Util.collectValues(new ArrayList<>(cooldowns.values())).forEach((pair) -> {
-			KeyedBossBar bar = pair.left();
+			KeyedBossBar bar = pair.first();
 			String keyString = bar.getKey().asString();
 			if (ticked.contains(keyString)) {
 				return;
@@ -144,7 +134,7 @@ public class Cooldown extends PowerType implements CooldownPower {
 			}
 		}
 
-		timingsTracker.remove(pair.key());
+		timingsTracker.remove(pair.first());
 	}
 
 	@Override

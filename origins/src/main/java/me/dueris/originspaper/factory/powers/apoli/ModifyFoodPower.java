@@ -21,6 +21,7 @@ import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,7 @@ public class ModifyFoodPower extends PowerType implements Listener {
 
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void saturationorwhateverRUN(PlayerItemConsumeEvent e) {
+	public void saturationorwhateverRUN(@NotNull PlayerItemConsumeEvent e) {
 		Player player = e.getPlayer();
 		if (getPlayers().contains(player)) {
 			if (isActive(player) && ConditionExecutor.testItem(itemCondition, e.getItem())) {
@@ -111,7 +112,7 @@ public class ModifyFoodPower extends PowerType implements Listener {
 	}
 
 	@EventHandler
-	public void effectAddEvent(EntityPotionEffectEvent e) {
+	public void effectAddEvent(@NotNull EntityPotionEffectEvent e) {
 		if (e.getEntity() instanceof Player p && e.getCause().equals(EntityPotionEffectEvent.Cause.FOOD) && preventEffects.contains(p)) {
 			e.setCancelled(true);
 			e.setOverride(false);

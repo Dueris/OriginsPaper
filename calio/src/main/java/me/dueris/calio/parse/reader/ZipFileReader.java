@@ -18,9 +18,9 @@ public class ZipFileReader implements FileReader {
 	@Override
 	public List<String> listFiles() {
 		List<String> fileList = new ArrayList<>();
-		Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
+		Enumeration<? extends ZipEntry> entries = this.zipFile.entries();
 		boolean hasPackMcmeta = false;
+
 		while (entries.hasMoreElements()) {
 			ZipEntry entry = entries.nextElement();
 			if (!entry.isDirectory() && "pack.mcmeta".equals(entry.getName())) {
@@ -31,25 +31,27 @@ public class ZipFileReader implements FileReader {
 
 		if (!hasPackMcmeta) {
 			return new ArrayList<>();
-		}
+		} else {
+			entries = this.zipFile.entries();
 
-		entries = zipFile.entries();
-		while (entries.hasMoreElements()) {
-			ZipEntry entry = entries.nextElement();
-			if (!entry.isDirectory()) {
-				fileList.add(entry.getName());
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = entries.nextElement();
+				if (!entry.isDirectory()) {
+					fileList.add(entry.getName());
+				}
 			}
-		}
 
-		return fileList;
+			return fileList;
+		}
 	}
 
 	@Override
 	public InputStream getFileStream(String name) throws IOException {
-		ZipEntry entry = zipFile.getEntry(name);
+		ZipEntry entry = this.zipFile.getEntry(name);
 		if (entry == null) {
 			throw new IOException("File not found in ZIP: " + name);
+		} else {
+			return this.zipFile.getInputStream(entry);
 		}
-		return zipFile.getInputStream(entry);
 	}
 }

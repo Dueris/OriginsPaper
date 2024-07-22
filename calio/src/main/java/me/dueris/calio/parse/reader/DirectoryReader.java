@@ -17,24 +17,21 @@ public class DirectoryReader implements FileReader {
 	@Override
 	public List<String> listFiles() throws IOException {
 		List<String> fileList = new ArrayList<>();
-
-		if (!Files.exists(directory.resolve("pack.mcmeta"))) {
+		if (!Files.exists(this.directory.resolve("pack.mcmeta"))) {
 			return new ArrayList<>();
+		} else {
+			Files.walk(this.directory).forEach(path -> {
+				if (Files.isRegularFile(path)) {
+					fileList.add(this.directory.relativize(path).toString());
+				}
+			});
+			return fileList;
 		}
-
-		Files.walk(directory).forEach(path -> {
-			if (Files.isRegularFile(path)) {
-				fileList.add(directory.relativize(path).toString());
-			}
-		});
-
-		return fileList;
 	}
 
 	@Override
 	public InputStream getFileStream(String name) throws IOException {
-		Path filePath = directory.resolve(name);
+		Path filePath = this.directory.resolve(name);
 		return Files.newInputStream(filePath);
 	}
 }
-

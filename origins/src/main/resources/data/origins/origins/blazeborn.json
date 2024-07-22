@@ -11,7 +11,5 @@
     "item": "minecraft:blaze_powder"
   },
   "order": 1,
-  "impact": 3,
-  "name": "Blazeborn",
-  "description": "Late descendants of the Blaze, the Blazeborn are naturally immune to the perils of the Nether"
+  "impact": 3
 }

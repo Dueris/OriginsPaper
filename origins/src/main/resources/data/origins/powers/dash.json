@@ -23,7 +23,5 @@
     "key": "key.origins.primary_active",
     "continuous": false
   },
-  "hidden": false,
-  "name": "Warriors Charge",
-  "description": "Every 30 seconds you can dash forward with great speed"
+  "hidden": false
 }

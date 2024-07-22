@@ -13,17 +13,13 @@ public class OriginDataContainer {
 
 	public static void loadData() {
 		for (Player p : Bukkit.getOnlinePlayers()) {
-			OriginDataContainer.loadData(p);
+			loadData(p);
 		}
 	}
 
 	public static void loadData(Player player) {
 		dataContainer.put(
-			player,
-			player.getPersistentDataContainer().get(
-				new NamespacedKey(OriginsPaper.getPlugin(), "originLayer"),
-				PersistentDataType.STRING
-			)
+			player, player.getPersistentDataContainer().get(new NamespacedKey(OriginsPaper.getPlugin(), "originLayer"), PersistentDataType.STRING)
 		);
 	}
 

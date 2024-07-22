@@ -1,7 +1,5 @@
 {
   "type": "origins:multiple",
-  "name": "Nether hide",
-  "description": "You have a stronger skin than most, you get 2 more armor bars zombify in the overworld",
   "hidden": false,
   "armor": {
     "type": "origins:attribute",

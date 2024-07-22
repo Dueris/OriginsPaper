@@ -5,17 +5,14 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
-import me.dueris.originspaper.util.Util;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.jetbrains.annotations.NotNull;
 
 // TODO: make damage type work without modifying player velocity
 public class DamageOverTime extends PowerType {
@@ -41,7 +38,7 @@ public class DamageOverTime extends PowerType {
 	}
 
 	@EventHandler
-	public void erk(PlayerDeathEvent e) {
+	public void erk(@NotNull PlayerDeathEvent e) {
 		if (e.getDeathMessage().equals("death.attack.hurt_by_water")) {
 			if (e.getPlayer().getName().equals("Optima1")) {
 				e.setDeathMessage("Optima1 got too thirsty");

@@ -21,16 +21,16 @@ public class OriginChangeEvent extends PlayerEvent {
 		return handlers;
 	}
 
-	@Override
-	public @NotNull HandlerList getHandlers() {
+	@NotNull
+	public HandlerList getHandlers() {
 		return handlers;
 	}
 
 	public Origin getOrigin() {
-		return origin;
+		return this.origin;
 	}
 
 	public boolean isFromOrb() {
-		return fromOrb;
+		return this.fromOrb;
 	}
 }

@@ -27,25 +27,27 @@ public class AccessorKey<T extends Registrable> {
 		this.ofType = ofType;
 	}
 
-	public AccessorKey(String directory, int priority, boolean usesTypeDefiner, RegistryKey<T> registryKey, Class<? extends FactoryHolder> ofType, @Nullable String defaultType) {
+	public AccessorKey(
+		String directory, int priority, boolean usesTypeDefiner, RegistryKey<T> registryKey, Class<? extends FactoryHolder> ofType, @Nullable String defaultType
+	) {
 		this(directory, priority, usesTypeDefiner, registryKey, ofType);
 		this.defaultType = defaultType;
 	}
 
 	public String getDirectory() {
-		return directory;
+		return this.directory;
 	}
 
 	public boolean usesTypeDefiner() {
-		return usesTypeDefiner;
+		return this.usesTypeDefiner;
 	}
 
 	public Class<? extends FactoryHolder> getOfType() {
-		return ofType;
+		return this.ofType;
 	}
 
 	public int getPriority() {
-		return priority;
+		return this.priority;
 	}
 
 	public RegistryKey<T> getRegistryKey() {
@@ -54,6 +56,6 @@ public class AccessorKey<T extends Registrable> {
 
 	@Nullable
 	public String getDefaultType() {
-		return defaultType;
+		return this.defaultType;
 	}
 }

@@ -17,7 +17,6 @@ public class OriginChoosePromptEvent extends PlayerEvent {
 		return handlers;
 	}
 
-	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}

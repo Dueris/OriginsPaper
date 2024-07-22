@@ -22,44 +22,34 @@ public class AttributeExecuteEvent extends PlayerEvent {
 		return handlers;
 	}
 
-	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}
 
 	public Attribute getAttribute() {
-		return attribute;
+		return this.attribute;
 	}
 
 	public PowerType getPower() {
-		return power;
+		return this.power;
 	}
 
-	@Override
 	public String toString() {
-		return "AttributeExecuteEvent{" +
-			"attribute=" + attribute +
-			", power=" + power +
-			", player=" + player +
-			'}';
+		return "AttributeExecuteEvent{attribute=" + this.attribute + ", power=" + this.power + ", player=" + this.player + "}";
 	}
 
-	@Override
 	public boolean equals(Object obj) {
 		return super.equals(obj);
 	}
 
-	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
 
-	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
 
-	@Override
 	public boolean callEvent() {
 		return super.callEvent();
 	}

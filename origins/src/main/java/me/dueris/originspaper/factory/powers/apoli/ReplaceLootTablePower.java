@@ -57,14 +57,14 @@ public class ReplaceLootTablePower extends PowerType {
 	}
 
 	@EventHandler
-	public void inventoryPopulate(LootGenerateEvent e) {
+	public void inventoryPopulate(@NotNull LootGenerateEvent e) {
 		if (getPlayers().contains(e.getEntity())) {
 			e.setLoot(modifyLoot(e.getLoot(), e.getLootTable().getKey(), e.getWorld(), e.getEntity().getLocation()));
 		}
 	}
 
 	@EventHandler
-	public void dropEvent(EntityDeathEvent e) {
+	public void dropEvent(@NotNull EntityDeathEvent e) {
 		if ((e.getEntity().getKiller() != null)) {
 			Player p = e.getEntity().getKiller();
 			String key = "minecraft:entities/" + e.getEntityType().getKey().getKey();
@@ -78,7 +78,7 @@ public class ReplaceLootTablePower extends PowerType {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void blockDropEvent(BlockDropItemEvent e) {
+	public void blockDropEvent(@NotNull BlockDropItemEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			String formattedKey = "minecraft:blocks/" + e.getBlockState().getType().getKey().getKey();
 			List<ItemStack> drops = new ArrayList<>();

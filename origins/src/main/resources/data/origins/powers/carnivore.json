@@ -30,7 +30,5 @@
       }
     ]
   },
-  "name": "Carnivore",
-  "description": "You diet is restricted to meat, you can't eat vegetables",
   "hidden": false
 }

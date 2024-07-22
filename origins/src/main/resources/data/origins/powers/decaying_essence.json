@@ -1,8 +1,6 @@
 {
   "type": "origins:action_over_time",
   "hidden": false,
-  "name": "Decaying Essence",
-  "description": "Over time your armor slowly disintegrates",
   "interval": 112,
   "entity_action": {
     "type": "origins:and",

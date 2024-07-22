@@ -10,6 +10,7 @@ import me.dueris.originspaper.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -46,7 +47,7 @@ public class ModifyAirSpeedPower extends ModifierPower {
 	}
 
 	@EventHandler
-	public void update(PowerUpdateEvent e) {
+	public void update(@NotNull PowerUpdateEvent e) {
 		Player p = e.getPlayer();
 		if (base.containsKey(p)) {
 			p.setFlySpeed(base.get(p));

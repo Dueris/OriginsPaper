@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BinaryOperator;
 
@@ -24,7 +25,7 @@ public class ModifyHealingPower extends ModifierPower implements Listener {
 	}
 
 	@EventHandler
-	public void runD(EntityRegainHealthEvent e) {
+	public void runD(@NotNull EntityRegainHealthEvent e) {
 		if (e.getEntity() instanceof Player p) {
 			if (!getPlayers().contains(p)) return;
 			for (Modifier modifier : getModifiers()) {

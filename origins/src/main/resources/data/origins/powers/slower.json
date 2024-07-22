@@ -11,7 +11,5 @@
   "condition": {
     "type": "origins:in_thunderstorm"
   },
-  "hidden": false,
-  "name": "Slower",
-  "description": "You are slower than the normal human"
+  "hidden": false
 }

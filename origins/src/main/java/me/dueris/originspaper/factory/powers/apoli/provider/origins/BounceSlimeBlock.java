@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.world.GenericGameEvent;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -24,7 +25,7 @@ public class BounceSlimeBlock implements Listener, PowerProvider {
 	protected static ResourceLocation powerReference = OriginsPaper.originIdentifier("slime_block_bounce");
 
 	@EventHandler
-	public void gameEvent(GenericGameEvent event) {
+	public void gameEvent(@NotNull GenericGameEvent event) {
 		if (event.getEvent().equals(GameEvent.HIT_GROUND)) {
 			if (event.getEntity() instanceof Player player) {
 				me.dueris.originspaper.event.PlayerHitGroundEvent playerHitGroundEvent = new me.dueris.originspaper.event.PlayerHitGroundEvent(player);
@@ -49,7 +50,7 @@ public class BounceSlimeBlock implements Listener, PowerProvider {
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void move(PlayerMoveEvent e) {
+	public void move(@NotNull PlayerMoveEvent e) {
 		if (!e.isCancelled()) {
 			if (e.getPlayer().isOnGround()) return;
 			lastLoc.put(e.getPlayer(), e.getFrom());

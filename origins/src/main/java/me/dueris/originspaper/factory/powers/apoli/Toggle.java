@@ -14,6 +14,7 @@ import me.dueris.originspaper.util.KeybindUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class Toggle extends PowerType implements KeyedPower {
 	}
 
 	@EventHandler
-	public void inContinuousFix(KeybindTriggerEvent e) {
+	public void inContinuousFix(@NotNull KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			in_continuous.putIfAbsent(p, new ArrayList<>());
@@ -55,7 +56,7 @@ public class Toggle extends PowerType implements KeyedPower {
 	}
 
 	@EventHandler
-	public void activeByDefaultEvent(OriginChangeEvent e) {
+	public void activeByDefaultEvent(@NotNull OriginChangeEvent e) {
 		e.getOrigin().getPowerContainers().forEach(power -> {
 			if (power instanceof Toggle toggle && toggle.isActiveByDefault()) {
 				in_continuous.putIfAbsent(e.getPlayer(), new ArrayList<>());
@@ -68,7 +69,7 @@ public class Toggle extends PowerType implements KeyedPower {
 	}
 
 	@EventHandler
-	public void keybindPress(KeybindTriggerEvent e) {
+	public void keybindPress(@NotNull KeybindTriggerEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			if (isActive(p)) {
@@ -79,7 +80,7 @@ public class Toggle extends PowerType implements KeyedPower {
 		}
 	}
 
-	public void execute(Player p, KeyedPower power) {
+	public void execute(Player p, @NotNull KeyedPower power) {
 		in_continuous.putIfAbsent(p, new ArrayList<>());
 		String key = power.getJsonKey().key();
 

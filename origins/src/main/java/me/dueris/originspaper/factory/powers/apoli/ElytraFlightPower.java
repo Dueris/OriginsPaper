@@ -27,6 +27,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.world.GenericGameEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -47,7 +48,7 @@ public class ElytraFlightPower extends PowerType {
 	}
 
 	@EventHandler
-	public void fixChangeConstantFlight(PowerUpdateEvent e) {
+	public void fixChangeConstantFlight(@NotNull PowerUpdateEvent e) {
 		if (!(e.getPower().getType().equalsIgnoreCase(getType()) && e.isRemoved())) return;
 		if (glidingPlayers.contains(e.getPlayer())) {
 			glidingPlayers.remove(e.getPlayer());
@@ -56,8 +57,8 @@ public class ElytraFlightPower extends PowerType {
 	}
 
 	@EventHandler
-	@SuppressWarnings({"unchecked", "Not scheduled yet"})
-	public void executeFlight(PlayerToggleFlightEvent e) {
+	@SuppressWarnings({"Not scheduled yet"})
+	public void executeFlight(@NotNull PlayerToggleFlightEvent e) {
 		Player p = e.getPlayer();
 		if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
 		if (getPlayers().contains(e.getPlayer())) {
@@ -88,7 +89,7 @@ public class ElytraFlightPower extends PowerType {
 	}
 
 	@EventHandler
-	public void onBoost(PlayerInteractEvent event) {
+	public void onBoost(@NotNull PlayerInteractEvent event) {
 		if (event.getAction() == Action.RIGHT_CLICK_AIR) {
 			if (event.getItem().getType().equals(Material.FIREWORK_ROCKET)) {
 				if (getPlayers().contains(event.getPlayer()) && glidingPlayers.contains(event.getPlayer().getUniqueId())) {
@@ -101,7 +102,7 @@ public class ElytraFlightPower extends PowerType {
 	}
 
 	@EventHandler
-	public void recreateFallDamage(GenericGameEvent e) {
+	public void recreateFallDamage(@NotNull GenericGameEvent e) {
 		if (e.getEvent().equals(GameEvent.HIT_GROUND)) {
 			if (e.getEntity() instanceof Player p) {
 				if (p.getGameMode().equals(GameMode.CREATIVE)) return;

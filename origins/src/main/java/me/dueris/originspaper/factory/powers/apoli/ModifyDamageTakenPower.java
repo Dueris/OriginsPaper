@@ -16,6 +16,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BinaryOperator;
 
@@ -45,7 +46,7 @@ public class ModifyDamageTakenPower extends ModifierPower implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void damageEVENT(EntityDamageEvent e) {
+	public void damageEVENT(@NotNull EntityDamageEvent e) {
 		if (e.isCancelled()) return;
 		if (e.getEntity() instanceof Player p && getPlayers().contains(p)) {
 			try {
@@ -68,7 +69,7 @@ public class ModifyDamageTakenPower extends ModifierPower implements Listener {
 		}
 	}
 
-	public void runSetDMG(EntityDamageEvent e, String operation, Object value) {
+	public void runSetDMG(@NotNull EntityDamageEvent e, String operation, Object value) {
 		double damage = e.getDamage();
 
 		BinaryOperator<Float> floatOperator = Util.getOperationMappingsFloat().get(operation);

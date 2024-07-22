@@ -4,7 +4,5 @@
     "minecraft:poison",
     "minecraft:hunger"
   ],
-  "name": "Hotblooded",
-  "description": "Due to your hot body, venoms burn up, making you immune to poison and hunger status effects",
   "hidden": false
 }

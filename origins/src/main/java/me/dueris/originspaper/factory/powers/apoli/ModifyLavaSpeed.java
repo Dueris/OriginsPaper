@@ -16,6 +16,7 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -36,7 +37,7 @@ public class ModifyLavaSpeed extends PowerType {
 	}
 
 	@Override
-	public void tick(Player p) {
+	public void tick(@NotNull Player p) {
 		Block be = p.getLocation().getBlock();
 		if (!getPlayers().contains(p) || p.isFlying() || be == null ||
 			!p.getLocation().getBlock().isLiquid() || !p.isSprinting()) return;

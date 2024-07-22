@@ -44,14 +44,14 @@ public class FactoryNumber {
 	}
 
 	public int round() {
-		return Math.round(getFloat());
+		return Math.round(this.getFloat());
 	}
 
 	public float multiply(float multiplyBy) {
-		return getFloat() * multiplyBy;
+		return this.getFloat() * multiplyBy;
 	}
 
 	public boolean isNegative() {
-		return getFloat() < 0;
+		return this.getFloat() < 0.0F;
 	}
 }

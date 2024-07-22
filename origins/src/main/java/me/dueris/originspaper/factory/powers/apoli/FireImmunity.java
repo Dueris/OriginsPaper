@@ -7,6 +7,7 @@ import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class FireImmunity extends PowerType {
 
@@ -19,7 +20,7 @@ public class FireImmunity extends PowerType {
 	}
 
 	@EventHandler
-	public void OnDamageFire(EntityDamageEvent e) {
+	public void OnDamageFire(@NotNull EntityDamageEvent e) {
 		if (e.getEntity().isDead()) return;
 		if (e.getEntity() instanceof Player p) {
 			if (getPlayers().contains(p)) {

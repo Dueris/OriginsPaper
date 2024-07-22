@@ -12,7 +12,5 @@
       }
     }
   },
-  "hidden": false,
-  "name": "Stinger",
-  "description": "Upon hitting an entity, they have a 35% chance of being poisoned"
+  "hidden": false
 }

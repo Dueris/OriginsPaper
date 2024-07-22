@@ -8,14 +8,12 @@ import me.dueris.originspaper.factory.powers.holder.PowerType;
 
 @RequiresPlugin(pluginName = "skinsrestorer")
 public class TestPluginRequirementPower extends TestPower {
-
 	public TestPluginRequirementPower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, String test) {
 		super(name, description, hidden, condition, loading_priority, test);
 	}
 
 	public static FactoryData registerComponents(FactoryData data) {
-		return PowerType.registerComponents(data)
-			.ofNamespace(OriginsPaper.apoliIdentifier("requires_plugin"));
+		return PowerType.registerComponents(data).ofNamespace(OriginsPaper.apoliIdentifier("requires_plugin"));
 	}
 
 	@Override

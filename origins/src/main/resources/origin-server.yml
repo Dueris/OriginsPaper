@@ -25,6 +25,8 @@ max-loader-threads: 6
 # Shows the command output for actions and conditions that use it
 show-command-output: true
 
+language: en_us
+
 # Any origin namespacedkey added here will be disabled and will be unchoosable
 # Example:
 # disabled-origins: [

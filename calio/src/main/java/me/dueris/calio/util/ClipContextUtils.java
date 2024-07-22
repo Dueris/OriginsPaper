@@ -1,51 +1,38 @@
 package me.dueris.calio.util;
 
-import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.ClipContext.Block;
+import net.minecraft.world.level.ClipContext.Fluid;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ClipContextUtils {
 
-	/**
-	 * Returns the corresponding ClipContext.Fluid enum value based on the given string.
-	 *
-	 * @param string the string representing the desired ClipContext.Fluid value
-	 *               (case insensitive)
-	 * @return the corresponding ClipContext.Fluid enum value, or null if the string
-	 * does not match any valid value
-	 */
-	public static ClipContext.Fluid getFluidHandling(String string) {
-		switch (string.toLowerCase()) {
-			case "any" -> {
-				return ClipContext.Fluid.ANY;
-			}
-			case "source_only" -> {
-				return ClipContext.Fluid.SOURCE_ONLY;
-			}
-			default -> {
-				return ClipContext.Fluid.NONE;
-			}
+	@Contract(pure = true)
+    public static Fluid getFluidHandling(@NotNull String string) {
+		String var1 = string.toLowerCase();
+		switch (var1) {
+			case "any":
+				return Fluid.ANY;
+			case "source_only":
+				return Fluid.SOURCE_ONLY;
+			default:
+				return Fluid.NONE;
 		}
 	}
 
-	/**
-	 * Returns the corresponding ClipContext.Block value based on the input string.
-	 *
-	 * @param string the string representing the shape type
-	 * @return the corresponding ClipContext.Block value, or null if the input string is not recognized
-	 */
-	public static ClipContext.Block getShapeType(String string) {
-		switch (string.toLowerCase()) {
-			case "collider" -> {
-				return ClipContext.Block.COLLIDER;
-			}
-			case "outline" -> {
-				return ClipContext.Block.OUTLINE;
-			}
-			case "visual" -> {
-				return ClipContext.Block.VISUAL;
-			}
-			default -> {
+	@Contract(pure = true)
+    public static @Nullable Block getShapeType(@NotNull String string) {
+		String var1 = string.toLowerCase();
+		switch (var1) {
+			case "collider":
+				return Block.COLLIDER;
+			case "outline":
+				return Block.OUTLINE;
+			case "visual":
+				return Block.VISUAL;
+			default:
 				return null;
-			}
 		}
 	}
 }

@@ -1,10 +1,18 @@
 package me.dueris.originspaper.util.console;
 
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
+import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.craftbukkit.conversations.ConversationTracker;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -81,5 +89,39 @@ public class OriginConsoleSender extends OriginServerCommandSender implements Co
 	@Override
 	public boolean hasPermission(org.bukkit.permissions.Permission perm) {
 		return true;
+	}
+
+	public static class NMSSender {
+
+		public static void executeNMSCommand(@Nullable Entity entity, Vec3 hitPosition, String command) {
+			if (command != null) {
+				MinecraftServer server = entity.getServer();
+				if (server != null) {
+					CommandSourceStack source = new CommandSourceStack(
+						entity == null ? CommandSource.NULL : entity,
+						hitPosition,
+						entity.getRotationVector(),
+						entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
+						4,
+						entity.getName().getString(),
+						entity.getName(),
+						entity.getServer(),
+						entity
+					)
+						.withSuppressedOutput();
+
+					try {
+						server.getCommands().performPrefixedCommand(source, command);
+					} catch (Exception var8) {
+						try {
+							OriginConsoleSender serverCommandSender = new OriginConsoleSender();
+							Bukkit.dispatchCommand(serverCommandSender, command);
+						} catch (Exception var7) {
+							var7.printStackTrace();
+						}
+					}
+				}
+			}
+		}
 	}
 }

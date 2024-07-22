@@ -14,6 +14,7 @@ import me.dueris.originspaper.factory.data.types.JsonKeybind;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.util.KeybindUtil;
 import org.bukkit.event.EventHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class ActiveSelf extends PowerType implements KeyedPower, CooldownPower {
 	private final FactoryJsonObject entityAction;
@@ -38,7 +39,7 @@ public class ActiveSelf extends PowerType implements KeyedPower, CooldownPower {
 	}
 
 	@EventHandler
-	public void k(KeybindTriggerEvent e) {
+	public void k(@NotNull KeybindTriggerEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			if (Cooldown.isInCooldown(e.getPlayer(), this)) return;
 			if (isActive(e.getPlayer())) {

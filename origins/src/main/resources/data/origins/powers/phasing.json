@@ -22,7 +22,5 @@
     "type": "origins:power_active",
     "power": "origins:phantomize"
   },
-  "name": "Phasing",
-  "description": "While phantomized, you can walk through solid material, except Obsidian",
   "hidden": false
 }

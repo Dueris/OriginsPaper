@@ -7,6 +7,7 @@ import me.dueris.originspaper.event.PowerUpdateEvent;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class PreventEntityCollision extends PowerType {
 
@@ -19,12 +20,12 @@ public class PreventEntityCollision extends PowerType {
 	}
 
 	@Override
-	public void tick(Player p) {
+	public void tick(@NotNull Player p) {
 		p.setCollidable(isActive(p));
 	}
 
 	@EventHandler
-	public void update(PowerUpdateEvent e) {
+	public void update(@NotNull PowerUpdateEvent e) {
 		e.getPlayer().setCollidable(true);
 	}
 

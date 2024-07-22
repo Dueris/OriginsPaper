@@ -8,6 +8,7 @@ import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 public class Invisibility extends PowerType {
 
@@ -26,7 +27,7 @@ public class Invisibility extends PowerType {
 		p.setInvisible(shouldSetInvisible || p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY));
 	}
 
-	public void doesntHavePower(Player p) {
+	public void doesntHavePower(@NotNull Player p) {
 		if (p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY)) {
 			return;
 		}
@@ -34,7 +35,7 @@ public class Invisibility extends PowerType {
 	}
 
 	@EventHandler
-	public void powerUpdate(PowerUpdateEvent e) {
+	public void powerUpdate(@NotNull PowerUpdateEvent e) {
 		if (!getPlayers().contains(e.getPlayer())) {
 			doesntHavePower(e.getPlayer());
 			return;

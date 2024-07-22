@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class PreventItemPickup extends PowerType implements Listener {
 	private final FactoryJsonObject itemCondition;
@@ -32,7 +33,7 @@ public class PreventItemPickup extends PowerType implements Listener {
 	}
 
 	@EventHandler
-	public void pickup(PlayerAttemptPickupItemEvent e) {
+	public void pickup(@NotNull PlayerAttemptPickupItemEvent e) {
 		Player p = e.getPlayer();
 		if (this.getPlayers().contains(p)) {
 			boolean shouldCancel = ConditionExecutor.testItem(itemCondition, e.getItem().getItemStack());

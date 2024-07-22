@@ -13,7 +13,5 @@
     "item": "minecraft:cod"
   },
   "order": 0,
-  "impact": 3,
-  "name": "Merling",
-  "description": "These natural inhabitants of the ocean are not used to being out of the water for too long"
+  "impact": 3
 }

@@ -9,6 +9,7 @@ import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class PreventItemUse extends PowerType implements Listener {
 
@@ -25,7 +26,7 @@ public class PreventItemUse extends PowerType implements Listener {
 	}
 
 	@EventHandler
-	public void runD(PlayerInteractEvent e) {
+	public void runD(@NotNull PlayerInteractEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			if (e.getItem() == null) return;
 			boolean shouldCancel = ConditionExecutor.testItem(itemCondition, e.getItem());

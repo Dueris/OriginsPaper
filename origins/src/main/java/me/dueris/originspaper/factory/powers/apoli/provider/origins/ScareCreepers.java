@@ -18,20 +18,21 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.world.EntitiesLoadEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 public class ScareCreepers implements Listener, PowerProvider {
 	protected static ResourceLocation powerReference = OriginsPaper.originIdentifier("scare_creepers");
 	private final ResourceLocation hitByPlayerKey = OriginsPaper.identifier("hit-by-player");
 
 	@EventHandler
-	public void load(EntitySpawnEvent event) {
+	public void load(@NotNull EntitySpawnEvent event) {
 		if (event.getEntity() instanceof Creeper creeper) {
 			applyPatch(creeper);
 		}
 	}
 
 	@EventHandler
-	public void load(EntitiesLoadEvent event) {
+	public void load(@NotNull EntitiesLoadEvent event) {
 		for (Entity entity : event.getEntities()) {
 			if (entity instanceof Creeper creeper) {
 				applyPatch(creeper);
@@ -58,7 +59,7 @@ public class ScareCreepers implements Listener, PowerProvider {
 	}
 
 	@EventHandler
-	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+	public void onEntityDamageByEntity(@NotNull EntityDamageByEntityEvent event) {
 		if (event.getEntity().getType().equals(EntityType.CREEPER)) {
 			Player player;
 			if (event.getDamager() instanceof Projectile projectile) {
@@ -74,7 +75,7 @@ public class ScareCreepers implements Listener, PowerProvider {
 	}
 
 	@EventHandler
-	public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
+	public void onEntityTargetLivingEntity(@NotNull EntityTargetLivingEntityEvent event) {
 		if (event.getEntity().getType().equals(EntityType.CREEPER)) {
 			if (event.getTarget() instanceof Player player) {
 				new BukkitRunnable() {

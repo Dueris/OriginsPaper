@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExhaustionEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BinaryOperator;
 
@@ -24,7 +25,7 @@ public class ModifyExhaustionPower extends ModifierPower implements Listener {
 	}
 
 	@EventHandler
-	public void run(EntityExhaustionEvent e) {
+	public void run(@NotNull EntityExhaustionEvent e) {
 		Player p = (Player) e.getEntity();
 		if (getPlayers().contains(p)) {
 			if (isActive(p)) {

@@ -7,6 +7,7 @@ import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class DisableRegeneration extends PowerType {
 
@@ -19,7 +20,7 @@ public class DisableRegeneration extends PowerType {
 	}
 
 	@EventHandler
-	public void disable(EntityRegainHealthEvent e) {
+	public void disable(@NotNull EntityRegainHealthEvent e) {
 		if (e.getEntity() instanceof Player p) {
 			if (getPlayers().contains(p)) {
 				if (isActive(p)) {

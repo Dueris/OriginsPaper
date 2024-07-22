@@ -20,6 +20,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,7 @@ public class ActionOnBlockUse extends PowerType {
 	}
 
 	@EventHandler
-	public void execute(PlayerInteractEvent e) {
+	public void execute(@NotNull PlayerInteractEvent e) {
 		if (e.getClickedBlock() == null) return;
 		if (e.getAction().isLeftClick() || e.getAction().equals(Action.RIGHT_CLICK_AIR)) return;
 		Player actor = e.getPlayer();

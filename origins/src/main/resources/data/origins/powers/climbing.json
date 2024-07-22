@@ -17,7 +17,5 @@
       "power": "origins:climbing_toggle"
     }
   },
-  "name": "Climbing",
-  "description": "You are able to climb up any kind of wall, just not ladders",
   "hidden": false
 }

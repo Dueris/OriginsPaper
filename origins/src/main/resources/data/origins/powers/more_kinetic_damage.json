@@ -9,7 +9,5 @@
     "type": "origins:in_tag",
     "tag": "*:kinetic"
   },
-  "name": "Brittle Bones",
-  "description": "You take more damage from falling and flying into blocks",
   "hidden": false
 }

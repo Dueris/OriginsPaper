@@ -14,6 +14,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,7 +86,7 @@ public class EntitySetPower extends PowerType {
 	}
 
 	@EventHandler
-	public void join(PlayerJoinEvent e) {
+	public void join(@NotNull PlayerJoinEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			for (String tag : entity_sets.keySet()) {
 				if (entity_sets.containsKey(tag)) {
@@ -97,7 +98,7 @@ public class EntitySetPower extends PowerType {
 	}
 
 	@EventHandler
-	public void addEvent(AddToSetEvent e) {
+	public void addEvent(@NotNull AddToSetEvent e) {
 		addToEntitySet(e.getEntity(), e.getTag());
 		for (Entity entity : entity_sets.get(e.getTag())) {
 			if (entity instanceof Player p && e.getTag().equalsIgnoreCase(getTag())) {
@@ -110,7 +111,7 @@ public class EntitySetPower extends PowerType {
 	}
 
 	@EventHandler
-	public void removeEvent(RemoveFromSetEvent e) {
+	public void removeEvent(@NotNull RemoveFromSetEvent e) {
 		removeFromEntitySet(e.getEntity(), e.getTag());
 		for (Entity entity : entity_sets.get(e.getTag())) {
 			if (entity instanceof Player p) {
@@ -123,7 +124,7 @@ public class EntitySetPower extends PowerType {
 	}
 
 	@EventHandler
-	public void changeOrigin(OriginChangeEvent e) {
+	public void changeOrigin(@NotNull OriginChangeEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			for (String tag : entity_sets.keySet()) {
 				if (entity_sets.containsKey(tag)) {

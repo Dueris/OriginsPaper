@@ -2,10 +2,10 @@ package me.dueris.originspaper.factory.powers.apoli;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.RequiredInstance;
+import me.dueris.calio.util.holders.Pair;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.PowerUpdateEvent;
 import me.dueris.originspaper.factory.CraftApoli;
@@ -41,10 +41,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.originspaper.util.TextureLocation.textureMap;
-
 public class Resource extends PowerType implements ResourcePower {
-	public static HashMap<String, Bar> serverLoadedBars = new HashMap<>(); // IDENTIFIER || BAR_IMPL
+	public static HashMap<String, Bar> serverLoadedBars = new HashMap<>();
 	public static HashMap<Player, List<Bar>> currentlyDisplayed = new HashMap<>();
 
 	static {
@@ -61,7 +59,7 @@ public class Resource extends PowerType implements ResourcePower {
 	private final FactoryJsonObject minAction;
 	private final FactoryJsonObject maxAction;
 
-	public Resource(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int min, int max, FactoryJsonObject hudRender, Optional startValue, FactoryJsonObject minAction, FactoryJsonObject maxAction) {
+	public Resource(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int min, int max, FactoryJsonObject hudRender, @NotNull Optional startValue, FactoryJsonObject minAction, FactoryJsonObject maxAction) {
 		super(name, description, hidden, condition, loading_priority);
 		this.min = min;
 		this.max = max;
@@ -83,17 +81,24 @@ public class Resource extends PowerType implements ResourcePower {
 
 	public static Optional<Bar> getDisplayedBar(Entity player, String identifier) {
 		currentlyDisplayed.putIfAbsent((Player) player, new ArrayList<>());
+
 		for (Bar bar : currentlyDisplayed.get(player)) {
-			if (bar.power.getTag().equalsIgnoreCase(identifier)) return Optional.of(bar);
+			if (bar.power.getTag().equalsIgnoreCase(identifier)) {
+				return Optional.of(bar);
+			}
 		}
+
 		return Optional.empty();
 	}
 
-	protected static KeyedBossBar createRender(String title, double currentProgress, ResourcePower power, Player player) {
+	protected static KeyedBossBar createRender(String title, double currentProgress, final ResourcePower power, final Player player) {
 		ResourceLocation f = ResourceLocation.parse(power.getTag() + "_bar_server_loaded");
-		KeyedBossBar bossBar = Bukkit.createBossBar(
+		final KeyedBossBar bossBar = Bukkit.createBossBar(
 			player == null ? CraftNamespacedKey.fromMinecraft(f) : NamespacedKey.fromString(power.getTag() + "_bar_" + player.getName().toLowerCase()),
-			title, Bar.getBarColor(power.getHudRender()), BarStyle.SEGMENTED_6);
+			title,
+			Bar.getBarColor(power.getHudRender()),
+			BarStyle.SEGMENTED_6
+		);
 		bossBar.setProgress(currentProgress);
 		new BukkitRunnable() {
 			@Override
@@ -116,32 +121,39 @@ public class Resource extends PowerType implements ResourcePower {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void preLoad(ServerLoadEvent e) {
-		// We preload the bars and then display a clone of them to each player
-		OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).values().stream()
-			.filter(p -> (p.getType().equalsIgnoreCase(getType()))).forEach(power -> {
+		OriginsPaper.getPlugin()
+			.registry
+			.retrieve(Registries.CRAFT_POWER)
+			.values()
+			.stream()
+			.filter(p -> p.getType().equalsIgnoreCase(this.getType()))
+			.forEach(power -> {
 				Bar bar = new Bar((Resource) power, null);
 				serverLoadedBars.put(power.getTag(), bar);
 			});
-		for (Player player : Bukkit.getOnlinePlayers())
-			PowerHolderComponent.getPowers(player, Resource.class).forEach(power -> powerAdd(new PowerUpdateEvent(player, power, false, false)));
+
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			PowerHolderComponent.getPowers(player, Resource.class).forEach(power -> this.powerAdd(new PowerUpdateEvent(player, power, false, false)));
+		}
 	}
 
 	@EventHandler
-	public void powerAdd(PowerUpdateEvent e) {
-		if (e.getPower() instanceof Resource && e.getPower().getTag().equalsIgnoreCase(getTag())) {
+	public void powerAdd(@NotNull PowerUpdateEvent e) {
+		if (e.getPower() instanceof Resource && e.getPower().getTag().equalsIgnoreCase(this.getTag())) {
 			currentlyDisplayed.putIfAbsent(e.getPlayer(), new ArrayList<>());
 			if (!e.isRemoved()) {
-				// Power is added, display bar
 				if (serverLoadedBars.containsKey(e.getPower().getTag())) {
-					Resource.Bar displayed = serverLoadedBars.get(e.getPower().getTag());
+					Bar displayed = serverLoadedBars.get(e.getPower().getTag());
 					if (!currentlyDisplayed.get(e.getPlayer()).contains(displayed)) {
 						currentlyDisplayed.get(e.getPlayer()).add(displayed.cloneForPlayer(e.getPlayer()));
 					}
 				}
 			} else if (currentlyDisplayed.containsKey(e.getPlayer())) {
-				// Power is removed, remove the bar
-				Resource.Bar cD = getDisplayedBar(e.getPlayer(), e.getPower().getTag()).orElse(null);
-				if (cD == null) return;
+				Bar cD = getDisplayedBar(e.getPlayer(), e.getPower().getTag()).orElse(null);
+				if (cD == null) {
+					return;
+				}
+
 				cD.delete();
 			}
 		}
@@ -153,18 +165,26 @@ public class Resource extends PowerType implements ResourcePower {
 		StringBuilder cooldownBuilder = new StringBuilder();
 		cooldownBuilder.append("[");
 		Cooldown.cooldowns.putIfAbsent(p, new ArrayList<>());
+
 		for (Pair<KeyedBossBar, ResourcePower> barPair : Cooldown.cooldowns.get(p)) {
-			cooldownBuilder.append(barPair.left().getKey().asString() + "<::>" + barPair.left().getProgress());
+			cooldownBuilder.append(barPair.first().getKey().asString() + "<::>" + barPair.first().getProgress());
 			cooldownBuilder.append(",");
 		}
+
 		cooldownBuilder.append("]");
-		p.getPersistentDataContainer().set(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("current_cooldowns")), PersistentDataType.STRING, new String(cooldownBuilder).replace(",]", "]"));
+		p.getPersistentDataContainer()
+			.set(
+				CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("current_cooldowns")),
+				PersistentDataType.STRING,
+				new String(cooldownBuilder).replace(",]", "]")
+			);
 		if (currentlyDisplayed.containsKey(p)) {
 			currentlyDisplayed.get(p).forEach(Bar::delete);
 			currentlyDisplayed.get(p).clear();
 		}
+
 		if (Cooldown.cooldowns.containsKey(p)) {
-			Cooldown.cooldowns.get(p).forEach(pair -> Bukkit.getServer().removeBossBar(pair.left().getKey()));
+			Cooldown.cooldowns.get(p).forEach(pair -> Bukkit.getServer().removeBossBar(pair.first().getKey()));
 			Cooldown.cooldowns.get(p).clear();
 		}
 	}
@@ -173,14 +193,17 @@ public class Resource extends PowerType implements ResourcePower {
 	public void join(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		if (p.getPersistentDataContainer().has(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("current_cooldowns")))) {
-			String encoded = p.getPersistentDataContainer().get(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("current_cooldowns")), PersistentDataType.STRING);
+			String encoded = p.getPersistentDataContainer()
+				.get(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("current_cooldowns")), PersistentDataType.STRING);
 			encoded = encoded.replace("[", "").replace("]", "");
-			if (encoded.equalsIgnoreCase("")) return;
+			if (encoded.equalsIgnoreCase("")) {
+				return;
+			}
+
 			Arrays.stream(encoded.split(",")).forEach(key -> {
 				String a = key.split("<::>")[0];
 				double b = Double.parseDouble(key.split("<::>")[1]);
-				PowerType power = CraftApoli.getPowerFromTag(a.split("_cooldown_")[0]);
-				if (power instanceof CooldownPower cooldownPower) {
+				if (CraftApoli.getPowerFromTag(a.split("_cooldown_")[0]) instanceof CooldownPower cooldownPower) {
 					Cooldown.addCooldown(p, cooldownPower.getCooldown(), cooldownPower, b);
 				}
 			});
@@ -188,28 +211,29 @@ public class Resource extends PowerType implements ResourcePower {
 	}
 
 	public int getMin() {
-		return min;
+		return this.min;
 	}
 
 	public int getMax() {
-		return max;
+		return this.max;
 	}
 
+	@Override
 	public HudRender getHudRender() {
-		return hudRender;
+		return this.hudRender;
 	}
 
 	@Nullable
 	public Integer getStartValue() {
-		return startValue;
+		return this.startValue;
 	}
 
 	public FactoryJsonObject getMinAction() {
-		return minAction;
+		return this.minAction;
 	}
 
 	public FactoryJsonObject getMaxAction() {
-		return maxAction;
+		return this.maxAction;
 	}
 
 	public static class Bar {
@@ -217,7 +241,7 @@ public class Resource extends PowerType implements ResourcePower {
 		ResourcePower power;
 		int min;
 		int max;
-		Double currentProgress; // Use lang class to use Number#intValue()
+		Double currentProgress;
 		Integer mappedProgress;
 		KeyedBossBar renderedBar;
 		double oneInc;
@@ -227,13 +251,13 @@ public class Resource extends PowerType implements ResourcePower {
 			this.power = power;
 			this.min = 0;
 			this.max = power.getCooldown();
-			this.currentProgress = Double.valueOf(power.getCooldown());
+			this.currentProgress = (double) power.getCooldown();
 			this.mappedProgress = power.getCooldown();
-			this.renderedBar = Resource.createRender(Util.getNameOrTag((PowerType) power), formatForFirstRender(this.currentProgress), power, player);
+			this.renderedBar = Resource.createRender(Util.getNameOrTag((PowerType) power), this.formatForFirstRender(this.currentProgress), power, player);
 			this.renderedBar.setVisible(true);
-			this.oneInc = 1.0 / this.max;
+			this.oneInc = 1.0 / (double) this.max;
 			this.renderedBar.addPlayer(player);
-			change(power.getCooldown(), "set", false);
+			this.change(power.getCooldown(), "set", false);
 		}
 
 		Bar(Resource power, Player player) {
@@ -243,26 +267,32 @@ public class Resource extends PowerType implements ResourcePower {
 			this.max = power.getMax();
 			this.currentProgress = (double) (power.getStartValue() != null ? power.getStartValue() : this.min);
 			this.mappedProgress = this.currentProgress.intValue();
-			this.renderedBar = Resource.createRender(title, formatForFirstRender(this.currentProgress), power, player);
+			this.renderedBar = Resource.createRender(this.title, this.formatForFirstRender(this.currentProgress), power, player);
 			this.renderedBar.setVisible(true);
-			this.oneInc = 1.0 / this.max;
+			this.oneInc = 1.0 / (double) this.max;
 			if (player != null) {
 				this.renderedBar.addPlayer(player);
 			}
 
-			change(power.getStartValue() != null ? power.getStartValue() : this.min, "set", false);
+			this.change(power.getStartValue() != null ? power.getStartValue() : this.min, "set", false);
 		}
 
 		public static BarColor getBarColor(HudRender element) {
 			if (element != null && element.spriteLocation() != null) {
-				TextureLocation loc = OriginsPaper.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION)
+				TextureLocation loc = OriginsPaper.getPlugin()
+					.registry
+					.retrieve(Registries.TEXTURE_LOCATION)
 					.get(DataConverter.resolveTextureLocationNamespace(ResourceLocation.parse(element.spriteLocation())));
-				if (loc == null) return BarColor.WHITE;
-				long index = (element.barIndex()) + 1;
-				BarColor color = textureMap.get(loc.key().toString() + "/-/" + index);
-				return color != null ? color : BarColor.WHITE;
+				if (loc == null) {
+					return BarColor.WHITE;
+				} else {
+					long index = element.barIndex() + 1;
+					BarColor color = TextureLocation.textureMap.get(loc.key().toString() + "/-/" + index);
+					return color != null ? color : BarColor.WHITE;
+				}
+			} else {
+				return BarColor.WHITE;
 			}
-			return BarColor.WHITE;
 		}
 
 		public Bar cloneForPlayer(Player player) {
@@ -271,21 +301,26 @@ public class Resource extends PowerType implements ResourcePower {
 
 		public void delete() {
 			this.renderedBar.setVisible(false);
-			this.renderedBar.setProgress(0);
+			this.renderedBar.setProgress(0.0);
 			this.renderedBar.removeAll();
 			Bukkit.getServer().removeBossBar(this.renderedBar.getKey());
 		}
 
 		public void change(int by, String operation, boolean updateMapped) {
 			Map<String, BinaryOperator<Double>> operator = Util.getOperationMappingsDouble();
-			double change = oneInc * by;
-			this.renderedBar.setProgress(preVerifyProgress(operator.get(operation).apply(this.renderedBar.getProgress(), change)));
+			double change = this.oneInc * (double) by;
+			this.renderedBar
+				.setProgress(this.preVerifyProgress(operator.get(operation).apply(Double.valueOf(this.renderedBar.getProgress()), Double.valueOf(change))));
 			this.currentProgress = this.renderedBar.getProgress();
 			if (updateMapped) {
-				int f = operator.get(operation).apply(this.mappedProgress.doubleValue(), (double) by).intValue();
-				if (f < 0) f = 0;
+				int f = operator.get(operation).apply(Double.valueOf(this.mappedProgress.doubleValue()), Double.valueOf(by)).intValue();
+				if (f < 0) {
+					f = 0;
+				}
+
 				this.mappedProgress = f;
 			}
+
 			this.renderedBar.getPlayers().forEach(entity -> {
 				if (this.power instanceof Resource resource) {
 					if (this.renderedBar.getProgress() == 1.0) {
@@ -298,38 +333,44 @@ public class Resource extends PowerType implements ResourcePower {
 		}
 
 		public void change(int by, String operation) {
-			change(by, operation, true);
+			this.change(by, operation, true);
 		}
 
 		public boolean meetsComparison(Comparison comparison, double e) {
-			return comparison.compare(this.mappedProgress, e);
+			return comparison.compare(this.mappedProgress.intValue(), e);
 		}
 
 		private double formatForFirstRender(double e) {
-			if (e == 0) return 0;
-			double f = 1.0 / e;
-			if (f > 1) return 1;
-			if (f < 0) return 0;
-			return f;
+			if (e == 0.0) {
+				return 0.0;
+			} else {
+				double f = 1.0 / e;
+				if (f > 1.0) {
+					return 1.0;
+				} else {
+					return f < 0.0 ? 0.0 : f;
+				}
+			}
 		}
 
 		private double preVerifyProgress(double e) {
-			if (e > 1) return 1.0;
-			if (e < 0) return 0.0;
-			return e;
+			if (e > 1.0) {
+				return 1.0;
+			} else {
+				return e < 0.0 ? 0.0 : e;
+			}
 		}
 
 		public ResourcePower getPower() {
-			return power;
+			return this.power;
 		}
 
 		public Integer getMappedProgress() {
-			return mappedProgress;
+			return this.mappedProgress;
 		}
 
 		public Double getCurrentProgress() {
-			return currentProgress;
+			return this.currentProgress;
 		}
 	}
-
 }

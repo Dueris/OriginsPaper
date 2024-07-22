@@ -12,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class ActionWhenDamageTaken extends PowerType implements CooldownPower {
 	private final HudRender hudRender;
@@ -36,7 +37,7 @@ public class ActionWhenDamageTaken extends PowerType implements CooldownPower {
 	}
 
 	@EventHandler
-	public void d(EntityDamageEvent e) {
+	public void d(@NotNull EntityDamageEvent e) {
 		if (e.getDamage() == 0 || e.isCancelled()) return;
 		Entity actor = e.getEntity();
 		if (!(actor instanceof Player player)) return;

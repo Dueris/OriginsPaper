@@ -16,6 +16,7 @@ import org.bukkit.craftbukkit.potion.CraftPotionEffectType;
 import org.bukkit.craftbukkit.potion.CraftPotionUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class StackingStatusEffect extends PowerType {
 	}
 
 	@Override
-	public void tick(Player p) {
+	public void tick(@NotNull Player p) {
 		if (p.getTicksLived() % tickRate == 0) {
 			if (isActive(p)) {
 				currentStack += 1;
@@ -85,7 +86,7 @@ public class StackingStatusEffect extends PowerType {
 		createdEffects.add(instance);
 	}
 
-	public void applyEffects(LivingEntity entity) {
+	public void applyEffects(@NotNull LivingEntity entity) {
 		createdEffects.stream().map(MobEffectInstance::new).forEach(entity::addEffect);
 	}
 

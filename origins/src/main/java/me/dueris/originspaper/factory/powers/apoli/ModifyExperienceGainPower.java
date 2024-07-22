@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BinaryOperator;
 
@@ -24,7 +25,7 @@ public class ModifyExperienceGainPower extends ModifierPower implements Listener
 	}
 
 	@EventHandler
-	public void run(PlayerExpChangeEvent e) {
+	public void run(@NotNull PlayerExpChangeEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			try {

@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -43,7 +44,7 @@ public class ActionOnBlockBreak extends PowerType {
 	}
 
 	@EventHandler
-	public void brek(BlockBreakEvent e) {
+	public void brek(@NotNull BlockBreakEvent e) {
 		Player actor = e.getPlayer();
 
 		if (!getPlayers().contains(actor)) return;
@@ -66,7 +67,7 @@ public class ActionOnBlockBreak extends PowerType {
 	}
 
 	@EventHandler
-	public void breakTick(BlockDamageEvent e) {
+	public void breakTick(@NotNull BlockDamageEvent e) {
 		if (!e.isCancelled()) {
 			playersMining.put(e.getPlayer(), true);
 			new BukkitRunnable() {

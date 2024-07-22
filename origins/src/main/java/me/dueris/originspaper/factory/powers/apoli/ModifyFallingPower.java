@@ -31,7 +31,7 @@ public class ModifyFallingPower extends PowerType implements Listener {
 	}
 
 	@EventHandler
-	public void runE(PlayerMoveEvent e) {
+	public void runE(@NotNull PlayerMoveEvent e) {
 		Player p = e.getPlayer();
 		if (getPlayers().contains(p)) {
 			if (e.getTo().getY() == e.getFrom().getY()) return;

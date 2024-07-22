@@ -11,6 +11,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class ActionOnDeath extends PowerType {
 	private final FactoryJsonObject bientityAction;
@@ -32,7 +33,7 @@ public class ActionOnDeath extends PowerType {
 	}
 
 	@EventHandler
-	public void d(EntityDeathEvent e) {
+	public void d(@NotNull EntityDeathEvent e) {
 		if (e.getEntity() instanceof Player p) {
 			if (getPlayers().contains(p)) {
 				if (!isActive(p) || !ConditionExecutor.testDamage(damageCondition, e.getEntity().getLastDamageCause()))

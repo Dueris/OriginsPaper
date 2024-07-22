@@ -23,20 +23,19 @@ public class PowerUpdateEvent extends PlayerEvent {
 		return handlers;
 	}
 
-	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}
 
 	public PowerType getPower() {
-		return power;
+		return this.power;
 	}
 
 	public boolean isRemoved() {
-		return removed;
+		return this.removed;
 	}
 
 	public boolean isNew() {
-		return isNew;
+		return this.isNew;
 	}
 }

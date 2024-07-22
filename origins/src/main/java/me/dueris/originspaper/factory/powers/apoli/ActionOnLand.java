@@ -10,6 +10,7 @@ import org.bukkit.GameEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.world.GenericGameEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class ActionOnLand extends PowerType {
 	private final FactoryJsonObject entityAction;
@@ -25,7 +26,7 @@ public class ActionOnLand extends PowerType {
 	}
 
 	@EventHandler
-	public void e(GenericGameEvent e) {
+	public void e(@NotNull GenericGameEvent e) {
 		if (e.getEvent() != GameEvent.HIT_GROUND) return;
 		if (!(e.getEntity() instanceof Player player)) return;
 		if (!getPlayers().contains(player)) return;

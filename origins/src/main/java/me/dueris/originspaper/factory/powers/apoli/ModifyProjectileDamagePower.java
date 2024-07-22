@@ -15,6 +15,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BinaryOperator;
 
@@ -42,7 +43,7 @@ public class ModifyProjectileDamagePower extends ModifierPower implements Listen
 	}
 
 	@EventHandler
-	public void runD(EntityDamageByEntityEvent e) {
+	public void runD(@NotNull EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Projectile p && p.getShooter() instanceof Player pl) {
 			if (getPlayers().contains(pl)) {
 				try {

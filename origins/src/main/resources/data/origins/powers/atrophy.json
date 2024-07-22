@@ -1,6 +1,4 @@
 {
-  "name": "Atrophy",
-  "description": "You take 2x wither damage.",
   "type": "origins:modify_damage_taken",
   "damage_condition": {
     "type": "origins:attacker",

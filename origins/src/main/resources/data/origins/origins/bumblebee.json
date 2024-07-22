@@ -11,8 +11,6 @@
   "icon": {
     "item": "minecraft:honeycomb"
   },
-  "name": "BumbleBee",
-  "description": "Bees are cool. They fly and enjoy flowers and die",
   "order": 0,
   "impact": 2
 }

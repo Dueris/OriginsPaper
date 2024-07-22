@@ -18,6 +18,8 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.Set;
@@ -51,7 +53,8 @@ public class SelfGlow extends PowerType {
 			.add("blue", float.class, 1.0F);
 	}
 
-	public static ChatColor translateBarColor(BarColor barColor) {
+	@Contract(pure = true)
+	public static ChatColor translateBarColor(@NotNull BarColor barColor) {
 		return switch (barColor) {
 			case BLUE -> ChatColor.BLUE;
 			case GREEN -> ChatColor.GREEN;
@@ -64,7 +67,7 @@ public class SelfGlow extends PowerType {
 	}
 
 	@Override
-	public void tick(Player p) {
+	public void tick(@NotNull Player p) {
 		ServerPlayer player = ((CraftPlayer) p).getHandle();
 		ServerLevel level = (ServerLevel) player.level();
 		Set<Entity> entities = Shape.getEntities(Shape.SPHERE, level, CraftLocation.toVec3D(p.getLocation()), 60);

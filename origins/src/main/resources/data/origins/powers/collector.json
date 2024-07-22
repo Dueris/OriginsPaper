@@ -1,6 +1,4 @@
 {
-  "name": "Collector",
-  "description": "Dropped items glow for you.",
   "type": "origins:entity_glow",
   "entity_condition": {
     "type": "origins:entity_type",

@@ -8,6 +8,7 @@ import me.dueris.originspaper.factory.data.types.Modifier;
 import me.dueris.originspaper.util.Util;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.function.BinaryOperator;
@@ -23,7 +24,7 @@ public class ModifySwimSpeedPower extends ModifierPower {
 	}
 
 	@Override
-	public void tick(Player p) {
+	public void tick(@NotNull Player p) {
 		Block be = p.getLocation().getBlock();
 		if (!getPlayers().contains(p) || p.isFlying() || be == null ||
 			!p.getLocation().getBlock().isLiquid() || !p.isSwimming()) return;

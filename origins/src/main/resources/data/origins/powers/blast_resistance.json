@@ -7,7 +7,5 @@
     "operation": "multiply_total",
     "value": 0.2
   },
-  "hidden": false,
-  "name": "Blast Resistant",
-  "description": "You take 80% less blast/explosion damage"
+  "hidden": false
 }

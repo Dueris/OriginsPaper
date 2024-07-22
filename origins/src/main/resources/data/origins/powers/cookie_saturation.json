@@ -16,7 +16,5 @@
     "operation": "set_total",
     "value": 8
   },
-  "name": "COOKIES",
-  "description": "Cookies give the same saturation as steak",
   "hidden": true
 }

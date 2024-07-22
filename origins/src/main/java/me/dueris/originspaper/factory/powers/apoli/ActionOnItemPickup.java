@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ActionOnItemPickup extends PowerType {
 	private final FactoryJsonObject itemCondition;
@@ -29,7 +30,7 @@ public class ActionOnItemPickup extends PowerType {
 	}
 
 	@EventHandler
-	public void pickup(PlayerAttemptPickupItemEvent e) {
+	public void pickup(@NotNull PlayerAttemptPickupItemEvent e) {
 		Player p = e.getPlayer();
 		if (this.getPlayers().contains(p)) {
 			if (!ConditionExecutor.testItem(itemCondition, e.getItem().getItemStack()) || !isActive(p)) return;

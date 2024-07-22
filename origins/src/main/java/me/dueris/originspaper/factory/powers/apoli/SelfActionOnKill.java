@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class SelfActionOnKill extends PowerType implements Listener, CooldownPower {
 	private final FactoryJsonObject entityAction;
@@ -33,7 +34,7 @@ public class SelfActionOnKill extends PowerType implements Listener, CooldownPow
 	}
 
 	@EventHandler
-	public void k(EntityDeathEvent e) {
+	public void k(@NotNull EntityDeathEvent e) {
 		Entity dead = e.getEntity();
 		Player target = e.getEntity().getKiller();
 

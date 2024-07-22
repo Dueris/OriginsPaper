@@ -1,6 +1,4 @@
 {
-  "name": "Brutish Gear",
-  "description": "You are accustomed to the gear of the nether (You can only wear gold, stone, leather, and netherite tools/weapons/armor)",
   "type": "origins:multiple",
   "hidden": false,
   "bow": {

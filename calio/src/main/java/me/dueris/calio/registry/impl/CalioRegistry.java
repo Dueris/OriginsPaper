@@ -14,25 +14,26 @@ public class CalioRegistry implements IRegistry {
 	private final HashMap<RegistryKey<?>, Registrar<?>> registry = new HashMap<>();
 
 	public void freezeAll() {
-		registry.values().forEach(Registrar::freeze);
+		this.registry.values().forEach(Registrar::freeze);
 	}
 
 	@Override
 	public <T extends Registrable> Registrar<T> retrieve(RegistryKey<T> key) {
 		Preconditions.checkArgument(key != null, "NamespacedKey must not be null");
-		return (Registrar<T>) registry.get(key);
+		return (Registrar<T>) this.registry.get(key);
 	}
 
 	@Override
 	public <T extends Registrable> void create(RegistryKey<T> key, Registrar<T> registrar) {
-		Preconditions.checkArgument(!registry.containsKey(key), new AlreadyRegisteredException("Cannot register a key thats already registered"));
-		Preconditions.checkArgument(!registry.containsValue(registrar), new AlreadyRegisteredException("Cannot register an registrar thats already registered"));
-		registry.put(key, registrar);
+		Preconditions.checkArgument(!this.registry.containsKey(key), new AlreadyRegisteredException("Cannot register a key thats already registered"));
+		Preconditions.checkArgument(
+			!this.registry.containsValue(registrar), new AlreadyRegisteredException("Cannot register an registrar thats already registered")
+		);
+		this.registry.put(key, registrar);
 	}
 
 	@Override
 	public void clearRegistries() {
-		registry.values().forEach(Registrar::clearEntries);
+		this.registry.values().forEach(Registrar::clearEntries);
 	}
-
 }

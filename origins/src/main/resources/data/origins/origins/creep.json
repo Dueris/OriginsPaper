@@ -12,8 +12,6 @@
   "icon": {
     "item": "minecraft:gunpowder"
   },
-  "name": "Creep",
-  "description": "Silent but deadly, the Creep are skilled in the arts of stealth, however they are TERRIBLY allergic to cats",
   "order": 0,
   "impact": 2
 }

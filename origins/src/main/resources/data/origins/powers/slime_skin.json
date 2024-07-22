@@ -53,9 +53,7 @@
     },
     "item_action": {
       "type": "origins:consume"
-    },
-    "name": "Absorption",
-    "description": "You can absorb some items, granting you temporary effects"
+    }
   },
   "damage_event": {
     "type": "origins:action_when_damage_taken",
@@ -139,9 +137,7 @@
     "modifier": {
       "operation": "multiply",
       "value": 2
-    },
-    "name": "Flammable",
-    "description": "You take double damage from fire"
+    }
   },
   "humidity": {
     "type": "origins:action_over_time",
@@ -166,13 +162,9 @@
     "condition": {
       "type": "origins:chance",
       "chance": 0.67
-    },
-    "name": "Faster Digestion",
-    "description": "You exhaust faster, even when standing still"
+    }
   },
   "sprinting": {
-    "name": "Less Stamina",
-    "description": "Because of your sludgy composition, you need more food to sprint",
     "type": "origins:prevent_sprinting",
     "condition": {
       "type": "origins:food_level",
@@ -180,7 +172,5 @@
       "compare_to": 10
     }
   },
-  "name": "Slime-Like",
-  "description": "You have the green skin of a slime, and when too cold you become more solid",
   "hidden": false
 }

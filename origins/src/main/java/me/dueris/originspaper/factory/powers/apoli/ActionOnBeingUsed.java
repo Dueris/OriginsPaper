@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ActionOnBeingUsed extends PowerType {
 	private final FactoryJsonObject bientityAction;
@@ -54,7 +55,7 @@ public class ActionOnBeingUsed extends PowerType {
 	}
 
 	@EventHandler
-	public void entityRightClickEntity(PlayerInteractEntityEvent e) {
+	public void entityRightClickEntity(@NotNull PlayerInteractEntityEvent e) {
 		boolean pass = false;
 		if (e.getHand().isHand()) {
 			InteractionHand hand = CraftEquipmentSlot.getHand(e.getHand());

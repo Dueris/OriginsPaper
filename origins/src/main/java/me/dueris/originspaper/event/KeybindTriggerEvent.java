@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class KeybindTriggerEvent extends PlayerEvent {
 	private static final HandlerList handlers = new HandlerList();
-
 	static String key_type;
 
 	public KeybindTriggerEvent(@NotNull Player who, String key_type) {
@@ -23,7 +22,6 @@ public class KeybindTriggerEvent extends PlayerEvent {
 		return key_type;
 	}
 
-	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}

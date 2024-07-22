@@ -12,6 +12,7 @@ import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.world.GenericGameEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class GameEventListener extends PowerType {
 	private final Set<String> events;
 	private final FactoryJsonObject entityAction;
 
-	public GameEventListener(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, String event, FactoryJsonArray events, FactoryJsonObject entityAction) {
+	public GameEventListener(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, @NotNull String event, FactoryJsonArray events, FactoryJsonObject entityAction) {
 		super(name, description, hidden, condition, loading_priority);
 		if (event.contains(":")) {
 			event = event.split(":")[1];
@@ -39,7 +40,7 @@ public class GameEventListener extends PowerType {
 	}
 
 	@EventHandler
-	public void event(GenericGameEvent e) {
+	public void event(@NotNull GenericGameEvent e) {
 		if (e.getEntity() == null) return;
 		if (e.getEntity() instanceof Player p) {
 			if (!this.getPlayers().contains(p)) return;

@@ -101,7 +101,5 @@
       }
     }
   },
-  "name": "Master of Webs",
-  "description": "You navigate cobweb perfectly, and are able to climb in them. When you hit an enemy, they get stuck in cobweb for a while. Non-arthropods stuck in cobweb will be sensed by you.",
   "hidden": false
 }

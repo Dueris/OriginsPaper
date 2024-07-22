@@ -70,7 +70,5 @@
       "operation": "multiply_total",
       "value": 1
     }
-  },
-  "name": "Prey",
-  "description": "Illagers and crossbows deal 2x damage to you."
+  }
 }

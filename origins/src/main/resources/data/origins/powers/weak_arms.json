@@ -28,7 +28,5 @@
     "effect": "minecraft:strength",
     "inverted": true
   },
-  "name": "Weak Arms",
-  "description": "When not under the effect of a strength potion, you can only mine natural stone if there are at most 2 other natural stone blocks adjacent to it",
   "hidden": false
 }

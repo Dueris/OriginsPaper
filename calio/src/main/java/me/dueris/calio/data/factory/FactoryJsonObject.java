@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -35,12 +34,12 @@ public class FactoryJsonObject {
 
 	@NotNull
 	public FactoryJsonObject getJsonObject(String key) {
-		return isPresent(key) ? new FactoryJsonObject(this.handle.get(key).getAsJsonObject()) : new FactoryJsonObject(new JsonObject());
+		return this.isPresent(key) ? new FactoryJsonObject(this.handle.get(key).getAsJsonObject()) : new FactoryJsonObject(new JsonObject());
 	}
 
 	@NotNull
 	public FactoryJsonArray getJsonArray(String key) {
-		return isPresent(key) ? new FactoryJsonArray(this.handle.get(key).getAsJsonArray()) : new FactoryJsonArray(new JsonArray());
+		return this.isPresent(key) ? new FactoryJsonArray(this.handle.get(key).getAsJsonArray()) : new FactoryJsonArray(new JsonArray());
 	}
 
 	public boolean isJsonObject(String key) {
@@ -65,13 +64,16 @@ public class FactoryJsonObject {
 
 	public <T extends Enum<T>> T getEnumValue(String key, Class<T> enumClass) {
 		String value = this.handle.get(key).getAsString().toLowerCase();
-		return getEV(enumClass, value, null);
+		return this.getEV(enumClass, value, null);
 	}
 
 	public <T extends Enum<T>> T getEnumValueOrDefault(String key, Class<T> enumClass, T def) {
-		if (!this.handle.has(key)) return def;
-		String value = this.handle.get(key).getAsString().toLowerCase();
-		return getEV(enumClass, value, def);
+		if (!this.handle.has(key)) {
+			return def;
+		} else {
+			String value = this.handle.get(key).getAsString().toLowerCase();
+			return this.getEV(enumClass, value, def);
+		}
 	}
 
 	public <T extends Enum<T>> T getEnumValue(String key, Class<T> enumClass, boolean checkNamespace) {
@@ -79,20 +81,26 @@ public class FactoryJsonObject {
 		if (checkNamespace && value.contains(":")) {
 			value = value.split(":")[1];
 		}
-		return getEV(enumClass, value, null);
+
+		return this.getEV(enumClass, value, null);
 	}
 
-	private <T extends Enum<T>> T getEV(Class<T> enumClass, String value, T def) {
+	private <T extends Enum<T>> @NotNull T getEV(@NotNull Class<T> enumClass, String value, T def) {
 		T[] enumConstants = enumClass.getEnumConstants();
+
 		for (T enumValue : enumConstants) {
 			if (enumValue.toString().toLowerCase().equalsIgnoreCase(value)) {
 				return enumValue;
 			}
 		}
+
 		if (def == null) {
-			throw new IllegalArgumentException("Provided JsonValue from key \"{key}\" was not an instanceof enum \"{enum}\""
-				.replace("{key}", value).replace("{enum}", enumClass.getSimpleName()));
-		} else return def;
+			throw new IllegalArgumentException(
+				"Provided JsonValue from key \"{key}\" was not an instanceof enum \"{enum}\"".replace("{key}", value).replace("{enum}", enumClass.getSimpleName())
+			);
+		} else {
+			return def;
+		}
 	}
 
 	public boolean getBoolean(String key) {
@@ -108,11 +116,11 @@ public class FactoryJsonObject {
 	}
 
 	public boolean getBooleanOrDefault(String key, boolean def) {
-		return isPresent(key) ? getBoolean(key) : def;
+		return this.isPresent(key) ? this.getBoolean(key) : def;
 	}
 
 	public String getStringOrDefault(String key, String def) {
-		return isPresent(key) ? getString(key) : def;
+		return this.isPresent(key) ? this.getString(key) : def;
 	}
 
 	public FactoryElement getElement(String key) {
@@ -153,17 +161,19 @@ public class FactoryJsonObject {
 			if (obj.isPresent("item")) {
 				materialVal = obj.getString("item");
 			}
+
 			if (obj.isPresent("amount")) {
 				amt = obj.getNumber("amount").getInt();
 			}
+
 			return new ItemStack(Material.valueOf(NamespacedKey.fromString(materialVal).asString().split(":")[1].toUpperCase()), amt);
+		} else {
+			return inst != null && inst.isString() ? new ItemStack(this.getMaterial(key)) : new ItemStack(Material.PLAYER_HEAD, 1);
 		}
-		if (inst != null && inst.isString()) return new ItemStack(this.getMaterial(key));
-		return new ItemStack(Material.PLAYER_HEAD, 1);
 	}
 
 	public PotionEffectType getPotionEffectType(String key) {
-		return PotionEffectType.getByKey(getBukkitNamespacedKey(key));
+		return PotionEffectType.getByKey(this.getBukkitNamespacedKey(key));
 	}
 
 	public ItemStack asItemStack() {
@@ -172,23 +182,26 @@ public class FactoryJsonObject {
 		if (this.isPresent("item")) {
 			materialVal = this.getString("item");
 		}
+
 		if (this.isPresent("amount")) {
 			amt = this.getNumber("amount").getInt();
 		}
+
 		return new ItemStack(Material.valueOf(NamespacedKey.fromString(materialVal).asString().split(":")[1].toUpperCase()), amt);
 	}
 
 	public <T> T transformWithCalio(String key, Function<JsonElement, T> transformer) {
-		return transformWithCalio(key, transformer, null);
+		return this.transformWithCalio(key, transformer, null);
 	}
 
 	public <T> T transformWithCalio(String key, Function<JsonElement, T> transformer, T def) {
-		if (!isPresent(key)) return def;
-		return transformer.apply(this.handle.get(key));
+		return !this.isPresent(key) ? def : transformer.apply(this.handle.get(key));
 	}
 
 	public <T> Holder<T> registryEntry(String key, ResourceKey<Registry<T>> registryResourceKey) {
-		return MinecraftServer.getServer().registryAccess().registry(registryResourceKey).get().getHolder(this.getResourceLocation(key)).orElseThrow();
+		return (Holder<T>) ((Registry) MinecraftServer.getServer().registryAccess().registry(registryResourceKey).get())
+			.getHolder(this.getResourceLocation(key))
+			.orElseThrow();
 	}
 
 	public <T> ResourceKey<T> resourceKey(String key, ResourceKey<Registry<T>> registry) {

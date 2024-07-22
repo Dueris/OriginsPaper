@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class AttributeConditioned extends AttributeHandler implements Listener {
 	}
 
 	@EventHandler
-	public void join(PlayerJoinEvent e) {
+	public void join(@NotNull PlayerJoinEvent e) {
 		applied.put(e.getPlayer(), false);
 	}
 

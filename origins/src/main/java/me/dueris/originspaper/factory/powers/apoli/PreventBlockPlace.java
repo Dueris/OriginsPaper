@@ -11,6 +11,7 @@ import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class PreventBlockPlace extends PowerType implements Listener {
 	private final FactoryJsonObject itemCondition;
@@ -44,7 +45,7 @@ public class PreventBlockPlace extends PowerType implements Listener {
 	}
 
 	@EventHandler
-	public void blockBreak(BlockPlaceEvent e) {
+	public void blockBreak(@NotNull BlockPlaceEvent e) {
 		if (getPlayers().contains(e.getPlayer())) {
 			if (!(isActive(e.getPlayer()) && ConditionExecutor.testItem(itemCondition, e.getItemInHand()) &&
 				ConditionExecutor.testBlock(placeToCondition, (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock(placeOnCondition, (CraftBlock) e.getBlockAgainst())))

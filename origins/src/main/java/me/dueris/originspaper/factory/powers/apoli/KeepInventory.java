@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -39,7 +40,7 @@ public class KeepInventory extends PowerType {
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void keepinv(PlayerDeathEvent e) {
+	public void keepinv(@NotNull PlayerDeathEvent e) {
 		Player player = e.getEntity();
 		if (!getPlayers().contains(player)) return;
 		if (isActive(player)) {

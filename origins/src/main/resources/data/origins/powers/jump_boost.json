@@ -4,7 +4,5 @@
     "operation": "multiply_base",
     "value": 0.12
   },
-  "name": "Strong Hopper",
-  "description": "You can jump significantly higher",
   "hidden": false
 }

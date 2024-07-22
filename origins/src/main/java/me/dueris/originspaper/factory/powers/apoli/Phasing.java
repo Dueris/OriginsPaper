@@ -7,8 +7,8 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
-import me.dueris.originspaper.util.RaycastUtils;
 import me.dueris.originspaper.util.Util;
+import me.dueris.originspaper.util.console.OriginConsoleSender;
 import net.minecraft.Optionull;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.RemoteChatSession;
@@ -37,6 +37,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.geysermc.floodgate.api.FloodgateApi;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -75,7 +76,7 @@ public class Phasing extends PowerType {
 			.add("block_condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()));
 	}
 
-	protected static void resyncJavaPlayer(ServerPlayer player) {
+	protected static void resyncJavaPlayer(@NotNull ServerPlayer player) {
 		if (player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR)) {
 			player.gameMode.changeGameModeForPlayer(GameType.SURVIVAL);
 		}
@@ -164,9 +165,9 @@ public class Phasing extends PowerType {
 	}
 
 	@EventHandler
-	public void chatEvent(PlayerChatEvent e) {
+	public void chatEvent(@NotNull PlayerChatEvent e) {
 		if (e.getMessage().equalsIgnoreCase("./origins-fixme")) {
-			RaycastUtils.executeNMSCommand(((CraftEntity) e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "gamemode survival @s");
+			OriginConsoleSender.NMSSender.executeNMSCommand(((CraftEntity) e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "gamemode survival @s");
 			e.setCancelled(true);
 		}
 	}
@@ -191,11 +192,11 @@ public class Phasing extends PowerType {
 	}
 
 	@EventHandler
-	public void je(PlayerJoinEvent e) {
+	public void je(@NotNull PlayerJoinEvent e) {
 		resynched.put(e.getPlayer(), false);
 	}
 
-	private Set<Block> getBlocksPlayerIsTouching(Player player) {
+	private @NotNull Set<Block> getBlocksPlayerIsTouching(Player player) {
 		Set<Block> touchingBlocks = new HashSet<>();
 
 		Vector[] offsets = new Vector[]{
@@ -309,7 +310,7 @@ public class Phasing extends PowerType {
 	}
 
 	@EventHandler
-	public void dmgEventRemoveSuff(EntityDamageEvent e) {
+	public void dmgEventRemoveSuff(@NotNull EntityDamageEvent e) {
 		if (e.getEntity() instanceof Player player) {
 			if (!inPhantomFormBlocks.contains(player)) return;
 			if (e.getCause().equals(EntityDamageEvent.DamageCause.SUFFOCATION)) {
@@ -334,7 +335,7 @@ public class Phasing extends PowerType {
 	}
 
 	@EventHandler
-	public void moveEvent(PlayerMoveEvent e) {
+	public void moveEvent(@NotNull PlayerMoveEvent e) {
 		if (getPlayers().contains(e.getPlayer()) && inPhantomFormBlocks.contains(e.getPlayer())) {
 			if (e.getTo().getBlock().isCollidable() &&
 				!((blacklist && !ConditionExecutor.testBlock(blockCondition, e.getTo().getBlock())) || (!blacklist && ConditionExecutor.testBlock(blockCondition, e.getTo().getBlock())))) {

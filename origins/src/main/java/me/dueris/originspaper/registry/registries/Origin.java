@@ -12,6 +12,7 @@ import me.dueris.originspaper.storage.OriginConfiguration;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class Origin implements FactoryHolder {
 	private String cachedTag = null;
 	private boolean isDisabled;
 
-	public Origin(String name, String description, int impact, ItemStack icon, boolean unchoosable, FactoryJsonArray upgrades, FactoryJsonArray powers, int order, int loading_priority) {
+	public Origin(String name, String description, int impact, ItemStack icon, boolean unchoosable, FactoryJsonArray upgrades, @NotNull FactoryJsonArray powers, int order, int loading_priority) {
 		this.name = name;
 		this.description = description;
 		this.impact = impact;
@@ -47,9 +48,9 @@ public class Origin implements FactoryHolder {
 		this.powerIdentifiers.addAll(powers.asList().stream().map(FactoryElement::getString).map(ResourceLocation::parse).filter(Objects::nonNull).toList());
 	}
 
-	public static FactoryData registerComponents(FactoryData data) {
-		return data.add("name", String.class, "craftapoli.origin.name.not_found")
-			.add("description", String.class, "craftapoli.origin.description.not_found")
+	public static FactoryData registerComponents(@NotNull FactoryData data) {
+		return data.add("name", String.class, "origin.$namespace.$path.name")
+			.add("description", String.class, "origin.$namespace.$path.description")
 			.add("impact", int.class, 0)
 			.add("icon", ItemStack.class, new ItemStack(Material.PLAYER_HEAD))
 			.add("unchoosable", boolean.class, false)
@@ -63,38 +64,38 @@ public class Origin implements FactoryHolder {
 	public void bootstrap() {
 		for (String origin : OriginConfiguration.getConfiguration().getStringList("disabled-origins")) {
 			if (this.cachedTag.equalsIgnoreCase(origin)) {
-				setDisabled();
+				this.setDisabled();
 				break;
 			}
 		}
 	}
 
 	public int getLoadingPriority() {
-		return loadingPriority;
+		return this.loadingPriority;
 	}
 
 	public FactoryJsonArray getPowerArray() {
-		return powers;
+		return this.powers;
 	}
 
 	public FactoryJsonArray getUpgrades() {
-		return upgrades;
+		return this.upgrades;
 	}
 
 	public boolean isUnchoosable() {
-		return unchoosable || isDisabled;
+		return this.unchoosable || this.isDisabled;
 	}
 
 	public int getImpact() {
-		return impact;
+		return this.impact;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public boolean getUsesCondition() {
@@ -106,43 +107,42 @@ public class Origin implements FactoryHolder {
 	}
 
 	public ItemStack getIcon() {
-		return icon;
+		return this.icon;
 	}
 
 	public int getOrder() {
-		return order;
+		return this.order;
 	}
 
 	public Material getMaterialIcon() {
-		return getIcon().getType();
+		return this.getIcon().getType();
 	}
 
 	public String getTag() {
 		return this.tag.toString();
 	}
 
-	/**
-	 * @return An array containing all the origin powers.
-	 */
 	public ArrayList<PowerType> getPowerContainers() {
 		return new ArrayList<>(this.powerIdentifiers.stream().map(CraftApoli::getPowersFromResourceLocation).toList());
 	}
 
 	public List<String> getPowers() {
-		return getPowerContainers().stream().filter(Objects::nonNull).map(PowerType::getTag).toList();
+		return this.getPowerContainers().stream().filter(Objects::nonNull).map(PowerType::getTag).toList();
 	}
 
 	private void setDisabled() {
-		isDisabled = true;
+		this.isDisabled = true;
 	}
 
-	@Override
 	public Origin ofResourceLocation(ResourceLocation key) {
-		if (this.tagSet) return this;
-		tagSet = true;
-		this.tag = key;
-		this.cachedTag = key.toString();
-		return this;
+		if (this.tagSet) {
+			return this;
+		} else {
+			this.tagSet = true;
+			this.tag = key;
+			this.cachedTag = key.toString();
+			return this;
+		}
 	}
 
 	@Override

@@ -26,7 +26,5 @@
       "value": 0.35
     }
   },
-  "hidden": false,
-  "name": "Unstable Entity",
-  "description": "Upon being hit, you have a 20% chance of getting poisoned."
+  "hidden": false
 }

@@ -2,18 +2,19 @@ package me.dueris.originspaper.util;
 
 import com.google.common.io.Files;
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import me.dueris.calio.registry.IRegistry;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.calio.registry.RegistryKey;
 import me.dueris.calio.registry.impl.CalioRegistry;
+import me.dueris.calio.util.holders.Pair;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,58 +27,55 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class WrappedBootstrapContext {
+	public final Logger LOGGER = LogManager.getLogger("ApoliBootstrapContext");
 	private final BootstrapContext context;
 	private final IRegistry registry;
 	private final List<String> registryPointers = new CopyOnWriteArrayList<>();
 	private final ConcurrentHashMap<Pair<ResourceKey, ResourceLocation>, JsonObject> registered = new ConcurrentHashMap<>();
-	private final Logger LOGGER = LogManager.getLogger("ApoliBootstrapContext");
 
 	public WrappedBootstrapContext(BootstrapContext context) {
 		this.context = context;
 		this.registry = CalioRegistry.INSTANCE;
 	}
 
-	public void createRegistry(RegistryKey key) {
-		registry.create(key, new Registrar<>(key.type()));
+	public void createRegistry(RegistryKey<?> key) {
+		this.registry.create(key, new Registrar(key.type()));
 	}
 
-	public void createRegistries(RegistryKey... keys) {
-		for (RegistryKey key : keys) {
-			createRegistry(key);
+	public void createRegistries(RegistryKey<?> @NotNull ... keys) {
+		for (RegistryKey<?> key : keys) {
+			this.createRegistry(key);
 		}
 	}
 
-	public void addDataDrivenPointer(ResourceKey<?> key) {
-		registryPointers.add(key.location().getPath());
+	public void addDataDrivenPointer(@NotNull ResourceKey<?> key) {
+		this.registryPointers.add(key.location().getPath());
 	}
 
-	public void registerData(ResourceKey<?> key, JsonObject data, ResourceLocation location) {
-		if (!registryPointers.contains(key.location().getPath())) {
-			registryPointers.add(key.location().getPath());
+	public void registerData(@NotNull ResourceKey<?> key, JsonObject data, ResourceLocation location) {
+		if (!this.registryPointers.contains(key.location().getPath())) {
+			this.registryPointers.add(key.location().getPath());
 		}
 
-		LOGGER.log(Level.INFO, "Registered new data for location: {}", location.getPath());
-		registered.put(
-			new Pair<>(key, location),
-			data
-		);
+		this.LOGGER.log(Level.INFO, "Registered new data for location: {}", location.getPath());
+		this.registered.put(new Pair<>(key, location), data);
 	}
 
-	public void initRegistries(Path datapackPath) {
+	public void initRegistries(@NotNull Path datapackPath) {
 		LOGGER.log(Level.INFO, "Creating data-driven registries...");
-		File data = Arrays.stream(Arrays.stream(datapackPath.toFile().listFiles())
+		File data = Arrays.stream(Objects.requireNonNull(Arrays.stream(datapackPath.toFile().listFiles())
 				.filter(Objects::nonNull)
 				.filter(f -> {
 					return f.getName().equalsIgnoreCase("datapack");
 				}).filter(File::isDirectory)
-				.findFirst().orElseThrow().listFiles()).filter(f -> {
+				.findFirst().orElseThrow().listFiles())).filter(f -> {
 				return f.getName().equalsIgnoreCase("data");
 			}).filter(File::isDirectory)
 			.findFirst().orElseThrow();
 
-		for (Pair<ResourceKey, ResourceLocation> key : registered.keySet()) {
-			String namespace = key.getSecond().getNamespace();
-			String registryLocation = key.getFirst().location().getPath();
+		for (Pair<ResourceKey, ResourceLocation> key : this.registered.keySet()) {
+			String namespace = key.second().getNamespace();
+			String registryLocation = key.first().location().getPath();
 			File namespaceFile = new File(data, namespace);
 			if (!namespaceFile.exists()) {
 				namespaceFile.mkdirs();
@@ -88,29 +86,29 @@ public class WrappedBootstrapContext {
 				registryLocationFile.mkdirs();
 			}
 
-			File registryFile = new File(registryLocationFile, key.getSecond().getPath() + ".json");
+			File registryFile = new File(registryLocationFile, key.second().getPath() + ".json");
 			if (registryFile.exists()) {
 				try {
 					List<String> lines = Files.readLines(registryFile, StandardCharsets.UTF_8);
-					String finishedLines = compileStrings(lines);
-					if (registered.get(key).toString().equalsIgnoreCase(finishedLines)) {
+					String finishedLines = this.compileStrings(lines);
+					if (this.registered.get(key).toString().equalsIgnoreCase(finishedLines)) {
 						continue;
 					}
-				} catch (IOException e) {
-					throw new RuntimeException(e);
+				} catch (IOException var18) {
+					throw new RuntimeException(var18);
 				}
 			}
+
 			try {
-				Files.write(registered.get(key).toString(), registryFile, StandardCharsets.UTF_8);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
+				Files.write(this.registered.get(key).toString(), registryFile, StandardCharsets.UTF_8);
+			} catch (IOException var16) {
+				throw new RuntimeException(var16);
 			} finally {
-				LOGGER.log(Level.INFO, "Created registry entry ({}) for registry \"{}\"", key.getSecond().toString(), registryLocation);
+				this.LOGGER.log(Level.INFO, "Created registry entry ({}) for registry \"{}\"", key.second().toString(), registryLocation);
 			}
 		}
 
-		registered.clear();
-
+		this.registered.clear();
 	}
 
 	public <T> void registerBuiltin(Registry<T> registry, ResourceLocation location, T type) {
@@ -118,14 +116,14 @@ public class WrappedBootstrapContext {
 	}
 
 	public IRegistry registry() {
-		return registry;
+		return this.registry;
 	}
 
 	public BootstrapContext context() {
-		return context;
+		return this.context;
 	}
 
-	private String compileStrings(List<String> strings) {
+	private @NotNull String compileStrings(@NotNull List<String> strings) {
 		StringBuilder builder = new StringBuilder();
 		strings.forEach(builder::append);
 		return builder.toString();

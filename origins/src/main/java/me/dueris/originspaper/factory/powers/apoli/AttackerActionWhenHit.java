@@ -12,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class AttackerActionWhenHit extends PowerType implements CooldownPower {
 	private final int cooldown;
@@ -36,7 +37,7 @@ public class AttackerActionWhenHit extends PowerType implements CooldownPower {
 	}
 
 	@EventHandler
-	public void a(EntityDamageByEntityEvent e) {
+	public void a(@NotNull EntityDamageByEntityEvent e) {
 		Entity actor = e.getEntity();
 
 		if (!(actor instanceof Player player)) return;

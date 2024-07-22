@@ -11,6 +11,7 @@ import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 public class ActionOnCallback extends PowerType {
 	private final FactoryJsonObject entityActionChosen;
@@ -56,7 +57,7 @@ public class ActionOnCallback extends PowerType {
 	}
 
 	@EventHandler
-	public void choose(OriginChangeEvent e) {
+	public void choose(@NotNull OriginChangeEvent e) {
 		Player actor = e.getPlayer();
 
 		new BukkitRunnable() {
@@ -72,7 +73,7 @@ public class ActionOnCallback extends PowerType {
 	}
 
 	@EventHandler
-	public void respawn(PlayerPostRespawnEvent e) {
+	public void respawn(@NotNull PlayerPostRespawnEvent e) {
 		Player player = e.getPlayer();
 		if (!getPlayers().contains(player)) return;
 		Actions.executeEntity(e.getPlayer(), entityActionRespawned);

@@ -1,11 +1,11 @@
 package me.dueris.originspaper.factory.powers.apoli;
 
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
 import me.dueris.calio.data.AccessorKey;
 import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.parse.CalioJsonParser;
+import me.dueris.calio.util.holders.Pair;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
