@@ -49,6 +49,7 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 		p.getBukkitEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1F);
 		p.getBukkitEntity().getAttribute(Attribute.GENERIC_MOVEMENT_EFFICIENCY).setBaseValue(0.0);
 		p.getBukkitEntity().getAttribute(Attribute.PLAYER_MINING_EFFICIENCY).setBaseValue(0.0);
+		p.getBukkitEntity().getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).setBaseValue(p.getBukkitEntity().getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getDefaultValue());
 		p.getBukkitEntity().getAttribute(Attribute.PLAYER_SUBMERGED_MINING_SPEED).setBaseValue(0.2);
 		p.getBukkitEntity().getAttribute(Attribute.GENERIC_GRAVITY).setBaseValue(0.08);
 	}
