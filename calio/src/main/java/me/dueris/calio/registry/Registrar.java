@@ -28,7 +28,7 @@ public class Registrar<T extends Registrable> {
 
 		try {
 			this.registerOrThrow(item);
-		} catch (Exception var3) {
+		} catch (Exception ignored) {
 		}
 
 		return item;

@@ -2,7 +2,13 @@ package me.dueris.originspaper;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
+import io.github.dueris.calio.data.AccessorKey;
+import io.github.dueris.calio.parser.JsonObjectRemapper;
+import io.github.dueris.calio.parser.ParsingStrategy;
+import io.github.dueris.calio.registry.RegistryKey;
+import io.github.dueris.calio.test.ModMeta;
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
+import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import io.papermc.paper.plugin.configuration.PluginMeta;
 import me.dueris.calio.CraftCalio;
 import me.dueris.calio.data.AssetIdentifier;
@@ -390,6 +396,27 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		ScreenNavigator.layerPages.values().forEach(pages -> pages.add(pages.size(), new RandomOriginPage()));
 		RecipePower.parseRecipes();
 		OrbOfOrigins.init();
+	}
+
+	@EventHandler
+	public void resourceReload(ServerResourcesReloadedEvent e) {
+		// beta testing
+		io.github.dueris.calio.CraftCalio craftCalio = io.github.dueris.calio.CraftCalio.buildInstance(
+			new String[]{"--debug=true", "--async=true"}
+		);
+		JsonObjectRemapper.main(versions.toArray(new String[0]));
+		try {
+			RegistryKey<ModMeta> registryKey = new RegistryKey<>(ModMeta.class, apoliIdentifier("mods"));
+			craftCalio.startBuilder()
+				.withAccessor(new AccessorKey<>("mods", ModMeta.class, 0, ParsingStrategy.TYPED, registryKey))
+				.build().parse();
+			io.github.dueris.calio.registry.impl.CalioRegistry.INSTANCE.retrieve(registryKey).forEach(((location, modMeta) -> {
+				System.out.println(modMeta);
+			}));
+		} catch (Throwable ex) {
+			throw new RuntimeException(ex);
+		}
+		// end beta
 	}
 
 	private interface BooleanGetter {

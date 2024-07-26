@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 public class ClipContextUtils {
 
 	@Contract(pure = true)
-    public static Fluid getFluidHandling(@NotNull String string) {
+	public static Fluid getFluidHandling(@NotNull String string) {
 		String var1 = string.toLowerCase();
 		switch (var1) {
 			case "any":
@@ -22,7 +22,7 @@ public class ClipContextUtils {
 	}
 
 	@Contract(pure = true)
-    public static @Nullable Block getShapeType(@NotNull String string) {
+	public static @Nullable Block getShapeType(@NotNull String string) {
 		String var1 = string.toLowerCase();
 		switch (var1) {
 			case "collider":

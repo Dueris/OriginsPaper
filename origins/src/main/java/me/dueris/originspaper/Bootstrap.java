@@ -1,6 +1,7 @@
 package me.dueris.originspaper;
 
 import com.mojang.brigadier.CommandDispatcher;
+import io.github.dueris.calio.parser.CalioParser;
 import io.papermc.paper.command.brigadier.ApiMirrorRootNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.PaperCommands;
@@ -26,10 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
@@ -178,6 +176,24 @@ public class Bootstrap implements PluginBootstrap {
 			CommandDispatcher<CommandSourceStack> commands = PaperCommands.INSTANCE.getDispatcher();
 			Commands.bootstrap(((ApiMirrorRootNode) commands.getRoot()).getDispatcher());
 		})).priority(10));
+		io.github.dueris.calio.parser.JsonObjectRemapper remapper = new io.github.dueris.calio.parser.JsonObjectRemapper(
+			List.of(
+				new io.github.dueris.calio.util.holder.Pair<>("origins", "apoli")
+			),
+			List.of(
+				new io.github.dueris.calio.util.holder.Pair<>("apoli:conditioned_restrict_armor", "apoli:restrict_armor"),
+				new io.github.dueris.calio.util.holder.Pair<>("apugli:edible_item", "apoli:edible_item"),
+				new io.github.dueris.calio.util.holder.Pair<>("apoli:modify_attribute", "apoli:conditioned_attribute"),
+				new io.github.dueris.calio.util.holder.Pair<>("apoli:add_to_set", "apoli:add_to_entity_set"),
+				new io.github.dueris.calio.util.holder.Pair<>("apoli:remove_from_set", "apoli:remove_from_entity_set"),
+				new io.github.dueris.calio.util.holder.Pair<>("apoli:action_on_set", "apoli:action_on_entity_set"),
+				new io.github.dueris.calio.util.holder.Pair<>("apoli:in_set", "apoli:in_entity_set"),
+				new io.github.dueris.calio.util.holder.Pair<>("apoli:set_size", "apoli:entity_set_size"),
+				new io.github.dueris.calio.util.holder.Pair<>("apoli:distance_from_spawn", "apoli:distance_from_coordinates"),
+				new io.github.dueris.calio.util.holder.Pair<>("apoli:custom_data", "apoli:nbt")
+			)
+		);
+		CalioParser.REMAPPER.set(remapper);
 		JsonObjectRemapper.typeMappings.add(new Pair<>("origins", "apoli"));
 		JsonObjectRemapper.typeAlias.put("apoli:conditioned_restrict_armor", "apoli:restrict_armor");
 		JsonObjectRemapper.typeAlias.put("apugli:edible_item", "apoli:edible_item");

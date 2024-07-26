@@ -12,6 +12,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DataResult.Error;
 import com.mojang.serialization.JsonOps;
+import io.github.dueris.calio.util.ArgumentWrapper;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;

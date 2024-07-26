@@ -54,7 +54,7 @@ import java.util.stream.Stream;
 public class CalioDataTypes {
 	public static HashMap<Class<?>, Function<JsonElement, ?>> registries = new HashMap<>();
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public static <T> @Nullable T test(@NotNull Class<T> ofType, JsonElement provider) {
 		if (ofType.equals(ItemStack.class)) {
 			return (T) itemStack(provider);
@@ -149,7 +149,7 @@ public class CalioDataTypes {
 	}
 
 	@Contract("_ -> new")
-    public static @NotNull Vector vector(JsonElement element) {
+	public static @NotNull Vector vector(JsonElement element) {
 		FactoryJsonObject object = new FactoryJsonObject(element.getAsJsonObject());
 		float x = 0.0F;
 		float y = 0.0F;
@@ -187,7 +187,7 @@ public class CalioDataTypes {
 	}
 
 	@Contract("_ -> new")
-    public static @NotNull ParticleEffect particleEffect(JsonElement raw) {
+	public static @NotNull ParticleEffect particleEffect(JsonElement raw) {
 		FactoryElement element = new FactoryElement(raw);
 		Particle particle = null;
 		Optional<DustOptions> data = Optional.empty();
@@ -226,7 +226,7 @@ public class CalioDataTypes {
 	}
 
 	@Contract(pure = true)
-    private static String ensureCorrectNamespace(@NotNull String string) {
+	private static String ensureCorrectNamespace(@NotNull String string) {
 		return string.contains(":") ? string : "minecraft:" + string;
 	}
 
@@ -239,7 +239,7 @@ public class CalioDataTypes {
 	}
 
 	@Contract("_ -> new")
-    public static @NotNull ResourceLocation identifier(JsonElement element) {
+	public static @NotNull ResourceLocation identifier(JsonElement element) {
 		return CraftNamespacedKey.toMinecraft(bukkitIdentifier(element));
 	}
 

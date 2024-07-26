@@ -28,8 +28,6 @@ public class LangFile implements Registrable {
 	}
 
 	public static String transform(String original) {
-		System.out.println(original);
-
 		if (langMap.get(LANGUAGE).containsKey(original)) {
 			return langMap.get(LANGUAGE).get(original);
 		}

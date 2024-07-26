@@ -56,6 +56,7 @@ allprojects {
         maven("https://repo.inventivetalent.org/repository/public/")
         maven("https://repo.codemc.org/repository/maven-releases/")
         maven("https://jitpack.io")
+        maven("https://maven.quiltmc.org/repository/release/")
     }
 
     tasks {
