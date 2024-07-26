@@ -207,4 +207,11 @@ public class FactoryJsonObject {
 	public <T> ResourceKey<T> resourceKey(String key, ResourceKey<Registry<T>> registry) {
 		return ResourceKey.create(registry, this.getResourceLocation(key));
 	}
+
+	@Override
+	public String toString() {
+		return "FactoryJsonObject{" +
+			"handle=" + handle +
+			'}';
+	}
 }

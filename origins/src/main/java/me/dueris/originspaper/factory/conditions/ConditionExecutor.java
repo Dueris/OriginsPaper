@@ -21,8 +21,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class ConditionExecutor {
@@ -70,60 +68,10 @@ public class ConditionExecutor {
 				String type = condition.getString("type");
 				switch (type) {
 					case "apoli:and" -> {
-						FactoryJsonArray array = condition.getJsonArray("conditions");
-						List<Boolean> cons = new ArrayList<>();
-						array.forEach(
-							object -> {
-								if (object.isJsonObject()) {
-									FactoryJsonObject obj = object.toJsonObject();
-									Registrar<BiEntityConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION);
-									BiEntityConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
-									if (conx != null) {
-										cons.add(
-											getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBiEntity(obj, entityPair.first(), entityPair.second()))
-										);
-									} else {
-										cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true));
-									}
-								}
-							}
-						);
-
-						for (boolean bx : cons) {
-							if (!bx) {
-								return false;
-							}
-						}
-
-						return true;
+						return evaluateBiEntityConditions(condition.getJsonArray("conditions"), entityPair, true);
 					}
 					case "apoli:or" -> {
-						FactoryJsonArray array = condition.getJsonArray("conditions");
-						List<Boolean> cons = new ArrayList<>();
-						array.forEach(
-							object -> {
-								if (object.isJsonObject()) {
-									FactoryJsonObject obj = object.toJsonObject();
-									Registrar<BiEntityConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION);
-									BiEntityConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
-									if (conx != null) {
-										cons.add(
-											getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBiEntity(obj, entityPair.first(), entityPair.second()))
-										);
-									} else {
-										cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true));
-									}
-								}
-							}
-						);
-
-						for (boolean b : cons) {
-							if (b) {
-								return true;
-							}
-						}
-
-						return false;
+						return evaluateBiEntityConditions(condition.getJsonArray("conditions"), entityPair, false);
 					}
 					case "apoli:constant" -> {
 						return getPossibleInvert(condition.getBooleanOrDefault("inverted", false), condition.getBoolean("value"));
@@ -146,6 +94,32 @@ public class ConditionExecutor {
 		}
 	}
 
+	private static boolean evaluateBiEntityConditions(FactoryJsonArray conditions, Pair<CraftEntity, CraftEntity> entityPair, boolean isAnd) {
+		for (var object : conditions.asList) {
+			if (object.isJsonObject()) {
+				FactoryJsonObject obj = object.toJsonObject();
+				Registrar<BiEntityConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION);
+				BiEntityConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
+				boolean conditionResult;
+				boolean inverted = obj.getBooleanOrDefault("inverted", false);
+
+				if (conx != null) {
+					conditionResult = getPossibleInvert(inverted, testBiEntity(obj, entityPair.first(), entityPair.second()));
+				} else {
+					conditionResult = getPossibleInvert(inverted, true);
+				}
+
+				if (isAnd && !conditionResult) {
+					return false;
+				} else if (!isAnd && conditionResult) {
+					return true;
+				}
+			}
+		}
+		return isAnd;
+	}
+
+
 	public static boolean testBiome(FactoryJsonObject condition, BlockPos blockPos, ServerLevel level) {
 		if (condition == null || condition.isEmpty()) {
 			return true;
@@ -153,52 +127,10 @@ public class ConditionExecutor {
 			String type = condition.getString("type");
 			switch (type) {
 				case "apoli:and" -> {
-					FactoryJsonArray array = condition.getJsonArray("conditions");
-					List<Boolean> cons = new ArrayList<>();
-					array.forEach(object -> {
-						if (object.isJsonObject()) {
-							FactoryJsonObject obj = object.toJsonObject();
-							Registrar<BiomeConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.BIOME_CONDITION);
-							BiomeConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
-							if (conx != null) {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBiome(obj, blockPos, level)));
-							} else {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true));
-							}
-						}
-					});
-
-					for (boolean bx : cons) {
-						if (!bx) {
-							return false;
-						}
-					}
-
-					return true;
+					return evaluateBiomeConditions(condition.getJsonArray("conditions"), blockPos, level, true);
 				}
 				case "apoli:or" -> {
-					FactoryJsonArray array = condition.getJsonArray("conditions");
-					List<Boolean> cons = new ArrayList<>();
-					array.forEach(object -> {
-						if (object.isJsonObject()) {
-							FactoryJsonObject obj = object.toJsonObject();
-							Registrar<BiomeConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.BIOME_CONDITION);
-							BiomeConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
-							if (conx != null) {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBiome(obj, blockPos, level)));
-							} else {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true));
-							}
-						}
-					});
-
-					for (boolean b : cons) {
-						if (b) {
-							return true;
-						}
-					}
-
-					return false;
+					return evaluateBiomeConditions(condition.getJsonArray("conditions"), blockPos, level, false);
 				}
 				case "apoli:constant" -> {
 					return getPossibleInvert(condition.getBooleanOrDefault("inverted", false), condition.getBoolean("value"));
@@ -218,6 +150,32 @@ public class ConditionExecutor {
 		}
 	}
 
+	private static boolean evaluateBiomeConditions(FactoryJsonArray conditions, BlockPos blockPos, ServerLevel level, boolean isAnd) {
+		for (var object : conditions.asList) {
+			if (object.isJsonObject()) {
+				FactoryJsonObject obj = object.toJsonObject();
+				Registrar<BiomeConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.BIOME_CONDITION);
+				BiomeConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
+				boolean conditionResult;
+				boolean inverted = obj.getBooleanOrDefault("inverted", false);
+
+				if (conx != null) {
+					conditionResult = getPossibleInvert(inverted, testBiome(obj, blockPos, level));
+				} else {
+					conditionResult = getPossibleInvert(inverted, true);
+				}
+
+				if (isAnd && !conditionResult) {
+					return false;
+				} else if (!isAnd && conditionResult) {
+					return true;
+				}
+			}
+		}
+		return isAnd;
+	}
+
+
 	public static boolean testBlock(FactoryJsonObject condition, Block block) {
 		return testBlock(condition, CraftBlock.at(((CraftWorld) block.getWorld()).getHandle(), CraftLocation.toBlockPosition(block.getLocation())));
 	}
@@ -229,52 +187,10 @@ public class ConditionExecutor {
 			String type = condition.getString("type");
 			switch (type) {
 				case "apoli:and" -> {
-					FactoryJsonArray array = condition.getJsonArray("conditions");
-					List<Boolean> cons = new ArrayList<>();
-					array.forEach(object -> {
-						if (object.isJsonObject()) {
-							FactoryJsonObject obj = object.toJsonObject();
-							Registrar<BlockConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.BLOCK_CONDITION);
-							BlockConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
-							if (conx != null) {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBlock(obj, block)));
-							} else {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true));
-							}
-						}
-					});
-
-					for (boolean bx : cons) {
-						if (!bx) {
-							return false;
-						}
-					}
-
-					return true;
+					return evaluateBlockConditions(condition.getJsonArray("conditions"), block, true);
 				}
 				case "apoli:or" -> {
-					FactoryJsonArray array = condition.getJsonArray("conditions");
-					List<Boolean> cons = new ArrayList<>();
-					array.forEach(object -> {
-						if (object.isJsonObject()) {
-							FactoryJsonObject obj = object.toJsonObject();
-							Registrar<BlockConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.BLOCK_CONDITION);
-							BlockConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
-							if (conx != null) {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testBlock(obj, block)));
-							} else {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true));
-							}
-						}
-					});
-
-					for (boolean b : cons) {
-						if (b) {
-							return true;
-						}
-					}
-
-					return false;
+					return evaluateBlockConditions(condition.getJsonArray("conditions"), block, false);
 				}
 				case "apoli:constant" -> {
 					return getPossibleInvert(condition.getBooleanOrDefault("inverted", false), condition.getBoolean("value"));
@@ -294,6 +210,31 @@ public class ConditionExecutor {
 		}
 	}
 
+	private static boolean evaluateBlockConditions(FactoryJsonArray conditions, Block block, boolean isAnd) {
+		for (var object : conditions.asList) {
+			if (object.isJsonObject()) {
+				FactoryJsonObject obj = object.toJsonObject();
+				Registrar<BlockConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.BLOCK_CONDITION);
+				BlockConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
+				boolean conditionResult;
+				boolean inverted = obj.getBooleanOrDefault("inverted", false);
+
+				if (conx != null) {
+					conditionResult = getPossibleInvert(inverted, testBlock(obj, block));
+				} else {
+					conditionResult = getPossibleInvert(inverted, true);
+				}
+
+				if (isAnd && !conditionResult) {
+					return false;
+				} else if (!isAnd && conditionResult) {
+					return true;
+				}
+			}
+		}
+		return isAnd;
+	}
+
 	public static boolean testDamage(FactoryJsonObject condition, EntityDamageEvent event) {
 		if (condition == null || condition.isEmpty()) {
 			return true;
@@ -301,52 +242,10 @@ public class ConditionExecutor {
 			String type = condition.getString("type");
 			switch (type) {
 				case "apoli:and" -> {
-					FactoryJsonArray array = condition.getJsonArray("conditions");
-					List<Boolean> cons = new ArrayList<>();
-					array.forEach(object -> {
-						if (object.isJsonObject()) {
-							FactoryJsonObject obj = object.toJsonObject();
-							Registrar<DamageConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.DAMAGE_CONDITION);
-							DamageConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
-							if (conx != null) {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testDamage(obj, event)));
-							} else {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true));
-							}
-						}
-					});
-
-					for (boolean bx : cons) {
-						if (!bx) {
-							return false;
-						}
-					}
-
-					return true;
+					return evaluateDamageConditions(condition.getJsonArray("conditions"), event, true);
 				}
 				case "apoli:or" -> {
-					FactoryJsonArray array = condition.getJsonArray("conditions");
-					List<Boolean> cons = new ArrayList<>();
-					array.forEach(object -> {
-						if (object.isJsonObject()) {
-							FactoryJsonObject obj = object.toJsonObject();
-							Registrar<DamageConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.DAMAGE_CONDITION);
-							DamageConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
-							if (conx != null) {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testDamage(obj, event)));
-							} else {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true));
-							}
-						}
-					});
-
-					for (boolean b : cons) {
-						if (b) {
-							return true;
-						}
-					}
-
-					return false;
+					return evaluateDamageConditions(condition.getJsonArray("conditions"), event, false);
 				}
 				case "apoli:constant" -> {
 					return getPossibleInvert(condition.getBooleanOrDefault("inverted", false), condition.getBoolean("value"));
@@ -366,6 +265,32 @@ public class ConditionExecutor {
 		}
 	}
 
+	private static boolean evaluateDamageConditions(FactoryJsonArray conditions, EntityDamageEvent event, boolean isAnd) {
+		for (var object : conditions.asList) {
+			if (object.isJsonObject()) {
+				FactoryJsonObject obj = object.toJsonObject();
+				Registrar<DamageConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.DAMAGE_CONDITION);
+				DamageConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
+				boolean conditionResult;
+				boolean inverted = obj.getBooleanOrDefault("inverted", false);
+
+				if (conx != null) {
+					conditionResult = getPossibleInvert(inverted, testDamage(obj, event));
+				} else {
+					conditionResult = getPossibleInvert(inverted, true);
+				}
+
+				if (isAnd && !conditionResult) {
+					return false;
+				} else if (!isAnd && conditionResult) {
+					return true;
+				}
+			}
+		}
+		return isAnd;
+	}
+
+
 	public static boolean testEntity(FactoryJsonObject condition, Entity entity) {
 		return testEntity(condition, (CraftEntity) entity);
 	}
@@ -377,52 +302,10 @@ public class ConditionExecutor {
 			String type = condition.getString("type");
 			switch (type) {
 				case "apoli:and" -> {
-					FactoryJsonArray array = condition.getJsonArray("conditions");
-					List<Boolean> cons = new ArrayList<>();
-					array.forEach(object -> {
-						if (object.isJsonObject()) {
-							FactoryJsonObject obj = object.toJsonObject();
-							Registrar<EntityConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.ENTITY_CONDITION);
-							EntityConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
-							if (conx != null) {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testEntity(obj, entity)));
-							} else {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true));
-							}
-						}
-					});
-
-					for (boolean bx : cons) {
-						if (!bx) {
-							return false;
-						}
-					}
-
-					return true;
+					return evaluateEntityConditions(condition.getJsonArray("conditions"), entity, true);
 				}
 				case "apoli:or" -> {
-					FactoryJsonArray array = condition.getJsonArray("conditions");
-					List<Boolean> cons = new ArrayList<>();
-					array.forEach(object -> {
-						if (object.isJsonObject()) {
-							FactoryJsonObject obj = object.toJsonObject();
-							Registrar<EntityConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.ENTITY_CONDITION);
-							EntityConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
-							if (conx != null) {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testEntity(obj, entity)));
-							} else {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true));
-							}
-						}
-					});
-
-					for (boolean b : cons) {
-						if (b) {
-							return true;
-						}
-					}
-
-					return false;
+					return evaluateEntityConditions(condition.getJsonArray("conditions"), entity, false);
 				}
 				case "apoli:constant" -> {
 					return getPossibleInvert(condition.getBooleanOrDefault("inverted", false), condition.getBoolean("value"));
@@ -442,6 +325,32 @@ public class ConditionExecutor {
 		}
 	}
 
+	private static boolean evaluateEntityConditions(FactoryJsonArray conditions, Entity entity, boolean isAnd) {
+		for (var object : conditions.asList) {
+			if (object.isJsonObject()) {
+				FactoryJsonObject obj = object.toJsonObject();
+				Registrar<EntityConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.ENTITY_CONDITION);
+				EntityConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
+				boolean conditionResult;
+				boolean inverted = obj.getBooleanOrDefault("inverted", false);
+
+				if (conx != null) {
+					conditionResult = getPossibleInvert(inverted, testEntity(obj, entity));
+				} else {
+					conditionResult = getPossibleInvert(inverted, true);
+				}
+
+				if (isAnd && !conditionResult) {
+					return false;
+				} else if (!isAnd && conditionResult) {
+					return true;
+				}
+			}
+		}
+		return isAnd;
+	}
+
+
 	public static boolean testItem(FactoryJsonObject condition, ItemStack itemStack) {
 		if (condition == null || condition.isEmpty()) {
 			return true;
@@ -449,53 +358,12 @@ public class ConditionExecutor {
 			String type = condition.getString("type");
 			switch (type) {
 				case "apoli:and" -> {
-					FactoryJsonArray array = condition.getJsonArray("conditions");
-					List<Boolean> cons = new ArrayList<>();
-					array.forEach(object -> {
-						if (object.isJsonObject()) {
-							FactoryJsonObject obj = object.toJsonObject();
-							Registrar<ItemConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_CONDITION);
-							ItemConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
-							if (conx != null) {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testItem(obj, itemStack)));
-							} else {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true));
-							}
-						}
-					});
-
-					for (boolean bx : cons) {
-						if (!bx) {
-							return false;
-						}
-					}
-
-					return true;
+					return evaluateItemConditions(condition.getJsonArray("conditions"), itemStack, true);
 				}
 				case "apoli:or" -> {
-					FactoryJsonArray array = condition.getJsonArray("conditions");
-					List<Boolean> cons = new ArrayList<>();
-					array.forEach(object -> {
-						if (object.isJsonObject()) {
-							FactoryJsonObject obj = object.toJsonObject();
-							Registrar<ItemConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_CONDITION);
-							ItemConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
-							if (conx != null) {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testItem(obj, itemStack)));
-							} else {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true));
-							}
-						}
-					});
-
-					for (boolean b : cons) {
-						if (b) {
-							return true;
-						}
-					}
-
-					return false;
+					return evaluateItemConditions(condition.getJsonArray("conditions"), itemStack, false);
 				}
+
 				case "apoli:constant" -> {
 					return getPossibleInvert(condition.getBooleanOrDefault("inverted", false), condition.getBoolean("value"));
 				}
@@ -514,6 +382,32 @@ public class ConditionExecutor {
 		}
 	}
 
+	private static boolean evaluateItemConditions(FactoryJsonArray conditions, ItemStack itemStack, boolean isAnd) {
+		for (var object : conditions.asList) {
+			if (object.isJsonObject()) {
+				FactoryJsonObject obj = object.toJsonObject();
+				Registrar<ItemConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_CONDITION);
+				ItemConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
+				boolean conditionResult;
+				boolean inverted = obj.getBooleanOrDefault("inverted", false);
+
+				if (conx != null) {
+					conditionResult = getPossibleInvert(inverted, testItem(obj, itemStack));
+				} else {
+					conditionResult = getPossibleInvert(inverted, true);
+				}
+
+				if (isAnd && !conditionResult) {
+					return false;
+				} else if (!isAnd && conditionResult) {
+					return true;
+				}
+			}
+		}
+		return isAnd;
+	}
+
+
 	public static boolean testFluid(FactoryJsonObject condition, Fluid fluid) {
 		if (condition == null || condition.isEmpty()) {
 			return true;
@@ -521,52 +415,10 @@ public class ConditionExecutor {
 			String type = condition.getString("type");
 			switch (type) {
 				case "apoli:and" -> {
-					FactoryJsonArray array = condition.getJsonArray("conditions");
-					List<Boolean> cons = new ArrayList<>();
-					array.forEach(object -> {
-						if (object.isJsonObject()) {
-							FactoryJsonObject obj = object.toJsonObject();
-							Registrar<FluidConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.FLUID_CONDITION);
-							FluidConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
-							if (conx != null) {
-								cons.add(testFluid(obj, fluid));
-							} else {
-								cons.add(true);
-							}
-						}
-					});
-
-					for (boolean bx : cons) {
-						if (!bx) {
-							return false;
-						}
-					}
-
-					return true;
+					return evaluateFluidConditions(condition.getJsonArray("conditions"), fluid, true);
 				}
 				case "apoli:or" -> {
-					FactoryJsonArray array = condition.getJsonArray("conditions");
-					List<Boolean> cons = new ArrayList<>();
-					array.forEach(object -> {
-						if (object.isJsonObject()) {
-							FactoryJsonObject obj = object.toJsonObject();
-							Registrar<FluidConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.FLUID_CONDITION);
-							FluidConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
-							if (conx != null) {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), testFluid(obj, fluid)));
-							} else {
-								cons.add(getPossibleInvert(condition.getBooleanOrDefault("inverted", false), true));
-							}
-						}
-					});
-
-					for (boolean b : cons) {
-						if (b) {
-							return true;
-						}
-					}
-
-					return false;
+					return evaluateFluidConditions(condition.getJsonArray("conditions"), fluid, false);
 				}
 				case "apoli:constant" -> {
 					return getPossibleInvert(condition.getBooleanOrDefault("inverted", false), condition.getBoolean("value"));
@@ -585,6 +437,32 @@ public class ConditionExecutor {
 			return con != null ? getPossibleInvert(invert, con.test(condition, fluid)) : getPossibleInvert(invert, false);
 		}
 	}
+
+	private static boolean evaluateFluidConditions(FactoryJsonArray conditions, Fluid fluid, boolean isAnd) {
+		for (var object : conditions.asList) {
+			if (object.isJsonObject()) {
+				FactoryJsonObject obj = object.toJsonObject();
+				Registrar<FluidConditions.ConditionFactory> factoryx = OriginsPaper.getPlugin().registry.retrieve(Registries.FLUID_CONDITION);
+				FluidConditions.ConditionFactory conx = factoryx.get(ResourceLocation.parse(obj.getString("type")));
+				boolean conditionResult;
+				boolean inverted = obj.getBooleanOrDefault("inverted", false);
+
+				if (conx != null) {
+					conditionResult = getPossibleInvert(inverted, testFluid(obj, fluid));
+				} else {
+					conditionResult = getPossibleInvert(inverted, true);
+				}
+
+				if (isAnd && !conditionResult) {
+					return false;
+				} else if (!isAnd && conditionResult) {
+					return true;
+				}
+			}
+		}
+		return isAnd;
+	}
+
 
 	protected static boolean getPossibleInvert(boolean inverted, boolean original) {
 		return inverted != original;

@@ -30,7 +30,9 @@ public class PreventItemUse extends PowerType implements Listener {
 		if (getPlayers().contains(e.getPlayer())) {
 			if (e.getItem() == null) return;
 			boolean shouldCancel = ConditionExecutor.testItem(itemCondition, e.getItem());
-			if (shouldCancel) e.setCancelled(true);
+			if (shouldCancel) {
+				e.setCancelled(true);
+			}
 		}
 	}
 
