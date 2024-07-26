@@ -1,4 +1,4 @@
-package io.github.dueris.calio.parser.reader;
+package io.github.dueris.calio.parser.reader.system;
 
 import org.jetbrains.annotations.NotNull;
 

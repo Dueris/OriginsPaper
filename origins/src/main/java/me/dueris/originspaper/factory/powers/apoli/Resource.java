@@ -16,7 +16,6 @@ import me.dueris.originspaper.factory.data.types.HudRender;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.util.DataConverter;
-import me.dueris.originspaper.util.TextureLocation;
 import me.dueris.originspaper.util.Util;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.minecraft.resources.ResourceLocation;

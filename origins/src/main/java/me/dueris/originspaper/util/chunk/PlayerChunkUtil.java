@@ -4,13 +4,13 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-public class ChunkManagerPlayer {
+public class PlayerChunkUtil {
 	Player player;
 	String shape;
 	ShapeData shapeData;
 	boolean thing;
 
-	public ChunkManagerPlayer(Player player, String shape) {
+	public PlayerChunkUtil(Player player, String shape) {
 		this.player = player;
 		this.shape = shape;
 		//generateShapeData

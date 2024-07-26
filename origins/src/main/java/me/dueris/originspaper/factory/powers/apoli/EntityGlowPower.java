@@ -5,7 +5,6 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.data.types.Shape;
-import me.dueris.originspaper.util.TextureLocation;
 import me.dueris.originspaper.util.entity.GlowingEntitiesUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;

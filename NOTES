@@ -1,2 +1,5 @@
 make actions via making new jsonobject builders that draw from the registry and return a SerializableDataBuilder<Consumer<BLAH>> which are based on compiled Consumers
 that are made from ENTITY_ACTION builder that takes the type, looks at the registry, finds the type, compiles the type(which must be its own class then)
+
+
+// TODO: ASSET PARSING FOR LANG

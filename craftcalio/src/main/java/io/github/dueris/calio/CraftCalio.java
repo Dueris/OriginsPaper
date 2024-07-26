@@ -2,7 +2,7 @@ package io.github.dueris.calio;
 
 import io.github.dueris.calio.data.AccessorKey;
 import io.github.dueris.calio.parser.CalioParser;
-import io.github.dueris.calio.parser.reader.FileSystemReader;
+import io.github.dueris.calio.parser.reader.system.FileSystemReader;
 import io.github.dueris.calio.util.Util;
 import io.github.dueris.calio.util.holder.Pair;
 import io.github.dueris.calio.util.thread.ParserFactory;

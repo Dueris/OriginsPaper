@@ -55,7 +55,7 @@ public class InstanceDefiner {
 		return dataMap;
 	}
 
-	protected List<?> sortByPriorities(@NotNull List<Pair<String, ?>> pairs) {
+	public List<?> sortByPriorities(@NotNull List<Pair<String, ?>> pairs) {
 		return pairs.stream()
 			.sorted(Comparator.comparingInt(pair -> keyPriorities.getInt(pair.first())))
 			.map(Pair::second)

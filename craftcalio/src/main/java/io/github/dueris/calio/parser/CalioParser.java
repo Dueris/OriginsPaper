@@ -3,6 +3,7 @@ package io.github.dueris.calio.parser;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.github.dueris.calio.data.AccessorKey;
+import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.github.dueris.calio.util.ReflectionUtils;
@@ -11,6 +12,7 @@ import io.github.dueris.calio.util.annotations.DontRegister;
 import io.github.dueris.calio.util.annotations.RequiresPlugin;
 import io.github.dueris.calio.util.annotations.SourceProvider;
 import io.github.dueris.calio.util.holder.ObjectProvider;
+import io.github.dueris.calio.util.holder.ObjectTiedBoolean;
 import io.github.dueris.calio.util.holder.Pair;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
@@ -20,10 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -68,8 +67,7 @@ public class CalioParser {
 				String path = pair.first();
 				String jsonContents = pair.second();
 				ResourceLocation location = Util.buildResourceLocationFromPath(path);
-				List<Pair<String, ?>> compiledArguments = new ArrayList<>();
-				List<Pair<String, ?>> compiledParams = new ArrayList<>();
+				if (location == null) throw new RuntimeException("Unable to compile ResourceLocation for CalioParser!");
 				InstanceDefiner definer;
 				Class<? extends T> toBuild = clz;
 
@@ -94,41 +92,10 @@ public class CalioParser {
 				if (toBuild == null)
 					throw new RuntimeException("Unable to parse type for class '" + clz.getSimpleName() + "' and type value of '" + jsonSource.get("type").getAsString() + "'");
 				definer = ReflectionUtils.invokeStaticMethod(toBuild, "buildDefiner");
-				definer.dataMap().forEach((key, serializableTiedBoolean) -> {
-					if (kill[0].get()) return;
-					boolean[] boolArgs = serializableTiedBoolean.bool();
-					SerializableType type = SerializableType.build(boolArgs[0], boolArgs[1]);
-					switch (type) {
-						case NULLABLE:
-							compiledParams.add(new Pair<>(key, serializableTiedBoolean.object().type()));
-							if (jsonSource.has(key)) {
-								compiledArguments.add(new Pair<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
-							} else {
-								compiledArguments.add(new Pair<>(key, null));
-							}
-							break;
-						case DEFAULT:
-							compiledParams.add(new Pair<>(key, serializableTiedBoolean.object().type()));
-							if (jsonSource.has(key)) {
-								compiledArguments.add(new Pair<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
-							} else {
-								if (!definer.defaultMap.containsKey(key)) {
-									throw new UnsupportedOperationException("A default value was provided but it wasn't fetch-able by the calio compiler!");
-								}
-
-								compiledArguments.add(new Pair<>(key, definer.defaultMap.get(key)));
-							}
-							break;
-						case REQUIRED:
-							compiledParams.add(new Pair<>(key, serializableTiedBoolean.object().type()));
-							if (jsonSource.has(key)) {
-								compiledArguments.add(new Pair<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
-							} else {
-								LOGGER.error("Required default not found, skipping instance compiling for '{}' : KEY ['{}'] | ClassName [{}]", location, key, clz.getSimpleName());
-								kill[0].set(true);
-							}
-					}
-				});
+				Optional<Pair<List<Pair<String, ?>>, List<Pair<String, ?>>>> compiledInstance = compileFromInstanceDefinition(definer, jsonSource, Optional.of(location), clz);
+				if (compiledInstance.isEmpty()) continue;
+				List<Pair<String, ?>> compiledArguments = compiledInstance.get().second();
+				List<Pair<String, ?>> compiledParams = compiledInstance.get().first();
 
 				if (kill[0].get()) continue;
 
@@ -187,6 +154,51 @@ public class CalioParser {
 		}
 
 		return concurrentLinkedQueue;
+	}
+
+	public static <T> Optional<Pair<List<Pair<String, ?>>, List<Pair<String, ?>>>> compileFromInstanceDefinition(@NotNull InstanceDefiner definer, JsonObject jsonSource, Optional<ResourceLocation> location, Optional<Class<T>> clz) {
+		List<Pair<String, ?>> compiledParams = new ArrayList<>();
+		List<Pair<String, ?>> compiledArguments = new ArrayList<>();
+		for (Map.Entry<String, ObjectTiedBoolean<SerializableDataBuilder<?>>> entry : definer.dataMap().entrySet()) {
+			String key = entry.getKey();
+			ObjectTiedBoolean<SerializableDataBuilder<?>> serializableTiedBoolean = entry.getValue();
+			boolean[] boolArgs = serializableTiedBoolean.bool();
+			SerializableType type = SerializableType.build(boolArgs[0], boolArgs[1]);
+			switch (type) {
+				case NULLABLE:
+					compiledParams.add(new Pair<>(key, serializableTiedBoolean.object().type()));
+					if (jsonSource.has(key)) {
+						compiledArguments.add(new Pair<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
+					} else {
+						compiledArguments.add(new Pair<>(key, null));
+					}
+					break;
+				case DEFAULT:
+					compiledParams.add(new Pair<>(key, serializableTiedBoolean.object().type()));
+					if (jsonSource.has(key)) {
+						compiledArguments.add(new Pair<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
+					} else {
+						if (!definer.defaultMap.containsKey(key)) {
+							throw new UnsupportedOperationException("A default value was provided but it wasn't fetch-able by the calio compiler!");
+						}
+
+						compiledArguments.add(new Pair<>(key, definer.defaultMap.get(key)));
+					}
+					break;
+				case REQUIRED:
+					compiledParams.add(new Pair<>(key, serializableTiedBoolean.object().type()));
+					if (jsonSource.has(key)) {
+						compiledArguments.add(new Pair<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
+					} else {
+						LOGGER.error("Required default not found, skipping instance compiling for '{}' : KEY ['{}'] | ClassName [{}]", location.isPresent() ? location.get() : "Unknown Key", key, clz.isPresent() ? clz.get() : "Unknown Class");
+						return Optional.empty();
+					}
+			}
+		}
+		if (!compiledParams.isEmpty() && !compiledArguments.isEmpty()) {
+			return Optional.of(new Pair<>(compiledParams, compiledArguments));
+		}
+		return Optional.empty();
 	}
 
 }

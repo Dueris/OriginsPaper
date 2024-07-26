@@ -10,8 +10,6 @@ import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.handler.configuration.PrioritizedLifecycleEventHandlerConfiguration;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
-import me.dueris.calio.data.JsonObjectRemapper;
-import me.dueris.calio.util.holders.Pair;
 import me.dueris.originspaper.command.Commands;
 import me.dueris.originspaper.content.NMSBootstrap;
 import me.dueris.originspaper.registry.Registries;
@@ -194,19 +192,6 @@ public class Bootstrap implements PluginBootstrap {
 			)
 		);
 		CalioParser.REMAPPER.set(remapper);
-		JsonObjectRemapper.typeMappings.add(new Pair<>("origins", "apoli"));
-		JsonObjectRemapper.typeAlias.put("apoli:conditioned_restrict_armor", "apoli:restrict_armor");
-		JsonObjectRemapper.typeAlias.put("apugli:edible_item", "apoli:edible_item");
-		JsonObjectRemapper.typeAlias.put("apoli:modify_attribute", "apoli:conditioned_attribute");
-		JsonObjectRemapper.typeAlias.put("apoli:add_to_set", "apoli:add_to_entity_set");
-		JsonObjectRemapper.typeAlias.put("apoli:remove_from_set", "apoli:remove_from_entity_set");
-		JsonObjectRemapper.typeAlias.put("apoli:action_on_set", "apoli:action_on_entity_set");
-		JsonObjectRemapper.typeAlias.put("apoli:in_set", "apoli:in_entity_set");
-		JsonObjectRemapper.typeAlias.put("apoli:set_size", "apoli:entity_set_size");
-		JsonObjectRemapper.typeAlias.put("apoli:distance_from_spawn", "apoli:distance_from_coordinates");
-		JsonObjectRemapper.typeAlias.put("apoli:custom_data", "apoli:nbt");
-
-		// Create new registry instances
 		context.createRegistries(
 			Registries.ORIGIN,
 			Registries.LAYER,
@@ -224,7 +209,6 @@ public class Bootstrap implements PluginBootstrap {
 			Registries.BIENTITY_ACTION,
 			Registries.TEXTURE_LOCATION,
 			Registries.LANG,
-			Registries.PACK_SOURCE,
 			Registries.CHOOSING_PAGE
 		);
 		BOOTSTRAPPED.set(true);

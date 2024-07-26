@@ -1,8 +1,8 @@
 package me.dueris.originspaper.util;
 
 import com.google.gson.JsonObject;
-import me.dueris.calio.registry.Registrable;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,11 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static me.dueris.originspaper.OriginsPaper.LANGUAGE;
 
-public class LangFile implements Registrable {
+public class LangFile {
 	public static final Map<String, Map<String, String>> langMap = new ConcurrentHashMap<>();
 	private final ResourceLocation key;
 
-	public LangFile(ResourceLocation key, JsonObject json) {
+	public LangFile(ResourceLocation key, @NotNull JsonObject json) {
 		this.key = key;
 		Map<String, String> foundLang = new HashMap<>();
 
@@ -35,7 +35,6 @@ public class LangFile implements Registrable {
 		return original;
 	}
 
-	@Override
 	public ResourceLocation key() {
 		return this.key;
 	}

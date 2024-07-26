@@ -14,10 +14,10 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 
-public class ChunkManagerWorld {
+public class LevelChunkUtil {
 	World world;
 
-	public ChunkManagerWorld(World world) {
+	public LevelChunkUtil(World world) {
 		this.world = world;
 	}
 
@@ -47,8 +47,8 @@ public class ChunkManagerWorld {
 		return world.getChunkAt(x, z);
 	}
 
-	public ChunkManagerPlayer getPlayerChunkManager(Player player, String shape, boolean usetoppybottom) {
-		return new ChunkManagerPlayer(player, shape);
+	public PlayerChunkUtil getPlayerChunkManager(Player player, String shape, boolean usetoppybottom) {
+		return new PlayerChunkUtil(player, shape);
 	}
 
 	public Block getBlockAtChunkPos(Chunk chunk, int x, int y, int z) {

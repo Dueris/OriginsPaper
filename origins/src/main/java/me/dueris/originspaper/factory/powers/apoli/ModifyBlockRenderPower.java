@@ -11,7 +11,7 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.data.types.Shape;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
-import me.dueris.originspaper.util.chunk.ChunkManagerWorld;
+import me.dueris.originspaper.util.chunk.LevelChunkUtil;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -50,7 +50,7 @@ public class ModifyBlockRenderPower extends PowerType implements Listener {
 	public void chunkLoad(@NotNull PlayerChunkLoadEvent e) {
 		Player p = e.getPlayer();
 		if (!getPlayers().contains(p)) return;
-		final ChunkManagerWorld worldChunkAccessor = new ChunkManagerWorld(e.getWorld());
+		final LevelChunkUtil worldChunkAccessor = new LevelChunkUtil(e.getWorld());
 		ServerLevel level = ((CraftWorld) e.getWorld()).getHandle();
 		que.add(() -> {
 			Map<Position, BlockData> updates = new ConcurrentHashMap<>();

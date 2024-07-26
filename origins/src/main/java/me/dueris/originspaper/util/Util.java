@@ -14,9 +14,6 @@ import com.mojang.serialization.DataResult.Error;
 import com.mojang.serialization.JsonOps;
 import io.github.dueris.calio.util.ArgumentWrapper;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import me.dueris.calio.data.factory.FactoryElement;
-import me.dueris.calio.data.factory.FactoryJsonArray;
-import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.actions.Actions;
 import me.dueris.originspaper.factory.conditions.ConditionExecutor;
@@ -62,6 +59,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.*;
+import org.bukkit.boss.BarColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.CraftServer;
@@ -131,56 +129,7 @@ public class Util {
 		return source;
 	}
 
-	public static PotionEffect parsePotionEffect(FactoryJsonObject effect) {
-		String potionEffect = "minecraft:luck";
-		int duration = 100;
-		int amplifier = 0;
-		boolean isAmbient = false;
-		boolean showParticles = false;
-		boolean showIcon = true;
-		if (effect.isPresent("effect")) {
-			potionEffect = effect.getString("effect");
-		}
-
-		if (effect.isPresent("duration")) {
-			duration = effect.getNumber("duration").getInt();
-		}
-
-		if (effect.isPresent("amplifier")) {
-			amplifier = effect.getNumber("amplifier").getInt();
-		}
-
-		if (effect.isPresent("is_ambient")) {
-			isAmbient = effect.getBooleanOrDefault("is_ambient", true);
-		}
-
-		if (effect.isPresent("show_particles")) {
-			showParticles = effect.getBooleanOrDefault("show_particles", false);
-		}
-
-		if (effect.isPresent("show_icon")) {
-			showIcon = effect.getBooleanOrDefault("show_icon", false);
-		}
-
-		return new PotionEffect(PotionEffectType.getByKey(NamespacedKey.fromString(potionEffect)), duration, amplifier, isAmbient, showParticles, showIcon);
-	}
-
-	public static List<PotionEffect> parseAndReturnPotionEffects(FactoryJsonObject power) {
-		List<PotionEffect> effectList = new ArrayList<>();
-		FactoryJsonObject singleEffect = power.isPresent("effect") ? power.getJsonObject("effect") : new FactoryJsonObject(new JsonObject());
-		List<FactoryJsonObject> effects = (power.isPresent("effects") ? power.getJsonArray("effects") : new FactoryJsonArray(new JsonArray())).asJsonObjectList();
-		if (singleEffect != null && !singleEffect.isEmpty()) {
-			effects.add(singleEffect);
-		}
-
-		for (FactoryJsonObject effect : effects) {
-			effectList.add(parsePotionEffect(effect));
-		}
-
-		return effectList;
-	}
-
-	public static void addPositionedItemStack(Inventory inventory, org.bukkit.inventory.ItemStack stack, int slot) {
+	public static void addPositionedItemStack(@NotNull Inventory inventory, org.bukkit.inventory.ItemStack stack, int slot) {
 		int maxSlots = inventory.getSize();
 		if (slot < 0 || slot > maxSlots) {
 			OriginsPaper.getPlugin().getLogger().warning("Invalid slot number provided!");
@@ -205,10 +154,6 @@ public class Util {
 		OriginsPaper.getPlugin().getLogger().warning("Inventory is full!");
 	}
 
-	public static Sound parseSound(String sound) {
-		return CraftRegistry.SOUNDS.get(NamespacedKey.fromString(sound));
-	}
-
 	public static @NotNull Registry<?> getRegistry(ResourceKey<Registry<?>> registry) {
 		return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
 	}
@@ -223,35 +168,6 @@ public class Util {
 		String name = power.getName();
 		String tag = power.getTag();
 		return !name.equals("craftapoli.name.not_found") ? name : tag;
-	}
-
-	public static @NotNull List<MobEffectInstance> toMobEffectList(@NotNull List<PotionEffect> effects) {
-		List<MobEffectInstance> ret = new ArrayList<>();
-		effects.forEach(effect -> ret.add(CraftPotionUtil.fromBukkit(effect)));
-		return ret;
-	}
-
-	@Contract("_ -> new")
-	public static @NotNull CraftFoodComponent parseProperties(FactoryJsonObject jsonObject) {
-		Builder builder = new Builder();
-		computeIfObjectPresent("hunger", jsonObject, value -> builder.nutrition(value.getNumber().getInt()));
-		computeIfObjectPresent("saturation", jsonObject, value -> builder.saturationModifier(value.getNumber().getFloat()));
-		computeIfObjectPresent("always_edible", jsonObject, value -> {
-			if (value.isBoolean() && value.getBoolean()) {
-				builder.alwaysEdible();
-			}
-		});
-		computeIfObjectPresent("snack", jsonObject, value -> {
-			if (value.isBoolean() && value.getBoolean()) {
-				builder.fast();
-			}
-		});
-		List<PotionEffect> effects = parseAndReturnPotionEffects(jsonObject);
-		effects.forEach(potionEffect -> {
-			MobEffectInstance instance = CraftPotionUtil.fromBukkit(potionEffect);
-			builder.effect(instance, 1.0F);
-		});
-		return new CraftFoodComponent(builder.build());
 	}
 
 	public static boolean inSnow(Level world, BlockPos... blockPositions) {
@@ -416,12 +332,6 @@ public class Util {
 		}
 
 		Bukkit.getLogger().info(values.toString());
-	}
-
-	public static void computeIfObjectPresent(String key, @NotNull FactoryJsonObject object, Consumer<FactoryElement> function) {
-		if (object.isPresent(key)) {
-			function.accept(object.getElement(key));
-		}
 	}
 
 	@Contract(value = "_, !null -> !null", pure = true)
@@ -696,6 +606,30 @@ public class Util {
 		return missingNumbersx;
 	}
 
+	public static BarColor convertToBarColor(java.awt.@NotNull Color color) {
+		int rgb = color.getRGB();
+		int red = (rgb >> 16) & 0xFF;
+		int green = (rgb >> 8) & 0xFF;
+		int blue = rgb & 0xFF;
+
+		if (red > green && red > blue) {
+			if (red - green < 30) return BarColor.YELLOW;
+			return BarColor.RED;
+		} else if (green > red && green > blue) {
+			return BarColor.GREEN;
+		} else if (blue > red && blue > green) {
+			return BarColor.BLUE;
+		} else if (red == green && red == blue) {
+			return BarColor.WHITE;
+		} else if (red == green) {
+			return BarColor.YELLOW;
+		} else if (red == blue) {
+			return BarColor.PURPLE;
+		} else {
+			return BarColor.GREEN;
+		}
+	}
+
 	@Contract(pure = true)
 	public static double slope(double @NotNull [] p1, double @NotNull [] p2) {
 		if (p2[0] - p1[0] == 0.0) {
@@ -841,7 +775,7 @@ public class Util {
 		return slotsList;
 	}
 
-	public static int checkInventory(FactoryJsonObject data, Entity entity, @Nullable me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, Function<net.minecraft.world.item.ItemStack, Integer> processor) {
+	public static int checkInventory(@NotNull FactoryJsonObject data, Entity entity, @Nullable me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, Function<net.minecraft.world.item.ItemStack, Integer> processor) {
 		FactoryJsonObject itemCondition = data.getJsonObject("item_condition");
 		List<Integer> slots = getSlots(data);
 		if (slots.isEmpty()) {
@@ -1082,13 +1016,13 @@ public class Util {
 		SOLARIS("solaris"),
 		WINDOWS("windows") {
 			@Override
-			protected String[] getOpenUrlArguments(URL url) {
+			protected String[] getOpenUrlArguments(@NotNull URL url) {
 				return new String[]{"rundll32", "url.dll,FileProtocolHandler", url.toString()};
 			}
 		},
 		OSX("mac") {
 			@Override
-			protected String[] getOpenUrlArguments(URL url) {
+			protected String[] getOpenUrlArguments(@NotNull URL url) {
 				return new String[]{"open", url.toString()};
 			}
 		},

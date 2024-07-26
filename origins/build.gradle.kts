@@ -10,7 +10,6 @@ println("Loaded subproject \"${project.name}\" with version {$version}")
 
 dependencies {
     // Project
-    implementation(project(mapOf("path" to ":calio")))
     implementation(project(mapOf("path" to ":craftcalio")))
     // Required Dependencies
     implementation("com.github.Dueris:ModelColorAPI:1.0.5-SNAPSHOT")

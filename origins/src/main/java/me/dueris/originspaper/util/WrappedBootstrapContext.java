@@ -2,18 +2,19 @@ package me.dueris.originspaper.util;
 
 import com.google.common.io.Files;
 import com.google.gson.JsonObject;
+import io.github.dueris.calio.registry.IRegistry;
+import io.github.dueris.calio.registry.Registrar;
+import io.github.dueris.calio.registry.RegistryKey;
+import io.github.dueris.calio.registry.impl.CalioRegistry;
+import io.github.dueris.calio.util.holder.Pair;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
-import me.dueris.calio.registry.IRegistry;
-import me.dueris.calio.registry.Registrar;
-import me.dueris.calio.registry.RegistryKey;
-import me.dueris.calio.registry.impl.CalioRegistry;
-import me.dueris.calio.util.holders.Pair;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -31,15 +32,15 @@ public class WrappedBootstrapContext {
 	private final BootstrapContext context;
 	private final IRegistry registry;
 	private final List<String> registryPointers = new CopyOnWriteArrayList<>();
-	private final ConcurrentHashMap<Pair<ResourceKey, ResourceLocation>, JsonObject> registered = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<Pair<ResourceKey<?>, ResourceLocation>, JsonObject> registered = new ConcurrentHashMap<>();
 
 	public WrappedBootstrapContext(BootstrapContext context) {
 		this.context = context;
 		this.registry = CalioRegistry.INSTANCE;
 	}
 
-	public void createRegistry(RegistryKey<?> key) {
-		this.registry.create(key, new Registrar(key.type()));
+	public <T> void createRegistry(RegistryKey<T> key) {
+		this.registry.create(key, new Registrar<T>(key.type()));
 	}
 
 	public void createRegistries(RegistryKey<?> @NotNull ... keys) {
@@ -73,7 +74,7 @@ public class WrappedBootstrapContext {
 			}).filter(File::isDirectory)
 			.findFirst().orElseThrow();
 
-		for (Pair<ResourceKey, ResourceLocation> key : this.registered.keySet()) {
+		for (Pair<ResourceKey<?>, ResourceLocation> key : this.registered.keySet()) {
 			String namespace = key.second().getNamespace();
 			String registryLocation = key.first().location().getPath();
 			File namespaceFile = new File(data, namespace);

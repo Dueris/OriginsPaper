@@ -47,11 +47,6 @@ public class DataConverter {
 		};
 	}
 
-	@Contract("_ -> new")
-	public static @NotNull AttributeModifier convertToAttributeModifier(@NotNull Modifier modifier) {
-		return new AttributeModifier(modifier.handle.getStringOrDefault("name", "modifier"), modifier.value().floatValue(), convertToOperation(modifier));
-	}
-
 	public static double attributeToEntityReach(double attributeValue) {
 		if (attributeValue < 0.0) {
 			throw new IllegalArgumentException("Attribute value must be non-negative.");

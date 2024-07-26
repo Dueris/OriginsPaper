@@ -5,7 +5,6 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.PowerUpdateEvent;
-import me.dueris.originspaper.factory.data.types.EntityGroup;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;

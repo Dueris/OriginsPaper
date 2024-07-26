@@ -1,19 +1,20 @@
 package me.dueris.originspaper.registry;
 
-import me.dueris.calio.registry.RegistryKey;
+import io.github.dueris.calio.registry.RegistryKey;
+import io.github.dueris.calio.util.Util;
+import me.dueris.originspaper.factory.actions.ActionFactory;
 import me.dueris.originspaper.factory.actions.types.BiEntityActions;
 import me.dueris.originspaper.factory.actions.types.BlockActions;
 import me.dueris.originspaper.factory.actions.types.EntityActions;
 import me.dueris.originspaper.factory.actions.types.ItemActions;
 import me.dueris.originspaper.factory.conditions.types.*;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
-import me.dueris.originspaper.registry.registries.DatapackRepository;
 import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.screen.ChoosingPage;
 import me.dueris.originspaper.util.LangFile;
-import me.dueris.originspaper.util.TextureLocation;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,13 +32,11 @@ public class Registries {
 	public static final RegistryKey<BiomeConditions.ConditionFactory> BIOME_CONDITION = new RegistryKey<>(BiomeConditions.ConditionFactory.class, apoliIdentifier("biome_condition"));
 
 	public static final RegistryKey<ItemActions.ActionFactory> ITEM_ACTION = new RegistryKey<>(ItemActions.ActionFactory.class, apoliIdentifier("item_action"));
-	public static final RegistryKey<EntityActions.ActionFactory> ENTITY_ACTION = new RegistryKey<>(EntityActions.ActionFactory.class, apoliIdentifier("entity_action"));
+	public static final RegistryKey<ActionFactory<Entity>> ENTITY_ACTION = new RegistryKey<>(Util.castClass(ActionFactory.class), apoliIdentifier("entity_action"));
 	public static final RegistryKey<BiEntityActions.ActionFactory> BIENTITY_ACTION = new RegistryKey<>(BiEntityActions.ActionFactory.class, apoliIdentifier("bientity_action"));
 	public static final RegistryKey<BlockActions.ActionFactory> BLOCK_ACTION = new RegistryKey<>(BlockActions.ActionFactory.class, apoliIdentifier("block_action"));
 
-	public static final RegistryKey<TextureLocation> TEXTURE_LOCATION = new RegistryKey<>(TextureLocation.class, apoliIdentifier("texture_location"));
 	public static final RegistryKey<LangFile> LANG = new RegistryKey<>(LangFile.class, identifier("lang_file"));
-	public static final RegistryKey<DatapackRepository> PACK_SOURCE = new RegistryKey<>(DatapackRepository.class, apoliIdentifier("pack_source"));
 	public static final RegistryKey<ChoosingPage> CHOOSING_PAGE = new RegistryKey<>(ChoosingPage.class, originIdentifier("choosing_page"));
 
 	@Contract("_ -> new")

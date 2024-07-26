@@ -2,18 +2,17 @@ package me.dueris.originspaper;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
+import io.github.dueris.calio.CraftCalio;
 import io.github.dueris.calio.data.AccessorKey;
 import io.github.dueris.calio.parser.JsonObjectRemapper;
 import io.github.dueris.calio.parser.ParsingStrategy;
+import io.github.dueris.calio.registry.IRegistry;
 import io.github.dueris.calio.registry.RegistryKey;
+import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.github.dueris.calio.test.ModMeta;
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import io.papermc.paper.plugin.configuration.PluginMeta;
-import me.dueris.calio.CraftCalio;
-import me.dueris.calio.data.AssetIdentifier;
-import me.dueris.calio.registry.IRegistry;
-import me.dueris.calio.registry.impl.CalioRegistry;
 import me.dueris.originspaper.command.Commands;
 import me.dueris.originspaper.command.OriginCommand;
 import me.dueris.originspaper.content.ContentTicker;
@@ -244,32 +243,23 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				? avalibleJVMThreads
 				: Math.min(avalibleJVMThreads, OriginConfiguration.getConfiguration().getInt("max-loader-threads"));
 			loaderThreadPool = Executors.newFixedThreadPool(dynamic_thread_count, threadFactory);
-			this.registry.retrieve(Registries.PACK_SOURCE).register(new DatapackRepository(originIdentifier("plugins"), Bukkit.getPluginsFolder().toPath()));
-			this.registry
-				.retrieve(Registries.PACK_SOURCE)
-				.register(new DatapackRepository(originIdentifier("datapacks"), server.getWorldPath(LevelResource.DATAPACK_DIR)));
-
 			try {
 				ConditionExecutor.registerAll();
 				Actions.registerAll();
 				PowerType.registerAll();
-				CraftCalio calio = CraftCalio.INSTANCE;
-				this.registry.retrieve(Registries.PACK_SOURCE).values().stream().map(DatapackRepository::path).forEach(calio::addDatapackPath);
-				calio.registerAccessor(
-					"powers", 0,
-					true, PowerType.class,
-					Registries.CRAFT_POWER, "apoli:simple");
-				calio.registerAccessor(
-					"origins", 1,
-					false, Origin.class,
-					Registries.ORIGIN);
-				calio.registerAccessor(
-					"origin_layers", 2,
-					false, Layer.class,
-					Registries.LAYER);
-				calio.registerAsset("textures", 0, "png", AssetIdentifier.AssetType.IMAGE, Registries.TEXTURE_LOCATION);
-				calio.registerAsset("lang", 1, "json", AssetIdentifier.AssetType.JSON, Registries.LANG);
-				calio.start(true, loaderThreadPool);
+				io.github.dueris.calio.CraftCalio craftCalio = io.github.dueris.calio.CraftCalio.buildInstance(
+					new String[]{"--debug=true", "--async=true"}
+				);
+				JsonObjectRemapper.main(versions.toArray(new String[0]));
+				try {
+					craftCalio.startBuilder()
+						.withAccessor(new AccessorKey<>("power", PowerType.class, 2, ParsingStrategy.TYPED, Registries.CRAFT_POWER))
+						.withAccessor(new AccessorKey<>("origin", Origin.class, 3, ParsingStrategy.DEFAULT, Registries.ORIGIN))
+						.withAccessor(new AccessorKey<>("origin_layer", Layer.class, 4, ParsingStrategy.DEFAULT, Registries.LAYER))
+						.build().parse();
+				} catch (Throwable ex) {
+					throw new RuntimeException(ex);
+				}
 				BuiltinRegistry.bootstrap();
 				NBTFixerUpper.runFixerUpper();
 				return true;
@@ -396,27 +386,6 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		ScreenNavigator.layerPages.values().forEach(pages -> pages.add(pages.size(), new RandomOriginPage()));
 		RecipePower.parseRecipes();
 		OrbOfOrigins.init();
-	}
-
-	@EventHandler
-	public void resourceReload(ServerResourcesReloadedEvent e) {
-		// beta testing
-		io.github.dueris.calio.CraftCalio craftCalio = io.github.dueris.calio.CraftCalio.buildInstance(
-			new String[]{"--debug=true", "--async=true"}
-		);
-		JsonObjectRemapper.main(versions.toArray(new String[0]));
-		try {
-			RegistryKey<ModMeta> registryKey = new RegistryKey<>(ModMeta.class, apoliIdentifier("mods"));
-			craftCalio.startBuilder()
-				.withAccessor(new AccessorKey<>("mods", ModMeta.class, 0, ParsingStrategy.TYPED, registryKey))
-				.build().parse();
-			io.github.dueris.calio.registry.impl.CalioRegistry.INSTANCE.retrieve(registryKey).forEach(((location, modMeta) -> {
-				System.out.println(modMeta);
-			}));
-		} catch (Throwable ex) {
-			throw new RuntimeException(ex);
-		}
-		// end beta
 	}
 
 	private interface BooleanGetter {
