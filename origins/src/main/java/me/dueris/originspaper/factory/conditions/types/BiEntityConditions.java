@@ -1,10 +1,10 @@
 package me.dueris.originspaper.factory.conditions.types;
 
 import io.github.dueris.calio.util.holder.Pair;
-import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
+import me.dueris.originspaper.factory.conditions.types.bientity.*;
 import me.dueris.originspaper.factory.data.types.Comparison;
 import me.dueris.originspaper.factory.data.types.RotationType;
 import me.dueris.originspaper.factory.powers.apoli.EntitySetPower;
@@ -20,35 +20,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BiEntityConditions implements Listener {
 	public static void registerConditions() {
 		MetaConditions.register(Registries.BIENTITY_CONDITION, BiEntityConditions::register);
-		register(new ConditionFactory(OriginsPaper.apoliIdentifier("both"), (data, pair) -> {
-			AtomicBoolean a = new AtomicBoolean(true);
-			AtomicBoolean t = new AtomicBoolean(true);
-			a.set(ConditionExecutor.testEntity(data.getJsonObject("condition"), pair.first()));
-			t.set(ConditionExecutor.testEntity(data.getJsonObject("condition"), pair.second()));
-			return a.get() && t.get();
-		}));
-		register(new ConditionFactory(OriginsPaper.apoliIdentifier("either"), (data, pair) -> {
-			AtomicBoolean a = new AtomicBoolean(true);
-			AtomicBoolean t = new AtomicBoolean(true);
-			a.set(ConditionExecutor.testEntity(data.getJsonObject("condition"), pair.first()));
-			t.set(ConditionExecutor.testEntity(data.getJsonObject("condition"), pair.second()));
-			return a.get() || t.get();
-		}));
-		register(new ConditionFactory(OriginsPaper.apoliIdentifier("invert"), (data, pair) -> ConditionExecutor.testBiEntity(data.getJsonObject("condition"), pair.second(), pair.first())));
-		register(new ConditionFactory(OriginsPaper.apoliIdentifier("undirected"), (data, pair) -> {
-			AtomicBoolean a = new AtomicBoolean(true);
-			AtomicBoolean b = new AtomicBoolean(true);
-			a.set(ConditionExecutor.testBiEntity(data.getJsonObject("condition"), pair.first(), pair.second()));
-			b.set(ConditionExecutor.testBiEntity(data.getJsonObject("condition"), pair.second(), pair.first()));
-			return a.get() || b.get();
-		}));
-		register(new ConditionFactory(OriginsPaper.apoliIdentifier("actor_condition"), (data, pair) -> ConditionExecutor.testEntity(data.getJsonObject("condition"), pair.first())));
-		register(new ConditionFactory(OriginsPaper.apoliIdentifier("target_condition"), (data, pair) -> ConditionExecutor.testEntity(data.getJsonObject("condition"), pair.second())));
+		register(ActorCondition.getFactory());
+		register(BothCondition.getFactory());
+		register(EitherCondition.getFactory());
+		register(InvertCondition.getFactory());
+		register(TargetCondition.getFactory());
+		register(UndirectedCondition.getFactory());
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("equal"), (data, pair) -> pair.first() == pair.second()));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("in_entity_set"), (data, pair) -> EntitySetPower.isInEntitySet(pair.second(), data.getString("set"))));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("can_see"), (data, pair) -> PreventEntityRender.canSeeEntity(pair.first(), pair.second(), data)));

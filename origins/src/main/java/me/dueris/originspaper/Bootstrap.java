@@ -207,7 +207,6 @@ public class Bootstrap implements PluginBootstrap {
 			Registries.ITEM_ACTION,
 			Registries.BLOCK_ACTION,
 			Registries.BIENTITY_ACTION,
-			Registries.TEXTURE_LOCATION,
 			Registries.LANG,
 			Registries.CHOOSING_PAGE
 		);

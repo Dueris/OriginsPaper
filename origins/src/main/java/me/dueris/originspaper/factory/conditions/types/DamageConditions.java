@@ -77,12 +77,12 @@ public class DamageConditions {
 		}));
 	}
 
-	private DamageSource nmsDamageSource(@NotNull EntityDamageEvent event) {
-		return Util.getDamageSource(CraftDamageType.bukkitToMinecraft(event.getDamageSource().getDamageType()));
-	}
-
 	public static void register(@NotNull ConditionFactory<EntityDamageEvent> factory) {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.DAMAGE_CONDITION).register(factory, factory.getSerializerId());
+	}
+
+	private DamageSource nmsDamageSource(@NotNull EntityDamageEvent event) {
+		return Util.getDamageSource(CraftDamageType.bukkitToMinecraft(event.getDamageSource().getDamageType()));
 	}
 
 }

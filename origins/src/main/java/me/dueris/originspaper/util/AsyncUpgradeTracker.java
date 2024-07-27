@@ -42,7 +42,7 @@ public class AsyncUpgradeTracker implements Listener {
 
 								AdvancementHolder advancementHolder = server.getAdvancements().get(ResourceLocation.parse(advancement));
 								if (advancementHolder == null) {
-									OriginsPaper.getPlugin().getLogger().severe("Advancement \"{}\" did not exist but was referenced in the an origin upgrade!".replace("{}", advancement));
+									OriginsPaper.getPlugin().getLog4JLogger().error("Advancement \"{}\" did not exist but was referenced in the an origin upgrade!", advancement);
 								}
 
 								AdvancementProgress progress = player.getHandle().getAdvancements().getOrStartProgress(advancementHolder);

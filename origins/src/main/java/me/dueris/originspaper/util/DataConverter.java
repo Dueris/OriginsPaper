@@ -35,7 +35,7 @@ public class DataConverter {
 	}
 
 	public static Operation convertToOperation(@NotNull Modifier modifier) {
-		String var1 = modifier.operation();
+		String var1 = modifier.operation;
 
 		return switch (var1) {
 			case "addition", "add_base_early", "add_base_late", "add_value" -> Operation.ADD_NUMBER;

@@ -11,10 +11,15 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DataResult.Error;
 import com.mojang.serialization.JsonOps;
+import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
 import io.github.dueris.calio.util.ArgumentWrapper;
+import io.github.dueris.calio.util.holder.Pair;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntLists;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.actions.Actions;
+import me.dueris.originspaper.factory.actions.ActionFactory;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.registries.Origin;
 import net.minecraft.commands.arguments.SlotArgument;
@@ -32,12 +37,15 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.SlotRange;
+import net.minecraft.world.inventory.SlotRanges;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
@@ -90,9 +98,39 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public class Util {
+	private static final List<SlotRange> SLOTS = net.minecraft.Util.make(new ArrayList<>(), list -> {
+		addSingleSlot(list, "contents", 0);
+		addSlotRange(list, "container.", 0, 54);
+		addSlotRange(list, "hotbar.", 0, 9);
+		addSlotRange(list, "inventory.", 9, 27);
+		addSlotRange(list, "enderchest.", 200, 27);
+		addSlotRange(list, "villager.", 300, 8);
+		addSlotRange(list, "horse.", 500, 15);
+		int i = EquipmentSlot.MAINHAND.getIndex(98);
+		int j = EquipmentSlot.OFFHAND.getIndex(98);
+		addSingleSlot(list, "weapon", i);
+		addSingleSlot(list, "weapon.mainhand", i);
+		addSingleSlot(list, "weapon.offhand", j);
+		addSlots(list, "weapon.*", i, j);
+		i = EquipmentSlot.HEAD.getIndex(100);
+		j = EquipmentSlot.CHEST.getIndex(100);
+		int m = EquipmentSlot.LEGS.getIndex(100);
+		int n = EquipmentSlot.FEET.getIndex(100);
+		int o = EquipmentSlot.BODY.getIndex(105);
+		addSingleSlot(list, "armor.head", i);
+		addSingleSlot(list, "armor.chest", j);
+		addSingleSlot(list, "armor.legs", m);
+		addSingleSlot(list, "armor.feet", n);
+		addSingleSlot(list, "armor.body", o);
+		addSlots(list, "armor.*", i, j, m, n, o);
+		addSingleSlot(list, "horse.saddle", 400);
+		addSingleSlot(list, "horse.chest", 499);
+		addSingleSlot(list, "player.cursor", 499);
+		addSlotRange(list, "player.crafting.", 500, 4);
+	});
+	private static final List<String> EXEMPT_SLOTS = List.of("weapon", "weapon.mainhand");
 	public static Registry<DamageType> DAMAGE_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
 	public static MinecraftServer server = OriginsPaper.server;
-	public static CraftServer bukkitServer = server.server;
 	public static HashMap<String, Material> KNOWN_MATERIALS = new HashMap<>();
 	public static Logger LOGGER = LogManager.getLogger("OriginsPaper");
 
@@ -673,6 +711,14 @@ public class Util {
 		return CraftItemStack.asNMSCopy(armorItem).getItem() instanceof ArmorItem item ? item.getDefense() : 0;
 	}
 
+	public static <T extends Enum<T>> @NotNull HashMap<String, T> buildEnumMap(@NotNull Class<T> enumClass, Function<T, String> enumToString) {
+		HashMap<String, T> map = new HashMap<>();
+		for (T enumConstant : enumClass.getEnumConstants()) {
+			map.put(enumToString.apply(enumConstant), enumConstant);
+		}
+		return map;
+	}
+
 	public static boolean attemptToTeleport(Entity entity, ServerLevel serverWorld, double destX, double destY, double destZ, double offsetX, double offsetY, double offsetZ, double areaHeight, boolean loadedChunksOnly, Heightmap.Types heightmap, Predicate<BlockInWorld> landingBlockCondition, Predicate<Entity> landingCondition) {
 
 		BlockPos.MutableBlockPos blockPos = BlockPos.containing(destX, destY, destZ).mutable();
@@ -750,47 +796,110 @@ public class Util {
 		}
 	}
 
-	public static @NotNull List<Integer> getSlots(@NotNull FactoryJsonObject data) {
-		List<Integer> slotsList = new ArrayList<>();
-		if (data.isPresent("slots")) {
-			for (FactoryElement element : data.getJsonArray("slots").asList) {
-				ArgumentWrapper<Integer> wrapped = wrappedIntegerSlot(element.getString());
-				slotsList.add(wrapped.get());
-			}
+	public static @NotNull Set<Integer> getSlots(@NotNull DeserializedFactoryJson data) {
+
+		Set<Integer> slots = new HashSet<>();
+
+		data.<ArgumentWrapper<Integer>>ifPresent("slot", iaw -> slots.add(iaw.get()));
+		data.<List<ArgumentWrapper<Integer>>>ifPresent("slots", iaws -> slots.addAll(iaws.stream().map(ArgumentWrapper::get).toList()));
+
+		if (slots.isEmpty()) {
+			slots.addAll(getAllSlots());
 		}
 
-		if (data.isPresent("slot")) {
-			ArgumentWrapper<Integer> wrapped = wrappedIntegerSlot(data.getString("slot"));
-			slotsList.add(wrapped.get());
-		}
+		return slots;
 
-		if (slotsList.isEmpty()) {
-			fillMissingNumbers(slotsList, 0, 40);
-		}
-
-		return slotsList;
 	}
 
-	public static int checkInventory(@NotNull FactoryJsonObject data, Entity entity, @Nullable me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, Function<net.minecraft.world.item.ItemStack, Integer> processor) {
-		FactoryJsonObject itemCondition = data.getJsonObject("item_condition");
-		List<Integer> slots = getSlots(data);
-		if (slots.isEmpty()) {
-			fillMissingNumbers(slots, 0, 40);
+	public static List<Integer> getAllSlots() {
+		return SLOTS
+			.stream()
+			.flatMapToInt(slotRange -> slotRange.slots().intStream())
+			.boxed()
+			.toList();
+	}
+
+	private static void addSlots(@NotNull List<SlotRange> list, String name, int... slots) {
+		list.add(create(name, slots));
+	}
+
+	private static void addSingleSlot(@NotNull List<SlotRange> list, String name, int slotId) {
+		list.add(create(name, slotId));
+	}
+
+	@Contract("_, _ -> new")
+	private static @NotNull SlotRange create(String name, int slotId) {
+		return SlotRange.of(name, IntLists.singleton(slotId));
+	}
+
+	@Contract("_, _ -> new")
+	private static @NotNull SlotRange create(String name, IntList slotIds) {
+		return SlotRange.of(name, IntLists.unmodifiable(slotIds));
+	}
+
+	@Contract("_, _ -> new")
+	private static @NotNull SlotRange create(String name, int... slotIds) {
+		return SlotRange.of(name, IntList.of(slotIds));
+	}
+
+	private static void addSlotRange(List<SlotRange> list, String baseName, int firstSlotId, int lastSlotId) {
+		IntList intList = new IntArrayList(lastSlotId);
+
+		for (int i = 0; i < lastSlotId; i++) {
+			int j = firstSlotId + i;
+			list.add(create(baseName + i, j));
+			intList.add(j);
 		}
 
+		list.add(create(baseName + "*", intList));
+	}
+
+	private static int getDuplicatedSlotIndex(Entity entity) {
+		SlotRange slotRange = entity instanceof Player player
+			? SlotRanges.nameToIds("hotbar." + player.getInventory().selected)
+			: null;
+
+		return slotRange != null
+			? slotRange.slots().getFirst()
+			: Integer.MIN_VALUE;
+
+	}
+
+	private static void deduplicateSlots(Entity entity, Set<Integer> slots) {
+
+		int selectedHotbarSlot = getDuplicatedSlotIndex(entity);
+		if (selectedHotbarSlot != Integer.MIN_VALUE && slots.contains(selectedHotbarSlot)) {
+			SLOTS
+				.stream()
+				.filter(sr -> EXEMPT_SLOTS.contains(sr.getSerializedName()))
+				.flatMapToInt(sr -> sr.slots().intStream())
+				.forEach(slots::remove);
+		}
+
+	}
+
+	public static int checkInventory(@NotNull DeserializedFactoryJson data, Entity entity, @Nullable me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, Function<ItemStack, Integer> processor) {
+
+		Predicate<Tuple<Level, ItemStack>> itemCondition = data.get("item_condition");
+		Set<Integer> slots = getSlots(data);
+		deduplicateSlots(entity, slots);
+
 		int matches = 0;
-		slots.removeIf(slotx -> slotNotWithinBounds(entity, inventoryPower, slotx));
+		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
 
 		for (int slot : slots) {
+
 			SlotAccess stackReference = getStackReference(entity, inventoryPower, slot);
 			ItemStack stack = stackReference.get();
-			if (itemCondition == null && !stack.isEmpty()
-				|| (itemCondition == null || ConditionExecutor.testItem(itemCondition, stack.getBukkitStack())) && !stack.getBukkitStack().getType().isAir()) {
+
+			if ((itemCondition == null && !stack.isEmpty()) || (itemCondition == null || itemCondition.test(new Tuple<>(entity.level(), stack)))) {
 				matches += processor.apply(stack);
 			}
+
 		}
 
 		return matches;
+
 	}
 
 	public static boolean slotNotWithinBounds(@NotNull Entity entity, @Nullable me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, int slot) {
@@ -860,15 +969,19 @@ public class Util {
 
 	}
 
-	public static void modifyInventory(FactoryJsonObject data, Entity entity, me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, Function<net.minecraft.world.item.ItemStack, Integer> processor, int limit) {
+	public static void modifyInventory(DeserializedFactoryJson data, Entity entity, me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, Function<ItemStack, Integer> processor, int limit) {
+
 		if (limit <= 0) {
 			limit = Integer.MAX_VALUE;
 		}
 
-		List<Integer> slots = getSlots(data);
-		FactoryJsonObject entityAction = data.getJsonObject("entity_action");
-		FactoryJsonObject itemCondition = data.getJsonObject("item_condition");
-		FactoryJsonObject itemAction = data.getJsonObject("item_action");
+		Set<Integer> slots = getSlots(data);
+		deduplicateSlots(entity, slots);
+
+		Consumer<Entity> entityAction = data.get("entity_action");
+		Predicate<Tuple<Level, ItemStack>> itemCondition = data.get("item_condition");
+		ActionFactory<Pair<ServerLevel, org.bukkit.inventory.ItemStack>> itemAction = data.get("item_action");
+
 		int processedItems = 0;
 		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
 
@@ -876,18 +989,18 @@ public class Util {
 		for (int slot : slots) {
 
 			SlotAccess stack = getStackReference(entity, inventoryPower, slot);
-			if (!(itemCondition == null || ConditionExecutor.testItem(itemCondition, stack.get().getBukkitStack()))) {
+			if (!(itemCondition == null || itemCondition.test(new Tuple<>(entity.level(), stack.get())))) {
 				continue;
 			}
 
 			int amount = processor.apply(stack.get());
 			for (int i = 0; i < amount; i++) {
 
-				if (entityAction != null && !entityAction.isEmpty()) {
-					Actions.executeEntity(entity.getBukkitEntity(), entityAction);
+				if (entityAction != null) {
+					entityAction.accept(entity);
 				}
 
-				Actions.executeItem(stack.get().getBukkitStack(), entity.getBukkitEntity().getWorld(), itemAction);
+				itemAction.accept(new Pair<>(((ServerLevel) entity.level()), stack.get().getBukkitStack()));
 				++processedItems;
 
 				if (processedItems >= limit) {
@@ -900,79 +1013,85 @@ public class Util {
 
 	}
 
-	public static void replaceInventory(FactoryJsonObject data, Entity entity, me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower) {
-		List<Integer> slots = getSlots(data);
-		FactoryJsonObject entityAction = data.getJsonObject("entity_action");
-		FactoryJsonObject itemCondition = data.getJsonObject("item_condition");
-		FactoryJsonObject itemAction = data.getJsonObject("item_action");
-		ItemStack replacementStack = CraftItemStack.asNMSCopy(data.getItemStack("stack"));
-		boolean mergeNbt = data.getBooleanOrDefault("merge_nbt", false);
-		slots.removeIf(slotx -> slotNotWithinBounds(entity, inventoryPower, slotx));
+	public static void replaceInventory(DeserializedFactoryJson data, Entity entity, me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower) {
 
+		Set<Integer> slots = getSlots(data);
+		deduplicateSlots(entity, slots);
+
+		Consumer<Entity> entityAction = data.get("entity_action");
+		Predicate<Tuple<Level, ItemStack>> itemCondition = data.get("item_condition");
+		Consumer<Tuple<Level, SlotAccess>> itemAction = data.get("item_action");
+
+		ItemStack replacementStack = data.get("stack");
+		boolean mergeNbt = data.getBoolean("merge_nbt");
+
+		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
 		for (int slot : slots) {
-			SlotAccess stackReference = getStackReference(entity, inventoryPower, slot);
-			net.minecraft.world.item.ItemStack stack = stackReference.get();
 
-			if (!(itemCondition == null || ConditionExecutor.testItem(itemCondition, stack.getBukkitStack()))) {
+			SlotAccess stackReference = getStackReference(entity, inventoryPower, slot);
+			ItemStack stack = stackReference.get();
+
+			if (!(itemCondition == null || itemCondition.test(new Tuple<>(entity.level(), stack)))) {
 				continue;
 			}
 
-			if (entityAction != null && !entityAction.isEmpty()) {
-				Actions.executeEntity(entity.getBukkitEntity(), entityAction);
+			if (entityAction != null) {
+				entityAction.accept(entity);
 			}
 
-			net.minecraft.world.item.ItemStack stackAfterReplacement = replacementStack.copy();
+			ItemStack stackAfterReplacement = replacementStack.copy();
 			if (mergeNbt) {
 				CompoundTag orgNbt = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).getUnsafe();
 				CustomData.update(DataComponents.CUSTOM_DATA, stackAfterReplacement, repNbt -> repNbt.merge(orgNbt));
 			}
 
 			stackReference.set(stackAfterReplacement);
-			if (itemAction != null && !itemAction.isEmpty()) {
-				Actions.executeItem(stack.getBukkitStack(), entity.getBukkitEntity().getWorld(), itemAction);
+			if (itemAction != null) {
+				itemAction.accept(new Tuple<>(entity.level(), stackReference));
 			}
 
 		}
 
 	}
 
-	public static void dropInventory(FactoryJsonObject data, Entity entity, me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower) {
-		List<Integer> slots = getSlots(data);
-		if (slots.isEmpty()) {
-			fillMissingNumbers(slots, 0, 40);
-		}
+	public static void dropInventory(DeserializedFactoryJson data, Entity entity, me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower) {
 
-		int amount = data.getNumberOrDefault("amount", 0).getInt();
-		boolean throwRandomly = data.getBooleanOrDefault("throw_randomly", false);
-		boolean retainOwnership = data.getBooleanOrDefault("retain_ownership", true);
-		FactoryJsonObject entityAction = data.getJsonObject("entity_action");
-		FactoryJsonObject itemCondition = data.getJsonObject("item_condition");
-		FactoryJsonObject itemAction = data.getJsonObject("item_action");
-		slots.removeIf(slotx -> slotNotWithinBounds(entity, inventoryPower, slotx));
+		Set<Integer> slots = getSlots(data);
+		deduplicateSlots(entity, slots);
 
+		int amount = data.getInt("amount");
+		boolean throwRandomly = data.getBoolean("throw_randomly");
+		boolean retainOwnership = data.getBoolean("retain_ownership");
+
+		Consumer<Entity> entityAction = data.get("entity_action");
+		Predicate<Tuple<Level, ItemStack>> itemCondition = data.get("item_condition");
+		Consumer<Tuple<Level, SlotAccess>> itemAction = data.get("item_action");
+
+		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
 		for (int slot : slots) {
+
 			SlotAccess stack = getStackReference(entity, inventoryPower, slot);
-			if (!(itemCondition == null || ConditionExecutor.testItem(itemCondition, stack.get().getBukkitStack()))) {
+			if (stack.get().isEmpty() || !(itemCondition == null || itemCondition.test(new Tuple<>(entity.level(), stack.get())))) {
 				continue;
 			}
 
-			if (entityAction != null && !entityAction.isEmpty()) {
-				Actions.executeEntity(entity.getBukkitEntity(), entityAction);
+			if (entityAction != null) {
+				entityAction.accept(entity);
 			}
 
-			if (itemAction != null && !itemAction.isEmpty()) {
-				Actions.executeItem(stack.get().getBukkitStack(), entity.getBukkitEntity().getWorld(), itemAction);
+			if (itemAction != null) {
+				itemAction.accept(new Tuple<>(entity.level(), stack));
 			}
 
-			net.minecraft.world.item.ItemStack newStack = stack.get();
-			net.minecraft.world.item.ItemStack droppedStack = net.minecraft.world.item.ItemStack.EMPTY;
+			ItemStack newStack = stack.get();
+			ItemStack droppedStack = ItemStack.EMPTY;
 			if (amount != 0) {
 				int newAmount = amount < 0 ? amount * -1 : amount;
 				droppedStack = newStack.split(newAmount);
 			}
 
 			throwItem(entity, droppedStack.isEmpty() ? stack.get() : droppedStack, throwRandomly, retainOwnership);
-			stack.set(droppedStack.isEmpty() ? net.minecraft.world.item.ItemStack.EMPTY : newStack);
+			stack.set(droppedStack.isEmpty() ? ItemStack.EMPTY : newStack);
 
 		}
 

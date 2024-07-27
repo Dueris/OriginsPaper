@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 
-public record CraftCalio(boolean debug, boolean threaded, int threadCount) {
+public record CraftCalio(boolean threaded, int threadCount) {
 	private static ExecutorService threadedParser;
 
 	@Contract("_ -> new")
@@ -33,7 +33,6 @@ public record CraftCalio(boolean debug, boolean threaded, int threadCount) {
 		OptionParser parser = new OptionParser();
 
 		parser.accepts("async").withOptionalArg().ofType(Boolean.class).defaultsTo(false);
-		parser.accepts("debug").withOptionalArg().ofType(Boolean.class).defaultsTo(false);
 
 		OptionSet options = parser.parse(args);
 
@@ -42,8 +41,7 @@ public record CraftCalio(boolean debug, boolean threaded, int threadCount) {
 		if (threaded) {
 			threadedParser = Executors.newFixedThreadPool(threadCount, new ParserFactory(threadCount));
 		}
-		boolean debug = (Boolean) options.valueOf("debug");
-		return new CraftCalio(debug, threaded, threadCount);
+		return new CraftCalio(threaded, threadCount);
 	}
 
 	@Contract(value = " -> new", pure = true)
@@ -136,8 +134,7 @@ public record CraftCalio(boolean debug, boolean threaded, int threadCount) {
 	@Override
 	public String toString() {
 		return "CraftCalio[" +
-			"debug=" + debug + ", " +
-			"threaded=" + threaded + ", " +
+			"async=" + threaded + ", " +
 			"threadCount=" + threadCount + ']';
 	}
 

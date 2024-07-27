@@ -15,4 +15,12 @@ public record Pair<A, B>(A first, B second) {
 	public static <F, S> @NotNull Pair<F, S> fromMojang(@Nullable com.mojang.datafixers.util.Pair<F, S> pair) {
 		return new Pair<>(pair.getFirst(), pair.getSecond());
 	}
+
+	public A getA() {
+		return first;
+	}
+
+	public B getB() {
+		return second;
+	}
 }

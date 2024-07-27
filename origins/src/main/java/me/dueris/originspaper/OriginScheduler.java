@@ -56,23 +56,16 @@ public class OriginScheduler {
 								.map(StackTraceElement::toString)
 								.forEach(string -> stacktrace[0] = stacktrace[0] + "\tat " + string + "\n");
 							OriginsPaper.getPlugin()
-								.getLogger()
-								.severe("An unhandled exception occurred when ticking a Power! [{a}]".replace("{a}", var8.getClass().getSimpleName()));
+								.getLog4JLogger()
+								.error("An unhandled exception occurred when ticking a Power! [{}]", var8.getClass().getSimpleName());
 							String t = power.getType();
 							if (t == null) {
 								t = power.key().toString();
 							}
 
 							OriginsPaper.getPlugin()
-								.getLogger()
-								.severe(
-									"Player: {a} | Power: {b} | CraftPower: {c} | Throwable: {d}"
-										.replace("{a}", p.getName())
-										.replace("{b}", power.getTag())
-										.replace("{c}", t)
-										.replace("{d}", var8.getMessage() == null ? var8.getClass().getSimpleName() : var8.getMessage())
-										+ stacktrace[0]
-								);
+								.getLog4JLogger()
+								.error("Player: {} | Power: {} | CraftPower: {} | Throwable: {} {}", p.getName(), power.getTag(), t, var8.getMessage() == null ? var8.getClass().getSimpleName() : var8.getMessage(), stacktrace[0]);
 						}
 					}
 				}

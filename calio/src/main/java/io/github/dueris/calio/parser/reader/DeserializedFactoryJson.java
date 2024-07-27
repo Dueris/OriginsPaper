@@ -46,7 +46,7 @@ public record DeserializedFactoryJson(HashMap<String, Object> data) {
 	@SuppressWarnings("unchecked")
 	public <T> T get(String name) {
 
-		if(!data.containsKey(name)) {
+		if (!data.containsKey(name)) {
 			throw new RuntimeException("Tried to get field \"" + name + "\" from data, which did not exist.");
 		}
 

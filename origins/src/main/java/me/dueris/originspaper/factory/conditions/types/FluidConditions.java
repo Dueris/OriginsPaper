@@ -5,7 +5,6 @@ import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
 import me.dueris.originspaper.registry.Registries;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.NotNull;
 

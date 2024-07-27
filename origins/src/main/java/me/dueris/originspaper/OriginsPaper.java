@@ -16,6 +16,7 @@ import me.dueris.originspaper.content.OrbOfOrigins;
 import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.actions.Actions;
 import me.dueris.originspaper.factory.conditions.types.BiEntityConditions;
+import me.dueris.originspaper.factory.data.types.modifier.ModifierOperations;
 import me.dueris.originspaper.factory.powers.apoli.RecipePower;
 import me.dueris.originspaper.factory.powers.apoli.provider.origins.BounceSlimeBlock;
 import me.dueris.originspaper.factory.powers.apoli.provider.origins.WaterBreathe;
@@ -208,9 +209,9 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 
 			if ((!isCompatible || !isCorrectVersion) && !forceUseCurrentVersion) {
 				if (isCorrectVersion) {
-					this.getLogger().severe("Unable to start OriginsPaper due to it not being compatible with this server type");
+					this.getLog4JLogger().error("Unable to start OriginsPaper due to it not being compatible with this server type");
 				} else {
-					this.getLogger().severe("Unable to start OriginsPaper due to it not being compatible with this server version");
+					this.getLog4JLogger().error("Unable to start OriginsPaper due to it not being compatible with this server version");
 				}
 
 				Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -235,17 +236,18 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				: Math.min(avalibleJVMThreads, OriginConfiguration.getConfiguration().getInt("max-loader-threads"));
 			loaderThreadPool = Executors.newFixedThreadPool(dynamic_thread_count, threadFactory);
 			try {
+				ModifierOperations.registerAll();
 				Actions.registerAll();
 				PowerType.registerAll();
 				io.github.dueris.calio.CraftCalio craftCalio = io.github.dueris.calio.CraftCalio.buildInstance(
-					new String[]{"--debug=true", "--async=true"}
+					new String[]{"--async=true"}
 				);
 				JsonObjectRemapper.main(versions.toArray(new String[0]));
 				try {
 					craftCalio.startBuilder()
-						.withAccessor(new AccessorKey<>("power", PowerType.class, 2, ParsingStrategy.TYPED, Registries.CRAFT_POWER))
-						.withAccessor(new AccessorKey<>("origin", Origin.class, 3, ParsingStrategy.DEFAULT, Registries.ORIGIN))
-						.withAccessor(new AccessorKey<>("origin_layer", Layer.class, 4, ParsingStrategy.DEFAULT, Registries.LAYER))
+						.withAccessor(new AccessorKey<>(List.of("apoli", "origins"), "power", PowerType.class, 0, ParsingStrategy.TYPED, Registries.CRAFT_POWER))
+						.withAccessor(new AccessorKey<>(List.of("origins"), "origin", Origin.class, 1, ParsingStrategy.DEFAULT, Registries.ORIGIN))
+						.withAccessor(new AccessorKey<>(List.of("origins"), "origin_layer", Layer.class, 2, ParsingStrategy.DEFAULT, Registries.LAYER))
 						.build().parse();
 				} catch (Throwable ex) {
 					throw new RuntimeException(ex);
@@ -254,7 +256,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				NBTFixerUpper.runFixerUpper();
 				return true;
 			} catch (Throwable throwable) {
-				this.getLogger().severe("An unhandled exception occurred when starting OriginsPaper!");
+				this.getLog4JLogger().error("An unhandled exception occurred when starting OriginsPaper!");
 				this.throwable(throwable, true);
 				return false;
 			}
@@ -292,7 +294,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 	public void throwable(@NotNull Throwable throwable, boolean kill) {
 		String[] stacktrace = new String[]{"\n"};
 		Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] = stacktrace[0] + "\tat " + string + "\n");
-		this.getLogger().severe(throwable.getMessage() + stacktrace[0]);
+		this.getLog4JLogger().error("{}{}", throwable.getMessage(), stacktrace[0]);
 		if (kill) {
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
@@ -356,7 +358,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				scheduler.cancel();
 			}
 		} catch (Throwable var3) {
-			this.getLogger().severe("An unhandled exception occurred when disabling OriginsPaper!");
+			this.getLog4JLogger().error("An unhandled exception occurred when disabling OriginsPaper!");
 			this.throwable(var3, false);
 		}
 	}

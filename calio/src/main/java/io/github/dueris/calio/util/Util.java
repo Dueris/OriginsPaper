@@ -7,10 +7,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class Util {
 	public static boolean pathMatchesAccessor(@NotNull String path, AccessorKey<?> accessorKey) {
-		if (!path.contains("data")) return false;
+		if (!path.contains("data/")) return false;
 		try {
-			String typeFolder = path.split("data/")[1].split("/")[1].split("/")[0];
-			return accessorKey.folder().equalsIgnoreCase(typeFolder);
+			String[] parts = path.split("/");
+			if (parts.length < 4) return false;
+			String modid = parts[2];
+			String typeFolder = parts[3];
+			return accessorKey.folder().equalsIgnoreCase(typeFolder) && accessorKey.modid().contains(modid);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			return false;
 		}
