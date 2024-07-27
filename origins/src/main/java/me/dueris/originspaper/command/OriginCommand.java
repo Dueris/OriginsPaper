@@ -417,7 +417,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 											}
 
 											Inventory help = Bukkit.createInventory(
-												p.getBukkitEntity(), 54, "Info - " + playerOrigins.get(p.getBukkitEntity()).get(playerPage.get(p.getBukkitEntity())).getName()
+												p.getBukkitEntity(), 54, net.kyori.adventure.text.Component.text("Info - ").append(playerOrigins.get(p.getBukkitEntity()).get(playerPage.get(p.getBukkitEntity())).name())
 											);
 											help.setContents(
 												new OriginPage(playerOrigins.get(p.getBukkitEntity()).get(playerPage.get(p.getBukkitEntity()))).createDisplay(p, null)
@@ -494,7 +494,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 						playerPage.put(player, playerPage.get(player) + 1);
 					}
 
-					Inventory info = Bukkit.createInventory(player, 54, "Info - " + playerOrigins.get(player).get(playerPage.get(player)).getName());
+					Inventory info = Bukkit.createInventory(player, 54, net.kyori.adventure.text.Component.text("Info - ").append(playerOrigins.get(player).get(playerPage.get(player)).name()));
 					info.setContents(new OriginPage(playerOrigins.get(player).get(playerPage.get(player))).createDisplay(((CraftPlayer) player).getHandle(), null));
 					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 2.0F, 1.0F);
 					player.closeInventory();

@@ -7,6 +7,7 @@ import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableDataBuilder;
 import me.dueris.originspaper.factory.data.types.GuiTitle;
 import me.dueris.originspaper.factory.data.types.Impact;
+import me.dueris.originspaper.factory.data.types.OriginUpgrade;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,5 +39,17 @@ public class OriginsDataTypes {
 
 			return new GuiTitle(kyoriViewOrigin, kyoriChooseOrigin);
 		}, GuiTitle.class
+	);
+
+	public static final SerializableDataBuilder<OriginUpgrade> ORIGIN_UPGRADE = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			if (!jsonElement.isJsonObject()) throw new JsonSyntaxException("Expected JsonObject for Origin Upgrade!");
+			JsonObject jo = jsonElement.getAsJsonObject();
+			return new OriginUpgrade(
+				SerializableDataTypes.IDENTIFIER.deserialize(jo.get("condition")),
+				SerializableDataTypes.IDENTIFIER.deserialize(jo.get("origin")),
+				jo.has("advancement") ? SerializableDataTypes.STRING.deserialize(jo.get("announcement")) : null
+			);
+		}, OriginUpgrade.class
 	);
 }

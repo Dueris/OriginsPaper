@@ -34,17 +34,6 @@ public class DataConverter {
 		return input.contains(".") ? input.replace(".", "_") : input;
 	}
 
-	public static Operation convertToOperation(@NotNull Modifier modifier) {
-		String var1 = modifier.operation;
-
-		return switch (var1) {
-			case "addition", "add_base_early", "add_base_late", "add_value" -> Operation.ADD_NUMBER;
-			case "multiply_base" -> Operation.ADD_SCALAR;
-			case "multiply_total" -> Operation.MULTIPLY_SCALAR_1;
-			default -> throw new RuntimeException("Not a valid attribute operation!");
-		};
-	}
-
 	public static double attributeToEntityReach(double attributeValue) {
 		if (attributeValue < 0.0) {
 			throw new IllegalArgumentException("Attribute value must be non-negative.");

@@ -327,6 +327,11 @@ public class SerializableDataTypes {
 				.getOrThrow(JsonParseException::new);
 		}, Component.class
 	);
+	public static final SerializableDataBuilder<net.kyori.adventure.text.Component> KYORI_COMPONENT = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			return net.kyori.adventure.text.Component.text(TEXT.deserialize(jsonElement).getString());
+		}, net.kyori.adventure.text.Component.class
+	);
 	public static final SerializableDataBuilder<RecipeHolder<? extends Recipe<?>>> RECIPE = SerializableDataBuilder.of(
 		(jsonElement) -> {
 			if (!(jsonElement instanceof JsonObject jsonObject)) {

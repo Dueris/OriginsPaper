@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AsyncUpgradeTracker implements Listener {
-	public static ConcurrentHashMap<Origin, TriPair<String, ResourceLocation, String>/*String advancement, NamespacedKey identifier, String announcement*/> upgrades = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Origin, TriPair<ResourceLocation, ResourceLocation, String>/*ResourceLocation advancement, NamespacedKey identifier, String announcement*/> upgrades = new ConcurrentHashMap<>();
 	public static String NO_ANNOUNCEMENT = "no_announcement_found";
 
 	@EventHandler
@@ -32,15 +32,15 @@ public class AsyncUpgradeTracker implements Listener {
 			@Override
 			public void run() {
 				MinecraftServer server = OriginsPaper.server;
-				for (Map.Entry<Origin, TriPair<String, ResourceLocation, String>> entry : upgrades.entrySet()) {
+				for (Map.Entry<Origin, TriPair<ResourceLocation, ResourceLocation, String>> entry : upgrades.entrySet()) {
 					for (CraftPlayer player : ((CraftServer) Bukkit.getServer()).getOnlinePlayers()) {
 						for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 							if (PowerHolderComponent.getOrigin(player, layer).equals(entry.getKey())) {
-								String advancement = entry.getValue().a();
+								ResourceLocation advancement = entry.getValue().a();
 								ResourceLocation originToSet = entry.getValue().b();
 								String announcement = entry.getValue().c();
 
-								AdvancementHolder advancementHolder = server.getAdvancements().get(ResourceLocation.parse(advancement));
+								AdvancementHolder advancementHolder = server.getAdvancements().get(advancement);
 								if (advancementHolder == null) {
 									OriginsPaper.getPlugin().getLog4JLogger().error("Advancement \"{}\" did not exist but was referenced in the an origin upgrade!", advancement);
 								}

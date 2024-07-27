@@ -1,152 +1,128 @@
 package me.dueris.originspaper.registry.registries;
 
-import com.google.gson.JsonArray;
-import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.FactoryHolder;
-import me.dueris.calio.data.factory.FactoryElement;
-import me.dueris.calio.data.factory.FactoryJsonArray;
-import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.powers.holder.PowerType;
-import me.dueris.originspaper.storage.OriginConfiguration;
+import io.github.dueris.calio.SerializableDataTypes;
+import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.util.holder.TriPair;
+import me.dueris.originspaper.factory.data.OriginsDataTypes;
+import me.dueris.originspaper.factory.data.types.Impact;
+import me.dueris.originspaper.factory.data.types.OriginUpgrade;
+import me.dueris.originspaper.util.AsyncUpgradeTracker;
+import me.dueris.originspaper.util.LangFile;
+import net.kyori.adventure.text.Component;
 import net.minecraft.resources.ResourceLocation;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class Origin implements FactoryHolder {
-	private final String name;
-	private final String description;
-	private final int impact;
+public class Origin {
+	private final List<ResourceLocation> powers;
+	private final net.minecraft.world.item.ItemStack icon;
 	private final boolean unchoosable;
-	private final FactoryJsonArray upgrades;
-	private final FactoryJsonArray powers;
-	private final int loadingPriority;
-	private final ItemStack icon;
 	private final int order;
-	private final List<ResourceLocation> powerIdentifiers = new ArrayList<>();
-	protected FactoryJsonObject choosingCondition;
-	private boolean tagSet = false;
-	private ResourceLocation tag = null;
-	private String cachedTag = null;
-	private boolean isDisabled;
+	private final Impact impact;
+	private final int loadingPriority;
+	private final OriginUpgrade upgrade;
+	private final Component name;
+	private final Component description;
+	private final ResourceLocation key;
 
-	public Origin(String name, String description, int impact, ItemStack icon, boolean unchoosable, FactoryJsonArray upgrades, @NotNull FactoryJsonArray powers, int order, int loading_priority) {
-		this.name = name;
-		this.description = description;
-		this.impact = impact;
-		this.unchoosable = unchoosable;
-		this.upgrades = upgrades;
+	public Origin(@NotNull ResourceLocation key, List<ResourceLocation> powers, net.minecraft.world.item.ItemStack icon, boolean unchoosable, int order,
+				  Impact impact, int loadingPriority, OriginUpgrade upgrade, net.minecraft.network.chat.Component name, net.minecraft.network.chat.Component description) {
+		this.key = key;
 		this.powers = powers;
 		this.icon = icon;
+		this.unchoosable = unchoosable;
 		this.order = order;
-		this.loadingPriority = loading_priority;
-		this.powerIdentifiers.addAll(powers.asList().stream().map(FactoryElement::getString).map(ResourceLocation::parse).filter(Objects::nonNull).toList());
-	}
-
-	public static FactoryData registerComponents(@NotNull FactoryData data) {
-		return data.add("name", String.class, "origin.$namespace.$path.name")
-			.add("description", String.class, "origin.$namespace.$path.description")
-			.add("impact", int.class, 0)
-			.add("icon", ItemStack.class, new ItemStack(Material.PLAYER_HEAD))
-			.add("unchoosable", boolean.class, false)
-			.add("upgrades", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()))
-			.add("powers", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()))
-			.add("order", int.class, 0)
-			.add("loading_priority", int.class, 0);
-	}
-
-	@Override
-	public void bootstrap() {
-		for (String origin : OriginConfiguration.getConfiguration().getStringList("disabled-origins")) {
-			if (this.cachedTag.equalsIgnoreCase(origin)) {
-				this.setDisabled();
-				break;
-			}
+		this.impact = impact;
+		this.loadingPriority = loadingPriority;
+		this.upgrade = upgrade;
+		if (upgrade != null) {
+			AsyncUpgradeTracker.upgrades.put(this, new TriPair<>(upgrade.advancementCondition(), upgrade.upgradeToOrigin(), upgrade.announcement()));
 		}
+		this.name = Component.text(
+			LangFile.transform((name != null ? name.getString() : "origin.$namespace.$path.name")
+				.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
+		);
+		this.description = Component.text(
+			LangFile.transform((description != null ? description.getString() : "origin.$namespace.$path.name")
+				.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
+		);
 	}
 
-	public int getLoadingPriority() {
-		return this.loadingPriority;
+	public static InstanceDefiner buildDefiner() {
+		return InstanceDefiner.instanceDefiner()
+			.add("powers", SerializableDataTypes.list(SerializableDataTypes.IDENTIFIER), new ArrayList<>())
+			.add("icon", SerializableDataTypes.ITEM_STACK, Items.PLAYER_HEAD.getDefaultInstance())
+			.add("unchoosable", SerializableDataTypes.BOOLEAN, false)
+			.add("order", SerializableDataTypes.INT, Integer.MAX_VALUE)
+			.add("impact", OriginsDataTypes.IMPACT, Impact.NONE)
+			.add("loading_priority", SerializableDataTypes.INT, 0)
+			.add("upgrades", OriginsDataTypes.ORIGIN_UPGRADE, null)
+			.add("name", SerializableDataTypes.TEXT, null)
+			.add("description", SerializableDataTypes.TEXT, null);
 	}
 
-	public FactoryJsonArray getPowerArray() {
-		return this.powers;
+	public List<ResourceLocation> powers() {
+		return powers;
 	}
 
-	public FactoryJsonArray getUpgrades() {
-		return this.upgrades;
+	public ItemStack icon() {
+		return icon;
 	}
 
-	public boolean isUnchoosable() {
-		return this.unchoosable || this.isDisabled;
+	public boolean unchoosable() {
+		return unchoosable;
 	}
 
-	public int getImpact() {
-		return this.impact;
+	public int order() {
+		return order;
 	}
 
-	public String getDescription() {
-		return this.description;
+	public Impact impact() {
+		return impact;
 	}
 
-	public String getName() {
-		return this.name;
+	public int loadingPriority() {
+		return loadingPriority;
 	}
 
-	public boolean getUsesCondition() {
-		return this.choosingCondition != null && !this.choosingCondition.isEmpty();
+	public Component name() {
+		return name;
 	}
 
-	public void setUsesCondition(FactoryJsonObject condition) {
-		this.choosingCondition = condition;
+	public Component description() {
+		return description;
 	}
 
-	public ItemStack getIcon() {
-		return this.icon;
+	public @NotNull ResourceLocation key() {
+		return key;
 	}
 
-	public int getOrder() {
-		return this.order;
+	public @NotNull String getTag() {
+		return key.toString();
 	}
 
-	public Material getMaterialIcon() {
-		return this.getIcon().getType();
+	@Nullable
+	public OriginUpgrade getUpgrade() {
+		return upgrade;
 	}
 
-	public String getTag() {
-		return this.tag.toString();
-	}
-
-	public ArrayList<PowerType> getPowerContainers() {
-		return new ArrayList<>(this.powerIdentifiers.stream().map(CraftApoli::getPowersFromResourceLocation).toList());
-	}
-
-	public List<String> getPowers() {
-		return this.getPowerContainers().stream().filter(Objects::nonNull).map(PowerType::getTag).toList();
-	}
-
-	private void setDisabled() {
-		this.isDisabled = true;
-	}
-
-	public Origin ofResourceLocation(ResourceLocation key) {
-		if (this.tagSet) {
-			return this;
-		} else {
-			this.tagSet = true;
-			this.tag = key;
-			this.cachedTag = key.toString();
-			return this;
-		}
-	}
-
+	@Contract(pure = true)
 	@Override
-	public ResourceLocation key() {
-		return this.tag;
+	public @NotNull String toString() {
+		return "Origin[" +
+			"powers=" + powers + ", " +
+			"icon=" + icon + ", " +
+			"unchoosable=" + unchoosable + ", " +
+			"order=" + order + ", " +
+			"impact=" + impact + ", " +
+			"loadingPriority=" + loadingPriority + ", " +
+			"name=" + name + ", " +
+			"description=" + description + ']';
 	}
 }

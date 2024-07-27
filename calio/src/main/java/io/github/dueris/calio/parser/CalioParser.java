@@ -99,7 +99,8 @@ public class CalioParser {
 
 				if (kill[0].get()) continue;
 
-				List<? extends Class<?>> parameterTypes = (List<? extends Class<?>>) definer.sortByPriorities(compiledParams);
+				List<Class<?>> parameterTypes = (List<Class<?>>) definer.sortByPriorities(compiledParams);
+				parameterTypes.addFirst(ResourceLocation.class);
 
 				Constructor<?> constructor;
 				try {
@@ -110,7 +111,8 @@ public class CalioParser {
 					continue;
 				}
 
-				List<?> arguments = definer.sortByPriorities(compiledArguments);
+				List arguments = definer.sortByPriorities(compiledArguments);
+				arguments.addFirst(location);
 
 				Object[] argsArray = new Object[parameterTypes.size()];
 				for (int i = 0; i < parameterTypes.size(); i++) {

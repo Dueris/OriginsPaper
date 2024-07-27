@@ -2,6 +2,7 @@ package me.dueris.originspaper.screen;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.factory.data.types.Impact;
 import me.dueris.originspaper.factory.powers.apoli.ModifyPlayerSpawnPower;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.registries.Layer;
@@ -108,7 +109,7 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 	}
 
 	public int getOrder() {
-		return this.origin.getOrder();
+		return this.origin.order();
 	}
 
 	@Override
@@ -123,20 +124,22 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 
 		for (int i = 0; i < 54; i++) {
 			if (i <= 2 || i >= 6 && i <= 8) {
-				Material impactMaterial = this.origin.getImpact() == 1
+				Impact originImpact = this.origin.impact();
+				int impactInt = originImpact.getImpactValue();
+				Material impactMaterial = originImpact.equals(Impact.LOW)
 					? Material.GREEN_STAINED_GLASS_PANE
 					: (
-					this.origin.getImpact() == 2
+					originImpact.equals(Impact.MEDIUM)
 						? Material.YELLOW_STAINED_GLASS_PANE
-						: (this.origin.getImpact() == 3 ? Material.RED_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE)
+						: (originImpact.equals(Impact.HIGH) ? Material.RED_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE)
 				);
-				Component impactComponent = this.origin.getImpact() == 1
+				Component impactComponent = originImpact.equals(Impact.LOW)
 					? Component.text("Low").color(TextColor.color(5569620))
 					: (
-					this.origin.getImpact() == 2
+					originImpact.equals(Impact.MEDIUM)
 						? Component.text("Medium").color(TextColor.color(14535987))
 						: (
-						this.origin.getImpact() == 3
+						originImpact.equals(Impact.HIGH)
 							? Component.text("High").color(TextColor.color(16536660))
 							: Component.text("None").color(TextColor.color(11053224))
 					)
@@ -144,10 +147,10 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 				Component fullImpactComponent = Component.textOfChildren(new ComponentLike[]{Component.text("Impact: "), impactComponent})
 					.decorate(TextDecoration.ITALIC.as(false).decoration());
 				ItemStack impact = itemProperties(new ItemStack(impactMaterial), fullImpactComponent, ItemFlag.values(), null, null);
-				if ((this.origin.getImpact() != 1 || i != 0 && i != 8)
-					&& (this.origin.getImpact() != 2 || i != 0 && i != 8 && i != 1 && i != 7)
-					&& this.origin.getImpact() != 3
-					&& this.origin.getImpact() != 0) {
+				if ((impactInt != 1 || i != 0 && i != 8)
+					&& (impactInt != 2 || i != 0 && i != 8 && i != 1 && i != 7)
+					&& impactInt != 3
+					&& impactInt != 0) {
 					stacks.add(new ItemStack(Material.AIR));
 				} else {
 					stacks.add(impact);
@@ -190,7 +193,7 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 
 	@Override
 	public @NotNull ItemStack getChoosingStack(net.minecraft.world.entity.player.@NotNull Player player) {
-		ItemStack originIcon = new ItemStack(this.origin.getMaterialIcon());
+		ItemStack originIcon = new ItemStack(this.origin.icon().getBukkitStack());
 		Player bukkit = (Player) player.getBukkitEntity();
 		if (originIcon.getType().equals(Material.PLAYER_HEAD)) {
 			SkullMeta skull_p = (SkullMeta) originIcon.getItemMeta();
@@ -201,7 +204,7 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 			originIcon.setItemMeta(skull_p);
 		}
 
-		return itemProperties(originIcon, Component.text(LangFile.transform(this.origin.getName())), ItemFlag.values(), null, LangFile.transform(this.origin.getDescription()));
+		return itemProperties(originIcon, this.origin.name(), ItemFlag.values(), null, LangFile.transform(this.origin.getDescription()));
 	}
 
 	@Override
