@@ -1,9 +1,13 @@
 package me.dueris.originspaper.factory.data;
 
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableDataBuilder;
+import me.dueris.originspaper.factory.data.types.GuiTitle;
 import me.dueris.originspaper.factory.data.types.Impact;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,4 +25,18 @@ public class OriginsDataTypes {
 		}, ItemStack.class
 	);
 	public static final SerializableDataBuilder<Impact> IMPACT = SerializableDataTypes.enumValue(Impact.class);
+
+	public static final SerializableDataBuilder<GuiTitle> GUI_TITLE = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			if (!jsonElement.isJsonObject()) throw new JsonSyntaxException("Expected JsonObject for GuiTitle!");
+			JsonObject jo = jsonElement.getAsJsonObject();
+
+			Component viewOriginTitle = SerializableDataTypes.TEXT.deserialize(jo.get("view_origin"));
+			Component chooseOriginTitle = SerializableDataTypes.TEXT.deserialize(jo.get("choose_origin"));
+			net.kyori.adventure.text.Component kyoriViewOrigin = net.kyori.adventure.text.Component.text(viewOriginTitle.getString());
+			net.kyori.adventure.text.Component kyoriChooseOrigin = net.kyori.adventure.text.Component.text(chooseOriginTitle.getString());
+
+			return new GuiTitle(kyoriViewOrigin, kyoriChooseOrigin);
+		}, GuiTitle.class
+	);
 }

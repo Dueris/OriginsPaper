@@ -26,6 +26,10 @@ public enum Impact {
 		this.spriteId = spriteId;
 	}
 
+	public static Impact getByValue(int impactValue) {
+		return Impact.values()[impactValue];
+	}
+
 	public ResourceLocation getSpriteId() {
 		return spriteId;
 	}
@@ -44,9 +48,5 @@ public enum Impact {
 
 	public @NotNull MutableComponent getTextComponent() {
 		return Component.translatable(getTranslationKey()).withStyle(getTextStyle());
-	}
-
-	public static Impact getByValue(int impactValue) {
-		return Impact.values()[impactValue];
 	}
 }
