@@ -2,7 +2,7 @@ package me.dueris.originspaper.factory.actions;
 
 import com.google.gson.JsonObject;
 import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.system.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
 import me.dueris.originspaper.factory.Factory;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -11,10 +11,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class ActionFactory<T> implements Factory, Consumer<T> {
-	private final ResourceLocation location;
 	protected final BiConsumer<DeserializedFactoryJson, T> effect;
-
 	protected final InstanceDefiner data;
+	private final ResourceLocation location;
 	private DeserializedFactoryJson deserializedFactory = null;
 
 	public ActionFactory(ResourceLocation location, InstanceDefiner data, @NotNull BiConsumer<DeserializedFactoryJson, T> effect) {
@@ -35,7 +34,8 @@ public class ActionFactory<T> implements Factory, Consumer<T> {
 
 	@Override
 	public void accept(T t) {
-		if (deserializedFactory == null) throw new IllegalStateException("Unable to execute ActionFactory because there was no DeserializedFactoryJson compiled!");
+		if (deserializedFactory == null)
+			throw new IllegalStateException("Unable to execute ActionFactory because there was no DeserializedFactoryJson compiled!");
 		effect.accept(deserializedFactory, t);
 	}
 
@@ -44,6 +44,7 @@ public class ActionFactory<T> implements Factory, Consumer<T> {
 	}
 
 	public ActionFactory<T> decompile(JsonObject object) {
+		this.deserializedFactory = DeserializedFactoryJson.decompileJsonObject(object, data);
 		return this;
 	}
 }

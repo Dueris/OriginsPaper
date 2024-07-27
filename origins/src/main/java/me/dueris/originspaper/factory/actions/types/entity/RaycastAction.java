@@ -2,9 +2,7 @@ package me.dueris.originspaper.factory.actions.types.entity;
 
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.factory.actions.Actions;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.data.types.Space;
-import me.dueris.originspaper.factory.data.types.VectorGetter;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Direction;

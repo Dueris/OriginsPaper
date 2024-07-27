@@ -1,7 +1,7 @@
 package io.github.dueris.calio.test;
 
 import com.google.gson.JsonObject;
-import io.github.dueris.calio.CalioDataTypes;
+import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import io.github.dueris.calio.util.annotations.SourceProvider;
 
@@ -31,12 +31,12 @@ public class ModMeta {
 
 	public static InstanceDefiner buildDefiner() {
 		return InstanceDefiner.instanceDefiner()
-			.required("modid", CalioDataTypes.STRING)
-			.add("name", CalioDataTypes.STRING, "hi")
-			.add("priority", CalioDataTypes.INT)
-			.add("test_array", CalioDataTypes.set(CalioDataTypes.STRING))
-			.add("test_boolean", CalioDataTypes.BOOLEAN)
-			.add("json_object", CalioDataTypes.JSON_OBJECT, new JsonObject());
+			.required("modid", SerializableDataTypes.STRING)
+			.add("name", SerializableDataTypes.STRING, "hi")
+			.add("priority", SerializableDataTypes.INT)
+			.add("test_array", SerializableDataTypes.set(SerializableDataTypes.STRING))
+			.add("test_boolean", SerializableDataTypes.BOOLEAN)
+			.add("json_object", SerializableDataTypes.JSON_OBJECT, new JsonObject());
 	}
 
 	@Override

@@ -10,7 +10,6 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.actions.Actions;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import net.minecraft.world.InteractionHand;
 import org.bukkit.craftbukkit.CraftEquipmentSlot;

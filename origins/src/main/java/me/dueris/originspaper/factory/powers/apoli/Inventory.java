@@ -8,9 +8,8 @@ import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.KeybindTriggerEvent;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.data.types.ContainerType;
-import me.dueris.originspaper.factory.data.types.JsonKeybind;
+import me.dueris.originspaper.factory.data.types.Keybind;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.util.KeybindUtil;
 import me.dueris.originspaper.util.Util;
@@ -43,7 +42,7 @@ public class Inventory extends PowerType implements KeyedPower {
 	private final boolean dropOnDeath;
 	private final FactoryJsonObject dropOnDeathFilter;
 	private final boolean recoverable;
-	private final JsonKeybind keybind;
+	private final Keybind keybind;
 
 	public Inventory(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, String title, ContainerType containerType, boolean dropOnDeath, FactoryJsonObject dropOnDeathFilter, boolean recoverable, FactoryElement key) {
 		super(name, description, hidden, condition, loading_priority);
@@ -52,7 +51,7 @@ public class Inventory extends PowerType implements KeyedPower {
 		this.dropOnDeath = dropOnDeath;
 		this.dropOnDeathFilter = dropOnDeathFilter;
 		this.recoverable = recoverable;
-		this.keybind = JsonKeybind.createJsonKeybind(key);
+		this.keybind = Keybind.createJsonKeybind(key);
 	}
 
 	public static FactoryData registerComponents(FactoryData data) {
@@ -247,7 +246,7 @@ public class Inventory extends PowerType implements KeyedPower {
 	}
 
 	@Override
-	public JsonKeybind getJsonKey() {
+	public Keybind getJsonKey() {
 		return keybind;
 	}
 

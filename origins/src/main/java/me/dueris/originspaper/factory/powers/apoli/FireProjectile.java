@@ -11,8 +11,7 @@ import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.KeybindTriggerEvent;
 import me.dueris.originspaper.factory.actions.Actions;
-import me.dueris.originspaper.factory.data.types.HudRender;
-import me.dueris.originspaper.factory.data.types.JsonKeybind;
+import me.dueris.originspaper.factory.data.types.Keybind;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.util.KeybindUtil;
 import me.dueris.originspaper.util.Util;
@@ -54,7 +53,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 	private final float providedDivergence;
 	private final Sound sound;
 	private final CompoundTag tag;
-	private final JsonKeybind keybind;
+	private final Keybind keybind;
 	private final FactoryJsonObject projectileAction;
 	private final FactoryJsonObject shooterAction;
 
@@ -70,7 +69,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 		this.providedDivergence = divergence;
 		this.sound = sound;
 		this.tag = tag;
-		this.keybind = JsonKeybind.createJsonKeybind(key);
+		this.keybind = Keybind.createJsonKeybind(key);
 		this.projectileAction = projectileAction;
 		this.shooterAction = shooterAction;
 	}
@@ -251,7 +250,7 @@ public class FireProjectile extends PowerType implements KeyedPower, CooldownPow
 	}
 
 	@Override
-	public JsonKeybind getJsonKey() {
+	public Keybind getJsonKey() {
 		return keybind;
 	}
 

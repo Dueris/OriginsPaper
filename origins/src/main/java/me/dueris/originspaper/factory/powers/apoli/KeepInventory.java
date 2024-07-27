@@ -8,7 +8,6 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.factory.FactoryNumber;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.util.Util;
 import org.bukkit.Material;

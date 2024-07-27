@@ -2,11 +2,8 @@ package me.dueris.originspaper.factory.actions.types;
 
 import me.dueris.calio.data.CalioDataTypes;
 import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.actions.Actions;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
-import me.dueris.originspaper.factory.data.types.DestructionType;
 import me.dueris.originspaper.factory.data.types.ExplosionMask;
 import me.dueris.originspaper.factory.data.types.ResourceOperation;
 import me.dueris.originspaper.factory.data.types.Shape;
@@ -19,7 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -41,7 +37,6 @@ import org.bukkit.craftbukkit.util.CraftLocation;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 
 public class BlockActions {
 
@@ -226,28 +221,4 @@ public class BlockActions {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.BLOCK_ACTION).register(factory);
 	}
 
-	public static class ActionFactory implements Registrable {
-		ResourceLocation key;
-		BiConsumer<FactoryJsonObject, Location> test;
-
-		public ActionFactory(ResourceLocation key, BiConsumer<FactoryJsonObject, Location> test) {
-			this.key = key;
-			this.test = test;
-		}
-
-		public void test(FactoryJsonObject action, Location tester) {
-			if (action == null || action.isEmpty()) return; // Dont execute empty actions
-			try {
-				test.accept(action, tester);
-			} catch (Exception e) {
-				OriginsPaper.getPlugin().getLogger().severe("An Error occurred while running an action: " + e.getMessage());
-				e.printStackTrace();
-			}
-		}
-
-		@Override
-		public ResourceLocation key() {
-			return key;
-		}
-	}
 }

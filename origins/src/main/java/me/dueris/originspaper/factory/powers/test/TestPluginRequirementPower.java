@@ -2,7 +2,6 @@ package me.dueris.originspaper.factory.powers.test;
 
 import io.github.dueris.calio.util.annotations.RequiresPlugin;
 import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.annotations.RequiresPlugin;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.powers.holder.PowerType;

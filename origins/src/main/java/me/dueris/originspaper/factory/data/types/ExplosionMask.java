@@ -2,8 +2,7 @@ package me.dueris.originspaper.factory.data.types;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
+import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
@@ -25,6 +24,7 @@ import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -64,28 +64,26 @@ public class ExplosionMask {
 		stacks.add(Pair.of(stack, pos));
 	}
 
-	public ExplosionMask apply(@NotNull FactoryJsonObject getter, boolean destroyAfterMask) {
+	public ExplosionMask apply(boolean fire, @Nullable ConditionFactory<CraftBlock> indestructible, @Nullable ConditionFactory<CraftBlock> destructible, boolean destroyAfterMask) {
 		this.explosion.explode(); // Setup explosion stuff -- includes iterator for explosions
-		this.fire = getter.getBooleanOrDefault("create_fire", false);
+		this.fire = fire;
 		this.blocks = createBlockList(this.explosion.getToBlow(), this.level);
 		List<Block> finalBlocks = new ArrayList<>();
 
-		boolean testFilters = getter.isPresent("indestructible") || getter.isPresent("destructible");
+		boolean testFilters = indestructible != null || destructible != null;
 
 		if (testFilters) {
 			this.blocks.forEach((block) -> {
 				boolean addBlock = true;
 
-				if (getter.isPresent("indestructible")) {
-					FactoryJsonObject condition = getter.getJsonObject("indestructible");
-					if (ConditionExecutor.testBlock(condition, (CraftBlock) block)) {
+				if (indestructible != null) {
+					if (indestructible.test((CraftBlock) block)) {
 						addBlock = false;
 					}
 				}
 
-				if (getter.isPresent("destructible")) {
-					FactoryJsonObject condition = getter.getJsonObject("destructible");
-					if (!ConditionExecutor.testBlock(condition, (CraftBlock) block)) {
+				if (destructible != null) {
+					if (!destructible.test((CraftBlock) block)) {
 						addBlock = false;
 					}
 				}

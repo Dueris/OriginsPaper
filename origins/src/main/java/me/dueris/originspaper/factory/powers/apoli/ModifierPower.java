@@ -6,7 +6,7 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.annotations.DontRegister;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.originspaper.factory.data.types.Modifier;
+import me.dueris.originspaper.factory.data.types.modifier.Modifier;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 
 @DontRegister

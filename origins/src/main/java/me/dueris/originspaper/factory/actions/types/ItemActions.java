@@ -1,10 +1,5 @@
 package me.dueris.originspaper.factory.actions.types;
 
-import com.mojang.datafixers.util.Pair;
-import me.dueris.calio.data.CalioDataTypes;
-import me.dueris.calio.data.factory.FactoryElement;
-import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.util.Util;
@@ -17,15 +12,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-import org.bukkit.World;
-import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 public class ItemActions {
 
@@ -118,28 +109,4 @@ public class ItemActions {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_ACTION).register(factory);
 	}
 
-	public static class ActionFactory implements Registrable {
-		ResourceLocation key;
-		BiConsumer<FactoryJsonObject, Pair<ServerLevel, ItemStack>> test;
-
-		public ActionFactory(ResourceLocation key, BiConsumer<FactoryJsonObject, Pair<ServerLevel, ItemStack>> test) {
-			this.key = key;
-			this.test = test;
-		}
-
-		public void test(FactoryJsonObject action, ItemStack tester, World testerWorld) {
-			if (action == null || action.isEmpty()) return; // Dont execute empty actions
-			try {
-				test.accept(action, new Pair<>(((CraftWorld) testerWorld).getHandle(), tester));
-			} catch (Exception e) {
-				OriginsPaper.getPlugin().getLogger().severe("An Error occurred while running an action: " + e.getMessage());
-				e.printStackTrace();
-			}
-		}
-
-		@Override
-		public ResourceLocation key() {
-			return key;
-		}
-	}
 }

@@ -1,16 +1,12 @@
 package me.dueris.originspaper.factory.actions.types;
 
-import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registrable;
-import me.dueris.calio.util.holders.Pair;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.AddToSetEvent;
 import me.dueris.originspaper.event.RemoveFromSetEvent;
-import me.dueris.originspaper.factory.data.types.Modifier;
 import me.dueris.originspaper.factory.data.types.Space;
+import me.dueris.originspaper.factory.data.types.modifier.Modifier;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.util.Util;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Leashable;
@@ -21,11 +17,9 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.function.TriConsumer;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.joml.Vector3f;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 // Left is the actor, right is the target.
@@ -157,28 +151,4 @@ public class BiEntityActions {
 
 	}
 
-	public static class ActionFactory implements Registrable {
-		ResourceLocation key;
-		BiConsumer<FactoryJsonObject, Pair<CraftEntity, CraftEntity>> test;
-
-		public ActionFactory(ResourceLocation key, BiConsumer<FactoryJsonObject, Pair<CraftEntity, CraftEntity>> test) {
-			this.key = key;
-			this.test = test;
-		}
-
-		public void test(FactoryJsonObject action, Pair<CraftEntity, CraftEntity> tester) {
-			if (action == null || action.isEmpty()) return; // Dont execute empty actions
-			try {
-				test.accept(action, tester);
-			} catch (Exception e) {
-				OriginsPaper.getPlugin().getLogger().severe("An Error occurred while running an action: " + e.getMessage());
-				e.printStackTrace();
-			}
-		}
-
-		@Override
-		public ResourceLocation key() {
-			return key;
-		}
-	}
 }

@@ -5,7 +5,7 @@ import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.PowerUpdateEvent;
-import me.dueris.originspaper.factory.data.types.Modifier;
+import me.dueris.originspaper.factory.data.types.modifier.Modifier;
 import me.dueris.originspaper.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

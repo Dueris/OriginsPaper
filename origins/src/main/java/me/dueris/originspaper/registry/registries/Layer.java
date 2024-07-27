@@ -2,16 +2,15 @@ package me.dueris.originspaper.registry.registries;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import me.dueris.calio.CraftCalio;
-import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.FactoryHolder;
+import io.github.dueris.calio.CraftCalio;
+import io.github.dueris.calio.SerializableDataTypes;
+import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.registry.Registrar;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registrar;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.screen.ScreenNavigator;
 import me.dueris.originspaper.util.Util;
@@ -20,13 +19,12 @@ import net.minecraft.resources.ResourceLocation;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Layer implements FactoryHolder {
+public class Layer {
 	private final int order;
 	private final FactoryJsonArray origins;
 	private final boolean enabled;
@@ -66,12 +64,13 @@ public class Layer implements FactoryHolder {
 		this.loadingPriority = loadingPriority;
 	}
 
-	public static FactoryData registerComponents(@NotNull FactoryData data) {
-		return data.add("order", int.class, 0)
-			.add("origins", FactoryJsonArray.class, new FactoryJsonArray(new JsonArray()))
-			.add("enabled", boolean.class, true)
-			.add("replace", boolean.class, false)
-			.add("name", String.class, "layer.$namespace.$path.name")
+	public static InstanceDefiner buildDefiner() {
+		return InstanceDefiner.instanceDefiner()
+			.add("order", SerializableDataTypes.INT, 0)
+			.required("origins", SerializableDataTypes.list(SerializableDataTypes.IDENTIFIER))
+			.add("enabled", SerializableDataTypes.BOOLEAN, true)
+			.add("replace", SerializableDataTypes.BOOLEAN, false)
+			.add("name", SerializableDataTypes.STRING, "layer.$namespace.$path.name")
 			.add("gui_title", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
 			.add("missing_name", String.class, "Missing Name")
 			.add("missing_description", String.class, "Missing Description")
@@ -82,23 +81,6 @@ public class Layer implements FactoryHolder {
 			.add("auto_choose", boolean.class, false)
 			.add("hidden", boolean.class, false)
 			.add("loading_priority", int.class, 0);
-	}
-
-	@Override
-	public FactoryHolder ofResourceLocation(ResourceLocation key) {
-		if (this.tagSet) {
-			return this;
-		} else {
-			this.tagSet = true;
-			this.tag = key;
-			this.cachedTagString = key.toString();
-			return this;
-		}
-	}
-
-	@Override
-	public ResourceLocation key() {
-		return this.tag;
 	}
 
 	public String getTag() {
@@ -241,7 +223,6 @@ public class Layer implements FactoryHolder {
 			.toList();
 	}
 
-	@Override
 	public boolean canRegister() {
 		Registrar<Layer> registrar = OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER);
 		AtomicBoolean merge = new AtomicBoolean(!this.isReplace() && registrar.rawRegistry.containsKey(this.tag));

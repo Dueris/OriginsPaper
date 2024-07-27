@@ -6,7 +6,7 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.data.types.Modifier;
+import me.dueris.originspaper.factory.data.types.modifier.Modifier;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.util.Util;
 import net.minecraft.resources.ResourceLocation;

@@ -1,9 +1,7 @@
 package me.dueris.originspaper.factory.conditions.types.entity;
 
 import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.data.types.Space;
-import me.dueris.originspaper.factory.data.types.VectorGetter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;

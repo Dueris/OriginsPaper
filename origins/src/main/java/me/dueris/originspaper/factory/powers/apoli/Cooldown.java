@@ -6,7 +6,6 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.util.holders.Pair;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.data.types.HudRender;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.util.ModifiableFloatPair;

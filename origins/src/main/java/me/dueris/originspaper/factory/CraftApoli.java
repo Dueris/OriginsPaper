@@ -1,8 +1,7 @@
 package me.dueris.originspaper.factory;
 
 import com.google.gson.JsonArray;
-import me.dueris.calio.data.factory.FactoryJsonArray;
-import me.dueris.calio.registry.Registrar;
+import io.github.dueris.calio.registry.Registrar;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.powers.apoli.Multiple;
 import me.dueris.originspaper.factory.powers.holder.PowerType;

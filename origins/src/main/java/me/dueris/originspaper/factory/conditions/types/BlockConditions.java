@@ -3,12 +3,11 @@ package me.dueris.originspaper.factory.conditions.types;
 import me.dueris.calio.data.CalioDataTypes;
 import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
+import me.dueris.originspaper.factory.conditions.ConditionFactory;
+import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
 import me.dueris.originspaper.factory.data.types.Comparison;
 import me.dueris.originspaper.factory.data.types.Shape;
-import me.dueris.originspaper.factory.data.types.VectorGetter;
 import me.dueris.originspaper.registry.Registries;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
@@ -20,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.LightLayer;
@@ -32,6 +32,7 @@ import org.bukkit.Location;
 import org.bukkit.block.TileState;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.util.CraftLocation;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -39,14 +40,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiPredicate;
 
 import static me.dueris.originspaper.factory.conditions.types.EntityConditions.compareOutOfBounds;
 import static me.dueris.originspaper.factory.conditions.types.EntityConditions.warnCouldNotGetObject;
 
 public class BlockConditions {
 
-	public void registerConditions() {
+	public static void registerConditions() {
+		MetaConditions.register(Registries.BLOCK_CONDITION, BlockConditions::register);
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("offset"), (data, block) -> {
 			return ConditionExecutor.testBlock(data.getJsonObject("condition"), block.getWorld().getBlockAt(block.getLocation().offset(
 				data.getNumberOrDefault("x", 0).getInt(),
@@ -283,26 +284,8 @@ public class BlockConditions {
 		}));
 	}
 
-	public void register(ConditionFactory factory) {
-		OriginsPaper.getPlugin().registry.retrieve(Registries.BLOCK_CONDITION).register(factory);
+	public static void register(@NotNull ConditionFactory<CraftBlock> factory) {
+		OriginsPaper.getPlugin().registry.retrieve(Registries.BLOCK_CONDITION).register(factory, factory.getSerializerId());
 	}
 
-	public class ConditionFactory implements Registrable {
-		ResourceLocation key;
-		BiPredicate<FactoryJsonObject, CraftBlock> test;
-
-		public ConditionFactory(ResourceLocation key, BiPredicate<FactoryJsonObject, CraftBlock> test) {
-			this.key = key;
-			this.test = test;
-		}
-
-		public boolean test(FactoryJsonObject condition, CraftBlock tester) {
-			return test.test(condition, tester);
-		}
-
-		@Override
-		public ResourceLocation key() {
-			return key;
-		}
-	}
 }

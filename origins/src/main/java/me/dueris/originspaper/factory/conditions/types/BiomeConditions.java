@@ -1,21 +1,22 @@
 package me.dueris.originspaper.factory.conditions.types;
 
 import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.factory.conditions.ConditionFactory;
+import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
 import me.dueris.originspaper.factory.data.types.Comparison;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
-
-import java.util.function.BiPredicate;
+import org.jetbrains.annotations.NotNull;
 
 public class BiomeConditions {
-	public void registerConditions() {
+	public static void registerConditions() {
+		MetaConditions.register(me.dueris.originspaper.registry.Registries.BIOME_CONDITION, BiomeConditions::register);
 		this.register(new ConditionFactory(OriginsPaper.apoliIdentifier("high_humidity"), (data, biome) -> biome.value().climateSettings.downfall() > 0.85F));
 		this.register(new ConditionFactory(OriginsPaper.apoliIdentifier("temperature"), (data, biome) -> Comparison.fromString(data.getString("comparison")).compare(biome.value().getBaseTemperature(), data.getNumber("compare_to").getFloat())));
 		this.register(new ConditionFactory(OriginsPaper.apoliIdentifier("category"), (data, biome) -> {
@@ -44,26 +45,8 @@ public class BiomeConditions {
 		};
 	}
 
-	public void register(ConditionFactory factory) {
-		OriginsPaper.getPlugin().registry.retrieve(me.dueris.originspaper.registry.Registries.BIOME_CONDITION).register(factory);
+	public static void register(@NotNull ConditionFactory<Biome> factory) {
+		OriginsPaper.getPlugin().registry.retrieve(me.dueris.originspaper.registry.Registries.BIOME_CONDITION).register(factory, factory.getSerializerId());
 	}
 
-	public class ConditionFactory implements Registrable {
-		ResourceLocation key;
-		BiPredicate<FactoryJsonObject, Holder<Biome>> test;
-
-		public ConditionFactory(ResourceLocation key, BiPredicate<FactoryJsonObject, Holder<Biome>> test) {
-			this.key = key;
-			this.test = test;
-		}
-
-		public boolean test(FactoryJsonObject condition, Holder<Biome> tester) {
-			return this.test.test(condition, tester);
-		}
-
-		@Override
-		public ResourceLocation key() {
-			return this.key;
-		}
-	}
 }

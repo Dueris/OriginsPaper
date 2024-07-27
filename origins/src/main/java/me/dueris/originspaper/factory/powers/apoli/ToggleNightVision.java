@@ -7,7 +7,7 @@ import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.KeybindTriggerEvent;
-import me.dueris.originspaper.factory.data.types.JsonKeybind;
+import me.dueris.originspaper.factory.data.types.Keybind;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.util.KeybindUtil;
 import org.bukkit.entity.Player;
@@ -22,11 +22,11 @@ import java.util.HashMap;
 
 public class ToggleNightVision extends PowerType implements KeyedPower {
 	public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
-	private final JsonKeybind key;
+	private final Keybind key;
 
 	public ToggleNightVision(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryElement key) {
 		super(name, description, hidden, condition, loading_priority);
-		this.key = JsonKeybind.createJsonKeybind(key);
+		this.key = Keybind.createJsonKeybind(key);
 	}
 
 	public static FactoryData registerComponents(FactoryData data) {
@@ -89,7 +89,7 @@ public class ToggleNightVision extends PowerType implements KeyedPower {
 	}
 
 	@Override
-	public JsonKeybind getJsonKey() {
+	public Keybind getJsonKey() {
 		return key;
 	}
 }

@@ -2,16 +2,12 @@ package me.dueris.originspaper;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
-import io.github.dueris.calio.CraftCalio;
 import io.github.dueris.calio.data.AccessorKey;
 import io.github.dueris.calio.parser.JsonObjectRemapper;
 import io.github.dueris.calio.parser.ParsingStrategy;
 import io.github.dueris.calio.registry.IRegistry;
-import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
-import io.github.dueris.calio.test.ModMeta;
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
-import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import io.papermc.paper.plugin.configuration.PluginMeta;
 import me.dueris.originspaper.command.Commands;
 import me.dueris.originspaper.command.OriginCommand;
@@ -19,7 +15,6 @@ import me.dueris.originspaper.content.ContentTicker;
 import me.dueris.originspaper.content.OrbOfOrigins;
 import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.actions.Actions;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.conditions.types.BiEntityConditions;
 import me.dueris.originspaper.factory.powers.apoli.RecipePower;
 import me.dueris.originspaper.factory.powers.apoli.provider.origins.BounceSlimeBlock;
@@ -29,7 +24,6 @@ import me.dueris.originspaper.integration.PlaceHolderAPI;
 import me.dueris.originspaper.integration.pehuki.CraftPehuki;
 import me.dueris.originspaper.registry.BuiltinRegistry;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.registry.registries.DatapackRepository;
 import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.screen.ChoosingPage;
@@ -48,7 +42,6 @@ import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -83,7 +76,6 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 	public static List<Runnable> preShutdownTasks = new ArrayList<>();
 	public static GlowingEntitiesUtils glowingEntitiesUtils;
 	public static BstatsMetrics metrics;
-	public static ConditionExecutor conditionExecutor;
 	public static String apoliVersion = "2.12.0-alpha.3";
 	public static String LANGUAGE;
 	public static boolean placeholderapi = false;
@@ -237,14 +229,12 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 			}
 
 			OriginDataContainer.loadData();
-			conditionExecutor = new ConditionExecutor();
 			int avalibleJVMThreads = Runtime.getRuntime().availableProcessors() * 2;
 			int dynamic_thread_count = avalibleJVMThreads < 4
 				? avalibleJVMThreads
 				: Math.min(avalibleJVMThreads, OriginConfiguration.getConfiguration().getInt("max-loader-threads"));
 			loaderThreadPool = Executors.newFixedThreadPool(dynamic_thread_count, threadFactory);
 			try {
-				ConditionExecutor.registerAll();
 				Actions.registerAll();
 				PowerType.registerAll();
 				io.github.dueris.calio.CraftCalio craftCalio = io.github.dueris.calio.CraftCalio.buildInstance(

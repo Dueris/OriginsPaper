@@ -10,8 +10,7 @@ import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.KeybindTriggerEvent;
-import me.dueris.originspaper.factory.data.types.HudRender;
-import me.dueris.originspaper.factory.data.types.JsonKeybind;
+import me.dueris.originspaper.factory.data.types.Keybind;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.util.KeybindUtil;
 import net.minecraft.core.particles.ParticleTypes;
@@ -32,7 +31,7 @@ public class Launch extends PowerType implements CooldownPower, KeyedPower {
 	private final float speed;
 	private final HudRender hudRender;
 	private final Sound sound;
-	private final JsonKeybind keybind;
+	private final Keybind keybind;
 
 	public Launch(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, int cooldown, float speed, FactoryJsonObject hudRender, Sound sound, FactoryElement keybind) {
 		super(name, description, hidden, condition, loading_priority);
@@ -40,7 +39,7 @@ public class Launch extends PowerType implements CooldownPower, KeyedPower {
 		this.speed = speed;
 		this.hudRender = HudRender.createHudRender(hudRender);
 		this.sound = sound;
-		this.keybind = JsonKeybind.createJsonKeybind(keybind);
+		this.keybind = Keybind.createJsonKeybind(keybind);
 	}
 
 	public static FactoryData registerComponents(FactoryData data) {
@@ -103,7 +102,7 @@ public class Launch extends PowerType implements CooldownPower, KeyedPower {
 	}
 
 	@Override
-	public JsonKeybind getJsonKey() {
+	public Keybind getJsonKey() {
 		return keybind;
 	}
 

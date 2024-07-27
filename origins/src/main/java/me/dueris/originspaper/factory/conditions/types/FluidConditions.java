@@ -1,17 +1,17 @@
 package me.dueris.originspaper.factory.conditions.types;
 
-import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.factory.conditions.ConditionFactory;
+import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
 import me.dueris.originspaper.registry.Registries;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.material.Fluid;
-
-import java.util.function.BiPredicate;
+import org.jetbrains.annotations.NotNull;
 
 public class FluidConditions {
-	public void registerConditions() {
+	public static void registerConditions() {
+		MetaConditions.register(Registries.FLUID_CONDITION, FluidConditions::register);
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("empty"), (data, fluid) -> {
 			return fluid.defaultFluidState().isEmpty();
 		}));
@@ -26,26 +26,7 @@ public class FluidConditions {
 		}));
 	}
 
-	public void register(ConditionFactory factory) {
-		OriginsPaper.getPlugin().registry.retrieve(Registries.FLUID_CONDITION).register(factory);
-	}
-
-	public class ConditionFactory implements Registrable {
-		ResourceLocation key;
-		BiPredicate<FactoryJsonObject, Fluid> test;
-
-		public ConditionFactory(ResourceLocation key, BiPredicate<FactoryJsonObject, Fluid> test) {
-			this.key = key;
-			this.test = test;
-		}
-
-		public boolean test(FactoryJsonObject condition, net.minecraft.world.level.material.Fluid tester) {
-			return test.test(condition, tester);
-		}
-
-		@Override
-		public ResourceLocation key() {
-			return key;
-		}
+	public static void register(@NotNull ConditionFactory<Fluid> factory) {
+		OriginsPaper.getPlugin().registry.retrieve(Registries.FLUID_CONDITION).register(factory, factory.getSerializerId());
 	}
 }

@@ -9,8 +9,7 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.KeybindTriggerEvent;
 import me.dueris.originspaper.factory.actions.Actions;
-import me.dueris.originspaper.factory.data.types.HudRender;
-import me.dueris.originspaper.factory.data.types.JsonKeybind;
+import me.dueris.originspaper.factory.data.types.Keybind;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.util.KeybindUtil;
 import org.bukkit.event.EventHandler;
@@ -20,14 +19,14 @@ public class ActiveSelf extends PowerType implements KeyedPower, CooldownPower {
 	private final FactoryJsonObject entityAction;
 	private final int cooldown;
 	private final HudRender hudRender;
-	private final JsonKeybind keybind;
+	private final Keybind keybind;
 
 	public ActiveSelf(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, FactoryJsonObject entityAction, int cooldown, FactoryJsonObject hudRender, FactoryElement key) {
 		super(name, description, hidden, condition, loading_priority);
 		this.entityAction = entityAction;
 		this.cooldown = cooldown;
 		this.hudRender = HudRender.createHudRender(hudRender);
-		this.keybind = JsonKeybind.createJsonKeybind(key);
+		this.keybind = Keybind.createJsonKeybind(key);
 	}
 
 	public static FactoryData registerComponents(FactoryData data) {
@@ -60,7 +59,7 @@ public class ActiveSelf extends PowerType implements KeyedPower, CooldownPower {
 	}
 
 	@Override
-	public JsonKeybind getJsonKey() {
+	public Keybind getJsonKey() {
 		return keybind;
 	}
 

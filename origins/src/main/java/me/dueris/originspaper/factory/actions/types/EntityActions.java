@@ -7,13 +7,14 @@ import me.dueris.calio.data.factory.FactoryElement;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.ParticleEffect;
-import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.actions.Actions;
 import me.dueris.originspaper.factory.actions.types.entity.RaycastAction;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
-import me.dueris.originspaper.factory.data.types.*;
+import me.dueris.originspaper.factory.data.types.ExplosionMask;
+import me.dueris.originspaper.factory.data.types.Shape;
+import me.dueris.originspaper.factory.data.types.Space;
+import me.dueris.originspaper.factory.data.types.modifier.Modifier;
 import me.dueris.originspaper.factory.powers.apoli.Cooldown;
 import me.dueris.originspaper.factory.powers.apoli.CooldownPower;
 import me.dueris.originspaper.factory.powers.apoli.EntitySetPower;
@@ -59,7 +60,6 @@ import org.bukkit.advancement.Advancement;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.CraftSound;
 import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.potion.CraftPotionUtil;
@@ -73,7 +73,6 @@ import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 public class EntityActions {
@@ -859,28 +858,4 @@ public class EntityActions {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.ENTITY_ACTION).register(factory);
 	}
 
-	public static class ActionFactory implements Registrable {
-		ResourceLocation key;
-		BiConsumer<FactoryJsonObject, CraftEntity> test;
-
-		public ActionFactory(ResourceLocation key, BiConsumer<FactoryJsonObject, CraftEntity> test) {
-			this.key = key;
-			this.test = test;
-		}
-
-		public void test(FactoryJsonObject action, CraftEntity tester) {
-			if (action == null || action.isEmpty()) return; // Dont execute empty actions
-			try {
-				test.accept(action, tester);
-			} catch (Exception e) {
-				OriginsPaper.getPlugin().getLogger().severe("An Error occurred while running an action: " + e.getMessage());
-				e.printStackTrace();
-			}
-		}
-
-		@Override
-		public ResourceLocation key() {
-			return key;
-		}
-	}
 }

@@ -8,7 +8,7 @@ import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.AttributeExecuteEvent;
 import me.dueris.originspaper.event.PowerUpdateEvent;
-import me.dueris.originspaper.factory.data.types.Modifier;
+import me.dueris.originspaper.factory.data.types.modifier.Modifier;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.screen.OriginPage;
 import me.dueris.originspaper.util.DataConverter;

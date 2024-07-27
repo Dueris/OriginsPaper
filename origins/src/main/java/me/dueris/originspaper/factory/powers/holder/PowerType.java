@@ -9,7 +9,6 @@ import me.dueris.calio.data.FactoryHolder;
 import me.dueris.calio.data.annotations.SourceProvider;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.powers.apoli.provider.OriginSimpleContainer;
 import me.dueris.originspaper.factory.powers.apoli.provider.origins.*;
 import net.minecraft.resources.ResourceLocation;

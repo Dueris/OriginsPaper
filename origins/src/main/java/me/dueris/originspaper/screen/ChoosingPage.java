@@ -1,11 +1,11 @@
 package me.dueris.originspaper.screen;
 
-import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public interface ChoosingPage extends Registrable {
+public interface ChoosingPage {
 	static void registerInstances() {
 		OriginsPaper.getPlugin()
 			.registry
@@ -50,7 +50,7 @@ public interface ChoosingPage extends Registrable {
 			);
 		ScreenNavigator.layerPages.values().forEach(list -> {
 			for (ChoosingPage page : list) {
-				OriginsPaper.getPlugin().registry.retrieve(Registries.CHOOSING_PAGE).register(page);
+				OriginsPaper.getPlugin().registry.retrieve(Registries.CHOOSING_PAGE).register(page, page.key());
 			}
 		});
 	}
@@ -60,4 +60,6 @@ public interface ChoosingPage extends Registrable {
 	ItemStack getChoosingStack(Player var1);
 
 	void onChoose(Player var1, Layer var2);
+
+	ResourceLocation key();
 }

@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class CalioParser {
 	public static final AtomicReference<JsonObjectRemapper> REMAPPER = new AtomicReference<>();
-	private static final Logger LOGGER = LogManager.getLogger("CraftCalioParser");
+	public static final Logger LOGGER = LogManager.getLogger("CraftCalioParser");
 	private static final Gson GSON = new Gson();
 
 	@SuppressWarnings("unchecked")
@@ -92,7 +92,7 @@ public class CalioParser {
 				if (toBuild == null)
 					throw new RuntimeException("Unable to parse type for class '" + clz.getSimpleName() + "' and type value of '" + jsonSource.get("type").getAsString() + "'");
 				definer = ReflectionUtils.invokeStaticMethod(toBuild, "buildDefiner");
-				Optional<Pair<List<Pair<String, ?>>, List<Pair<String, ?>>>> compiledInstance = compileFromInstanceDefinition(definer, jsonSource, Optional.of(location), clz);
+				Optional<Pair<List<Pair<String, ?>>, List<Pair<String, ?>>>> compiledInstance = compileFromInstanceDefinition(definer, jsonSource, Optional.of(location), Optional.of(clz));
 				if (compiledInstance.isEmpty()) continue;
 				List<Pair<String, ?>> compiledArguments = compiledInstance.get().second();
 				List<Pair<String, ?>> compiledParams = compiledInstance.get().first();

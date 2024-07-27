@@ -5,7 +5,6 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.RequiredInstance;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.block.CraftBlock;

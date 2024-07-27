@@ -1,19 +1,20 @@
 package me.dueris.originspaper.factory.conditions.types;
 
 import me.dueris.calio.data.CalioDataTypes;
-import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.factory.conditions.ConditionFactory;
+import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
 import me.dueris.originspaper.factory.data.types.Comparison;
 import me.dueris.originspaper.registry.Registries;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Equipable;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -23,13 +24,12 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.function.BiPredicate;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemConditions {
 
-	public void registerConditions() {
+	public static void registerConditions() {
+		MetaConditions.register(Registries.ITEM_CONDITION, ItemConditions::register);
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("food"), (data, itemStack) -> {
 			return CraftItemStack.asNMSCopy(itemStack).has(DataComponents.FOOD);
 		}));
@@ -115,27 +115,8 @@ public class ItemConditions {
 		}));
 	}
 
-	public void register(ConditionFactory factory) {
-		OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_CONDITION).register(factory);
-	}
-
-	public class ConditionFactory implements Registrable {
-		ResourceLocation key;
-		BiPredicate<FactoryJsonObject, ItemStack> test;
-
-		public ConditionFactory(ResourceLocation key, BiPredicate<FactoryJsonObject, ItemStack> test) {
-			this.key = key;
-			this.test = test;
-		}
-
-		public boolean test(FactoryJsonObject condition, ItemStack tester) {
-			return test.test(condition, tester);
-		}
-
-		@Override
-		public ResourceLocation key() {
-			return key;
-		}
+	public static void register(@NotNull ConditionFactory<ItemStack> factory) {
+		OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_CONDITION).register(factory, factory.getSerializerId());
 	}
 
 }

@@ -5,8 +5,6 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.actions.Actions;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
-import me.dueris.originspaper.factory.data.types.HudRender;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

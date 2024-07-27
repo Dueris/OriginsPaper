@@ -10,16 +10,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class DeserializedFactoryJson {
-	private final Map<String, Object> keyValueMap;
-
-	public DeserializedFactoryJson(Map<String, Object> keyValueMap) {
-		this.keyValueMap = keyValueMap;
-	}
+public record DeserializedFactoryJson(HashMap<String, Object> data) {
 
 	public static @Nullable DeserializedFactoryJson decompileJsonObject(JsonObject jsonObject, InstanceDefiner definer) {
 		Optional<Pair<List<Pair<String, ?>>, List<Pair<String, ?>>>> compiledInstance = CalioParser.compileFromInstanceDefinition(
@@ -27,16 +21,16 @@ public class DeserializedFactoryJson {
 		);
 		if (compiledInstance.isEmpty()) return null;
 		List<Pair<String, ?>> compiledArguments = compiledInstance.get().second();
-		Map<String, Object>
+		HashMap<String, Object> deserialized = new HashMap<>();
+		for (Pair<String, ?> compiledArgument : compiledArguments) {
+			deserialized.put(compiledArgument.first(), compiledArgument.second());
+		}
 
-		return new DeserializedFactoryJson();
+		return new DeserializedFactoryJson(deserialized);
 	}
-
-	private final HashMap<String, Object> data = new HashMap<>();
 
 	public boolean isPresent(String name) {
 		return data.containsKey(name);
-
 	}
 
 	public <T> void ifPresent(String name, Consumer<T> consumer) {

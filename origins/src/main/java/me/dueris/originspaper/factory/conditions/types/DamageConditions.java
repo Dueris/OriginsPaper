@@ -1,13 +1,12 @@
 package me.dueris.originspaper.factory.conditions.types;
 
 import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registrable;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.conditions.ConditionExecutor;
+import me.dueris.originspaper.factory.conditions.ConditionFactory;
+import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
 import me.dueris.originspaper.factory.data.types.Comparison;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.util.Util;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -18,11 +17,10 @@ import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.BiPredicate;
-
 public class DamageConditions {
 
-	public void registerConditions() {
+	public static void registerConditions() {
+		MetaConditions.register(Registries.DAMAGE_CONDITION, DamageConditions::register);
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("amount"), (data, damageEvent) -> {
 			return Comparison.fromString(data.getString("comparison")).compare(damageEvent.getDamage(), data.getNumber("compare_to").getFloat());
 		}));
@@ -79,30 +77,12 @@ public class DamageConditions {
 		}));
 	}
 
-	private DamageSource nmsDamageSource(EntityDamageEvent event) {
+	private DamageSource nmsDamageSource(@NotNull EntityDamageEvent event) {
 		return Util.getDamageSource(CraftDamageType.bukkitToMinecraft(event.getDamageSource().getDamageType()));
 	}
 
-	public void register(ConditionFactory factory) {
-		OriginsPaper.getPlugin().registry.retrieve(Registries.DAMAGE_CONDITION).register(factory);
+	public static void register(@NotNull ConditionFactory<EntityDamageEvent> factory) {
+		OriginsPaper.getPlugin().registry.retrieve(Registries.DAMAGE_CONDITION).register(factory, factory.getSerializerId());
 	}
 
-	public class ConditionFactory implements Registrable {
-		ResourceLocation key;
-		BiPredicate<FactoryJsonObject, EntityDamageEvent> test;
-
-		public ConditionFactory(ResourceLocation key, BiPredicate<FactoryJsonObject, EntityDamageEvent> test) {
-			this.key = key;
-			this.test = test;
-		}
-
-		public boolean test(FactoryJsonObject condition, EntityDamageEvent tester) {
-			return test.test(condition, tester);
-		}
-
-		@Override
-		public ResourceLocation key() {
-			return key;
-		}
-	}
 }

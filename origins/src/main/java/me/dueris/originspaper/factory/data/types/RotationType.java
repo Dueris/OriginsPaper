@@ -1,11 +1,12 @@
 package me.dueris.originspaper.factory.data.types;
 
-import me.dueris.calio.data.factory.FactoryJsonObject;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 import java.util.function.Function;
@@ -20,16 +21,17 @@ public enum RotationType {
 		this.function = function;
 	}
 
-	public static double getAngleBetween(Vec3 a, Vec3 b) {
+	public static double getAngleBetween(@NotNull Vec3 a, Vec3 b) {
 		double dot = a.dot(b);
 		return dot / (a.length() * b.length());
 	}
 
-	public static Vec3 reduceAxes(Vec3 vector, EnumSet<Axis> axesToKeep) {
+	@Contract("_, _ -> new")
+	public static @NotNull Vec3 reduceAxes(Vec3 vector, @NotNull EnumSet<Axis> axesToKeep) {
 		return new Vec3(axesToKeep.contains(Axis.X) ? vector.x : 0.0, axesToKeep.contains(Axis.Y) ? vector.y : 0.0, axesToKeep.contains(Axis.Z) ? vector.z : 0.0);
 	}
 
-	private static Vec3 getBodyRotationVector(Entity entity) {
+	private static @NotNull Vec3 getBodyRotationVector(Entity entity) {
 		if (entity instanceof LivingEntity livingEntity) {
 			float f = livingEntity.getXRot() * (float) (Math.PI / 180.0);
 			float g = -livingEntity.getYRot() * (float) (Math.PI / 180.0);
@@ -41,10 +43,6 @@ public enum RotationType {
 		} else {
 			return entity.getViewVector(1.0F);
 		}
-	}
-
-	public static Vec3 parseDirection(FactoryJsonObject jsonObject) {
-		return jsonObject != null && !jsonObject.isEmpty() ? VectorGetter.getNMSVector(jsonObject) : null;
 	}
 
 	public Vec3 getRotation(Entity entity) {

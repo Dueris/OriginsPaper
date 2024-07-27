@@ -10,6 +10,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.registry.RegistryKey;
+import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.github.dueris.calio.util.ArgumentWrapper;
 import io.github.dueris.calio.util.ReflectionUtils;
 import io.github.dueris.calio.util.StatusEffectChance;
@@ -86,7 +88,7 @@ import java.util.stream.Stream;
 import static net.minecraft.util.GsonHelper.getAsDouble;
 
 @SuppressWarnings({"unused", "unchecked"})
-public class CalioDataTypes {
+public class SerializableDataTypes {
 	public static final SerializableDataBuilder<String> STRING = SerializableDataBuilder.of(
 		JsonElement::getAsString, String.class
 	);
@@ -497,11 +499,33 @@ public class CalioDataTypes {
 		);
 	}
 
-	@Contract(value = "_, _ -> new", pure = true)
-	public static <T> @NotNull SerializableDataBuilder<T> registry(Class<T> dataClass, Registry<T> registry) {
+	@Contract(value = "_, _, _ -> new", pure = true)
+	public static <T> @NotNull SerializableDataBuilder<T> calioRegistry(Class<T> dataClass, RegistryKey<T> registry, String defaultNamespace) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
-				ResourceLocation id = IDENTIFIER.deserialize(jsonElement);
+				CalioRegistry reg = CalioRegistry.INSTANCE;
+				String locationID = jsonElement.getAsString();
+				if (!locationID.contains(":")) {
+					locationID = defaultNamespace + ":" + jsonElement.getAsString();
+				}
+				ResourceLocation id = ResourceLocation.parse(locationID);
+				return reg.retrieve(registry).get(id);
+			}, dataClass
+		);
+	}
+
+	public static <T> @NotNull SerializableDataBuilder<T> registry(Class<T> dataClass, Registry<T> registry) {
+		return registry(dataClass, registry, ResourceLocation.DEFAULT_NAMESPACE);
+	}
+
+	public static <T> @NotNull SerializableDataBuilder<T> registry(Class<T> dataClass, Registry<T> registry, String defaultNamespace) {
+		return SerializableDataBuilder.of(
+			(jsonElement) -> {
+				String locationID = jsonElement.getAsString();
+				if (!locationID.contains(":")) {
+					locationID = defaultNamespace + ":" + jsonElement.getAsString();
+				}
+				ResourceLocation id = ResourceLocation.parse(locationID);
 				return registry
 					.getOptional(id)
 					.orElseThrow();

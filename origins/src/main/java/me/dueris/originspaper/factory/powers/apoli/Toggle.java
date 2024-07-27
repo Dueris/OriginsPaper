@@ -8,7 +8,7 @@ import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.KeybindTriggerEvent;
 import me.dueris.originspaper.event.OriginChangeEvent;
-import me.dueris.originspaper.factory.data.types.JsonKeybind;
+import me.dueris.originspaper.factory.data.types.Keybind;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.util.KeybindUtil;
 import org.bukkit.entity.Player;
@@ -23,13 +23,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Toggle extends PowerType implements KeyedPower {
 	public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
 	private final boolean activeByDefault;
-	private final JsonKeybind key;
+	private final Keybind key;
 	private final boolean retainState;
 
 	public Toggle(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, boolean activeByDefault, FactoryElement key, boolean retainState) {
 		super(name, description, hidden, condition, loading_priority);
 		this.activeByDefault = activeByDefault;
-		this.key = JsonKeybind.createJsonKeybind(key);
+		this.key = Keybind.createJsonKeybind(key);
 		this.retainState = retainState;
 	}
 
@@ -102,7 +102,7 @@ public class Toggle extends PowerType implements KeyedPower {
 	}
 
 	@Override
-	public JsonKeybind getJsonKey() {
+	public Keybind getJsonKey() {
 		return key;
 	}
 
