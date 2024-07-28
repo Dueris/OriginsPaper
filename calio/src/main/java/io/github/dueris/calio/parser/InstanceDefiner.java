@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class InstanceDefiner {
 	protected final Map<String, Object> defaultMap = new HashMap<>();
@@ -59,6 +60,6 @@ public class InstanceDefiner {
 		return pairs.stream()
 			.sorted(Comparator.comparingInt(pair -> keyPriorities.getInt(pair.first())))
 			.map(Pair::second)
-			.toList();
+			.collect(Collectors.toList());
 	}
 }

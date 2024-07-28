@@ -311,14 +311,19 @@ public class SerializableDataTypes {
 	);
 	public static final SerializableDataBuilder<ItemStack> ITEM_STACK = SerializableDataBuilder.of(
 		(jsonElement) -> {
-			JsonObject jo = jsonElement.getAsJsonObject();
-			Item item = ITEM.deserialize(jo.get("item"));
-			ItemStack stack = item.getDefaultInstance();
+			if (jsonElement.isJsonObject()) {
+				JsonObject jo = jsonElement.getAsJsonObject();
+				Item item = ITEM.deserialize(jo.get("item"));
+				ItemStack stack = item.getDefaultInstance();
 
-			stack.setCount(jo.has("amount") ? INT.deserialize(jo.get("amount")) : 1);
-			stack.applyComponentsAndValidate(jo.has("components") ? COMPONENT_CHANGES.deserialize(jo.get("components")) : DataComponentPatch.EMPTY);
+				stack.setCount(jo.has("amount") ? INT.deserialize(jo.get("amount")) : 1);
+				stack.applyComponentsAndValidate(jo.has("components") ? COMPONENT_CHANGES.deserialize(jo.get("components")) : DataComponentPatch.EMPTY);
 
-			return stack;
+				return stack;
+			} else if (jsonElement.isJsonPrimitive() && jsonElement.getAsJsonPrimitive().isString()) {
+				return new ItemStack(ITEM.deserialize(jsonElement));
+			}
+			throw new JsonSyntaxException("Unable to build ItemStack from provided object!");
 		}, ItemStack.class
 	);
 	public static final SerializableDataBuilder<Component> TEXT = SerializableDataBuilder.of(

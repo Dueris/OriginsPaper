@@ -20,9 +20,16 @@ public class Util {
 	}
 
 	public static @Nullable ResourceLocation buildResourceLocationFromPath(@NotNull String path) {
-		if (!path.contains("data")) return null;
-		String a = path.split("data/")[1].split("/")[0] + ":" + path.split("data/")[1].split("/")[2].replace(".json", "");
-		return ResourceLocation.read(a).getOrThrow();
+		if (!path.contains("data/")) return null;
+		try {
+			String[] parts = path.split("/");
+			if (parts.length < 4) return null;
+			String name = parts[4].replace(".json", "");
+			String resourceString = parts[2] + ":" + name;
+			return ResourceLocation.read(resourceString).getOrThrow();
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	@SuppressWarnings("unchecked")

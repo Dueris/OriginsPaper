@@ -83,7 +83,8 @@ public class CalioParser {
 							return stringClassPair.first().typedInstance != null && stringClassPair.first().typedInstance.toString().equalsIgnoreCase(jsonSource.get("type").getAsString());
 						}).findFirst().get().second();
 					} catch (NoSuchElementException e) {
-						throw new RuntimeException("Unable to retrieve type instance of '" + jsonSource.get("type").getAsString() + "'");
+						LOGGER.error("Unable to retrieve type instance of '{}'", jsonSource.get("type").getAsString());
+						continue;
 					}
 					if (typedInst != null) {
 						toBuild = typedInst;
@@ -120,17 +121,11 @@ public class CalioParser {
 					Object arg = (i < arguments.size()) ? arguments.get(i) : null;
 
 					if (arg != null && !paramType.isInstance(arg)) {
-						LOGGER.error("Argument {} is of type {}, expected type is {}", i, arg.getClass().getName(), paramType.getName());
-						continue;
-					}
-
-					if (arg == null && paramType.isPrimitive()) {
-						if (paramType == int.class) {
-							arg = 0;
-						} else if (paramType == boolean.class) {
-							arg = false;
-						} else if (paramType == double.class) {
-							arg = 0.0;
+						try {
+							arg = convertArgument(arg, paramType);
+						} catch (Exception e) {
+							LOGGER.error("Error converting argument {} to type {}: {}", arg, paramType, e.getMessage());
+							continue;
 						}
 					}
 
@@ -148,7 +143,7 @@ public class CalioParser {
 					}
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
 						 InvocationTargetException e) {
-					LOGGER.error("Error compiling instance: {}", e.getMessage());
+					LOGGER.error("Error compiling instanceof {} : {}", toBuild.getSimpleName(), e.getMessage());
 					e.printStackTrace();
 				}
 
@@ -203,6 +198,44 @@ public class CalioParser {
 			return Optional.of(new Pair<>(compiledParams, compiledArguments));
 		}
 		return Optional.empty();
+	}
+
+	private static Object convertArgument(Object arg, Class<?> paramType) {
+		if (paramType.isPrimitive()) {
+			return convertToPrimitive(arg, paramType);
+		} else if (isWrapperType(paramType)) {
+			return convertToWrapper(arg, paramType);
+		}
+		throw new IllegalArgumentException("Unsupported type conversion for: " + paramType.getName());
+	}
+
+	private static boolean isWrapperType(Class<?> type) {
+		return type == Integer.class || type == Boolean.class || type == Double.class || type == Float.class ||
+			type == Long.class || type == Short.class || type == Byte.class || type == Character.class;
+	}
+
+	private static Object convertToPrimitive(Object arg, Class<?> primitiveType) {
+		if (primitiveType == int.class) return ((Number) arg).intValue();
+		if (primitiveType == boolean.class) return arg;
+		if (primitiveType == double.class) return ((Number) arg).doubleValue();
+		if (primitiveType == float.class) return ((Number) arg).floatValue();
+		if (primitiveType == long.class) return ((Number) arg).longValue();
+		if (primitiveType == short.class) return ((Number) arg).shortValue();
+		if (primitiveType == byte.class) return ((Number) arg).byteValue();
+		if (primitiveType == char.class) return arg.toString().charAt(0);
+		throw new IllegalArgumentException("Unsupported primitive type: " + primitiveType.getName());
+	}
+
+	private static Object convertToWrapper(Object arg, Class<?> wrapperType) {
+		if (wrapperType == Integer.class) return Integer.valueOf(((Number) arg).intValue());
+		if (wrapperType == Boolean.class) return Boolean.valueOf((Boolean) arg);
+		if (wrapperType == Double.class) return Double.valueOf(((Number) arg).doubleValue());
+		if (wrapperType == Float.class) return Float.valueOf(((Number) arg).floatValue());
+		if (wrapperType == Long.class) return Long.valueOf(((Number) arg).longValue());
+		if (wrapperType == Short.class) return Short.valueOf(((Number) arg).shortValue());
+		if (wrapperType == Byte.class) return Byte.valueOf(((Number) arg).byteValue());
+		if (wrapperType == Character.class) return Character.valueOf(arg.toString().charAt(0));
+		throw new IllegalArgumentException("Unsupported wrapper type: " + wrapperType.getName());
 	}
 
 }
