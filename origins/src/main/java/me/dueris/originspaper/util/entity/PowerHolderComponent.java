@@ -7,8 +7,8 @@ import me.dueris.originspaper.event.PowerUpdateEvent;
 import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
+import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.screen.ScreenNavigator;
 import me.dueris.originspaper.storage.OriginDataContainer;
 import me.dueris.originspaper.util.BstatsMetrics;
@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PowerHolderComponent implements Listener {
-	public static ConcurrentHashMap<Player, ConcurrentHashMap<Layer, ConcurrentLinkedQueue<PowerType>>> playerPowerMapping = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Player, ConcurrentHashMap<OriginLayer, ConcurrentLinkedQueue<PowerType>>> playerPowerMapping = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Player, ConcurrentLinkedQueue<PowerType>> powersAppliedList = new ConcurrentHashMap<>();
 	public static ConcurrentLinkedQueue<Player> hasPowers = new ConcurrentLinkedQueue<>();
 	public static ArrayList<Player> currentSprintingPlayersFallback = new ArrayList<>();
@@ -57,7 +57,7 @@ public class PowerHolderComponent implements Listener {
 
 	public static boolean hasOrigin(Player player, String originTag) {
 		if (OriginDataContainer.getDataMap().containsKey(player)) {
-			HashMap<Layer, Origin> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(player));
+			HashMap<OriginLayer, Origin> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(player));
 
 			for (Origin origin : origins.values()) {
 				if (origin.getTag().equals(originTag)) {
@@ -69,7 +69,7 @@ public class PowerHolderComponent implements Listener {
 		return false;
 	}
 
-	public static Origin getOrigin(Player player, Layer layer) {
+	public static Origin getOrigin(Player player, OriginLayer layer) {
 		if (!OriginDataContainer.getDataMap().containsKey(player) && OriginDataContainer.getLayer(player) == null) {
 			setOrigin(player, layer, CraftApoli.emptyOrigin());
 			return CraftApoli.emptyOrigin();
@@ -78,18 +78,18 @@ public class PowerHolderComponent implements Listener {
 		}
 	}
 
-	public static HashMap<Layer, Origin> getOrigin(Player player) {
+	public static HashMap<OriginLayer, Origin> getOrigin(Player player) {
 		return CraftApoli.toOrigin(OriginDataContainer.getLayer(player));
 	}
 
 	public static void setupPowers(Player p) {
 		OriginDataContainer.loadData(p);
 		String[] layers = OriginDataContainer.getLayer(p).split("\n");
-		ConcurrentHashMap<Layer, ConcurrentLinkedQueue<PowerType>> map = new ConcurrentHashMap<>();
+		ConcurrentHashMap<OriginLayer, ConcurrentLinkedQueue<PowerType>> map = new ConcurrentHashMap<>();
 
 		for (String layer : layers) {
 			String[] layerData = layer.split("\\|");
-			Layer layerContainer = CraftApoli.getLayerFromTag(layerData[0]);
+			OriginLayer layerContainer = CraftApoli.getLayerFromTag(layerData[0]);
 			ConcurrentLinkedQueue<PowerType> powers = new ConcurrentLinkedQueue<>();
 
 			for (String dataPiece : layerData) {
@@ -116,7 +116,7 @@ public class PowerHolderComponent implements Listener {
 		ArrayList<T> powers = new ArrayList<>();
 		if (!(p instanceof Player)) return powers;
 		if (playerPowerMapping.get(p) == null) return powers;
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+		for (OriginLayer layer : CraftApoli.getLayersFromRegistry()) {
 			if (layer == null) continue;
 			for (PowerType power : playerPowerMapping.get(p).get(layer)) {
 				if (power == null || !power.getClass().equals(typeOf)) continue;
@@ -129,7 +129,7 @@ public class PowerHolderComponent implements Listener {
 	public static @NotNull ArrayList<PowerType> getPowers(Player p, String typeOf) {
 		ArrayList<PowerType> powers = new ArrayList<>();
 		if (playerPowerMapping.get(p) == null) return powers;
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+		for (OriginLayer layer : CraftApoli.getLayersFromRegistry()) {
 			if (layer == null) continue;
 			for (PowerType power : playerPowerMapping.get(p).get(layer)) {
 				if (power == null || !power.getType().equalsIgnoreCase(typeOf)) continue;
@@ -143,7 +143,7 @@ public class PowerHolderComponent implements Listener {
 	public static @NotNull ArrayList<PowerType> getPowers(Entity p) {
 		if (!(p instanceof Player)) return new ArrayList<>();
 		ArrayList<PowerType> powers = new ArrayList<>();
-		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+		for (OriginLayer layer : CraftApoli.getLayersFromRegistry()) {
 			for (PowerType power : playerPowerMapping.get(p).get(layer)) {
 				if (power == null) continue;
 				powers.add(power);
@@ -154,7 +154,7 @@ public class PowerHolderComponent implements Listener {
 
 	public static PowerType getPower(Entity p, String powerKey) {
 		if (!(p instanceof Player)) return null;
-		for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
+		for (OriginLayer layerContainer : playerPowerMapping.get(p).keySet()) {
 			for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {
 				if (power.getTag().equalsIgnoreCase(powerKey)) return power;
 			}
@@ -164,7 +164,7 @@ public class PowerHolderComponent implements Listener {
 
 	public static boolean hasPower(Entity p, String powerKey) {
 		if (!(p instanceof Player) || playerPowerMapping.get(p) == null) return false;
-		for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
+		for (OriginLayer layerContainer : playerPowerMapping.get(p).keySet()) {
 			for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {
 				if (power.getTag().equalsIgnoreCase(powerKey)) return true;
 			}
@@ -174,7 +174,7 @@ public class PowerHolderComponent implements Listener {
 
 	public static boolean hasPowerType(Entity p, Class<? extends PowerType> typeOf) {
 		if (!(p instanceof Player)) return false;
-		for (Layer layerContainer : playerPowerMapping.get(p).keySet()) {
+		for (OriginLayer layerContainer : playerPowerMapping.get(p).keySet()) {
 			for (PowerType power : playerPowerMapping.get(p).get(layerContainer)) {
 				if (power.getClass().equals(typeOf)) return true;
 			}
@@ -182,10 +182,10 @@ public class PowerHolderComponent implements Listener {
 		return false;
 	}
 
-	public static void setOrigin(final @NotNull Entity entity, final Layer layer, final Origin origin) {
+	public static void setOrigin(final @NotNull Entity entity, final OriginLayer layer, final Origin origin) {
 		if (!(entity instanceof Player player)) return;
 		NamespacedKey key = new NamespacedKey(OriginsPaper.getPlugin(), "originLayer");
-		HashMap<Layer, Origin> origins = CraftApoli.toOrigin(player.getPersistentDataContainer().get(key, PersistentDataType.STRING));
+		HashMap<OriginLayer, Origin> origins = CraftApoli.toOrigin(player.getPersistentDataContainer().get(key, PersistentDataType.STRING));
 		if (CraftApoli.getLayersFromRegistry().contains(layer)) {
 			if (!origin.getTag().equals(CraftApoli.emptyOrigin().getTag())) {
 				try {
@@ -195,7 +195,7 @@ public class PowerHolderComponent implements Listener {
 				}
 			}
 
-			for (Layer layers : origins.keySet()) {
+			for (OriginLayer layers : origins.keySet()) {
 				if (layer.getTag().equals(layers.getTag())) {
 					origins.replace(layers, origin);
 				}
@@ -310,9 +310,9 @@ public class PowerHolderComponent implements Listener {
 	}
 
 	public static void unassignPowers(@NotNull Player player) {
-		HashMap<Layer, Origin> origins = getOrigin(player);
+		HashMap<OriginLayer, Origin> origins = getOrigin(player);
 
-		for (Layer layer : origins.keySet()) {
+		for (OriginLayer layer : origins.keySet()) {
 			try {
 				unassignPowers(player, layer);
 				hasPowers.remove(player);
@@ -323,9 +323,9 @@ public class PowerHolderComponent implements Listener {
 	}
 
 	public static void assignPowers(@NotNull Player player) {
-		HashMap<Layer, Origin> origins = getOrigin(player);
+		HashMap<OriginLayer, Origin> origins = getOrigin(player);
 
-		for (Layer layer : origins.keySet()) {
+		for (OriginLayer layer : origins.keySet()) {
 			try {
 				assignPowers(player, layer);
 			} catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | SecurityException |
@@ -335,11 +335,11 @@ public class PowerHolderComponent implements Listener {
 		}
 	}
 
-	public static void unassignPowers(@NotNull Player player, Layer layer) throws NotFoundException {
+	public static void unassignPowers(@NotNull Player player, OriginLayer layer) throws NotFoundException {
 		unassignPowers(player, layer, false);
 	}
 
-	public static void unassignPowers(@NotNull Player player, Layer layer, boolean isNew) throws NotFoundException {
+	public static void unassignPowers(@NotNull Player player, OriginLayer layer, boolean isNew) throws NotFoundException {
 		try {
 			if (layer == null) {
 				OriginsPaper.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
@@ -356,11 +356,11 @@ public class PowerHolderComponent implements Listener {
 		}
 	}
 
-	public static void assignPowers(@NotNull Player player, Layer layer) throws InstantiationException, IllegalAccessException, NotFoundException, IllegalArgumentException, NoSuchFieldException, SecurityException {
+	public static void assignPowers(@NotNull Player player, OriginLayer layer) throws InstantiationException, IllegalAccessException, NotFoundException, IllegalArgumentException, NoSuchFieldException, SecurityException {
 		assignPowers(player, layer, false);
 	}
 
-	public static void assignPowers(@NotNull Player player, Layer layer, boolean isNew) throws InstantiationException, IllegalAccessException, NotFoundException, IllegalArgumentException, NoSuchFieldException, SecurityException {
+	public static void assignPowers(@NotNull Player player, OriginLayer layer, boolean isNew) throws InstantiationException, IllegalAccessException, NotFoundException, IllegalArgumentException, NoSuchFieldException, SecurityException {
 		try {
 			if (layer == null) {
 				OriginsPaper.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");

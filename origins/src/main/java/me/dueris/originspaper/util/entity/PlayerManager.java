@@ -4,8 +4,8 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.OriginChangeEvent;
 import me.dueris.originspaper.event.PowerUpdateEvent;
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
+import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.screen.GuiTicker;
 import me.dueris.originspaper.storage.OriginConfiguration;
 import me.dueris.originspaper.storage.OriginDataContainer;
@@ -56,9 +56,9 @@ public class PlayerManager implements Listener {
 		if (!p.getPersistentDataContainer().has(identifier("originLayer"), PersistentDataType.STRING)
 			|| p.getPersistentDataContainer().get(identifier("originLayer"), PersistentDataType.STRING) == null
 			|| p.getPersistentDataContainer().get(identifier("originLayer"), PersistentDataType.STRING).equalsIgnoreCase("")) {
-			HashMap<Layer, Origin> origins = new HashMap<>();
+			HashMap<OriginLayer, Origin> origins = new HashMap<>();
 
-			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			for (OriginLayer layer : CraftApoli.getLayersFromRegistry()) {
 				origins.put(layer, CraftApoli.emptyOrigin());
 			}
 
@@ -66,7 +66,6 @@ public class PlayerManager implements Listener {
 			firstJoin.add(p);
 		}
 
-		System.out.println(p.getPersistentDataContainer().get(new NamespacedKey(OriginsPaper.getPlugin(), "originLayer"), PersistentDataType.STRING));
 		if (!p.getPersistentDataContainer().has(identifier("insideblock"), PersistentDataType.BOOLEAN)) {
 			p.getPersistentDataContainer().set(identifier("insideblock"), PersistentDataType.BOOLEAN, false);
 		}
@@ -145,7 +144,6 @@ public class PlayerManager implements Listener {
 	public void playerQuitHandler(PlayerQuitEvent e) {
 		playersLeaving.add(e.getPlayer());
 		String serializedData = CraftApoli.toSaveFormat(PowerHolderComponent.getOrigin(e.getPlayer()), e.getPlayer());
-		OriginsPaper.getPlugin().getLog4JLogger().info(serializedData);
 		e.getPlayer().getPersistentDataContainer().set(identifier("originLayer"), PersistentDataType.STRING, serializedData);
 		e.getPlayer().saveData();
 		PowerHolderComponent.unassignPowers(e.getPlayer());

@@ -10,7 +10,7 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.registry.registries.Layer;
+import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.util.JsonTextFormatter;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import me.dueris.originspaper.util.entity.PowerUtils;
@@ -207,7 +207,7 @@ public class PowerCommand {
 											EntityArgument.getPlayers(context, "targets")
 												.forEach(
 													player -> {
-														for (Layer layer : OriginCommand.LAYERS.values()) {
+														for (OriginLayer layer : OriginCommand.LAYERS.values()) {
 															for (PowerType power : PowerHolderComponent.playerPowerMapping.get(player.getBukkitEntity()).get(layer)) {
 																if (!passed.get()
 																	&& power.getTag()

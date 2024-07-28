@@ -7,8 +7,8 @@ import me.dueris.originspaper.factory.actions.ActionFactory;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.data.types.modifier.IModifierOperation;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
-import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
+import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.screen.ChoosingPage;
 import me.dueris.originspaper.util.LangFile;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class Registries {
 	public static final RegistryKey<Origin> ORIGIN = new RegistryKey<>(Origin.class, apoliIdentifier("origin"));
-	public static final RegistryKey<Layer> LAYER = new RegistryKey<>(Layer.class, apoliIdentifier("layer"));
+	public static final RegistryKey<OriginLayer> LAYER = new RegistryKey<>(OriginLayer.class, apoliIdentifier("layer"));
 	public static final RegistryKey<PowerType> CRAFT_POWER = new RegistryKey<>(PowerType.class, apoliIdentifier("craft_power"));
 
 	public static final RegistryKey<ConditionFactory<Fluid>> FLUID_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("fluid_condition"));

@@ -5,8 +5,8 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.data.types.Impact;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
+import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -26,17 +26,17 @@ import java.util.List;
 
 public class CraftApoli {
 	private static final int BUFFER_SIZE = 4096;
-	private static final Registrar<Layer> layerRegistrar = OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER);
+	private static final Registrar<OriginLayer> layerRegistrar = OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER);
 	private static final Registrar<Origin> originRegistrar = OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN);
 	private static final Registrar<PowerType> powerRegistrar = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER);
-	private static final Collection<Layer> layerValues = new ArrayList<>();
+	private static final Collection<OriginLayer> layerValues = new ArrayList<>();
 	private static final Collection<Origin> originValues = new ArrayList<>();
 	private static final Collection<PowerType> powerValues = new ArrayList<>();
 	public static Origin EMPTY_ORIGIN = new Origin(
 		ResourceLocation.parse("origins:empty"), List.of(), new ItemStack(Items.AIR), true, Integer.MAX_VALUE, Impact.NONE, 0, null, Component.empty(), Component.empty()
 	);
 
-	public static Collection<Layer> getLayersFromRegistry() {
+	public static Collection<OriginLayer> getLayersFromRegistry() {
 		return layerValues;
 	}
 
@@ -62,8 +62,8 @@ public class CraftApoli {
 		return emptyOrigin();
 	}
 
-	public static Layer getLayerFromTag(String layerTag) {
-		for (Layer l : layerRegistrar.values()) {
+	public static OriginLayer getLayerFromTag(String layerTag) {
+		for (OriginLayer l : layerRegistrar.values()) {
 			if (l.getTag().equals(layerTag)) {
 				return l;
 			}
@@ -72,7 +72,7 @@ public class CraftApoli {
 		return layerRegistrar.get(ResourceLocation.fromNamespaceAndPath("origins", "origin"));
 	}
 
-	public static @Nullable PowerType getPower(ResourceLocation location) {
+	public static @Nullable PowerType getPower(@NotNull ResourceLocation location) {
 		return getPower(location.toString());
 	}
 
@@ -121,10 +121,10 @@ public class CraftApoli {
 		OriginsPaper.getPlugin().registry.clearRegistries();
 	}
 
-	public static @NotNull String toSaveFormat(@NotNull HashMap<Layer, Origin> origin, Player p) {
+	public static @NotNull String toSaveFormat(@NotNull HashMap<OriginLayer, Origin> origin, Player p) {
 		StringBuilder data = new StringBuilder();
 
-		for (Layer layer : origin.keySet()) {
+		for (OriginLayer layer : origin.keySet()) {
 			if (layer != null) {
 				Origin layerOrigins = origin.get(layer);
 				ArrayList<String> powers = new ArrayList<>();
@@ -148,10 +148,10 @@ public class CraftApoli {
 		return data.toString();
 	}
 
-	public static @NotNull String toOriginSetSaveFormat(@NotNull HashMap<Layer, Origin> origin) {
+	public static @NotNull String toOriginSetSaveFormat(@NotNull HashMap<OriginLayer, Origin> origin) {
 		StringBuilder data = new StringBuilder();
 
-		for (Layer layer : origin.keySet()) {
+		for (OriginLayer layer : origin.keySet()) {
 			Origin layerOrigins = origin.get(layer);
 			List<String> powers = layerOrigins.powers().stream().map(ResourceLocation::toString).toList();
 			int powerSize = 0;
@@ -168,7 +168,7 @@ public class CraftApoli {
 		return data.toString();
 	}
 
-	public static Origin toOrigin(String originData, Layer originLayer) {
+	public static Origin toOrigin(String originData, OriginLayer originLayer) {
 		if (originData != null) {
 			try {
 				String[] layers = originData.split("\n");
@@ -188,8 +188,8 @@ public class CraftApoli {
 		return emptyOrigin();
 	}
 
-	public static HashMap<Layer, Origin> toOrigin(String originData) {
-		HashMap<Layer, Origin> containedOrigins = new HashMap<>();
+	public static HashMap<OriginLayer, Origin> toOrigin(String originData) {
+		HashMap<OriginLayer, Origin> containedOrigins = new HashMap<>();
 		if (originData == null) {
 			layerRegistrar.forEach((key, layerx) -> containedOrigins.put(layerx, emptyOrigin()));
 		} else {
@@ -198,7 +198,7 @@ public class CraftApoli {
 
 				for (String layer : layers) {
 					String[] layerData = layer.split("\\|");
-					Layer layerContainer = layerRegistrar.get(ResourceLocation.parse(layerData[0]));
+					OriginLayer layerContainer = layerRegistrar.get(ResourceLocation.parse(layerData[0]));
 					Origin originContainer = getOrigin(layerData[1]);
 					containedOrigins.put(layerContainer, originContainer);
 				}

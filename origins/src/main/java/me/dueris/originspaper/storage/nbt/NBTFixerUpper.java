@@ -3,8 +3,8 @@ package me.dueris.originspaper.storage.nbt;
 import com.google.common.base.Stopwatch;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
+import me.dueris.originspaper.registry.registries.OriginLayer;
 import net.kyori.adventure.text.Component;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -26,9 +26,9 @@ public class NBTFixerUpper {
 				CompoundTag bukkitVals = playerData.getCompound("BukkitValues");
 				if (bukkitVals.contains("originspaper:originlayer")
 					&& (bukkitVals.getString("originspaper:originlayer") == null || bukkitVals.getString("originspaper:originlayer").equals(""))) {
-					HashMap<Layer, Origin> origins = new HashMap<>();
+					HashMap<OriginLayer, Origin> origins = new HashMap<>();
 
-					for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+					for (OriginLayer layer : CraftApoli.getLayersFromRegistry()) {
 						origins.put(layer, CraftApoli.emptyOrigin());
 					}
 

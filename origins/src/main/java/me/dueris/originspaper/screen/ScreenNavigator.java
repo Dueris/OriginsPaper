@@ -7,11 +7,12 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.content.OrbOfOrigins;
 import me.dueris.originspaper.event.OrbInteractEvent;
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.registry.registries.Layer;
+import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.storage.OriginConfiguration;
 import me.dueris.originspaper.util.Util;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
@@ -43,22 +44,28 @@ import static org.bukkit.Bukkit.getServer;
 public class ScreenNavigator implements Listener {
 	public static final ItemStack NEXT_ITEMSTACK;
 	public static final ItemStack BACK_ITEMSTACK;
-	public static HashMap<Player, Layer> inChoosingLayer = new HashMap<>();
+	public static HashMap<Player, OriginLayer> inChoosingLayer = new HashMap<>();
 	public static ArrayList<Player> orbChoosing = new ArrayList<>();
-	public static HashMap<Layer, List<ChoosingPage>> layerPages = new HashMap<>();
+	public static HashMap<OriginLayer, List<ChoosingPage>> layerPages = new HashMap<>();
 	public static Object2IntMap<Player> currentDisplayingPage = new Object2IntOpenHashMap();
-	public static HashMap<ItemStack, BiConsumer<Player, Layer>> itemActions = new HashMap<>();
+	public static HashMap<ItemStack, BiConsumer<Player, OriginLayer>> itemActions = new HashMap<>();
 	public static ArrayList<HumanEntity> tickCooldown = new ArrayList<>();
 
 	static {
 		ItemStack next = new ItemStack(Material.ARROW);
 		ItemMeta nmeta = next.getItemMeta();
-		nmeta.setDisplayName("Next Origin");
+		nmeta.displayName(
+			Component.text("Next Origin")
+				.decoration(TextDecoration.ITALIC, false)
+		);
 		next.setItemMeta(nmeta);
 		NEXT_ITEMSTACK = next;
 		ItemStack back = new ItemStack(Material.ARROW);
 		ItemMeta bmeta = next.getItemMeta();
-		bmeta.setDisplayName("Previous Origin");
+		bmeta.displayName(
+			Component.text("Previous Origin")
+				.decoration(TextDecoration.ITALIC, false)
+		);
 		back.setItemMeta(bmeta);
 		BACK_ITEMSTACK = back;
 		itemActions.put(NEXT_ITEMSTACK, (player, layer) -> {
@@ -84,7 +91,7 @@ public class ScreenNavigator implements Listener {
 		});
 	}
 
-	public static void open(Player player, Layer layer, boolean inOrbChoosing) {
+	public static void open(Player player, OriginLayer layer, boolean inOrbChoosing) {
 		inChoosingLayer.put(player, layer);
 		currentDisplayingPage.put(player, 0);
 		if (inOrbChoosing) {
@@ -104,7 +111,7 @@ public class ScreenNavigator implements Listener {
 		OriginsPaper.scheduler.parent.scheduleMainThreadCall(() -> player.getBukkitEntity().openInventory(gui));
 	}
 
-	public static void open(org.bukkit.entity.Player player, Layer layer, boolean inOrbChoosing) {
+	public static void open(org.bukkit.entity.Player player, OriginLayer layer, boolean inOrbChoosing) {
 		open(((CraftPlayer) player).getHandle(), layer, inOrbChoosing);
 	}
 

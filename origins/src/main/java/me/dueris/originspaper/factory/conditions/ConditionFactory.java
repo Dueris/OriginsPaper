@@ -1,6 +1,7 @@
 package me.dueris.originspaper.factory.conditions;
 
 import com.google.gson.JsonObject;
+import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
 import me.dueris.originspaper.factory.Factory;
@@ -16,9 +17,9 @@ public class ConditionFactory<T> implements Factory, Predicate<T> {
 	private final ResourceLocation location;
 	private DeserializedFactoryJson deserializedFactory = null;
 
-	public ConditionFactory(ResourceLocation location, InstanceDefiner data, @NotNull BiPredicate<DeserializedFactoryJson, T> effect) {
+	public ConditionFactory(ResourceLocation location, @NotNull InstanceDefiner data, @NotNull BiPredicate<DeserializedFactoryJson, T> effect) {
 		this.location = location;
-		this.data = data;
+		this.data = data.add("inverted", SerializableDataTypes.BOOLEAN, false);
 		this.effect = effect;
 	}
 
@@ -33,9 +34,13 @@ public class ConditionFactory<T> implements Factory, Predicate<T> {
 	}
 
 	@Override
-	public boolean test(T t) {
+	public final boolean test(T t) {
 		if (deserializedFactory == null)
 			throw new IllegalStateException("Unable to execute ActionFactory because there was no DeserializedFactoryJson compiled!");
+		return deserializedFactory.getBoolean("inverted") != isFulfilled(t);
+	}
+
+	public boolean isFulfilled(T t) {
 		return effect.test(deserializedFactory, t);
 	}
 

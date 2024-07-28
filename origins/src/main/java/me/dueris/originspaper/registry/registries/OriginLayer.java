@@ -26,7 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class Layer {
+public class OriginLayer {
 	private final ResourceLocation key;
 	private final String tag;
 	private int order;
@@ -44,8 +44,8 @@ public class Layer {
 	private boolean autoChoose;
 	private boolean hidden;
 
-	public Layer(@NotNull ResourceLocation key, int order, int loadingPriority, List<ConditionedOrigin> origins, boolean replace, boolean enabled, Component name, GuiTitle guiTitle, boolean allowRandom,
-				 boolean allowRandomUnchoosable, List<ResourceLocation> excludeRandom, boolean replaceExcludeRandom, ResourceLocation defaultOrigin, boolean autoChoose, boolean hidden) {
+	public OriginLayer(@NotNull ResourceLocation key, int order, int loadingPriority, List<ConditionedOrigin> origins, boolean replace, boolean enabled, Component name, GuiTitle guiTitle, boolean allowRandom,
+					   boolean allowRandomUnchoosable, List<ResourceLocation> excludeRandom, boolean replaceExcludeRandom, ResourceLocation defaultOrigin, boolean autoChoose, boolean hidden) {
 		this.key = key;
 		this.tag = key.toString();
 		this.order = order;
@@ -114,6 +114,7 @@ public class Layer {
 
 	public boolean testDefaultOrigin(net.minecraft.world.entity.player.Player entity) {
 		boolean autoChoose = this.isAutoChoose();
+		if (defaultOrigin == null) return false;
 		if (autoChoose) {
 			PowerHolderComponent.setOrigin(entity.getBukkitEntityRaw(), this, CraftApoli.getOrigin(defaultOrigin));
 			return true;
@@ -201,10 +202,10 @@ public class Layer {
 	}
 
 	public boolean canRegister() {
-		Registrar<Layer> registrar = OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER);
+		Registrar<OriginLayer> registrar = OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER);
 		boolean merge = registrar.keySet().contains(this.key);
 		if (merge) {
-			Layer otherLayer = registrar.get(this.key);
+			OriginLayer otherLayer = registrar.get(this.key);
 			this.order = otherLayer.order;
 			this.enabled = otherLayer.enabled;
 

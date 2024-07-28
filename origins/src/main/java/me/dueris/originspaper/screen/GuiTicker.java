@@ -3,7 +3,7 @@ package me.dueris.originspaper.screen;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.OriginChoosePromptEvent;
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.registry.registries.Layer;
+import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -24,11 +24,11 @@ public class GuiTicker extends BukkitRunnable {
 		if (ScreenNavigator.layerPages.isEmpty()) return; // No pages to display.
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			if (delayedPlayers.contains(p)) continue;
-			for (Layer layer : CraftApoli.getLayersFromRegistry().stream().filter(Layer::isEnabled).toList()) {
-				if (layer.testChoosable(((CraftPlayer)p).getHandle()).isEmpty()) continue;
+			for (OriginLayer layer : CraftApoli.getLayersFromRegistry().stream().filter(OriginLayer::isEnabled).toList()) {
+				if (layer.testChoosable(((CraftPlayer) p).getHandle()).isEmpty()) continue;
 				try {
 					if (PowerHolderComponent.getOrigin(p, layer).getTag().equalsIgnoreCase("origins:empty")) {
-						if (layer.testDefaultOrigin(((CraftPlayer)p).getHandle())) continue;
+						if (layer.testDefaultOrigin(((CraftPlayer) p).getHandle())) continue;
 						if (!inChoosingLayer.containsKey(((CraftPlayer) p).getHandle())) {
 							OriginChoosePromptEvent event = new OriginChoosePromptEvent(p);
 							Bukkit.getPluginManager().callEvent(event);

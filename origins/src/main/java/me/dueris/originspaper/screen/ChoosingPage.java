@@ -3,8 +3,8 @@ package me.dueris.originspaper.screen;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
+import me.dueris.originspaper.registry.registries.OriginLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +21,7 @@ public interface ChoosingPage {
 			.retrieve(Registries.LAYER)
 			.values()
 			.stream()
-			.filter(Layer::isEnabled)
+			.filter(OriginLayer::isEnabled)
 			.forEach(
 				layer -> {
 					ScreenNavigator.layerPages.put(layer, new ArrayList<>());
@@ -55,11 +55,11 @@ public interface ChoosingPage {
 		});
 	}
 
-	ItemStack[] createDisplay(Player var1, Layer var2);
+	ItemStack[] createDisplay(Player var1, OriginLayer var2);
 
 	ItemStack getChoosingStack(Player var1);
 
-	void onChoose(Player var1, Layer var2);
+	void onChoose(Player var1, OriginLayer var2);
 
 	ResourceLocation key();
 }

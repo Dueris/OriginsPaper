@@ -4,21 +4,20 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.data.types.Impact;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
-import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
+import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.util.ComponentUtil;
 import me.dueris.originspaper.util.LangFile;
 import me.dueris.originspaper.util.entity.PlayerManager;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -35,9 +34,6 @@ import java.util.List;
 import java.util.Objects;
 
 public record OriginPage(Origin origin) implements ChoosingPage {
-	public static void setAttributesToDefault(Player player) {
-		setAttributesToDefault(((CraftPlayer) player).getHandle());
-	}
 
 	public static void setAttributesToDefault(net.minecraft.world.entity.player.@NotNull Player p) {
 		p.getBukkitEntity().getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0.0);
@@ -59,7 +55,7 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 	public static @NotNull ItemStack itemProperties(@NotNull ItemStack item, Component displayName, ItemFlag[] itemFlag, Enchantment enchantment, String lore) {
 		ItemMeta itemMeta = item.getItemMeta();
 		if (displayName != null) {
-			itemMeta.displayName(displayName.decorate(TextDecoration.ITALIC.withState(false).decoration()));
+			itemMeta.displayName(displayName);
 		}
 
 		if (itemFlag != null) {
@@ -79,7 +75,9 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 	}
 
 	private static @NotNull Component noItalic(String string) {
-		return Component.text(string).decorate(TextDecoration.ITALIC.withState(false).decoration());
+		return Component.text(string)
+			.decoration(TextDecoration.ITALIC, false)
+			.color(NamedTextColor.GRAY);
 	}
 
 	public static List<String> cutStringIntoLines(@NotNull String string) {
@@ -118,9 +116,10 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 	}
 
 	@Override
-	public ItemStack @NotNull [] createDisplay(net.minecraft.world.entity.player.Player player, Layer layer) {
+	public ItemStack @NotNull [] createDisplay(net.minecraft.world.entity.player.Player player, OriginLayer layer) {
 		List<ItemStack> stacks = new ArrayList<>();
-		List<PowerType> powerContainers = new ArrayList<>(this.origin.powers().stream().filter(Objects::nonNull).map(CraftApoli::getPower).filter(p -> !p.isHidden()).toList());
+		List<PowerType> powerContainers = new ArrayList<>(this.origin.powers().stream()
+			.filter(Objects::nonNull).map(CraftApoli::getPower).filter(p -> p != null && !p.isHidden()).toList());
 
 		for (int i = 0; i < 54; i++) {
 			if (i <= 2 || i >= 6 && i <= 8) {
@@ -144,8 +143,8 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 							: Component.text("None").color(TextColor.color(11053224))
 					)
 				);
-				Component fullImpactComponent = Component.textOfChildren(new ComponentLike[]{Component.text("Impact: "), impactComponent})
-					.decorate(TextDecoration.ITALIC.as(false).decoration());
+				Component fullImpactComponent = Component.textOfChildren(Component.text("Impact: "), impactComponent)
+					.decoration(TextDecoration.ITALIC, false);
 				ItemStack impact = itemProperties(new ItemStack(impactMaterial), fullImpactComponent, ItemFlag.values(), null, null);
 				if ((impactInt != 1 || i != 0 && i != 8)
 					&& (impactInt != 2 || i != 0 && i != 8 && i != 1 && i != 7)
@@ -173,16 +172,28 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 				if (!powerContainers.isEmpty()) {
 					ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 					ItemMeta meta = originPower.getItemMeta();
-					meta.displayName(ComponentUtil.apply(LangFile.transform(PlainTextComponentSerializer.plainText().serialize(powerContainers.get(0).name()))));
-					Arrays.stream(ItemFlag.values()).toList().forEach(xva$0 -> originPower.addItemFlags(xva$0));
-					meta.lore(ComponentUtil.apply(cutStringIntoLines(LangFile.transform(PlainTextComponentSerializer.plainText().serialize(powerContainers.get(0).description())))));
+					meta.displayName(ComponentUtil.stringToComponent(LangFile.transform(PlainTextComponentSerializer.plainText().serialize(powerContainers.get(0).name()))));
+					Arrays.stream(ItemFlag.values()).toList().forEach(originPower::addItemFlags);
+					List<Component> lore = ComponentUtil.stringListToComponent(cutStringIntoLines(LangFile.transform(PlainTextComponentSerializer.plainText().serialize(powerContainers.get(0).description()))));
+					lore.forEach(component -> {
+						component
+							.decoration(TextDecoration.ITALIC, false)
+							.color(NamedTextColor.GRAY);
+					});
+					meta.lore(lore);
 					originPower.setItemMeta(meta);
-					Arrays.stream(ItemFlag.values()).toList().forEach(xva$0 -> originPower.addItemFlags(xva$0));
+					Arrays.stream(ItemFlag.values()).toList().forEach(originPower::addItemFlags);
 					stacks.add(originPower);
 					powerContainers.remove(0);
 				} else {
 					ItemStack blank = new ItemStack(Material.MAP);
-					Arrays.stream(ItemFlag.values()).toList().forEach(xva$0 -> blank.addItemFlags(xva$0));
+					ItemMeta meta = blank.getItemMeta();
+					meta.displayName(
+						Component.text("")
+					);
+					meta.setHideTooltip(true);
+					blank.setItemMeta(meta);
+					Arrays.stream(ItemFlag.values()).toList().forEach(blank::addItemFlags);
 					stacks.add(blank);
 				}
 			}
@@ -204,11 +215,13 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 			originIcon.setItemMeta(skull_p);
 		}
 
-		return itemProperties(originIcon, this.origin.name(), ItemFlag.values(), null, PlainTextComponentSerializer.plainText().serialize(this.origin.description()));
+		return itemProperties(originIcon, this.origin.name()
+			.decoration(TextDecoration.ITALIC, false)
+			.color(NamedTextColor.WHITE), ItemFlag.values(), null, PlainTextComponentSerializer.plainText().serialize(this.origin.description()));
 	}
 
 	@Override
-	public void onChoose(net.minecraft.world.entity.player.@NotNull Player player, Layer layer) {
+	public void onChoose(net.minecraft.world.entity.player.@NotNull Player player, OriginLayer layer) {
 		PowerHolderComponent.setOrigin((Player) player.getBukkitEntity(), layer, this.origin);
 		player.getBukkitEntity().getOpenInventory().close();
 		final Player bukkitEntity = (Player) player.getBukkitEntity();

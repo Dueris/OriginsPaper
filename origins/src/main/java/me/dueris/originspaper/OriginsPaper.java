@@ -3,7 +3,6 @@ package me.dueris.originspaper;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 import io.github.dueris.calio.data.AccessorKey;
-import io.github.dueris.calio.parser.JsonObjectRemapper;
 import io.github.dueris.calio.parser.ParsingStrategy;
 import io.github.dueris.calio.registry.IRegistry;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
@@ -25,8 +24,8 @@ import me.dueris.originspaper.integration.PlaceHolderAPI;
 import me.dueris.originspaper.integration.pehuki.CraftPehuki;
 import me.dueris.originspaper.registry.BuiltinRegistry;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
+import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.screen.ChoosingPage;
 import me.dueris.originspaper.screen.GuiTicker;
 import me.dueris.originspaper.screen.RandomOriginPage;
@@ -248,7 +247,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 					craftCalio.startBuilder()
 						.withAccessor(new AccessorKey<>(List.of("apoli", "origins"), "power", PowerType.class, 0, ParsingStrategy.TYPED, Registries.CRAFT_POWER))
 						.withAccessor(new AccessorKey<>(List.of("origins"), "origin", Origin.class, 1, ParsingStrategy.DEFAULT, Registries.ORIGIN))
-						.withAccessor(new AccessorKey<>(List.of("origins"), "origin_layer", Layer.class, 2, ParsingStrategy.DEFAULT, Registries.LAYER))
+						.withAccessor(new AccessorKey<>(List.of("origins"), "origin_layer", OriginLayer.class, 2, ParsingStrategy.DEFAULT, Registries.LAYER))
 						.build().parse();
 					BuiltinRegistry.bootstrap();
 					NBTFixerUpper.runFixerUpper();

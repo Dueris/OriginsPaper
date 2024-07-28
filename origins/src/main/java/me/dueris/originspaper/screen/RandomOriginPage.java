@@ -3,8 +3,8 @@ package me.dueris.originspaper.screen;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.content.OrbOfOrigins;
 import me.dueris.originspaper.event.OriginChangeEvent;
-import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
+import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -26,7 +26,7 @@ public class RandomOriginPage implements ChoosingPage {
 	private final Random random = new Random(232342333L);
 
 	@Override
-	public ItemStack[] createDisplay(Player player, @NotNull Layer layer) {
+	public ItemStack[] createDisplay(Player player, @NotNull OriginLayer layer) {
 		List<ItemStack> stacks = new ArrayList<>();
 		List<Origin> randomOrigins = new ArrayList<>(layer.getRandomOrigins());
 		randomOrigins.sort(Comparator.comparingInt(Origin::impactValue).thenComparingInt(Origin::order));
@@ -97,7 +97,7 @@ public class RandomOriginPage implements ChoosingPage {
 	}
 
 	@Override
-	public void onChoose(@NotNull Player player, @NotNull Layer layer) {
+	public void onChoose(@NotNull Player player, @NotNull OriginLayer layer) {
 		int r = this.random.nextInt(layer.getRandomOrigins().size());
 		Origin origin = layer.getRandomOrigins().get(Math.max(r, 1));
 		PowerHolderComponent.setOrigin((org.bukkit.entity.Player) player.getBukkitEntity(), layer, origin);
