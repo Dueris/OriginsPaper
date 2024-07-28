@@ -44,7 +44,7 @@ public class ResourceCommand {
 								.executes(context -> {
 									ResourceLocation power = ResourceLocationArgument.getId(context, "power");
 									ServerPlayer player = EntityArgument.getPlayer(context, "targets");
-									PowerType powerType = CraftApoli.getPowerFromTag(power.toString());
+									PowerType powerType = CraftApoli.getPower(power.toString());
 									if (powerType == null) {
 										throw new IllegalArgumentException("Provided power argument was not found!");
 									} else {
@@ -87,7 +87,7 @@ public class ResourceCommand {
 										context -> {
 											ResourceLocation power = ResourceLocationArgument.getId(context, "power");
 											ServerPlayer player = EntityArgument.getPlayer(context, "targets");
-											PowerType powerType = CraftApoli.getPowerFromTag(power.toString());
+											PowerType powerType = CraftApoli.getPower(power.toString());
 											if (powerType == null) {
 												throw new IllegalArgumentException("Provided power argument was not found!");
 											} else {
@@ -149,7 +149,7 @@ public class ResourceCommand {
 												context -> {
 													ResourceLocation power = ResourceLocationArgument.getId(context, "power");
 													ServerPlayer player = EntityArgument.getPlayer(context, "targets");
-													PowerType powerType = CraftApoli.getPowerFromTag(power.toString());
+													PowerType powerType = CraftApoli.getPower(power.toString());
 													int setTo = IntegerArgumentType.getInteger(context, "value");
 													Component failure = Component.literal("No relevant score holders could be found");
 													if (PowerHolderComponent.hasPower(player.getBukkitEntity(), powerType.getTag())
@@ -208,7 +208,7 @@ public class ResourceCommand {
 												context -> {
 													ResourceLocation power = ResourceLocationArgument.getId(context, "power");
 													ServerPlayer player = EntityArgument.getPlayer(context, "targets");
-													PowerType powerType = CraftApoli.getPowerFromTag(power.toString());
+													PowerType powerType = CraftApoli.getPower(power.toString());
 													int setTo = IntegerArgumentType.getInteger(context, "value");
 													Component failure = Component.literal("No relevant score holders could be found");
 													if (PowerHolderComponent.hasPower(player.getBukkitEntity(), powerType.getTag())

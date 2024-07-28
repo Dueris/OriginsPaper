@@ -9,6 +9,7 @@ import me.dueris.originspaper.factory.data.types.OriginUpgrade;
 import me.dueris.originspaper.util.AsyncUpgradeTracker;
 import me.dueris.originspaper.util.LangFile;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Origin {
@@ -27,8 +28,8 @@ public class Origin {
 	private final Impact impact;
 	private final int loadingPriority;
 	private final OriginUpgrade upgrade;
-	private final Component name;
-	private final Component description;
+	private final TextComponent name;
+	private final TextComponent description;
 	private final ResourceLocation key;
 
 	public Origin(@NotNull ResourceLocation key, List<ResourceLocation> powers, net.minecraft.world.item.ItemStack icon, boolean unchoosable, int order,
@@ -56,7 +57,7 @@ public class Origin {
 
 	public static InstanceDefiner buildDefiner() {
 		return InstanceDefiner.instanceDefiner()
-			.add("powers", SerializableDataTypes.list(SerializableDataTypes.IDENTIFIER), new ArrayList<>())
+			.add("powers", SerializableDataTypes.list(SerializableDataTypes.IDENTIFIER), new LinkedList<>())
 			.add("icon", SerializableDataTypes.ITEM_STACK, Items.PLAYER_HEAD.getDefaultInstance())
 			.add("unchoosable", SerializableDataTypes.BOOLEAN, false)
 			.add("order", SerializableDataTypes.INT, Integer.MAX_VALUE)
@@ -91,11 +92,11 @@ public class Origin {
 		return loadingPriority;
 	}
 
-	public Component name() {
+	public TextComponent name() {
 		return name;
 	}
 
-	public Component description() {
+	public TextComponent description() {
 		return description;
 	}
 

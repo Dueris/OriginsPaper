@@ -1,9 +1,7 @@
 package me.dueris.originspaper.util;
 
-import me.dueris.originspaper.factory.data.types.modifier.Modifier;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier.Operation;
 import org.jetbrains.annotations.NotNull;
 
 public class DataConverter {

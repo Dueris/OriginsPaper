@@ -1,19 +1,20 @@
 package me.dueris.originspaper.factory;
 
-import com.google.gson.JsonArray;
 import io.github.dueris.calio.registry.Registrar;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.factory.data.types.Impact;
 import me.dueris.originspaper.factory.powers.apoli.Multiple;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.LevelResource;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,9 +33,9 @@ public class CraftApoli {
 	private static final Collection<Layer> layerValues = new ArrayList<>();
 	private static final Collection<Origin> originValues = new ArrayList<>();
 	private static final Collection<PowerType> powerValues = new ArrayList<>();
-	static Origin empty = new Origin(
-		"Empty", "No Origin", 0, new ItemStack(Material.BEDROCK), true, new FactoryJsonArray(new JsonArray()), new FactoryJsonArray(new JsonArray()), 0, 0
-	).ofResourceLocation(ResourceLocation.parse("origins:empty"));
+	public static Origin EMPTY_ORIGIN = new Origin(
+		ResourceLocation.parse("origins:empty"), List.of(), new ItemStack(Items.AIR), true, Integer.MAX_VALUE, Impact.NONE, 0, null, Component.empty(), Component.empty()
+	);
 
 	public static Collection<Layer> getLayersFromRegistry() {
 		return layerValues;
@@ -46,6 +47,10 @@ public class CraftApoli {
 
 	public static Collection<PowerType> getPowersFromRegistry() {
 		return powerValues;
+	}
+
+	public static Origin getOrigin(ResourceLocation location) {
+		return getOrigin(location.toString());
 	}
 
 	public static Origin getOrigin(String originTag) {
@@ -68,7 +73,11 @@ public class CraftApoli {
 		return layerRegistrar.get(ResourceLocation.fromNamespaceAndPath("origins", "origin"));
 	}
 
-	public static @Nullable PowerType getPowerFromTag(String powerTag) {
+	public static @Nullable PowerType getPower(ResourceLocation location) {
+		return getPower(location.toString());
+	}
+
+	public static @Nullable PowerType getPower(String powerTag) {
 		for (PowerType p : powerRegistrar.values()) {
 			if (p.getTag().equals(powerTag)) {
 				return p;
@@ -79,11 +88,11 @@ public class CraftApoli {
 	}
 
 	public static PowerType getPowersFromResourceLocation(@NotNull ResourceLocation location) {
-		return getPowerFromTag(location.toString());
+		return getPower(location.toString());
 	}
 
 	public static Origin emptyOrigin() {
-		return empty;
+		return EMPTY_ORIGIN;
 	}
 
 	public static @NotNull ArrayList<PowerType> getNestedPowerTypes(PowerType power) {
@@ -122,7 +131,7 @@ public class CraftApoli {
 				if (PowerHolderComponent.playerPowerMapping.get(p).containsKey(layer)) {
 					powers.addAll(PowerHolderComponent.playerPowerMapping.get(p).get(layer).stream().map(PowerType::getTag).toList());
 				} else {
-					powers.addAll(layerOrigins.getPowers());
+					powers.addAll(layerOrigins.powers().stream().map(ResourceLocation::toString).toList());
 				}
 
 				int powerSize = powers.size();
@@ -144,17 +153,13 @@ public class CraftApoli {
 
 		for (Layer layer : origin.keySet()) {
 			Origin layerOrigins = origin.get(layer);
-			List<String> powers = layerOrigins.getPowers();
+			List<String> powers = layerOrigins.powers().stream().map(ResourceLocation::toString).toList();
 			int powerSize = 0;
-			if (powers != null) {
-				powerSize = powers.size();
-			}
+			powerSize = powers.size();
 
 			data.append(layer.getTag()).append("|").append(layerOrigins.getTag()).append("|").append(powerSize);
-			if (powers != null) {
-				for (String power : powers) {
-					data.append("|").append(power);
-				}
+			for (String power : powers) {
+				data.append("|").append(power);
 			}
 
 			data.append("\n");

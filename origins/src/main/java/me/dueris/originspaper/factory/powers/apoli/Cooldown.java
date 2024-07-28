@@ -90,7 +90,7 @@ public class Cooldown extends PowerType implements CooldownPower {
 
 	@Override
 	public void tick() {
-		Util.collectValues(new ArrayList<>(cooldowns.values())).forEach((pair) -> {
+		Util.collapseList(new ArrayList<>(cooldowns.values())).forEach((pair) -> {
 			KeyedBossBar bar = pair.first();
 			String keyString = bar.getKey().asString();
 			if (ticked.contains(keyString)) {

@@ -22,6 +22,7 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.actions.ActionFactory;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.registries.Origin;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.commands.arguments.SlotArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -192,15 +193,13 @@ public class Util {
 	}
 
 	public static String getNameOrTag(@NotNull PowerType power) {
-		String name = power.getName();
-		String tag = power.getTag();
-		return !name.equals("craftapoli.name.not_found") ? name : tag;
+		return PlainTextComponentSerializer.plainText().serialize(power.name()).equalsIgnoreCase(("power.$namespace.$path.name")
+			.replace("$namespace", power.key().getNamespace()).replace("$path", power.key().getPath())) ? power.getTag() : PlainTextComponentSerializer.plainText().serialize(power.name());
 	}
 
-	public static String getNameOrTag(@NotNull Origin power) {
-		String name = power.getName();
-		String tag = power.getTag();
-		return !name.equals("craftapoli.name.not_found") ? name : tag;
+	public static String getNameOrTag(@NotNull Origin origin) {
+		return PlainTextComponentSerializer.plainText().serialize(origin.name()).equalsIgnoreCase(("origin.$namespace.$path.name")
+			.replace("$namespace", origin.key().getNamespace()).replace("$path", origin.key().getPath())) ? origin.getTag() : PlainTextComponentSerializer.plainText().serialize(origin.name());
 	}
 
 	public static boolean inSnow(Level world, BlockPos... blockPositions) {
@@ -339,7 +338,7 @@ public class Util {
 		return id == null ? type + ".unregistered_sadface" : type + "." + id.getNamespace() + "." + id.getPath().replace('/', '.');
 	}
 
-	public static <T> @NotNull List<T> collectValues(@NotNull Collection<List<T>> collection) {
+	public static <T> @NotNull List<T> collapseList(@NotNull Collection<List<T>> collection) {
 		List<T> lC = new ArrayList<>();
 		collection.forEach(lC::addAll);
 		return lC;

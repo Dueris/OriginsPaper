@@ -1,14 +1,18 @@
 package me.dueris.originspaper.factory.data;
 
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
 import me.dueris.originspaper.factory.data.types.GuiTitle;
 import me.dueris.originspaper.factory.data.types.Impact;
 import me.dueris.originspaper.factory.data.types.OriginUpgrade;
+import me.dueris.originspaper.registry.registries.Layer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -39,6 +43,30 @@ public class OriginsDataTypes {
 
 			return new GuiTitle(kyoriViewOrigin, kyoriChooseOrigin);
 		}, GuiTitle.class
+	);
+
+	public static final SerializableDataBuilder<Layer.ConditionedOrigin> CONDITIONED_ORIGIN = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			if (jsonElement instanceof JsonObject jsonObject && !jsonObject.isEmpty()) {
+				DeserializedFactoryJson factoryJson = DeserializedFactoryJson.decompileJsonObject(jsonObject, Layer.ConditionedOrigin.DATA);
+				return new Layer.ConditionedOrigin(factoryJson.get("condition"), factoryJson.get("origins"));
+			} else throw new JsonSyntaxException("Expected JsonObject for ConditionedOrigin!");
+		}, Layer.ConditionedOrigin.class
+	);
+
+	public static final SerializableDataBuilder<Layer.ConditionedOrigin> ORIGIN_OR_CONDITIONED_ORIGIN = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			if (jsonElement instanceof JsonObject jsonObject) {
+				return CONDITIONED_ORIGIN.deserialize(jsonObject);
+			}
+
+			if (!(jsonElement instanceof JsonPrimitive jsonPrimitive) || !jsonPrimitive.isString()) {
+				throw new JsonSyntaxException("Expected a JSON object or string when parsing Origin/Conditioned Origin");
+			}
+
+			ResourceLocation originId = SerializableDataTypes.IDENTIFIER.deserialize(jsonPrimitive);
+			return new Layer.ConditionedOrigin(null, Lists.newArrayList(originId));
+		}, Layer.ConditionedOrigin.class
 	);
 
 	public static final SerializableDataBuilder<OriginUpgrade> ORIGIN_UPGRADE = SerializableDataBuilder.of(

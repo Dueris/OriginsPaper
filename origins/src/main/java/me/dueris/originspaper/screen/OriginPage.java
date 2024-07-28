@@ -2,6 +2,7 @@ package me.dueris.originspaper.screen;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.data.types.Impact;
 import me.dueris.originspaper.factory.powers.apoli.ModifyPlayerSpawnPower;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
@@ -15,6 +16,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -120,7 +122,7 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 	@Override
 	public ItemStack @NotNull [] createDisplay(net.minecraft.world.entity.player.Player player, Layer layer) {
 		List<ItemStack> stacks = new ArrayList<>();
-		List<PowerType> powerContainers = new ArrayList<>(this.origin.getPowerContainers().stream().filter(Objects::nonNull).filter(p -> !p.isHidden()).toList());
+		List<PowerType> powerContainers = new ArrayList<>(this.origin.powers().stream().filter(Objects::nonNull).map(CraftApoli::getPower).filter(p -> !p.isHidden()).toList());
 
 		for (int i = 0; i < 54; i++) {
 			if (i <= 2 || i >= 6 && i <= 8) {
@@ -204,7 +206,7 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 			originIcon.setItemMeta(skull_p);
 		}
 
-		return itemProperties(originIcon, this.origin.name(), ItemFlag.values(), null, LangFile.transform(this.origin.getDescription()));
+		return itemProperties(originIcon, this.origin.name(), ItemFlag.values(), null, PlainTextComponentSerializer.plainText().serialize(this.origin.description()));
 	}
 
 	@Override

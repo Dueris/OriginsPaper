@@ -183,7 +183,8 @@ public class PowerHolderComponent implements Listener {
 		return false;
 	}
 
-	public static void setOrigin(final @NotNull Player player, final Layer layer, final Origin origin) {
+	public static void setOrigin(final @NotNull Entity entity, final Layer layer, final Origin origin) {
+		if (!(entity instanceof Player player)) return;
 		NamespacedKey key = new NamespacedKey(OriginsPaper.getPlugin(), "originLayer");
 		HashMap<Layer, Origin> origins = CraftApoli.toOrigin(player.getPersistentDataContainer().get(key, PersistentDataType.STRING));
 		if (CraftApoli.getLayersFromRegistry().contains(layer)) {

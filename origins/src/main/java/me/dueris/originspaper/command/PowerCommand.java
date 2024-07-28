@@ -291,7 +291,7 @@ public class PowerCommand {
 			ArrayList<PowerType> powers = PowerHolderComponent.getPowers(player.getBukkitEntity());
 			ArrayList<Multiple> multiples = PowerHolderComponent.getPowers(player.getBukkitEntity(), Multiple.class);
 			if (!subPowers) {
-				powers.removeAll(Util.collectValues(multiples.stream().map(Multiple::getSubPowers).toList()));
+				powers.removeAll(Util.collapseList(multiples.stream().map(Multiple::getSubPowers).toList()));
 			}
 
 			if (!powers.isEmpty()) {

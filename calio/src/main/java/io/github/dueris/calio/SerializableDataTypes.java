@@ -10,6 +10,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.exceptions.DataException;
 import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.github.dueris.calio.util.ArgumentWrapper;
@@ -451,15 +452,23 @@ public class SerializableDataTypes {
 	public static <T> @NotNull SerializableDataBuilder<Set<T>> set(SerializableDataBuilder<T> singular) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
-				Set<T> built = new HashSet<>();
-				if (jsonElement.isJsonArray()) {
-					jsonElement.getAsJsonArray().forEach(instance -> {
-						built.add(singular.deserialize(instance));
-					});
+				Set<T> set = new HashSet<>();
+				if(jsonElement.isJsonArray()) {
+					int i = 0;
+					for(JsonElement je : jsonElement.getAsJsonArray()) {
+						try {
+							set.add(singular.deserialize(je));
+						} catch(DataException e) {
+							throw e.prepend("[" + i + "]");
+						} catch(Exception e) {
+							throw new DataException(DataException.Phase.READING, "[" + i + "]", e);
+						}
+						i++;
+					}
 				} else {
-					built.add(singular.deserialize(jsonElement));
+					set.add(singular.deserialize(jsonElement));
 				}
-				return built;
+				return set;
 			}, Set.class
 		);
 	}
@@ -467,15 +476,23 @@ public class SerializableDataTypes {
 	public static <T> @NotNull SerializableDataBuilder<List<T>> list(SerializableDataBuilder<T> singular) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
-				List<T> built = new ArrayList<>();
-				if (jsonElement.isJsonArray()) {
-					jsonElement.getAsJsonArray().forEach(instance -> {
-						built.add(singular.deserialize(instance));
-					});
+				LinkedList<T> list = new LinkedList<>();
+				if(jsonElement.isJsonArray()) {
+					int i = 0;
+					for(JsonElement je : jsonElement.getAsJsonArray()) {
+						try {
+							list.add(singular.deserialize(je));
+						} catch(DataException e) {
+							throw e.prepend("[" + i + "]");
+						} catch(Exception e) {
+							throw new DataException(DataException.Phase.READING, "[" + i + "]", e);
+						}
+						i++;
+					}
 				} else {
-					built.add(singular.deserialize(jsonElement));
+					list.add(singular.deserialize(jsonElement));
 				}
-				return built;
+				return list;
 			}, List.class
 		);
 	}
@@ -483,15 +500,23 @@ public class SerializableDataTypes {
 	public static <T> @NotNull SerializableDataBuilder<ConcurrentLinkedQueue<T>> concurrentQueue(SerializableDataBuilder<T> singular) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
-				ConcurrentLinkedQueue<T> built = new ConcurrentLinkedQueue<>();
-				if (jsonElement.isJsonArray()) {
-					jsonElement.getAsJsonArray().forEach(instance -> {
-						built.add(singular.deserialize(instance));
-					});
+				ConcurrentLinkedQueue<T> linkedQueue = new ConcurrentLinkedQueue<>();
+				if(jsonElement.isJsonArray()) {
+					int i = 0;
+					for(JsonElement je : jsonElement.getAsJsonArray()) {
+						try {
+							linkedQueue.add(singular.deserialize(je));
+						} catch(DataException e) {
+							throw e.prepend("[" + i + "]");
+						} catch(Exception e) {
+							throw new DataException(DataException.Phase.READING, "[" + i + "]", e);
+						}
+						i++;
+					}
 				} else {
-					built.add(singular.deserialize(jsonElement));
+					linkedQueue.add(singular.deserialize(jsonElement));
 				}
-				return built;
+				return linkedQueue;
 			}, ConcurrentLinkedQueue.class
 		);
 	}

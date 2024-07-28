@@ -200,7 +200,7 @@ public class Resource extends PowerType implements ResourcePower {
 			Arrays.stream(encoded.split(",")).forEach(key -> {
 				String a = key.split("<::>")[0];
 				double b = Double.parseDouble(key.split("<::>")[1]);
-				if (CraftApoli.getPowerFromTag(a.split("_cooldown_")[0]) instanceof CooldownPower cooldownPower) {
+				if (CraftApoli.getPower(a.split("_cooldown_")[0]) instanceof CooldownPower cooldownPower) {
 					Cooldown.addCooldown(p, cooldownPower.getCooldown(), cooldownPower, b);
 				}
 			});

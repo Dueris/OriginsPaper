@@ -75,6 +75,10 @@ public class Registrar<T> {
 		return this.rawRegistry.values();
 	}
 
+	public Collection<ResourceLocation> keySet() {
+		return this.rawRegistry.keySet();
+	}
+
 	@SuppressWarnings("unchecked")
 	public T[] getFromPredicate(Predicate<T> predicate) {
 		List<T> filtered = this.rawRegistry.values().stream()
