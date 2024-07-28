@@ -41,10 +41,19 @@ public class ReflectionUtils {
 		field.set(instance, value);
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T> T invokeMethod(Object instance, @NotNull Method method, Object... args) throws InvocationTargetException, IllegalAccessException {
-		method.setAccessible(true);
-		return (T) method.invoke(instance, args);
+	public static boolean invokeBooleanMethod(Object instance, @NotNull String methodName, Object @NotNull ... args) {
+		try {
+			Class<?>[] argTypes = new Class<?>[args.length];
+			for (int i = 0; i < args.length; i++) {
+				argTypes[i] = args[i].getClass();
+			}
+
+			Method method = instance.getClass().getDeclaredMethod(methodName, argTypes);
+			method.setAccessible(true);
+			return (boolean) method.invoke(instance, args);
+		} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+			return true;
+		}
 	}
 
 	public static <T> @NotNull T newInstance(@NotNull Constructor<T> constructor, Object... args) throws InvocationTargetException, InstantiationException, IllegalAccessException {

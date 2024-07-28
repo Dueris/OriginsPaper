@@ -143,7 +143,9 @@ public class CalioParser {
 						ReflectionUtils.setFieldWithAnnotation(instance, SourceProvider.class, jsonSource);
 					}
 					RegistryKey<T> registryKey = (RegistryKey<T>) accessorKey.registryKey();
-					CalioRegistry.INSTANCE.retrieve(registryKey).register(instance, location);
+					if (ReflectionUtils.invokeBooleanMethod(instance, "canRegister")) {
+						CalioRegistry.INSTANCE.retrieve(registryKey).register(instance, location);
+					}
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
 						 InvocationTargetException e) {
 					LOGGER.error("Error compiling instance: {}", e.getMessage());
