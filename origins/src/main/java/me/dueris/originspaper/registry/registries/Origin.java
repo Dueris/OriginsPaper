@@ -50,7 +50,7 @@ public class Origin {
 				.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
 		);
 		this.description = Component.text(
-			LangFile.transform((description != null ? description.getString() : "origin.$namespace.$path.name")
+			LangFile.transform((description != null ? description.getString() : "origin.$namespace.$path.description")
 				.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
 		);
 	}

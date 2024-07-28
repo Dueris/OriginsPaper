@@ -3,62 +3,73 @@ package me.dueris.originspaper.factory.powers.holder;
 import com.google.gson.JsonObject;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
-import me.dueris.calio.CraftCalio;
-import me.dueris.calio.data.FactoryData;
-import me.dueris.calio.data.FactoryHolder;
-import me.dueris.calio.data.annotations.SourceProvider;
-import me.dueris.calio.data.factory.FactoryJsonObject;
+import io.github.dueris.calio.SerializableDataTypes;
+import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.util.annotations.SourceProvider;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.factory.conditions.ConditionFactory;
+import me.dueris.originspaper.factory.data.ApoliDataTypes;
 import me.dueris.originspaper.factory.powers.apoli.provider.OriginSimpleContainer;
 import me.dueris.originspaper.factory.powers.apoli.provider.origins.*;
+import me.dueris.originspaper.util.LangFile;
+import net.kyori.adventure.text.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class PowerType implements FactoryHolder, Listener {
+public class PowerType implements Listener {
 	public static ConcurrentLinkedQueue<Class<? extends PowerType>> INSTANCE_TYPES = new ConcurrentLinkedQueue<>();
-	private final String name;
-	private final String description;
+	private final ResourceLocation key;
+	private final @NotNull TextComponent name;
+	private final @NotNull TextComponent description;
 	private final boolean hidden;
-	private final FactoryJsonObject condition;
+	private final ConditionFactory<Entity> condition;
 	private final int loadingPriority;
+	private final String cachedTagString;
+	private final String cachedTypeString;
 	private final ConcurrentLinkedQueue<CraftPlayer> players = new ConcurrentLinkedQueue<>();
-	private final List<FactoryJsonObject> conditions = new ArrayList<>();
 	@SourceProvider
 	public JsonObject sourceObject;
-	protected boolean tagSet = false;
-	private ResourceLocation tag = null;
-	private String cachedTagString = null;
 	private boolean hasPlayers = false;
 
-	public PowerType(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
-		this.name = name;
-		this.description = description;
+	public PowerType(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority) {
+		this.key = key;
+		this.cachedTagString = key.toString();
+		this.cachedTypeString = type.toString();
+		this.name = net.kyori.adventure.text.Component.text(
+			LangFile.transform((name != null ? name.getString() : "power.$namespace.$path.name")
+				.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
+		);
+		this.description = net.kyori.adventure.text.Component.text(
+			LangFile.transform((description != null ? description.getString() : "power.$namespace.$path.description")
+				.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
+		);
 		this.hidden = hidden;
 		this.condition = condition;
-		this.loadingPriority = loading_priority;
-		this.addCondition(condition);
+		this.loadingPriority = loadingPriority;
 	}
 
-	public static FactoryData registerComponents(@NotNull FactoryData data) {
-		return data.add("name", String.class, "power.$namespace.$path.name")
-			.add("description", String.class, "power.$namespace.$path.description")
-			.add("hidden", boolean.class, false)
-			.add("condition", FactoryJsonObject.class, new FactoryJsonObject(new JsonObject()))
-			.add("loading_priority", int.class, 1);
+	public static InstanceDefiner buildDefiner() {
+		return InstanceDefiner.instanceDefiner()
+			.required("type", SerializableDataTypes.IDENTIFIER)
+			.add("name", SerializableDataTypes.TEXT, null)
+			.add("description", SerializableDataTypes.TEXT, null)
+			.add("hidden", SerializableDataTypes.BOOLEAN, false)
+			.add("condition", ApoliDataTypes.ENTITY_CONDITION, null)
+			.add("loading_priority", SerializableDataTypes.INT, 0);
 	}
 
 	public static void registerAll() {
-		List<Class<FactoryHolder>> holders = new ArrayList<>();
+		List<Class<? extends PowerType>> holders = new ArrayList<>();
 
 		try {
 			ScanResult result = new ClassGraph().whitelistPackages("me.dueris.originspaper.factory.powers").enableClassInfo().scan();
@@ -66,7 +77,7 @@ public class PowerType implements FactoryHolder, Listener {
 			try {
 				holders.addAll(
 					result.getSubclasses(PowerType.class)
-						.loadClasses(FactoryHolder.class)
+						.loadClasses(PowerType.class)
 						.stream()
 						.filter(clz -> !clz.isAnnotation() && !clz.isInterface() && !clz.isEnum())
 						.toList()
@@ -83,14 +94,12 @@ public class PowerType implements FactoryHolder, Listener {
 				throw var5;
 			}
 
-			if (result != null) {
-				result.close();
-			}
+			result.close();
 		} catch (Exception var6) {
 			System.out.println("This would've been a zip error :P. Please tell us on discord if you see this ^-^");
 		}
 
-		holders.forEach(CraftCalio.INSTANCE::register);
+		INSTANCE_TYPES.addAll(holders);
 		OriginSimpleContainer.registerPower(BounceSlimeBlock.class);
 		OriginSimpleContainer.registerPower(LikeWater.class);
 		OriginSimpleContainer.registerPower(PiglinNoAttack.class);
@@ -101,49 +110,32 @@ public class PowerType implements FactoryHolder, Listener {
 		Bukkit.getServer().getPluginManager().registerEvents(new SlimelingSizeChangers(), OriginsPaper.getPlugin());
 	}
 
-	public String getName() {
-		return this.name;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public boolean isHidden() {
-		return this.hidden;
-	}
-
-	public FactoryJsonObject getCondition() {
-		return this.condition;
-	}
-
-	public int getLoadingPriority() {
-		return this.loadingPriority;
-	}
-
-	public void tick(Player player) {
-	}
-
-	public void tickAsync(Player player) {
-	}
-
-	public void tick() {
-	}
-
-	public void bootstrapUnapply(Player player) {
-	}
-
-	public void bootstrapApply(Player player) {
+	public ResourceLocation key() {
+		return key;
 	}
 
 	public String getType() {
-		try {
-			return ((FactoryData) this.getClass().getDeclaredMethod("registerComponents", FactoryData.class).invoke(null, new FactoryData()))
-				.getIdentifier()
-				.toString();
-		} catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException var2) {
-			throw new RuntimeException("Unable to invoke type-getters!", var2);
-		}
+		return cachedTypeString;
+	}
+
+	public @NotNull TextComponent getName() {
+		return name;
+	}
+
+	public @NotNull TextComponent getDescription() {
+		return description;
+	}
+
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public ConditionFactory<Entity> getCondition() {
+		return condition;
+	}
+
+	public int getLoadingPriority() {
+		return loadingPriority;
 	}
 
 	public ConcurrentLinkedQueue<CraftPlayer> getPlayers() {
@@ -168,27 +160,22 @@ public class PowerType implements FactoryHolder, Listener {
 		this.hasPlayers = !this.players.isEmpty();
 	}
 
-	public boolean isActive(Player player) {
-		return this.conditions.stream().allMatch(condition -> ConditionExecutor.testEntity(condition, (CraftEntity) player));
+	public boolean isActive(@NotNull CraftPlayer player) {
+		return condition.test(player.getHandle());
 	}
 
-	public void addCondition(FactoryJsonObject condition) {
-		this.conditions.add(condition);
+	public void tick(Player player) {
 	}
 
-	public PowerType ofResourceLocation(ResourceLocation key) {
-		if (this.tagSet) {
-			return this;
-		} else {
-			this.tagSet = true;
-			this.tag = key;
-			this.cachedTagString = key.toString();
-			return this;
-		}
+	public void tickAsync(Player player) {
 	}
 
-	@Override
-	public ResourceLocation key() {
-		return this.tag;
+	public void tick() {
+	}
+
+	public void bootstrapUnapply(Player player) {
+	}
+
+	public void bootstrapApply(Player player) {
 	}
 }
