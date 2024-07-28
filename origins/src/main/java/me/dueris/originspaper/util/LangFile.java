@@ -1,6 +1,10 @@
 package me.dueris.originspaper.util;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.registry.Registries;
+import me.dueris.originspaper.storage.OriginConfiguration;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,10 +16,8 @@ import static me.dueris.originspaper.OriginsPaper.LANGUAGE;
 
 public class LangFile {
 	public static final Map<String, Map<String, String>> langMap = new ConcurrentHashMap<>();
-	private final ResourceLocation key;
 
-	public LangFile(ResourceLocation key, @NotNull JsonObject json) {
-		this.key = key;
+	public LangFile(@NotNull JsonObject json) {
 		Map<String, String> foundLang = new HashMap<>();
 
 		for (String jsonKey : json.keySet()) {
@@ -24,7 +26,14 @@ public class LangFile {
 			}
 		}
 
-		langMap.put(key.getPath().replace(".json", "").replace("lang/", ""), foundLang);
+		langMap.put(OriginConfiguration.getConfiguration().getString("language"), foundLang);
+	}
+
+	public static void init() {
+		String lang = OriginConfiguration.getConfiguration().getString("language", "en_us");
+		String langInput = Util.readResource("/assets/origins/lang/%%.json".replace("%%", lang));
+		ResourceLocation location = ResourceLocation.parse("origins:" + lang);
+		OriginsPaper.getPlugin().registry.retrieve(Registries.LANG).register(new LangFile(new Gson().fromJson(langInput, JsonObject.class)), location);
 	}
 
 	public static String transform(String original) {
@@ -35,7 +44,4 @@ public class LangFile {
 		return original;
 	}
 
-	public ResourceLocation key() {
-		return this.key;
-	}
 }

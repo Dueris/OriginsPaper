@@ -2,6 +2,7 @@ package io.github.dueris.calio.parser;
 
 import com.google.gson.*;
 import io.github.dueris.calio.util.holder.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -15,26 +16,7 @@ public class JsonObjectRemapper {
 		this.typeAliases = typeAliases;
 	}
 
-	// Testing
-	public static void main(String[] args) {
-		List<Pair<String, String>> namespaceRemappings = List.of(
-			new Pair<>("minecraft", "test")
-		);
-
-		List<Pair<String, String>> typeAliases = List.of(
-			new Pair<>("minecraft:example", "test:hello")
-		);
-
-		JsonObjectRemapper remapper = new JsonObjectRemapper(namespaceRemappings, typeAliases);
-
-		String jsonString = "{\"type\": \"minecraft:example\", \"nested\": {\"type\": \"minecraft:other\", \"otherField\": \"value\"}}";
-		JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
-
-		JsonObject remappedJson = remapper.remap(jsonObject).getAsJsonObject();
-		System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(remappedJson));
-	}
-
-	public JsonElement remap(JsonElement element) {
+	public JsonElement remap(@NotNull JsonElement element) {
 		if (element.isJsonObject()) {
 			return remapJsonObject(element.getAsJsonObject());
 		} else if (element.isJsonArray()) {
@@ -43,7 +25,7 @@ public class JsonObjectRemapper {
 		return element;
 	}
 
-	private JsonObject remapJsonObject(JsonObject jsonObject) {
+	private @NotNull JsonObject remapJsonObject(@NotNull JsonObject jsonObject) {
 		JsonObject remappedObject = new JsonObject();
 
 		for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
@@ -62,7 +44,7 @@ public class JsonObjectRemapper {
 		return remappedObject;
 	}
 
-	private JsonArray remapJsonArray(JsonArray jsonArray) {
+	private @NotNull JsonArray remapJsonArray(@NotNull JsonArray jsonArray) {
 		JsonArray remappedArray = new JsonArray();
 
 		for (JsonElement element : jsonArray) {

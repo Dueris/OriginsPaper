@@ -84,6 +84,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -93,6 +94,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -715,6 +717,19 @@ public class Util {
 			map.put(enumToString.apply(enumConstant), enumConstant);
 		}
 		return map;
+	}
+
+	public static String readResource(String resourcePath) {
+		InputStream inputStream = Util.class.getResourceAsStream(resourcePath);
+		if (inputStream == null) {
+			throw new IllegalArgumentException("Resource not found: " + resourcePath);
+		}
+
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+			return reader.lines().collect(Collectors.joining(System.lineSeparator()));
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to read resource: " + resourcePath, e);
+		}
 	}
 
 	public static boolean attemptToTeleport(Entity entity, ServerLevel serverWorld, double destX, double destY, double destZ, double offsetX, double offsetY, double offsetZ, double areaHeight, boolean loadedChunksOnly, Heightmap.Types heightmap, Predicate<BlockInWorld> landingBlockCondition, Predicate<Entity> landingCondition) {

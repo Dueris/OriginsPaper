@@ -15,6 +15,7 @@ import me.dueris.originspaper.content.ContentTicker;
 import me.dueris.originspaper.content.OrbOfOrigins;
 import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.actions.Actions;
+import me.dueris.originspaper.factory.conditions.Conditions;
 import me.dueris.originspaper.factory.conditions.types.BiEntityConditions;
 import me.dueris.originspaper.factory.data.types.modifier.ModifierOperations;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
@@ -235,24 +236,27 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				: Math.min(avalibleJVMThreads, OriginConfiguration.getConfiguration().getInt("max-loader-threads"));
 			loaderThreadPool = Executors.newFixedThreadPool(dynamic_thread_count, threadFactory);
 			try {
+				LangFile.init();
 				ModifierOperations.registerAll();
+				Conditions.registerAll();
 				Actions.registerAll();
 				PowerType.registerAll();
 				io.github.dueris.calio.CraftCalio craftCalio = io.github.dueris.calio.CraftCalio.buildInstance(
 					new String[]{"--async=true"}
 				);
-				JsonObjectRemapper.main(versions.toArray(new String[0]));
 				try {
 					craftCalio.startBuilder()
 						.withAccessor(new AccessorKey<>(List.of("apoli", "origins"), "power", PowerType.class, 0, ParsingStrategy.TYPED, Registries.CRAFT_POWER))
 						.withAccessor(new AccessorKey<>(List.of("origins"), "origin", Origin.class, 1, ParsingStrategy.DEFAULT, Registries.ORIGIN))
 						.withAccessor(new AccessorKey<>(List.of("origins"), "origin_layer", Layer.class, 2, ParsingStrategy.DEFAULT, Registries.LAYER))
 						.build().parse();
+					BuiltinRegistry.bootstrap();
+					NBTFixerUpper.runFixerUpper();
 				} catch (Throwable ex) {
-					throw new RuntimeException(ex);
+					ex.printStackTrace();
+					this.throwable(ex, true);
+					return false;
 				}
-				BuiltinRegistry.bootstrap();
-				NBTFixerUpper.runFixerUpper();
 				return true;
 			} catch (Throwable throwable) {
 				this.getLog4JLogger().error("An unhandled exception occurred when starting OriginsPaper!");
