@@ -10,7 +10,6 @@ import javassist.NotFoundException;
 import me.dueris.originspaper.content.OrbOfOrigins;
 import me.dueris.originspaper.event.OriginChangeEvent;
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.powers.apoli.RecipePower;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Layer;
@@ -32,7 +31,6 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,7 +39,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -439,7 +436,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 										.then(
 											(Commands.argument("namespace", ResourceLocationArgument.id())
 												.suggests((context, builder) -> {
-													RecipePower.tags.forEach(builder::suggest);
+													// RecipePower.tags.forEach(builder::suggest); // todo
 													builder.suggest("origins:orb_of_origins");
 													return builder.buildFuture();
 												})
@@ -459,6 +456,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 
 	public static void give(CommandContext<CommandSourceStack> context, int amt) throws CommandSyntaxException {
 		String tag = CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "namespace")).asString();
+		/* //todo
 		if (RecipePower.taggedRegistry.containsKey(tag)) {
 			for (ServerPlayer player : EntityArgument.getPlayers(context, "targets")) {
 				Recipe recipe = RecipePower.taggedRegistry.get(tag);
@@ -468,7 +466,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 			}
 		} else {
 			context.getSource().sendFailure(Component.literal("Item not found in origins registry."));
-		}
+		}*/
 	}
 
 	@EventHandler

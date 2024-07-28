@@ -5,21 +5,10 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
 import me.dueris.originspaper.factory.conditions.types.bientity.*;
-import me.dueris.originspaper.factory.data.types.Comparison;
-import me.dueris.originspaper.factory.data.types.RotationType;
-import me.dueris.originspaper.factory.powers.apoli.EntitySetPower;
-import me.dueris.originspaper.factory.powers.apoli.PreventEntityRender;
 import me.dueris.originspaper.registry.Registries;
-import net.minecraft.core.Direction.Axis;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.entity.Entity;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
 
 public class BiEntityConditions implements Listener {
 	public static void registerConditions() {
@@ -30,7 +19,7 @@ public class BiEntityConditions implements Listener {
 		register(InvertCondition.getFactory());
 		register(TargetCondition.getFactory());
 		register(UndirectedCondition.getFactory());
-		register(new ConditionFactory(OriginsPaper.apoliIdentifier("equal"), (data, pair) -> pair.first() == pair.second()));
+		/* register(new ConditionFactory(OriginsPaper.apoliIdentifier("equal"), (data, pair) -> pair.first() == pair.second()));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("in_entity_set"), (data, pair) -> EntitySetPower.isInEntitySet(pair.second(), data.getString("set"))));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("can_see"), (data, pair) -> PreventEntityRender.canSeeEntity(pair.first(), pair.second(), data)));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("distance"), (data, pair) -> {
@@ -122,7 +111,7 @@ public class BiEntityConditions implements Listener {
 			} else {
 				return false;
 			}
-		}));
+		}));*/
 	}
 
 	public static void register(@NotNull ConditionFactory<Pair<Entity, Entity>> factory) {

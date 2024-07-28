@@ -28,9 +28,9 @@ public interface ChoosingPage {
 					List<Origin> choosable = layer.getOriginIdentifiers()
 						.stream()
 						.map(CraftApoli::getOrigin)
-						.filter(origin -> !origin.isUnchoosable())
-						.sorted(Comparator.comparingInt(Origin::getOrder))
-						.sorted(Comparator.comparingInt(Origin::getImpact))
+						.filter(origin -> !origin.unchoosable())
+						.sorted(Comparator.comparingInt(Origin::order))
+						.sorted(Comparator.comparingInt(Origin::impactValue))
 						.collect(Collectors.toCollection(ArrayList::new));
 					Origin defaultOrigin = null;
 					if (!layer.getDefaultOrigin().toString().equalsIgnoreCase("origins:empty")) {

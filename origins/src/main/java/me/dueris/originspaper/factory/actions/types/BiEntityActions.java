@@ -1,32 +1,15 @@
 package me.dueris.originspaper.factory.actions.types;
 
-import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.event.AddToSetEvent;
-import me.dueris.originspaper.event.RemoveFromSetEvent;
-import me.dueris.originspaper.factory.data.types.Space;
-import me.dueris.originspaper.factory.data.types.modifier.Modifier;
-import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.util.Util;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Leashable;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.lang3.function.TriConsumer;
-import org.joml.Vector3f;
 
-import java.util.List;
 import java.util.function.BiFunction;
 
 // Left is the actor, right is the target.
 public class BiEntityActions {
 
 	public void register() {
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("remove_from_entity_set"), (data, entityPair) -> {
+		/*register(new ActionFactory(OriginsPaper.apoliIdentifier("remove_from_entity_set"), (data, entityPair) -> {
 			RemoveFromSetEvent ev = new RemoveFromSetEvent(entityPair.second(), data.getString("set"));
 			ev.callEvent();
 		}));
@@ -114,12 +97,12 @@ public class BiEntityActions {
 			if (!mobTarget.isLeashed()) {
 				mobTarget.setLeashedTo(actor, true);
 			}
-		}));
+		}));*/
 	}
 
-	public void register(BiEntityActions.ActionFactory factory) {
-		OriginsPaper.getPlugin().registry.retrieve(Registries.BIENTITY_ACTION).register(factory);
-	}
+//	public void register(BiEntityActions.ActionFactory factory) {
+//		OriginsPaper.getPlugin().registry.retrieve(Registries.BIENTITY_ACTION).register(factory);
+//	}
 
 	public enum Reference {
 

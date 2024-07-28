@@ -1,41 +1,10 @@
 package me.dueris.originspaper.factory.actions.types;
 
-import me.dueris.calio.data.CalioDataTypes;
-import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.actions.Actions;
-import me.dueris.originspaper.factory.data.types.ExplosionMask;
-import me.dueris.originspaper.factory.data.types.ResourceOperation;
-import me.dueris.originspaper.factory.data.types.Shape;
-import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.util.Util;
-import net.minecraft.commands.CommandSource;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.BoneMealItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.ExplosionDamageCalculator;
-import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.CraftRegistry;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.util.CraftLocation;
 
-import java.util.Collection;
 import java.util.Optional;
 
 public class BlockActions {
@@ -46,7 +15,7 @@ public class BlockActions {
 	}
 
 	public void register() {
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("explode"), (data, location) -> {
+		/*register(new ActionFactory(OriginsPaper.apoliIdentifier("explode"), (data, location) -> {
 			float explosionPower = data.getNumber("power").getFloat();
 			String destruction_type = "break";
 			boolean create_fire = false;
@@ -214,11 +183,11 @@ public class BlockActions {
 			if (data.isPresent("entity_action")) {
 				Actions.executeEntity(entityToSpawn.getBukkitEntity(), data.getJsonObject("entity_action"));
 			}
-		}));
+		}));*/
 	}
 
-	public void register(BlockActions.ActionFactory factory) {
-		OriginsPaper.getPlugin().registry.retrieve(Registries.BLOCK_ACTION).register(factory);
-	}
+//	public void register(BlockActions.ActionFactory factory) {
+//		OriginsPaper.getPlugin().registry.retrieve(Registries.BLOCK_ACTION).register(factory);
+//	}
 
 }

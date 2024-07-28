@@ -1,19 +1,12 @@
 package me.dueris.originspaper.factory.conditions.types;
 
-import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
-import me.dueris.originspaper.factory.data.types.Comparison;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.util.Util;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.damage.CraftDamageType;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +14,7 @@ public class DamageConditions {
 
 	public static void registerConditions() {
 		MetaConditions.register(Registries.DAMAGE_CONDITION, DamageConditions::register);
-		register(new ConditionFactory(OriginsPaper.apoliIdentifier("amount"), (data, damageEvent) -> {
+		/*register(new ConditionFactory(OriginsPaper.apoliIdentifier("amount"), (data, damageEvent) -> {
 			return Comparison.fromString(data.getString("comparison")).compare(damageEvent.getDamage(), data.getNumber("compare_to").getFloat());
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("fire"), (data, damageEvent) -> {
@@ -74,7 +67,7 @@ public class DamageConditions {
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("type"), (data, damageEvent) -> {
 			return nmsDamageSource(damageEvent).is(data.resourceKey("damage_type", net.minecraft.core.registries.Registries.DAMAGE_TYPE));
-		}));
+		}));*/
 	}
 
 	public static void register(@NotNull ConditionFactory<EntityDamageEvent> factory) {

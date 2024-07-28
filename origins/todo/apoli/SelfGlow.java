@@ -54,12 +54,12 @@ public class SelfGlow extends PowerType {
 	@Contract(pure = true)
 	public static ChatColor translateBarColor(@NotNull BarColor barColor) {
 		return switch (barColor) {
-			case BLUE -> ChatColor.BLUE;
-			case GREEN -> ChatColor.GREEN;
-			case PINK -> ChatColor.LIGHT_PURPLE;
-			case PURPLE -> ChatColor.DARK_PURPLE;
-			case RED -> ChatColor.RED;
-			case YELLOW -> ChatColor.YELLOW;
+			case BarColor.BLUE -> ChatColor.BLUE;
+			case BarColor.GREEN -> ChatColor.GREEN;
+			case BarColor.PINK -> ChatColor.LIGHT_PURPLE;
+			case BarColor.PURPLE -> ChatColor.DARK_PURPLE;
+			case BarColor.RED -> ChatColor.RED;
+			case BarColor.YELLOW -> ChatColor.YELLOW;
 			default -> ChatColor.WHITE;
 		};
 	}

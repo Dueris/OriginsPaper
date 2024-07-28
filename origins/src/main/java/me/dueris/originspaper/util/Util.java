@@ -876,18 +876,18 @@ public class Util {
 
 	}
 
-	public static int checkInventory(@NotNull DeserializedFactoryJson data, Entity entity, @Nullable me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, Function<ItemStack, Integer> processor) {
+	public static int checkInventory(@NotNull DeserializedFactoryJson data, Entity entity, Function<ItemStack, Integer> processor) {
 
 		Predicate<Tuple<Level, ItemStack>> itemCondition = data.get("item_condition");
 		Set<Integer> slots = getSlots(data);
 		deduplicateSlots(entity, slots);
 
 		int matches = 0;
-		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
+		slots.removeIf(slot -> slotNotWithinBounds(entity, slot));
 
 		for (int slot : slots) {
 
-			SlotAccess stackReference = getStackReference(entity, inventoryPower, slot);
+			SlotAccess stackReference = getStackReference(entity, slot);
 			ItemStack stack = stackReference.get();
 
 			if ((itemCondition == null && !stack.isEmpty()) || (itemCondition == null || itemCondition.test(new Tuple<>(entity.level(), stack)))) {
@@ -900,11 +900,11 @@ public class Util {
 
 	}
 
-	public static boolean slotNotWithinBounds(@NotNull Entity entity, @Nullable me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, int slot) {
+	public static boolean slotNotWithinBounds(@NotNull Entity entity, int slot) {
 		return entity.getSlot(slot) == SlotAccess.NULL;
 	}
 
-	public static @NotNull SlotAccess getStackReference(@NotNull Entity entity, @Nullable me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, int slot) {
+	public static @NotNull SlotAccess getStackReference(@NotNull Entity entity, int slot) {
 		return entity.getSlot(slot);
 	}
 
@@ -967,7 +967,7 @@ public class Util {
 
 	}
 
-	public static void modifyInventory(DeserializedFactoryJson data, Entity entity, me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower, Function<ItemStack, Integer> processor, int limit) {
+	public static void modifyInventory(DeserializedFactoryJson data, Entity entity, Function<ItemStack, Integer> processor, int limit) {
 
 		if (limit <= 0) {
 			limit = Integer.MAX_VALUE;
@@ -981,12 +981,12 @@ public class Util {
 		ActionFactory<Pair<ServerLevel, org.bukkit.inventory.ItemStack>> itemAction = data.get("item_action");
 
 		int processedItems = 0;
-		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
+		slots.removeIf(slot -> slotNotWithinBounds(entity, slot));
 
 		modifyingItemsLoop:
 		for (int slot : slots) {
 
-			SlotAccess stack = getStackReference(entity, inventoryPower, slot);
+			SlotAccess stack = getStackReference(entity, slot);
 			if (!(itemCondition == null || itemCondition.test(new Tuple<>(entity.level(), stack.get())))) {
 				continue;
 			}
@@ -1011,7 +1011,7 @@ public class Util {
 
 	}
 
-	public static void replaceInventory(DeserializedFactoryJson data, Entity entity, me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower) {
+	public static void replaceInventory(DeserializedFactoryJson data, Entity entity) {
 
 		Set<Integer> slots = getSlots(data);
 		deduplicateSlots(entity, slots);
@@ -1023,10 +1023,10 @@ public class Util {
 		ItemStack replacementStack = data.get("stack");
 		boolean mergeNbt = data.getBoolean("merge_nbt");
 
-		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
+		slots.removeIf(slot -> slotNotWithinBounds(entity, slot));
 		for (int slot : slots) {
 
-			SlotAccess stackReference = getStackReference(entity, inventoryPower, slot);
+			SlotAccess stackReference = getStackReference(entity, slot);
 			ItemStack stack = stackReference.get();
 
 			if (!(itemCondition == null || itemCondition.test(new Tuple<>(entity.level(), stack)))) {
@@ -1052,7 +1052,7 @@ public class Util {
 
 	}
 
-	public static void dropInventory(DeserializedFactoryJson data, Entity entity, me.dueris.originspaper.factory.powers.apoli.Inventory inventoryPower) {
+	public static void dropInventory(DeserializedFactoryJson data, Entity entity) {
 
 		Set<Integer> slots = getSlots(data);
 		deduplicateSlots(entity, slots);
@@ -1065,10 +1065,10 @@ public class Util {
 		Predicate<Tuple<Level, ItemStack>> itemCondition = data.get("item_condition");
 		Consumer<Tuple<Level, SlotAccess>> itemAction = data.get("item_action");
 
-		slots.removeIf(slot -> slotNotWithinBounds(entity, inventoryPower, slot));
+		slots.removeIf(slot -> slotNotWithinBounds(entity, slot));
 		for (int slot : slots) {
 
-			SlotAccess stack = getStackReference(entity, inventoryPower, slot);
+			SlotAccess stack = getStackReference(entity, slot);
 			if (stack.get().isEmpty() || !(itemCondition == null || itemCondition.test(new Tuple<>(entity.level(), stack.get())))) {
 				continue;
 			}

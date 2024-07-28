@@ -1,11 +1,9 @@
 package me.dueris.originspaper;
 
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.powers.apoli.CreativeFlight;
-import me.dueris.originspaper.factory.powers.apoli.provider.OriginSimpleContainer;
-import me.dueris.originspaper.factory.powers.apoli.provider.PowerProvider;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
-import me.dueris.originspaper.factory.powers.originspaper.GravityPower;
+import me.dueris.originspaper.factory.powers.provider.OriginSimpleContainer;
+import me.dueris.originspaper.factory.powers.provider.PowerProvider;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -29,7 +27,8 @@ public class OriginScheduler {
 	}
 
 	public static class MainTickerThread extends BukkitRunnable implements Listener {
-		private final CreativeFlight flight = new CreativeFlight("creative_flight", "description", true, null, 0);
+		// todo
+//		private final CreativeFlight flight = new CreativeFlight("creative_flight", "description", true, null, 0);
 		public OriginScheduler parent = new OriginScheduler(OriginsPaper.getPlugin());
 
 		public String toString() {
@@ -88,10 +87,10 @@ public class OriginScheduler {
 			}
 
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				this.flight.tickAsync(p);
-				if (!PowerHolderComponent.hasPowerType(p, GravityPower.class) && !PowerHolderComponent.hasPower(p, "origins:like_water")) {
-					p.setGravity(true);
-				}
+				//this.flight.tickAsync(p);
+//				if (!PowerHolderComponent.hasPowerType(p, GravityPower.class) && !PowerHolderComponent.hasPower(p, "origins:like_water")) {
+//					p.setGravity(true);
+//				}
 			}
 		}
 	}

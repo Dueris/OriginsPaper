@@ -1,23 +1,11 @@
 package me.dueris.originspaper.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.powers.apoli.Resource;
-import me.dueris.originspaper.factory.powers.apoli.ResourcePower;
-import me.dueris.originspaper.factory.powers.holder.PowerType;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 
 public class ResourceCommand {
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-		LiteralArgumentBuilder<CommandSourceStack> main = net.minecraft.commands.Commands.literal("resource")
+		/*LiteralArgumentBuilder<CommandSourceStack> main = net.minecraft.commands.Commands.literal("resource")
 			.requires(source -> source.hasPermission(2));
 		(main.then(
 			net.minecraft.commands.Commands.literal("has")
@@ -239,6 +227,6 @@ public class ResourceCommand {
 							)
 					)
 			);
-		dispatcher.register(main);
+		dispatcher.register(main);*/
 	}
 }

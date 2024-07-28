@@ -3,19 +3,13 @@ package me.dueris.originspaper.factory.conditions.types;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
-import me.dueris.originspaper.factory.data.types.Comparison;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biome.Precipitation;
 import org.jetbrains.annotations.NotNull;
 
 public class BiomeConditions {
 	public static void registerConditions() {
 		MetaConditions.register(me.dueris.originspaper.registry.Registries.BIOME_CONDITION, BiomeConditions::register);
-		register(new ConditionFactory(OriginsPaper.apoliIdentifier("high_humidity"), (data, biome) -> biome.value().climateSettings.downfall() > 0.85F));
+		/*register(new ConditionFactory(OriginsPaper.apoliIdentifier("high_humidity"), (data, biome) -> biome.value().climateSettings.downfall() > 0.85F));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("temperature"), (data, biome) -> Comparison.fromString(data.getString("comparison")).compare(biome.value().getBaseTemperature(), data.getNumber("compare_to").getFloat())));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("category"), (data, biome) -> {
 			ResourceLocation tagId = OriginsPaper.apoliIdentifier("category/" + data.getString("category"));
@@ -30,7 +24,7 @@ public class BiomeConditions {
 			ResourceLocation tagId = data.getResourceLocation("tag");
 			TagKey<Biome> biomeTag = TagKey.create(Registries.BIOME, tagId);
 			return biome.is(biomeTag);
-		}));
+		}));*/
 	}
 
 	public static void register(@NotNull ConditionFactory<Biome> factory) {

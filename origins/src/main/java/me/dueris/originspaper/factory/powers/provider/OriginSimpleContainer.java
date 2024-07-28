@@ -1,4 +1,4 @@
-package me.dueris.originspaper.factory.powers.apoli.provider;
+package me.dueris.originspaper.factory.powers.provider;
 
 import me.dueris.originspaper.OriginsPaper;
 import org.bukkit.Bukkit;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class OriginSimpleContainer {
 	public static ArrayList<PowerProvider> registeredPowers = new ArrayList<>();
 
-	public static boolean registerPower(@NotNull Class<?> clz) {
+	public static void registerPower(@NotNull Class<?> clz) {
 		try {
 			Preconditions.checkArgument(clz.newInstance() instanceof PowerProvider, "Power isn't an instance of a PowerProvider power. This is required to make it so that its marked as able to be its own originPower");
 			Preconditions.checkArgument(clz.getDeclaredField("powerReference") != null, "Unable to access required field \"powerReference\" inside Power. This is required to point to what powerFile this PowerProvider will use");
@@ -24,8 +24,6 @@ public class OriginSimpleContainer {
 		} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException |
 				 InstantiationException e) {
 			e.printStackTrace();
-			return false;
 		}
-		return true;
 	}
 }

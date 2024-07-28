@@ -29,7 +29,7 @@ public class RandomOriginPage implements ChoosingPage {
 	public ItemStack[] createDisplay(Player player, @NotNull Layer layer) {
 		List<ItemStack> stacks = new ArrayList<>();
 		List<Origin> randomOrigins = new ArrayList<>(layer.getRandomOrigins());
-		randomOrigins.sort(Comparator.comparingInt(Origin::getImpact).thenComparingInt(Origin::getOrder));
+		randomOrigins.sort(Comparator.comparingInt(Origin::impactValue).thenComparingInt(Origin::order));
 		List<List<Origin>> texts = new ArrayList<>();
 		int batchSize = 12;
 
@@ -57,7 +57,7 @@ public class RandomOriginPage implements ChoosingPage {
 						Arrays.stream(ItemFlag.values()).toList().forEach(xva$0 -> blank.addItemFlags(xva$0));
 						stacks.add(blank);
 					} else {
-						List<TextComponent> cL = texts.get(0).stream().map(Origin::getName).map(Component::text).toList();
+						List<TextComponent> cL = texts.get(0).stream().map(Origin::name).toList();
 						texts.remove(0);
 						ItemStack stack = new ItemStack(Material.FILLED_MAP);
 						stack.lore(cL);

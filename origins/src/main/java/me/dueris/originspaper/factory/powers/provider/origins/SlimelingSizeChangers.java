@@ -1,10 +1,10 @@
-package me.dueris.originspaper.factory.powers.apoli.provider.origins;
+package me.dueris.originspaper.factory.powers.provider.origins;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.PowerUpdateEvent;
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.powers.apoli.provider.PowerProvider;
+import me.dueris.originspaper.factory.powers.provider.PowerProvider;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import me.dueris.originspaper.util.entity.PowerUtils;
 import net.minecraft.resources.ResourceLocation;

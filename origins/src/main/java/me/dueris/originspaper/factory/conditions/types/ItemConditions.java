@@ -1,35 +1,17 @@
 package me.dueris.originspaper.factory.conditions.types;
 
-import me.dueris.calio.data.CalioDataTypes;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
-import me.dueris.originspaper.factory.data.types.Comparison;
 import me.dueris.originspaper.registry.Registries;
-import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemConditions {
 
 	public static void registerConditions() {
 		MetaConditions.register(Registries.ITEM_CONDITION, ItemConditions::register);
-		register(new ConditionFactory(OriginsPaper.apoliIdentifier("food"), (data, itemStack) -> {
+		/*register(new ConditionFactory(OriginsPaper.apoliIdentifier("food"), (data, itemStack) -> {
 			return CraftItemStack.asNMSCopy(itemStack).has(DataComponents.FOOD);
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("smeltable"), (data, itemStack) -> {
@@ -111,7 +93,7 @@ public class ItemConditions {
 				AbstractFurnaceBlockEntity.getFuel().get(CraftItemStack.asNMSCopy(itemStack).getItem()),
 				data.getNumberOrDefault("compare_to", 0).getInt()
 			);
-		}));
+		}));*/
 	}
 
 	public static void register(@NotNull ConditionFactory<ItemStack> factory) {

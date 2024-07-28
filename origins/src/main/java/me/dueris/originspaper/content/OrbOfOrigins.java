@@ -1,7 +1,6 @@
 package me.dueris.originspaper.content;
 
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.powers.apoli.RecipePower;
 import me.dueris.originspaper.storage.OriginConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -56,7 +55,7 @@ public class OrbOfOrigins {
 			} catch (Throwable var4) {
 			}
 
-			RecipePower.taggedRegistry.put(sr.key().asString(), sr);
+			// RecipePower.taggedRegistry.put(sr.key().asString(), sr);
 			return sr.getResult().clone();
 		} catch (Exception var5) {
 			Bukkit.getServer().getLogger().warning("An unexpected error occured when trying to load the orb of origins! : " + var5.getLocalizedMessage());

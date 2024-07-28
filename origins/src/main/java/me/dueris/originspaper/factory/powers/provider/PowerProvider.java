@@ -1,4 +1,4 @@
-package me.dueris.originspaper.factory.powers.apoli.provider;
+package me.dueris.originspaper.factory.powers.provider;
 
 import org.bukkit.entity.Player;
 

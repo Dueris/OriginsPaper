@@ -1,74 +1,15 @@
 package me.dueris.originspaper.factory.conditions.types;
 
-import me.dueris.calio.data.CalioDataTypes;
-import me.dueris.calio.data.factory.FactoryElement;
-import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
-import me.dueris.originspaper.factory.conditions.types.entity.RaycastCondition;
 import me.dueris.originspaper.factory.data.types.Comparison;
-import me.dueris.originspaper.factory.data.types.Shape;
-import me.dueris.originspaper.factory.powers.apoli.ElytraFlightPower;
-import me.dueris.originspaper.factory.powers.apoli.Resource;
-import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.util.Reflector;
-import me.dueris.originspaper.util.Util;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.commands.CommandSource;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.ServerPlayerGameMode;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.OwnableEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.item.ElytraItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.BlockCollisions;
-import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.scores.Objective;
-import net.minecraft.world.scores.ScoreAccess;
-import net.minecraft.world.scores.ScoreHolder;
-import net.minecraft.world.scores.Scoreboard;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.ArrayList;
 
 public class EntityConditions {
 	private static final ArrayList<Object> previousWarnings = new ArrayList<>();
@@ -96,7 +37,7 @@ public class EntityConditions {
 
 	public static void registerConditions() {
 		MetaConditions.register(Registries.ENTITY_CONDITION, EntityConditions::register);
-		register(new ConditionFactory(OriginsPaper.apoliIdentifier("power_type"), (condition, entity) -> {
+		/*register(new ConditionFactory(OriginsPaper.apoliIdentifier("power_type"), (condition, entity) -> {
 			for (PowerType c : PowerHolderComponent.getPowers(entity)) {
 				if (c.getType().equals(condition.getString("power_type").replace("origins:", "apoli:"))) { // Apoli remapping
 					return true;
@@ -178,7 +119,7 @@ public class EntityConditions {
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("exposed_to_sun"), (data, entity) -> {
 			Level world = entity.level();
-			if (!world.isDay() || entity.isInRain()/*we use bukkits check for if the entity is in rain*/) {
+			if (!world.isDay() || entity.isInRain()) {
 				return false;
 			}
 
@@ -811,7 +752,7 @@ public class EntityConditions {
 			return specifiedCommandTags.isEmpty()
 				? !commandTags.isEmpty()
 				: !Collections.disjoint(commandTags, specifiedCommandTags);
-		}));
+		}));*/
 	}
 
 	public static void register(@NotNull ConditionFactory<net.minecraft.world.entity.Entity> factory) {

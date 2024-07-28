@@ -3,6 +3,7 @@ package me.dueris.originspaper.util.entity;
 import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.registries.Layer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -21,7 +22,7 @@ public class PowerUtils {
 						PowerHolderComponent.removePower(p, power, suppress, true);
 						if (!suppress) {
 							executor.sendMessage("Entity %name% had the power %power% removed"
-								.replace("%power%", power.getName())
+								.replace("%power%", PlainTextComponentSerializer.plainText().serialize(power.name()))
 								.replace("%name%", p.getName())
 							);
 						}
@@ -39,7 +40,7 @@ public class PowerUtils {
 			PowerHolderComponent.applyPower(p, power, suppress, true);
 			if (!suppress) {
 				executor.sendMessage("Entity %name% was granted the power %power%"
-					.replace("%power%", power.getName())
+					.replace("%power%", PlainTextComponentSerializer.plainText().serialize(power.name()))
 					.replace("%name%", p.getName())
 				);
 			}

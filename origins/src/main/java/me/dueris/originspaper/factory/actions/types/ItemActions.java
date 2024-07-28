@@ -1,27 +1,9 @@
 package me.dueris.originspaper.factory.actions.types;
 
-import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.util.Util;
-import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 public class ItemActions {
 
 	public void register() {
-		register(new ActionFactory(OriginsPaper.apoliIdentifier("consume"), (data, itemStack) -> {
+		/*register(new ActionFactory(OriginsPaper.apoliIdentifier("consume"), (data, itemStack) -> {
 			Util.consumeItem(itemStack.getSecond());
 		}));
 		register(new ActionFactory(OriginsPaper.apoliIdentifier("damage"), (data, itemStack) -> {
@@ -102,11 +84,11 @@ public class ItemActions {
 			if (data.getBoolean("reset_repair_cost") && !stack.isEnchanted()) {
 				stack.set(DataComponents.REPAIR_COST, 0);
 			}
-		}));
+		}));*/
 	}
 
-	public void register(ItemActions.ActionFactory factory) {
-		OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_ACTION).register(factory);
-	}
+//	public void register(ItemActions.ActionFactory factory) {
+//		OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_ACTION).register(factory);
+//	}
 
 }

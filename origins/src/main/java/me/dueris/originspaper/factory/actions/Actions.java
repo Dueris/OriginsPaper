@@ -1,38 +1,12 @@
 package me.dueris.originspaper.factory.actions;
 
-import me.dueris.calio.data.factory.FactoryJsonArray;
-import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.calio.registry.Registrar;
-import me.dueris.calio.util.holders.Pair;
-import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.actions.types.BiEntityActions;
 import me.dueris.originspaper.factory.actions.types.BlockActions;
 import me.dueris.originspaper.factory.actions.types.EntityActions;
 import me.dueris.originspaper.factory.actions.types.ItemActions;
-import me.dueris.originspaper.registry.Registries;
-import net.minecraft.resources.ResourceLocation;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.craftbukkit.util.CraftLocation;
-import org.bukkit.entity.Entity;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Consumer;
 
 public class Actions {
-	public static BiEntityActions bientityActions = new BiEntityActions();
+	/*public static BiEntityActions bientityActions = new BiEntityActions();
 	public static BlockActions blockActions = new BlockActions();
 	public static EntityActions entityActions = new EntityActions();
 	public static ItemActions itemActions = new ItemActions();
@@ -354,7 +328,7 @@ public class Actions {
 			default:
 				return null;
 		}
-	}
+	}*/
 
 	public static void registerAll() {
 		new BiEntityActions().register();

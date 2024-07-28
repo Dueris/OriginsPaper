@@ -4,14 +4,13 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
 import me.dueris.originspaper.registry.Registries;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.NotNull;
 
 public class FluidConditions {
 	public static void registerConditions() {
 		MetaConditions.register(Registries.FLUID_CONDITION, FluidConditions::register);
-		register(new ConditionFactory(OriginsPaper.apoliIdentifier("empty"), (data, fluid) -> {
+		/*register(new ConditionFactory(OriginsPaper.apoliIdentifier("empty"), (data, fluid) -> {
 			return fluid.defaultFluidState().isEmpty();
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("still"), (data, fluid) -> {
@@ -22,7 +21,7 @@ public class FluidConditions {
 		}));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("fluid"), (data, fluid) -> {
 			return fluid.defaultFluidState().getType() == BuiltInRegistries.FLUID.get(data.getResourceLocation("fluid"));
-		}));
+		}));*/
 	}
 
 	public static void register(@NotNull ConditionFactory<Fluid> factory) {

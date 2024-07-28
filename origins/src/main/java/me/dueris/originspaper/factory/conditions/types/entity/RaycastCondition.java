@@ -1,23 +1,7 @@
 package me.dueris.originspaper.factory.conditions.types.entity;
 
-import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.originspaper.factory.data.types.Space;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.ClipContext.Block;
-import net.minecraft.world.level.ClipContext.Fluid;
-import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import net.minecraft.world.phys.*;
-import net.minecraft.world.phys.HitResult.Type;
-import org.bukkit.craftbukkit.util.CraftLocation;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
-
 public class RaycastCondition {
-	public static boolean condition(@NotNull FactoryJsonObject data, @NotNull Entity entity) {
+	/*public static boolean condition(@NotNull FactoryJsonObject data, @NotNull Entity entity) {
 		Vec3 origin = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
 		Vec3 direction = entity.getViewVector(1.0F);
 		if (data.isPresent("direction")) {
@@ -117,5 +101,5 @@ public class RaycastCondition {
 			),
 			ray.lengthSqr()
 		);
-	}
+	}*/
 }

@@ -9,8 +9,8 @@ import io.github.dueris.calio.util.annotations.SourceProvider;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.data.ApoliDataTypes;
-import me.dueris.originspaper.factory.powers.apoli.provider.OriginSimpleContainer;
-import me.dueris.originspaper.factory.powers.apoli.provider.origins.*;
+import me.dueris.originspaper.factory.powers.provider.OriginSimpleContainer;
+import me.dueris.originspaper.factory.powers.provider.origins.*;
 import me.dueris.originspaper.util.LangFile;
 import net.kyori.adventure.text.TextComponent;
 import net.minecraft.network.chat.Component;
@@ -118,11 +118,11 @@ public class PowerType implements Listener {
 		return cachedTypeString;
 	}
 
-	public @NotNull TextComponent getName() {
+	public @NotNull TextComponent name() {
 		return name;
 	}
 
-	public @NotNull TextComponent getDescription() {
+	public @NotNull TextComponent description() {
 		return description;
 	}
 

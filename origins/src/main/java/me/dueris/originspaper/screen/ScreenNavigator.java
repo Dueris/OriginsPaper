@@ -12,6 +12,7 @@ import me.dueris.originspaper.storage.OriginConfiguration;
 import me.dueris.originspaper.util.Util;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -94,8 +95,8 @@ public class ScreenNavigator implements Listener {
 			player.getBukkitEntity(),
 			54,
 			Component.text(
-				!layer.getGuiTitle().isEmpty()
-					? layer.getGuiTitle().getStringOrDefault("choose_origin", "Choosing - " + layer.getTag())
+				layer.getGuiTitle() != null
+					? PlainTextComponentSerializer.plainText().serialize(layer.getGuiTitle().chooseOrigin())
 					: "Choosing - " + (layer.getTag())
 			)
 		);

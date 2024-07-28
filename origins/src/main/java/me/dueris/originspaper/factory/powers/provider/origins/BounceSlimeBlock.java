@@ -1,7 +1,7 @@
-package me.dueris.originspaper.factory.powers.apoli.provider.origins;
+package me.dueris.originspaper.factory.powers.provider.origins;
 
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.powers.apoli.provider.PowerProvider;
+import me.dueris.originspaper.factory.powers.provider.PowerProvider;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Bukkit;

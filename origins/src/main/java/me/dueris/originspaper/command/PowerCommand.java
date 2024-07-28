@@ -8,12 +8,10 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import joptsimple.internal.Strings;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.powers.apoli.Multiple;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.util.JsonTextFormatter;
-import me.dueris.originspaper.util.Util;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import me.dueris.originspaper.util.entity.PowerUtils;
 import net.minecraft.commands.CommandSourceStack;
@@ -289,10 +287,10 @@ public class PowerCommand {
 		for (ServerPlayer player : EntityArgument.getPlayers(context, "targets")) {
 			ConcurrentLinkedQueue<PowerType> allPowers = new ConcurrentLinkedQueue<>();
 			ArrayList<PowerType> powers = PowerHolderComponent.getPowers(player.getBukkitEntity());
-			ArrayList<Multiple> multiples = PowerHolderComponent.getPowers(player.getBukkitEntity(), Multiple.class);
-			if (!subPowers) {
-				powers.removeAll(Util.collapseList(multiples.stream().map(Multiple::getSubPowers).toList()));
-			}
+//			ArrayList<Multiple> multiples = PowerHolderComponent.getPowers(player.getBukkitEntity(), Multiple.class);
+//			if (!subPowers) {
+//				powers.removeAll(Util.collapseList(multiples.stream().map(Multiple::getSubPowers).toList()));
+//			}
 
 			if (!powers.isEmpty()) {
 				allPowers.addAll(powers);

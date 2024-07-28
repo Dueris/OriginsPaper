@@ -88,6 +88,10 @@ public class Origin {
 		return impact;
 	}
 
+	public int impactValue() {
+		return impact.getImpactValue();
+	}
+
 	public int loadingPriority() {
 		return loadingPriority;
 	}

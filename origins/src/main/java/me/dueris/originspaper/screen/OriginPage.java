@@ -1,10 +1,8 @@
 package me.dueris.originspaper.screen;
 
-import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.data.types.Impact;
-import me.dueris.originspaper.factory.powers.apoli.ModifyPlayerSpawnPower;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.registries.Layer;
 import me.dueris.originspaper.registry.registries.Origin;
@@ -175,9 +173,9 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 				if (!powerContainers.isEmpty()) {
 					ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 					ItemMeta meta = originPower.getItemMeta();
-					meta.displayName(ComponentUtil.apply(LangFile.transform(powerContainers.get(0).getName())));
+					meta.displayName(ComponentUtil.apply(LangFile.transform(PlainTextComponentSerializer.plainText().serialize(powerContainers.get(0).name()))));
 					Arrays.stream(ItemFlag.values()).toList().forEach(xva$0 -> originPower.addItemFlags(xva$0));
-					meta.lore(ComponentUtil.apply(cutStringIntoLines(LangFile.transform(powerContainers.get(0).getDescription()))));
+					meta.lore(ComponentUtil.apply(cutStringIntoLines(LangFile.transform(PlainTextComponentSerializer.plainText().serialize(powerContainers.get(0).description())))));
 					originPower.setItemMeta(meta);
 					Arrays.stream(ItemFlag.values()).toList().forEach(xva$0 -> originPower.addItemFlags(xva$0));
 					stacks.add(originPower);
@@ -218,13 +216,13 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					if (PowerHolderComponent.hasPowerType(bukkitEntity, ModifyPlayerSpawnPower.class)) {
-						ModifyPlayerSpawnPower.suspendPlayer(bukkitEntity);
-					}
-
-					for (ModifyPlayerSpawnPower power : PowerHolderComponent.getPowers(bukkitEntity, ModifyPlayerSpawnPower.class)) {
-						power.runD(new PlayerPostRespawnEvent(bukkitEntity, bukkitEntity.getLocation(), false));
-					}
+//					if (PowerHolderComponent.hasPowerType(bukkitEntity, ModifyPlayerSpawnPower.class)) {
+//						ModifyPlayerSpawnPower.suspendPlayer(bukkitEntity);
+//					}
+//
+//					for (ModifyPlayerSpawnPower power : PowerHolderComponent.getPowers(bukkitEntity, ModifyPlayerSpawnPower.class)) {
+//						power.runD(new PlayerPostRespawnEvent(bukkitEntity, bukkitEntity.getLocation(), false));
+//					}
 
 					PlayerManager.firstJoin.remove(bukkitEntity);
 				}

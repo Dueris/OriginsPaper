@@ -25,10 +25,10 @@ public class GuiTicker extends BukkitRunnable {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			if (delayedPlayers.contains(p)) continue;
 			for (Layer layer : CraftApoli.getLayersFromRegistry().stream().filter(Layer::isEnabled).toList()) {
-				if (layer.testChoosable(p).isEmpty()) continue;
+				if (layer.testChoosable(((CraftPlayer)p).getHandle()).isEmpty()) continue;
 				try {
 					if (PowerHolderComponent.getOrigin(p, layer).getTag().equalsIgnoreCase("origins:empty")) {
-						if (layer.testDefaultOrigin(p)) continue;
+						if (layer.testDefaultOrigin(((CraftPlayer)p).getHandle())) continue;
 						if (!inChoosingLayer.containsKey(((CraftPlayer) p).getHandle())) {
 							OriginChoosePromptEvent event = new OriginChoosePromptEvent(p);
 							Bukkit.getPluginManager().callEvent(event);

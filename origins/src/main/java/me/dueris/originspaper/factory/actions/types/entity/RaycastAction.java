@@ -1,30 +1,7 @@
 package me.dueris.originspaper.factory.actions.types.entity;
 
-import me.dueris.calio.data.factory.FactoryJsonObject;
-import me.dueris.originspaper.factory.actions.Actions;
-import me.dueris.originspaper.factory.data.types.Space;
-import net.minecraft.commands.CommandSource;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.core.Direction;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.ClipContext.Block;
-import net.minecraft.world.level.ClipContext.Fluid;
-import net.minecraft.world.phys.*;
-import net.minecraft.world.phys.HitResult.Type;
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.util.CraftLocation;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
-
 public class RaycastAction {
-	public static void action(@NotNull FactoryJsonObject data, @NotNull Entity entity) {
+	/*public static void action(@NotNull FactoryJsonObject data, @NotNull Entity entity) {
 		Vec3 origin = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
 		Vec3 direction = entity.getViewVector(1.0F);
 		if (data.isPresent("direction")) {
@@ -227,5 +204,5 @@ public class RaycastAction {
 				&& (biEntityCondition == null || ConditionExecutor.testBiEntity(biEntityCondition, source.getBukkitEntity(), entityx.getBukkitEntity())),
 			ray.lengthSqr()
 		);
-	}
+	}*/
 }

@@ -3,7 +3,6 @@ package me.dueris.originspaper.factory;
 import io.github.dueris.calio.registry.Registrar;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.data.types.Impact;
-import me.dueris.originspaper.factory.powers.apoli.Multiple;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Layer;
@@ -100,9 +99,10 @@ public class CraftApoli {
 		if (power == null) {
 			return nested;
 		} else {
-			if (power instanceof Multiple multiple) {
-				nested.addAll(multiple.getSubPowers());
-			}
+			// todo
+//			if (power instanceof Multiple multiple) {
+//				nested.addAll(multiple.getSubPowers());
+//			}
 
 			return nested;
 		}

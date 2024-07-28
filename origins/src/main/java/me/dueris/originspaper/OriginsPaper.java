@@ -17,10 +17,9 @@ import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.actions.Actions;
 import me.dueris.originspaper.factory.conditions.types.BiEntityConditions;
 import me.dueris.originspaper.factory.data.types.modifier.ModifierOperations;
-import me.dueris.originspaper.factory.powers.apoli.RecipePower;
-import me.dueris.originspaper.factory.powers.apoli.provider.origins.BounceSlimeBlock;
-import me.dueris.originspaper.factory.powers.apoli.provider.origins.WaterBreathe;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
+import me.dueris.originspaper.factory.powers.provider.origins.BounceSlimeBlock;
+import me.dueris.originspaper.factory.powers.provider.origins.WaterBreathe;
 import me.dueris.originspaper.integration.PlaceHolderAPI;
 import me.dueris.originspaper.integration.pehuki.CraftPehuki;
 import me.dueris.originspaper.registry.BuiltinRegistry;
@@ -351,8 +350,9 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 			CraftApoli.unloadData();
 			PowerHolderComponent.playerPowerMapping.clear();
 			PowerHolderComponent.powersAppliedList.clear();
-			RecipePower.recipeMapping.clear();
-			RecipePower.tags.clear();
+			// todo
+//			RecipePower.recipeMapping.clear();
+//			RecipePower.tags.clear();
 			this.registry.clearRegistries();
 			if (scheduler != null) {
 				scheduler.cancel();
@@ -376,7 +376,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		CraftApoli.getLayersFromRegistry().addAll(this.registry.retrieve(Registries.LAYER).values());
 		ChoosingPage.registerInstances();
 		ScreenNavigator.layerPages.values().forEach(pages -> pages.add(pages.size(), new RandomOriginPage()));
-		RecipePower.parseRecipes();
+//		RecipePower.parseRecipes();
 		OrbOfOrigins.init();
 	}
 
