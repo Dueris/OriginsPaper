@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class DamageConditions {
 
-	public static void registerConditions() {
+	public static void registerAll() {
 		MetaConditions.register(Registries.DAMAGE_CONDITION, DamageConditions::register);
 		/*register(new ConditionFactory(OriginsPaper.apoliIdentifier("amount"), (data, damageEvent) -> {
 			return Comparison.fromString(data.getString("comparison")).compare(damageEvent.getDamage(), data.getNumber("compare_to").getFloat());

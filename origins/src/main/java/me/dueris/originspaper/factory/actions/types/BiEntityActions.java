@@ -1,14 +1,30 @@
 package me.dueris.originspaper.factory.actions.types;
 
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
-
-import java.util.function.BiFunction;
+import io.github.dueris.calio.SerializableDataTypes;
+import io.github.dueris.calio.util.holder.Pair;
+import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.factory.actions.ActionFactory;
+import me.dueris.originspaper.factory.actions.meta.*;
+import me.dueris.originspaper.factory.data.ApoliDataTypes;
+import me.dueris.originspaper.registry.Registries;
+import net.minecraft.world.entity.Entity;
 
 // Left is the actor, right is the target.
 public class BiEntityActions {
 
-	public void register() {
+	public static void register(ActionFactory<Pair<Entity, Entity>> factory) {
+		OriginsPaper.getPlugin().registry.retrieve(Registries.BIENTITY_ACTION).register(factory, factory.getSerializerId());
+	}
+
+	public static void registerAll() {
+		register(AndAction.getFactory(SerializableDataTypes.list(ApoliDataTypes.BIENTITY_ACTION)));
+		register(ChanceAction.getFactory(ApoliDataTypes.BIENTITY_ACTION));
+		register(IfElseAction.getFactory(ApoliDataTypes.BIENTITY_ACTION, ApoliDataTypes.BIENTITY_CONDITION));
+		register(ChoiceAction.getFactory(ApoliDataTypes.BIENTITY_ACTION));
+		register(IfElseListAction.getFactory(ApoliDataTypes.BIENTITY_ACTION, ApoliDataTypes.BIENTITY_CONDITION));
+		register(DelayAction.getFactory(ApoliDataTypes.BIENTITY_ACTION));
+		register(NothingAction.getFactory());
+		register(SideAction.getFactory(ApoliDataTypes.BIENTITY_ACTION, entities -> !entities.getLeft().level().isClientSide));
 		/*register(new ActionFactory(OriginsPaper.apoliIdentifier("remove_from_entity_set"), (data, entityPair) -> {
 			RemoveFromSetEvent ev = new RemoveFromSetEvent(entityPair.second(), data.getString("set"));
 			ev.callEvent();
@@ -98,40 +114,6 @@ public class BiEntityActions {
 				mobTarget.setLeashedTo(actor, true);
 			}
 		}));*/
-	}
-
-//	public void register(BiEntityActions.ActionFactory factory) {
-//		OriginsPaper.getPlugin().registry.retrieve(Registries.BIENTITY_ACTION).register(factory);
-//	}
-
-	public enum Reference {
-
-		POSITION((actor, target) -> target.position().subtract(actor.position())),
-		ROTATION((actor, target) -> {
-
-			float pitch = actor.getXRot();
-			float yaw = actor.getYRot();
-
-			float i = 0.017453292F;
-
-			float j = -Mth.sin(yaw * i) * Mth.cos(pitch * i);
-			float k = -Mth.sin(pitch * i);
-			float l = Mth.cos(yaw * i) * Mth.cos(pitch * i);
-
-			return new Vec3(j, k, l);
-
-		});
-
-		final BiFunction<net.minecraft.world.entity.Entity, net.minecraft.world.entity.Entity, Vec3> refFunction;
-
-		Reference(BiFunction<net.minecraft.world.entity.Entity, net.minecraft.world.entity.Entity, Vec3> refFunction) {
-			this.refFunction = refFunction;
-		}
-
-		public Vec3 apply(net.minecraft.world.entity.Entity actor, net.minecraft.world.entity.Entity target) {
-			return refFunction.apply(actor, target);
-		}
-
 	}
 
 }

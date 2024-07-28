@@ -5,12 +5,12 @@ import me.dueris.originspaper.factory.conditions.types.*;
 public class Conditions {
 
 	public static void registerAll() {
-		BiEntityConditions.registerConditions();
-		BiomeConditions.registerConditions();
-		BlockConditions.registerConditions();
-		DamageConditions.registerConditions();
-		EntityConditions.registerConditions();
-		FluidConditions.registerConditions();
-		ItemConditions.registerConditions();
+		BiEntityConditions.registerAll();
+		BiomeConditions.registerAll();
+		BlockConditions.registerAll();
+		DamageConditions.registerAll();
+		EntityConditions.registerAll();
+		FluidConditions.registerAll();
+		ItemConditions.registerAll();
 	}
 }

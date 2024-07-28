@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public enum RotationType {
@@ -47,5 +48,35 @@ public enum RotationType {
 
 	public Vec3 getRotation(Entity entity) {
 		return this.function.apply(entity);
+	}
+
+	public enum Reference {
+
+		POSITION((actor, target) -> target.position().subtract(actor.position())),
+		ROTATION((actor, target) -> {
+
+			float pitch = actor.getXRot();
+			float yaw = actor.getYRot();
+
+			float i = 0.017453292F;
+
+			float j = -Mth.sin(yaw * i) * Mth.cos(pitch * i);
+			float k = -Mth.sin(pitch * i);
+			float l = Mth.cos(yaw * i) * Mth.cos(pitch * i);
+
+			return new Vec3(j, k, l);
+
+		});
+
+		final BiFunction<Entity, Entity, Vec3> refFunction;
+
+		Reference(BiFunction<net.minecraft.world.entity.Entity, net.minecraft.world.entity.Entity, Vec3> refFunction) {
+			this.refFunction = refFunction;
+		}
+
+		public Vec3 apply(net.minecraft.world.entity.Entity actor, net.minecraft.world.entity.Entity target) {
+			return refFunction.apply(actor, target);
+		}
+
 	}
 }

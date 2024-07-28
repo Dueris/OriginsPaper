@@ -19,7 +19,7 @@ public enum Impact {
 	private final ChatFormatting textStyle;
 	private final ResourceLocation spriteId;
 
-	private Impact(int impactValue, String translationKey, ChatFormatting textStyle, ResourceLocation spriteId) {
+	Impact(int impactValue, String translationKey, ChatFormatting textStyle, ResourceLocation spriteId) {
 		this.translationKey = "origins.gui.impact." + translationKey;
 		this.impactValue = impactValue;
 		this.textStyle = textStyle;

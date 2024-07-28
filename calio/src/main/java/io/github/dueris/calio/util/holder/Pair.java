@@ -23,4 +23,12 @@ public record Pair<A, B>(A first, B second) {
 	public B getB() {
 		return second;
 	}
+
+	public A getLeft() {
+		return first;
+	}
+
+	public B getRight() {
+		return second;
+	}
 }

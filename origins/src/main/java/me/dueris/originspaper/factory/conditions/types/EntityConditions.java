@@ -35,7 +35,7 @@ public class EntityConditions {
 		return assumption;
 	}
 
-	public static void registerConditions() {
+	public static void registerAll() {
 		MetaConditions.register(Registries.ENTITY_CONDITION, EntityConditions::register);
 		/*register(new ConditionFactory(OriginsPaper.apoliIdentifier("power_type"), (condition, entity) -> {
 			for (PowerType c : PowerHolderComponent.getPowers(entity)) {

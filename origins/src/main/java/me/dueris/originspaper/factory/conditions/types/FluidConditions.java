@@ -8,7 +8,7 @@ import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.NotNull;
 
 public class FluidConditions {
-	public static void registerConditions() {
+	public static void registerAll() {
 		MetaConditions.register(Registries.FLUID_CONDITION, FluidConditions::register);
 		/*register(new ConditionFactory(OriginsPaper.apoliIdentifier("empty"), (data, fluid) -> {
 			return fluid.defaultFluidState().isEmpty();

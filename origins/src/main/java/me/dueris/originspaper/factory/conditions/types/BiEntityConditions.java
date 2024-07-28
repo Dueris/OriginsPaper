@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 public class BiEntityConditions implements Listener {
-	public static void registerConditions() {
+	public static void registerAll() {
 		MetaConditions.register(Registries.BIENTITY_CONDITION, BiEntityConditions::register);
 		register(ActorCondition.getFactory());
 		register(BothCondition.getFactory());

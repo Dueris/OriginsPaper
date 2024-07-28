@@ -1,20 +1,34 @@
 package me.dueris.originspaper.factory.actions.types;
 
+import io.github.dueris.calio.SerializableDataTypes;
+import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.factory.actions.ActionFactory;
+import me.dueris.originspaper.factory.actions.meta.*;
+import me.dueris.originspaper.factory.data.ApoliDataTypes;
+import me.dueris.originspaper.registry.Registries;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
-
-import java.util.Optional;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+import org.apache.commons.lang3.tuple.Triple;
 
 public class BlockActions {
 
-	private static <T extends Comparable<T>> void modifyEnumState(ServerLevel world, BlockPos pos, BlockState originalState, Property<T> property, String value) {
-		Optional<T> enumValue = property.getValue(value);
-		enumValue.ifPresent(v -> world.setBlockAndUpdate(pos, originalState.setValue(property, v)));
+	public static void register(ActionFactory<Triple<Level, BlockPos, Direction>> factory) {
+		OriginsPaper.getPlugin().registry.retrieve(Registries.BLOCK_ACTION).register(factory, factory.getSerializerId());
 	}
 
-	public void register() {
+	public static void registerAll() {
+		register(AndAction.getFactory(SerializableDataTypes.list(ApoliDataTypes.BLOCK_ACTION)));
+		register(ChanceAction.getFactory(ApoliDataTypes.BLOCK_ACTION));
+		register(IfElseAction.getFactory(ApoliDataTypes.BLOCK_ACTION, ApoliDataTypes.BLOCK_CONDITION,
+			t -> new BlockInWorld(t.getLeft(), t.getMiddle(), true)));
+		register(ChoiceAction.getFactory(ApoliDataTypes.BLOCK_ACTION));
+		register(IfElseListAction.getFactory(ApoliDataTypes.BLOCK_ACTION, ApoliDataTypes.BLOCK_CONDITION,
+			t -> new BlockInWorld(t.getLeft(), t.getMiddle(), true)));
+		register(DelayAction.getFactory(ApoliDataTypes.BLOCK_ACTION));
+		register(NothingAction.getFactory());
+		register(SideAction.getFactory(ApoliDataTypes.BLOCK_ACTION, block -> !block.getLeft().isClientSide));
 		/*register(new ActionFactory(OriginsPaper.apoliIdentifier("explode"), (data, location) -> {
 			float explosionPower = data.getNumber("power").getFloat();
 			String destruction_type = "break";

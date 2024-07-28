@@ -13,10 +13,7 @@ import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.data.exceptions.DataException;
 import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
-import io.github.dueris.calio.util.ArgumentWrapper;
-import io.github.dueris.calio.util.ReflectionUtils;
-import io.github.dueris.calio.util.StatusEffectChance;
-import io.github.dueris.calio.util.Util;
+import io.github.dueris.calio.util.*;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.commands.arguments.NbtPathArgument;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
@@ -326,40 +323,6 @@ public class SerializableDataTypes {
 			throw new JsonSyntaxException("Unable to build ItemStack from provided object!");
 		}, ItemStack.class
 	);
-	public static final SerializableDataBuilder<Component> TEXT = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			return ComponentSerialization.CODEC
-				.parse(JsonOps.INSTANCE, jsonElement)
-				.getOrThrow(JsonParseException::new);
-		}, Component.class
-	);
-	public static final SerializableDataBuilder<net.kyori.adventure.text.Component> KYORI_COMPONENT = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			return net.kyori.adventure.text.Component.text(TEXT.deserialize(jsonElement).getString());
-		}, net.kyori.adventure.text.Component.class
-	);
-	public static final SerializableDataBuilder<RecipeHolder<? extends Recipe<?>>> RECIPE = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			if (!(jsonElement instanceof JsonObject jsonObject)) {
-				throw new JsonSyntaxException("Expected recipe to be a JSON object.");
-			}
-
-			ResourceLocation id = IDENTIFIER.deserialize(GsonHelper.getNonNull(jsonObject, "id"));
-			Recipe<?> recipe = Recipe.CODEC
-				.parse(JsonOps.INSTANCE, jsonObject)
-				.getOrThrow(JsonParseException::new);
-
-			return new RecipeHolder<>(id, recipe);
-		}, RecipeHolder.class
-	);
-	public static final SerializableDataBuilder<GameEvent> GAME_EVENT = registry(GameEvent.class, BuiltInRegistries.GAME_EVENT);
-	public static final SerializableDataBuilder<Holder<GameEvent>> GAME_EVENT_ENTRY = registryEntry(BuiltInRegistries.GAME_EVENT);
-	public static final SerializableDataBuilder<TagKey<GameEvent>> GAME_EVENT_TAG = tag(Registries.GAME_EVENT);
-	public static final SerializableDataBuilder<Fluid> FLUID = registry(Fluid.class, BuiltInRegistries.FLUID);
-	public static final SerializableDataBuilder<FogType> CAMERA_SUBMERSION_TYPE = enumValue(FogType.class);
-	public static final SerializableDataBuilder<InteractionHand> HAND = enumValue(InteractionHand.class);
-	public static final SerializableDataBuilder<InteractionResult> ACTION_RESULT = enumValue(InteractionResult.class);
-	public static final SerializableDataBuilder<UseAnim> USE_ACTION = enumValue(UseAnim.class);
 	public static final SerializableDataBuilder<FoodProperties.PossibleEffect> FOOD_STATUS_EFFECT_ENTRY = SerializableDataBuilder.of(
 		(jsonElement) -> {
 			return FoodProperties.PossibleEffect.CODEC
@@ -411,6 +374,40 @@ public class SerializableDataTypes {
 			return builder.build();
 		}, FoodProperties.class
 	);
+	public static final SerializableDataBuilder<Component> TEXT = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			return ComponentSerialization.CODEC
+				.parse(JsonOps.INSTANCE, jsonElement)
+				.getOrThrow(JsonParseException::new);
+		}, Component.class
+	);
+	public static final SerializableDataBuilder<net.kyori.adventure.text.Component> KYORI_COMPONENT = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			return net.kyori.adventure.text.Component.text(TEXT.deserialize(jsonElement).getString());
+		}, net.kyori.adventure.text.Component.class
+	);
+	public static final SerializableDataBuilder<RecipeHolder<? extends Recipe<?>>> RECIPE = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			if (!(jsonElement instanceof JsonObject jsonObject)) {
+				throw new JsonSyntaxException("Expected recipe to be a JSON object.");
+			}
+
+			ResourceLocation id = IDENTIFIER.deserialize(GsonHelper.getNonNull(jsonObject, "id"));
+			Recipe<?> recipe = Recipe.CODEC
+				.parse(JsonOps.INSTANCE, jsonObject)
+				.getOrThrow(JsonParseException::new);
+
+			return new RecipeHolder<>(id, recipe);
+		}, RecipeHolder.class
+	);
+	public static final SerializableDataBuilder<GameEvent> GAME_EVENT = registry(GameEvent.class, BuiltInRegistries.GAME_EVENT);
+	public static final SerializableDataBuilder<Holder<GameEvent>> GAME_EVENT_ENTRY = registryEntry(BuiltInRegistries.GAME_EVENT);
+	public static final SerializableDataBuilder<TagKey<GameEvent>> GAME_EVENT_TAG = tag(Registries.GAME_EVENT);
+	public static final SerializableDataBuilder<Fluid> FLUID = registry(Fluid.class, BuiltInRegistries.FLUID);
+	public static final SerializableDataBuilder<FogType> CAMERA_SUBMERSION_TYPE = enumValue(FogType.class);
+	public static final SerializableDataBuilder<InteractionHand> HAND = enumValue(InteractionHand.class);
+	public static final SerializableDataBuilder<InteractionResult> ACTION_RESULT = enumValue(InteractionResult.class);
+	public static final SerializableDataBuilder<UseAnim> USE_ACTION = enumValue(UseAnim.class);
 	public static final SerializableDataBuilder<Direction> DIRECTION = enumValue(Direction.class);
 	public static final SerializableDataBuilder<Set<Direction>> DIRECTION_SET = set(DIRECTION);
 	public static final SerializableDataBuilder<Class<?>> CLASS = SerializableDataBuilder.of(
@@ -458,14 +455,14 @@ public class SerializableDataTypes {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
 				Set<T> set = new HashSet<>();
-				if(jsonElement.isJsonArray()) {
+				if (jsonElement.isJsonArray()) {
 					int i = 0;
-					for(JsonElement je : jsonElement.getAsJsonArray()) {
+					for (JsonElement je : jsonElement.getAsJsonArray()) {
 						try {
 							set.add(singular.deserialize(je));
-						} catch(DataException e) {
+						} catch (DataException e) {
 							throw e.prepend("[" + i + "]");
-						} catch(Exception e) {
+						} catch (Exception e) {
 							throw new DataException(DataException.Phase.READING, "[" + i + "]", e);
 						}
 						i++;
@@ -482,14 +479,14 @@ public class SerializableDataTypes {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
 				LinkedList<T> list = new LinkedList<>();
-				if(jsonElement.isJsonArray()) {
+				if (jsonElement.isJsonArray()) {
 					int i = 0;
-					for(JsonElement je : jsonElement.getAsJsonArray()) {
+					for (JsonElement je : jsonElement.getAsJsonArray()) {
 						try {
 							list.add(singular.deserialize(je));
-						} catch(DataException e) {
+						} catch (DataException e) {
 							throw e.prepend("[" + i + "]");
-						} catch(Exception e) {
+						} catch (Exception e) {
 							throw new DataException(DataException.Phase.READING, "[" + i + "]", e);
 						}
 						i++;
@@ -506,14 +503,14 @@ public class SerializableDataTypes {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
 				ConcurrentLinkedQueue<T> linkedQueue = new ConcurrentLinkedQueue<>();
-				if(jsonElement.isJsonArray()) {
+				if (jsonElement.isJsonArray()) {
 					int i = 0;
-					for(JsonElement je : jsonElement.getAsJsonArray()) {
+					for (JsonElement je : jsonElement.getAsJsonArray()) {
 						try {
 							linkedQueue.add(singular.deserialize(je));
-						} catch(DataException e) {
+						} catch (DataException e) {
 							throw e.prepend("[" + i + "]");
-						} catch(Exception e) {
+						} catch (Exception e) {
 							throw new DataException(DataException.Phase.READING, "[" + i + "]", e);
 						}
 						i++;
@@ -672,6 +669,29 @@ public class SerializableDataTypes {
 				}
 			}, ArgumentWrapper.class
 		);
+	}
+
+	public static <T> SerializableDataBuilder<FilterableWeightedList<T>> weightedList(SerializableDataBuilder<T> singleDataType) {
+		return SerializableDataBuilder.of((jsonElement) -> {
+			FilterableWeightedList<T> list = new FilterableWeightedList<>();
+			if (jsonElement.isJsonArray()) {
+				int i = 0;
+				for (JsonElement je : jsonElement.getAsJsonArray()) {
+					try {
+						JsonObject weightedObj = je.getAsJsonObject();
+						T elem = singleDataType.deserialize(weightedObj.get("element"));
+						int weight = GsonHelper.getAsInt(weightedObj, "weight");
+						list.add(elem, weight);
+					} catch (DataException e) {
+						throw e.prepend("[" + i + "]");
+					} catch (Exception e) {
+						throw new DataException(DataException.Phase.READING, "[" + i + "]", e);
+					}
+					i++;
+				}
+			}
+			return list;
+		}, Util.castClass(FilterableWeightedList.class));
 	}
 
 	private static void initValues(@NotNull JsonObject object, List<Ingredient.Value> entries) {

@@ -7,7 +7,7 @@ import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.NotNull;
 
 public class BiomeConditions {
-	public static void registerConditions() {
+	public static void registerAll() {
 		MetaConditions.register(me.dueris.originspaper.registry.Registries.BIOME_CONDITION, BiomeConditions::register);
 		/*register(new ConditionFactory(OriginsPaper.apoliIdentifier("high_humidity"), (data, biome) -> biome.value().climateSettings.downfall() > 0.85F));
 		register(new ConditionFactory(OriginsPaper.apoliIdentifier("temperature"), (data, biome) -> Comparison.fromString(data.getString("comparison")).compare(biome.value().getBaseTemperature(), data.getNumber("compare_to").getFloat())));

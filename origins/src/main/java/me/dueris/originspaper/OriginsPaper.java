@@ -325,6 +325,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new PowerHolderComponent(), this);
 		this.getServer().getPluginManager().registerEvents(new CraftPehuki(), this);
 		this.getServer().getPluginManager().registerEvents(EntityLinkedItemStack.getInstance(), this);
+		this.getServer().getPluginManager().registerEvents(new ApoliScheduler(), this);
 		this.registry.retrieve(Registries.CRAFT_POWER).values().forEach(powerType -> {
 			if (powerType != null) {
 				this.getServer().getPluginManager().registerEvents(powerType, this);

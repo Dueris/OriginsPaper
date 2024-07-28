@@ -4,13 +4,13 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
 import me.dueris.originspaper.registry.Registries;
-import org.bukkit.craftbukkit.block.CraftBlock;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import org.jetbrains.annotations.NotNull;
 
 
 public class BlockConditions {
 
-	public static void registerConditions() {
+	public static void registerAll() {
 		MetaConditions.register(Registries.BLOCK_CONDITION, BlockConditions::register);
 		/*register(new ConditionFactory(OriginsPaper.apoliIdentifier("offset"), (data, block) -> {
 			return ConditionExecutor.testBlock(data.getJsonObject("condition"), block.getWorld().getBlockAt(block.getLocation().offset(
@@ -248,7 +248,7 @@ public class BlockConditions {
 		}));*/
 	}
 
-	public static void register(@NotNull ConditionFactory<CraftBlock> factory) {
+	public static void register(@NotNull ConditionFactory<BlockInWorld> factory) {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.BLOCK_CONDITION).register(factory, factory.getSerializerId());
 	}
 
