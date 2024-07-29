@@ -8,7 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import joptsimple.internal.Strings;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.powers.holder.PowerType;
+import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.util.JsonTextFormatter;

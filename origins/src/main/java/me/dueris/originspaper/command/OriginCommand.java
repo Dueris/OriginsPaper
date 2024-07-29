@@ -10,7 +10,7 @@ import javassist.NotFoundException;
 import me.dueris.originspaper.content.OrbOfOrigins;
 import me.dueris.originspaper.event.OriginChangeEvent;
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.powers.holder.PowerType;
+import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;

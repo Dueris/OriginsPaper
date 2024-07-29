@@ -6,7 +6,7 @@ import io.github.dueris.calio.util.holder.Pair;
 import me.dueris.originspaper.factory.actions.ActionFactory;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.data.types.modifier.IModifierOperation;
-import me.dueris.originspaper.factory.powers.holder.PowerType;
+import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.screen.ChoosingPage;

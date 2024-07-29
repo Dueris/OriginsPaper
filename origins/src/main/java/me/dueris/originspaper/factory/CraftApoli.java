@@ -3,7 +3,7 @@ package me.dueris.originspaper.factory;
 import io.github.dueris.calio.registry.Registrar;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.data.types.Impact;
-import me.dueris.originspaper.factory.powers.holder.PowerType;
+import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;
@@ -48,7 +48,7 @@ public class CraftApoli {
 		return powerValues;
 	}
 
-	public static Origin getOrigin(ResourceLocation location) {
+	public static Origin getOrigin(@NotNull ResourceLocation location) {
 		return getOrigin(location.toString());
 	}
 

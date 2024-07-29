@@ -26,7 +26,6 @@ import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 
 public record CraftCalio(boolean threaded, int threadCount) {
-	private static ExecutorService threadedParser;
 
 	@Contract("_ -> new")
 	public static @NotNull CraftCalio buildInstance(String[] args) {
@@ -39,7 +38,8 @@ public record CraftCalio(boolean threaded, int threadCount) {
 		boolean threaded = (Boolean) options.valueOf("async");
 		int threadCount = 3;
 		if (threaded) {
-			threadedParser = Executors.newFixedThreadPool(threadCount, new ParserFactory(threadCount));
+			CalioParser.threadedParser = Executors.newFixedThreadPool(threadCount, new ParserFactory(threadCount));
+			CalioParser.threaded = true;
 		}
 		return new CraftCalio(threaded, threadCount);
 	}
@@ -89,50 +89,32 @@ public record CraftCalio(boolean threaded, int threadCount) {
 						return ent.getKey().priority();
 					}));
 					Iterator<Map.Entry<AccessorKey<?>, ConcurrentLinkedQueue<Pair<String, String>>>> entryIterator = entries.iterator();
-					List<CompletableFuture<Void>> parsingTasks = new ArrayList<>();
-
 					while (entryIterator.hasNext()) {
 						Map.Entry<AccessorKey<?>, ConcurrentLinkedQueue<Pair<String, String>>> entry = entryIterator.next();
-						Optional<CompletableFuture<Void>> future = this.submitParseTask(() -> {
-							try {
-								CalioParser.fromJsonFile(entry).forEach((out) -> {
-									if (out.first() == null || out.second() == null) {
-										throw new RuntimeException("Output instance or output ResourceLocation was null!");
-									}
-								});
-							} catch (Throwable throwable) {
-								throwable.printStackTrace();
-							}
-
-						});
-						Objects.requireNonNull(parsingTasks);
-						future.ifPresent(parsingTasks::add);
+						try {
+							CalioParser.fromJsonFile(entry).forEach((out) -> {
+								if (out.first() == null || out.second() == null) {
+									throw new RuntimeException("Output instance or output ResourceLocation was null!");
+								}
+							});
+						} catch (Throwable throwable) {
+							throwable.printStackTrace();
+						}
 					}
 
-					CompletableFuture<Void> allOf = CompletableFuture.allOf(parsingTasks.toArray(new CompletableFuture[0]));
-					allOf.get();
 				}
 
-				if (threadedParser != null) {
-					threadedParser.shutdown();
+				if (CalioParser.threadedParser != null) {
+					CalioParser.threadedParser.shutdown();
 				}
 				return true;
 			}
 		}
 	}
 
-	private Optional<CompletableFuture<Void>> submitParseTask(Runnable runnable) {
-		CompletableFuture<Void> voidCompletableFuture = threaded ? CompletableFuture.runAsync(runnable, threadedParser) : null;
-		if (voidCompletableFuture == null) {
-			runnable.run();
-			return Optional.empty();
-		}
-		return Optional.of(voidCompletableFuture);
-	}
-
-
+	@Contract(pure = true)
 	@Override
-	public String toString() {
+	public @NotNull String toString() {
 		return "CraftCalio[" +
 			"async=" + threaded + ", " +
 			"threadCount=" + threadCount + ']';

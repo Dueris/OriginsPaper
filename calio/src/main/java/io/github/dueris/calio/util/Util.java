@@ -25,7 +25,7 @@ public class Util {
 			String[] parts = path.split("/");
 			if (parts.length < 4) return null;
 			String name = parts[4].replace(".json", "");
-			String resourceString = parts[2] + ":" + name;
+			String resourceString = parts[1] + ":" + name;
 			return ResourceLocation.read(resourceString).getOrThrow();
 		} catch (Exception e) {
 			return null;

@@ -17,7 +17,7 @@ import me.dueris.originspaper.factory.actions.Actions;
 import me.dueris.originspaper.factory.conditions.Conditions;
 import me.dueris.originspaper.factory.conditions.types.BiEntityConditions;
 import me.dueris.originspaper.factory.data.types.modifier.ModifierOperations;
-import me.dueris.originspaper.factory.powers.holder.PowerType;
+import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.factory.powers.provider.origins.BounceSlimeBlock;
 import me.dueris.originspaper.factory.powers.provider.origins.WaterBreathe;
 import me.dueris.originspaper.integration.PlaceHolderAPI;

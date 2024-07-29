@@ -20,7 +20,7 @@ import it.unimi.dsi.fastutil.ints.IntLists;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.actions.ActionFactory;
-import me.dueris.originspaper.factory.powers.holder.PowerType;
+import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.registry.registries.Origin;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.commands.arguments.SlotArgument;

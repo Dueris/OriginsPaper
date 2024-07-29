@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.powers.holder.PowerType;
+import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.minecraft.resources.ResourceLocation;

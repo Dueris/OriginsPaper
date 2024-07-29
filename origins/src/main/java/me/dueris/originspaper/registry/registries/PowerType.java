@@ -1,4 +1,4 @@
-package me.dueris.originspaper.factory.powers.holder;
+package me.dueris.originspaper.registry.registries;
 
 import com.google.gson.JsonObject;
 import io.github.classgraph.ClassGraph;
@@ -9,6 +9,7 @@ import io.github.dueris.calio.util.annotations.SourceProvider;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.data.ApoliDataTypes;
+import me.dueris.originspaper.factory.powers.SimplePower;
 import me.dueris.originspaper.factory.powers.provider.OriginSimpleContainer;
 import me.dueris.originspaper.factory.powers.provider.origins.*;
 import me.dueris.originspaper.util.LangFile;
@@ -28,6 +29,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PowerType implements Listener {
 	public static ConcurrentLinkedQueue<Class<? extends PowerType>> INSTANCE_TYPES = new ConcurrentLinkedQueue<>();
+	public static Class<? extends PowerType> DEFAULT_TYPE = SimplePower.class;
 	private final ResourceLocation key;
 	private final @NotNull TextComponent name;
 	private final @NotNull TextComponent description;

@@ -3,7 +3,7 @@ package me.dueris.originspaper.screen;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.data.types.Impact;
-import me.dueris.originspaper.factory.powers.holder.PowerType;
+import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.util.ComponentUtil;
@@ -172,14 +172,9 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 				if (!powerContainers.isEmpty()) {
 					ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 					ItemMeta meta = originPower.getItemMeta();
-					meta.displayName(ComponentUtil.stringToComponent(LangFile.transform(PlainTextComponentSerializer.plainText().serialize(powerContainers.get(0).name()))));
+					meta.displayName(ComponentUtil.stringToComponent(LangFile.transform(PlainTextComponentSerializer.plainText().serialize(powerContainers.get(0).name()))).decoration(TextDecoration.ITALIC, false));
 					Arrays.stream(ItemFlag.values()).toList().forEach(originPower::addItemFlags);
-					List<Component> lore = ComponentUtil.stringListToComponent(cutStringIntoLines(LangFile.transform(PlainTextComponentSerializer.plainText().serialize(powerContainers.get(0).description()))));
-					lore.forEach(component -> {
-						component
-							.decoration(TextDecoration.ITALIC, false)
-							.color(NamedTextColor.GRAY);
-					});
+					List<Component> lore = cutStringIntoLines(LangFile.transform(PlainTextComponentSerializer.plainText().serialize(powerContainers.get(0).description()))).stream().map(OriginPage::noItalic).toList();
 					meta.lore(lore);
 					originPower.setItemMeta(meta);
 					Arrays.stream(ItemFlag.values()).toList().forEach(originPower::addItemFlags);
