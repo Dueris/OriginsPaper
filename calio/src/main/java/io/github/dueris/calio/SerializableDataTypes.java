@@ -247,7 +247,7 @@ public class SerializableDataTypes {
 	);
 	public static final SerializableDataBuilder<EntityType<?>> ENTITY_TYPE = registry(Util.castClass(EntityType.class), BuiltInRegistries.ENTITY_TYPE);
 	public static final SerializableDataBuilder<ParticleType<?>> PARTICLE_TYPE = registry(Util.castClass(ParticleType.class), BuiltInRegistries.PARTICLE_TYPE);
-	public static final SerializableDataBuilder<CompoundTag> COMPOUND_NBT = SerializableDataBuilder.of(
+	public static final SerializableDataBuilder<CompoundTag> NBT = SerializableDataBuilder.of(
 		(jsonElement) -> {
 			return Codec.withAlternative(CompoundTag.CODEC, TagParser.LENIENT_CODEC)
 				.parse(JsonOps.INSTANCE, jsonElement)
@@ -261,7 +261,7 @@ public class SerializableDataTypes {
 			if (jsonElement.isJsonObject()) {
 				JsonObject jo = jsonElement.getAsJsonObject();
 				if (jo.has("params")) {
-					paramsNbt = COMPOUND_NBT.deserialize(jo.get("params"));
+					paramsNbt = NBT.deserialize(jo.get("params"));
 				}
 				particleType = PARTICLE_TYPE.deserialize(jo.get("type"));
 			} else {
@@ -475,6 +475,29 @@ public class SerializableDataTypes {
 		);
 	}
 
+	@Contract("_, _ -> new")
+	public static <T extends Enum<T>> @NotNull SerializableDataBuilder<EnumSet<T>> enumSet(Class<T> enumClass, SerializableDataBuilder<T> enumDataType) {
+		return SerializableDataBuilder.of(
+			(json) -> {
+				EnumSet<T> set = EnumSet.noneOf(enumClass);
+				if(json.isJsonPrimitive()) {
+					T t = enumDataType.deserialize(json);
+					set.add(t);
+				} else
+				if(json.isJsonArray()) {
+					JsonArray array = json.getAsJsonArray();
+					for (JsonElement jsonElement : array) {
+						T t = enumDataType.deserialize(jsonElement);
+						set.add(t);
+					}
+				} else {
+					throw new RuntimeException("Expected enum set to be either an array or a primitive.");
+				}
+				return set;
+			}, Util.castClass(EnumSet.class));
+	}
+
+	@Contract(value = "_ -> new", pure = true)
 	public static <T> @NotNull SerializableDataBuilder<List<T>> list(SerializableDataBuilder<T> singular) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {

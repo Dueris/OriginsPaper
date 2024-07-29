@@ -19,7 +19,7 @@ public class InvertCondition {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("invert"),
 			InstanceDefiner.instanceDefiner()
-				.required("condition", ApoliDataTypes.BIENTITY_CONDITION),
+				.add("condition", ApoliDataTypes.BIENTITY_CONDITION),
 			(data, actorAndTarget) -> {
 				return data.<Predicate<Tuple<Entity, Entity>>>get("condition").test(new Tuple<>(actorAndTarget.getB(), actorAndTarget.getA()));
 			}

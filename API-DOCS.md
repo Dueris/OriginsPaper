@@ -49,7 +49,7 @@ dependencies:
 The Power system in OriginsPaper works closely to the Apoli PowerType system, where each PowerType instance is a
 representation of a Power json inside the datapack. For example:
 
-I have a power in ``data/dueris/powers/test.json`` with the `"type"` field as `"apoli:test"`, and a PowerType of the
+I have a power in ``data/dueris/apoli/power/test.json`` with the `"type"` field as `"apoli:test"`, and a PowerType of the
 type `"apoli:test"`. Calio will create a new instance of the PowerType and register it using defined AccessorKeys(more
 details bellow in the `Calio` section).
 
@@ -61,60 +61,63 @@ public class ApoliExamplePower extends PowerType {
 }
 ```
 
-In Calio/Apoli, a PowerType is an extension of the FactoryHolder system which contains methods to create a valid
-instance for Calio to create the object. To create a FactoryHolder inside Calio during parsing, it reads the FactoryData
-provided by the FactoryHolder, which is defined by the method ``registerComponents(FactoryData data)``. FactoryData is
-the definition of a Constructor for the FactoryHolder. The first instance added is the first arg, the second being the
-second arg, etc. It also provides the key for the `"type"` field.
+In Calio/Apoli, a PowerType is an object that defines the main logic and handling of powers for the players it has assigned to it.
+To create an instance of any class inside Calio during parsing, it reads the InstanceDefiner, which is defined by the
+method ``static InstanceDefiner buildDefiner()``. InstanceDefiners are definition of a Constructor for the FactoryHolder. The first instance
+added is the first arg, the second being the second arg, etc. It also provides the key for the `"type"` field. However, in Calio, there
+is a required argument of a ResourceLocation at the beginning of the constructor your InstanceDefiner is creating, which is the `"key"` argument.
+The key argument is the argument assigned to the instance upon instance creation, named after the Namesace and Key of the json.
 With adding the constructor, it becomes:
 
 ```java
 public class ApoliExamplePower extends PowerType {
-	public ApoliExamplePower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
-		super(name, description, hidden, condition, loading_priority);
+	public ApoliExamplePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority) {
+		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 }
 ```
 
-Adding the method to create the FactoryData:
+Adding the method to create the InstanceDefiner:
 
 ```java
 public class ApoliExamplePower extends PowerType {
-	public ApoliExamplePower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority) {
-		super(name, description, hidden, condition, loading_priority);
+	public ApoliExamplePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority) {
+		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	// registerComponents method. We call the PowerType.registerComponents method first to define those args
-	// from the base instead of Copy/Pasting its registerComponents method and adding to it.
+	// buildDefiner method. We call the PowerType.buildDefiner method first to define those args
+	// from the base instead of Copy/Pasting its buildDefiner method and adding to it.
 	// By default, the PowerType class does not contain a Namespace, which is why ofNamespace needs to be added.
 	// The way this is made allows for creating easy extensions of any power without too much struggle.
-	public static FactoryData registerComponents(FactoryData data) {
-		return PowerType.registerComponents(data).ofNamespace(new NamespacedKey("example", "apoli"));
+	public static InstanceDefiner buildDefiner() {
+		return PowerType.buildDefiner().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"));
 	}
 }
 ```
 
-To Add your own fields to the power json, its as simple as adding the ``add`` method to the FactoryData building.
-The ``add`` method takes a FactoryDataDefiner, which is an Object that defines the 3 args needed for FactoryData
-building, or you can provide the 3 args and the FactoryData will create the instance for you. The method takes 3 params,
-a `String` key, a `Class<T>` class type, which defines the type of class the arg will be, and a `T` default value.
-Gradle should throw a compile error if your class type provided and the default value do not match. The default value
-can be null. To add a required param, you can replace the default value with a `new RequiredInstance()`, and Calio will
-throw a ParseException if the value isnt provided. To add an optional param, its the same thing but with
-a `new OptionalInstance()`. Calio will provide null if not found.
+To Add your own fields to the power json, its as simple as defining what field name, SerializableDataType,
+which is an instance of a deserializer for json elements to translate a JsonElement to a Java object. There
+are multiple classes to get SerializableDataTypes from(SerializableDataTypes, ApoliDataTypes, OriginsDataTypes), or you can
+create your own!
+
+| Method Name                                                          | Description                                                                                             |
+|----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| required(String key, SerializableDataBuilder<T> dataType)            | Adds a required field to the InstanceDefiner                                                            |
+| add(String key, SerializableDataBuilder<T> dataType)                 | Adds a nullable field to the InstanceDefiner, when the field is not present, it returns null            |
+| add(String key, SerializableDataBuilder<T> dataType, T defaultValue) | Adds a field to the InstanceDefiner with a default value that is provided when the field is not present |
 
 ```java
 public class ApoliExamplePower extends PowerType {
 	private String welcomeMessage;
 
-	public ApoliExamplePower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, String welcomeMessage) {
-		super(name, description, hidden, condition, loading_priority);
+	public ApoliExamplePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority, String welcomeMessage) {
+		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static FactoryData registerComponents(FactoryData data) {
-		return PowerType.registerComponents(data).ofNamespace(new NamespacedKey("example", "apoli"))
-			/* |   Field name   |   Class type   |   Default value   | */
-			.add("welcome_message", String.class, "Hello World!");
+	public static InstanceDefiner buildDefiner() {
+		return PowerType.buildDefiner().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"))
+			/* |   Field name   |   SerializableDataType instance   |   Default value   | */
+			.add("welcome_message", SerializableDataTypes.STRING, "Hello World!");
 	}
 
 	public String welcomeMessage() {
@@ -124,15 +127,14 @@ public class ApoliExamplePower extends PowerType {
 ```
 
 By default, a PowerType is an implementation of a Listener instance, so there is no need to
-add `implements org.bukkit.Listener` to your class. However, if you are creating an external plugin, you will need to
-register your Class as a Listener with Bukkit, as Calio doesnt do this automagically. If you are contributing, then
-there is no need because during registration of the Power, OriginsPaper takes care of this.
+add `implements org.bukkit.Listener` to your class. When extending the PowerType instance, it will
+automagically register your Listener as a Listener in OriginsPaper
 
 Now that we have created our PowerType, lets register it. Its as simple as adding calling this method:
 
 ```java
-// Registers the PowerType in the Calio "type" registry
-CraftCalio.INSTANCE.register(ApoliExamplePower .class/*replace with your class*/);
+// Registers the PowerType in the PowerType "type" registry
+PowerType.INSTANCE_TYPES.add(ApoliExamplePower.class); // Replace with the class of the PowerType you are registering
 ```
 
 ### Adding functionality to your PowerType
@@ -151,13 +153,13 @@ For this example, we are going to use `tick(Player)`:
 public class ApoliExamplePower extends PowerType {
 	private String welcomeMessage;
 
-	public ApoliExamplePower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, String welcomeMessage) {
-		super(name, description, hidden, condition, loading_priority);
+	public ApoliExamplePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority, String welcomeMessage) {
+		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static FactoryData registerComponents(FactoryData data) {
-		return PowerType.registerComponents(data).ofNamespace(new NamespacedKey("example", "apoli"))
-			.add("welcome_message", String.class, "Hello World!");
+	public static InstanceDefiner buildDefiner() {
+		return PowerType.buildDefiner().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"))
+			.add("welcome_message", SerializableDataTypes.STRING, "Hello World!");
 	}
 
 	public String welcomeMessage() {
@@ -167,7 +169,7 @@ public class ApoliExamplePower extends PowerType {
 	@Override
 	public void tick(Player player) {
 		if (player.getGameMode().equals(GameMode.CREATIVE)) {
-			player.sendMessage(Component.text("Your in creative mode!"));
+			player.sendMessage(Component.text("You're in creative mode!"));
 		}
 	}
 }
@@ -180,13 +182,13 @@ provided `welcomeMessage` value should be the one that was provided in the json,
 public class ApoliExamplePower extends PowerType {
 	private String welcomeMessage;
 
-	public ApoliExamplePower(String name, String description, boolean hidden, FactoryJsonObject condition, int loading_priority, String welcomeMessage) {
-		super(name, description, hidden, condition, loading_priority);
+	public ApoliExamplePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority, String welcomeMessage) {
+		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static FactoryData registerComponents(FactoryData data) {
-		return PowerType.registerComponents(data).ofNamespace(new NamespacedKey("example", "apoli"))
-			.add("welcome_message", String.class, "Hello World!");
+	public static InstanceDefiner buildDefiner() {
+		return PowerType.buildDefiner().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"))
+			.add("welcome_message", SerializableDataTypes.STRING, "Hello World!");
 	}
 
 	public String welcomeMessage() {
@@ -216,39 +218,35 @@ To create a new Condition, is a little bit weirder. The current Condition system
 plugins in mind, but its possible to hook into the Condition system with ease.
 In this tutorial, we are going to add a new entity condition that checks if the entity is currently in spectator mode.
 
-To register a Condition, you must first go through the ConditionExecutor to access the conditions `register` method.
-Each Condition class has its respective ConditionFactory class. A ConditionFactory is a builder for creating,
-registering, and calling Conditions. Conditions in OriginsPaper are defined by a NamepacedKey as the associated type,
-and a
-Predicate to define if the condition is true or not. Each Condition type category has its own ConditionFactory.
+To register a Condition, you must first go through the main Condition type class(like `EntityConditions`) to access the conditions `register` method.
+Each Condition class uses the ConditionFactory class. A ConditionFactory<T> is a builder for creating,
+registering, and calling Conditions. Conditions in OriginsPaper are defined by a ResourceLocation as the associated type,
+and a Predicate to define if the condition is true or not. Each Condition type category has a different <T> value for the ConditionFactory<T> (like entity conditions would use ConditionFactory<Entity>).
+
+In this example, we will register a new Entity Condition.
 
 ```java
-ConditionExecutor.entityConditions.register(new EntityConditions.ConditionFactory());
+EntityConditions.register(new ConditionFactory<Entity>());
 ```
 
 Now, we are going to add our `"type"` param, which defines the type associated in the json, like "origins:sprinting":
 
 ```java
-ConditionExecutor.entityConditions.register(new EntityConditions.ConditionFactory(new NamespacedKey("dueris", "in_spectator")));
+register(new ConditionFactory<>(ResourceLocation.fromNamespaceAndPath("test", "example")));
 ```
 
-The 2nd and last arg is the Predicate. In the EntityConditon ConditionFactory, it is a BiPredicate<FactoryJsonObject,
-CraftEntity>, condition object and the entity. Each ConditionFactory has a FactoryJsonObject as its condition provider,
-which is a set of methods for reading and parsing data within the JsonObject provided. For more info on
-FactoryJsonObjects, please see the Calio docs.
+The 2nd arg is an InstanceDefiner, which functions exactly how the PowerType instance definer works for building! The 3rd
+and final arg is a `BiPredicate<DeserializedFactoryJson, T>`. A DeserializedFactoryJson is similar to the Apoli SerializableData.Instance
+class, which acts as an accessor for getting values defined in the InstanceDefiner.
 
 ```java
-ConditionExecutor.entityConditions.register(new EntityConditions.ConditionFactory(new NamespacedKey("dueris", "in_spectator"), (condition,entity)->{
-	if(entity instanceof
-Player player){
-	return player.
-
-getGameMode().
-
-equals(GameMode.SPECTATOR);
-	}
-		return false;
-		}));
+register(new ConditionFactory<>(
+	ResourceLocation.fromNamespaceAndPath("test", "example"),
+	InstanceDefiner.instanceDefiner(),
+        (data, entity) -> {
+		    return entity.isAlive();
+	    }
+));
 ```
 
 Now we have a fully functioning condition added to the plugin! OriginsPaper should automagically setup the rest of the
@@ -256,34 +254,8 @@ registration to allow any origin to test the condition.
 
 ## Actions
 
-Creating a new Action is quite similar to creating a new Condition, but with ActionFactories instead. In this tutorial,
-we are going to create a new Action called "dueris:welcome", which will send a welcome message to a Player. The
-ActionFactory system is quite literally the same thing as the Condition system, but with different registry points and
-we use BiFunctions instead of BiPredicates, since we dont need a return value for the action.
-
-```java
-Actions.entityActions.register(new EntityActions.ActionFactory());
-```
-
-Now we define our `"type"` param, like before:
-
-```java
-Actions.entityActions.register(new EntityActions.ActionFactory(new NamespacedKey("dueris", "welcome")));
-```
-
-And lets add our functionality to our Action:
-
-```java
-Actions.entityActions.register(new EntityActions.ActionFactory(new NamespacedKey("dueris", "welcome"), (action,entity)->{
-	if(entity instanceof
-Player player){
-	// We send the welcome message with a provided "message" param inside the Action.
-	player.
-
-sendMessage(Component.text(action.getString("message")));
-	}
-	}));
-```
+Creating an Action is literally the EXACT same thing as creating a Condition, but its with an ActionFactory, which is the same
+as a ConditionFactory but with BiConsumers instead of BiPredicates.
 
 And thats it! Almost the exact same thing as Condition registration, and the same process in the end aswell.
 
@@ -351,12 +323,8 @@ Lets do it with a provided PowerType arg:
 
 ```java
 Entity entity = /*your entity instance*/;
-if(PowerHolderComponent.
-
-hasPowerType(entity, Phasing .class)){
-	entity.
-
-sendMessage(Component.text("You have a phasing power!"));
+    if (PowerHolderComponent.hasPowerType(entity, Phasing.class)) {
+	    entity.sendMessage(Component.text("You have a phasing power!"));
 	}
 ```
 
@@ -364,13 +332,9 @@ When using the one with a provided String, it takes a Power *tag*, not a Power *
 
 ```java
 Entity entity = /*your entity instance*/;
-if(PowerHolderComponent.
-
-hasPower(entity, "origins:phasing")){
-	entity.
-
-sendMessage(Component.text("You have the phantom phasing power!"));
-	}
+    if (PowerHolderComponent.hasPower(entity, "origins:phasing")){
+        entity.sendMessage(Component.text("You have the phantom phasing power!"));
+    }
 ```
 
 ### Setting and Getting the Origin of a Player
@@ -387,22 +351,13 @@ Player player = /*your player instance*/;
 /**
  * Sets the origin on the default layer provided by Origins/OriginsPaper
  */
-PowerHolderComponent.
-
-setOrigin(player, CraftApoli.getOriginFromTag("origins:elytrian"),CraftApoli.
-
-getLayerFromTag("origins:origin"));
+PowerHolderComponent.setOrigin(player, CraftApoli.getOriginFromTag("origins:elytrian"), CraftApoli.getLayerFromTag("origins:origin"));
 
 /**
  * Sets the origin on ALL layers in the OriginsPaper registrar
  */
-	for(
-Layer layer :CraftApoli.
-
-getLayersFromRegistry()){
-	PowerHolderComponent.
-
-setOrigin(player, CraftApoli.getOriginFromTag("origins:elytrian"),layer);
+	for (OriginLayer layer : CraftApoli.getLayersFromRegistry()){
+	    PowerHolderComponent.setOrigin(player, CraftApoli.getOriginFromTag("origins:elytrian"), layer);
 	}
 ```
 
@@ -417,7 +372,7 @@ Player player = /*your player instance*/;
 /**
  * Returns the Layer -> Origin Map. NotNull
  */
-Map<Layer, Origin> layerToOriginMap = PowerHolderComponent.getOrigin(player);
+Map<OriginLayer, Origin> layerToOriginMap = PowerHolderComponent.getOrigin(player);
 
 /**
  * Returns the Origin found on the origins:origin Layer. Null if not found.

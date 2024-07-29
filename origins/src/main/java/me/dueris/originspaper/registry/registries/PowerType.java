@@ -17,9 +17,8 @@ import net.kyori.adventure.text.TextComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +37,7 @@ public class PowerType implements Listener {
 	private final int loadingPriority;
 	private final String cachedTagString;
 	private final String cachedTypeString;
-	private final ConcurrentLinkedQueue<CraftPlayer> players = new ConcurrentLinkedQueue<>();
+	private final ConcurrentLinkedQueue<Player> players = new ConcurrentLinkedQueue<>();
 	@SourceProvider
 	public JsonObject sourceObject;
 	private boolean hasPlayers = false;
@@ -58,11 +57,12 @@ public class PowerType implements Listener {
 		this.hidden = hidden;
 		this.condition = condition;
 		this.loadingPriority = loadingPriority;
+		Bukkit.getPluginManager().registerEvents(this, OriginsPaper.getPlugin());
 	}
 
 	public static InstanceDefiner buildDefiner() {
 		return InstanceDefiner.instanceDefiner()
-			.required("type", SerializableDataTypes.IDENTIFIER)
+			.add("type", SerializableDataTypes.IDENTIFIER)
 			.add("name", SerializableDataTypes.TEXT, null)
 			.add("description", SerializableDataTypes.TEXT, null)
 			.add("hidden", SerializableDataTypes.BOOLEAN, false)
@@ -140,7 +140,7 @@ public class PowerType implements Listener {
 		return loadingPriority;
 	}
 
-	public ConcurrentLinkedQueue<CraftPlayer> getPlayers() {
+	public ConcurrentLinkedQueue<Player> getPlayers() {
 		return this.players;
 	}
 
@@ -154,16 +154,16 @@ public class PowerType implements Listener {
 
 	public void forPlayer(Player player) {
 		this.hasPlayers = true;
-		this.players.add((CraftPlayer) player);
+		this.players.add(player);
 	}
 
 	public void removePlayer(Player player) {
-		this.players.remove((CraftPlayer) player);
+		this.players.remove(player);
 		this.hasPlayers = !this.players.isEmpty();
 	}
 
-	public boolean isActive(@NotNull CraftPlayer player) {
-		return condition.test(player.getHandle());
+	public boolean isActive(@NotNull Player player) {
+		return condition == null || condition.test(player);
 	}
 
 	public void tick(Player player) {

@@ -5,10 +5,10 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.OriginChangeEvent;
 import me.dueris.originspaper.event.PowerUpdateEvent;
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;
+import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.screen.ScreenNavigator;
 import me.dueris.originspaper.storage.OriginDataContainer;
 import me.dueris.originspaper.util.BstatsMetrics;
@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -267,14 +268,14 @@ public class PowerHolderComponent implements Listener {
 			ResourceLocation registryKey = power.key();
 			PowerType c = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(registryKey);
 			if (c != null) {
-				c.forPlayer(player);
+				c.forPlayer(((CraftPlayer) player).getHandle());
 				if (!powersAppliedList.containsKey(player)) {
 					powersAppliedList.put(player, new ConcurrentLinkedQueue<>(List.of(c)));
 				} else {
 					powersAppliedList.get(player).add(c);
 				}
 
-				c.bootstrapApply(player);
+				c.bootstrapApply(((CraftPlayer) player).getHandle());
 				if (!suppress) {
 					Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
 				}
@@ -295,9 +296,9 @@ public class PowerHolderComponent implements Listener {
 			ResourceLocation registryKey = power.key();
 			PowerType c = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(registryKey);
 			if (c != null) {
-				c.bootstrapUnapply(player);
+				c.bootstrapUnapply(((CraftPlayer) player).getHandle());
 				powersAppliedList.get(player).remove(c);
-				c.removePlayer(player);
+				c.removePlayer(((CraftPlayer) player).getHandle());
 				if (!suppress) {
 					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
 				}

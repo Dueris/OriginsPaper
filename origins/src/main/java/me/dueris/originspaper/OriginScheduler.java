@@ -1,12 +1,13 @@
 package me.dueris.originspaper;
 
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.factory.powers.provider.OriginSimpleContainer;
 import me.dueris.originspaper.factory.powers.provider.PowerProvider;
+import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -44,7 +45,7 @@ public class OriginScheduler {
 				if (power.hasPlayers()) {
 					for (Player p : power.getPlayers()) {
 						if (Bukkit.getServer().getCurrentTick() % 20 == 0) {
-							PowerHolderComponent.checkForDuplicates(p);
+							PowerHolderComponent.checkForDuplicates((CraftPlayer) p.getBukkitEntity());
 						}
 
 						try {
@@ -73,20 +74,20 @@ public class OriginScheduler {
 			for (PowerProvider provider : OriginSimpleContainer.registeredPowers) {
 				provider.tick();
 
-				for (Player p : Bukkit.getOnlinePlayers()) {
+				for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
 					provider.tick(p);
 				}
 			}
 		}
 
 		public void tickAsyncScheduler() {
-			for (Player p : PowerHolderComponent.hasPowers) {
+			for (org.bukkit.entity.Player p : PowerHolderComponent.hasPowers) {
 				for (PowerType c : PowerHolderComponent.getPowersApplied(p)) {
-					c.tickAsync(p);
+					c.tickAsync(((CraftPlayer) p).getHandle());
 				}
 			}
 
-			for (Player p : Bukkit.getOnlinePlayers()) {
+			for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
 				//this.flight.tickAsync(p);
 //				if (!PowerHolderComponent.hasPowerType(p, GravityPower.class) && !PowerHolderComponent.hasPower(p, "origins:like_water")) {
 //					p.setGravity(true);

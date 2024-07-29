@@ -29,7 +29,7 @@ public class InstanceDefiner {
 	}
 
 	public synchronized InstanceDefiner add(String key, SerializableDataBuilder<?> data) {
-		dataMap.put(key, new ObjectTiedBoolean<>(data, false, false));
+		dataMap.put(key, new ObjectTiedBoolean<>(data, true, false));
 		keyPriorities.put(key, priorityCounter++);
 		return this;
 	}
@@ -37,12 +37,6 @@ public class InstanceDefiner {
 	public synchronized <T> InstanceDefiner add(String key, SerializableDataBuilder<T> data, T defaultValue) {
 		dataMap.put(key, new ObjectTiedBoolean<>(data, false, true));
 		defaultMap.put(key, defaultValue);
-		keyPriorities.put(key, priorityCounter++);
-		return this;
-	}
-
-	public synchronized InstanceDefiner required(String key, SerializableDataBuilder<?> data) {
-		dataMap.put(key, new ObjectTiedBoolean<>(data, true, false));
 		keyPriorities.put(key, priorityCounter++);
 		return this;
 	}

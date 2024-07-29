@@ -1,0 +1,6 @@
+{
+  "type": "origins:disable_regen",
+  "condition": {
+    "type": "test:test"
+  }
+}

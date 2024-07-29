@@ -6,13 +6,14 @@ import io.github.dueris.calio.util.holder.Pair;
 import me.dueris.originspaper.factory.actions.ActionFactory;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.data.types.modifier.IModifierOperation;
-import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;
+import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.screen.ChoosingPage;
 import me.dueris.originspaper.util.LangFile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
@@ -37,7 +38,7 @@ public class Registries {
 	public static final RegistryKey<ConditionFactory<EntityDamageEvent>> DAMAGE_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("damage_condition"));
 	public static final RegistryKey<ConditionFactory<Pair<Entity, Entity>>> BIENTITY_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("bientity_condition"));
 	public static final RegistryKey<ConditionFactory<BlockInWorld>> BLOCK_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("block_condition"));
-	public static final RegistryKey<ConditionFactory<Biome>> BIOME_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("biome_condition"));
+	public static final RegistryKey<ConditionFactory<Holder<Biome>>> BIOME_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("biome_condition"));
 
 	public static final RegistryKey<ActionFactory<Pair<Level, SlotAccess>>> ITEM_ACTION = new RegistryKey<>(Util.castClass(ActionFactory.class), apoliIdentifier("item_action"));
 	public static final RegistryKey<ActionFactory<Entity>> ENTITY_ACTION = new RegistryKey<>(Util.castClass(ActionFactory.class), apoliIdentifier("entity_action"));

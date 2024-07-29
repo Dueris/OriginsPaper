@@ -31,7 +31,7 @@ public class ModMeta {
 
 	public static InstanceDefiner buildDefiner() {
 		return InstanceDefiner.instanceDefiner()
-			.required("modid", SerializableDataTypes.STRING)
+			.add("modid", SerializableDataTypes.STRING)
 			.add("name", SerializableDataTypes.STRING, "hi")
 			.add("priority", SerializableDataTypes.INT)
 			.add("test_array", SerializableDataTypes.set(SerializableDataTypes.STRING))

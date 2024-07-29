@@ -180,15 +180,7 @@ public class Bootstrap implements PluginBootstrap {
 			),
 			List.of(
 				new io.github.dueris.calio.util.holder.Pair<>("apoli:conditioned_restrict_armor", "apoli:restrict_armor"),
-				new io.github.dueris.calio.util.holder.Pair<>("apugli:edible_item", "apoli:edible_item"),
-				new io.github.dueris.calio.util.holder.Pair<>("apoli:modify_attribute", "apoli:conditioned_attribute"),
-				new io.github.dueris.calio.util.holder.Pair<>("apoli:add_to_set", "apoli:add_to_entity_set"),
-				new io.github.dueris.calio.util.holder.Pair<>("apoli:remove_from_set", "apoli:remove_from_entity_set"),
-				new io.github.dueris.calio.util.holder.Pair<>("apoli:action_on_set", "apoli:action_on_entity_set"),
-				new io.github.dueris.calio.util.holder.Pair<>("apoli:in_set", "apoli:in_entity_set"),
-				new io.github.dueris.calio.util.holder.Pair<>("apoli:set_size", "apoli:entity_set_size"),
-				new io.github.dueris.calio.util.holder.Pair<>("apoli:distance_from_spawn", "apoli:distance_from_coordinates"),
-				new io.github.dueris.calio.util.holder.Pair<>("apoli:custom_data", "apoli:nbt")
+				new io.github.dueris.calio.util.holder.Pair<>("apoli:has_tag", "apoli:has_command_tag")
 			)
 		);
 		CalioParser.REMAPPER.set(remapper);

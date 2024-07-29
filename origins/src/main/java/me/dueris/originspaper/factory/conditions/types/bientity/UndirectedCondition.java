@@ -18,7 +18,7 @@ public class UndirectedCondition {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("undirected"),
 			InstanceDefiner.instanceDefiner()
-				.required("condition", ApoliDataTypes.BIENTITY_CONDITION),
+				.add("condition", ApoliDataTypes.BIENTITY_CONDITION),
 			(data, actorAndTarget) -> {
 				Predicate<Pair<Entity, Entity>> biEntityCondition = data.get("condition");
 				return biEntityCondition.test(actorAndTarget)

@@ -3,9 +3,9 @@ package me.dueris.originspaper.screen;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.data.types.Impact;
-import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;
+import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.util.ComponentUtil;
 import me.dueris.originspaper.util.LangFile;
 import me.dueris.originspaper.util.entity.PlayerManager;
@@ -112,7 +112,7 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 
 	@Override
 	public @NotNull ResourceLocation key() {
-		return ResourceLocation.parse(this.origin.key().toString() + "_page");
+		return ResourceLocation.parse(this.origin.key() + "_page");
 	}
 
 	@Override
@@ -217,7 +217,7 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 
 	@Override
 	public void onChoose(net.minecraft.world.entity.player.@NotNull Player player, OriginLayer layer) {
-		PowerHolderComponent.setOrigin((Player) player.getBukkitEntity(), layer, this.origin);
+		PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, this.origin);
 		player.getBukkitEntity().getOpenInventory().close();
 		final Player bukkitEntity = (Player) player.getBukkitEntity();
 		if (PlayerManager.firstJoin.contains(bukkitEntity)) {

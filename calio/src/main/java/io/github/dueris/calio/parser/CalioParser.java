@@ -83,7 +83,7 @@ public class CalioParser {
 					InstanceDefiner definer;
 					Class<? extends T> toBuild = clz;
 
-					JsonObject jsonSource = REMAPPER.get().remap(GSON.fromJson(jsonContents, JsonObject.class)).getAsJsonObject();
+					JsonObject jsonSource = REMAPPER.get().remap(GSON.fromJson(jsonContents, JsonObject.class), location).getAsJsonObject();
 					if (accessorKey.strategy().equals(ParsingStrategy.TYPED)) {
 						Class<? extends T> typedInst;
 						if (!jsonSource.has("type")) {

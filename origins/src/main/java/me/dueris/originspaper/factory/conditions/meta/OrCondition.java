@@ -16,7 +16,7 @@ public class OrCondition {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("or"),
 			InstanceDefiner.instanceDefiner()
-				.required("conditions", SerializableDataTypes.list(ApoliDataTypes.condition(conditionDataType))),
+				.add("conditions", SerializableDataTypes.list(ApoliDataTypes.condition(conditionDataType))),
 			(data, t) -> {
 				List<ConditionFactory<T>> conditions = data.get("conditions");
 				return conditions.stream().anyMatch(condition -> condition.test(t));

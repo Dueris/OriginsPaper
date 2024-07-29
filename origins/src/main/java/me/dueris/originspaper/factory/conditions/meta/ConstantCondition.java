@@ -12,7 +12,7 @@ public class ConstantCondition {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("constant"),
 			InstanceDefiner.instanceDefiner()
-				.required("value", SerializableDataTypes.BOOLEAN),
+				.add("value", SerializableDataTypes.BOOLEAN),
 			(data, t) -> {
 				return data.getBoolean("value");
 			}

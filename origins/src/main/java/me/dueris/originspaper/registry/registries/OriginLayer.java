@@ -29,17 +29,17 @@ import java.util.function.Predicate;
 public class OriginLayer {
 	private final ResourceLocation key;
 	private final String tag;
+	private final int loadingPriority;
+	private final List<ConditionedOrigin> origins;
+	private final boolean replace;
+	private final List<ResourceLocation> excludeRandom;
+	private final boolean replaceExcludeRandom;
 	private int order;
-	private int loadingPriority;
-	private List<ConditionedOrigin> origins;
-	private boolean replace;
 	private boolean enabled;
 	private @NotNull TextComponent name;
 	private GuiTitle guiTitle;
 	private boolean allowRandom;
 	private boolean allowRandomUnchoosable;
-	private List<ResourceLocation> excludeRandom;
-	private boolean replaceExcludeRandom;
 	private ResourceLocation defaultOrigin;
 	private boolean autoChoose;
 	private boolean hidden;
@@ -71,7 +71,7 @@ public class OriginLayer {
 		return InstanceDefiner.instanceDefiner()
 			.add("order", SerializableDataTypes.INT, Integer.MAX_VALUE)
 			.add("loading_priority", SerializableDataTypes.INT, 0)
-			.required("origins", SerializableDataTypes.list(OriginsDataTypes.ORIGIN_OR_CONDITIONED_ORIGIN))
+			.add("origins", SerializableDataTypes.list(OriginsDataTypes.ORIGIN_OR_CONDITIONED_ORIGIN))
 			.add("replace", SerializableDataTypes.BOOLEAN, false)
 			.add("enabled", SerializableDataTypes.BOOLEAN, true)
 			.add("name", SerializableDataTypes.TEXT, null)

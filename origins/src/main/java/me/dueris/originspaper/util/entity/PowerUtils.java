@@ -1,8 +1,8 @@
 package me.dueris.originspaper.util.entity;
 
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.registry.registries.OriginLayer;
+import me.dueris.originspaper.registry.registries.PowerType;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

@@ -3,6 +3,7 @@ package me.dueris.originspaper.factory.conditions.types;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.conditions.meta.MetaConditions;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +28,7 @@ public class BiomeConditions {
 		}));*/
 	}
 
-	public static void register(@NotNull ConditionFactory<Biome> factory) {
+	public static void register(@NotNull ConditionFactory<Holder<Biome>> factory) {
 		OriginsPaper.getPlugin().registry.retrieve(me.dueris.originspaper.registry.Registries.BIOME_CONDITION).register(factory, factory.getSerializerId());
 	}
 

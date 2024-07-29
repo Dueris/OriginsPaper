@@ -12,6 +12,7 @@ import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.github.dueris.calio.util.ArgumentWrapper;
 import io.github.dueris.calio.util.holder.Pair;
+import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.actions.ActionFactory;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.data.types.*;
@@ -22,6 +23,7 @@ import net.minecraft.commands.arguments.SlotArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -56,7 +58,7 @@ public class ApoliDataTypes {
 	public static final SerializableDataBuilder<ActionFactory<Triple<Level, BlockPos, Direction>>> BLOCK_ACTION = action(Registries.BLOCK_ACTION);
 	public static final SerializableDataBuilder<ActionFactory<Pair<Level, SlotAccess>>> ITEM_ACTION = action(Registries.ITEM_ACTION);
 	public static final SerializableDataBuilder<ConditionFactory<Pair<Entity, Entity>>> BIENTITY_CONDITION = condition(Registries.BIENTITY_CONDITION);
-	public static final SerializableDataBuilder<ConditionFactory<Biome>> BIOME_CONDITION = condition(Registries.BIOME_CONDITION);
+	public static final SerializableDataBuilder<ConditionFactory<Holder<Biome>>> BIOME_CONDITION = condition(Registries.BIOME_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<BlockInWorld>> BLOCK_CONDITION = condition(Registries.BLOCK_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<EntityDamageEvent>> DAMAGE_CONDITION = condition(Registries.DAMAGE_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<Entity>> ENTITY_CONDITION = condition(Registries.ENTITY_CONDITION);
@@ -181,7 +183,12 @@ public class ApoliDataTypes {
 				}
 
 				ResourceLocation factoryID = SerializableDataTypes.IDENTIFIER.deserialize(jsonObject.get("type"));
-				return CalioRegistry.INSTANCE.retrieve(registry).get(factoryID).copy().decompile(jsonObject);
+				try {
+					return CalioRegistry.INSTANCE.retrieve(registry).get(factoryID).copy().decompile(jsonObject);
+				} catch (Throwable e) {
+					OriginsPaper.getPlugin().getLog4JLogger().error("Unable to retrieve action of `{}` for Power!", factoryID.toString());
+					throw e;
+				}
 			}, ActionFactory.class
 		);
 	}
@@ -194,7 +201,13 @@ public class ApoliDataTypes {
 				}
 
 				ResourceLocation factoryID = SerializableDataTypes.IDENTIFIER.deserialize(jsonObject.get("type"));
-				return CalioRegistry.INSTANCE.retrieve(registry).get(factoryID).copy().decompile(jsonObject);
+				try {
+					return CalioRegistry.INSTANCE.retrieve(registry).get(factoryID).copy().decompile(jsonObject);
+				} catch (Throwable e) {
+					OriginsPaper.getPlugin().getLog4JLogger().error("Unable to retrieve condition of `{}` for Power!", factoryID.toString());
+					e.printStackTrace();
+					throw e;
+				}
 			}, ConditionFactory.class
 		);
 	}

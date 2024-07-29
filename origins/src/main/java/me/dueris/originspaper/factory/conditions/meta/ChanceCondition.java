@@ -15,7 +15,7 @@ public class ChanceCondition {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("chance"),
 			InstanceDefiner.instanceDefiner()
-				.required("chance", SerializableDataTypes.FLOAT),
+				.add("chance", SerializableDataTypes.FLOAT),
 			(data, t) -> {
 				return random.nextFloat() < data.getFloat("chance");
 			}

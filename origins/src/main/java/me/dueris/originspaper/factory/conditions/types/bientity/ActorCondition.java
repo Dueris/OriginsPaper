@@ -18,7 +18,7 @@ public class ActorCondition {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("actor_condition"),
 			InstanceDefiner.instanceDefiner()
-				.required("condition", ApoliDataTypes.ENTITY_CONDITION),
+				.add("condition", ApoliDataTypes.ENTITY_CONDITION),
 			(data, actorAndTarget) -> {
 				Entity actor = actorAndTarget.first();
 				return actor != null && data.<Predicate<Entity>>get("condition").test(actor);

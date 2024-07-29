@@ -18,7 +18,7 @@ public class EitherCondition {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("either"),
 			InstanceDefiner.instanceDefiner()
-				.required("condition", ApoliDataTypes.ENTITY_CONDITION),
+				.add("condition", ApoliDataTypes.ENTITY_CONDITION),
 			(data, actorAndTarget) -> {
 				Entity actor = actorAndTarget.getA();
 				Entity target = actorAndTarget.getB();

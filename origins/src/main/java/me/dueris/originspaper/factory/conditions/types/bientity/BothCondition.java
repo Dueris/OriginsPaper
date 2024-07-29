@@ -18,7 +18,7 @@ public class BothCondition {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("both"),
 			InstanceDefiner.instanceDefiner()
-				.required("condition", ApoliDataTypes.ENTITY_CONDITION),
+				.add("condition", ApoliDataTypes.ENTITY_CONDITION),
 			(data, actorAndTarget) -> {
 				Entity actor = actorAndTarget.getA();
 				Entity target = actorAndTarget.getB();
