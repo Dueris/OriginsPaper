@@ -2,6 +2,7 @@ package me.dueris.originspaper;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.dueris.calio.parser.CalioParser;
+import io.github.dueris.calio.util.holder.Pair;
 import io.papermc.paper.command.brigadier.ApiMirrorRootNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.PaperCommands;
@@ -170,7 +171,7 @@ public class Bootstrap implements PluginBootstrap {
 		}
 
 		LifecycleEventManager<BootstrapContext> lifecycleManager = context.context().getLifecycleManager();
-		lifecycleManager.registerEventHandler(((PrioritizedLifecycleEventHandlerConfiguration) LifecycleEvents.COMMANDS.newHandler(event -> {
+		lifecycleManager.registerEventHandler((LifecycleEvents.COMMANDS.newHandler(event -> {
 			CommandDispatcher<CommandSourceStack> commands = PaperCommands.INSTANCE.getDispatcher();
 			Commands.bootstrap(((ApiMirrorRootNode) commands.getRoot()).getDispatcher());
 		})).priority(10));
@@ -179,8 +180,11 @@ public class Bootstrap implements PluginBootstrap {
 				new io.github.dueris.calio.util.holder.Pair<>("origins", "apoli")
 			),
 			List.of(
-				new io.github.dueris.calio.util.holder.Pair<>("apoli:conditioned_restrict_armor", "apoli:restrict_armor"),
-				new io.github.dueris.calio.util.holder.Pair<>("apoli:has_tag", "apoli:has_command_tag")
+				new Pair<>("apoli:conditioned_restrict_armor", "apoli:restrict_armor"),
+				new Pair<>("apoli:has_tag", "apoli:has_command_tag"),
+				new Pair<>("apoli:custom_data", "apoli:nbt"),
+				new Pair<>("apoli:is_equippable", "apoli:equippable"),
+				new Pair<>("apoli:fireproof", "apoli:fire_resistant")
 			)
 		);
 		CalioParser.REMAPPER.set(remapper);
