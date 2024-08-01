@@ -15,9 +15,9 @@ import java.util.function.Consumer;
 
 public record DeserializedFactoryJson(HashMap<String, Object> data) {
 
-	public static @Nullable DeserializedFactoryJson decompileJsonObject(JsonObject jsonObject, InstanceDefiner definer) {
+	public static @Nullable DeserializedFactoryJson decompileJsonObject(JsonObject jsonObject, InstanceDefiner definer, String instanceType, String key) {
 		Optional<Pair<List<Pair<String, ?>>, List<Pair<String, ?>>>> compiledInstance = CalioParser.compileFromInstanceDefinition(
-			definer, jsonObject, Optional.empty(), Optional.empty()
+			definer, jsonObject, Optional.of(key + "=|=" + instanceType), Optional.empty()
 		);
 		if (compiledInstance.isEmpty()) return null;
 		List<Pair<String, ?>> compiledArguments = compiledInstance.get().second();
@@ -30,7 +30,7 @@ public record DeserializedFactoryJson(HashMap<String, Object> data) {
 	}
 
 	public boolean isPresent(String name) {
-		return data.containsKey(name);
+		return data.containsKey(name) && data.get(name) != null;
 	}
 
 	public <T> void ifPresent(String name, Consumer<T> consumer) {

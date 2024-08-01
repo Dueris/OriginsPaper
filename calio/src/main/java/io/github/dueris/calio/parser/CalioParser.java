@@ -13,6 +13,7 @@ import io.github.dueris.calio.util.annotations.RequiresPlugin;
 import io.github.dueris.calio.util.annotations.SourceProvider;
 import io.github.dueris.calio.util.holder.ObjectProvider;
 import io.github.dueris.calio.util.holder.ObjectTiedBoolean;
+import io.github.dueris.calio.util.holder.ObjectTiedEnumState;
 import io.github.dueris.calio.util.holder.Pair;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
@@ -114,7 +115,7 @@ public class CalioParser {
 					} catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
 						throw new RuntimeException(e);
 					}
-					Optional<Pair<List<Pair<String, ?>>, List<Pair<String, ?>>>> compiledInstance = compileFromInstanceDefinition(definer, jsonSource, Optional.of(location), Optional.of(clz));
+					Optional<Pair<List<Pair<String, ?>>, List<Pair<String, ?>>>> compiledInstance = compileFromInstanceDefinition(definer, jsonSource, Optional.of(location.toString()), Optional.of(clz));
 					if (compiledInstance.isEmpty()) return;
 					List<Pair<String, ?>> compiledArguments = compiledInstance.get().second();
 					List<Pair<String, ?>> compiledParams = compiledInstance.get().first();
@@ -196,23 +197,14 @@ public class CalioParser {
 		return Optional.of(voidCompletableFuture);
 	}
 
-	public static <T> Optional<Pair<List<Pair<String, ?>>, List<Pair<String, ?>>>> compileFromInstanceDefinition(@NotNull InstanceDefiner definer, JsonObject jsonSource, Optional<ResourceLocation> location, Optional<Class<T>> clz) {
+	public static <T> Optional<Pair<List<Pair<String, ?>>, List<Pair<String, ?>>>> compileFromInstanceDefinition(@NotNull InstanceDefiner definer, JsonObject jsonSource, Optional<String> location, Optional<Class<T>> clz) {
 		List<Pair<String, ?>> compiledParams = new ArrayList<>();
 		List<Pair<String, ?>> compiledArguments = new ArrayList<>();
-		for (Map.Entry<String, ObjectTiedBoolean<SerializableDataBuilder<?>>> entry : definer.dataMap().entrySet()) {
+		for (Map.Entry<String, ObjectTiedEnumState<SerializableDataBuilder<?>>> entry : definer.dataMap().entrySet()) {
 			String key = entry.getKey();
-			ObjectTiedBoolean<SerializableDataBuilder<?>> serializableTiedBoolean = entry.getValue();
-			boolean[] boolArgs = serializableTiedBoolean.bool();
-			SerializableType type = SerializableType.build(boolArgs[0], boolArgs[1]);
+			ObjectTiedEnumState<SerializableDataBuilder<?>> serializableTiedBoolean = entry.getValue();
+			SerializableType type = (SerializableType) serializableTiedBoolean.state();
 			switch (type) {
-				case NULLABLE:
-					compiledParams.add(new Pair<>(key, serializableTiedBoolean.object().type()));
-					if (jsonSource.has(key)) {
-						compiledArguments.add(new Pair<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
-					} else {
-						compiledArguments.add(new Pair<>(key, null));
-					}
-					break;
 				case DEFAULT:
 					compiledParams.add(new Pair<>(key, serializableTiedBoolean.object().type()));
 					if (jsonSource.has(key)) {
@@ -230,7 +222,7 @@ public class CalioParser {
 					if (jsonSource.has(key)) {
 						compiledArguments.add(new Pair<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
 					} else {
-						LOGGER.error("Required default not found, skipping instance compiling for '{}' : KEY ['{}'] | ClassName [{}]", location.isPresent() ? location.get() : "Unknown Key", key, clz.isPresent() ? clz.get() : "Unknown Class");
+						LOGGER.error("Required instance not found, skipping instance compiling for '{}' : KEY ['{}'] | ClassName [{}]", location.orElse("Unknown Key"), key, clz.isPresent() ? clz.get() : "Unknown Class");
 						return Optional.empty();
 					}
 			}

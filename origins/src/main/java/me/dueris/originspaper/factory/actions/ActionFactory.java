@@ -44,7 +44,7 @@ public class ActionFactory<T> implements Factory, Consumer<T> {
 	}
 
 	public ActionFactory<T> decompile(JsonObject object) {
-		this.deserializedFactory = DeserializedFactoryJson.decompileJsonObject(object, data);
+		this.deserializedFactory = DeserializedFactoryJson.decompileJsonObject(object, data, "Action Factory", location.toString());
 		return this;
 	}
 }

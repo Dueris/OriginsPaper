@@ -205,7 +205,6 @@ public class ApoliDataTypes {
 					return CalioRegistry.INSTANCE.retrieve(registry).get(factoryID).copy().decompile(jsonObject);
 				} catch (Throwable e) {
 					OriginsPaper.getPlugin().getLog4JLogger().error("Unable to retrieve condition of `{}` for Power!", factoryID.toString());
-					e.printStackTrace();
 					throw e;
 				}
 			}, ConditionFactory.class

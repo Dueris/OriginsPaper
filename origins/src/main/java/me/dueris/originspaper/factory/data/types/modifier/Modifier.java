@@ -27,7 +27,7 @@ public class Modifier implements Comparable<Modifier> {
 			try {
 
 				IModifierOperation operation = IModifierOperation.DATA_TYPE.deserialize(jsonObject.get("operation"));
-				DeserializedFactoryJson data = DeserializedFactoryJson.decompileJsonObject(jsonObject, operation.getData());
+				DeserializedFactoryJson data = DeserializedFactoryJson.decompileJsonObject(jsonObject, operation.getData(), "Modifier", "null");
 
 				return new Modifier(operation, data);
 

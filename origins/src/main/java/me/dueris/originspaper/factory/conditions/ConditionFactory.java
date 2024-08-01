@@ -49,7 +49,7 @@ public class ConditionFactory<T> implements Factory, Predicate<T> {
 	}
 
 	public ConditionFactory<T> decompile(JsonObject object) {
-		this.deserializedFactory = DeserializedFactoryJson.decompileJsonObject(object, data);
+		this.deserializedFactory = DeserializedFactoryJson.decompileJsonObject(object, data, "Condition Factory", location.toString());
 		return this;
 	}
 }

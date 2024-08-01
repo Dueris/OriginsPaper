@@ -86,6 +86,17 @@ public class EntityConditions {
 		));
 
 		Conditions.registerPackage(EntityConditions::register, "entity");
+
+		// TESTING
+		register(new ConditionFactory<>(
+			ResourceLocation.fromNamespaceAndPath("test", "test"),
+			InstanceDefiner.instanceDefiner()
+				.add("required", SerializableDataTypes.FOOD_COMPONENT)
+				.add("nullable", SerializableDataTypes.INT, 4),
+			(data, entity) -> {
+				return entity.isShiftKeyDown();
+			}
+		));
 	}
 
 	public static void register(@NotNull ConditionFactory<net.minecraft.world.entity.Entity> factory) {

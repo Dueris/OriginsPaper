@@ -1,7 +1,7 @@
 package io.github.dueris.calio.parser;
 
 import io.github.dueris.calio.data.SerializableDataBuilder;
-import io.github.dueris.calio.util.holder.ObjectTiedBoolean;
+import io.github.dueris.calio.util.holder.ObjectTiedEnumState;
 import io.github.dueris.calio.util.holder.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class InstanceDefiner {
 	protected final Map<String, Object> defaultMap = new HashMap<>();
-	private final HashMap<String, ObjectTiedBoolean<SerializableDataBuilder<?>>> dataMap = new HashMap<>();
+	private final HashMap<String, ObjectTiedEnumState<SerializableDataBuilder<?>>> dataMap = new HashMap<>();
 	private final Object2IntOpenHashMap<String> keyPriorities = new Object2IntOpenHashMap<>();
 	@Nullable
 	protected ResourceLocation typedInstance;
@@ -29,13 +29,13 @@ public class InstanceDefiner {
 	}
 
 	public synchronized InstanceDefiner add(String key, SerializableDataBuilder<?> data) {
-		dataMap.put(key, new ObjectTiedBoolean<>(data, true, false));
+		dataMap.put(key, new ObjectTiedEnumState<>(data, SerializableType.REQUIRED));
 		keyPriorities.put(key, priorityCounter++);
 		return this;
 	}
 
 	public synchronized <T> InstanceDefiner add(String key, SerializableDataBuilder<T> data, T defaultValue) {
-		dataMap.put(key, new ObjectTiedBoolean<>(data, false, true));
+		dataMap.put(key, new ObjectTiedEnumState<>(data, SerializableType.DEFAULT));
 		defaultMap.put(key, defaultValue);
 		keyPriorities.put(key, priorityCounter++);
 		return this;
@@ -46,7 +46,7 @@ public class InstanceDefiner {
 		return this;
 	}
 
-	public HashMap<String, ObjectTiedBoolean<SerializableDataBuilder<?>>> dataMap() {
+	public HashMap<String, ObjectTiedEnumState<SerializableDataBuilder<?>>> dataMap() {
 		return dataMap;
 	}
 

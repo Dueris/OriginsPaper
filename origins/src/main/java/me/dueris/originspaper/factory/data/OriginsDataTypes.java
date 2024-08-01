@@ -48,7 +48,7 @@ public class OriginsDataTypes {
 	public static final SerializableDataBuilder<OriginLayer.ConditionedOrigin> CONDITIONED_ORIGIN = SerializableDataBuilder.of(
 		(jsonElement) -> {
 			if (jsonElement instanceof JsonObject jsonObject && !jsonObject.isEmpty()) {
-				DeserializedFactoryJson factoryJson = DeserializedFactoryJson.decompileJsonObject(jsonObject, OriginLayer.ConditionedOrigin.DATA);
+				DeserializedFactoryJson factoryJson = DeserializedFactoryJson.decompileJsonObject(jsonObject, OriginLayer.ConditionedOrigin.DATA, "Origin/ConditionedOrigin", "null");
 				return new OriginLayer.ConditionedOrigin(factoryJson.get("condition"), factoryJson.get("origins"));
 			} else throw new JsonSyntaxException("Expected JsonObject for ConditionedOrigin!");
 		}, OriginLayer.ConditionedOrigin.class
