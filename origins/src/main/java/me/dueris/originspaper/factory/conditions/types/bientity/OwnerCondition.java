@@ -2,7 +2,7 @@ package me.dueris.originspaper.factory.conditions.types.bientity;
 
 import io.github.dueris.calio.parser.InstanceDefiner;
 import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import net.minecraft.world.entity.Entity;
@@ -11,7 +11,7 @@ import net.minecraft.world.entity.TraceableEntity;
 
 public class OwnerCondition {
 
-	public static boolean condition(DeserializedFactoryJson data, Pair<Entity, Entity> actorAndTarget) {
+	public static boolean condition(DeserializedFactoryJson data, Tuple<Entity, Entity> actorAndTarget) {
 
 		Entity actor = actorAndTarget.getA();
 		Entity target = actorAndTarget.getB();
@@ -25,7 +25,7 @@ public class OwnerCondition {
 
 	}
 
-	public static ConditionFactory<Pair<Entity, Entity>> getFactory() {
+	public static ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("owner"),
 			InstanceDefiner.instanceDefiner(),

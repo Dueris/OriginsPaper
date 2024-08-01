@@ -1,6 +1,6 @@
 package me.dueris.originspaper.factory.conditions.types;
 
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.conditions.Conditions;
@@ -17,7 +17,7 @@ public class ItemConditions {
 		Conditions.registerPackage(ItemConditions::register, "item");
 	}
 
-	public static void register(@NotNull ConditionFactory<Pair<Level, ItemStack>> factory) {
+	public static void register(@NotNull ConditionFactory<Tuple<Level, ItemStack>> factory) {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_CONDITION).register(factory, factory.getSerializerId());
 	}
 

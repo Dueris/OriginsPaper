@@ -13,7 +13,7 @@ import com.mojang.serialization.DataResult.Error;
 import com.mojang.serialization.JsonOps;
 import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
 import io.github.dueris.calio.util.ArgumentWrapper;
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntLists;
@@ -993,7 +993,7 @@ public class Util {
 
 		Consumer<Entity> entityAction = data.get("entity_action");
 		Predicate<Tuple<Level, ItemStack>> itemCondition = data.get("item_condition");
-		ActionFactory<Pair<ServerLevel, org.bukkit.inventory.ItemStack>> itemAction = data.get("item_action");
+		ActionFactory<Tuple<ServerLevel, org.bukkit.inventory.ItemStack>> itemAction = data.get("item_action");
 
 		int processedItems = 0;
 		slots.removeIf(slot -> slotNotWithinBounds(entity, slot));
@@ -1013,7 +1013,7 @@ public class Util {
 					entityAction.accept(entity);
 				}
 
-				itemAction.accept(new Pair<>(((ServerLevel) entity.level()), stack.get().getBukkitStack()));
+				itemAction.accept(new Tuple<>(((ServerLevel) entity.level()), stack.get().getBukkitStack()));
 				++processedItems;
 
 				if (processedItems >= limit) {

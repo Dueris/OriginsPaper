@@ -3,7 +3,7 @@ package io.github.dueris.calio.parser.reader;
 import com.google.gson.JsonObject;
 import io.github.dueris.calio.parser.CalioParser;
 import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.jetbrains.annotations.Nullable;
@@ -16,14 +16,14 @@ import java.util.function.Consumer;
 public record DeserializedFactoryJson(HashMap<String, Object> data) {
 
 	public static @Nullable DeserializedFactoryJson decompileJsonObject(JsonObject jsonObject, InstanceDefiner definer, String instanceType, String key) {
-		Optional<Pair<List<Pair<String, ?>>, List<Pair<String, ?>>>> compiledInstance = CalioParser.compileFromInstanceDefinition(
+		Optional<Tuple<List<Tuple<String, ?>>, List<Tuple<String, ?>>>> compiledInstance = CalioParser.compileFromInstanceDefinition(
 			definer, jsonObject, Optional.of(key + "=|=" + instanceType), Optional.empty()
 		);
 		if (compiledInstance.isEmpty()) return null;
-		List<Pair<String, ?>> compiledArguments = compiledInstance.get().second();
+		List<Tuple<String, ?>> compiledArguments = compiledInstance.get().getB();
 		HashMap<String, Object> deserialized = new HashMap<>();
-		for (Pair<String, ?> compiledArgument : compiledArguments) {
-			deserialized.put(compiledArgument.first(), compiledArgument.second());
+		for (Tuple<String, ?> compiledArgument : compiledArguments) {
+			deserialized.put(compiledArgument.getA(), compiledArgument.getB());
 		}
 
 		return new DeserializedFactoryJson(deserialized);

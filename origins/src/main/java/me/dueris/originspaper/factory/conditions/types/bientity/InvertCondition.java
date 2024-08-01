@@ -1,7 +1,7 @@
 package me.dueris.originspaper.factory.conditions.types.bientity;
 
 import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.data.ApoliDataTypes;
@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 public class InvertCondition {
 
 	@Contract(" -> new")
-	public static @NotNull ConditionFactory<Pair<Entity, Entity>> getFactory() {
+	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("invert"),
 			InstanceDefiner.instanceDefiner()

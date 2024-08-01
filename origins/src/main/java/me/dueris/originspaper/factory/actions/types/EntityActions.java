@@ -3,6 +3,7 @@ package me.dueris.originspaper.factory.actions.types;
 import io.github.dueris.calio.SerializableDataTypes;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.actions.ActionFactory;
+import me.dueris.originspaper.factory.actions.Actions;
 import me.dueris.originspaper.factory.actions.meta.*;
 import me.dueris.originspaper.factory.data.ApoliDataTypes;
 import me.dueris.originspaper.registry.Registries;
@@ -23,6 +24,8 @@ public class EntityActions {
 		register(DelayAction.getFactory(ApoliDataTypes.ENTITY_ACTION));
 		register(NothingAction.getFactory());
 		register(SideAction.getFactory(ApoliDataTypes.ENTITY_ACTION, entity -> !entity.level().isClientSide));
+
+		Actions.registerPackage(EntityActions::register, "entity");
 	}
 
 }

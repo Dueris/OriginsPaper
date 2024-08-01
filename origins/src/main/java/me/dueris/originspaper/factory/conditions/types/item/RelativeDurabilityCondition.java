@@ -3,7 +3,7 @@ package me.dueris.originspaper.factory.conditions.types.item;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.data.ApoliDataTypes;
@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 
 public class RelativeDurabilityCondition {
 
-	public static boolean condition(DeserializedFactoryJson data, Pair<Level, ItemStack> worldAndStack) {
+	public static boolean condition(DeserializedFactoryJson data, Tuple<Level, ItemStack> worldAndStack) {
 
 		Comparison comparison = data.get("comparison");
 		float compareTo = data.get("compare_to");
@@ -25,7 +25,7 @@ public class RelativeDurabilityCondition {
 
 	}
 
-	public static ConditionFactory<Pair<Level, ItemStack>> getFactory() {
+	public static ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("relative_durability"),
 			InstanceDefiner.instanceDefiner()

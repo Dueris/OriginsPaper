@@ -11,7 +11,7 @@ import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.github.dueris.calio.util.ArgumentWrapper;
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.actions.ActionFactory;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
@@ -54,15 +54,15 @@ import java.util.regex.Pattern;
 @SuppressWarnings("unused")
 public class ApoliDataTypes {
 	public static final SerializableDataBuilder<ActionFactory<Entity>> ENTITY_ACTION = action(Registries.ENTITY_ACTION);
-	public static final SerializableDataBuilder<ActionFactory<Pair<Entity, Entity>>> BIENTITY_ACTION = action(Registries.BIENTITY_ACTION);
+	public static final SerializableDataBuilder<ActionFactory<Tuple<Entity, Entity>>> BIENTITY_ACTION = action(Registries.BIENTITY_ACTION);
 	public static final SerializableDataBuilder<ActionFactory<Triple<Level, BlockPos, Direction>>> BLOCK_ACTION = action(Registries.BLOCK_ACTION);
-	public static final SerializableDataBuilder<ActionFactory<Pair<Level, SlotAccess>>> ITEM_ACTION = action(Registries.ITEM_ACTION);
-	public static final SerializableDataBuilder<ConditionFactory<Pair<Entity, Entity>>> BIENTITY_CONDITION = condition(Registries.BIENTITY_CONDITION);
+	public static final SerializableDataBuilder<ActionFactory<Tuple<Level, SlotAccess>>> ITEM_ACTION = action(Registries.ITEM_ACTION);
+	public static final SerializableDataBuilder<ConditionFactory<Tuple<Entity, Entity>>> BIENTITY_CONDITION = condition(Registries.BIENTITY_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<Holder<Biome>>> BIOME_CONDITION = condition(Registries.BIOME_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<BlockInWorld>> BLOCK_CONDITION = condition(Registries.BLOCK_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<EntityDamageEvent>> DAMAGE_CONDITION = condition(Registries.DAMAGE_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<Entity>> ENTITY_CONDITION = condition(Registries.ENTITY_CONDITION);
-	public static final SerializableDataBuilder<ConditionFactory<Pair<Level, ItemStack>>> ITEM_CONDITION = condition(Registries.ITEM_CONDITION);
+	public static final SerializableDataBuilder<ConditionFactory<Tuple<Level, ItemStack>>> ITEM_CONDITION = condition(Registries.ITEM_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<Fluid>> FLUID_CONDITION = condition(Registries.FLUID_CONDITION);
 	public static final SerializableDataBuilder<Space> SPACE = SerializableDataTypes.enumValue(Space.class);
 	public static final SerializableDataBuilder<ResourceOperation> RESOURCE_OPERATION = SerializableDataTypes.enumValue(ResourceOperation.class);

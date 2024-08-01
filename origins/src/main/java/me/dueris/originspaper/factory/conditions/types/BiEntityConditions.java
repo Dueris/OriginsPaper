@@ -1,6 +1,6 @@
 package me.dueris.originspaper.factory.conditions.types;
 
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
 import me.dueris.originspaper.factory.conditions.Conditions;
@@ -16,7 +16,7 @@ public class BiEntityConditions implements Listener {
 		Conditions.registerPackage(BiEntityConditions::register, "bientity");
 	}
 
-	public static void register(@NotNull ConditionFactory<Pair<Entity, Entity>> factory) {
+	public static void register(@NotNull ConditionFactory<Tuple<Entity, Entity>> factory) {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION).register(factory, factory.getSerializerId());
 	}
 

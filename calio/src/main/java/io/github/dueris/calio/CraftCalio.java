@@ -4,7 +4,7 @@ import io.github.dueris.calio.data.AccessorKey;
 import io.github.dueris.calio.parser.CalioParser;
 import io.github.dueris.calio.parser.reader.system.FileSystemReader;
 import io.github.dueris.calio.util.Util;
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import io.github.dueris.calio.util.thread.ParserFactory;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
@@ -65,7 +65,7 @@ public record CraftCalio(boolean threaded, int threadCount) {
 				throw new IllegalStateException("'datapack' directory is not a directory! Corrupted?");
 			} else {
 				for (Path pathToParse : new Path[]{Paths.get("plugins"), datapackDirPath}) {
-					Object2ObjectLinkedOpenHashMap<AccessorKey<?>, ConcurrentLinkedQueue<Pair<String, String>>> priorityParsingQueue = new Object2ObjectLinkedOpenHashMap<>();
+					Object2ObjectLinkedOpenHashMap<AccessorKey<?>, ConcurrentLinkedQueue<Tuple<String, String>>> priorityParsingQueue = new Object2ObjectLinkedOpenHashMap<>();
 					CalioParserBuilder.accessorKeys.forEach((key) -> {
 						priorityParsingQueue.put(key, new ConcurrentLinkedQueue<>());
 					});
@@ -76,7 +76,7 @@ public record CraftCalio(boolean threaded, int threadCount) {
 							while (var3.hasNext()) {
 								AccessorKey<?> key = var3.next();
 								if (jsonContents != null && path != null && Util.pathMatchesAccessor(path, key)) {
-									priorityParsingQueue.get(key).add(new Pair(path, jsonContents));
+									priorityParsingQueue.get(key).add(new Tuple(path, jsonContents));
 								}
 							}
 
@@ -84,16 +84,16 @@ public record CraftCalio(boolean threaded, int threadCount) {
 						FileSystemReader.processDatapacks(pathToParse, jsonVerificationFilter);
 					}
 
-					List<Map.Entry<AccessorKey<?>, ConcurrentLinkedQueue<Pair<String, String>>>> entries = new ArrayList<>(priorityParsingQueue.object2ObjectEntrySet());
+					List<Map.Entry<AccessorKey<?>, ConcurrentLinkedQueue<Tuple<String, String>>>> entries = new ArrayList<>(priorityParsingQueue.object2ObjectEntrySet());
 					entries.sort(Comparator.comparingInt((ent) -> {
 						return ent.getKey().priority();
 					}));
-					Iterator<Map.Entry<AccessorKey<?>, ConcurrentLinkedQueue<Pair<String, String>>>> entryIterator = entries.iterator();
+					Iterator<Map.Entry<AccessorKey<?>, ConcurrentLinkedQueue<Tuple<String, String>>>> entryIterator = entries.iterator();
 					while (entryIterator.hasNext()) {
-						Map.Entry<AccessorKey<?>, ConcurrentLinkedQueue<Pair<String, String>>> entry = entryIterator.next();
+						Map.Entry<AccessorKey<?>, ConcurrentLinkedQueue<Tuple<String, String>>> entry = entryIterator.next();
 						try {
 							CalioParser.fromJsonFile(entry).forEach((out) -> {
-								if (out.first() == null || out.second() == null) {
+								if (out.getA() == null || out.getB() == null) {
 									throw new RuntimeException("Output instance or output ResourceLocation was null!");
 								}
 							});

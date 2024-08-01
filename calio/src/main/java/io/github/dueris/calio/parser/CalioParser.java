@@ -14,7 +14,7 @@ import io.github.dueris.calio.util.annotations.SourceProvider;
 import io.github.dueris.calio.util.holder.ObjectProvider;
 import io.github.dueris.calio.util.holder.ObjectTiedBoolean;
 import io.github.dueris.calio.util.holder.ObjectTiedEnumState;
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,10 +40,10 @@ public class CalioParser {
 	private static final Gson GSON = new Gson();
 
 	@SuppressWarnings("unchecked")
-	public static <T> @NotNull ConcurrentLinkedQueue<Pair<?, ResourceLocation>> fromJsonFile(Map.@NotNull Entry<AccessorKey<?>, ConcurrentLinkedQueue<Pair<String, String>>> entry) {
+	public static <T> @NotNull ConcurrentLinkedQueue<Tuple<?, ResourceLocation>> fromJsonFile(Map.@NotNull Entry<AccessorKey<?>, ConcurrentLinkedQueue<Tuple<String, String>>> entry) {
 		AccessorKey<?> accessorKey = entry.getKey();
 		// We return the same result, but implement a check that it's valid to ensure it's ready for parsing.
-		ConcurrentLinkedQueue<Pair<InstanceDefiner, Class<? extends T>>> typedTempInstance = new ConcurrentLinkedQueue<>();
+		ConcurrentLinkedQueue<Tuple<InstanceDefiner, Class<? extends T>>> typedTempInstance = new ConcurrentLinkedQueue<>();
 		final Class<? extends T>[] defaultType = new Class[]{null};
 		Class<T> clz = accessorKey.strategy().equals(ParsingStrategy.DEFAULT) ? (Class<T>) accessorKey.toBuild() :
 			((ObjectProvider<Class<T>>) () -> {
@@ -51,7 +51,7 @@ public class CalioParser {
 					ConcurrentLinkedQueue<Class<? extends T>> instanceTypes = (ConcurrentLinkedQueue<Class<? extends T>>) ReflectionUtils.getStaticFieldValue(accessorKey.toBuild(), "INSTANCE_TYPES");
 					for (Class<? extends T> instanceType : instanceTypes) {
 						if (ReflectionUtils.hasMethod(instanceType, "buildDefiner", true)) {
-							typedTempInstance.add(new Pair<>(ReflectionUtils.invokeStaticMethod(instanceType, "buildDefiner"), instanceType));
+							typedTempInstance.add(new Tuple<>(ReflectionUtils.invokeStaticMethod(instanceType, "buildDefiner"), instanceType));
 						}
 					}
 					if (ReflectionUtils.hasField(accessorKey.toBuild(), "DEFAULT_TYPE", true)) {
@@ -62,7 +62,7 @@ public class CalioParser {
 				}
 				return (Class<T>) accessorKey.toBuild();
 			}).get();
-		ConcurrentLinkedQueue<Pair<?, ResourceLocation>> concurrentLinkedQueue = new ConcurrentLinkedQueue<>();
+		ConcurrentLinkedQueue<Tuple<?, ResourceLocation>> concurrentLinkedQueue = new ConcurrentLinkedQueue<>();
 		if (ReflectionUtils.hasAnnotation(clz, DontRegister.class)) {
 			return concurrentLinkedQueue;
 		}
@@ -74,11 +74,11 @@ public class CalioParser {
 		}
 		if (ReflectionUtils.hasMethod(clz, "buildDefiner", true)) {
 			List<CompletableFuture<Void>> parsingTasks = new ArrayList<>();
-			for (Pair<String, String> pair : entry.getValue()) {
+			for (Tuple<String, String> Tuple : entry.getValue()) {
 				Optional<CompletableFuture<Void>> future = submitParseTask(() -> {
 					final AtomicBoolean[] kill = {new AtomicBoolean(false)};
-					String path = pair.first();
-					String jsonContents = pair.second();
+					String path = Tuple.getA();
+					String jsonContents = Tuple.getB();
 					ResourceLocation location = Util.buildResourceLocationFromPath(path);
 					if (location == null) throw new RuntimeException("Unable to compile ResourceLocation for CalioParser!");
 					InstanceDefiner definer;
@@ -96,9 +96,9 @@ public class CalioParser {
 							}
 						} else {
 							try {
-								typedInst = typedTempInstance.stream().filter(stringClassPair -> {
-									return stringClassPair.first().typedInstance != null && stringClassPair.first().typedInstance.toString().equalsIgnoreCase(jsonSource.get("type").getAsString());
-								}).findFirst().get().second();
+								typedInst = typedTempInstance.stream().filter(stringClassTuple -> {
+									return stringClassTuple.getA().typedInstance != null && stringClassTuple.getA().typedInstance.toString().equalsIgnoreCase(jsonSource.get("type").getAsString());
+								}).findFirst().get().getB();
 							} catch (NoSuchElementException e) {
 								LOGGER.error("Unable to retrieve type instance of '{}'", jsonSource.get("type").getAsString());
 								return;
@@ -115,10 +115,10 @@ public class CalioParser {
 					} catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
 						throw new RuntimeException(e);
 					}
-					Optional<Pair<List<Pair<String, ?>>, List<Pair<String, ?>>>> compiledInstance = compileFromInstanceDefinition(definer, jsonSource, Optional.of(location.toString()), Optional.of(clz));
+					Optional<Tuple<List<Tuple<String, ?>>, List<Tuple<String, ?>>>> compiledInstance = compileFromInstanceDefinition(definer, jsonSource, Optional.of(location.toString()), Optional.of(clz));
 					if (compiledInstance.isEmpty()) return;
-					List<Pair<String, ?>> compiledArguments = compiledInstance.get().second();
-					List<Pair<String, ?>> compiledParams = compiledInstance.get().first();
+					List<Tuple<String, ?>> compiledArguments = compiledInstance.get().getB();
+					List<Tuple<String, ?>> compiledParams = compiledInstance.get().getA();
 
 					if (kill[0].get()) return;
 
@@ -197,30 +197,30 @@ public class CalioParser {
 		return Optional.of(voidCompletableFuture);
 	}
 
-	public static <T> Optional<Pair<List<Pair<String, ?>>, List<Pair<String, ?>>>> compileFromInstanceDefinition(@NotNull InstanceDefiner definer, JsonObject jsonSource, Optional<String> location, Optional<Class<T>> clz) {
-		List<Pair<String, ?>> compiledParams = new ArrayList<>();
-		List<Pair<String, ?>> compiledArguments = new ArrayList<>();
+	public static <T> Optional<Tuple<List<Tuple<String, ?>>, List<Tuple<String, ?>>>> compileFromInstanceDefinition(@NotNull InstanceDefiner definer, JsonObject jsonSource, Optional<String> location, Optional<Class<T>> clz) {
+		List<Tuple<String, ?>> compiledParams = new ArrayList<>();
+		List<Tuple<String, ?>> compiledArguments = new ArrayList<>();
 		for (Map.Entry<String, ObjectTiedEnumState<SerializableDataBuilder<?>>> entry : definer.dataMap().entrySet()) {
 			String key = entry.getKey();
 			ObjectTiedEnumState<SerializableDataBuilder<?>> serializableTiedBoolean = entry.getValue();
 			SerializableType type = (SerializableType) serializableTiedBoolean.state();
 			switch (type) {
 				case DEFAULT:
-					compiledParams.add(new Pair<>(key, serializableTiedBoolean.object().type()));
+					compiledParams.add(new Tuple<>(key, serializableTiedBoolean.object().type()));
 					if (jsonSource.has(key)) {
-						compiledArguments.add(new Pair<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
+						compiledArguments.add(new Tuple<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
 					} else {
 						if (!definer.defaultMap.containsKey(key)) {
 							throw new UnsupportedOperationException("A default value was provided but it wasn't fetch-able by the calio compiler!");
 						}
 
-						compiledArguments.add(new Pair<>(key, definer.defaultMap.get(key)));
+						compiledArguments.add(new Tuple<>(key, definer.defaultMap.get(key)));
 					}
 					break;
 				case REQUIRED:
-					compiledParams.add(new Pair<>(key, serializableTiedBoolean.object().type()));
+					compiledParams.add(new Tuple<>(key, serializableTiedBoolean.object().type()));
 					if (jsonSource.has(key)) {
-						compiledArguments.add(new Pair<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
+						compiledArguments.add(new Tuple<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
 					} else {
 						LOGGER.error("Required instance not found, skipping instance compiling for '{}' : KEY ['{}'] | ClassName [{}]", location.orElse("Unknown Key"), key, clz.isPresent() ? clz.get() : "Unknown Class");
 						return Optional.empty();
@@ -228,7 +228,7 @@ public class CalioParser {
 			}
 		}
 		if (!compiledParams.isEmpty() && !compiledArguments.isEmpty()) {
-			return Optional.of(new Pair<>(compiledParams, compiledArguments));
+			return Optional.of(new Tuple<>(compiledParams, compiledArguments));
 		}
 		return Optional.empty();
 	}

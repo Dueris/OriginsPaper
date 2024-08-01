@@ -2,7 +2,7 @@ package io.github.dueris.calio.parser;
 
 import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.util.holder.ObjectTiedEnumState;
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Contract;
@@ -50,10 +50,10 @@ public class InstanceDefiner {
 		return dataMap;
 	}
 
-	public List<?> sortByPriorities(@NotNull List<Pair<String, ?>> pairs) {
-		return pairs.stream()
-			.sorted(Comparator.comparingInt(pair -> keyPriorities.getInt(pair.first())))
-			.map(Pair::second)
+	public List<?> sortByPriorities(@NotNull List<Tuple<String, ?>> Tuples) {
+		return Tuples.stream()
+			.sorted(Comparator.comparingInt(Tuple -> keyPriorities.getInt(Tuple.getA())))
+			.map(Tuple::getB)
 			.collect(Collectors.toList());
 	}
 }

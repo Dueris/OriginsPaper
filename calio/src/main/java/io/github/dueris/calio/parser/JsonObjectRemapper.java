@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 public class JsonObjectRemapper {
-	private final List<Pair<String, String>> namespaceRemappings;
-	private final List<Pair<String, String>> typeAliases;
+	private final List<Tuple<String, String>> namespaceRemappings;
+	private final List<Tuple<String, String>> typeAliases;
 
-	public JsonObjectRemapper(List<Pair<String, String>> namespaceRemappings, List<Pair<String, String>> typeAliases) {
+	public JsonObjectRemapper(List<Tuple<String, String>> namespaceRemappings, List<Tuple<String, String>> typeAliases) {
 		this.namespaceRemappings = namespaceRemappings;
 		this.typeAliases = typeAliases;
 	}
@@ -69,9 +69,9 @@ public class JsonObjectRemapper {
 			}
 			typeValue = typeValue.replace("*", currentNamespace.toString());
 		}
-		for (Pair<String, String> alias : typeAliases) {
-			if (alias.first().equals(typeValue)) {
-				return alias.second();
+		for (Tuple<String, String> alias : typeAliases) {
+			if (alias.getA().equals(typeValue)) {
+				return alias.getB();
 			}
 		}
 
@@ -79,9 +79,9 @@ public class JsonObjectRemapper {
 		if (parts.length == 2) {
 			String namespace = parts[0];
 			String key = parts[1];
-			for (Pair<String, String> namespaceMapping : namespaceRemappings) {
-				if (namespaceMapping.first().equals(namespace)) {
-					return namespaceMapping.second() + ":" + key;
+			for (Tuple<String, String> namespaceMapping : namespaceRemappings) {
+				if (namespaceMapping.getA().equals(namespace)) {
+					return namespaceMapping.getB() + ":" + key;
 				}
 			}
 		}

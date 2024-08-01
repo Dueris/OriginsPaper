@@ -2,7 +2,7 @@ package me.dueris.originspaper;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.dueris.calio.parser.CalioParser;
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import io.papermc.paper.command.brigadier.ApiMirrorRootNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.PaperCommands;
@@ -177,14 +177,14 @@ public class Bootstrap implements PluginBootstrap {
 		})).priority(10));
 		io.github.dueris.calio.parser.JsonObjectRemapper remapper = new io.github.dueris.calio.parser.JsonObjectRemapper(
 			List.of(
-				new io.github.dueris.calio.util.holder.Pair<>("origins", "apoli")
+				new Tuple<>("origins", "apoli")
 			),
 			List.of(
-				new Pair<>("apoli:conditioned_restrict_armor", "apoli:restrict_armor"),
-				new Pair<>("apoli:has_tag", "apoli:has_command_tag"),
-				new Pair<>("apoli:custom_data", "apoli:nbt"),
-				new Pair<>("apoli:is_equippable", "apoli:equippable"),
-				new Pair<>("apoli:fireproof", "apoli:fire_resistant")
+				new Tuple<>("apoli:conditioned_restrict_armor", "apoli:restrict_armor"),
+				new Tuple<>("apoli:has_tag", "apoli:has_command_tag"),
+				new Tuple<>("apoli:custom_data", "apoli:nbt"),
+				new Tuple<>("apoli:is_equippable", "apoli:equippable"),
+				new Tuple<>("apoli:fireproof", "apoli:fire_resistant")
 			)
 		);
 		CalioParser.REMAPPER.set(remapper);

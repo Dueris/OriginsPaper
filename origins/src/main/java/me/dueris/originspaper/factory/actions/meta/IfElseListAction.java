@@ -6,7 +6,7 @@ import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.actions.ActionFactory;
 import me.dueris.originspaper.factory.conditions.ConditionFactory;
@@ -41,12 +41,12 @@ public class IfElseListAction {
 				(jsonElement) -> {
 					if (jsonElement.isJsonObject()) {
 						JsonObject jo = jsonElement.getAsJsonObject();
-						return new Pair<>(
+						return new Tuple<>(
 							conditionDataType.deserialize(jo.get("condition")), actionDataType.deserialize(jo.get("action"))
 						);
 					}
 					throw new JsonSyntaxException("Unable to parse actions for the if_else_list action!");
-				}, Pair.class
+				}, Tuple.class
 			))),
 			(inst, t) -> action(inst, t, actionToConditionTypeFunction));
 	}

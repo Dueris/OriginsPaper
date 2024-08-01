@@ -6,7 +6,7 @@ import io.github.dueris.calio.registry.IRegistry;
 import io.github.dueris.calio.registry.Registrar;
 import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
-import io.github.dueris.calio.util.holder.Pair;
+import net.minecraft.util.Tuple;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -31,7 +31,7 @@ public class WrappedBootstrapContext {
 	private final BootstrapContext context;
 	private final IRegistry registry;
 	private final List<String> registryPointers = new CopyOnWriteArrayList<>();
-	private final ConcurrentHashMap<Pair<ResourceKey<?>, ResourceLocation>, JsonObject> registered = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<Tuple<ResourceKey<?>, ResourceLocation>, JsonObject> registered = new ConcurrentHashMap<>();
 
 	public WrappedBootstrapContext(BootstrapContext context) {
 		this.context = context;
@@ -58,7 +58,7 @@ public class WrappedBootstrapContext {
 		}
 
 		this.LOGGER.log(Level.INFO, "Registered new data for location: {}", location.getPath());
-		this.registered.put(new Pair<>(key, location), data);
+		this.registered.put(new Tuple<>(key, location), data);
 	}
 
 	public void initRegistries(@NotNull Path datapackPath) {
@@ -73,9 +73,9 @@ public class WrappedBootstrapContext {
 			}).filter(File::isDirectory)
 			.findFirst().orElseThrow();
 
-		for (Pair<ResourceKey<?>, ResourceLocation> key : this.registered.keySet()) {
-			String namespace = key.second().getNamespace();
-			String registryLocation = key.first().location().getPath();
+		for (Tuple<ResourceKey<?>, ResourceLocation> key : this.registered.keySet()) {
+			String namespace = key.getB().getNamespace();
+			String registryLocation = key.getA().location().getPath();
 			File namespaceFile = new File(data, namespace);
 			if (!namespaceFile.exists()) {
 				namespaceFile.mkdirs();
@@ -86,7 +86,7 @@ public class WrappedBootstrapContext {
 				registryLocationFile.mkdirs();
 			}
 
-			File registryFile = new File(registryLocationFile, key.second().getPath() + ".json");
+			File registryFile = new File(registryLocationFile, key.getB().getPath() + ".json");
 			if (registryFile.exists()) {
 				try {
 					List<String> lines = Files.readLines(registryFile, StandardCharsets.UTF_8);
@@ -104,7 +104,7 @@ public class WrappedBootstrapContext {
 			} catch (IOException var16) {
 				throw new RuntimeException(var16);
 			} finally {
-				this.LOGGER.log(Level.INFO, "Created registry entry ({}) for registry \"{}\"", key.second().toString(), registryLocation);
+				this.LOGGER.log(Level.INFO, "Created registry entry ({}) for registry \"{}\"", key.getB().toString(), registryLocation);
 			}
 		}
 
