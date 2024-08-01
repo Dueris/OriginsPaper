@@ -2,7 +2,7 @@ package me.dueris.originspaper.factory.data.types;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import me.dueris.originspaper.factory.conditions.ConditionFactory;
+import me.dueris.originspaper.factory.condition.ConditionFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
@@ -10,6 +10,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -45,6 +46,11 @@ public class ExplosionMask {
 	@Contract(value = "_, _ -> new", pure = true)
 	public static @NotNull ExplosionMask getExplosionMask(Explosion explosion, ServerLevel level) {
 		return new ExplosionMask(explosion, level);
+	}
+
+	@Contract(value = "_, _ -> new", pure = true)
+	public static @NotNull ExplosionMask getExplosionMask(Explosion explosion, Level level) {
+		return getExplosionMask(explosion, (ServerLevel) level);
 	}
 
 	private static void addOrAppendStack(List<Pair<ItemStack, BlockPos>> stacks, @NotNull ItemStack stack, BlockPos pos) {

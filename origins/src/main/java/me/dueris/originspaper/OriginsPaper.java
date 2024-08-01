@@ -13,9 +13,9 @@ import me.dueris.originspaper.command.OriginCommand;
 import me.dueris.originspaper.content.ContentTicker;
 import me.dueris.originspaper.content.OrbOfOrigins;
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.actions.Actions;
-import me.dueris.originspaper.factory.conditions.Conditions;
-import me.dueris.originspaper.factory.conditions.types.BiEntityConditions;
+import me.dueris.originspaper.factory.action.Actions;
+import me.dueris.originspaper.factory.condition.Conditions;
+import me.dueris.originspaper.factory.condition.types.BiEntityConditions;
 import me.dueris.originspaper.factory.data.types.modifier.ModifierOperations;
 import me.dueris.originspaper.factory.powers.provider.origins.BounceSlimeBlock;
 import me.dueris.originspaper.factory.powers.provider.origins.WaterBreathe;
@@ -168,7 +168,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 
 		Bootstrap.BOOTSTRAPPED.set(false);
 		plugin = this;
-		BooleanGetter startup = () -> {
+		Getter<Boolean> startup = () -> {
 			this.finalizePreboot();
 			this.registry = CalioRegistry.INSTANCE;
 			Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -263,12 +263,27 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				return false;
 			}
 		};
-		if (!startup.get()) {
-			Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		} else {
+		if (startup.get()) {
 			this.debug(Component.text("  - Loaded @1 powers".replace("@1", String.valueOf(this.registry.retrieve(Registries.CRAFT_POWER).registrySize()))));
 			this.debug(Component.text("  - Loaded @2 layers".replace("@2", String.valueOf(this.registry.retrieve(Registries.LAYER).registrySize()))));
 			this.debug(Component.text("  - Loaded @3 origins".replace("@3", String.valueOf(this.registry.retrieve(Registries.ORIGIN).registrySize()))));
+			this.debug(Component.text("  - Loaded @4 actions".replace("@4", String.valueOf(((Getter<Integer>) () -> {
+				int bientity = this.registry.retrieve(Registries.BIENTITY_ACTION).registrySize();
+				int block = this.registry.retrieve(Registries.BLOCK_ACTION).registrySize();
+				int entity = this.registry.retrieve(Registries.ENTITY_ACTION).registrySize();
+				int item = this.registry.retrieve(Registries.ITEM_ACTION).registrySize();
+				return item + entity + block + bientity;
+			}).get()))));
+			this.debug(Component.text("  - Loaded @5 conditions".replace("@5", String.valueOf(((Getter<Integer>) () -> {
+				int bientity = this.registry.retrieve(Registries.BIENTITY_CONDITION).registrySize();
+				int biome = this.registry.retrieve(Registries.BIOME_CONDITION).registrySize();
+				int block = this.registry.retrieve(Registries.BLOCK_CONDITION).registrySize();
+				int damage = this.registry.retrieve(Registries.DAMAGE_CONDITION).registrySize();
+				int entity = this.registry.retrieve(Registries.ENTITY_CONDITION).registrySize();
+				int fluid = this.registry.retrieve(Registries.FLUID_CONDITION).registrySize();
+				int item = this.registry.retrieve(Registries.ITEM_CONDITION).registrySize();
+				return item + fluid + entity + damage + block + biome + bientity;
+			}).get()))));
 			scheduler = new OriginScheduler.MainTickerThread();
 			scheduler.runTaskTimer(this, 0L, 1L);
 			new BukkitRunnable() {
@@ -289,8 +304,8 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 
 			Commands.bootstrap(commandDispatcher);
 			CraftPehuki.onLoad();
-			Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		}
+		Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 	}
 
 	public void throwable(@NotNull Throwable throwable, boolean kill) {
@@ -384,7 +399,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		OrbOfOrigins.init();
 	}
 
-	private interface BooleanGetter {
-		boolean get();
+	private interface Getter<T> {
+		T get();
 	}
 }

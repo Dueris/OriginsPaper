@@ -12,10 +12,9 @@ import io.github.dueris.calio.util.annotations.DontRegister;
 import io.github.dueris.calio.util.annotations.RequiresPlugin;
 import io.github.dueris.calio.util.annotations.SourceProvider;
 import io.github.dueris.calio.util.holder.ObjectProvider;
-import io.github.dueris.calio.util.holder.ObjectTiedBoolean;
 import io.github.dueris.calio.util.holder.ObjectTiedEnumState;
-import net.minecraft.util.Tuple;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
@@ -34,10 +33,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class CalioParser {
 	public static final AtomicReference<JsonObjectRemapper> REMAPPER = new AtomicReference<>();
-	public static ExecutorService threadedParser;
-	public static boolean threaded = false;
 	public static final Logger LOGGER = LogManager.getLogger("CraftCalioParser");
 	private static final Gson GSON = new Gson();
+	public static ExecutorService threadedParser;
+	public static boolean threaded = false;
 
 	@SuppressWarnings("unchecked")
 	public static <T> @NotNull ConcurrentLinkedQueue<Tuple<?, ResourceLocation>> fromJsonFile(Map.@NotNull Entry<AccessorKey<?>, ConcurrentLinkedQueue<Tuple<String, String>>> entry) {
@@ -80,7 +79,8 @@ public class CalioParser {
 					String path = Tuple.getA();
 					String jsonContents = Tuple.getB();
 					ResourceLocation location = Util.buildResourceLocationFromPath(path);
-					if (location == null) throw new RuntimeException("Unable to compile ResourceLocation for CalioParser!");
+					if (location == null)
+						throw new RuntimeException("Unable to compile ResourceLocation for CalioParser!");
 					InstanceDefiner definer;
 					Class<? extends T> toBuild = clz;
 

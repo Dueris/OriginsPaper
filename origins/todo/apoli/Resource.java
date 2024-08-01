@@ -9,7 +9,7 @@ import me.dueris.calio.util.holders.Pair;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.PowerUpdateEvent;
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.actions.Actions;
+import me.dueris.originspaper.factory.action.Actions;
 import me.dueris.originspaper.factory.data.types.Comparison;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import me.dueris.originspaper.registry.Registries;

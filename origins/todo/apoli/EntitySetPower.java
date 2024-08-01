@@ -8,7 +8,7 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.AddToSetEvent;
 import me.dueris.originspaper.event.OriginChangeEvent;
 import me.dueris.originspaper.event.RemoveFromSetEvent;
-import me.dueris.originspaper.factory.actions.Actions;
+import me.dueris.originspaper.factory.action.Actions;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

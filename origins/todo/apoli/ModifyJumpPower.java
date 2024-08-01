@@ -7,7 +7,7 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonArray;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.actions.Actions;
+import me.dueris.originspaper.factory.action.Actions;
 import me.dueris.originspaper.factory.data.types.modifier.Modifier;
 import me.dueris.originspaper.util.DataConverter;
 import org.bukkit.Bukkit;

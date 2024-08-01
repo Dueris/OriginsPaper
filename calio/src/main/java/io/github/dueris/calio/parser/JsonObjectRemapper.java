@@ -3,9 +3,8 @@ package io.github.dueris.calio.parser;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import net.minecraft.util.Tuple;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -38,7 +37,7 @@ public class JsonObjectRemapper {
 
 			if (key.equals("type") && value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) {
 				String typeValue = value.getAsString();
-				String remappedTypeValue = remapTypeValue(typeValue,currentNamespace);
+				String remappedTypeValue = remapTypeValue(typeValue, currentNamespace);
 				remappedObject.addProperty(key, remappedTypeValue);
 			} else {
 				remappedObject.add(key, remap(value, currentNamespace));

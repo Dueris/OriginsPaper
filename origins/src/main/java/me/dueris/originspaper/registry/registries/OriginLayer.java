@@ -5,7 +5,7 @@ import io.github.dueris.calio.parser.InstanceDefiner;
 import io.github.dueris.calio.registry.Registrar;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.conditions.ConditionFactory;
+import me.dueris.originspaper.factory.condition.ConditionFactory;
 import me.dueris.originspaper.factory.data.ApoliDataTypes;
 import me.dueris.originspaper.factory.data.OriginsDataTypes;
 import me.dueris.originspaper.factory.data.types.GuiTitle;

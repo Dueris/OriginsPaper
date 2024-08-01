@@ -5,7 +5,7 @@ import me.dueris.calio.data.FactoryData;
 import me.dueris.calio.data.factory.FactoryJsonObject;
 import me.dueris.calio.data.types.OptionalInstance;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.actions.Actions;
+import me.dueris.originspaper.factory.action.Actions;
 import me.dueris.originspaper.factory.powers.holder.PowerType;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;

@@ -2,7 +2,7 @@ package me.dueris.originspaper.factory.powers.test;
 
 import io.github.dueris.calio.parser.InstanceDefiner;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.actions.ActionFactory;
+import me.dueris.originspaper.factory.action.ActionFactory;
 import me.dueris.originspaper.registry.Registries;
 
 public class TestActions {

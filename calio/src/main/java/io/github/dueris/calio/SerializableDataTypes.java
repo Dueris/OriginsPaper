@@ -480,11 +480,10 @@ public class SerializableDataTypes {
 		return SerializableDataBuilder.of(
 			(json) -> {
 				EnumSet<T> set = EnumSet.noneOf(enumClass);
-				if(json.isJsonPrimitive()) {
+				if (json.isJsonPrimitive()) {
 					T t = enumDataType.deserialize(json);
 					set.add(t);
-				} else
-				if(json.isJsonArray()) {
+				} else if (json.isJsonArray()) {
 					JsonArray array = json.getAsJsonArray();
 					for (JsonElement jsonElement : array) {
 						T t = enumDataType.deserialize(jsonElement);

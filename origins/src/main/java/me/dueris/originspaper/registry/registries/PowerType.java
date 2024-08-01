@@ -7,7 +7,7 @@ import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import io.github.dueris.calio.util.annotations.SourceProvider;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.conditions.ConditionFactory;
+import me.dueris.originspaper.factory.condition.ConditionFactory;
 import me.dueris.originspaper.factory.data.ApoliDataTypes;
 import me.dueris.originspaper.factory.powers.SimplePower;
 import me.dueris.originspaper.factory.powers.provider.OriginSimpleContainer;

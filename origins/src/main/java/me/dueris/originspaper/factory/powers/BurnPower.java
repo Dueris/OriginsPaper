@@ -3,7 +3,7 @@ package me.dueris.originspaper.factory.powers;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.conditions.ConditionFactory;
+import me.dueris.originspaper.factory.condition.ConditionFactory;
 import me.dueris.originspaper.registry.registries.PowerType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

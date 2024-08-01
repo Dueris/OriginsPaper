@@ -2,9 +2,9 @@ package io.github.dueris.calio.parser;
 
 import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.util.holder.ObjectTiedEnumState;
-import net.minecraft.util.Tuple;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

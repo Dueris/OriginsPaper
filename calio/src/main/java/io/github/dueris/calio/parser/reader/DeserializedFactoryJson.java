@@ -3,8 +3,8 @@ package io.github.dueris.calio.parser.reader;
 import com.google.gson.JsonObject;
 import io.github.dueris.calio.parser.CalioParser;
 import io.github.dueris.calio.parser.InstanceDefiner;
-import net.minecraft.util.Tuple;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.jetbrains.annotations.Nullable;
 
