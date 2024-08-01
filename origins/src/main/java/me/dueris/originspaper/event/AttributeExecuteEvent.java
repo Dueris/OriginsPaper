@@ -42,15 +42,5 @@ public class AttributeExecuteEvent extends PlayerEvent {
 		return super.equals(obj);
 	}
 
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
 
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-	public boolean callEvent() {
-		return super.callEvent();
-	}
 }

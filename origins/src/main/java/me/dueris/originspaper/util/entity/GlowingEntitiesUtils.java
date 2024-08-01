@@ -223,7 +223,6 @@ public class GlowingEntitiesUtils implements Listener {
 		private static Logger logger;
 		private static int version;
 		private static int versionMinor;
-		private static ProtocolMappings mappings;
 		private static Method getHandle;
 		private static Method getDataWatcher;
 		// Synched datas
@@ -280,7 +279,7 @@ public class GlowingEntitiesUtils implements Listener {
 
 				boolean remapped = Bukkit.getServer().getClass().getPackage().getName().split("\\.").length == 3;
 
-				mappings = ProtocolMappings.getMappings(version, versionMinor, remapped);
+				ProtocolMappings mappings = ProtocolMappings.getMappings(version, versionMinor, remapped);
 				if (mappings == null) {
 					mappings = ProtocolMappings.getLast(remapped);
 					logger.warning("Loaded not matching version of the mappings for your server version");

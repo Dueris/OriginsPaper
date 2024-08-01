@@ -2,10 +2,8 @@ package me.dueris.originspaper.util.chunk;
 
 public class ShapeData {
 	String shape;
-	boolean useTopBottomThinger;
 
-	public ShapeData(String shape, boolean useTopToBottom) {
-		this.useTopBottomThinger = useTopToBottom;
+	public ShapeData(String shape) {
 		this.shape = shape;
 	}
 
@@ -17,21 +15,9 @@ public class ShapeData {
 		this.shape = shape;
 	}
 
-	@Override
-	public String toString() {
-		return super.toString();
-	}
 
 	@Override
 	public boolean equals(Object obj) {
 		return super.equals(obj);
-	}
-
-	public boolean isUseTopBottomThinger() {
-		return useTopBottomThinger;
-	}
-
-	public void setUseTopBottomThinger(boolean useTopBottomThinger) {
-		this.useTopBottomThinger = useTopBottomThinger;
 	}
 }

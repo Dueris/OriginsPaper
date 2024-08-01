@@ -34,11 +34,6 @@ public class LevelChunkUtil {
 		return super.equals(obj);
 	}
 
-	@Override
-	public String toString() {
-		return super.toString();
-	}
-
 	public Chunk getChunkAt(Location location) {
 		return location.getChunk();
 	}

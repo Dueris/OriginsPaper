@@ -3,6 +3,7 @@ package me.dueris.originspaper.command;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 
+//todo
 public class ResourceCommand {
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 		/*LiteralArgumentBuilder<CommandSourceStack> main = net.minecraft.commands.Commands.literal("resource")

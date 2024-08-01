@@ -14,7 +14,7 @@ public class PlayerChunkUtil {
 		this.player = player;
 		this.shape = shape;
 		//generateShapeData
-		this.shapeData = new ShapeData(shape, true);
+		this.shapeData = new ShapeData(shape);
 	}
 
 	public Player getPlayer() {
@@ -44,11 +44,6 @@ public class PlayerChunkUtil {
 	@Override
 	public boolean equals(Object obj) {
 		return super.equals(obj);
-	}
-
-	@Override
-	public String toString() {
-		return super.toString();
 	}
 
 	public boolean isThing() {
