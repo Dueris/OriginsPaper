@@ -32,18 +32,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class Bootstrap implements PluginBootstrap {
-	public static ArrayList<String> oldDV = new ArrayList<>();
 	public static ArrayList<Consumer<WrappedBootstrapContext>> apiCalls = new ArrayList<>();
 	public static AtomicBoolean BOOTSTRAPPED = new AtomicBoolean(false);
-
-	static {
-		oldDV.add("OriginsGenesis");
-		oldDV.add("Origins-Genesis");
-		oldDV.add("Origins-GenesisMC");
-		oldDV.add("Origins-GenesisMC[0_2_2]");
-		oldDV.add("Origins-GenesisMC[0_2_4]");
-		oldDV.add("Origins-GenesisMC[0_2_6]");
-	}
 
 	public static void deleteDirectory(Path directory, boolean ignoreErrors) throws IOException {
 		if (Files.exists(directory)) {
@@ -62,21 +52,7 @@ public class Bootstrap implements PluginBootstrap {
 		}
 	}
 
-	public static void copyOriginDatapack(Path datapackPath, WrappedBootstrapContext context) {
-		for (String string : oldDV) {
-			if (Files.exists(datapackPath)) {
-				String path = Path.of(datapackPath + File.separator + string).toAbsolutePath().toString();
-
-				try {
-					deleteDirectory(Path.of(path), true);
-				} catch (IOException ignore) {}
-			} else {
-				File file = new File(datapackPath.toAbsolutePath().toString());
-				file.mkdirs();
-				copyOriginDatapack(datapackPath, context);
-			}
-		}
-
+	public static void copyOriginDatapack(Path datapackPath) {
 		try {
 			CodeSource src = Util.class.getProtectionDomain().getCodeSource();
 			URL jar = src.getLocation();
@@ -160,7 +136,7 @@ public class Bootstrap implements PluginBootstrap {
 
 			try {
 				packDir = new File(this.parseDatapackPath());
-				copyOriginDatapack(packDir.toPath(), context);
+				copyOriginDatapack(packDir.toPath());
 			} catch (Exception ignored) {
 			} finally {
 				if (packDir != null) {
@@ -183,7 +159,8 @@ public class Bootstrap implements PluginBootstrap {
 				new Tuple<>("apoli:has_tag", "apoli:has_command_tag"),
 				new Tuple<>("apoli:custom_data", "apoli:nbt"),
 				new Tuple<>("apoli:is_equippable", "apoli:equippable"),
-				new Tuple<>("apoli:fireproof", "apoli:fire_resistant")
+				new Tuple<>("apoli:fireproof", "apoli:fire_resistant"),
+				new Tuple<>("apoli:merge_nbt", "apoli:merge_custom_data")
 			)
 		);
 		CalioParser.REMAPPER.set(remapper);

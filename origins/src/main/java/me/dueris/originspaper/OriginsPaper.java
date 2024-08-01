@@ -354,6 +354,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		}
 	}
 
+	@Override
 	public void onDisable() {
 		try {
 			for (Player player : Bukkit.getOnlinePlayers()) {

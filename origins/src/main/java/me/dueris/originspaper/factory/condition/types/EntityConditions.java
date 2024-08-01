@@ -92,16 +92,6 @@ public class EntityConditions {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.ENTITY_CONDITION).register(factory, factory.getSerializerId());
 	}
 
-	public static boolean isEntityMoving(@NotNull Entity entity) {
-		int entID = entity.getEntityId();
-		Location prevLocat = prevLoca[entID];
-		Location cuLo = entity.getLocation().clone();
-		prevLoca[entID] = cuLo;
-		if (prevLocat != null) cuLo.setDirection(prevLocat.getDirection()); // Ignore direction changes
-
-		return !cuLo.equals(prevLocat);
-	}
-
 	public static boolean isEntityMovingHorizontal(@NotNull Entity entity) {
 		int entID = entity.getEntityId();
 		Location prevLocat = prevLoca[entID];

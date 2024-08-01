@@ -14,7 +14,7 @@ public class ActionFactory<T> implements Factory, Consumer<T> {
 	protected final BiConsumer<DeserializedFactoryJson, T> effect;
 	protected final InstanceDefiner data;
 	private final ResourceLocation location;
-	private DeserializedFactoryJson deserializedFactory = null;
+	protected DeserializedFactoryJson deserializedFactory = null;
 
 	public ActionFactory(ResourceLocation location, InstanceDefiner data, @NotNull BiConsumer<DeserializedFactoryJson, T> effect) {
 		this.location = location;
