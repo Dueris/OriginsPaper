@@ -1,6 +1,9 @@
 package me.dueris.originspaper.factory.actions.types.bientity;
 
+import io.github.dueris.calio.parser.InstanceDefiner;
 import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.factory.actions.ActionFactory;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -24,8 +27,8 @@ public class LeashAction {
 
 	public static ActionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ActionFactory<>(
-			Apoli.identifier("leash"),
-			new SerializableData(),
+			OriginsPaper.apoliIdentifier("leash"),
+			InstanceDefiner.instanceDefiner(),
 			LeashAction::action
 		);
 	}
