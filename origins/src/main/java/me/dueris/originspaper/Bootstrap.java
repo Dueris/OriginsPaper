@@ -160,7 +160,8 @@ public class Bootstrap implements PluginBootstrap {
 				new Tuple<>("apoli:custom_data", "apoli:nbt"),
 				new Tuple<>("apoli:is_equippable", "apoli:equippable"),
 				new Tuple<>("apoli:fireproof", "apoli:fire_resistant"),
-				new Tuple<>("apoli:merge_nbt", "apoli:merge_custom_data")
+				new Tuple<>("apoli:merge_nbt", "apoli:merge_custom_data"),
+				new Tuple<>("apoli:revoke_power", "apoli:remove_power")
 			)
 		);
 		CalioParser.REMAPPER.set(remapper);

@@ -123,7 +123,7 @@ public class PowerCommand {
 																		context.getSource().getBukkitSender(),
 																		power,
 																		player.getBukkitEntity(),
-																		CraftApoli.getLayerFromTag("apoli:command"),
+																		CraftApoli.getLayer("apoli:command"),
 																		context.getSource().isSilent()
 																	);
 																} catch (IllegalAccessException |
@@ -158,7 +158,7 @@ public class PowerCommand {
 																				context.getSource().getBukkitSender(),
 																				power,
 																				player.getBukkitEntity(),
-																				CraftApoli.getLayerFromTag(
+																				CraftApoli.getLayer(
 																					CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer"))
 																						.asString()
 																				),
@@ -379,7 +379,7 @@ public class PowerCommand {
 																	context.getSource().getBukkitSender(),
 																	OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(arg),
 																	p.getBukkitEntity(),
-																	CraftApoli.getLayerFromTag(layer),
+																	CraftApoli.getLayer(layer),
 																	context.getSource().isSilent()
 																);
 															} catch (IllegalAccessException |

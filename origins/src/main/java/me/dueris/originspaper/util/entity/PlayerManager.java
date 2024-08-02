@@ -132,9 +132,9 @@ public class PlayerManager implements Listener {
 			}
 		}).runTaskLater(OriginsPaper.getPlugin(), OriginConfiguration.getConfiguration().getInt("choosing_delay"));
 		if (!p.getPersistentDataContainer().has(identifier("updated"))
-			&& !PowerHolderComponent.getOrigin(p, CraftApoli.getLayerFromTag("origins:origin")).equals(CraftApoli.emptyOrigin())) {
+			&& !PowerHolderComponent.getOrigin(p, CraftApoli.getLayer("origins:origin")).equals(CraftApoli.emptyOrigin())) {
 			PowerHolderComponent.setOrigin(
-				p, CraftApoli.getLayerFromTag("origins:origin"), PowerHolderComponent.getOrigin(p, CraftApoli.getLayerFromTag("origins:origin"))
+				p, CraftApoli.getLayer("origins:origin"), PowerHolderComponent.getOrigin(p, CraftApoli.getLayer("origins:origin"))
 			);
 			p.getPersistentDataContainer().set(identifier("updated"), PersistentDataType.BOOLEAN, true);
 		}

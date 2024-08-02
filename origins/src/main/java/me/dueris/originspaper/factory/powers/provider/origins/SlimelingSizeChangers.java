@@ -69,7 +69,7 @@ public class SlimelingSizeChangers implements Listener {
 						@Override
 						public void run() {
 							try {
-								PowerUtils.removePower(Bukkit.getConsoleSender(), e.getPower(), p, CraftApoli.getLayerFromTag("origins:origin"), false);
+								PowerUtils.removePower(Bukkit.getConsoleSender(), e.getPower(), p, CraftApoli.getLayer("origins:origin"), false);
 							} catch (InstantiationException | IllegalAccessException ex) {
 								throw new RuntimeException(ex);
 							}
@@ -108,7 +108,7 @@ public class SlimelingSizeChangers implements Listener {
 						@Override
 						public void run() {
 							try {
-								PowerUtils.removePower(Bukkit.getConsoleSender(), e.getPower(), p, CraftApoli.getLayerFromTag("origins:origin"), false);
+								PowerUtils.removePower(Bukkit.getConsoleSender(), e.getPower(), p, CraftApoli.getLayer("origins:origin"), false);
 							} catch (InstantiationException | IllegalAccessException ex) {
 								throw new RuntimeException(ex);
 							}

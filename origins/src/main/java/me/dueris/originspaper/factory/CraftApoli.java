@@ -62,7 +62,11 @@ public class CraftApoli {
 		return emptyOrigin();
 	}
 
-	public static OriginLayer getLayerFromTag(String layerTag) {
+	public static OriginLayer getLayer(ResourceLocation layerTag) {
+		return getLayer(layerTag.toString());
+	}
+
+	public static OriginLayer getLayer(String layerTag) {
 		for (OriginLayer l : layerRegistrar.values()) {
 			if (l.getTag().equals(layerTag)) {
 				return l;

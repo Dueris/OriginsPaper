@@ -83,7 +83,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 											Commands.argument("origin", ResourceLocationArgument.id())
 												.suggests(
 													(context, builder) -> {
-														OriginLayer layer = CraftApoli.getLayerFromTag(
+														OriginLayer layer = CraftApoli.getLayer(
 															CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()
 														);
 														ORIGINS.stream()
@@ -106,7 +106,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 												.executes(
 													context -> {
 														Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-														OriginLayer layer = CraftApoli.getLayerFromTag(
+														OriginLayer layer = CraftApoli.getLayer(
 															CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()
 														);
 														Origin origin = CraftApoli.getOrigin(
@@ -259,7 +259,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 										.executes(
 											context -> {
 												Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-												OriginLayer layer = CraftApoli.getLayerFromTag(
+												OriginLayer layer = CraftApoli.getLayer(
 													CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()
 												);
 												targets.forEach(
@@ -318,7 +318,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 										)
 										.executes(context -> {
 											Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-											OriginLayer layer = CraftApoli.getLayerFromTag(
+											OriginLayer layer = CraftApoli.getLayer(
 												CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()
 											);
 											RandomOriginPage randomOriginPage = new RandomOriginPage();
@@ -383,7 +383,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 										)
 										.executes(context -> {
 											Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-											OriginLayer layer = CraftApoli.getLayerFromTag(
+											OriginLayer layer = CraftApoli.getLayer(
 												CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()
 											);
 											targets.forEach(player -> {

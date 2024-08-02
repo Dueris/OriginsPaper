@@ -90,7 +90,7 @@ public class PowerHolderComponent implements Listener {
 
 		for (String layer : layers) {
 			String[] layerData = layer.split("\\|");
-			OriginLayer layerContainer = CraftApoli.getLayerFromTag(layerData[0]);
+			OriginLayer layerContainer = CraftApoli.getLayer(layerData[0]);
 			ConcurrentLinkedQueue<PowerType> powers = new ConcurrentLinkedQueue<>();
 
 			for (String dataPiece : layerData) {
