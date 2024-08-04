@@ -25,7 +25,8 @@ public class ApoliLootContextTypes {
 			.optional(LootContextParams.EXPLOSION_RADIUS)
 	);
 
-	private ApoliLootContextTypes() {}
+	private ApoliLootContextTypes() {
+	}
 
 	private static LootContextParamSet register(ResourceLocation id, LootContextParamSet.Builder lootContextTypeBuilder) {
 

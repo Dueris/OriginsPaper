@@ -75,104 +75,11 @@ public class CalioParser {
 			List<CompletableFuture<Void>> parsingTasks = new ArrayList<>();
 			for (Tuple<String, String> Tuple : entry.getValue()) {
 				Optional<CompletableFuture<Void>> future = submitParseTask(() -> {
-					final AtomicBoolean[] kill = {new AtomicBoolean(false)};
-					String path = Tuple.getA();
-					String jsonContents = Tuple.getB();
-					ResourceLocation location = Util.buildResourceLocationFromPath(path);
-					if (location == null)
-						throw new RuntimeException("Unable to compile ResourceLocation for CalioParser!");
-					InstanceDefiner definer;
-					Class<? extends T> toBuild = clz;
-
-					JsonObject jsonSource = REMAPPER.get().remap(GSON.fromJson(jsonContents, JsonObject.class), location).getAsJsonObject();
-					if (accessorKey.strategy().equals(ParsingStrategy.TYPED)) {
-						Class<? extends T> typedInst;
-						if (!jsonSource.has("type")) {
-							if (defaultType[0] != null) {
-								typedInst = defaultType[0];
-							} else {
-								LOGGER.error("Error when parsing {} : 'type' field is required for {} instances", location.toString(), clz.getSimpleName());
-								return;
-							}
-						} else {
-							try {
-								typedInst = typedTempInstance.stream().filter(stringClassTuple -> {
-									return stringClassTuple.getA().typedInstance != null && stringClassTuple.getA().typedInstance.toString().equalsIgnoreCase(jsonSource.get("type").getAsString());
-								}).findFirst().get().getB();
-							} catch (NoSuchElementException e) {
-								LOGGER.error("Unable to retrieve type instance of '{}'", jsonSource.get("type").getAsString());
-								return;
-							}
-						}
-						if (typedInst != null) {
-							toBuild = typedInst;
-						}
-					}
-					if (toBuild == null)
-						throw new RuntimeException("Unable to parse type for class '" + clz.getSimpleName() + "' and type value of '" + jsonSource.get("type").getAsString() + "'");
-					try {
-						definer = ReflectionUtils.invokeStaticMethod(toBuild, "buildDefiner");
-					} catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
-						throw new RuntimeException(e);
-					}
-					Optional<Tuple<List<Tuple<String, ?>>, List<Tuple<String, ?>>>> compiledInstance = compileFromInstanceDefinition(definer, jsonSource, Optional.of(location.toString()), Optional.of(clz));
-					if (compiledInstance.isEmpty()) return;
-					List<Tuple<String, ?>> compiledArguments = compiledInstance.get().getB();
-					List<Tuple<String, ?>> compiledParams = compiledInstance.get().getA();
-
-					if (kill[0].get()) return;
-
-					List<Class<?>> parameterTypes = (List<Class<?>>) definer.sortByPriorities(compiledParams);
-					parameterTypes.addFirst(ResourceLocation.class);
-
-					Constructor<?> constructor;
-					try {
-						constructor = toBuild.getConstructor(parameterTypes.toArray(new Class[0]));
-					} catch (NoSuchMethodException e) {
-						LOGGER.error("No such constructor with the given parameter types: {}", e.getMessage());
-						e.printStackTrace();
-						return;
-					}
-
-					List arguments = definer.sortByPriorities(compiledArguments);
-					arguments.addFirst(location);
-
-					Object[] argsArray = new Object[parameterTypes.size()];
-					for (int i = 0; i < parameterTypes.size(); i++) {
-						Class<?> paramType = parameterTypes.get(i);
-						Object arg = (i < arguments.size()) ? arguments.get(i) : null;
-
-						if (arg != null && !paramType.isInstance(arg)) {
-							try {
-								arg = convertArgument(arg, paramType);
-							} catch (Exception e) {
-								LOGGER.error("Error converting argument {} to type {}: {}", arg, paramType, e.getMessage());
-								continue;
-							}
-						}
-
-						argsArray[i] = arg;
-					}
-
-					try {
-						T instance = (T) constructor.newInstance(argsArray);
-						if (ReflectionUtils.hasFieldWithAnnotation(instance.getClass(), JsonObject.class, SourceProvider.class)) {
-							ReflectionUtils.setFieldWithAnnotation(instance, SourceProvider.class, jsonSource);
-						}
-						RegistryKey<T> registryKey = (RegistryKey<T>) accessorKey.registryKey();
-						if (ReflectionUtils.invokeBooleanMethod(instance, "canRegister")) {
-							CalioRegistry.INSTANCE.retrieve(registryKey).register(instance, location);
-						}
-					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
-							 InvocationTargetException e) {
-						LOGGER.error("Error compiling instanceof {} : {}", toBuild.getSimpleName(), e.getMessage());
-						e.printStackTrace();
-					}
+					parseFile(new Tuple<>(Util.buildResourceLocationFromPath(Tuple.getA()), Tuple.getB()), clz, accessorKey, defaultType, typedTempInstance);
 				});
 
 				Objects.requireNonNull(parsingTasks);
 				future.ifPresent(parsingTasks::add);
-
 			}
 
 			CompletableFuture<Void> allOf = CompletableFuture.allOf(parsingTasks.toArray(new CompletableFuture[0]));
@@ -186,6 +93,108 @@ public class CalioParser {
 		}
 
 		return concurrentLinkedQueue;
+	}
+
+	public static <T> void parseFile(@NotNull Tuple<ResourceLocation, String> Tuple, Class<T> clz, AccessorKey<?> accessorKey, Class<? extends T>[] defaultType, ConcurrentLinkedQueue<Tuple<InstanceDefiner, Class<? extends T>>> typedTempInstance) {
+		final AtomicBoolean[] kill = {new AtomicBoolean(false)};
+		ResourceLocation location = Tuple.getA();
+		String jsonContents = Tuple.getB();
+		if (location == null)
+			throw new RuntimeException("Unable to compile ResourceLocation for CalioParser!");
+		InstanceDefiner definer;
+		Class<? extends T> toBuild = clz;
+
+		JsonObject jsonSource = REMAPPER.get().remap(GSON.fromJson(jsonContents, JsonObject.class), location).getAsJsonObject();
+		switch (accessorKey.strategy()) {
+			case TYPED -> {
+				Class<? extends T> typedInst;
+				if (!jsonSource.has("type")) {
+					if (defaultType[0] != null) {
+						typedInst = defaultType[0];
+					} else {
+						LOGGER.error("Error when parsing {} : 'type' field is required for {} instances", location.toString(), clz.getSimpleName());
+						kill[0].set(true);
+						return;
+					}
+				} else {
+					try {
+						typedInst = typedTempInstance.stream().filter(stringClassTuple -> {
+							return stringClassTuple.getA().typedInstance != null && stringClassTuple.getA().typedInstance.toString().equalsIgnoreCase(jsonSource.get("type").getAsString());
+						}).findFirst().get().getB();
+					} catch (NoSuchElementException e) {
+						kill[0].set(true);
+						LOGGER.error("Unable to retrieve type instance of '{}'", jsonSource.get("type").getAsString());
+						return;
+					}
+				}
+				if (typedInst != null) {
+					toBuild = typedInst;
+				}
+			}
+		}
+		if (toBuild == null)
+			throw new RuntimeException("Unable to parse type for class '" + clz.getSimpleName() + "' and type value of '" + jsonSource.get("type").getAsString() + "'");
+		try {
+			definer = ReflectionUtils.invokeStaticMethod(toBuild, "buildDefiner");
+		} catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+		Optional<Tuple<List<Tuple<String, ?>>, List<Tuple<String, ?>>>> compiledInstance = compileFromInstanceDefinition(definer, jsonSource, Optional.of(location.toString()), Optional.of(clz));
+		if (compiledInstance.isEmpty()) return;
+		List<Tuple<String, ?>> compiledArguments = compiledInstance.get().getB();
+		List<Tuple<String, ?>> compiledParams = compiledInstance.get().getA();
+
+		if (kill[0].get()) return;
+
+		List<Class<?>> parameterTypes = (List<Class<?>>) definer.sortByPriorities(compiledParams);
+		parameterTypes.addFirst(ResourceLocation.class);
+
+		Constructor<?> constructor;
+		try {
+			constructor = toBuild.getConstructor(parameterTypes.toArray(new Class[0]));
+		} catch (NoSuchMethodException e) {
+			LOGGER.error("No such constructor with the given parameter types: {}", e.getMessage());
+			e.printStackTrace();
+			return;
+		}
+
+		List arguments = definer.sortByPriorities(compiledArguments);
+		arguments.addFirst(location);
+
+		Object[] argsArray = new Object[parameterTypes.size()];
+		for (int i = 0; i < parameterTypes.size(); i++) {
+			Class<?> paramType = parameterTypes.get(i);
+			Object arg = (i < arguments.size()) ? arguments.get(i) : null;
+
+			if (arg != null && !paramType.isInstance(arg)) {
+				try {
+					arg = convertArgument(arg, paramType);
+				} catch (Exception e) {
+					LOGGER.error("Error converting argument {} to type {}: {}", arg, paramType, e.getMessage());
+					continue;
+				}
+			}
+
+			argsArray[i] = arg;
+		}
+
+		try {
+			finalizeInstance((T) constructor.newInstance(argsArray), jsonSource, accessorKey, location);
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
+				 InvocationTargetException e) {
+			LOGGER.error("Error compiling instanceof {} : {}", toBuild.getSimpleName(), e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public static <T> void finalizeInstance(@NotNull T instance, JsonObject jsonSource, AccessorKey<?> accessorKey, ResourceLocation location) {
+		if (ReflectionUtils.hasFieldWithAnnotation(instance.getClass(), JsonObject.class, SourceProvider.class)) {
+			ReflectionUtils.setFieldWithAnnotation(instance, SourceProvider.class, jsonSource);
+		}
+		RegistryKey<T> registryKey = (RegistryKey<T>) accessorKey.registryKey();
+		if (ReflectionUtils.invokeBooleanMethod(instance, "canRegister")) {
+			CalioRegistry.INSTANCE.retrieve(registryKey).register(instance, location);
+		}
 	}
 
 	private static Optional<CompletableFuture<Void>> submitParseTask(Runnable runnable) {
@@ -261,7 +270,7 @@ public class CalioParser {
 
 	private static @Unmodifiable Object convertToWrapper(Object arg, Class<?> wrapperType) {
 		if (wrapperType == Integer.class) return Integer.valueOf(((Number) arg).intValue());
-		if (wrapperType == Boolean.class) return Boolean.valueOf((Boolean) arg);
+		if (wrapperType == Boolean.class) return (Boolean) arg;
 		if (wrapperType == Double.class) return Double.valueOf(((Number) arg).doubleValue());
 		if (wrapperType == Float.class) return Float.valueOf(((Number) arg).floatValue());
 		if (wrapperType == Long.class) return Long.valueOf(((Number) arg).longValue());

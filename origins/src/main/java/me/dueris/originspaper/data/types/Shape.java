@@ -1,4 +1,4 @@
-package me.dueris.originspaper.factory.data.types;
+package me.dueris.originspaper.data.types;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;

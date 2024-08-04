@@ -1,4 +1,4 @@
-package me.dueris.originspaper.factory.data;
+package me.dueris.originspaper.data;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
@@ -7,9 +7,9 @@ import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
-import me.dueris.originspaper.factory.data.types.GuiTitle;
-import me.dueris.originspaper.factory.data.types.Impact;
-import me.dueris.originspaper.factory.data.types.OriginUpgrade;
+import me.dueris.originspaper.data.types.GuiTitle;
+import me.dueris.originspaper.data.types.Impact;
+import me.dueris.originspaper.data.types.OriginUpgrade;
 import me.dueris.originspaper.registry.registries.OriginLayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

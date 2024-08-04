@@ -4,9 +4,9 @@ import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.data.ApoliDataTypes;
+import me.dueris.originspaper.data.types.InventoryType;
 import me.dueris.originspaper.factory.action.ActionFactory;
-import me.dueris.originspaper.factory.data.ApoliDataTypes;
-import me.dueris.originspaper.factory.data.types.InventoryType;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 

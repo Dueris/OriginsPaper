@@ -1,4 +1,4 @@
-package me.dueris.originspaper.factory.data.types;
+package me.dueris.originspaper.data.types;
 
 import me.dueris.originspaper.util.Util;
 import net.kyori.adventure.text.Component;

@@ -2,6 +2,7 @@ package io.github.dueris.calio.registry;
 
 import com.google.common.base.Preconditions;
 import io.github.dueris.calio.registry.exceptions.UnmodifiableRegistryException;
+import io.github.dueris.calio.util.ReflectionUtils;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,6 +39,9 @@ public class Registrar<T> {
 		Preconditions.checkArgument(key != null, "Registry key cannot be null");
 		this.rawRegistry.put(key, item);
 		this.reverseLookup.put(item, key);
+		if (ReflectionUtils.hasMethod(item.getClass(), "onBootstrap", false)) {
+			ReflectionUtils.invokeMethod(item, "onBootstrap");
+		}
 		this.fireEvent(new RegistryEvent<>(RegistryEvent.Type.REGISTER, key, item));
 	}
 

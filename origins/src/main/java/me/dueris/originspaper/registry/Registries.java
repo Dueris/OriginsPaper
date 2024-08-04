@@ -2,9 +2,9 @@ package me.dueris.originspaper.registry;
 
 import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.util.Util;
+import me.dueris.originspaper.data.types.modifier.IModifierOperation;
 import me.dueris.originspaper.factory.action.ActionFactory;
 import me.dueris.originspaper.factory.condition.ConditionFactory;
-import me.dueris.originspaper.factory.data.types.modifier.IModifierOperation;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.registry.registries.PowerType;

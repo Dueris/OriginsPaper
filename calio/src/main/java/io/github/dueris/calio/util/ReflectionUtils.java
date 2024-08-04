@@ -56,6 +56,16 @@ public class ReflectionUtils {
 		}
 	}
 
+	public static void invokeMethod(Object instance, @NotNull String methodName) {
+		try {
+			Method method = instance.getClass().getDeclaredMethod(methodName);
+			method.setAccessible(true);
+			method.invoke(instance);
+		} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {
+			ignored.printStackTrace();
+		}
+	}
+
 	public static <T> @NotNull T newInstance(@NotNull Constructor<T> constructor, Object... args) throws InvocationTargetException, InstantiationException, IllegalAccessException {
 		constructor.setAccessible(true);
 		return constructor.newInstance(args);
@@ -118,19 +128,31 @@ public class ReflectionUtils {
 	}
 
 	public static boolean hasFieldWithAnnotation(@NotNull Class<?> clazz, Class<?> fieldType, Class<? extends Annotation> annotationType) {
-		return Arrays.stream(clazz.getDeclaredFields())
-			.anyMatch(field -> fieldType.isAssignableFrom(field.getType()) && field.isAnnotationPresent(annotationType));
+		while (clazz != null) {
+			if (Arrays.stream(clazz.getDeclaredFields())
+				.anyMatch(field -> fieldType.isAssignableFrom(field.getType()) && field.isAnnotationPresent(annotationType))) {
+				return true;
+			}
+			clazz = clazz.getSuperclass();
+		}
+		return false;
 	}
 
 	public static <T> void setFieldWithAnnotation(@NotNull Object target, Class<? extends Annotation> annotationType, T value) {
 		Class<?> clazz = target.getClass();
 		Field fieldToSet = null;
 
-		for (Field field : clazz.getDeclaredFields()) {
-			if (field.isAnnotationPresent(annotationType)) {
-				fieldToSet = field;
+		while (clazz != null) {
+			for (Field field : clazz.getDeclaredFields()) {
+				if (field.isAnnotationPresent(annotationType)) {
+					fieldToSet = field;
+					break;
+				}
+			}
+			if (fieldToSet != null) {
 				break;
 			}
+			clazz = clazz.getSuperclass();
 		}
 
 		if (fieldToSet != null) {

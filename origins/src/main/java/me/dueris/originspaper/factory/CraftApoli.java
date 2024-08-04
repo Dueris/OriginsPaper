@@ -2,7 +2,7 @@ package me.dueris.originspaper.factory;
 
 import io.github.dueris.calio.registry.Registrar;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.data.types.Impact;
+import me.dueris.originspaper.data.types.Impact;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;

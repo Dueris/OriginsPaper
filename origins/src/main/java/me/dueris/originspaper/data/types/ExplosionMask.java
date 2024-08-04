@@ -1,4 +1,4 @@
-package me.dueris.originspaper.factory.data.types;
+package me.dueris.originspaper.data.types;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;

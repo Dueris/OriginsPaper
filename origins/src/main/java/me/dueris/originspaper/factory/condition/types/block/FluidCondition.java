@@ -2,8 +2,8 @@ package me.dueris.originspaper.factory.condition.types.block;
 
 import io.github.dueris.calio.parser.InstanceDefiner;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.data.ApoliDataTypes;
 import me.dueris.originspaper.factory.condition.ConditionFactory;
-import me.dueris.originspaper.factory.data.ApoliDataTypes;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;

@@ -2,8 +2,8 @@ package me.dueris.originspaper.factory.action.types.entity;
 
 import io.github.dueris.calio.parser.InstanceDefiner;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.data.ApoliDataTypes;
 import me.dueris.originspaper.factory.action.ActionFactory;
-import me.dueris.originspaper.factory.data.ApoliDataTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;

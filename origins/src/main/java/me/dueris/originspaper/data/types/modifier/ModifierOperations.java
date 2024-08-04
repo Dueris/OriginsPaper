@@ -1,4 +1,4 @@
-package me.dueris.originspaper.factory.data.types.modifier;
+package me.dueris.originspaper.data.types.modifier;
 
 import io.github.dueris.calio.registry.impl.CalioRegistry;
 import me.dueris.originspaper.OriginsPaper;

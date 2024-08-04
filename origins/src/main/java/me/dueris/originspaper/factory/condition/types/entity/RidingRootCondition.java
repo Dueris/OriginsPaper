@@ -2,8 +2,8 @@ package me.dueris.originspaper.factory.condition.types.entity;
 
 import io.github.dueris.calio.parser.InstanceDefiner;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.data.ApoliDataTypes;
 import me.dueris.originspaper.factory.condition.ConditionFactory;
-import me.dueris.originspaper.factory.data.ApoliDataTypes;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;

@@ -1,4 +1,4 @@
-package me.dueris.originspaper.factory.data.types.modifier;
+package me.dueris.originspaper.data.types.modifier;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;

@@ -2,10 +2,10 @@ package me.dueris.originspaper.factory.action.types;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.data.ApoliDataTypes;
 import me.dueris.originspaper.factory.action.ActionFactory;
 import me.dueris.originspaper.factory.action.Actions;
 import me.dueris.originspaper.factory.action.meta.*;
-import me.dueris.originspaper.factory.data.ApoliDataTypes;
 import me.dueris.originspaper.registry.Registries;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;

@@ -1,4 +1,4 @@
-package me.dueris.originspaper.factory.data;
+package me.dueris.originspaper.data;
 
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -12,9 +12,9 @@ import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.github.dueris.calio.util.ArgumentWrapper;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.data.types.*;
 import me.dueris.originspaper.factory.action.ActionFactory;
 import me.dueris.originspaper.factory.condition.ConditionFactory;
-import me.dueris.originspaper.factory.data.types.*;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.util.Util;
 import net.minecraft.commands.arguments.EntityArgument;

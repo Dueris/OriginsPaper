@@ -7,8 +7,8 @@ import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import io.github.dueris.calio.util.annotations.SourceProvider;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.data.ApoliDataTypes;
 import me.dueris.originspaper.factory.condition.ConditionFactory;
-import me.dueris.originspaper.factory.data.ApoliDataTypes;
 import me.dueris.originspaper.factory.powers.SimplePower;
 import me.dueris.originspaper.factory.powers.provider.OriginSimpleContainer;
 import me.dueris.originspaper.factory.powers.provider.origins.*;
@@ -38,8 +38,7 @@ public class PowerType implements Listener {
 	private final String cachedTagString;
 	private final String cachedTypeString;
 	private final ConcurrentLinkedQueue<Player> players = new ConcurrentLinkedQueue<>();
-	@SourceProvider
-	public JsonObject sourceObject;
+	public @SourceProvider JsonObject sourceObject;
 	private boolean hasPlayers = false;
 
 	public PowerType(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority) {
@@ -175,9 +174,12 @@ public class PowerType implements Listener {
 	public void tick() {
 	}
 
-	public void bootstrapUnapply(Player player) {
+	public void onRemoved(Player player) {
 	}
 
-	public void bootstrapApply(Player player) {
+	public void onAdded(Player player) {
+	}
+
+	public void onBootstrap() {
 	}
 }

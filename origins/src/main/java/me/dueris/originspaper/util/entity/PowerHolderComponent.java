@@ -275,7 +275,7 @@ public class PowerHolderComponent implements Listener {
 					powersAppliedList.get(player).add(c);
 				}
 
-				c.bootstrapApply(((CraftPlayer) player).getHandle());
+				c.onAdded(((CraftPlayer) player).getHandle());
 				if (!suppress) {
 					Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
 				}
@@ -296,7 +296,7 @@ public class PowerHolderComponent implements Listener {
 			ResourceLocation registryKey = power.key();
 			PowerType c = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(registryKey);
 			if (c != null) {
-				c.bootstrapUnapply(((CraftPlayer) player).getHandle());
+				c.onRemoved(((CraftPlayer) player).getHandle());
 				powersAppliedList.get(player).remove(c);
 				c.removePlayer(((CraftPlayer) player).getHandle());
 				if (!suppress) {
