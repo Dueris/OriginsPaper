@@ -24,7 +24,12 @@ public class Util {
 		try {
 			String[] parts = path.split("/");
 			if (parts.length < 4) return null;
-			String name = parts[4].replace(".json", "");
+
+			StringBuilder nameBuilder = new StringBuilder(parts[4].replace(".json", ""));
+			for (int i = 5; i < parts.length; i++) {
+				nameBuilder.append('/').append(parts[i].replace(".json", ""));
+			}
+			String name = nameBuilder.toString();
 			String resourceString = parts[1] + ":" + name;
 			return ResourceLocation.read(resourceString).getOrThrow();
 		} catch (Exception e) {
