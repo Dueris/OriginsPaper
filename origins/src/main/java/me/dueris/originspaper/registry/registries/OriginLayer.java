@@ -271,5 +271,12 @@ public class OriginLayer {
 		public List<ResourceLocation> getOrigins() {
 			return origins;
 		}
+
+		@Override
+		public String toString() {
+			return "ConditionedOrigin{" +
+				"origins=" + origins +
+				'}';
+		}
 	}
 }

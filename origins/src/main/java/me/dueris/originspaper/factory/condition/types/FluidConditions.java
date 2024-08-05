@@ -8,6 +8,7 @@ import me.dueris.originspaper.factory.condition.meta.MetaConditions;
 import me.dueris.originspaper.registry.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 
 public class FluidConditions {
@@ -16,36 +17,28 @@ public class FluidConditions {
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("empty"),
 			InstanceDefiner.instanceDefiner(),
-			(data, fluid) -> {
-				return fluid.defaultFluidState().isEmpty();
-			}
+			(data, fluid) -> fluid.isEmpty()
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("still"),
 			InstanceDefiner.instanceDefiner(),
-			(data, fluid) -> {
-				return fluid.defaultFluidState().isSource();
-			}
+			(data, fluid) -> fluid.isSource()
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("in_tag"),
 			InstanceDefiner.instanceDefiner()
 				.add("tag", SerializableDataTypes.FLUID_TAG),
-			(data, fluid) -> {
-				return fluid.defaultFluidState().holder().is((TagKey<Fluid>) data.get("tag"));
-			}
+			(data, fluid) -> fluid.holder().is((TagKey<Fluid>) data.get("tag"))
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("fluid"),
 			InstanceDefiner.instanceDefiner()
 				.add("fluid", SerializableDataTypes.FLUID),
-			(data, fluid) -> {
-				return fluid.defaultFluidState().getType() == data.get("fluid");
-			}
+			(data, fluid) -> fluid.getType() == data.get("fluid")
 		));
 	}
 
-	public static void register(@NotNull ConditionFactory<Fluid> factory) {
+	public static void register(@NotNull ConditionFactory<FluidState> factory) {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.FLUID_CONDITION).register(factory, factory.getSerializerId());
 	}
 }

@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.Contract;
@@ -32,7 +33,7 @@ public class Registries {
 	public static final RegistryKey<OriginLayer> LAYER = new RegistryKey<>(OriginLayer.class, apoliIdentifier("layer"));
 	public static final RegistryKey<PowerType> CRAFT_POWER = new RegistryKey<>(PowerType.class, apoliIdentifier("craft_power"));
 
-	public static final RegistryKey<ConditionFactory<Fluid>> FLUID_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("fluid_condition"));
+	public static final RegistryKey<ConditionFactory<FluidState>> FLUID_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("fluid_condition"));
 	public static final RegistryKey<ConditionFactory<Tuple<Level, ItemStack>>> ITEM_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("item_condition"));
 	public static final RegistryKey<ConditionFactory<Entity>> ENTITY_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("entity_condition"));
 	public static final RegistryKey<ConditionFactory<EntityDamageEvent>> DAMAGE_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("damage_condition"));

@@ -6,6 +6,8 @@ import io.github.dueris.calio.parser.InstanceDefiner;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -15,11 +17,11 @@ import java.util.function.Consumer;
 
 public record DeserializedFactoryJson(HashMap<String, Object> data) {
 
-	public static @Nullable DeserializedFactoryJson decompileJsonObject(JsonObject jsonObject, InstanceDefiner definer, String instanceType, String key) {
+	public static @NotNull DeserializedFactoryJson decompileJsonObject(JsonObject jsonObject, InstanceDefiner definer, String instanceType, String key) {
 		Optional<Tuple<List<Tuple<String, ?>>, List<Tuple<String, ?>>>> compiledInstance = CalioParser.compileFromInstanceDefinition(
 			definer, jsonObject, Optional.of(key + "=|=" + instanceType), Optional.empty()
 		);
-		if (compiledInstance.isEmpty()) return null;
+		if (compiledInstance.isEmpty()) return new DeserializedFactoryJson(new HashMap<>());
 		List<Tuple<String, ?>> compiledArguments = compiledInstance.get().getB();
 		HashMap<String, Object> deserialized = new HashMap<>();
 		for (Tuple<String, ?> compiledArgument : compiledArguments) {

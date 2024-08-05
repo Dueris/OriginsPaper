@@ -40,6 +40,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -62,7 +63,7 @@ public class ApoliDataTypes {
 	public static final SerializableDataBuilder<ConditionFactory<EntityDamageEvent>> DAMAGE_CONDITION = condition(Registries.DAMAGE_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<Entity>> ENTITY_CONDITION = condition(Registries.ENTITY_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<Tuple<Level, ItemStack>>> ITEM_CONDITION = condition(Registries.ITEM_CONDITION);
-	public static final SerializableDataBuilder<ConditionFactory<Fluid>> FLUID_CONDITION = condition(Registries.FLUID_CONDITION);
+	public static final SerializableDataBuilder<ConditionFactory<FluidState>> FLUID_CONDITION = condition(Registries.FLUID_CONDITION);
 	public static final SerializableDataBuilder<Space> SPACE = SerializableDataTypes.enumValue(Space.class);
 	public static final SerializableDataBuilder<ResourceOperation> RESOURCE_OPERATION = SerializableDataTypes.enumValue(ResourceOperation.class);
 	public static final SerializableDataBuilder<InventoryType> INVENTORY_TYPE = SerializableDataTypes.enumValue(InventoryType.class);

@@ -409,7 +409,7 @@ public class SerializableDataTypes {
 	public static final SerializableDataBuilder<InteractionResult> ACTION_RESULT = enumValue(InteractionResult.class);
 	public static final SerializableDataBuilder<UseAnim> USE_ACTION = enumValue(UseAnim.class);
 	public static final SerializableDataBuilder<Direction> DIRECTION = enumValue(Direction.class);
-	public static final SerializableDataBuilder<Set<Direction>> DIRECTION_SET = set(DIRECTION);
+	public static final SerializableDataBuilder<EnumSet<Direction>> DIRECTION_SET = enumSet(Direction.class, DIRECTION);
 	public static final SerializableDataBuilder<Class<?>> CLASS = SerializableDataBuilder.of(
 		(jsonElement) -> {
 			try {

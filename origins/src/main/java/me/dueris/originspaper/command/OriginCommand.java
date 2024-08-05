@@ -83,23 +83,11 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 											Commands.argument("origin", ResourceLocationArgument.id())
 												.suggests(
 													(context, builder) -> {
-														OriginLayer layer = CraftApoli.getLayer(
-															CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()
-														);
-														ORIGINS.stream()
-															.filter(o -> layer.getOriginIdentifiers().contains(o.getTag()))
-															.forEach(
-																origin -> {
-																	if (context.getInput().split(" ").length == 4
-																		|| origin.getTag()
-																		.startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
-																		|| origin.getTag().split(":")[1]
-																		.startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
-																	) {
-																		builder.suggest(origin.getTag());
-																	}
-																}
-															);
+														OriginLayer layer = CraftApoli.getLayer(ResourceLocationArgument.getId(context, "layer"));
+														layer.getOriginIdentifiers().stream().map(ResourceLocation::toString).filter(tag -> {
+															String input = context.getInput().split(" ")[context.getInput().split(" ").length - 1];
+															return (tag.startsWith(input)) || context.getInput().split(" ").length == 4;
+														}).forEach(builder::suggest);
 														return builder.buildFuture();
 													}
 												)
@@ -112,7 +100,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 														Origin origin = CraftApoli.getOrigin(
 															CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "origin")).asString()
 														);
-														if (!layer.getOriginIdentifiers().contains(origin.getTag())) {
+														if (!layer.getOriginIdentifiers().contains(ResourceLocation.parse(origin.getTag()))) {
 															context.getSource()
 																.sendFailure(
 																	Component.literal(

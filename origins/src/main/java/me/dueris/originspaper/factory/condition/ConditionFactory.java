@@ -15,7 +15,7 @@ public class ConditionFactory<T> implements Factory, Predicate<T> {
 	protected final BiPredicate<DeserializedFactoryJson, T> effect;
 	protected final InstanceDefiner data;
 	private final ResourceLocation location;
-	private DeserializedFactoryJson deserializedFactory = null;
+	public DeserializedFactoryJson deserializedFactory = null;
 
 	public ConditionFactory(ResourceLocation location, @NotNull InstanceDefiner data, @NotNull BiPredicate<DeserializedFactoryJson, T> effect) {
 		this.location = location;
