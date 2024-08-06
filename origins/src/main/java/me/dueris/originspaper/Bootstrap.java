@@ -35,23 +35,6 @@ public class Bootstrap implements PluginBootstrap {
 	public static ArrayList<Consumer<WrappedBootstrapContext>> apiCalls = new ArrayList<>();
 	public static AtomicBoolean BOOTSTRAPPED = new AtomicBoolean(false);
 
-	public static void deleteDirectory(Path directory, boolean ignoreErrors) throws IOException {
-		if (Files.exists(directory)) {
-			Files.walk(directory)
-				.sorted(Comparator.reverseOrder()) // Sort in reverse order for correct deletion
-				.forEach(path -> {
-					try {
-						Files.deleteIfExists(path);
-						Files.delete(path);
-					} catch (IOException e) {
-						if (!ignoreErrors) {
-							System.err.println("Error deleting: " + path + e);
-						}
-					}
-				});
-		}
-	}
-
 	public static void copyOriginDatapack(Path datapackPath) {
 		try {
 			CodeSource src = Util.class.getProtectionDomain().getCodeSource();
@@ -186,7 +169,7 @@ public class Bootstrap implements PluginBootstrap {
 		BOOTSTRAPPED.set(true);
 	}
 
-	public String parseDatapackPath() throws Exception {
+	public String parseDatapackPath() {
 		YamlConfiguration bukkitConfiguration = YamlConfiguration.loadConfiguration(Paths.get("bukkit.yml").toFile());
 		File container = new File(bukkitConfiguration.getString("settings.world-container", "."));
 		String s = Optional.ofNullable(levelNameProp()).orElse("world");

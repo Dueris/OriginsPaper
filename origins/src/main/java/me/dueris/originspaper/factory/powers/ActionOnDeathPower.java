@@ -42,7 +42,7 @@ public class ActionOnDeathPower extends PowerType {
 
 	public boolean doesApply(Entity actor, DamageSource damageSource, float damageAmount, Entity entity) {
 		return (bientityCondition == null || bientityCondition.test(new Tuple<>(actor, entity)))
-			&& (damageCondition == null || damageCondition.test(new Tuple<>(damageSource, damageAmount))) && isActive((Player) entity);
+			&& (damageCondition == null || damageCondition.test(new Tuple<>(damageSource, damageAmount))) && isActive(entity);
 	}
 
 	public void onDeath(Entity actor, Entity entity) {

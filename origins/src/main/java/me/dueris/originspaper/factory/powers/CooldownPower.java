@@ -78,7 +78,7 @@ public class CooldownPower extends PowerType implements CooldownInterface {
 	}
 
 	@Override
-	public boolean isActive(net.minecraft.world.entity.player.@NotNull Player player) {
+	public boolean isActive(@NotNull Entity player) {
 		return super.isActive(player) && isInCooldown((Player) player.getBukkitEntity(), this);
 	}
 

@@ -7,6 +7,7 @@ import me.dueris.originspaper.factory.Factory;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -44,7 +45,7 @@ public class ActionFactory<T> implements Factory, Consumer<T> {
 	}
 
 	public ActionFactory<T> decompile(JsonObject object) {
-		this.deserializedFactory = DeserializedFactoryJson.decompileJsonObject(object, data, "Action Factory", location.toString());
+		this.deserializedFactory = DeserializedFactoryJson.decompileJsonObject(object, data, "Action Factory", location.toString(), Optional.of(this.getClass()));
 		return this;
 	}
 }

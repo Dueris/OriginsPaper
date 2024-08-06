@@ -79,7 +79,7 @@ public class ActionOnEntityUsePower extends PowerType {
 	public boolean shouldExecute(@NotNull Entity other, InteractionHand hand, ItemStack heldStack, Entity entity) {
 		return shouldExecute$apoli$super(hand, heldStack, (ServerLevel) other.level())
 			&& (bientityCondition == null || bientityCondition.test(new Tuple<>(entity, other)))
-			&& isActive((Player) entity);
+			&& isActive(entity);
 	}
 
 	public void executeAction(Entity target, InteractionHand hand, Entity entity) {

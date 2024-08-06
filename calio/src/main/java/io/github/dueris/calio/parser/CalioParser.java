@@ -235,6 +235,7 @@ public class CalioParser {
 						compiledArguments.add(new Tuple<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
 					} else {
 						LOGGER.error("Required instance not found, skipping instance compiling for '{}' : KEY ['{}'] | ClassName [{}]", location.orElse("Unknown Key"), key, clz.isPresent() ? clz.get() : "Unknown Class");
+						LOGGER.error("JSON: {}", jsonSource.toString());
 						return Optional.empty();
 					}
 			}

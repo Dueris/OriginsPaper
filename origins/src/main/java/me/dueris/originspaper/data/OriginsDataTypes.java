@@ -16,6 +16,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Optional;
+
 @SuppressWarnings("unused")
 public class OriginsDataTypes {
 
@@ -48,7 +50,7 @@ public class OriginsDataTypes {
 	public static final SerializableDataBuilder<OriginLayer.ConditionedOrigin> CONDITIONED_ORIGIN = SerializableDataBuilder.of(
 		(jsonElement) -> {
 			if (jsonElement instanceof JsonObject jsonObject && !jsonObject.isEmpty()) {
-				DeserializedFactoryJson factoryJson = DeserializedFactoryJson.decompileJsonObject(jsonObject, OriginLayer.ConditionedOrigin.DATA, "Origin/ConditionedOrigin", "null");
+				DeserializedFactoryJson factoryJson = DeserializedFactoryJson.decompileJsonObject(jsonObject, OriginLayer.ConditionedOrigin.DATA, "Origin/ConditionedOrigin", "null", Optional.of(OriginLayer.ConditionedOrigin.class));
 				return new OriginLayer.ConditionedOrigin(factoryJson.get("condition"), factoryJson.get("origins"));
 			} else throw new JsonSyntaxException("Expected JsonObject for ConditionedOrigin!");
 		}, OriginLayer.ConditionedOrigin.class

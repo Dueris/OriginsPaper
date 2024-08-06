@@ -15,9 +15,9 @@ import java.util.function.Consumer;
 
 public record DeserializedFactoryJson(HashMap<String, Object> data) {
 
-	public static @NotNull DeserializedFactoryJson decompileJsonObject(JsonObject jsonObject, InstanceDefiner definer, String instanceType, String key) {
+	public static <T> @NotNull DeserializedFactoryJson decompileJsonObject(JsonObject jsonObject, InstanceDefiner definer, String instanceType, String key, Optional<Class<T>> classType) {
 		Optional<Tuple<List<Tuple<String, ?>>, List<Tuple<String, ?>>>> compiledInstance = CalioParser.compileFromInstanceDefinition(
-			definer, jsonObject, Optional.of(key + "=|=" + instanceType), Optional.empty()
+			definer, jsonObject, Optional.of(key + "=|=" + instanceType), classType
 		);
 		if (compiledInstance.isEmpty()) return new DeserializedFactoryJson(new HashMap<>());
 		List<Tuple<String, ?>> compiledArguments = compiledInstance.get().getB();

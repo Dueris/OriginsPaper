@@ -90,10 +90,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.security.CodeSource;
 import java.util.*;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -192,10 +189,6 @@ public class Util {
 		}
 
 		OriginsPaper.getPlugin().getLogger().warning("Inventory is full!");
-	}
-
-	public static @NotNull Registry<?> getRegistry(ResourceKey<Registry<?>> registry) {
-		return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
 	}
 
 	public static String getNameOrTag(@NotNull PowerType power) {
@@ -481,41 +474,6 @@ public class Util {
 			zipFile.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-
-	public static void unpackOriginPack() {
-		try {
-			CodeSource src = Util.class.getProtectionDomain().getCodeSource();
-			URL jar = src.getLocation();
-			ZipInputStream zip = new ZipInputStream(jar.openStream());
-			while (true) {
-				ZipEntry entry = zip.getNextEntry();
-				if (entry == null)
-					break;
-				String name = entry.getName();
-
-				if (!name.startsWith("minecraft/")) continue;
-				if (FilenameUtils.getExtension(name).equals("zip")) continue;
-				if (name.equals("minecraft/")) continue;
-
-				name = name.substring(9);
-				File file = new File(OriginsPaper.getTmpFolder().getAbsolutePath().replace(".\\", "") + File.separator + name);
-				if (!file.getName().contains(".")) {
-					Files.createDirectory(Path.of(file.getAbsolutePath()));
-					continue;
-				}
-
-				File parentDir = file.getParentFile();
-				if (!parentDir.exists()) {
-					parentDir.mkdirs();
-				}
-
-				Files.writeString(Path.of(file.getAbsolutePath()), new String(zip.readAllBytes()));
-			}
-			zip.close();
-		} catch (Exception e) {
-			// Say nothing, no need to print.
 		}
 	}
 
@@ -869,6 +827,31 @@ public class Util {
 		}
 
 		list.add(create(baseName + "*", intList));
+	}
+
+	public static SlotAccess getStackReferenceFromStack(Entity entity, ItemStack stack) {
+		return getStackReferenceFromStack(entity, stack, (provStack, refStack) -> provStack == refStack);
+	}
+
+	public static SlotAccess getStackReferenceFromStack(Entity entity, ItemStack stack, BiPredicate<ItemStack, ItemStack> equalityPredicate) {
+
+		int slotToSkip = getDuplicatedSlotIndex(entity);
+		for (int slot : getAllSlots()) {
+
+			if (slot == slotToSkip) {
+				slotToSkip = Integer.MIN_VALUE;
+				continue;
+			}
+
+			SlotAccess stackReference = entity.getSlot(slot);
+			if (stackReference != SlotAccess.NULL && equalityPredicate.test(stack, stackReference.get())) {
+				return stackReference;
+			}
+
+		}
+
+		return SlotAccess.NULL;
+
 	}
 
 	private static int getDuplicatedSlotIndex(Entity entity) {

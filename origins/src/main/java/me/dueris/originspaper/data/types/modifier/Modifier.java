@@ -10,6 +10,7 @@ import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Modifier implements Comparable<Modifier> {
 
@@ -27,7 +28,7 @@ public class Modifier implements Comparable<Modifier> {
 			try {
 
 				IModifierOperation operation = IModifierOperation.DATA_TYPE.deserialize(jsonObject.get("operation"));
-				DeserializedFactoryJson data = DeserializedFactoryJson.decompileJsonObject(jsonObject, operation.getData(), "Modifier", "null");
+				DeserializedFactoryJson data = DeserializedFactoryJson.decompileJsonObject(jsonObject, operation.getData(), "Modifier", "null", Optional.of(Modifier.class));
 
 				return new Modifier(operation, data);
 

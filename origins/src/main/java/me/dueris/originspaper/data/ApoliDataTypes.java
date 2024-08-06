@@ -194,7 +194,11 @@ public class ApoliDataTypes {
 
 				ResourceLocation factoryID = SerializableDataTypes.IDENTIFIER.deserialize(jsonObject.get("type"));
 				try {
-					return CalioRegistry.INSTANCE.retrieve(registry).get(factoryID).copy().decompile(jsonObject);
+					ActionFactory<T> actionFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
+					if (actionFactory == null) {
+						throw new IllegalArgumentException("Unable to retrieve action of: " + jsonObject.get("type").getAsString());
+					}
+					return actionFactory.copy().decompile(jsonObject);
 				} catch (Throwable e) {
 					OriginsPaper.getPlugin().getLog4JLogger().error("Unable to retrieve action of `{}` for Power!", factoryID.toString());
 					throw e;
@@ -212,7 +216,11 @@ public class ApoliDataTypes {
 
 				ResourceLocation factoryID = SerializableDataTypes.IDENTIFIER.deserialize(jsonObject.get("type"));
 				try {
-					return CalioRegistry.INSTANCE.retrieve(registry).get(factoryID).copy().decompile(jsonObject);
+					ConditionFactory<T> conditionFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
+					if (conditionFactory == null) {
+						throw new IllegalArgumentException("Unable to retrieve action of: " + jsonObject.get("type").getAsString());
+					}
+					return conditionFactory.copy().decompile(jsonObject);
 				} catch (Throwable e) {
 					OriginsPaper.getPlugin().getLog4JLogger().error("Unable to retrieve condition of `{}` for Power!", factoryID.toString());
 					throw e;

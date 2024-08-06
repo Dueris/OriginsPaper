@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class GainAirAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
-		return new ActionFactory<>(OriginsPaper.identifier("gain_air"),
+		return new ActionFactory<>(OriginsPaper.apoliIdentifier("gain_air"),
 			InstanceDefiner.instanceDefiner()
 				.add("value", SerializableDataTypes.INT),
 			(data, entity) -> {
