@@ -180,6 +180,12 @@ public class PowerType implements Listener {
 	public void onAdded(Player player) {
 	}
 
+	public void onGained(Player player) {
+	}
+
+	public void onLost(Player player) {
+	}
+
 	public void onBootstrap() {
 	}
 }

@@ -6,9 +6,12 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.data.ApoliDataTypes;
 import me.dueris.originspaper.data.types.ResourceOperation;
 import me.dueris.originspaper.factory.action.ActionFactory;
+import me.dueris.originspaper.factory.powers.ResourcePower;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
+import java.util.Optional;
 
 public class ChangeResourceAction {
 
@@ -19,9 +22,12 @@ public class ChangeResourceAction {
 				.add("change", SerializableDataTypes.INT)
 				.add("operation", ApoliDataTypes.RESOURCE_OPERATION, ResourceOperation.ADD),
 			(data, entity) -> {
-				if (entity instanceof Player player) {
-					// TODO
-				}
+				Optional<ResourcePower.Bar> resourceBar = ResourcePower.getDisplayedBar(entity, data.getId("resource").toString());
+				resourceBar.ifPresent((bar) -> {
+					int change = data.get("change");
+					ResourceOperation operation = data.get("operation");
+					bar.change(change, operation.toString().toLowerCase(Locale.ROOT));
+				});
 			}
 		);
 	}

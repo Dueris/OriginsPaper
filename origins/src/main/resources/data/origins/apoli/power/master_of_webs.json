@@ -7,7 +7,6 @@
       "sprite_location": "origins:textures/gui/resource_bar.png",
       "bar_index": 5
     },
-    "hidden": true,
     "entity_action": {
       "type": "origins:block_action_at",
       "block_action": {
@@ -17,17 +16,24 @@
         },
         "if_action": {
           "type": "origins:set_block",
-          "block": "minecraft:cobweb"
+          "block": "origins:temporary_cobweb"
         }
       }
+    },
+    "condition": {
+      "type": "origins:sneaking",
+      "inverted": true
     }
   },
   "no_slowdown": {
-    "hidden": true,
-    "type": "origins:simple"
+    "type": "origins:phasing",
+    "block_condition": {
+      "type": "origins:in_tag",
+      "tag": "origins:cobwebs"
+    },
+    "render_type": "none"
   },
   "climbing": {
-    "hidden": true,
     "type": "origins:climbing",
     "condition": {
       "type": "origins:and",
@@ -46,12 +52,20 @@
       ]
     },
     "hold_condition": {
-      "type": "origins:power_active",
-      "power": "*:*_climbing"
+      "type": "origins:and",
+      "conditions": [
+        {
+          "type": "origins:power_active",
+          "power": "*:*_climbing"
+        },
+        {
+          "type": "origins:sneaking",
+          "inverted": true
+        }
+      ]
     }
   },
   "punch_through": {
-    "hidden": true,
     "type": "origins:prevent_block_selection",
     "block_condition": {
       "type": "origins:in_tag",
@@ -75,15 +89,14 @@
           }
         },
         {
-          "type": "origins:entity_group",
-          "group": "arthropod",
+          "type": "origins:in_tag",
+          "tag": "arthropod",
           "inverted": true
         }
       ]
     }
   },
   "web_crafting": {
-    "hidden": true,
     "type": "origins:recipe",
     "recipe": {
       "id": "origins:master_of_webs/web_crafting",
@@ -97,9 +110,8 @@
         }
       ],
       "result": {
-        "item": "minecraft:cobweb"
+        "id": "minecraft:cobweb"
       }
     }
-  },
-  "hidden": false
+  }
 }

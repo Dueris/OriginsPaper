@@ -113,7 +113,6 @@ public class ExplosionMask {
 
 
 	public void destroyBlocks() {
-		this.explosion.finalizeExplosion(false);
 		ParticleOptions particleparam;
 
 		if (this.explosion.radius() >= 2.0F && this.explosion.interactsWithBlocks()) {

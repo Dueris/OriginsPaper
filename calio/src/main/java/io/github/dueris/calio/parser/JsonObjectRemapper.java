@@ -35,9 +35,9 @@ public class JsonObjectRemapper {
 			String key = entry.getKey();
 			JsonElement value = entry.getValue();
 
-			if (key.equals("type") && value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) {
+			if (value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) {
 				String typeValue = value.getAsString();
-				String remappedTypeValue = remapTypeValue(typeValue, currentNamespace);
+				String remappedTypeValue = remapTypeValue(typeValue, currentNamespace, !key.equalsIgnoreCase("id"));
 				remappedObject.addProperty(key, remappedTypeValue);
 			} else {
 				remappedObject.add(key, remap(value, currentNamespace));
@@ -57,7 +57,7 @@ public class JsonObjectRemapper {
 		return remappedArray;
 	}
 
-	private String remapTypeValue(String typeValue, ResourceLocation currentNamespace) {
+	private @NotNull String remapTypeValue(@NotNull String typeValue, ResourceLocation currentNamespace, boolean aliases) {
 		if (typeValue.contains("*")) {
 			if (typeValue.contains(":")) {
 				String[] namespacepath = typeValue.split(":");
@@ -68,19 +68,22 @@ public class JsonObjectRemapper {
 			}
 			typeValue = typeValue.replace("*", currentNamespace.toString());
 		}
-		for (Tuple<String, String> alias : typeAliases) {
-			if (alias.getA().equals(typeValue)) {
-				return alias.getB();
-			}
-		}
 
-		String[] parts = typeValue.split(":");
-		if (parts.length == 2) {
-			String namespace = parts[0];
-			String key = parts[1];
-			for (Tuple<String, String> namespaceMapping : namespaceRemappings) {
-				if (namespaceMapping.getA().equals(namespace)) {
-					return namespaceMapping.getB() + ":" + key;
+		if (aliases) {
+			for (Tuple<String, String> alias : typeAliases) {
+				if (alias.getA().equals(typeValue)) {
+					return alias.getB();
+				}
+			}
+
+			String[] parts = typeValue.split(":");
+			if (parts.length == 2) {
+				String namespace = parts[0];
+				String key = parts[1];
+				for (Tuple<String, String> namespaceMapping : namespaceRemappings) {
+					if (namespaceMapping.getA().equals(namespace)) {
+						return namespaceMapping.getB() + ":" + key;
+					}
 				}
 			}
 		}

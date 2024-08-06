@@ -4,10 +4,12 @@ import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.data.ApoliDataTypes;
+import me.dueris.originspaper.data.types.Comparison;
 import me.dueris.originspaper.factory.condition.ConditionFactory;
 import me.dueris.originspaper.factory.condition.Conditions;
 import me.dueris.originspaper.factory.condition.meta.MetaConditions;
 import me.dueris.originspaper.factory.condition.types.multi.DistanceFromCoordinatesConditionRegistry;
+import me.dueris.originspaper.factory.powers.ResourcePower;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
@@ -16,6 +18,8 @@ import net.minecraft.world.entity.player.Player;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class EntityConditions {
 	private static final Location[] prevLoca = new Location[100000];
@@ -72,16 +76,15 @@ public class EntityConditions {
 				.add("comparison", ApoliDataTypes.COMPARISON)
 				.add("compare_to", SerializableDataTypes.INT),
 			(data, entity) -> {
-				// TODO : IMPLEMENT
-				/* Optional<Resource.Bar> bar = Resource.getDisplayedBar(entity, condition.getString("resource"));
+				String resource = data.getId("resource").toString();
+				Optional<ResourcePower.Bar> bar = ResourcePower.getDisplayedBar(entity, resource);
 				if (bar.isPresent()) {
-					return bar.get().meetsComparison(Comparison.fromString(condition.getString("comparison")), condition.getNumber("compare_to").getInt());
+					return bar.get().meetsComparison(data.get("comparison"), data.getInt("compare_to"));
 				}
 				// We do a manual check of this as a backup for when people check for a non-functioning/displaying resource
 				// By checking the serverloaded bars(after we define that its not displayed) and seeing if the origin wants to check
 				// if its value is 0, then it would be true in apoli.
-				return Resource.serverLoadedBars.containsKey(condition.getString("resource")) && condition.getString("comparison").equalsIgnoreCase("==") && condition.getNumber("compare_to").getInt() == 0; */
-				return false;
+				return ResourcePower.serverLoadedBars.containsKey(resource) && ((Comparison) data.get("comparison")).equals(Comparison.EQUAL) && data.getInt("compare_to") == 0;
 			}
 		));
 

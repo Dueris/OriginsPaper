@@ -6,6 +6,7 @@ import io.github.dueris.calio.registry.IRegistry;
 import io.github.dueris.calio.registry.Registrar;
 import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
+import io.github.dueris.calio.util.holder.ObjectProvider;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -63,15 +64,25 @@ public class WrappedBootstrapContext {
 
 	public void initRegistries(@NotNull Path datapackPath) {
 		LOGGER.log(Level.INFO, "Creating data-driven registries...");
-		File data = Arrays.stream(Objects.requireNonNull(Arrays.stream(datapackPath.toFile().listFiles())
-				.filter(Objects::nonNull)
-				.filter(f -> {
-					return f.getName().equalsIgnoreCase("datapack");
+		File data;
+		if (datapackPath.toFile().listFiles() == null) {
+			data = datapackPath.resolve("datapack").toFile();
+			data.mkdirs();
+		} else {
+			data = Arrays.stream(Objects.requireNonNull(Arrays.stream(datapackPath.toFile().listFiles())
+					.filter(Objects::nonNull)
+					.filter(f -> {
+						return f.getName().equalsIgnoreCase("datapack");
+					}).filter(File::isDirectory)
+					.findFirst().orElseThrow().listFiles())).filter(f -> {
+					return f.getName().equalsIgnoreCase("data");
 				}).filter(File::isDirectory)
-				.findFirst().orElseThrow().listFiles())).filter(f -> {
-				return f.getName().equalsIgnoreCase("data");
-			}).filter(File::isDirectory)
-			.findFirst().orElseThrow();
+				.findFirst().orElse(((ObjectProvider<File>) () -> {
+					File d = datapackPath.resolve("datapack").toFile();
+					d.mkdirs();
+					return d;
+				}).get());
+		}
 
 		for (Tuple<ResourceKey<?>, ResourceLocation> key : this.registered.keySet()) {
 			String namespace = key.getB().getNamespace();

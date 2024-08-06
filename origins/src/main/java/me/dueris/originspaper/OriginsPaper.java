@@ -10,13 +10,13 @@ import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import io.papermc.paper.plugin.configuration.PluginMeta;
 import me.dueris.originspaper.command.Commands;
 import me.dueris.originspaper.command.OriginCommand;
-import me.dueris.originspaper.content.ContentTicker;
 import me.dueris.originspaper.content.OrbOfOrigins;
 import me.dueris.originspaper.data.types.modifier.ModifierOperations;
 import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.factory.action.Actions;
 import me.dueris.originspaper.factory.condition.Conditions;
 import me.dueris.originspaper.factory.condition.types.BiEntityConditions;
+import me.dueris.originspaper.factory.powers.RecipePower;
 import me.dueris.originspaper.factory.powers.provider.origins.BounceSlimeBlock;
 import me.dueris.originspaper.factory.powers.provider.origins.WaterBreathe;
 import me.dueris.originspaper.integration.PlaceHolderAPI;
@@ -303,6 +303,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 			}
 
 			Commands.bootstrap(commandDispatcher);
+			Bukkit.updateRecipes();
 			CraftPehuki.onLoad();
 		}
 		Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -330,7 +331,6 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new PlayerManager(), this);
 		this.getServer().getPluginManager().registerEvents(new ScreenNavigator(), this);
 		this.getServer().getPluginManager().registerEvents(new OriginCommand(), this);
-		this.getServer().getPluginManager().registerEvents(new ContentTicker(), this);
 		this.getServer().getPluginManager().registerEvents(new LogoutBugWorkaround(), this);
 		this.getServer().getPluginManager().registerEvents(new BounceSlimeBlock(), this);
 		this.getServer().getPluginManager().registerEvents(new BiEntityConditions(), this);
@@ -346,7 +346,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				this.getServer().getPluginManager().registerEvents(powerType, this);
 			}
 		});
-		BukkitRunnable[] independentTickers = new BukkitRunnable[]{new GuiTicker(), new ContentTicker(), new OriginCommand()};
+		BukkitRunnable[] independentTickers = new BukkitRunnable[]{new GuiTicker(), new OriginCommand()};
 		WaterBreathe.start();
 
 		for (BukkitRunnable runnable : independentTickers) {
@@ -370,9 +370,8 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 			CraftApoli.unloadData();
 			PowerHolderComponent.playerPowerMapping.clear();
 			PowerHolderComponent.powersAppliedList.clear();
-			// todo
-//			RecipePower.recipeMapping.clear();
-//			RecipePower.tags.clear();
+			RecipePower.recipeMapping.clear();
+			RecipePower.tags.clear();
 			this.registry.clearRegistries();
 			if (scheduler != null) {
 				scheduler.cancel();

@@ -646,6 +646,14 @@ public class SerializableDataTypes {
 		);
 	}
 
+	public static <T> @NotNull SerializableDataBuilder<Optional<T>> optional(SerializableDataBuilder<T> builder) {
+		return SerializableDataBuilder.of(
+			(jsonElement) -> {
+				return Optional.of(builder.deserialize(jsonElement));
+			}, Optional.class
+		);
+	}
+
 	@Contract(value = "_ -> new", pure = true)
 	public static <T> @NotNull SerializableDataBuilder<TagKey<T>> tag(ResourceKey<? extends Registry<T>> registryRef) {
 		return SerializableDataBuilder.of(

@@ -70,6 +70,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.block.CraftBlockType;
+import org.bukkit.craftbukkit.damage.CraftDamageSource;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffectType;
@@ -162,6 +163,10 @@ public class Util {
 		}
 
 		return source;
+	}
+
+	public static DamageSource damageSourceFromBukkit(org.bukkit.damage.DamageSource bukkit) {
+		return ((CraftDamageSource) bukkit).getHandle();
 	}
 
 	public static void addPositionedItemStack(@NotNull Inventory inventory, org.bukkit.inventory.ItemStack stack, int slot) {

@@ -95,7 +95,7 @@ public class CalioParser {
 		return concurrentLinkedQueue;
 	}
 
-	public static <T> void parseFile(@NotNull Tuple<ResourceLocation, String> Tuple, Class<T> clz, AccessorKey<?> accessorKey, Class<? extends T>[] defaultType, ConcurrentLinkedQueue<Tuple<InstanceDefiner, Class<? extends T>>> typedTempInstance) {
+	public static <T> T parseFile(@NotNull Tuple<ResourceLocation, String> Tuple, Class<T> clz, AccessorKey<?> accessorKey, Class<? extends T>[] defaultType, ConcurrentLinkedQueue<Tuple<InstanceDefiner, Class<? extends T>>> typedTempInstance) {
 		final AtomicBoolean[] kill = {new AtomicBoolean(false)};
 		ResourceLocation location = Tuple.getA();
 		String jsonContents = Tuple.getB();
@@ -114,7 +114,7 @@ public class CalioParser {
 					} else {
 						LOGGER.error("Error when parsing {} : 'type' field is required for {} instances", location.toString(), clz.getSimpleName());
 						kill[0].set(true);
-						return;
+						return null;
 					}
 				} else {
 					try {
@@ -124,7 +124,7 @@ public class CalioParser {
 					} catch (NoSuchElementException e) {
 						kill[0].set(true);
 						LOGGER.error("Unable to retrieve type instance of '{}'", jsonSource.get("type").getAsString());
-						return;
+						return null;
 					}
 				}
 				if (typedInst != null) {
@@ -140,11 +140,11 @@ public class CalioParser {
 			throw new RuntimeException(e);
 		}
 		Optional<Tuple<List<Tuple<String, ?>>, List<Tuple<String, ?>>>> compiledInstance = compileFromInstanceDefinition(definer, jsonSource, Optional.of(location.toString()), Optional.of(clz));
-		if (compiledInstance.isEmpty()) return;
+		if (compiledInstance.isEmpty()) return null;
 		List<Tuple<String, ?>> compiledArguments = compiledInstance.get().getB();
 		List<Tuple<String, ?>> compiledParams = compiledInstance.get().getA();
 
-		if (kill[0].get()) return;
+		if (kill[0].get()) return null;
 
 		List<Class<?>> parameterTypes = (List<Class<?>>) definer.sortByPriorities(compiledParams);
 		parameterTypes.addFirst(ResourceLocation.class);
@@ -155,7 +155,7 @@ public class CalioParser {
 		} catch (NoSuchMethodException e) {
 			LOGGER.error("No such constructor with the given parameter types: {}", e.getMessage());
 			e.printStackTrace();
-			return;
+			return null;
 		}
 
 		List arguments = definer.sortByPriorities(compiledArguments);
@@ -179,15 +179,16 @@ public class CalioParser {
 		}
 
 		try {
-			finalizeInstance((T) constructor.newInstance(argsArray), jsonSource, accessorKey, location);
+			return finalizeInstance((T) constructor.newInstance(argsArray), jsonSource, accessorKey, location);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
 				 InvocationTargetException e) {
 			LOGGER.error("Error compiling instanceof {} : {}", toBuild.getSimpleName(), e.getMessage());
 			e.printStackTrace();
 		}
+		return null;
 	}
 
-	public static <T> void finalizeInstance(@NotNull T instance, JsonObject jsonSource, AccessorKey<?> accessorKey, ResourceLocation location) {
+	public static <T> T finalizeInstance(@NotNull T instance, JsonObject jsonSource, AccessorKey<?> accessorKey, ResourceLocation location) {
 		if (ReflectionUtils.hasFieldWithAnnotation(instance.getClass(), JsonObject.class, SourceProvider.class)) {
 			ReflectionUtils.setFieldWithAnnotation(instance, SourceProvider.class, jsonSource);
 		}
@@ -195,6 +196,8 @@ public class CalioParser {
 		if (ReflectionUtils.invokeBooleanMethod(instance, "canRegister")) {
 			CalioRegistry.INSTANCE.retrieve(registryKey).register(instance, location);
 		}
+
+		return instance;
 	}
 
 	private static Optional<CompletableFuture<Void>> submitParseTask(Runnable runnable) {
@@ -270,7 +273,7 @@ public class CalioParser {
 
 	private static @Unmodifiable Object convertToWrapper(Object arg, Class<?> wrapperType) {
 		if (wrapperType == Integer.class) return Integer.valueOf(((Number) arg).intValue());
-		if (wrapperType == Boolean.class) return (Boolean) arg;
+		if (wrapperType == Boolean.class) return arg;
 		if (wrapperType == Double.class) return Double.valueOf(((Number) arg).doubleValue());
 		if (wrapperType == Float.class) return Float.valueOf(((Number) arg).floatValue());
 		if (wrapperType == Long.class) return Long.valueOf(((Number) arg).longValue());

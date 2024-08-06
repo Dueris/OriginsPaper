@@ -27,6 +27,7 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SlotAccess;
@@ -39,11 +40,9 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.entity.TextDisplay;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -60,7 +59,7 @@ public class ApoliDataTypes {
 	public static final SerializableDataBuilder<ConditionFactory<Tuple<Entity, Entity>>> BIENTITY_CONDITION = condition(Registries.BIENTITY_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<Holder<Biome>>> BIOME_CONDITION = condition(Registries.BIOME_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<BlockInWorld>> BLOCK_CONDITION = condition(Registries.BLOCK_CONDITION);
-	public static final SerializableDataBuilder<ConditionFactory<EntityDamageEvent>> DAMAGE_CONDITION = condition(Registries.DAMAGE_CONDITION);
+	public static final SerializableDataBuilder<ConditionFactory<Tuple<DamageSource, Float>>> DAMAGE_CONDITION = condition(Registries.DAMAGE_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<Entity>> ENTITY_CONDITION = condition(Registries.ENTITY_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<Tuple<Level, ItemStack>>> ITEM_CONDITION = condition(Registries.ITEM_CONDITION);
 	public static final SerializableDataBuilder<ConditionFactory<FluidState>> FLUID_CONDITION = condition(Registries.FLUID_CONDITION);
@@ -174,6 +173,17 @@ public class ApoliDataTypes {
 		}, Comparison.class
 	);
 	public static final SerializableDataBuilder<Pose> ENTITY_POSE = SerializableDataTypes.enumValue(Pose.class);
+	public static final SerializableDataBuilder<HudRender> HUD_RENDER = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			if (!(jsonElement instanceof JsonObject jo)) {
+				throw new JsonSyntaxException("HudRender should be instanceof a JsonObject!");
+			}
+			return new HudRender(
+				jo.has("should_render") ? SerializableDataTypes.BOOLEAN.deserialize(jo.get("should_render")) : true,
+				jo.has("condition") ? ENTITY_CONDITION.deserialize(jo.get("condition")) : null
+			);
+		}, HudRender.class
+	);
 
 	public static <T> @NotNull SerializableDataBuilder<ActionFactory<T>> action(RegistryKey<ActionFactory<T>> registry) {
 		return SerializableDataBuilder.of(

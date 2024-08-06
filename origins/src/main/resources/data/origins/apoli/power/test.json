@@ -1,18 +1,31 @@
 {
-  "type": "origins:action_on_block_use",
-  "block_action": {
-    "type": "origins:set_block",
-    "block": "minecraft:gold_block"
+  "type": "origins:action_on_entity_use",
+  "bientity_action": {
+    "type": "origins:mount"
   },
-  "block_condition": {
-    "type": "origins:block",
-    "block": "minecraft:iron_block"
+  "bientity_condition": {
+    "type": "origins:and",
+    "conditions": [
+      {
+        "type": "origins:riding",
+        "inverted": true
+      },
+      {
+        "type": "origins:target_condition",
+        "condition": {
+          "type": "origins:living"
+        }
+      }
+    ]
   },
-  "directions": [
-    "up",
-    "down"
+  "item_condition": {
+    "type": "origins:empty"
+  },
+  "hands": [
+    "main_hand"
   ],
   "condition": {
-    "type": "origins:sprinting"
+    "type": "origins:sneaking",
+    "inverted": true
   }
 }

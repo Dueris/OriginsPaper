@@ -18,11 +18,14 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class MultiplePower extends PowerType {
+	private final List<PowerType> subPowers = new ArrayList<>();
+
 	public MultiplePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
@@ -61,7 +64,15 @@ public class MultiplePower extends PowerType {
 				}).get();
 			Tuple<ResourceLocation, String> pathAndSource = new Tuple<>(
 				ResourceLocation.fromNamespaceAndPath(key().getNamespace(), key().getPath() + "_" + key.toLowerCase(Locale.getDefault())), jo.toString());
-			CalioParser.parseFile(pathAndSource, clz, accessorKey, defaultType, typedTempInstance);
+			PowerType type = CalioParser.parseFile(pathAndSource, clz, accessorKey, defaultType, typedTempInstance);
+			if (type != null) {
+				subPowers.add(type);
+			}
 		}
 	}
+
+	public List<PowerType> getSubPowers() {
+		return subPowers;
+	}
+
 }

@@ -15,16 +15,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import org.apache.commons.lang3.tuple.Triple;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +35,7 @@ public class Registries {
 	public static final RegistryKey<ConditionFactory<FluidState>> FLUID_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("fluid_condition"));
 	public static final RegistryKey<ConditionFactory<Tuple<Level, ItemStack>>> ITEM_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("item_condition"));
 	public static final RegistryKey<ConditionFactory<Entity>> ENTITY_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("entity_condition"));
-	public static final RegistryKey<ConditionFactory<EntityDamageEvent>> DAMAGE_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("damage_condition"));
+	public static final RegistryKey<ConditionFactory<Tuple<DamageSource, Float>>> DAMAGE_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("damage_condition"));
 	public static final RegistryKey<ConditionFactory<Tuple<Entity, Entity>>> BIENTITY_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("bientity_condition"));
 	public static final RegistryKey<ConditionFactory<BlockInWorld>> BLOCK_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("block_condition"));
 	public static final RegistryKey<ConditionFactory<Holder<Biome>>> BIOME_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("biome_condition"));

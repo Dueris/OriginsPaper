@@ -4,8 +4,11 @@ import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.factory.action.ActionFactory;
+import me.dueris.originspaper.factory.powers.ResourcePower;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class SetResourceAction {
 
@@ -15,12 +18,11 @@ public class SetResourceAction {
 				.add("resource", SerializableDataTypes.IDENTIFIER)
 				.add("value", SerializableDataTypes.INT),
 			(data, entity) -> {
-				// TODO
-//				Optional<Resource.Bar> resourceBar = Resource.getDisplayedBar(entity, data.getString("resource"));
-//				resourceBar.ifPresent((bar) -> {
-//					int val = data.getNumber("value").getInt();
-//					bar.change(val, "set");
-//				});
+				Optional<ResourcePower.Bar> resourceBar = ResourcePower.getDisplayedBar(entity, data.getId("resource").toString());
+				resourceBar.ifPresent((bar) -> {
+					int val = data.get("value");
+					bar.change(val, "set");
+				});
 			}
 		);
 	}

@@ -1,19 +1,30 @@
 package me.dueris.originspaper.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import me.dueris.originspaper.factory.CraftApoli;
+import me.dueris.originspaper.factory.powers.ResourcePower;
+import me.dueris.originspaper.registry.registries.PowerType;
+import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
-//todo
 public class ResourceCommand {
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-		/*LiteralArgumentBuilder<CommandSourceStack> main = net.minecraft.commands.Commands.literal("resource")
+		LiteralArgumentBuilder<CommandSourceStack> main = net.minecraft.commands.Commands.literal("resource")
 			.requires(source -> source.hasPermission(2));
 		(main.then(
-			net.minecraft.commands.Commands.literal("has")
+			Commands.literal("has")
 				.then(
-					net.minecraft.commands.Commands.argument("targets", EntityArgument.player())
+					Commands.argument("targets", EntityArgument.player())
 						.then(
-							net.minecraft.commands.Commands.argument("power", ResourceLocationArgument.id())
+							Commands.argument("power", ResourceLocationArgument.id())
 								.suggests(
 									(context, builder) -> {
 										OriginCommand.POWERS
@@ -38,7 +49,7 @@ public class ResourceCommand {
 										throw new IllegalArgumentException("Provided power argument was not found!");
 									} else {
 										if (PowerHolderComponent.hasPower(player.getBukkitEntity(), powerType.getTag())
-											&& PowerHolderComponent.isOfType(powerType, Resource.class)) {
+											&& PowerHolderComponent.isOfType(powerType, ResourcePower.class)) {
 											context.getSource().sendSystemMessage(Component.literal("Test passed"));
 										} else {
 											context.getSource().sendFailure(Component.literal("Test failed"));
@@ -51,11 +62,11 @@ public class ResourceCommand {
 				)
 		))
 			.then(
-				net.minecraft.commands.Commands.literal("get")
+				Commands.literal("get")
 					.then(
-						net.minecraft.commands.Commands.argument("targets", EntityArgument.player())
+						Commands.argument("targets", EntityArgument.player())
 							.then(
-								net.minecraft.commands.Commands.argument("power", ResourceLocationArgument.id())
+								Commands.argument("power", ResourceLocationArgument.id())
 									.suggests(
 										(context, builder) -> {
 											OriginCommand.POWERS
@@ -84,9 +95,9 @@ public class ResourceCommand {
 													"Can't get value of {%} for {$}; none is set".replace("{$}", player.displayName).replace("{%}", power.toString())
 												);
 												if (PowerHolderComponent.hasPower(player.getBukkitEntity(), powerType.getTag())
-													&& PowerHolderComponent.isOfType(powerType, Resource.class)) {
+													&& PowerHolderComponent.isOfType(powerType, ResourcePower.class)) {
 													ResourcePower resourcePower = (ResourcePower) powerType;
-													Resource.getDisplayedBar(player.getBukkitEntity(), resourcePower.getTag())
+													ResourcePower.getDisplayedBar(player, resourcePower.getTag())
 														.ifPresentOrElse(
 															bar -> {
 																Integer mappedProgress = bar.getMappedProgress();
@@ -111,11 +122,11 @@ public class ResourceCommand {
 					)
 			)
 			.then(
-				net.minecraft.commands.Commands.literal("set")
+				Commands.literal("set")
 					.then(
-						net.minecraft.commands.Commands.argument("targets", EntityArgument.player())
+						Commands.argument("targets", EntityArgument.player())
 							.then(
-								net.minecraft.commands.Commands.argument("power", ResourceLocationArgument.id())
+								Commands.argument("power", ResourceLocationArgument.id())
 									.suggests(
 										(context, builder) -> {
 											OriginCommand.POWERS
@@ -133,7 +144,7 @@ public class ResourceCommand {
 										}
 									)
 									.then(
-										net.minecraft.commands.Commands.argument("value", IntegerArgumentType.integer())
+										Commands.argument("value", IntegerArgumentType.integer())
 											.executes(
 												context -> {
 													ResourceLocation power = ResourceLocationArgument.getId(context, "power");
@@ -142,9 +153,9 @@ public class ResourceCommand {
 													int setTo = IntegerArgumentType.getInteger(context, "value");
 													Component failure = Component.literal("No relevant score holders could be found");
 													if (PowerHolderComponent.hasPower(player.getBukkitEntity(), powerType.getTag())
-														&& PowerHolderComponent.isOfType(powerType, Resource.class)) {
+														&& PowerHolderComponent.isOfType(powerType, ResourcePower.class)) {
 														ResourcePower resourcePower = (ResourcePower) powerType;
-														Resource.getDisplayedBar(player.getBukkitEntity(), resourcePower.getTag())
+														ResourcePower.getDisplayedBar(player, resourcePower.getTag())
 															.ifPresentOrElse(
 																bar -> {
 																	bar.change(setTo, "set");
@@ -201,9 +212,9 @@ public class ResourceCommand {
 													int setTo = IntegerArgumentType.getInteger(context, "value");
 													Component failure = Component.literal("No relevant score holders could be found");
 													if (PowerHolderComponent.hasPower(player.getBukkitEntity(), powerType.getTag())
-														&& PowerHolderComponent.isOfType(powerType, Resource.class)) {
+														&& PowerHolderComponent.isOfType(powerType, ResourcePower.class)) {
 														ResourcePower resourcePower = (ResourcePower) powerType;
-														Resource.getDisplayedBar(player.getBukkitEntity(), resourcePower.getTag())
+														ResourcePower.getDisplayedBar(player, resourcePower.getTag())
 															.ifPresentOrElse(
 																bar -> {
 																	System.out.println(bar.getMappedProgress() + setTo);
@@ -228,6 +239,6 @@ public class ResourceCommand {
 							)
 					)
 			);
-		dispatcher.register(main);*/
+		dispatcher.register(main);
 	}
 }

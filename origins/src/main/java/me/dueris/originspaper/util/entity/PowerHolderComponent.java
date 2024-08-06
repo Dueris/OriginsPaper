@@ -5,6 +5,7 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.OriginChangeEvent;
 import me.dueris.originspaper.event.PowerUpdateEvent;
 import me.dueris.originspaper.factory.CraftApoli;
+import me.dueris.originspaper.factory.powers.MultiplePower;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;
@@ -99,12 +100,12 @@ public class PowerHolderComponent implements Listener {
 				if (powerCon != null) {
 					if (powers.contains(powerCon)) continue;
 					powers.add(powerCon);
-//					if (powerCon.getClass().equals(Multiple.class)) {
-//						ArrayList<PowerType> nestedPowers = CraftApoli.getNestedPowerTypes(powerCon);
-//						for (PowerType nested : nestedPowers) {
-//							if (nested != null) powers.add(nested);
-//						}
-//					}
+					if (powerCon.getClass().equals(MultiplePower.class)) {
+						ArrayList<PowerType> nestedPowers = CraftApoli.getNestedPowerTypes(powerCon);
+						for (PowerType nested : nestedPowers) {
+							if (nested != null) powers.add(nested);
+						}
+					}
 				}
 			}
 			map.put(layerContainer, powers);
@@ -276,6 +277,7 @@ public class PowerHolderComponent implements Listener {
 				}
 
 				c.onAdded(((CraftPlayer) player).getHandle());
+				PowerUtils.markGained(power, player);
 				if (!suppress) {
 					Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
 				}

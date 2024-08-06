@@ -2,15 +2,16 @@
   "type": "origins:attribute",
   "modifiers": [
     {
-      "attribute": "reach-entity-attributes:reach",
+      "id": "*:*",
+      "attribute": "minecraft:player.block_interaction_range",
       "value": 1.5,
-      "operation": "addition"
+      "operation": "add_value"
     },
     {
-      "attribute": "reach-entity-attributes:attack_range",
+      "id": "*:*",
+      "attribute": "minecraft:player.entity_interaction_range",
       "value": 1.5,
-      "operation": "addition"
+      "operation": "add_value"
     }
-  ],
-  "hidden": false
+  ]
 }

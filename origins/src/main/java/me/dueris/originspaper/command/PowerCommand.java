@@ -346,6 +346,9 @@ public class PowerCommand {
 														.forEach(
 															layer -> {
 																try {
+																	if (name.equalsIgnoreCase("revoke")) {
+																		PowerUtils.markBlacklist(OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(arg), p.getBukkitEntity());
+																	}
 																	PowerUtils.removePower(
 																		context.getSource().getBukkitSender(),
 																		OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(arg),

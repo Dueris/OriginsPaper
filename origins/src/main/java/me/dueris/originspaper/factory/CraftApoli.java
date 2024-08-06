@@ -3,6 +3,7 @@ package me.dueris.originspaper.factory;
 import io.github.dueris.calio.registry.Registrar;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.data.types.Impact;
+import me.dueris.originspaper.factory.powers.MultiplePower;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;
@@ -62,7 +63,7 @@ public class CraftApoli {
 		return emptyOrigin();
 	}
 
-	public static OriginLayer getLayer(ResourceLocation layerTag) {
+	public static OriginLayer getLayer(@NotNull ResourceLocation layerTag) {
 		return getLayer(layerTag.toString());
 	}
 
@@ -103,10 +104,9 @@ public class CraftApoli {
 		if (power == null) {
 			return nested;
 		} else {
-			// todo
-//			if (power instanceof Multiple multiple) {
-//				nested.addAll(multiple.getSubPowers());
-//			}
+			if (power instanceof MultiplePower multiple) {
+				nested.addAll(multiple.getSubPowers());
+			}
 
 			return nested;
 		}
