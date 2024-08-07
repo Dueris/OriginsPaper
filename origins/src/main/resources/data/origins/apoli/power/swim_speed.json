@@ -1,9 +1,9 @@
 {
-  "type": "origins:attribute",
+  "type": "origins:modify_swim_speed",
   "modifier": {
-    "id": "*:*",
-    "attribute": "additionalentityattributes:generic.water_speed",
     "value": 1.5,
-    "operation": "add_multiplied_base"
-  }
+    "operation": "multiply_base",
+    "id": "*:*"
+  },
+  "hidden": false
 }

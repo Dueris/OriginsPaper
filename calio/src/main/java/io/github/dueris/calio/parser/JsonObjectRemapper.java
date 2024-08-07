@@ -13,10 +13,12 @@ import java.util.Map;
 public class JsonObjectRemapper {
 	private final List<Tuple<String, String>> namespaceRemappings;
 	private final List<Tuple<String, String>> typeAliases;
+	private final List<String> aliasKeys;
 
-	public JsonObjectRemapper(List<Tuple<String, String>> namespaceRemappings, List<Tuple<String, String>> typeAliases) {
+	public JsonObjectRemapper(List<Tuple<String, String>> namespaceRemappings, List<Tuple<String, String>> typeAliases, List<String> aliasKeys) {
 		this.namespaceRemappings = namespaceRemappings;
 		this.typeAliases = typeAliases;
+		this.aliasKeys = aliasKeys;
 	}
 
 	public JsonElement remap(@NotNull JsonElement element, ResourceLocation currentNamespace) {
@@ -37,7 +39,7 @@ public class JsonObjectRemapper {
 
 			if (value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) {
 				String typeValue = value.getAsString();
-				String remappedTypeValue = remapTypeValue(typeValue, currentNamespace, !key.equalsIgnoreCase("id"));
+				String remappedTypeValue = remapTypeValue(typeValue, currentNamespace, aliasKeys.contains(key));
 				remappedObject.addProperty(key, remappedTypeValue);
 			} else {
 				remappedObject.add(key, remap(value, currentNamespace));
@@ -70,20 +72,21 @@ public class JsonObjectRemapper {
 		}
 
 		if (aliases) {
-			for (Tuple<String, String> alias : typeAliases) {
-				if (alias.getA().equals(typeValue)) {
-					return alias.getB();
-				}
-			}
-
 			String[] parts = typeValue.split(":");
 			if (parts.length == 2) {
 				String namespace = parts[0];
 				String key = parts[1];
 				for (Tuple<String, String> namespaceMapping : namespaceRemappings) {
 					if (namespaceMapping.getA().equals(namespace)) {
-						return namespaceMapping.getB() + ":" + key;
+						typeValue = namespaceMapping.getB() + ":" + key;
+						break;
 					}
+				}
+			}
+
+			for (Tuple<String, String> alias : typeAliases) {
+				if (alias.getA().equals(typeValue)) {
+					return alias.getB();
 				}
 			}
 		}

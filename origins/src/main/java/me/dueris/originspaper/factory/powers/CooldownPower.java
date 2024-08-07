@@ -52,9 +52,9 @@ public class CooldownPower extends PowerType implements CooldownInterface {
 			.add("cooldown", SerializableDataTypes.INT, 0);
 	}
 
-	public static void addCooldown(Player player, int amt, CooldownInterface power) {
-		if (amt <= 1) return;
-		addCooldown(player, amt, power, 1.0);
+	public static void addCooldown(org.bukkit.entity.Entity player, int amt, CooldownInterface power) {
+		if (amt <= 1 || !(player instanceof Player)) return;
+		addCooldown((Player) player, amt, power, 1.0);
 	}
 
 	protected static void addCooldown(Player player, int amt, CooldownInterface power, double start) {
@@ -69,8 +69,9 @@ public class CooldownPower extends PowerType implements CooldownInterface {
 		timingsTracker.put(pair.first(), new ModifiableFloatPair(amt, amt));
 	}
 
-	public static boolean isInCooldown(Player player, ResourceInterface power) {
-		cooldowns.putIfAbsent(player, new ArrayList<>());
+	public static boolean isInCooldown(org.bukkit.entity.Entity player, ResourceInterface power) {
+		if (!(player instanceof Player)) return false;
+		cooldowns.putIfAbsent((Player) player, new ArrayList<>());
 		for (Pair<KeyedBossBar, ResourceInterface> pair : cooldowns.get(player)) {
 			if (pair.second().getTag().equalsIgnoreCase(power.getTag())) return true;
 		}
@@ -79,7 +80,7 @@ public class CooldownPower extends PowerType implements CooldownInterface {
 
 	@Override
 	public boolean isActive(@NotNull Entity player) {
-		return super.isActive(player) && isInCooldown((Player) player.getBukkitEntity(), this);
+		return super.isActive(player) && isInCooldown(player.getBukkitEntity(), this);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class SetFallDistanceAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
-		return new ActionFactory<>(OriginsPaper.identifier("set_fall_distance"),
+		return new ActionFactory<>(OriginsPaper.apoliIdentifier("set_fall_distance"),
 			InstanceDefiner.instanceDefiner()
 				.add("fall_distance", SerializableDataTypes.FLOAT),
 			(data, entity) -> entity.fallDistance = data.getFloat("fall_distance"));

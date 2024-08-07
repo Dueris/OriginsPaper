@@ -84,6 +84,10 @@ public class WrappedBootstrapContext {
 				}).get());
 		}
 
+		if (!data.exists()) {
+			data.mkdirs();
+		}
+
 		for (Tuple<ResourceKey<?>, ResourceLocation> key : this.registered.keySet()) {
 			String namespace = key.getB().getNamespace();
 			String registryLocation = key.getA().location().getPath();

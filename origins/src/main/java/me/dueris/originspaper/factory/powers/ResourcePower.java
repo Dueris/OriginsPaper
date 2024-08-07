@@ -119,6 +119,61 @@ public class ResourcePower extends PowerType implements ResourceInterface {
 		return bossBar;
 	}
 
+	@Deprecated(forRemoval = true)
+	private static <T extends Number> @NotNull Map<String, BinaryOperator<T>> createOperationMappings(
+		BinaryOperator<T> addition,
+		BinaryOperator<T> subtraction,
+		BinaryOperator<T> multiplication,
+		BinaryOperator<T> division,
+		BinaryOperator<T> multiplyBase,
+		BinaryOperator<T> multiplyTotal,
+		BinaryOperator<T> multiplyTotalAddictive,
+		BinaryOperator<T> minBase,
+		BinaryOperator<T> maxBase) {
+
+		Map<String, BinaryOperator<T>> operationMap = new HashMap<>();
+		operationMap.put("addition", addition);
+		operationMap.put("add", addition);
+		operationMap.put("add_value", addition);
+		operationMap.put("subtract_value", addition);
+		operationMap.put("subtraction", subtraction);
+		operationMap.put("subtract", subtraction);
+		operationMap.put("multiplication", multiplication);
+		operationMap.put("multiply", multiplication);
+		operationMap.put("division", division);
+		operationMap.put("divide", division);
+		operationMap.put("multiply_base", multiplyBase);
+		operationMap.put("multiply_total", multiplyTotal);
+		operationMap.put("set_total", (a, b) -> b);
+		operationMap.put("set", (a, b) -> b);
+		operationMap.put("add_base_early", addition);
+		operationMap.put("multiply_base_additive", multiplyBase);
+		operationMap.put("multiply_base_multiplicative", multiplyTotal);
+		operationMap.put("add_base_late", addition);
+		operationMap.put("multiply_total_additive", multiplyTotalAddictive);
+		operationMap.put("multiply_total_multiplicative", multiplyTotal);
+		operationMap.put("min_base", minBase);
+		operationMap.put("max_base", maxBase);
+		operationMap.put("min_total", minBase);
+		operationMap.put("max_total", maxBase);
+		return operationMap;
+	}
+
+	@Deprecated(forRemoval = true)
+	public static @NotNull Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
+		return createOperationMappings(
+			Double::sum,
+			(a, b) -> a - b,
+			(a, b) -> a * b,
+			(a, b) -> a / b,
+			(a, b) -> a + a * b,
+			(a, b) -> a * (1.0 + b),
+			(a, b) -> a * a * b,
+			(a, b) -> a > b ? a : b,
+			(a, b) -> a < b ? a : b
+		);
+	}
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void preLoad(ServerLoadEvent e) {
 		OriginsPaper.getPlugin()
@@ -273,7 +328,7 @@ public class ResourcePower extends PowerType implements ResourceInterface {
 		}
 
 		public void change(int by, String operation, boolean updateMapped) {
-			Map<String, BinaryOperator<Double>> operator = Util.getOperationMappingsDouble();
+			Map<String, BinaryOperator<Double>> operator = getOperationMappingsDouble();
 			double change = this.oneInc * (double) by;
 			this.renderedBar
 				.setProgress(this.preVerifyProgress(operator.get(operation).apply(Double.valueOf(this.renderedBar.getProgress()), Double.valueOf(change))));

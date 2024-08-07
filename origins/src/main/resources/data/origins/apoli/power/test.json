@@ -1,11 +1,8 @@
 {
-  "type": "origins:action_over_time",
+  "type": "origins:attacker_action_when_hit",
   "entity_action": {
-    "type": "origins:set_on_fire",
-    "duration": 4
+    "type": "origins:add_velocity",
+    "y": 2
   },
-  "interval": 20,
-  "condition": {
-    "type": "origins:on_fire"
-  }
+  "cooldown": 20
 }

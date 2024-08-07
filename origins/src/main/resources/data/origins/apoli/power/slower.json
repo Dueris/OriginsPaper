@@ -4,8 +4,9 @@
   "modifiers": [
     {
       "attribute": "minecraft:generic.movement_speed",
-      "operation": "addition",
-      "value": -0.012
+      "operation": "add_value",
+      "value": -0.012,
+      "id": "*:*"
     }
   ],
   "condition": {

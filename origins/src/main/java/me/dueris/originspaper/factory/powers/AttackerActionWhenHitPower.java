@@ -21,52 +21,49 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class ActionOnHitPower extends PowerType implements CooldownInterface {
-	private final ActionFactory<Tuple<Entity, Entity>> bientityAction;
+public class AttackerActionWhenHitPower extends PowerType implements CooldownInterface {
+	private final ActionFactory<Entity> entityAction;
 	private final ConditionFactory<Tuple<DamageSource, Float>> damageCondition;
 	private final int cooldown;
 	private final HudRender hudRender;
-	private final ConditionFactory<Tuple<Entity, Entity>> bientityCondition;
 
-	public ActionOnHitPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-							ActionFactory<Tuple<Entity, Entity>> bientityAction, ConditionFactory<Tuple<DamageSource, Float>> damageCondition, int cooldown, HudRender hudRender, ConditionFactory<Tuple<Entity, Entity>> bientityCondition) {
+	public AttackerActionWhenHitPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
+									  ActionFactory<Entity> entityAction, ConditionFactory<Tuple<DamageSource, Float>> damageCondition, int cooldown, HudRender hudRender) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
-		this.bientityAction = bientityAction;
+		this.entityAction = entityAction;
 		this.damageCondition = damageCondition;
 		this.cooldown = cooldown;
 		this.hudRender = hudRender;
-		this.bientityCondition = bientityCondition;
 	}
 
 	public static InstanceDefiner buildDefiner() {
-		return PowerType.buildDefiner().typedRegistry(OriginsPaper.apoliIdentifier("action_on_hit"))
-			.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION)
+		return PowerType.buildDefiner().typedRegistry(OriginsPaper.apoliIdentifier("attacker_action_when_hit"))
+			.add("entity_action", ApoliDataTypes.ENTITY_ACTION)
 			.add("damage_condition", ApoliDataTypes.DAMAGE_CONDITION, null)
 			.add("cooldown", SerializableDataTypes.INT, 1)
-			.add("hud_render", ApoliDataTypes.HUD_RENDER, HudRender.DONT_RENDER)
-			.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null);
+			.add("hud_render", ApoliDataTypes.HUD_RENDER, HudRender.DONT_RENDER);
 	}
 
-	public boolean doesApply(Entity target, @NotNull Entity entity, DamageSource source, float amount) {
-		return !CooldownPower.isInCooldown(entity.getBukkitEntity(), this)
-			&& (bientityCondition == null || bientityCondition.test(new Tuple<>(entity, target)))
+	public boolean doesApply(@NotNull DamageSource source, float amount, Entity entity) {
+		return source.getEntity() != null
+			&& !CooldownPower.isInCooldown(entity.getBukkitEntity(), this)
 			&& (damageCondition == null || damageCondition.test(new Tuple<>(source, amount)));
 	}
 
-	public void onHit(Entity target, Entity entity) {
-		this.bientityAction.accept(new Tuple<>(entity, target));
+	public void whenHit(Entity attacker, @NotNull Entity entity) {
+		this.entityAction.accept(attacker);
 		CooldownPower.addCooldown(entity.getBukkitEntity(), cooldown, this);
 	}
 
 	@EventHandler
-	public void onHit(@NotNull EntityDamageByEntityEvent e) {
-		if (e.getDamager() instanceof Player p) {
+	public void whenHit(@NotNull EntityDamageByEntityEvent e) {
+		if (e.getEntity() instanceof Player p) {
 			net.minecraft.world.entity.player.Player player = ((CraftPlayer) p).getHandle();
 			if (!getPlayers().contains(player)) return;
-			Entity target = ((CraftEntity) e.getEntity()).getHandle();
+			Entity damager = ((CraftEntity) e.getDamager()).getHandle();
 			DamageSource damageSource = Util.damageSourceFromBukkit(e.getDamageSource());
-			if (doesApply(target, player, damageSource, Double.valueOf(e.getDamage()).floatValue()) && isActive(player)) {
-				onHit(target, player);
+			if (doesApply(damageSource, Double.valueOf(e.getDamage()).floatValue(), player)) {
+				whenHit(damager, player);
 			}
 		}
 	}

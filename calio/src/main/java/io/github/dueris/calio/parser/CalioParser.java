@@ -216,28 +216,32 @@ public class CalioParser {
 			String key = entry.getKey();
 			ObjectTiedEnumState<SerializableDataBuilder<?>> serializableTiedBoolean = entry.getValue();
 			SerializableType type = (SerializableType) serializableTiedBoolean.state();
-			switch (type) {
-				case DEFAULT:
-					compiledParams.add(new Tuple<>(key, serializableTiedBoolean.object().type()));
-					if (jsonSource.has(key)) {
-						compiledArguments.add(new Tuple<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
-					} else {
-						if (!definer.defaultMap.containsKey(key)) {
-							throw new UnsupportedOperationException("A default value was provided but it wasn't fetch-able by the calio compiler!");
-						}
+			try {
+				switch (type) {
+					case DEFAULT:
+						compiledParams.add(new Tuple<>(key, serializableTiedBoolean.object().type()));
+						if (jsonSource.has(key)) {
+							compiledArguments.add(new Tuple<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
+						} else {
+							if (!definer.defaultMap.containsKey(key)) {
+								throw new UnsupportedOperationException("A default value was provided but it wasn't fetch-able by the calio compiler!");
+							}
 
-						compiledArguments.add(new Tuple<>(key, definer.defaultMap.get(key)));
-					}
-					break;
-				case REQUIRED:
-					compiledParams.add(new Tuple<>(key, serializableTiedBoolean.object().type()));
-					if (jsonSource.has(key)) {
-						compiledArguments.add(new Tuple<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
-					} else {
-						LOGGER.error("Required instance not found, skipping instance compiling for '{}' : KEY ['{}'] | ClassName [{}]", location.orElse("Unknown Key"), key, clz.isPresent() ? clz.get() : "Unknown Class");
-						LOGGER.error("JSON: {}", jsonSource.toString());
-						return Optional.empty();
-					}
+							compiledArguments.add(new Tuple<>(key, definer.defaultMap.get(key)));
+						}
+						break;
+					case REQUIRED:
+						compiledParams.add(new Tuple<>(key, serializableTiedBoolean.object().type()));
+						if (jsonSource.has(key)) {
+							compiledArguments.add(new Tuple<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
+						} else {
+							LOGGER.error("Required instance not found, skipping instance compiling for '{}' : KEY ['{}'] | ClassName [{}]", location.orElse("Unknown Key"), key, clz.isPresent() ? clz.get() : "Unknown Class");
+							LOGGER.error("JSON: {}", jsonSource.toString());
+							return Optional.empty();
+						}
+				}
+			} catch (Throwable throwable) {
+				throw new RuntimeException("Unable to compile from InstanceDefinition: '" + location.orElse("no_location_found") + "'", throwable);
 			}
 		}
 		if (!compiledParams.isEmpty() && !compiledArguments.isEmpty()) {

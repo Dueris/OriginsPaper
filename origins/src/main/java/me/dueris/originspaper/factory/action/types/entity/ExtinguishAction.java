@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public class ExtinguishAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
-		return new ActionFactory<>(OriginsPaper.identifier("extinguish"),
+		return new ActionFactory<>(OriginsPaper.apoliIdentifier("extinguish"),
 			InstanceDefiner.instanceDefiner(),
 			(data, entity) -> entity.clearFire());
 	}

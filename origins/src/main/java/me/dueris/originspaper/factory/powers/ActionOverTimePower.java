@@ -32,7 +32,7 @@ public class ActionOverTimePower extends PowerType {
 		this.risingAction = risingAction;
 		this.fallingAction = fallingAction;
 	}
-	
+
 	public static InstanceDefiner buildDefiner() {
 		return PowerType.buildDefiner().typedRegistry(OriginsPaper.apoliIdentifier("action_over_time"))
 			.add("interval", SerializableDataTypes.POSITIVE_INT, 20)

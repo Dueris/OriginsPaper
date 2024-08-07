@@ -6,7 +6,8 @@
     "modifier": {
       "attribute": "minecraft:generic.armor",
       "value": 2.0,
-      "operation": "addition"
+      "operation": "add_value",
+      "id": "*:*"
     },
     "hidden": true
   },

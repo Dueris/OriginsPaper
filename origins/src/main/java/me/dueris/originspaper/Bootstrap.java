@@ -12,79 +12,75 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import me.dueris.originspaper.command.Commands;
 import me.dueris.originspaper.content.NMSBootstrap;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.util.Util;
 import me.dueris.originspaper.util.WrappedBootstrapContext;
 import net.minecraft.util.Tuple;
-import org.apache.commons.io.FilenameUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class Bootstrap implements PluginBootstrap {
 	public static ArrayList<Consumer<WrappedBootstrapContext>> apiCalls = new ArrayList<>();
 	public static AtomicBoolean BOOTSTRAPPED = new AtomicBoolean(false);
 
 	public static void copyOriginDatapack(Path datapackPath) {
+		String jarPath = getJarPath();
+		if (jarPath == null) {
+			System.err.println("Could not determine JAR file path.");
+			return;
+		}
+		String outputDir = datapackPath.toAbsolutePath().toString();
+		String resourceDir = "minecraft/";
 		try {
-			CodeSource src = Util.class.getProtectionDomain().getCodeSource();
-			URL jar = src.getLocation();
-			ZipInputStream zip = new ZipInputStream(jar.openStream());
+			extractResources(jarPath, outputDir, resourceDir);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		System.out.println("Resources extracted successfully.");
+	}
 
-			while (true) {
-				ZipEntry entry = zip.getNextEntry();
-				if (entry == null) {
-					zip.close();
-					break;
-				}
-
-				String name = entry.getName();
-
-				if (!name.startsWith("minecraft/")) continue;
-				if (FilenameUtils.getExtension(name).equals("zip")) continue;
-				if (name.equals("minecraft/")) continue;
-
-				name = name.substring(9);
-				File file = new File(datapackPath.toAbsolutePath().toString().replace(".\\", "") + File.separator + name);
-				if (!file.getName().contains(".")) {
-					Files.createDirectory(Path.of(file.getAbsolutePath()));
-					continue;
-				}
-
-				// Ensure parent directory exists
-				File parentDir = file.getParentFile();
-				if (!parentDir.exists()) {
-					parentDir.mkdirs();
-				}
-
-				// Copy PNG files
-				if (FilenameUtils.getExtension(name).equalsIgnoreCase("png")) {
-					try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
+	public static void extractResources(String jarPath, String outputDir, String resourceDir) throws IOException {
+		try (JarFile jar = new JarFile(jarPath)) {
+			Enumeration<JarEntry> entries = jar.entries();
+			while (entries.hasMoreElements()) {
+				JarEntry entry = entries.nextElement();
+				if (entry.getName().startsWith(resourceDir) && !entry.isDirectory()) {
+					File file = new File(outputDir, entry.getName().substring(resourceDir.length()));
+					File parent = file.getParentFile();
+					if (parent != null && !parent.exists()) {
+						parent.mkdirs();
+					}
+					try (InputStream is = jar.getInputStream(entry);
+						 OutputStream os = Files.newOutputStream(file.toPath())) {
 						byte[] buffer = new byte[1024];
-						int len;
-						while ((len = zip.read(buffer)) > 0) {
-							bos.write(buffer, 0, len);
+						int bytesRead;
+						while ((bytesRead = is.read(buffer)) != -1) {
+							os.write(buffer, 0, bytesRead);
 						}
 					}
-				} else { // Copy non-PNG files as text
-					Files.writeString(Path.of(file.getAbsolutePath()), new String(zip.readAllBytes()));
 				}
 			}
-			zip.close();
-		} catch (Exception e) {
-			// e.printStackTrace(); // Print stack trace for debugging // I changed my mind
 		}
+	}
 
+	public static @Nullable String getJarPath() {
+		ProtectionDomain protectionDomain = Bootstrap.class.getProtectionDomain();
+		File jarFile = null;
+		try {
+			jarFile = new File(protectionDomain.getCodeSource().getLocation().toURI());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jarFile != null ? jarFile.getAbsolutePath() : null;
 	}
 
 	public static String levelNameProp() {
@@ -138,13 +134,17 @@ public class Bootstrap implements PluginBootstrap {
 				new Tuple<>("origins", "apoli")
 			),
 			List.of(
-				new Tuple<>("apoli:conditioned_restrict_armor", "apoli:restrict_armor"),
+				new Tuple<>("apoli:restrict_armor", "apoli:conditioned_restrict_armor"),
 				new Tuple<>("apoli:has_tag", "apoli:has_command_tag"),
 				new Tuple<>("apoli:custom_data", "apoli:nbt"),
 				new Tuple<>("apoli:is_equippable", "apoli:equippable"),
 				new Tuple<>("apoli:fireproof", "apoli:fire_resistant"),
 				new Tuple<>("apoli:merge_nbt", "apoli:merge_custom_data"),
-				new Tuple<>("apoli:revoke_power", "apoli:remove_power")
+				new Tuple<>("apoli:revoke_power", "apoli:remove_power"),
+				new Tuple<>("apoli:water_protection", "origins:water_protection") // fix water protection in namespace aliases
+			),
+			List.of(
+				"power", "power_type", "type"
 			)
 		);
 		CalioParser.REMAPPER.set(remapper);

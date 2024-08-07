@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class TriggerCooldownAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
-		return new ActionFactory<>(OriginsPaper.identifier("trigger_cooldown"),
+		return new ActionFactory<>(OriginsPaper.apoliIdentifier("trigger_cooldown"),
 			InstanceDefiner.instanceDefiner()
 				.add("power", SerializableDataTypes.IDENTIFIER),
 			(data, entity) -> {

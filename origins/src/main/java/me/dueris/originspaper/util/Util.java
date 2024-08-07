@@ -59,7 +59,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
@@ -88,13 +87,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.security.CodeSource;
 import java.util.*;
-import java.util.function.*;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 public class Util {
 	private static final List<SlotRange> SLOTS = net.minecraft.Util.make(new ArrayList<>(), list -> {
@@ -475,87 +475,6 @@ public class Util {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private static <T extends Number> @NotNull Map<String, BinaryOperator<T>> createOperationMappings(
-		BinaryOperator<T> addition,
-		BinaryOperator<T> subtraction,
-		BinaryOperator<T> multiplication,
-		BinaryOperator<T> division,
-		BinaryOperator<T> multiplyBase,
-		BinaryOperator<T> multiplyTotal,
-		BinaryOperator<T> multiplyTotalAddictive,
-		BinaryOperator<T> minBase,
-		BinaryOperator<T> maxBase) {
-
-		Map<String, BinaryOperator<T>> operationMap = new HashMap<>();
-		operationMap.put("addition", addition);
-		operationMap.put("add", addition);
-		operationMap.put("add_value", addition);
-		operationMap.put("subtract_value", addition);
-		operationMap.put("subtraction", subtraction);
-		operationMap.put("subtract", subtraction);
-		operationMap.put("multiplication", multiplication);
-		operationMap.put("multiply", multiplication);
-		operationMap.put("division", division);
-		operationMap.put("divide", division);
-		operationMap.put("multiply_base", multiplyBase);
-		operationMap.put("multiply_total", multiplyTotal);
-		operationMap.put("set_total", (a, b) -> b);
-		operationMap.put("set", (a, b) -> b);
-		operationMap.put("add_base_early", addition);
-		operationMap.put("multiply_base_additive", multiplyBase);
-		operationMap.put("multiply_base_multiplicative", multiplyTotal);
-		operationMap.put("add_base_late", addition);
-		operationMap.put("multiply_total_additive", multiplyTotalAddictive);
-		operationMap.put("multiply_total_multiplicative", multiplyTotal);
-		operationMap.put("min_base", minBase);
-		operationMap.put("max_base", maxBase);
-		operationMap.put("min_total", minBase);
-		operationMap.put("max_total", maxBase);
-		return operationMap;
-	}
-
-	public static @NotNull Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
-		return createOperationMappings(
-			Double::sum,
-			(a, b) -> a - b,
-			(a, b) -> a * b,
-			(a, b) -> a / b,
-			(a, b) -> a + a * b,
-			(a, b) -> a * (1.0 + b),
-			(a, b) -> a * a * b,
-			(a, b) -> a > b ? a : b,
-			(a, b) -> a < b ? a : b
-		);
-	}
-
-	public static @NotNull Map<String, BinaryOperator<Integer>> getOperationMappingsInteger() {
-		return createOperationMappings(
-			Integer::sum,
-			(a, b) -> a - b,
-			(a, b) -> a * b,
-			(a, b) -> a / b,
-			(a, b) -> a + a * b,
-			(a, b) -> a * (1 + b),
-			(a, b) -> a * a * b,
-			(a, b) -> a > b ? a : b,
-			(a, b) -> a < b ? a : b
-		);
-	}
-
-	public static @NotNull Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
-		return createOperationMappings(
-			Float::sum,
-			(a, b) -> a - b,
-			(a, b) -> a * b,
-			(a, b) -> a / b,
-			(a, b) -> a + a * b,
-			(a, b) -> a * (1.0F + b),
-			(a, b) -> a * a * b,
-			(a, b) -> a > b ? a : b,
-			(a, b) -> a < b ? a : b
-		);
 	}
 
 	public static void fillMissingNumbers(List<Integer> numbers, int min, int max) {

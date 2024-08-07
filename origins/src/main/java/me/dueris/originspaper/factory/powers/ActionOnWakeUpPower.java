@@ -22,10 +22,14 @@ import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ActionOnWakeUpPower extends PowerType {
 	private final ActionFactory<Entity> entityAction;
 	private final ActionFactory<Triple<Level, BlockPos, Direction>> blockAction;
 	private final ConditionFactory<BlockInWorld> blockCondition;
+	private final List<org.bukkit.entity.Player> tickedAlready = new ArrayList<>();
 
 	public ActionOnWakeUpPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
 							   ActionFactory<Entity> entityAction, ActionFactory<Triple<Level, BlockPos, Direction>> blockAction, ConditionFactory<BlockInWorld> blockCondition) {
@@ -67,10 +71,18 @@ public class ActionOnWakeUpPower extends PowerType {
 			public void run() {
 				Player player = ((CraftPlayer) e.getPlayer()).getHandle();
 				if (e.getPlayer().getWorld().isDayTime() && getPlayers().contains(player)) {
+					if (tickedAlready.contains(e.getPlayer())) return;
+					tickedAlready.add(e.getPlayer());
 					BlockPos pos = CraftLocation.toBlockPosition(e.getBed().getLocation());
 					if (doesApply(pos, player)) {
 						executeActions(pos, Direction.DOWN, player);
 					}
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							tickedAlready.remove(player.getBukkitEntity());
+						}
+					}.runTaskLater(OriginsPaper.getPlugin(), 1);
 				}
 			}
 		}

@@ -97,7 +97,7 @@ public class SerializableDataTypes {
 		JsonElement::getAsInt, int.class
 	);
 	public static final SerializableDataBuilder<Float> FLOAT = SerializableDataBuilder.of(
-		JsonElement::getAsFloat, int.class
+		JsonElement::getAsFloat, float.class
 	);
 	public static final SerializableDataBuilder<Double> DOUBLE = SerializableDataBuilder.of(
 		JsonElement::getAsDouble, double.class

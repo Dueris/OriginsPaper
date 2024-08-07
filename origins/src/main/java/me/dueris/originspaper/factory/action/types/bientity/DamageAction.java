@@ -8,8 +8,10 @@ import me.dueris.originspaper.data.types.modifier.Modifier;
 import me.dueris.originspaper.data.types.modifier.ModifierUtil;
 import me.dueris.originspaper.factory.action.ActionFactory;
 import me.dueris.originspaper.util.Util;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +47,7 @@ public class DamageAction {
 		try {
 			DamageSource source;
 			if (data.isPresent("damage_type")) {
-				source = Util.getDamageSource(Util.DAMAGE_REGISTRY.get(data.getId("damage_type")));
+				source = Util.getDamageSource(Util.DAMAGE_REGISTRY.get((ResourceKey<DamageType>) data.get("damage_type")));
 			} else {
 				source = actor.level().damageSources().generic();
 			}

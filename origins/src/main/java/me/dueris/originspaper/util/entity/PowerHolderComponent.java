@@ -53,6 +53,9 @@ public class PowerHolderComponent implements Listener {
 			if (emptySlot != -1) {
 				player.getInventory().setItem(equipmentSlot, null);
 				player.getInventory().setItem(emptySlot, item);
+			} else {
+				player.getWorld().dropItem(player.getLocation(), item);
+				player.getInventory().setItem(equipmentSlot, null);
 			}
 		}
 	}
