@@ -166,7 +166,7 @@ public class KeybindUtil implements Listener {
 		if (e.getAction().isRightClick()) {
 			triggerExecution("key.use", e.getPlayer());
 			if (e.getItem() != null) {
-				if (e.getItem().getItemMeta() == null && !e.getHand().equals(EquipmentSlot.HAND)) return;
+				if (e.getItem().getItemMeta() == null || !e.getHand().equals(EquipmentSlot.HAND)) return;
 				if (e.getItem().getItemMeta().getPersistentDataContainer().has(identifier("origin_item_data"))) { // Is keybind
 					triggerExecution(e.getItem().getItemMeta().getPersistentDataContainer().get(identifier("origin_item_data"), PersistentDataType.STRING), e.getPlayer());
 				}

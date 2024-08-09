@@ -1,8 +1,19 @@
 {
-  "type": "origins:attacker_action_when_hit",
-  "entity_action": {
-    "type": "origins:add_velocity",
-    "y": 2
+  "type": "origins:edible_item",
+  "item_condition": {
+    "type": "origins:ingredient",
+    "ingredient": {
+      "item": "minecraft:oak_log"
+    }
   },
-  "cooldown": 20
+  "food_component": {
+    "hunger": 4,
+    "saturation": 1,
+    "meat": true
+  },
+  "use_action": "eat",
+  "result_stack": {
+    "item": "minecraft:water_bucket",
+    "amount": 1
+  }
 }

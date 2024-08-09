@@ -47,7 +47,7 @@ public class EntityActions {
 					}
 					OriginLayer layer = CraftApoli.getLayer(data.getId("source"));
 					try {
-						PowerUtils.removePower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
+						PowerUtils.grantPower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
 					} catch (InstantiationException | IllegalAccessException e) {
 						throw new RuntimeException(e);
 					}
@@ -66,7 +66,7 @@ public class EntityActions {
 					}
 					OriginLayer layer = CraftApoli.getLayer(data.getId("source"));
 					try {
-						PowerUtils.grantPower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
+						PowerUtils.removePower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
 					} catch (InstantiationException | IllegalAccessException e) {
 						throw new RuntimeException(e);
 					}

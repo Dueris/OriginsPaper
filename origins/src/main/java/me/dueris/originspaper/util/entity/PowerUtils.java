@@ -19,12 +19,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PowerUtils {
 	public static Gson GSON = new Gson();
 
 	public static void removePower(CommandSender executor, PowerType poweR, Player p, OriginLayer layer, boolean suppress) throws InstantiationException, IllegalAccessException {
-		if (PowerHolderComponent.playerPowerMapping.get(p) != null) {
+		if (PowerHolderComponent.playerPowerMapping.getOrDefault(p, new ConcurrentHashMap<>()) != null) {
 			ArrayList<PowerType> powersToEdit = new ArrayList<>();
 			powersToEdit.add(poweR);
 			powersToEdit.addAll(CraftApoli.getNestedPowerTypes(poweR));
@@ -48,7 +49,7 @@ public class PowerUtils {
 	}
 
 	public static void grantPower(CommandSender executor, PowerType power, Player p, OriginLayer layer, boolean suppress) throws InstantiationException, IllegalAccessException {
-		if (!PowerHolderComponent.playerPowerMapping.get(p).get(layer).contains(power)) {
+		if (!PowerHolderComponent.playerPowerMapping.getOrDefault(p, new ConcurrentHashMap<>()).get(layer).contains(power)) {
 			PowerHolderComponent.playerPowerMapping.get(p).get(layer).add(power);
 			PowerHolderComponent.applyPower(p, power, suppress, true);
 			if (!suppress) {

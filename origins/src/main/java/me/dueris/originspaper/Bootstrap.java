@@ -144,7 +144,7 @@ public class Bootstrap implements PluginBootstrap {
 				new Tuple<>("apoli:water_protection", "origins:water_protection") // fix water protection in namespace aliases
 			),
 			List.of(
-				"power", "power_type", "type"
+				"power_type", "type"
 			)
 		);
 		CalioParser.REMAPPER.set(remapper);

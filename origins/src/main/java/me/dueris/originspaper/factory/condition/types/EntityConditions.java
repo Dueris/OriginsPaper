@@ -84,7 +84,7 @@ public class EntityConditions {
 				// We do a manual check of this as a backup for when people check for a non-functioning/displaying resource
 				// By checking the serverloaded bars(after we define that its not displayed) and seeing if the origin wants to check
 				// if its value is 0, then it would be true in apoli.
-				return ResourcePower.serverLoadedBars.containsKey(resource) && ((Comparison) data.get("comparison")).equals(Comparison.EQUAL) && data.getInt("compare_to") == 0;
+				return ResourcePower.serverLoadedBars.containsKey(resource) && data.get("comparison").equals(Comparison.EQUAL) && data.getInt("compare_to") == 0;
 			}
 		));
 

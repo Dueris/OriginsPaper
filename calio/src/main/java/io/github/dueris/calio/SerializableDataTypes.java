@@ -85,6 +85,16 @@ import java.util.stream.Stream;
 
 import static net.minecraft.util.GsonHelper.getAsDouble;
 
+/**
+ * The provided calio data types that can be defined by
+ * your {@link io.github.dueris.calio.parser.InstanceDefiner}s.
+ * Each SerializableDataType is an instanceof a {@link SerializableDataBuilder}, where T is the
+ * actual instance of the type. When defined by the InstanceDefiner, this points to the type of class that is in your constructor. For example:
+ * A {@code STRING} data type will define a String param of your constructor. Each SerializableDataBuilder has a method for converting the Gson {@link JsonElement}instance to a Java Object.
+ * <br><br>
+ * SerializableDataBuilders can also be used outside of instance parsing by calling the {@code deserialize} method with a provided JsonElement. The data builder
+ * will then decompile your JsonElement into the java object equivalent
+ */
 @SuppressWarnings({"unused", "unchecked"})
 public class SerializableDataTypes {
 	public static final SerializableDataBuilder<String> STRING = SerializableDataBuilder.of(
@@ -701,7 +711,8 @@ public class SerializableDataTypes {
 		);
 	}
 
-	public static <T> SerializableDataBuilder<FilterableWeightedList<T>> weightedList(SerializableDataBuilder<T> singleDataType) {
+	@Contract("_ -> new")
+	public static <T> @NotNull SerializableDataBuilder<FilterableWeightedList<T>> weightedList(SerializableDataBuilder<T> singleDataType) {
 		return SerializableDataBuilder.of((jsonElement) -> {
 			FilterableWeightedList<T> list = new FilterableWeightedList<>();
 			if (jsonElement.isJsonArray()) {

@@ -27,7 +27,7 @@ public class TriggerCooldownAction {
 						"apoli:self_action_on_kill", "apoli:self_action_when_hit", "apoli:target_action_on_hit", "apoli:cooldown"}).forEach(type -> {
 						for (PowerType powerContainer : PowerHolderComponent.getPowers((org.bukkit.entity.Player) player.getBukkitEntity(), type)) {
 							if (powerContainer instanceof CooldownInterface cooldownInterface) {
-								CooldownPower.addCooldown((org.bukkit.entity.Player) player.getBukkitEntity(), cooldownInterface.getCooldown(), cooldownInterface);
+								CooldownPower.addCooldown(player.getBukkitEntity(), cooldownInterface.getCooldown(), cooldownInterface);
 							}
 						}
 					});

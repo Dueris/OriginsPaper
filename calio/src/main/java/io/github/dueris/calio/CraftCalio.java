@@ -23,8 +23,17 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 
+/**
+ * The main class for the Calio Parser, used to start the parser with specified args
+ * @param threaded
+ * @param threadCount
+ */
 public record CraftCalio(boolean threaded, int threadCount) {
 
+	/**
+	 * Creates the calio parser instance and allows for providing
+	 * arguments like {@code async} to make it run threaded parsing.
+	 */
 	@Contract("_ -> new")
 	public static @NotNull CraftCalio buildInstance(String[] args) {
 		OptionParser parser = new OptionParser();
@@ -42,12 +51,20 @@ public record CraftCalio(boolean threaded, int threadCount) {
 		return new CraftCalio(threaded, threadCount);
 	}
 
+	/**
+	 * Creates a new builder for calio parsing to add {@link AccessorKey}s
+	 */
 	@Contract(value = " -> new", pure = true)
 	public @NotNull CalioParserBuilder startBuilder() {
 		return new CalioParserBuilder(this);
 	}
 
-
+	/**
+	 * Begins parsing instances defined by the {@link AccessorKey}s in the
+	 * CalioParserBuilder in both the plugins directory(and sub-dirs), and the
+	 * datapacks directory defined by the {@code server.properties} file.
+	 * @throws Throwable
+	 */
 	public boolean parse() throws Throwable {
 		MinecraftServer server = MinecraftServer.getServer();
 		if (server == null) {
@@ -110,7 +127,6 @@ public record CraftCalio(boolean threaded, int threadCount) {
 		}
 	}
 
-	@Contract(pure = true)
 	@Override
 	public @NotNull String toString() {
 		return "CraftCalio[" +
