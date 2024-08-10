@@ -152,7 +152,8 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				String contents = new String(bytes, StandardCharsets.UTF_8);
 				YamlConfiguration yamlConfiguration = new YamlConfiguration();
 				yamlConfiguration.loadFromString(contents);
-				versions.add(yamlConfiguration.getString("supportedVer"));
+				if (!yamlConfiguration.contains("supportedVersions")) throw new RuntimeException("Supported Versions list not found in plugin yaml!");
+				versions.addAll(yamlConfiguration.getStringList("supportedVersions"));
 				LANGUAGE = yamlConfiguration.getString("default-language");
 			} catch (InvalidConfigurationException | IOException var8) {
 				throw new RuntimeException(var8);
@@ -213,7 +214,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				if (isCorrectVersion) {
 					this.getLogger().severe("Unable to start OriginsPaper due to it not being compatible with this server type");
 				} else {
-					this.getLogger().severe("Unable to start OriginsPaper due to it not being compatible with this server version");
+					this.getLogger().severe("Unable to start OriginsPaper due to it not being compatible with this server version, {}".replace("{}", version));
 				}
 
 				Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");

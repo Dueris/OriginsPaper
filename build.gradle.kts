@@ -64,7 +64,8 @@ allprojects {
                 "mcVer" to mcVer,
                 "pluginVer" to pluginVer,
                 "fullVer" to "mc$mcVer-$pluginVer",
-                "apiVer" to "1.$mcMajorVer"
+                "apiVer" to "1.$mcMajorVer",
+                "supportedVersions" to listOf("1.21", "1.21.1")
             )
             inputs.properties(props)
             filesMatching("paper-plugin.yml") {
