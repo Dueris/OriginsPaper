@@ -18,7 +18,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntLists;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.action.ActionFactory;
+import me.dueris.originspaper.action.ActionFactory;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.PowerType;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -409,7 +409,8 @@ public class Util {
 			entityToSpawnNbt.merge(entityNbt);
 		}
 
-		entityToSpawnNbt.putString("id", BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString());
+		String type = BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString();
+		entityToSpawnNbt.putString("id", type.equalsIgnoreCase("origins:enderian_pearl") ? "minecraft:ender_pearl" : type);
 		Entity entityToSpawn = EntityType.loadEntityRecursive(
 			entityToSpawnNbt,
 			serverWorld,

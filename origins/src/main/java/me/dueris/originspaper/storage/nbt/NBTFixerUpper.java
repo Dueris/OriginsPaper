@@ -1,8 +1,8 @@
 package me.dueris.originspaper.storage.nbt;
 
 import com.google.common.base.Stopwatch;
+import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;
 import net.kyori.adventure.text.Component;

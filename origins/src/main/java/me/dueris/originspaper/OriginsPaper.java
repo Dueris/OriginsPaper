@@ -8,19 +8,18 @@ import io.github.dueris.calio.registry.IRegistry;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import io.papermc.paper.plugin.configuration.PluginMeta;
+import me.dueris.originspaper.action.Actions;
 import me.dueris.originspaper.command.Commands;
 import me.dueris.originspaper.command.OriginCommand;
+import me.dueris.originspaper.condition.Conditions;
+import me.dueris.originspaper.condition.types.BiEntityConditions;
 import me.dueris.originspaper.content.OrbOfOrigins;
 import me.dueris.originspaper.data.types.modifier.ModifierOperations;
-import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.action.Actions;
-import me.dueris.originspaper.factory.condition.Conditions;
-import me.dueris.originspaper.factory.condition.types.BiEntityConditions;
-import me.dueris.originspaper.factory.powers.RecipePower;
-import me.dueris.originspaper.factory.powers.provider.origins.BounceSlimeBlock;
-import me.dueris.originspaper.factory.powers.provider.origins.WaterBreathe;
 import me.dueris.originspaper.integration.PlaceHolderAPI;
 import me.dueris.originspaper.integration.pehuki.CraftPehuki;
+import me.dueris.originspaper.power.RecipePower;
+import me.dueris.originspaper.power.provider.origins.BounceSlimeBlock;
+import me.dueris.originspaper.power.provider.origins.WaterBreathe;
 import me.dueris.originspaper.registry.BuiltinRegistry;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Origin;
@@ -149,7 +148,8 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				String contents = new String(bytes, StandardCharsets.UTF_8);
 				YamlConfiguration yamlConfiguration = new YamlConfiguration();
 				yamlConfiguration.loadFromString(contents);
-				if (!yamlConfiguration.contains("supportedVersions")) throw new RuntimeException("Supported Versions list not found in plugin yaml!");
+				if (!yamlConfiguration.contains("supportedVersions"))
+					throw new RuntimeException("Supported Versions list not found in plugin yaml!");
 				versions.addAll(yamlConfiguration.getStringList("supportedVersions"));
 				LANGUAGE = yamlConfiguration.getString("default-language");
 			} catch (InvalidConfigurationException | IOException var8) {
@@ -211,7 +211,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				if (isCorrectVersion) {
 					this.getLog4JLogger().error("Unable to start OriginsPaper due to it not being compatible with this server type");
 				} else {
-					this.getLog4JLogger().error("Unable to start OriginsPaper due to it not being compatible with this server version, {}",  version);
+					this.getLog4JLogger().error("Unable to start OriginsPaper due to it not being compatible with this server version, {}", version);
 				}
 
 				Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");

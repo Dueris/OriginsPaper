@@ -1,8 +1,8 @@
 package me.dueris.originspaper.screen;
 
+import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.OriginChoosePromptEvent;
-import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import org.bukkit.Bukkit;

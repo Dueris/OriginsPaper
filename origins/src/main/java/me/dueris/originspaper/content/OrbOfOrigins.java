@@ -1,6 +1,7 @@
 package me.dueris.originspaper.content;
 
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.power.RecipePower;
 import me.dueris.originspaper.storage.OriginConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,7 +24,7 @@ public class OrbOfOrigins {
 	}
 
 	public static @NotNull ItemStack createOrb() {
-		ItemStack item = new ItemStack(Material.MAGMA_CREAM);
+		ItemStack item = ItemStack.of(Material.MAGMA_CREAM);
 		ItemMeta meta = item.getItemMeta();
 		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -53,12 +54,13 @@ public class OrbOfOrigins {
 			try {
 				Bukkit.getServer().addRecipe(sr);
 			} catch (Throwable var4) {
+				var4.printStackTrace();
 			}
 
-			// RecipePower.taggedRegistry.put(sr.key().asString(), sr);
+			RecipePower.taggedRegistry.put(sr.key().asString(), sr);
 			return sr.getResult().clone();
 		} catch (Exception var5) {
-			Bukkit.getServer().getLogger().warning("An unexpected error occured when trying to load the orb of origins! : " + var5.getLocalizedMessage());
+			OriginsPaper.getPlugin().getLog4JLogger().error("An unexpected error occured when trying to load the orb of origins! : {}", var5.getLocalizedMessage());
 			throw var5;
 		}
 	}

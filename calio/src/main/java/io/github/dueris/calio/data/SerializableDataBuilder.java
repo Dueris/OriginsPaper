@@ -23,4 +23,8 @@ public interface SerializableDataBuilder<T> {
 	T deserialize(JsonElement object);
 
 	Class<?> type();
+
+	default String asString() {
+		return type().getSimpleName();
+	}
 }

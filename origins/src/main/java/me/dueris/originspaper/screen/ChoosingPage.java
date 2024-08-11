@@ -1,7 +1,7 @@
 package me.dueris.originspaper.screen;
 
+import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;

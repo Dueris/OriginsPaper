@@ -1,8 +1,8 @@
 package me.dueris.originspaper.screen;
 
+import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.data.types.Impact;
-import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.registry.registries.PowerType;

@@ -1,8 +1,8 @@
 package me.dueris.originspaper.util;
 
 import io.github.dueris.calio.util.holder.TriPair;
+import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;

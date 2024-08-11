@@ -1,9 +1,9 @@
 package me.dueris.originspaper.util.entity;
 
+import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.OriginChangeEvent;
 import me.dueris.originspaper.event.PowerUpdateEvent;
-import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;
 import me.dueris.originspaper.screen.GuiTicker;

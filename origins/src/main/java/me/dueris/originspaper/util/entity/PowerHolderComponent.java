@@ -1,11 +1,11 @@
 package me.dueris.originspaper.util.entity;
 
 import javassist.NotFoundException;
+import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.OriginChangeEvent;
 import me.dueris.originspaper.event.PowerUpdateEvent;
-import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.powers.MultiplePower;
+import me.dueris.originspaper.power.MultiplePower;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.registry.registries.OriginLayer;
@@ -233,7 +233,7 @@ public class PowerHolderComponent implements Listener {
 		}
 	}
 
-	public static boolean isInPhantomForm(@NotNull Player player) {
+	public static boolean isInPhantomForm(@NotNull Entity player) {
 		return player.getPersistentDataContainer().has(CraftNamespacedKey.fromString("originspaper:in-phantomform"))
 			? player.getPersistentDataContainer().get(CraftNamespacedKey.fromString("originspaper:in-phantomform"), PersistentDataType.BOOLEAN)
 			: false;

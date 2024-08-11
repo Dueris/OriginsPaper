@@ -1,8 +1,7 @@
 package me.dueris.originspaper;
 
-import me.dueris.originspaper.factory.CraftApoli;
-import me.dueris.originspaper.factory.powers.provider.OriginSimpleContainer;
-import me.dueris.originspaper.factory.powers.provider.PowerProvider;
+import me.dueris.originspaper.power.provider.OriginSimpleContainer;
+import me.dueris.originspaper.power.provider.PowerProvider;
 import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.minecraft.world.entity.player.Player;

@@ -135,6 +135,7 @@ public class CalioParser {
 		if (toBuild == null)
 			throw new RuntimeException("Unable to parse type for class '" + clz.getSimpleName() + "' and type value of '" + jsonSource.get("type").getAsString() + "'");
 		try {
+			if (!ReflectionUtils.hasMethod(toBuild, "buildDefiner", true)) throw new IllegalArgumentException("Class '" + toBuild.getSimpleName() + "' must have the method 'buildDefiner' but one was not found!");
 			definer = ReflectionUtils.invokeStaticMethod(toBuild, "buildDefiner");
 		} catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
 			throw new RuntimeException(e);
@@ -241,7 +242,9 @@ public class CalioParser {
 						}
 				}
 			} catch (Throwable throwable) {
-				throw new RuntimeException("Unable to compile from InstanceDefinition: '" + location.orElse("no_location_found") + "'", throwable);
+				LOGGER.error("Unable to compile '{}' from InstanceDefinition: '{}'", serializableTiedBoolean.object().asString(), location.orElse("no_location_found"));
+				LOGGER.error("JSON-ELEMENT: {}", jsonSource.get(key).toString());
+				throw new RuntimeException(throwable);
 			}
 		}
 		if (!compiledParams.isEmpty() && !compiledArguments.isEmpty()) {

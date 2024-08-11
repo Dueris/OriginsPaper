@@ -2,7 +2,7 @@ package me.dueris.originspaper.data.types;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import me.dueris.originspaper.factory.condition.ConditionFactory;
+import me.dueris.originspaper.condition.ConditionFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;

@@ -1,8 +1,8 @@
 package me.dueris.originspaper.integration;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.factory.CraftApoli;
 import me.dueris.originspaper.registry.registries.Origin;
 import me.dueris.originspaper.storage.OriginDataContainer;
 import me.dueris.originspaper.util.entity.PowerHolderComponent;
