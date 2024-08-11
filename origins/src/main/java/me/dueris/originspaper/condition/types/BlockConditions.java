@@ -15,7 +15,7 @@ public class BlockConditions {
 	public static void registerAll() {
 		MetaConditions.register(Registries.BLOCK_CONDITION, BlockConditions::register);
 		DistanceFromCoordinatesConditionRegistry.registerBlockCondition(BlockConditions::register);
-		Conditions.registerPackage(BlockConditions::register, "me.dueris.originspaper.factory.condition.types.block");
+		Conditions.registerPackage(BlockConditions::register, "me.dueris.originspaper.condition.types.block");
 	}
 
 	public static void register(@NotNull ConditionFactory<BlockInWorld> factory) {

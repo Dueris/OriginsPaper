@@ -33,8 +33,10 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -51,6 +53,7 @@ public class EdibleItemPower extends PowerType {
 	private final List<Modifier> consumingTimeModifiers;
 
 	private final NamespacedKey EDIBLE_ITEM_MODIFIED_KEY = CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("edible_item_modified"));
+	private final List<org.bukkit.entity.Player> tickedAlready = new ArrayList<>();
 
 	public EdibleItemPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
 						   ActionFactory<Entity> entityAction, ActionFactory<Tuple<Level, SlotAccess>> consumedItemAction, ActionFactory<Tuple<Level, SlotAccess>> resultItemAction, ConditionFactory<Tuple<Level, ItemStack>> itemCondition,
@@ -120,6 +123,7 @@ public class EdibleItemPower extends PowerType {
 		net.minecraft.world.entity.player.Player player = ((CraftPlayer) e.getPlayer()).getHandle();
 		ItemStack original = CraftItemStack.unwrap(e.getItem());
 		ItemStack result = original;
+		if (tickedAlready.contains(e.getPlayer())) return;
 		modifyCustomFood:
 		if (getPlayers().contains(player) && (itemCondition == null || itemCondition.test(new Tuple<>(player.level(), original)))) {
 			if (entityAction != null) {
@@ -151,6 +155,13 @@ public class EdibleItemPower extends PowerType {
 
 		e.setItem(result.getBukkitStack());
 		player.playSound(consumeSoundEvent);
+		tickedAlready.add(e.getPlayer());
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				tickedAlready.remove(e.getPlayer());
+			}
+		}.runTaskLater(OriginsPaper.getPlugin(), 1);
 	}
 
 	@EventHandler
@@ -158,12 +169,12 @@ public class EdibleItemPower extends PowerType {
 		org.bukkit.inventory.ItemStack stack = e.getPlayer().getInventory().getItem(e.getNewSlot());
 		if (stack != null) {
 			Player p = e.getPlayer();
-			if (getPlayers().contains(((CraftPlayer) p).getHandle()) && !stack.getItemMeta().getPersistentDataContainer().has(EDIBLE_ITEM_MODIFIED_KEY)) {
-				if (!itemCondition.test(new Tuple<>(((CraftPlayer) p).getHandle().level(), CraftItemStack.unwrap(stack))))
-					return;
-				if (!isActive(((CraftPlayer) p).getHandle())) return;
-				FoodComponent food = new CraftFoodComponent(foodComponent);
+			boolean isModified = !stack.getItemMeta().getPersistentDataContainer().has(EDIBLE_ITEM_MODIFIED_KEY);
+			boolean isValid = getPlayers().contains(((CraftPlayer) p).getHandle());
+			boolean conditions = !(!itemCondition.test(new Tuple<>(((CraftPlayer) p).getHandle().level(), CraftItemStack.unwrap(stack))) || !isActive(((CraftPlayer) p).getHandle()));
+			if (isValid && isModified && conditions) {
 				ItemMeta meta = stack.getItemMeta();
+				FoodComponent food = new CraftFoodComponent(foodComponent);
 				meta.getPersistentDataContainer().set(EDIBLE_ITEM_MODIFIED_KEY, PersistentDataType.BOOLEAN, true);
 				meta.setFood(food);
 				stack.setItemMeta(meta);
@@ -171,7 +182,7 @@ public class EdibleItemPower extends PowerType {
 				return;
 			}
 
-			if (stack.getItemMeta().getPersistentDataContainer().has(EDIBLE_ITEM_MODIFIED_KEY)) {
+			if (isModified && !(isValid || conditions)) {
 				ItemMeta meta = stack.getItemMeta();
 				meta.setFood(null);
 				meta.getPersistentDataContainer().remove(EDIBLE_ITEM_MODIFIED_KEY);

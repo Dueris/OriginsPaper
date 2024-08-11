@@ -29,7 +29,7 @@ public class ItemActions {
 		register(NothingAction.getFactory());
 		register(SideAction.getFactory(ApoliDataTypes.ITEM_ACTION, worldAndStack -> !worldAndStack.getA().isClientSide));
 
-		Actions.registerPackage(ItemActions::register, "me.dueris.originspaper.factory.action.types.item");
+		Actions.registerPackage(ItemActions::register, "me.dueris.originspaper.action.types.item");
 	}
 
 }

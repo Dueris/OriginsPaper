@@ -73,7 +73,7 @@ public class PowerType implements Listener {
 		List<Class<? extends PowerType>> holders = new ArrayList<>();
 
 		try {
-			ScanResult result = new ClassGraph().whitelistPackages("me.dueris.originspaper.factory.powers").enableClassInfo().scan();
+			ScanResult result = new ClassGraph().whitelistPackages("me.dueris.originspaper.power").enableClassInfo().scan();
 
 			try {
 				holders.addAll(

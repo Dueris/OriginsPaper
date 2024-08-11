@@ -1,10 +1,20 @@
 {
-  "type": "origins:freeze",
-  "condition": {
-    "type": "origins:biome",
-    "condition": {
-      "type": "origins:precipitation",
-      "precipitation": "snow"
+  "type": "origins:edible_item",
+  "item_condition": {
+    "type": "origins:ingredient",
+    "ingredient": {
+      "item": "minecraft:oak_log"
     }
+  },
+  "food_component": {
+    "hunger": 4,
+    "saturation": 1,
+    "always_edible": true,
+    "snack": false
+  },
+  "use_action": "eat",
+  "result_stack": {
+    "item": "minecraft:water_bucket",
+    "amount": 1
   }
 }

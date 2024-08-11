@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class BiEntityConditions implements Listener {
 	public static void registerAll() {
 		MetaConditions.register(Registries.BIENTITY_CONDITION, BiEntityConditions::register);
-		Conditions.registerPackage(BiEntityConditions::register, "me.dueris.originspaper.factory.condition.types.bientity");
+		Conditions.registerPackage(BiEntityConditions::register, "me.dueris.originspaper.condition.types.bientity");
 	}
 
 	public static void register(@NotNull ConditionFactory<Tuple<Entity, Entity>> factory) {

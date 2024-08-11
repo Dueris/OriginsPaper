@@ -27,7 +27,7 @@ public class BiEntityActions {
 		register(NothingAction.getFactory());
 		register(SideAction.getFactory(ApoliDataTypes.BIENTITY_ACTION, entities -> !entities.getA().level().isClientSide));
 
-		Actions.registerPackage(BiEntityActions::register, "me.dueris.originspaper.factory.action.types.bientity");
+		Actions.registerPackage(BiEntityActions::register, "me.dueris.originspaper.action.types.bientity");
 	}
 
 }

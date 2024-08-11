@@ -31,7 +31,7 @@ public class BlockActions {
 		register(NothingAction.getFactory());
 		register(SideAction.getFactory(ApoliDataTypes.BLOCK_ACTION, block -> !block.getLeft().isClientSide));
 
-		Actions.registerPackage(BlockActions::register, "me.dueris.originspaper.factory.action.types.block");
+		Actions.registerPackage(BlockActions::register, "me.dueris.originspaper.action.types.block");
 	}
 
 }

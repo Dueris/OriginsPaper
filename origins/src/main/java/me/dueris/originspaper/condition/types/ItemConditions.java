@@ -14,7 +14,7 @@ public class ItemConditions {
 
 	public static void registerAll() {
 		MetaConditions.register(Registries.ITEM_CONDITION, ItemConditions::register);
-		Conditions.registerPackage(ItemConditions::register, "me.dueris.originspaper.factory.condition.types.item");
+		Conditions.registerPackage(ItemConditions::register, "me.dueris.originspaper.condition.types.item");
 	}
 
 	public static void register(@NotNull ConditionFactory<Tuple<Level, ItemStack>> factory) {

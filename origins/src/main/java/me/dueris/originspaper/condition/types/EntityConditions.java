@@ -88,7 +88,7 @@ public class EntityConditions {
 			}
 		));
 
-		Conditions.registerPackage(EntityConditions::register, "me.dueris.originspaper.factory.condition.types.entity");
+		Conditions.registerPackage(EntityConditions::register, "me.dueris.originspaper.condition.types.entity");
 	}
 
 	public static void register(@NotNull ConditionFactory<net.minecraft.world.entity.Entity> factory) {

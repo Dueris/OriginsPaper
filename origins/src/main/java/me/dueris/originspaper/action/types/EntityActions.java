@@ -92,7 +92,7 @@ public class EntityActions {
 					}
 				}
 			}));
-		Actions.registerPackage(EntityActions::register, "me.dueris.originspaper.factory.action.types.entity");
+		Actions.registerPackage(EntityActions::register, "me.dueris.originspaper.action.types.entity");
 	}
 
 }
