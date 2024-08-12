@@ -4,8 +4,8 @@ import java.util.Locale;
 
 public class DataException extends RuntimeException {
 	private final Phase phase;
-	private String path;
 	private final Exception exception;
+	private String path;
 
 	public DataException(Phase phase, String path, Exception exception) {
 		super("Error " + phase.name().toLowerCase(Locale.ROOT) + " data field");

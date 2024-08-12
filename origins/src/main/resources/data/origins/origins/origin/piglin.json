@@ -10,7 +10,7 @@
     "origins:dash"
   ],
   "icon": {
-    "item": "minecraft:piglin_head"
+    "id": "minecraft:piglin_head"
   },
   "order": 0,
   "impact": 2

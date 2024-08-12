@@ -6,7 +6,7 @@
       {
         "type": "origins:give",
         "stack": {
-          "item": "minecraft:egg"
+          "id": "minecraft:egg"
         }
       },
       {

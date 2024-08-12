@@ -5,16 +5,16 @@
   "duration_per_stack": 15,
   "effects": [
     {
-      "effect": "minecraft:slow_falling",
+      "id": "minecraft:slow_falling",
       "amplifier": 0,
-      "is_ambient": true,
+      "ambient": true,
       "show_particles": false,
       "show_icon": false
     },
     {
-      "effect": "minecraft:jump_boost",
+      "id": "minecraft:jump_boost",
       "amplifier": 2,
-      "is_ambient": true,
+      "ambient": true,
       "show_particles": false,
       "show_icon": false
     }

@@ -5,7 +5,7 @@
     "action": {
       "type": "origins:give",
       "stack": {
-        "item": "minecraft:rabbit_foot",
+        "id": "minecraft:rabbit_foot",
         "amount": 1
       }
     },

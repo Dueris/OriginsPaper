@@ -8,13 +8,23 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.codecs.PrimitiveCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.data.exceptions.DataException;
+import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
 import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
-import io.github.dueris.calio.util.*;
+import io.github.dueris.calio.util.ArgumentWrapper;
+import io.github.dueris.calio.util.FilterableWeightedList;
+import io.github.dueris.calio.util.StatusEffectChance;
+import io.github.dueris.calio.util.Util;
 import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minecraft.commands.arguments.NbtPathArgument;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.Direction;
@@ -51,6 +61,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.food.FoodProperties;
@@ -61,6 +72,7 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Explosion;
@@ -81,7 +93,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.stream.Stream;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static net.minecraft.util.GsonHelper.getAsDouble;
 
@@ -97,48 +111,40 @@ import static net.minecraft.util.GsonHelper.getAsDouble;
  */
 @SuppressWarnings({"unused", "unchecked"})
 public class SerializableDataTypes {
-	public static final SerializableDataBuilder<String> STRING = SerializableDataBuilder.of(
-		JsonElement::getAsString, String.class
-	);
-	public static final SerializableDataBuilder<Boolean> BOOLEAN = SerializableDataBuilder.of(
-		JsonElement::getAsBoolean, boolean.class
-	);
-	public static final SerializableDataBuilder<Integer> INT = SerializableDataBuilder.of(
-		JsonElement::getAsInt, int.class
-	);
-	public static final SerializableDataBuilder<Float> FLOAT = SerializableDataBuilder.of(
-		JsonElement::getAsFloat, float.class
-	);
-	public static final SerializableDataBuilder<Double> DOUBLE = SerializableDataBuilder.of(
-		JsonElement::getAsDouble, double.class
-	);
-	public static final SerializableDataBuilder<Integer> POSITIVE_INT = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			int raw = INT.deserialize(jsonElement);
-			if (raw < 0) {
-				throw new IllegalArgumentException("Value must be greater than 0! Current value: " + raw);
-			}
-			return raw;
-		}, int.class
-	);
-	public static final SerializableDataBuilder<Float> POSITIVE_FLOAT = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			float raw = FLOAT.deserialize(jsonElement);
-			if (raw < 0) {
-				throw new IllegalArgumentException("Value must be greater than 0! Current value: " + raw);
-			}
-			return raw;
-		}, float.class
-	);
-	public static final SerializableDataBuilder<Double> POSITIVE_DOUBLE = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			double raw = DOUBLE.deserialize(jsonElement);
-			if (raw < 0) {
-				throw new IllegalArgumentException("Value must be greater than 0! Current value: " + raw);
-			}
-			return raw;
-		}, double.class
-	);
+	public static final SerializableDataBuilder<Integer> INT = SerializableDataBuilder.of(Codec.INT, int.class);
+	public static final SerializableDataBuilder<List<Integer>> INTS = SerializableDataBuilder.of(INT.listOf());
+	public static final SerializableDataBuilder<Integer> POSITIVE_INT = boundNumber(INT, 1, Integer.MAX_VALUE);
+	public static final SerializableDataBuilder<List<Integer>> POSITIVE_INTS = SerializableDataBuilder.of(POSITIVE_INT.listOf());
+	public static final SerializableDataBuilder<Integer> NON_NEGATIVE_INT = boundNumber(INT, 0, Integer.MAX_VALUE);
+	public static final SerializableDataBuilder<List<Integer>> NON_NEGATIVE_INTS = SerializableDataBuilder.of(NON_NEGATIVE_INT.listOf());
+	public static final SerializableDataBuilder<Boolean> BOOLEAN = SerializableDataBuilder.of(Codec.BOOL, boolean.class);
+	public static final SerializableDataBuilder<Float> FLOAT = SerializableDataBuilder.of(Codec.FLOAT, float.class);
+	public static final SerializableDataBuilder<List<Float>> FLOATS = SerializableDataBuilder.of(FLOAT.listOf());
+	public static final SerializableDataBuilder<Float> POSITIVE_FLOAT = boundNumber(FLOAT, 1F, Float.MAX_VALUE);
+	public static final SerializableDataBuilder<List<Float>> POSITIVE_FLOATS = SerializableDataBuilder.of(POSITIVE_FLOAT.listOf());
+	public static final SerializableDataBuilder<Float> NON_NEGATIVE_FLOAT = boundNumber(FLOAT, 0F, Float.MAX_VALUE);
+	public static final SerializableDataBuilder<List<Float>> NON_NEGATIVE_FLOATS = SerializableDataBuilder.of(NON_NEGATIVE_FLOAT.listOf());
+	public static final SerializableDataBuilder<Double> DOUBLE = SerializableDataBuilder.of(Codec.DOUBLE, double.class);
+	public static final SerializableDataBuilder<List<Double>> DOUBLES = SerializableDataBuilder.of(DOUBLE.listOf());
+	public static final SerializableDataBuilder<Double> POSITIVE_DOUBLE = boundNumber(DOUBLE, 1D, Double.MAX_VALUE);
+	public static final SerializableDataBuilder<List<Double>> POSITIVE_DOUBLES = SerializableDataBuilder.of(POSITIVE_DOUBLE.listOf());
+	public static final SerializableDataBuilder<Double> NON_NEGATIVE_DOUBLE = boundNumber(DOUBLE, 0D, Double.MAX_VALUE);
+	public static final SerializableDataBuilder<List<Double>> NON_NEGATIVE_DOUBLES = SerializableDataBuilder.of(NON_NEGATIVE_DOUBLE.listOf());
+	public static final SerializableDataBuilder<String> STRING = SerializableDataBuilder.of(Codec.STRING, String.class);
+	public static final SerializableDataBuilder<List<String>> STRINGS = SerializableDataBuilder.of(STRING.listOf());
+	public static final SerializableDataBuilder<Number> NUMBER = SerializableDataBuilder.of(new PrimitiveCodec<Number>() {
+
+		@Override
+		public <T> DataResult<Number> read(DynamicOps<T> ops, T input) {
+			return ops.getNumberValue(input);
+		}
+
+		@Override
+		public <T> T write(DynamicOps<T> ops, Number value) {
+			return ops.createNumeric(value);
+		}
+
+	}, Number.class);
 	public static final SerializableDataBuilder<JsonObject> JSON_OBJECT = SerializableDataBuilder.of(
 		JsonElement::getAsJsonObject, JsonObject.class
 	);
@@ -157,10 +163,10 @@ public class SerializableDataTypes {
 		}, Vec3.class
 	);
 	public static final SerializableDataBuilder<ResourceLocation> IDENTIFIER = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			return ResourceLocation.read(jsonElement.getAsString()).getOrThrow();
-		}, ResourceLocation.class
+		Codec.STRING.comapFlatMap(ResourceLocation::read, ResourceLocation::toString),
+		ResourceLocation.class
 	);
+	public static final SerializableDataBuilder<List<ResourceLocation>> IDENTIFIERS = SerializableDataBuilder.of(IDENTIFIER.listOf());
 	public static final SerializableDataBuilder<ResourceKey<Enchantment>> ENCHANTMENT = registryKey(Registries.ENCHANTMENT);
 	public static final SerializableDataBuilder<ResourceKey<Level>> DIMENSION = registryKey(Registries.DIMENSION);
 	public static final SerializableDataBuilder<Attribute> ATTRIBUTE = registry(Attribute.class, BuiltInRegistries.ATTRIBUTE);
@@ -172,30 +178,58 @@ public class SerializableDataTypes {
 				JsonObject jo = jsonElement.getAsJsonObject();
 				AttributeModifier.Operation operation = MODIFIER_OPERATION.deserialize(jo.get("operation"));
 				ResourceLocation identifier = IDENTIFIER.deserialize(jo.get("id"));
-				double value = DOUBLE.deserialize(jo.get("value"));
+				double value = DOUBLE.deserialize(jo.get("amount"));
 				return new AttributeModifier(identifier, value, operation);
 			} else {
 				throw new JsonSyntaxException("Expected json object when creating AttributeModifier instance");
 			}
 		}, AttributeModifier.class
 	);
+	public static final SerializableDataBuilder<DataComponentPatch> COMPONENT_CHANGES = SerializableDataBuilder.of(DataComponentPatch.CODEC, DataComponentPatch.class);
 	public static final SerializableDataBuilder<Item> ITEM = registry(Item.class, BuiltInRegistries.ITEM);
+	public static final SerializableDataBuilder<Holder<Item>> ITEM_ENTRY = registryEntry(BuiltInRegistries.ITEM);
+	public static final SerializableDataBuilder<ItemStack> UNCOUNTED_ITEM_STACK = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			if (!(jsonElement instanceof JsonObject jo)) {
+				return new ItemStack(ITEM_ENTRY.deserialize(jsonElement));
+			}
+			return new ItemStack(
+				ITEM_ENTRY.deserialize(jo.get("id")), 1,
+				jo.has("components") ? COMPONENT_CHANGES.deserialize(jo.get("components")) : DataComponentPatch.EMPTY
+			);
+		}, ItemStack.class
+	);
+	public static final SerializableDataBuilder<ItemStack> ITEM_STACK = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			ItemStack stack = UNCOUNTED_ITEM_STACK.deserialize(jsonElement);
+			stack.setCount(
+				(jsonElement instanceof JsonObject jo) ?
+					(jo.has("count") ? boundNumber(INT, 1, 99).deserialize(jo.get("count")) : 1) : 1
+			);
+			return stack;
+		}, ItemStack.class
+	);
 	public static final SerializableDataBuilder<MobEffect> STATUS_EFFECT = registry(MobEffect.class, BuiltInRegistries.MOB_EFFECT);
 	public static final SerializableDataBuilder<Holder<MobEffect>> STATUS_EFFECT_ENTRY = registryEntry(BuiltInRegistries.MOB_EFFECT);
 	public static final SerializableDataBuilder<MobEffectInstance> STATUS_EFFECT_INSTANCE = SerializableDataBuilder.of(
 		(jsonElement) -> {
-			if (jsonElement.isJsonObject()) {
-				JsonObject jo = jsonElement.getAsJsonObject();
-				Holder<MobEffect> effectHolder = STATUS_EFFECT_ENTRY.deserialize(jo.get("effect"));
-				int duration = jo.has("duration") ? INT.deserialize(jo.get("duration")) : 100;
-				int amplifier = jo.has("amplifier") ? INT.deserialize(jo.get("amplifier")) : 0;
-				boolean isAmbient = jo.has("is_ambient") ? BOOLEAN.deserialize(jo.get("is_ambient")) : false;
-				boolean showParticles = jo.has("show_particles") ? BOOLEAN.deserialize(jo.get("show_particles")) : true;
-				boolean showIcon = jo.has("show_icon") ? BOOLEAN.deserialize(jo.get("show_icon")) : true;
-				return new MobEffectInstance(effectHolder, duration, amplifier, isAmbient, showParticles, showIcon);
-			} else {
-				throw new JsonSyntaxException("StatusEffectInstance must be a json object!");
-			}
+			if (!(jsonElement instanceof JsonObject jo)) throw new JsonSyntaxException("StatusEffectInstance should be a JsonObject!");
+			DeserializedFactoryJson data = SerializableDataBuilder.compound(
+				InstanceDefiner.instanceDefiner()
+					.add("id", STATUS_EFFECT_ENTRY)
+					.add("duration", INT, 100)
+					.add("amplifier", INT, 0)
+					.add("ambient", BOOLEAN, false)
+					.add("show_particles", BOOLEAN, true)
+					.add("show_icon", BOOLEAN, true), jo, MobEffectInstance.class
+			);
+			return new MobEffectInstance(
+				data.get("id"),
+				data.getInt("duration"),
+				data.getInt("amplifier"),
+				data.getBoolean("ambient"),
+				data.getBoolean("show_particles"),
+				data.getBoolean("show_icon"));
 		}, MobEffectInstance.class
 	);
 	public static final SerializableDataBuilder<StatusEffectChance> STATUS_EFFECT_CHANCE = SerializableDataBuilder.of(
@@ -213,34 +247,54 @@ public class SerializableDataTypes {
 	public static final SerializableDataBuilder<TagKey<EntityType<?>>> ENTITY_TAG = tag(Registries.ENTITY_TYPE);
 	public static final SerializableDataBuilder<Ingredient> INGREDIENT = SerializableDataBuilder.of(
 		(jsonElement) -> {
+			BiConsumer<JsonObject, List<Ingredient.Value>> initValues = (object, entries) -> {
+				if (object.has("item")) {
+					entries.add(
+						new Ingredient.ItemValue(
+							MinecraftServer.getServer().registryAccess().registry(Registries.ITEM).get()
+								.get(ResourceLocation.parse(object.get("item").getAsString()))
+								.getDefaultInstance()
+						)
+					);
+				}
+
+				if (object.has("tag")) {
+					try {
+						Class<?> tagValueClass = Class.forName("net.minecraft.world.item.crafting.Ingredient$TagValue");
+						Constructor<?> constructor = tagValueClass.getDeclaredConstructor(TagKey.class);
+						constructor.setAccessible(true);
+						Object tagValueInst = constructor.newInstance(TagKey.create(Registries.ITEM, ResourceLocation.parse(object.get("tag").getAsString())));
+						entries.add((Ingredient.Value) tagValueInst);
+					} catch (InvocationTargetException | NoSuchMethodException | InstantiationException |
+							 IllegalAccessException | ClassNotFoundException var5) {
+						throw new RuntimeException(var5);
+					}
+				}
+			};
 			List<Ingredient.Value> entries = new ArrayList<>();
 			if (jsonElement.isJsonObject()) {
-				initValues(jsonElement.getAsJsonObject(), entries);
+				initValues.accept(jsonElement.getAsJsonObject(), entries);
 			} else if (jsonElement.isJsonArray()) {
 				JsonArray array = jsonElement.getAsJsonArray();
-				array.asList().stream().map(JsonElement::getAsJsonObject).forEach(object -> initValues(object, entries));
+				array.asList().stream().map(JsonElement::getAsJsonObject).forEach(object -> initValues.accept(object, entries));
 			}
 
-			return fromValues(entries.stream());
+			Ingredient ingredient = new Ingredient(entries.stream());
+			return ingredient.isEmpty() ? Ingredient.EMPTY : ingredient;
 		}, Ingredient.class
 	);
-	public static final SerializableDataBuilder<Ingredient> VANILLA_INGREDIENT = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			return Ingredient.CODEC_NONEMPTY
-				.parse(JsonOps.INSTANCE, jsonElement)
-				.mapError(err -> "Couldn't deserialize ingredient from JSON: " + err)
-				.getOrThrow();
-		}, Ingredient.class
-	);
+	public static final SerializableDataBuilder<Ingredient> VANILLA_INGREDIENT = SerializableDataBuilder.of(Ingredient.CODEC_NONEMPTY, Ingredient.class);
 	public static final SerializableDataBuilder<Block> BLOCK = registry(Block.class, BuiltInRegistries.BLOCK);
-	public static final SerializableDataBuilder<BlockState> BLOCK_STATE = SerializableDataBuilder.of(
-		(jsonElement) -> {
+	public static final SerializableDataBuilder<BlockState> BLOCK_STATE = SerializableDataBuilder.of(STRING.comapFlatMap(
+		str -> {
+
 			try {
-				return BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), STRING.deserialize(jsonElement), false).blockState();
-			} catch (CommandSyntaxException e) {
-				throw new JsonParseException(e);
+				return DataResult.success(BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), str, false).blockState());
+			} catch (Exception e) {
+				return DataResult.error(e::getMessage);
 			}
-		}, BlockState.class
+
+		}, BlockStateParser::serialize), BlockState.class
 	);
 	public static final SerializableDataBuilder<ResourceKey<DamageType>> DAMAGE_TYPE = registryKey(Registries.DAMAGE_TYPE);
 	public static final SerializableDataBuilder<TagKey<EntityType<?>>> ENTITY_GROUP_TAG = mapped(Util.castClass(TagKey.class), HashBiMap.create(ImmutableMap.of(
@@ -250,20 +304,13 @@ public class SerializableDataTypes {
 		"aquatic", EntityTypeTags.AQUATIC
 	)));
 	public static final SerializableDataBuilder<EquipmentSlot> EQUIPMENT_SLOT = enumValue(EquipmentSlot.class);
-	public static final SerializableDataBuilder<SoundEvent> SOUND_EVENT = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			return SoundEvent.createVariableRangeEvent(IDENTIFIER.deserialize(jsonElement));
-		}, SoundEvent.class
-	);
+	public static final SerializableDataBuilder<EnumSet<EquipmentSlot>> EQUIPMENT_SLOT_SET = enumSet(EquipmentSlot.class, EQUIPMENT_SLOT);
+	public static final SerializableDataBuilder<EquipmentSlotGroup> ATTRIBUTE_MODIFIER_SLOT = enumValue(EquipmentSlotGroup.class);
+	public static final SerializableDataBuilder<EnumSet<EquipmentSlotGroup>> ATTRIBUTE_MODIFIER_SLOT_SET = enumSet(EquipmentSlotGroup.class, ATTRIBUTE_MODIFIER_SLOT);
+	public static final SerializableDataBuilder<SoundEvent> SOUND_EVENT = SerializableDataBuilder.of(IDENTIFIER.xmap(SoundEvent::createVariableRangeEvent, SoundEvent::getLocation), SoundEvent.class);
 	public static final SerializableDataBuilder<EntityType<?>> ENTITY_TYPE = registry(Util.castClass(EntityType.class), BuiltInRegistries.ENTITY_TYPE);
 	public static final SerializableDataBuilder<ParticleType<?>> PARTICLE_TYPE = registry(Util.castClass(ParticleType.class), BuiltInRegistries.PARTICLE_TYPE);
-	public static final SerializableDataBuilder<CompoundTag> NBT = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			return Codec.withAlternative(CompoundTag.CODEC, TagParser.LENIENT_CODEC)
-				.parse(JsonOps.INSTANCE, jsonElement)
-				.getOrThrow();
-		}, CompoundTag.class
-	);
+	public static final SerializableDataBuilder<CompoundTag> NBT = SerializableDataBuilder.of(Codec.withAlternative(CompoundTag.CODEC, TagParser.LENIENT_CODEC), CompoundTag.class);
 	public static final SerializableDataBuilder<ParticleOptions> PARTICLE_EFFECT = SerializableDataBuilder.of(
 		(jsonElement) -> {
 			ParticleType<? extends ParticleOptions> particleType;
@@ -309,106 +356,52 @@ public class SerializableDataTypes {
 		}, ParticleOptions.class
 	);
 	public static final StreamCodec<ByteBuf, CompoundTag> UNLIMITED_NBT_COMPOUND_PACKET_CODEC = ByteBufCodecs.compoundTagCodec(NbtAccounter::unlimitedHeap);
-	public static final SerializableDataBuilder<DataComponentPatch> COMPONENT_CHANGES = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			return DataComponentPatch.CODEC
-				.parse(JsonOps.INSTANCE, jsonElement)
-				.getOrThrow(JsonParseException::new);
-		}, DataComponentPatch.class
-	);
-	public static final SerializableDataBuilder<ItemStack> ITEM_STACK = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			if (jsonElement.isJsonObject()) {
-				JsonObject jo = jsonElement.getAsJsonObject();
-				Item item = ITEM.deserialize(jo.get("item"));
-				ItemStack stack = item.getDefaultInstance();
-
-				stack.setCount(jo.has("amount") ? INT.deserialize(jo.get("amount")) : 1);
-				stack.applyComponentsAndValidate(jo.has("components") ? COMPONENT_CHANGES.deserialize(jo.get("components")) : DataComponentPatch.EMPTY);
-
-				return stack;
-			} else if (jsonElement.isJsonPrimitive() && jsonElement.getAsJsonPrimitive().isString()) {
-				return new ItemStack(ITEM.deserialize(jsonElement));
-			}
-			throw new JsonSyntaxException("Unable to build ItemStack from provided object!");
-		}, ItemStack.class
-	);
-	public static final SerializableDataBuilder<FoodProperties.PossibleEffect> FOOD_STATUS_EFFECT_ENTRY = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			return FoodProperties.PossibleEffect.CODEC
-				.parse(JsonOps.INSTANCE, jsonElement)
-				.getOrThrow(JsonParseException::new);
-		}, FoodProperties.PossibleEffect.class
-	);
+	public static final SerializableDataBuilder<FoodProperties.PossibleEffect> FOOD_STATUS_EFFECT_ENTRY = SerializableDataBuilder.of(FoodProperties.PossibleEffect.CODEC, FoodProperties.PossibleEffect.class);
+	public static final SerializableDataBuilder<List<FoodProperties.PossibleEffect>> FOOD_STATUS_EFFECT_ENTRIES = SerializableDataBuilder.of(FOOD_STATUS_EFFECT_ENTRY.listOf());
 	public static final SerializableDataBuilder<FoodProperties> FOOD_COMPONENT = SerializableDataBuilder.of(
 		(jsonElement) -> {
-			JsonObject jo = jsonElement.getAsJsonObject();
-			int hunger = INT.deserialize(jo.get("hunger"));
-			float saturation = FLOAT.deserialize(jo.get("saturation"));
-			boolean alwaysEdible = jo.has("always_edible") ? BOOLEAN.deserialize(jo.get("always_edible")) : false;
-			boolean snack = jo.has("snack") ? BOOLEAN.deserialize(jo.get("snack")) : false;
-			FoodProperties.PossibleEffect effect = jo.has("effect") ? FOOD_STATUS_EFFECT_ENTRY.deserialize(jo.get("effect")) : null;
-			Set<FoodProperties.PossibleEffect> effects = jo.has("effects") ? set(FOOD_STATUS_EFFECT_ENTRY).deserialize(jo.get("effects")) : null;
-			ItemStack usingConvertsTo = jo.has("using_converts_to") ? ITEM_STACK.deserialize(jo.get("using_converts_to")) : null;
+			if (!(jsonElement instanceof JsonObject jo))
+				throw new JsonSyntaxException("Food Properties should be a JsonObject!");
+			DeserializedFactoryJson data = SerializableDataBuilder.compound(
+				InstanceDefiner.instanceDefiner()
+					.add("nutrition", NON_NEGATIVE_INT)
+					.add("saturation", FLOAT)
+					.add("can_always_eat", BOOLEAN, false)
+					.add("eat_seconds", POSITIVE_FLOAT, 1.6F)
+					.addSupplied("using_converts_to", optional(UNCOUNTED_ITEM_STACK), Optional::empty)
+					.add("effect", FOOD_STATUS_EFFECT_ENTRY, null)
+					.add("effects", FOOD_STATUS_EFFECT_ENTRIES, null),
+				jo, FoodProperties.class
+			);
 
-			FoodProperties.Builder builder = new FoodProperties.Builder()
-				.nutrition(hunger)
-				.saturationModifier(saturation);
+			List<FoodProperties.PossibleEffect> effects = new ArrayList<>();
 
-			if (alwaysEdible) {
-				builder.alwaysEdible();
-			}
+			data.<FoodProperties.PossibleEffect>ifPresent("effect", effects::add);
+			data.<List<FoodProperties.PossibleEffect>>ifPresent("effects", effects::addAll);
 
-			if (snack) {
-				builder.fast();
-			}
-
-			if (effect != null) {
-				builder.effect(effect.effect(), effect.probability());
-			}
-
-			if (effects != null) {
-				for (FoodProperties.PossibleEffect possibleEffect : effects) {
-					builder.effect(possibleEffect.effect(), possibleEffect.probability());
-				}
-			}
-
-			if (usingConvertsTo != null) {
-				try {
-					ReflectionUtils.setFieldValue(builder, ReflectionUtils.getField(FoodProperties.Builder.class, "usingConvertsTo").orElseThrow(), Optional.of(usingConvertsTo));
-				} catch (IllegalAccessException e) {
-					throw new RuntimeException(e);
-				}
-			}
-
-			return builder.build();
+			return new FoodProperties(
+				data.getInt("nutrition"),
+				data.getFloat("saturation"),
+				data.getBoolean("can_always_eat"),
+				data.getFloat("eat_seconds"),
+				data.get("using_converts_to"),
+				effects
+			);
 		}, FoodProperties.class
 	);
-	public static final SerializableDataBuilder<Component> TEXT = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			return ComponentSerialization.CODEC
-				.parse(JsonOps.INSTANCE, jsonElement)
-				.getOrThrow(JsonParseException::new);
-		}, Component.class
-	);
+	public static final SerializableDataBuilder<Component> TEXT = SerializableDataBuilder.of(ComponentSerialization.CODEC, Component.class);
 	public static final SerializableDataBuilder<net.kyori.adventure.text.Component> KYORI_COMPONENT = SerializableDataBuilder.of(
 		(jsonElement) -> {
-			return net.kyori.adventure.text.Component.text(TEXT.deserialize(jsonElement).getString());
+			return GsonComponentSerializer.gson().deserializeFromTree(jsonElement);
 		}, net.kyori.adventure.text.Component.class
 	);
 	public static final SerializableDataBuilder<RecipeHolder<? extends Recipe<?>>> RECIPE = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			if (!(jsonElement instanceof JsonObject jsonObject)) {
-				throw new JsonSyntaxException("Expected recipe to be a JSON object.");
-			}
-
-			ResourceLocation id = IDENTIFIER.deserialize(GsonHelper.getNonNull(jsonObject, "id"));
-			Recipe<?> recipe = Recipe.CODEC
-				.parse(JsonOps.INSTANCE, jsonObject)
-				.getOrThrow(JsonParseException::new);
-
-			return new RecipeHolder<>(id, recipe);
-		}, RecipeHolder.class
+		Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
+			SerializableDataTypes.IDENTIFIER.fieldOf("id").forGetter(RecipeHolder::id),
+			BuiltInRegistries.RECIPE_SERIALIZER
+				.byNameCodec()
+				.dispatchMap(Recipe::getSerializer, RecipeSerializer::codec).forGetter(RecipeHolder::value)
+		).apply(instance, RecipeHolder::new))), RecipeHolder.class
 	);
 	public static final SerializableDataBuilder<GameEvent> GAME_EVENT = registry(GameEvent.class, BuiltInRegistries.GAME_EVENT);
 	public static final SerializableDataBuilder<Holder<GameEvent>> GAME_EVENT_ENTRY = registryEntry(BuiltInRegistries.GAME_EVENT);
@@ -421,13 +414,18 @@ public class SerializableDataTypes {
 	public static final SerializableDataBuilder<Direction> DIRECTION = enumValue(Direction.class);
 	public static final SerializableDataBuilder<EnumSet<Direction>> DIRECTION_SET = enumSet(Direction.class, DIRECTION);
 	public static final SerializableDataBuilder<Class<?>> CLASS = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			try {
-				return Class.forName(STRING.deserialize(jsonElement));
-			} catch (ClassNotFoundException e) {
-				throw new RuntimeException(e);
-			}
-		}, Class.class
+		STRING.comapFlatMap(
+			str -> {
+
+				try {
+					return DataResult.success(Class.forName(str));
+				} catch (ClassNotFoundException ignored) {
+					return DataResult.error(() -> "Specified class does not exist: \"" + str + "\"");
+				}
+
+			},
+			Class::getName
+		), Class.class
 	);
 	public static final SerializableDataBuilder<ClipContext.Block> SHAPE_TYPE = enumValue(ClipContext.Block.class);
 	public static final SerializableDataBuilder<ClipContext.Fluid> FLUID_HANDLING = enumValue(ClipContext.Fluid.class);
@@ -449,18 +447,11 @@ public class SerializableDataTypes {
 		}, Stat.class
 	);
 	public static final SerializableDataBuilder<TagKey<Biome>> BIOME_TAG = tag(Registries.BIOME);
-	public static final SerializableDataBuilder<PotionContents> POTION_CONTENTS_COMPONENT = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			return PotionContents.CODEC
-				.parse(JsonOps.INSTANCE, jsonElement)
-				.getOrThrow(JsonParseException::new);
-		}, PotionContents.class
-	);
+	public static final SerializableDataBuilder<PotionContents> POTION_CONTENTS_COMPONENT = SerializableDataBuilder.of(PotionContents.CODEC, PotionContents.class);
 	public static final SerializableDataBuilder<ResourceKey<LootItemFunction>> ITEM_MODIFIER = registryKey(Registries.ITEM_MODIFIER);
 	public static final SerializableDataBuilder<ResourceKey<LootItemCondition>> PREDICATE = registryKey(Registries.PREDICATE);
 	private static final Gson GSON = new Gson();
 
-	@Contract(value = "_ -> new", pure = true)
 	public static <T> @NotNull SerializableDataBuilder<Set<T>> set(SerializableDataBuilder<T> singular) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
@@ -485,7 +476,6 @@ public class SerializableDataTypes {
 		);
 	}
 
-	@Contract("_, _ -> new")
 	public static <T extends Enum<T>> @NotNull SerializableDataBuilder<EnumSet<T>> enumSet(Class<T> enumClass, SerializableDataBuilder<T> enumDataType) {
 		return SerializableDataBuilder.of(
 			(json) -> {
@@ -506,7 +496,6 @@ public class SerializableDataTypes {
 			}, Util.castClass(EnumSet.class));
 	}
 
-	@Contract(value = "_ -> new", pure = true)
 	public static <T> @NotNull SerializableDataBuilder<List<T>> list(SerializableDataBuilder<T> singular) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
@@ -555,7 +544,6 @@ public class SerializableDataTypes {
 		);
 	}
 
-	@Contract(value = "_ -> new", pure = true)
 	public static <T> @NotNull SerializableDataBuilder<ResourceKey<T>> registryKey(ResourceKey<Registry<T>> registryRef) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> ResourceKey.create(registryRef, IDENTIFIER.deserialize(jsonElement)),
@@ -597,7 +585,6 @@ public class SerializableDataTypes {
 		);
 	}
 
-	@Contract(value = "_ -> new", pure = true)
 	public static <T> @NotNull SerializableDataBuilder<Holder<T>> registryEntry(Registry<T> registry) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
@@ -608,12 +595,10 @@ public class SerializableDataTypes {
 		);
 	}
 
-	@Contract(value = "_ -> new", pure = true)
 	public static <T extends Enum<T>> @NotNull SerializableDataBuilder<T> enumValue(Class<T> dataClass) {
 		return enumValue(dataClass, null);
 	}
 
-	@Contract(value = "_, _ -> new", pure = true)
 	public static <T extends Enum<T>> @NotNull SerializableDataBuilder<T> enumValue(Class<T> dataClass, HashMap<String, T> additionalMap) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
@@ -664,7 +649,6 @@ public class SerializableDataTypes {
 		);
 	}
 
-	@Contract(value = "_ -> new", pure = true)
 	public static <T> @NotNull SerializableDataBuilder<TagKey<T>> tag(ResourceKey<? extends Registry<T>> registryRef) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
@@ -673,7 +657,6 @@ public class SerializableDataTypes {
 		);
 	}
 
-	@Contract(value = "_, _ -> new", pure = true)
 	public static <T> @NotNull SerializableDataBuilder<T> mapped(Class<T> dataClass, BiMap<String, T> map) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
@@ -696,7 +679,6 @@ public class SerializableDataTypes {
 		);
 	}
 
-	@Contract(value = "_ -> new", pure = true)
 	public static <T, U extends ArgumentType<T>> @NotNull SerializableDataBuilder<ArgumentWrapper<T>> argumentType(U argumentType) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
@@ -711,7 +693,6 @@ public class SerializableDataTypes {
 		);
 	}
 
-	@Contract("_ -> new")
 	public static <T> @NotNull SerializableDataBuilder<FilterableWeightedList<T>> weightedList(SerializableDataBuilder<T> singleDataType) {
 		return SerializableDataBuilder.of((jsonElement) -> {
 			FilterableWeightedList<T> list = new FilterableWeightedList<>();
@@ -735,34 +716,28 @@ public class SerializableDataTypes {
 		}, Util.castClass(FilterableWeightedList.class));
 	}
 
-	private static void initValues(@NotNull JsonObject object, List<Ingredient.Value> entries) {
-		if (object.has("item")) {
-			entries.add(
-				new Ingredient.ItemValue(
-					MinecraftServer.getServer().registryAccess().registry(Registries.ITEM).get()
-						.get(ResourceLocation.parse(object.get("item").getAsString()))
-						.getDefaultInstance()
-				)
-			);
-		}
-
-		if (object.has("tag")) {
-			try {
-				Class<?> tagValueClass = Class.forName("net.minecraft.world.item.crafting.Ingredient$TagValue");
-				Constructor<?> constructor = tagValueClass.getDeclaredConstructor(TagKey.class);
-				constructor.setAccessible(true);
-				Object tagValueInst = constructor.newInstance(TagKey.create(Registries.ITEM, ResourceLocation.parse(object.get("tag").getAsString())));
-				entries.add((Ingredient.Value) tagValueInst);
-			} catch (InvocationTargetException | NoSuchMethodException | InstantiationException |
-					 IllegalAccessException | ClassNotFoundException var5) {
-				throw new RuntimeException(var5);
-			}
-		}
+	public static <N extends Number & Comparable<N>> SerializableDataBuilder<N> boundNumber(SerializableDataBuilder<N> numberDataType, N min, N max) {
+		return boundNumber(numberDataType,
+			min, (value, _min) -> "Expected value to be at least " + _min + "! (current value: " + value + ")",
+			max, (value, _max) -> "Expected value to be at most " + _max + "! (current value: " + value + ")"
+		);
 	}
 
-	private static Ingredient fromValues(Stream<? extends Ingredient.Value> entries) {
-		Ingredient ingredient = new Ingredient(entries);
-		return ingredient.isEmpty() ? Ingredient.EMPTY : ingredient;
+	public static <N extends Number & Comparable<N>> SerializableDataBuilder<N> boundNumber(@NotNull SerializableDataBuilder<N> numberDataType, N min, BiFunction<N, N, String> underMinError, N max, BiFunction<N, N, String> overMaxError) {
+		return (SerializableDataBuilder<N>) numberDataType.comapFlatMap(
+			number -> {
+
+				if (number.compareTo(min) < 0) {
+					return DataResult.error(() -> underMinError.apply(number, min));
+				} else if (number.compareTo(max) > 0) {
+					return DataResult.error(() -> overMaxError.apply(number, max));
+				} else {
+					return DataResult.success(number);
+				}
+
+			},
+			Function.identity(), numberDataType.type()
+		);
 	}
 
 }

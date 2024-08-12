@@ -10,7 +10,7 @@
     "origins:air_from_potions"
   ],
   "icon": {
-    "item": "minecraft:cod"
+    "id": "minecraft:cod"
   },
   "order": 0,
   "impact": 3

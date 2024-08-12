@@ -6,14 +6,14 @@
       "type": "origins:apply_effect",
       "effects": [
         {
-          "effect": "minecraft:slowness",
+          "id": "minecraft:slowness",
           "amplifier": 9,
           "duration": 160,
           "show_icon": true,
           "show_particles": false
         },
         {
-          "effect": "minecraft:blindness",
+          "id": "minecraft:blindness",
           "amplifier": 9,
           "duration": 160,
           "show_icon": true,

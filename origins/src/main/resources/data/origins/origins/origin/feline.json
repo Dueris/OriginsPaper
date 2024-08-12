@@ -9,7 +9,7 @@
     "origins:cat_vision"
   ],
   "icon": {
-    "item": "minecraft:orange_wool"
+    "id": "minecraft:orange_wool"
   },
   "order": 0,
   "impact": 2

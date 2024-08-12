@@ -19,10 +19,10 @@
     "duration_per_stack": 40,
     "effects": [
       {
-        "effect": "minecraft:slowness",
+        "id": "minecraft:slowness",
         "amplifier": 0,
         "duration": 40,
-        "is_ambient": false,
+        "ambient": false,
         "show_particles": false
       }
     ]

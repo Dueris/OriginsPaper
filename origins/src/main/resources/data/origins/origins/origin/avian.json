@@ -8,7 +8,7 @@
     "origins:vegetarian"
   ],
   "icon": {
-    "item": "minecraft:feather"
+    "id": "minecraft:feather"
   },
   "order": 0,
   "impact": 1

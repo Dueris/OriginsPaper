@@ -17,13 +17,18 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActiveSelfPower extends PowerType implements CooldownInterface {
 	private final ActionFactory<Entity> entityAction;
 	private final int cooldown;
 	private final HudRender hudRender;
 	private final Keybind keybind;
+	private final List<Player> alreadyTicked = new ArrayList<>();
 
 	public ActiveSelfPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
 						   ActionFactory<Entity> entityAction, int cooldown, HudRender hudRender, Keybind keybind) {
@@ -47,11 +52,18 @@ public class ActiveSelfPower extends PowerType implements CooldownInterface {
 		Player player = ((CraftPlayer) e.getPlayer()).getHandle();
 		if (!getPlayers().contains(player)) return;
 		if (isActive(player) && !CooldownPower.isInCooldown(e.getPlayer(), this)) {
-			if (KeybindUtil.isKeyActive(keybind.key(), e.getPlayer())) {
+			if (KeybindUtil.isKeyActive(keybind.key(), e.getPlayer()) && keybind.key().equalsIgnoreCase(e.getKey()) && !alreadyTicked.contains(player)) {
 				entityAction.accept(player);
 				if (cooldown > 1) {
 					CooldownPower.addCooldown(e.getPlayer(), this);
 				}
+				alreadyTicked.add(player);
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						alreadyTicked.remove(player);
+					}
+				}.runTaskLater(OriginsPaper.getPlugin(), 1);
 			}
 		}
 	}

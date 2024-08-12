@@ -25,7 +25,7 @@
   },
   "condition": {
     "type": "origins:status_effect",
-    "effect": "minecraft:strength",
+    "id": "minecraft:strength",
     "inverted": true
   },
   "hidden": false

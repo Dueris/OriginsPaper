@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+@Deprecated(forRemoval = true)
 public class CraftApoli {
 	private static final int BUFFER_SIZE = 4096;
 	private static final Registrar<OriginLayer> layerRegistrar = OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER);

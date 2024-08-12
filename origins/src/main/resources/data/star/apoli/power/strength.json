@@ -5,15 +5,15 @@
   "duration_per_stack": 80,
   "effects": [
     {
-      "effect": "minecraft:regeneration",
-      "is_ambient": true,
+      "id": "minecraft:regeneration",
+      "ambient": true,
       "show_particles": false,
       "show_icon": false,
       "amplifier": 1
     },
     {
-      "effect": "minecraft:speed",
-      "is_ambient": true,
+      "id": "minecraft:speed",
+      "ambient": true,
       "show_particles": false,
       "show_icon": false
     }

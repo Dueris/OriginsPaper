@@ -7,7 +7,7 @@
     "origins:slime_skin"
   ],
   "icon": {
-    "item": "minecraft:slime_ball"
+    "id": "minecraft:slime_ball"
   },
   "order": 0,
   "impact": 2

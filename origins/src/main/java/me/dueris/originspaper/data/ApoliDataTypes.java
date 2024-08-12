@@ -81,30 +81,19 @@ public class ApoliDataTypes {
 	);
 	public static final SerializableDataBuilder<AttributedEntityAttributeModifier> ATTRIBUTED_ATTRIBUTE_MODIFIER = SerializableDataBuilder.of(
 		(jsonElement) -> {
-			if (!(jsonElement.isJsonObject()))
-				throw new JsonSyntaxException("Expected JsonObject for Attributed Attribute Modifier!");
-			JsonObject jo = jsonElement.getAsJsonObject();
-			AttributeModifier modifier = new AttributeModifier(
-				SerializableDataTypes.IDENTIFIER.deserialize(jo.get("id")),
-				SerializableDataTypes.DOUBLE.deserialize(jo.get("value")),
-				SerializableDataTypes.MODIFIER_OPERATION.deserialize(jo.get("operation"))
+			if (!(jsonElement instanceof JsonObject jo)) throw new JsonSyntaxException("Expected a JsonObject for Attributed Attribute Modifier");
+			return new AttributedEntityAttributeModifier(
+				SerializableDataTypes.ATTRIBUTE_ENTRY.deserialize(jo.get("attribute")),
+				SerializableDataTypes.ATTRIBUTE_MODIFIER.deserialize(jo)
 			);
-
-			return new AttributedEntityAttributeModifier(SerializableDataTypes.ATTRIBUTE_ENTRY.deserialize(jo.get("attribute")), modifier);
 		}, AttributedEntityAttributeModifier.class
 	);
 	public static final SerializableDataBuilder<Tuple<Integer, net.minecraft.world.item.ItemStack>> POSITIONED_ITEM_STACK = SerializableDataBuilder.of(
 		(jsonElement) -> {
-			if (!(jsonElement.isJsonObject()))
-				throw new JsonSyntaxException("Expected JsonObject for Positioned ItemStack!");
-			JsonObject jo = jsonElement.getAsJsonObject();
-			Item item = SerializableDataTypes.ITEM.deserialize(jo.get("item"));
-			net.minecraft.world.item.ItemStack stack = item.getDefaultInstance();
-
-			stack.setCount(jo.has("amount") ? SerializableDataTypes.INT.deserialize(jo.get("amount")) : 1);
-			stack.applyComponentsAndValidate(jo.has("components") ? SerializableDataTypes.COMPONENT_CHANGES.deserialize(jo.get("componnts")) : DataComponentPatch.EMPTY);
-
-			return new Tuple<>(jo.has("slot") ? SerializableDataTypes.INT.deserialize(jo.get("slot")) : Integer.MIN_VALUE, stack);
+			if (!(jsonElement instanceof JsonObject jo)) throw new JsonSyntaxException("Expected JsonObject for Positioned ItemStack!");
+			return new Tuple<>(
+				jo.has("slot") ? SerializableDataTypes.INT.deserialize(jo.get("slot")) : Integer.MIN_VALUE,
+				SerializableDataTypes.ITEM_STACK.deserialize(jo));
 		}, Tuple.class
 	);
 	public static final SerializableDataBuilder<Comparison> COMPARISON = SerializableDataTypes.enumValue(Comparison.class, Util.buildEnumMap(Comparison.class, Comparison::getComparisonString));

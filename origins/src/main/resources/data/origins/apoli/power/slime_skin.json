@@ -23,7 +23,7 @@
     "entity_action": {
       "type": "origins:apply_effect",
       "effect": {
-        "effect": "minecraft:fire_resistance",
+        "id": "minecraft:fire_resistance",
         "duration": 200,
         "amplifier": 1
       }
@@ -103,16 +103,16 @@
       "type": "origins:apply_effect",
       "effects": [
         {
-          "effect": "minecraft:resistance",
+          "id": "minecraft:resistance",
           "duration": 200,
-          "is_ambient": false,
+          "ambient": false,
           "show_particles": false,
           "show_icon": true
         },
         {
-          "effect": "minecraft:slowness",
+          "id": "minecraft:slowness",
           "duration": 200,
-          "is_ambient": false,
+          "ambient": false,
           "show_particles": false,
           "show_icon": true
         }
@@ -153,7 +153,7 @@
     "action": {
       "type": "origins:apply_effect",
       "effect": {
-        "effect": "minecraft:slowness",
+        "id": "minecraft:slowness",
         "duration": 40,
         "amplifier": 0
       }

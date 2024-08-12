@@ -8,7 +8,7 @@
     "origins:more_kinetic_damage"
   ],
   "icon": {
-    "item": "minecraft:elytra"
+    "id": "minecraft:elytra"
   },
   "order": 3,
   "impact": 1

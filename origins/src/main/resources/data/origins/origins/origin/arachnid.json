@@ -7,7 +7,7 @@
     "origins:arthropod"
   ],
   "icon": {
-    "item": "minecraft:cobweb"
+    "id": "minecraft:cobweb"
   },
   "order": 1,
   "impact": 1

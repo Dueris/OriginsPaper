@@ -11,7 +11,7 @@
       {
         "type": "origins:apply_effect",
         "effect": {
-          "effect": "minecraft:resistance",
+          "id": "minecraft:resistance",
           "duration": 10,
           "amplifier": 50,
           "show_icon": false,

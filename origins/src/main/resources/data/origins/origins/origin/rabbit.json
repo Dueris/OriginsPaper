@@ -9,7 +9,7 @@
     "origins:fragile"
   ],
   "icon": {
-    "item": "minecraft:carrot"
+    "id": "minecraft:carrot"
   },
   "order": 0,
   "impact": 1

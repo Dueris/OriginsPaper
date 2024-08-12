@@ -18,7 +18,9 @@ import net.minecraft.util.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.lang.reflect.Constructor;
@@ -33,7 +35,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class CalioParser {
 	public static final AtomicReference<JsonObjectRemapper> REMAPPER = new AtomicReference<>();
-	public static final Logger LOGGER = LogManager.getLogger("CraftCalioParser");
+	public static final Logger LOGGER = LogManager.getLogger("CalioParser");
 	private static final Gson GSON = new Gson();
 	public static ExecutorService threadedParser;
 	public static boolean threaded = false;
@@ -95,7 +97,7 @@ public class CalioParser {
 		return concurrentLinkedQueue;
 	}
 
-	public static <T> T parseFile(@NotNull Tuple<ResourceLocation, String> Tuple, Class<T> clz, AccessorKey<?> accessorKey, Class<? extends T>[] defaultType, ConcurrentLinkedQueue<Tuple<InstanceDefiner, Class<? extends T>>> typedTempInstance) {
+	public static <T> @Nullable T parseFile(@NotNull Tuple<ResourceLocation, String> Tuple, Class<T> clz, AccessorKey<?> accessorKey, Class<? extends T>[] defaultType, ConcurrentLinkedQueue<Tuple<InstanceDefiner, Class<? extends T>>> typedTempInstance) {
 		final AtomicBoolean[] kill = {new AtomicBoolean(false)};
 		ResourceLocation location = Tuple.getA();
 		String jsonContents = Tuple.getB();
@@ -135,7 +137,8 @@ public class CalioParser {
 		if (toBuild == null)
 			throw new RuntimeException("Unable to parse type for class '" + clz.getSimpleName() + "' and type value of '" + jsonSource.get("type").getAsString() + "'");
 		try {
-			if (!ReflectionUtils.hasMethod(toBuild, "buildDefiner", true)) throw new IllegalArgumentException("Class '" + toBuild.getSimpleName() + "' must have the method 'buildDefiner' but one was not found!");
+			if (!ReflectionUtils.hasMethod(toBuild, "buildDefiner", true))
+				throw new IllegalArgumentException("Class '" + toBuild.getSimpleName() + "' must have the method 'buildDefiner' but one was not found!");
 			definer = ReflectionUtils.invokeStaticMethod(toBuild, "buildDefiner");
 		} catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
 			throw new RuntimeException(e);
@@ -189,7 +192,7 @@ public class CalioParser {
 		return null;
 	}
 
-	public static <T> T finalizeInstance(@NotNull T instance, JsonObject jsonSource, AccessorKey<?> accessorKey, ResourceLocation location) {
+	public static <T> @NotNull T finalizeInstance(@NotNull T instance, JsonObject jsonSource, AccessorKey<?> accessorKey, ResourceLocation location) {
 		if (ReflectionUtils.hasFieldWithAnnotation(instance.getClass(), JsonObject.class, SourceProvider.class)) {
 			ReflectionUtils.setFieldWithAnnotation(instance, SourceProvider.class, jsonSource);
 		}
@@ -237,14 +240,14 @@ public class CalioParser {
 							compiledArguments.add(new Tuple<>(key, serializableTiedBoolean.object().deserialize(jsonSource.get(key))));
 						} else {
 							LOGGER.error("Required instance not found, skipping instance compiling for '{}' : KEY ['{}'] | ClassName [{}]", location.orElse("Unknown Key"), key, clz.isPresent() ? clz.get() : "Unknown Class");
-							LOGGER.error("JSON: {}", jsonSource.toString());
+							LOGGER.error("JSON: {}", jsonSource.get(key).toString());
 							return Optional.empty();
 						}
 				}
 			} catch (Throwable throwable) {
-				LOGGER.error("Unable to compile '{}' from InstanceDefinition: '{}'", serializableTiedBoolean.object().asString(), location.orElse("no_location_found"));
+				LOGGER.error("Unable to compile '{}' from InstanceDefinition: '{}'", serializableTiedBoolean.object() == null ? "NULL" : serializableTiedBoolean.object().asString(), location.orElse("no_location_found"));
 				LOGGER.error("JSON-ELEMENT: {}", jsonSource.get(key).toString());
-				throw new RuntimeException(throwable);
+				throwable.printStackTrace();
 			}
 		}
 		if (!compiledParams.isEmpty() && !compiledArguments.isEmpty()) {

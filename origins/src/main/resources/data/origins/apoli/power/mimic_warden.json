@@ -25,10 +25,10 @@
           "action": {
             "type": "origins:apply_effect",
             "effect": {
-              "effect": "minecraft:darkness",
+              "id": "minecraft:darkness",
               "duration": 100,
               "amplifier": 2,
-              "is_ambient": false,
+              "ambient": false,
               "show_particles": false
             }
           }

@@ -9,7 +9,7 @@
     "origins:bee_flight"
   ],
   "icon": {
-    "item": "minecraft:honeycomb"
+    "id": "minecraft:honeycomb"
   },
   "order": 0,
   "impact": 2

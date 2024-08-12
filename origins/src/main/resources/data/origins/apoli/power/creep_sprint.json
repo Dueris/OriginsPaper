@@ -17,7 +17,7 @@
         {
           "type": "origins:apply_effect",
           "effect": {
-            "effect": "minecraft:speed",
+            "id": "minecraft:speed",
             "duration": 300,
             "amplifier": 0
           }

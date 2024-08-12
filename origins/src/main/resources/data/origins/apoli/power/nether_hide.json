@@ -18,8 +18,8 @@
     "duration_per_stack": 10,
     "effects": [
       {
-        "effect": "minecraft:slowness",
-        "is_ambient": true,
+        "id": "minecraft:slowness",
+        "ambient": true,
         "show_particles": false,
         "show_icon": true
       }

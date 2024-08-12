@@ -4,7 +4,7 @@
   "max_stacks": 3,
   "duration_per_stack": 10,
   "effect": {
-    "effect": "minecraft:weakness",
+    "id": "minecraft:weakness",
     "amplifier": 1,
     "duration": 10
   },

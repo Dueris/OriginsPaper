@@ -63,7 +63,7 @@ public class JsonObjectRemapper {
 		if (typeValue.contains("*")) {
 			if (typeValue.contains(":")) {
 				String[] namespacepath = typeValue.split(":");
-				typeValue = (namespacepath[0].contains("*") ? namespacepath[0].replace("*", currentNamespace.getNamespace()) : namespacepath[0]) +
+				typeValue = (namespacepath[0].contains("*") ? namespacepath[0].replace("*", currentNamespace.getNamespace()) : namespacepath[0]) + ":" +
 					(namespacepath[1].contains("*") ? namespacepath[1].replace("*", currentNamespace.getPath()) : namespacepath[1]);
 			} else {
 				typeValue = currentNamespace.toString();

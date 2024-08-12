@@ -96,17 +96,14 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		return scheduler;
 	}
 
-	@Contract("_ -> new")
 	public static @NotNull ResourceLocation identifier(String path) {
 		return ResourceLocation.fromNamespaceAndPath("originspaper", path);
 	}
 
-	@Contract("_ -> new")
 	public static @NotNull ResourceLocation originIdentifier(String path) {
 		return ResourceLocation.fromNamespaceAndPath("origins", path);
 	}
 
-	@Contract("_ -> new")
 	public static @NotNull ResourceLocation apoliIdentifier(String path) {
 		return ResourceLocation.fromNamespaceAndPath("apoli", path);
 	}
@@ -217,8 +214,6 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 				Bukkit.getServer().getPluginManager().disablePlugin(this);
 			}
-
-			this.debug(Component.text("* (-debugOrigins={true}) || BEGINNING DEBUG {"));
 			ThreadFactory threadFactory = new NamedTickThreadFactory("OriginParsingPool");
 			placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
 			if (placeholderapi) {
@@ -296,7 +291,6 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 			this.start();
 			patchPowers();
 			this.debug(Component.text("  - Power thread starting with {originScheduler}".replace("originScheduler", scheduler.toString())));
-			this.debug(Component.text("}"));
 			loaderThreadPool.shutdown();
 			CommandDispatcher<CommandSourceStack> commandDispatcher = server.getCommands().getDispatcher();
 			if (commandDispatcher.getRoot().getChildren().stream().map(CommandNode::getName).toList().contains("origin")) {

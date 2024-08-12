@@ -16,7 +16,7 @@
     "origins:collector"
   ],
   "icon": {
-    "item": "minecraft:cookie"
+    "id": "minecraft:cookie"
   },
   "order": 0,
   "impact": 3

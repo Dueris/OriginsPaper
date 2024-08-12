@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class InstanceDefiner {
@@ -37,6 +38,13 @@ public class InstanceDefiner {
 	public synchronized <T> InstanceDefiner add(String key, SerializableDataBuilder<T> data, T defaultValue) {
 		dataMap.put(key, new ObjectTiedEnumState<>(data, SerializableType.DEFAULT));
 		defaultMap.put(key, defaultValue);
+		keyPriorities.put(key, priorityCounter++);
+		return this;
+	}
+
+	public synchronized <T> InstanceDefiner addSupplied(String key, SerializableDataBuilder<T> data, @NotNull Supplier<T> supplier) {
+		dataMap.put(key, new ObjectTiedEnumState<>(data, SerializableType.DEFAULT));
+		defaultMap.put(key, supplier.get());
 		keyPriorities.put(key, priorityCounter++);
 		return this;
 	}

@@ -7,11 +7,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class KeybindTriggerEvent extends PlayerEvent {
 	private static final HandlerList handlers = new HandlerList();
-	static String key_type;
+	private final String key_type;
 
 	public KeybindTriggerEvent(@NotNull Player who, String key_type) {
 		super(who);
-		KeybindTriggerEvent.key_type = key_type;
+		this.key_type = key_type;
 	}
 
 	public static HandlerList getHandlerList() {

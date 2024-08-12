@@ -9,7 +9,7 @@
     "origins:toggle_night_vision"
   ],
   "icon": {
-    "item": "minecraft:echo_shard"
+    "id": "minecraft:echo_shard"
   },
   "order": 0,
   "impact": 3

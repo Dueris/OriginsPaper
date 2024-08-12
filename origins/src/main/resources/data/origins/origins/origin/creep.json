@@ -10,7 +10,7 @@
     "origins:slower"
   ],
   "icon": {
-    "item": "minecraft:gunpowder"
+    "id": "minecraft:gunpowder"
   },
   "order": 0,
   "impact": 2

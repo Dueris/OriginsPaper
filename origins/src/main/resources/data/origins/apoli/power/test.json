@@ -7,14 +7,14 @@
     }
   },
   "food_component": {
-    "hunger": 4,
+    "nutrition": 4,
     "saturation": 1,
     "always_edible": true,
     "snack": false
   },
   "use_action": "eat",
   "result_stack": {
-    "item": "minecraft:water_bucket",
+    "id": "minecraft:water_bucket",
     "amount": 1
   }
 }
