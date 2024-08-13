@@ -168,10 +168,10 @@ public class EdibleItemPower extends PowerType {
 		org.bukkit.inventory.ItemStack stack = e.getPlayer().getInventory().getItem(e.getNewSlot());
 		if (stack != null) {
 			Player p = e.getPlayer();
-			boolean isModified = !stack.getItemMeta().getPersistentDataContainer().has(EDIBLE_ITEM_MODIFIED_KEY);
+			boolean isModified = stack.getItemMeta().getPersistentDataContainer().has(EDIBLE_ITEM_MODIFIED_KEY);
 			boolean isValid = getPlayers().contains(((CraftPlayer) p).getHandle());
 			boolean conditions = !(!itemCondition.test(new Tuple<>(((CraftPlayer) p).getHandle().level(), CraftItemStack.unwrap(stack))) || !isActive(((CraftPlayer) p).getHandle()));
-			if (isValid && isModified && conditions) {
+			if (isValid && !isModified && conditions) {
 				ItemMeta meta = stack.getItemMeta();
 				FoodComponent food = new CraftFoodComponent(foodComponent);
 				meta.getPersistentDataContainer().set(EDIBLE_ITEM_MODIFIED_KEY, PersistentDataType.BOOLEAN, true);
