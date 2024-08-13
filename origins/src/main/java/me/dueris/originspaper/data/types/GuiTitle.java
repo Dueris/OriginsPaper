@@ -11,8 +11,8 @@ import org.jetbrains.annotations.Nullable;
 public record GuiTitle(@Nullable Component viewOrigin, @Nullable Component chooseOrigin) {
 
 	public static final InstanceDefiner DATA = InstanceDefiner.instanceDefiner()
-		.add("view_origin", SerializableDataTypes.TEXT, null)
-		.add("choose_origin", SerializableDataTypes.TEXT, null);
+		.add("view_origin", SerializableDataTypes.KYORI_COMPONENT, null)
+		.add("choose_origin", SerializableDataTypes.KYORI_COMPONENT, null);
 
 	@Contract("_ -> new")
 	public static @NotNull GuiTitle fromData(@NotNull DeserializedFactoryJson data) {

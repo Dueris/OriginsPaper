@@ -35,15 +35,13 @@ public class OriginsDataTypes {
 
 	public static final SerializableDataBuilder<GuiTitle> GUI_TITLE = SerializableDataBuilder.of(
 		(jsonElement) -> {
-			if (!jsonElement.isJsonObject()) throw new JsonSyntaxException("Expected JsonObject for GuiTitle!");
-			JsonObject jo = jsonElement.getAsJsonObject();
+			if (!(jsonElement instanceof JsonObject jo)) throw new JsonSyntaxException("Expected JsonObject for GuiTitle!");
+			DeserializedFactoryJson data = SerializableDataBuilder.compound(GuiTitle.DATA, jo, GuiTitle.class);
 
 			Component viewOriginTitle = SerializableDataTypes.TEXT.deserialize(jo.get("view_origin"));
 			Component chooseOriginTitle = SerializableDataTypes.TEXT.deserialize(jo.get("choose_origin"));
-			net.kyori.adventure.text.Component kyoriViewOrigin = net.kyori.adventure.text.Component.text(viewOriginTitle.getString());
-			net.kyori.adventure.text.Component kyoriChooseOrigin = net.kyori.adventure.text.Component.text(chooseOriginTitle.getString());
 
-			return new GuiTitle(kyoriViewOrigin, kyoriChooseOrigin);
+			return new GuiTitle(data.get("view_origin"), data.get("choose_origin"));
 		}, GuiTitle.class
 	);
 

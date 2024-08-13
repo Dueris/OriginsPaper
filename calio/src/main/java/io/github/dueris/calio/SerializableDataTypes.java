@@ -391,9 +391,7 @@ public class SerializableDataTypes {
 	);
 	public static final SerializableDataBuilder<Component> TEXT = SerializableDataBuilder.of(ComponentSerialization.CODEC, Component.class);
 	public static final SerializableDataBuilder<net.kyori.adventure.text.Component> KYORI_COMPONENT = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			return GsonComponentSerializer.gson().deserializeFromTree(jsonElement);
-		}, net.kyori.adventure.text.Component.class
+		(jsonElement) -> GsonComponentSerializer.gson().deserializeFromTree(jsonElement), net.kyori.adventure.text.Component.class
 	);
 	public static final SerializableDataBuilder<RecipeHolder<? extends Recipe<?>>> RECIPE = SerializableDataBuilder.of(
 		Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
