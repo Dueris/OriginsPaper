@@ -1,12 +1,11 @@
 package me.dueris.originspaper.util;
 
 import io.github.dueris.calio.util.holder.TriPair;
-import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.origin.Origin;
+import me.dueris.originspaper.origin.OriginLayer;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.registry.registries.Origin;
-import me.dueris.originspaper.registry.registries.OriginLayer;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +33,7 @@ public class AsyncUpgradeTracker implements Listener {
 				MinecraftServer server = OriginsPaper.server;
 				for (Map.Entry<Origin, TriPair<ResourceLocation, ResourceLocation, String>> entry : upgrades.entrySet()) {
 					for (CraftPlayer player : ((CraftServer) Bukkit.getServer()).getOnlinePlayers()) {
-						for (OriginLayer layer : CraftApoli.getLayersFromRegistry()) {
+						for (OriginLayer layer : OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values()) {
 							if (PowerHolderComponent.getOrigin(player, layer).equals(entry.getKey())) {
 								ResourceLocation advancement = entry.getValue().a();
 								ResourceLocation originToSet = entry.getValue().b();

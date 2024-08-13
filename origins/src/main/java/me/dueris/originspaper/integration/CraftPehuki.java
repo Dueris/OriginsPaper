@@ -1,4 +1,4 @@
-package me.dueris.originspaper.integration.pehuki;
+package me.dueris.originspaper.integration;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;

@@ -1,4 +1,4 @@
-package me.dueris.originspaper.registry.registries;
+package me.dueris.originspaper.power;
 
 import com.google.gson.JsonObject;
 import io.github.classgraph.ClassGraph;
@@ -9,7 +9,6 @@ import io.github.dueris.calio.util.annotations.SourceProvider;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.condition.ConditionFactory;
 import me.dueris.originspaper.data.ApoliDataTypes;
-import me.dueris.originspaper.power.SimplePower;
 import me.dueris.originspaper.power.provider.OriginSimpleContainer;
 import me.dueris.originspaper.power.provider.origins.*;
 import me.dueris.originspaper.util.LangFile;

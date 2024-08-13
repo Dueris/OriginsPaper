@@ -23,7 +23,6 @@ import io.github.dueris.calio.util.FilterableWeightedList;
 import io.github.dueris.calio.util.StatusEffectChance;
 import io.github.dueris.calio.util.Util;
 import io.netty.buffer.ByteBuf;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minecraft.commands.arguments.NbtPathArgument;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
@@ -213,7 +212,8 @@ public class SerializableDataTypes {
 	public static final SerializableDataBuilder<Holder<MobEffect>> STATUS_EFFECT_ENTRY = registryEntry(BuiltInRegistries.MOB_EFFECT);
 	public static final SerializableDataBuilder<MobEffectInstance> STATUS_EFFECT_INSTANCE = SerializableDataBuilder.of(
 		(jsonElement) -> {
-			if (!(jsonElement instanceof JsonObject jo)) throw new JsonSyntaxException("StatusEffectInstance should be a JsonObject!");
+			if (!(jsonElement instanceof JsonObject jo))
+				throw new JsonSyntaxException("StatusEffectInstance should be a JsonObject!");
 			DeserializedFactoryJson data = SerializableDataBuilder.compound(
 				InstanceDefiner.instanceDefiner()
 					.add("id", STATUS_EFFECT_ENTRY)

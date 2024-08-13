@@ -5,7 +5,6 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.action.ActionFactory;
 import me.dueris.originspaper.condition.ConditionFactory;
 import me.dueris.originspaper.data.ApoliDataTypes;
-import me.dueris.originspaper.registry.registries.PowerType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;

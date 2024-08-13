@@ -4,13 +4,13 @@
     {
       "id": "*:*",
       "attribute": "minecraft:player.block_interaction_range",
-      "value": 1.5,
+      "amount": 1.5,
       "operation": "add_value"
     },
     {
       "id": "*:*",
       "attribute": "minecraft:player.entity_interaction_range",
-      "value": 1.5,
+      "amount": 1.5,
       "operation": "add_value"
     }
   ]

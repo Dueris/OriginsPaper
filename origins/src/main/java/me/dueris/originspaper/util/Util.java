@@ -19,8 +19,8 @@ import it.unimi.dsi.fastutil.ints.IntLists;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.action.ActionFactory;
-import me.dueris.originspaper.registry.registries.Origin;
-import me.dueris.originspaper.registry.registries.PowerType;
+import me.dueris.originspaper.origin.Origin;
+import me.dueris.originspaper.power.PowerType;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.commands.arguments.SlotArgument;
 import net.minecraft.core.BlockPos;
@@ -76,6 +76,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -337,10 +338,18 @@ public class Util {
 		return id == null ? type + ".unregistered_sadface" : type + "." + id.getNamespace() + "." + id.getPath().replace('/', '.');
 	}
 
+	@Unmodifiable
 	public static <T> @NotNull List<T> collapseList(@NotNull Collection<List<T>> collection) {
 		List<T> lC = new ArrayList<>();
 		collection.forEach(lC::addAll);
-		return lC;
+		return Collections.unmodifiableList(lC);
+	}
+
+	@Unmodifiable
+	public static <T> @NotNull Set<T> collapseSet(Collection<Set<T>> collection) {
+		Set<T> lC = new HashSet<>();
+		collection.forEach(lC::addAll);
+		return Collections.unmodifiableSet(lC);
 	}
 
 	@Contract(pure = true)

@@ -2,7 +2,7 @@ package me.dueris.originspaper.power.provider.origins;
 
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.power.provider.PowerProvider;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;

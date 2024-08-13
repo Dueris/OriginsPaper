@@ -7,7 +7,6 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.condition.ConditionFactory;
 import me.dueris.originspaper.data.ApoliDataTypes;
 import me.dueris.originspaper.data.types.AttributedEntityAttributeModifier;
-import me.dueris.originspaper.registry.registries.PowerType;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

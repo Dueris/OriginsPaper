@@ -2,8 +2,8 @@ package me.dueris.originspaper.power.provider.origins;
 
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.power.provider.PowerProvider;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import me.dueris.originspaper.util.Util;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageType;

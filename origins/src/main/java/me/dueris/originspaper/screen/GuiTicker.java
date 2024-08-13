@@ -1,10 +1,10 @@
 package me.dueris.originspaper.screen;
 
-import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.OriginChoosePromptEvent;
-import me.dueris.originspaper.registry.registries.OriginLayer;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import me.dueris.originspaper.origin.OriginLayer;
+import me.dueris.originspaper.registry.Registries;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -24,7 +24,7 @@ public class GuiTicker extends BukkitRunnable {
 		if (ScreenNavigator.layerPages.isEmpty()) return; // No pages to display.
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			if (delayedPlayers.contains(p)) continue;
-			for (OriginLayer layer : CraftApoli.getLayersFromRegistry().stream().filter(OriginLayer::isEnabled).toList()) {
+			for (OriginLayer layer : OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values().stream().filter(OriginLayer::isEnabled).toList()) {
 				if (layer.testChoosable(((CraftPlayer) p).getHandle()).isEmpty()) continue;
 				try {
 					if (PowerHolderComponent.getOrigin(p, layer).getTag().equalsIgnoreCase("origins:empty")) {

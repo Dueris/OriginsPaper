@@ -1,15 +1,14 @@
 package me.dueris.originspaper.screen;
 
-import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.data.types.Impact;
-import me.dueris.originspaper.registry.registries.Origin;
-import me.dueris.originspaper.registry.registries.OriginLayer;
-import me.dueris.originspaper.registry.registries.PowerType;
+import me.dueris.originspaper.origin.Origin;
+import me.dueris.originspaper.origin.OriginLayer;
+import me.dueris.originspaper.power.PowerType;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import me.dueris.originspaper.util.ComponentUtil;
 import me.dueris.originspaper.util.LangFile;
 import me.dueris.originspaper.util.entity.PlayerManager;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -119,7 +118,7 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 	public ItemStack @NotNull [] createDisplay(net.minecraft.world.entity.player.Player player, OriginLayer layer) {
 		List<ItemStack> stacks = new ArrayList<>();
 		List<PowerType> powerContainers = new ArrayList<>(this.origin.powers().stream()
-			.filter(Objects::nonNull).map(CraftApoli::getPower).filter(p -> p != null && !p.isHidden()).toList());
+			.filter(Objects::nonNull).map(OriginsPaper::getPower).filter(p -> p != null && !p.isHidden()).toList());
 
 		for (int i = 0; i < 54; i++) {
 			if (i <= 2 || i >= 6 && i <= 8) {

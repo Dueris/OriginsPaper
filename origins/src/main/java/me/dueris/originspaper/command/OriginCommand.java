@@ -6,20 +6,18 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.dueris.calio.registry.Registrar;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
-import javassist.NotFoundException;
-import me.dueris.originspaper.CraftApoli;
+import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.content.OrbOfOrigins;
 import me.dueris.originspaper.event.OriginChangeEvent;
+import me.dueris.originspaper.origin.Origin;
+import me.dueris.originspaper.origin.OriginLayer;
+import me.dueris.originspaper.power.PowerType;
 import me.dueris.originspaper.power.RecipePower;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.registry.registries.Origin;
-import me.dueris.originspaper.registry.registries.OriginLayer;
-import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.screen.OriginPage;
 import me.dueris.originspaper.screen.RandomOriginPage;
 import me.dueris.originspaper.storage.OriginConfiguration;
-import me.dueris.originspaper.storage.OriginDataContainer;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -49,6 +47,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 public class OriginCommand extends BukkitRunnable implements Listener {
 	public static final HashMap<Player, Integer> playerPage = new HashMap<>();
@@ -86,7 +85,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 											Commands.argument("origin", ResourceLocationArgument.id())
 												.suggests(
 													(context, builder) -> {
-														OriginLayer layer = CraftApoli.getLayer(ResourceLocationArgument.getId(context, "layer"));
+														OriginLayer layer = OriginsPaper.getLayer(ResourceLocationArgument.getId(context, "layer"));
 														layer.getOriginIdentifiers().stream().map(ResourceLocation::toString).filter(tag -> {
 															String input = context.getInput().split(" ")[context.getInput().split(" ").length - 1];
 															return (tag.startsWith(input)) || context.getInput().split(" ").length == 4;
@@ -97,12 +96,8 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 												.executes(
 													context -> {
 														Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-														OriginLayer layer = CraftApoli.getLayer(
-															CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()
-														);
-														Origin origin = CraftApoli.getOrigin(
-															CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "origin")).asString()
-														);
+														OriginLayer layer = OriginsPaper.getLayer(ResourceLocationArgument.getId(context, "layer"));
+														Origin origin = OriginsPaper.getOrigin(ResourceLocationArgument.getId(context, "origin"));
 														if (!layer.getOriginIdentifiers().contains(ResourceLocation.parse(origin.getTag()))) {
 															context.getSource()
 																.sendFailure(
@@ -250,9 +245,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 										.executes(
 											context -> {
 												Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-												OriginLayer layer = CraftApoli.getLayer(
-													CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()
-												);
+												OriginLayer layer = OriginsPaper.getLayer(ResourceLocationArgument.getId(context, "layer"));
 												targets.forEach(
 													player -> context.getSource()
 														.sendSystemMessage(
@@ -279,7 +272,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 							} else {
 								ServerPlayer player = context.getSource().getPlayer();
 								RandomOriginPage randomOriginPage = new RandomOriginPage();
-								CraftApoli.getLayersFromRegistry().forEach(layer -> randomOriginPage.onChoose(player, layer));
+								OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values().forEach(layer -> randomOriginPage.onChoose(player, layer));
 								return 1;
 							}
 						})
@@ -287,7 +280,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 							(Commands.argument("targets", EntityArgument.players()).executes(context -> {
 								Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
 								RandomOriginPage randomOriginPage = new RandomOriginPage();
-								targets.forEach(player -> CraftApoli.getLayersFromRegistry().forEach(layer -> randomOriginPage.onChoose(player, layer)));
+								targets.forEach(player -> OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values().forEach(layer -> randomOriginPage.onChoose(player, layer)));
 								return 1;
 							}))
 								.then(
@@ -309,9 +302,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 										)
 										.executes(context -> {
 											Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-											OriginLayer layer = CraftApoli.getLayer(
-												CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()
-											);
+											OriginLayer layer = OriginsPaper.getLayer(ResourceLocationArgument.getId(context, "layer"));
 											RandomOriginPage randomOriginPage = new RandomOriginPage();
 											targets.forEach(player -> randomOriginPage.onChoose(player, layer));
 											return 1;
@@ -327,14 +318,9 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 								return 0;
 							} else {
 								ServerPlayer player = context.getSource().getPlayer();
-								CraftApoli.getLayersFromRegistry().forEach(layer -> {
-									try {
-										PowerHolderComponent.unassignPowers(player.getBukkitEntity(), layer);
-									} catch (NotFoundException var3) {
-										throw new RuntimeException(var3);
-									}
-
-									PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, CraftApoli.emptyOrigin());
+								OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values().forEach(layer -> {
+									PowerHolderComponent.unassignPowers(player.getBukkitEntity(), layer);
+									PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, OriginsPaper.EMPTY_ORIGIN);
 								});
 								return 1;
 							}
@@ -343,14 +329,9 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 							(Commands.argument("targets", EntityArgument.players()).executes(context -> {
 								Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
 								targets.forEach(player -> {
-									for (OriginLayer layer : CraftApoli.getLayersFromRegistry()) {
-										try {
-											PowerHolderComponent.unassignPowers(player.getBukkitEntity(), layer);
-										} catch (NotFoundException var4) {
-											throw new RuntimeException(var4);
-										}
-
-										PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, CraftApoli.emptyOrigin());
+									for (OriginLayer layer : OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values()) {
+										PowerHolderComponent.unassignPowers(player.getBukkitEntity(), layer);
+										PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, OriginsPaper.EMPTY_ORIGIN);
 									}
 								});
 								return 1;
@@ -374,17 +355,10 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 										)
 										.executes(context -> {
 											Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-											OriginLayer layer = CraftApoli.getLayer(
-												CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()
-											);
+											OriginLayer layer = OriginsPaper.getLayer(ResourceLocationArgument.getId(context, "layer"));
 											targets.forEach(player -> {
-												try {
-													PowerHolderComponent.unassignPowers(player.getBukkitEntity(), layer);
-												} catch (NotFoundException var3) {
-													throw new RuntimeException(var3);
-												}
-
-												PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, CraftApoli.emptyOrigin());
+												PowerHolderComponent.unassignPowers(player.getBukkitEntity(), layer);
+												PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, OriginsPaper.EMPTY_ORIGIN);
 											});
 											return 1;
 										})
@@ -397,7 +371,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 							context -> {
 								if (context.getSource().isPlayer()) {
 									ServerPlayer p = context.getSource().getPlayer();
-									HashMap<OriginLayer, Origin> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(p.getBukkitEntity()));
+									Map<OriginLayer, Origin> origins = PowerHolderComponent.getOrigin(p.getBukkitEntity());
 									origins.entrySet().removeIf(entry -> entry.getKey().isHidden());
 									playerOrigins.put(p.getBukkitEntity(), new ArrayList<>(origins.values()));
 									if (!playerPage.containsKey(p.getBukkitEntity())) {

@@ -4,10 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.registry.registries.OriginLayer;
-import me.dueris.originspaper.registry.registries.PowerType;
+import me.dueris.originspaper.origin.OriginLayer;
+import me.dueris.originspaper.power.PowerType;
+import me.dueris.originspaper.storage.PlayerPowerRepository;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -19,44 +20,42 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class PowerUtils {
 	public static Gson GSON = new Gson();
 
-	public static void removePower(CommandSender executor, PowerType poweR, Player p, OriginLayer layer, boolean suppress) throws InstantiationException, IllegalAccessException {
-		if (PowerHolderComponent.playerPowerMapping.getOrDefault(p, new ConcurrentHashMap<>()) != null) {
-			ArrayList<PowerType> powersToEdit = new ArrayList<>();
-			powersToEdit.add(poweR);
-			powersToEdit.addAll(CraftApoli.getNestedPowerTypes(poweR));
-			for (PowerType power : powersToEdit) {
-				try {
-					if (PowerHolderComponent.playerPowerMapping.get(p).get(layer).contains(power)) {
-						PowerHolderComponent.playerPowerMapping.get(p).get(layer).remove(power);
-						PowerHolderComponent.removePower(p, power, suppress, true);
-						if (!suppress) {
-							executor.sendMessage("Entity %name% had the power %power% removed"
-								.replace("%power%", PlainTextComponentSerializer.plainText().serialize(power.name()))
-								.replace("%name%", p.getName())
-							);
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
+	public static void removePower(CommandSender executor, PowerType powerType, Player p, OriginLayer layer, boolean suppress) throws InstantiationException, IllegalAccessException {
+		ArrayList<PowerType> powersToEdit = new ArrayList<>();
+		powersToEdit.add(powerType);
+		powersToEdit.addAll(PowerHolderComponent.getNestedPowerTypes(powerType));
+		for (PowerType power : powersToEdit) {
+			if (PowerHolderComponent.hasPower(p, power.getTag())) {
+				PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) p).getHandle()).removePower(power, layer);
+				PowerHolderComponent.removePower(p, power, layer, suppress, true);
+				if (!suppress) {
+					executor.sendMessage("Entity %name% had the power %power% removed"
+						.replace("%power%", PlainTextComponentSerializer.plainText().serialize(power.name()))
+						.replace("%name%", p.getName())
+					);
 				}
 			}
 		}
 	}
 
-	public static void grantPower(CommandSender executor, PowerType power, Player p, OriginLayer layer, boolean suppress) throws InstantiationException, IllegalAccessException {
-		if (!PowerHolderComponent.playerPowerMapping.getOrDefault(p, new ConcurrentHashMap<>()).get(layer).contains(power)) {
-			PowerHolderComponent.playerPowerMapping.get(p).get(layer).add(power);
-			PowerHolderComponent.applyPower(p, power, suppress, true);
-			if (!suppress) {
-				executor.sendMessage("Entity %name% was granted the power %power%"
-					.replace("%power%", PlainTextComponentSerializer.plainText().serialize(power.name()))
-					.replace("%name%", p.getName())
-				);
+	public static void grantPower(CommandSender executor, PowerType powerType, Player p, OriginLayer layer, boolean suppress) throws InstantiationException, IllegalAccessException {
+		ArrayList<PowerType> powersToEdit = new ArrayList<>();
+		powersToEdit.add(powerType);
+		powersToEdit.addAll(PowerHolderComponent.getNestedPowerTypes(powerType));
+		for (PowerType power : powersToEdit) {
+			if (!PowerHolderComponent.hasPower(p, power.getTag())) {
+				PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) p).getHandle()).addPower(power, layer);
+				PowerHolderComponent.applyPower(p, power, layer, suppress, true);
+				if (!suppress) {
+					executor.sendMessage("Entity %name% was granted the power %power%"
+						.replace("%power%", PlainTextComponentSerializer.plainText().serialize(power.name()))
+						.replace("%name%", p.getName())
+					);
+				}
 			}
 		}
 	}

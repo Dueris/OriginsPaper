@@ -4,7 +4,6 @@ import me.dueris.originspaper.OriginsPaper;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -37,11 +36,8 @@ public class OriginConfiguration {
 		}
 	}
 
-	@Contract("_, _ -> param2")
 	private static @NotNull File fillFile(String a, @NotNull File o) throws IOException {
-		if (o.exists()) {
-			return o;
-		} else {
+		if (!o.exists()) {
 			o.createNewFile();
 			ClassLoader cL = OriginConfiguration.class.getClassLoader();
 
@@ -56,16 +52,14 @@ public class OriginConfiguration {
 				var8.printStackTrace();
 			}
 
-			return o;
 		}
+		return o;
 	}
 
-	@Contract(" -> new")
 	public static @NotNull YamlConfiguration getConfiguration() {
 		return YamlConfiguration.loadConfiguration(server);
 	}
 
-	@Contract(" -> new")
 	public static @NotNull FileConfiguration getOrbConfiguration() {
 		return YamlConfiguration.loadConfiguration(orb);
 	}

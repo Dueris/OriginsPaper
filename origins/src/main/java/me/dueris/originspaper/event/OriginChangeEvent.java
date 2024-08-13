@@ -1,6 +1,6 @@
 package me.dueris.originspaper.event;
 
-import me.dueris.originspaper.registry.registries.Origin;
+import me.dueris.originspaper.origin.Origin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;

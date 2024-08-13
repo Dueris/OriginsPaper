@@ -23,7 +23,6 @@ import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -31,9 +30,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.inventory.ClickAction;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameType;
@@ -81,7 +78,8 @@ public class ApoliDataTypes {
 	);
 	public static final SerializableDataBuilder<AttributedEntityAttributeModifier> ATTRIBUTED_ATTRIBUTE_MODIFIER = SerializableDataBuilder.of(
 		(jsonElement) -> {
-			if (!(jsonElement instanceof JsonObject jo)) throw new JsonSyntaxException("Expected a JsonObject for Attributed Attribute Modifier");
+			if (!(jsonElement instanceof JsonObject jo))
+				throw new JsonSyntaxException("Expected a JsonObject for Attributed Attribute Modifier");
 			return new AttributedEntityAttributeModifier(
 				SerializableDataTypes.ATTRIBUTE_ENTRY.deserialize(jo.get("attribute")),
 				SerializableDataTypes.ATTRIBUTE_MODIFIER.deserialize(jo)
@@ -90,7 +88,8 @@ public class ApoliDataTypes {
 	);
 	public static final SerializableDataBuilder<Tuple<Integer, net.minecraft.world.item.ItemStack>> POSITIONED_ITEM_STACK = SerializableDataBuilder.of(
 		(jsonElement) -> {
-			if (!(jsonElement instanceof JsonObject jo)) throw new JsonSyntaxException("Expected JsonObject for Positioned ItemStack!");
+			if (!(jsonElement instanceof JsonObject jo))
+				throw new JsonSyntaxException("Expected JsonObject for Positioned ItemStack!");
 			return new Tuple<>(
 				jo.has("slot") ? SerializableDataTypes.INT.deserialize(jo.get("slot")) : Integer.MIN_VALUE,
 				SerializableDataTypes.ITEM_STACK.deserialize(jo));
@@ -216,6 +215,9 @@ public class ApoliDataTypes {
 				}
 			}, ConditionFactory.class
 		);
+	}
+
+	public static void init() {
 	}
 
 }

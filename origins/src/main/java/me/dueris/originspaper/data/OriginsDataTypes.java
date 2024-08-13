@@ -10,7 +10,7 @@ import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
 import me.dueris.originspaper.data.types.GuiTitle;
 import me.dueris.originspaper.data.types.Impact;
 import me.dueris.originspaper.data.types.OriginUpgrade;
-import me.dueris.originspaper.registry.registries.OriginLayer;
+import me.dueris.originspaper.origin.OriginLayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -82,4 +82,7 @@ public class OriginsDataTypes {
 			);
 		}, OriginUpgrade.class
 	);
+
+	public static void init() {
+	}
 }

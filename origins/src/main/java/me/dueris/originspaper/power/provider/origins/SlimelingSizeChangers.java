@@ -1,11 +1,10 @@
 package me.dueris.originspaper.power.provider.origins;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
-import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.event.PowerUpdateEvent;
 import me.dueris.originspaper.power.provider.PowerProvider;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import me.dueris.originspaper.util.entity.PowerUtils;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Bukkit;
@@ -69,7 +68,7 @@ public class SlimelingSizeChangers implements Listener {
 						@Override
 						public void run() {
 							try {
-								PowerUtils.removePower(Bukkit.getConsoleSender(), e.getPower(), p, CraftApoli.getLayer("origins:origin"), false);
+								PowerUtils.removePower(Bukkit.getConsoleSender(), e.getPower(), p, OriginsPaper.getLayer(ResourceLocation.parse("origins:origin")), false);
 							} catch (InstantiationException | IllegalAccessException ex) {
 								throw new RuntimeException(ex);
 							}
@@ -108,7 +107,7 @@ public class SlimelingSizeChangers implements Listener {
 						@Override
 						public void run() {
 							try {
-								PowerUtils.removePower(Bukkit.getConsoleSender(), e.getPower(), p, CraftApoli.getLayer("origins:origin"), false);
+								PowerUtils.removePower(Bukkit.getConsoleSender(), e.getPower(), p, OriginsPaper.getLayer(ResourceLocation.parse("origins:origin")), false);
 							} catch (InstantiationException | IllegalAccessException ex) {
 								throw new RuntimeException(ex);
 							}

@@ -6,13 +6,15 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import joptsimple.internal.Strings;
-import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.origin.OriginLayer;
+import me.dueris.originspaper.power.MultiplePower;
+import me.dueris.originspaper.power.PowerType;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.registry.registries.OriginLayer;
-import me.dueris.originspaper.registry.registries.PowerType;
+import me.dueris.originspaper.storage.PlayerPowerRepository;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import me.dueris.originspaper.util.JsonTextFormatter;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import me.dueris.originspaper.util.Util;
 import me.dueris.originspaper.util.entity.PowerUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -23,6 +25,7 @@ import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -109,27 +112,25 @@ public class PowerCommand {
 											EntityArgument.getPlayers(context, "targets")
 												.forEach(
 													player -> {
-														if (PowerHolderComponent.playerPowerMapping.get(player.getBukkitEntity()) != null) {
-															PowerType poweR = OriginsPaper.getPlugin()
-																.registry
-																.retrieve(Registries.CRAFT_POWER)
-																.get(ResourceLocationArgument.getId(context, "power"));
-															ArrayList<PowerType> powersToEdit = new ArrayList<>(CraftApoli.getNestedPowerTypes(poweR));
-															powersToEdit.add(poweR);
+														PowerType poweR = OriginsPaper.getPlugin()
+															.registry
+															.retrieve(Registries.CRAFT_POWER)
+															.get(ResourceLocationArgument.getId(context, "power"));
+														ArrayList<PowerType> powersToEdit = new ArrayList<>(PowerHolderComponent.getNestedPowerTypes(poweR));
+														powersToEdit.add(poweR);
 
-															for (PowerType power : powersToEdit) {
-																try {
-																	PowerUtils.grantPower(
-																		context.getSource().getBukkitSender(),
-																		power,
-																		player.getBukkitEntity(),
-																		CraftApoli.getLayer("apoli:command"),
-																		context.getSource().isSilent()
-																	);
-																} catch (IllegalAccessException |
-																		 InstantiationException var7) {
-																	throw new RuntimeException(var7);
-																}
+														for (PowerType power : powersToEdit) {
+															try {
+																PowerUtils.grantPower(
+																	context.getSource().getBukkitSender(),
+																	power,
+																	player.getBukkitEntity(),
+																	OriginsPaper.getLayer(ResourceLocation.parse("apoli:command")),
+																	context.getSource().isSilent()
+																);
+															} catch (IllegalAccessException |
+																	 InstantiationException var7) {
+																throw new RuntimeException(var7);
 															}
 														}
 													}
@@ -144,30 +145,25 @@ public class PowerCommand {
 													EntityArgument.getPlayers(context, "targets")
 														.forEach(
 															player -> {
-																if (PowerHolderComponent.playerPowerMapping.get(player.getBukkitEntity()) != null) {
-																	PowerType poweR = OriginsPaper.getPlugin()
-																		.registry
-																		.retrieve(Registries.CRAFT_POWER)
-																		.get(ResourceLocationArgument.getId(context, "power"));
-																	ArrayList<PowerType> powersToEdit = new ArrayList<>(CraftApoli.getNestedPowerTypes(poweR));
-																	powersToEdit.add(poweR);
+																PowerType poweR = OriginsPaper.getPlugin()
+																	.registry
+																	.retrieve(Registries.CRAFT_POWER)
+																	.get(ResourceLocationArgument.getId(context, "power"));
+																ArrayList<PowerType> powersToEdit = new ArrayList<>(PowerHolderComponent.getNestedPowerTypes(poweR));
+																powersToEdit.add(poweR);
 
-																	for (PowerType power : powersToEdit) {
-																		try {
-																			PowerUtils.grantPower(
-																				context.getSource().getBukkitSender(),
-																				power,
-																				player.getBukkitEntity(),
-																				CraftApoli.getLayer(
-																					CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer"))
-																						.asString()
-																				),
-																				context.getSource().isSilent()
-																			);
-																		} catch (IllegalAccessException |
-																				 InstantiationException var7) {
-																			throw new RuntimeException(var7);
-																		}
+																for (PowerType power : powersToEdit) {
+																	try {
+																		PowerUtils.grantPower(
+																			context.getSource().getBukkitSender(),
+																			power,
+																			player.getBukkitEntity(),
+																			OriginsPaper.getLayer(ResourceLocationArgument.getId(context, "layer")),
+																			context.getSource().isSilent()
+																		);
+																	} catch (IllegalAccessException |
+																			 InstantiationException var7) {
+																		throw new RuntimeException(var7);
 																	}
 																}
 															}
@@ -208,7 +204,7 @@ public class PowerCommand {
 												.forEach(
 													player -> {
 														for (OriginLayer layer : OriginCommand.LAYERS.values()) {
-															for (PowerType power : PowerHolderComponent.playerPowerMapping.get(player.getBukkitEntity()).get(layer)) {
+															for (PowerType power : PlayerPowerRepository.getOrCreateRepo(player).getAppliedPowers(layer)) {
 																if (!passed.get()
 																	&& power.getTag()
 																	.equals(
@@ -253,7 +249,7 @@ public class PowerCommand {
 										.forEach(
 											p -> {
 												for (PowerType power : PowerHolderComponent.getPowers(p.getBukkitEntity())) {
-													CraftApoli.getLayersFromRegistry()
+													OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values()
 														.forEach(
 															layer -> {
 																try {
@@ -286,11 +282,11 @@ public class PowerCommand {
 	private static int list(CommandContext<CommandSourceStack> context, boolean subPowers) throws CommandSyntaxException {
 		for (ServerPlayer player : EntityArgument.getPlayers(context, "targets")) {
 			ConcurrentLinkedQueue<PowerType> allPowers = new ConcurrentLinkedQueue<>();
-			ArrayList<PowerType> powers = PowerHolderComponent.getPowers(player.getBukkitEntity());
-//			ArrayList<Multiple> multiples = PowerHolderComponent.getPowers(player.getBukkitEntity(), Multiple.class);
-//			if (!subPowers) {
-//				powers.removeAll(Util.collapseList(multiples.stream().map(Multiple::getSubPowers).toList()));
-//			}
+			List<PowerType> powers = new ArrayList<>(PowerHolderComponent.getPowers(player.getBukkitEntity()));
+			List<MultiplePower> multiples = PowerHolderComponent.getPowers(player.getBukkitEntity(), MultiplePower.class);
+			if (!subPowers) {
+				powers.removeAll(Util.collapseList(multiples.stream().map(MultiplePower::getSubPowers).toList()));
+			}
 
 			if (!powers.isEmpty()) {
 				allPowers.addAll(powers);
@@ -342,7 +338,7 @@ public class PowerCommand {
 											.forEach(
 												p -> {
 													ResourceLocation arg = ResourceLocationArgument.getId(context, "power");
-													CraftApoli.getLayersFromRegistry()
+													OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values()
 														.forEach(
 															layer -> {
 																try {
@@ -375,14 +371,14 @@ public class PowerCommand {
 													.forEach(
 														p -> {
 															ResourceLocation arg = ResourceLocationArgument.getId(context, "power");
-															String layer = CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString();
+															ResourceLocation layer = ResourceLocationArgument.getId(context, "layer");
 
 															try {
 																PowerUtils.removePower(
 																	context.getSource().getBukkitSender(),
 																	OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(arg),
 																	p.getBukkitEntity(),
-																	CraftApoli.getLayer(layer),
+																	OriginsPaper.getLayer(layer),
 																	context.getSource().isSilent()
 																);
 															} catch (IllegalAccessException |

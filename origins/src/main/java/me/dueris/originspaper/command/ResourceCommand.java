@@ -3,10 +3,10 @@ package me.dueris.originspaper.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.dueris.originspaper.CraftApoli;
+import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.power.PowerType;
 import me.dueris.originspaper.power.ResourcePower;
-import me.dueris.originspaper.registry.registries.PowerType;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -44,7 +44,7 @@ public class ResourceCommand {
 								.executes(context -> {
 									ResourceLocation power = ResourceLocationArgument.getId(context, "power");
 									ServerPlayer player = EntityArgument.getPlayer(context, "targets");
-									PowerType powerType = CraftApoli.getPower(power.toString());
+									PowerType powerType = OriginsPaper.getPower(power);
 									if (powerType == null) {
 										throw new IllegalArgumentException("Provided power argument was not found!");
 									} else {
@@ -87,7 +87,7 @@ public class ResourceCommand {
 										context -> {
 											ResourceLocation power = ResourceLocationArgument.getId(context, "power");
 											ServerPlayer player = EntityArgument.getPlayer(context, "targets");
-											PowerType powerType = CraftApoli.getPower(power.toString());
+											PowerType powerType = OriginsPaper.getPower(power);
 											if (powerType == null) {
 												throw new IllegalArgumentException("Provided power argument was not found!");
 											} else {
@@ -149,7 +149,7 @@ public class ResourceCommand {
 												context -> {
 													ResourceLocation power = ResourceLocationArgument.getId(context, "power");
 													ServerPlayer player = EntityArgument.getPlayer(context, "targets");
-													PowerType powerType = CraftApoli.getPower(power.toString());
+													PowerType powerType = OriginsPaper.getPower(power);
 													int setTo = IntegerArgumentType.getInteger(context, "value");
 													Component failure = Component.literal("No relevant score holders could be found");
 													if (PowerHolderComponent.hasPower(player.getBukkitEntity(), powerType.getTag())
@@ -208,7 +208,7 @@ public class ResourceCommand {
 												context -> {
 													ResourceLocation power = ResourceLocationArgument.getId(context, "power");
 													ServerPlayer player = EntityArgument.getPlayer(context, "targets");
-													PowerType powerType = CraftApoli.getPower(power.toString());
+													PowerType powerType = OriginsPaper.getPower(power);
 													int setTo = IntegerArgumentType.getInteger(context, "value");
 													Component failure = Component.literal("No relevant score holders could be found");
 													if (PowerHolderComponent.hasPower(player.getBukkitEntity(), powerType.getTag())

@@ -3,8 +3,7 @@ package me.dueris.originspaper.power;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.condition.ConditionFactory;
-import me.dueris.originspaper.registry.registries.PowerType;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,6 +15,7 @@ import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 // TODO
 public class CreativeFlightPower extends PowerType {
@@ -27,8 +27,7 @@ public class CreativeFlightPower extends PowerType {
 		return PowerType.buildDefiner().typedRegistry(OriginsPaper.apoliIdentifier("creative_flight"));
 	}
 
-	@Override
-	public void tickAsync(@NotNull Player p) {
+	public static void tickPlayer(@NotNull Player p, @Nullable CreativeFlightPower power) {
 		GameType m = ((ServerPlayer) p).gameMode.getGameModeForPlayer();
 		ResourceLocation insideBlock = OriginsPaper.identifier("insideblock");
 		PersistentDataContainer container = p.getBukkitEntity().getPersistentDataContainer();
@@ -38,7 +37,7 @@ public class CreativeFlightPower extends PowerType {
 			}
 		} else {
 			if (PowerHolderComponent.hasPowerType(p.getBukkitEntity(), CreativeFlightPower.class)) {
-				((org.bukkit.entity.Player) p.getBukkitEntity()).setAllowFlight(isActive(p) || m.equals(GameMode.SPECTATOR) || m.equals(GameMode.CREATIVE));
+				((org.bukkit.entity.Player) p.getBukkitEntity()).setAllowFlight((power == null || power.isActive(p)) || m.equals(GameMode.SPECTATOR) || m.equals(GameMode.CREATIVE));
 			} else {
 				boolean a = m.equals(GameMode.SPECTATOR) || m.equals(GameMode.CREATIVE) ||
 					// TODO
@@ -62,5 +61,10 @@ public class CreativeFlightPower extends PowerType {
 				container.set(CraftNamespacedKey.fromMinecraft(insideBlock), PersistentDataType.BOOLEAN, false);
 			} */
 		}
+	}
+
+	@Override
+	public void tickAsync(Player player) {
+		tickPlayer(player, this);
 	}
 }

@@ -1,9 +1,11 @@
 package me.dueris.originspaper;
 
+import me.dueris.originspaper.power.CreativeFlightPower;
+import me.dueris.originspaper.power.PowerType;
 import me.dueris.originspaper.power.provider.OriginSimpleContainer;
 import me.dueris.originspaper.power.provider.PowerProvider;
-import me.dueris.originspaper.registry.registries.PowerType;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import me.dueris.originspaper.registry.Registries;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -27,8 +29,6 @@ public class OriginScheduler {
 	}
 
 	public static class MainTickerThread extends BukkitRunnable implements Listener {
-		// todo
-//		private final CreativeFlight flight = new CreativeFlight("creative_flight", "description", true, null, 0);
 		public OriginScheduler parent = new OriginScheduler(OriginsPaper.getPlugin());
 
 		public String toString() {
@@ -39,7 +39,7 @@ public class OriginScheduler {
 			this.parent.mainThreadCalls.forEach(Runnable::run);
 			this.parent.mainThreadCalls.clear();
 
-			for (PowerType power : CraftApoli.getPowersFromRegistry()) {
+			for (PowerType power : OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).values()) {
 				power.tick();
 				if (power.hasPlayers()) {
 					for (Player p : power.getPlayers()) {
@@ -80,14 +80,14 @@ public class OriginScheduler {
 		}
 
 		public void tickAsyncScheduler() {
-			for (org.bukkit.entity.Player p : PowerHolderComponent.hasPowers) {
+			for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
 				for (PowerType c : PowerHolderComponent.getPowersApplied(p)) {
 					c.tickAsync(((CraftPlayer) p).getHandle());
 				}
 			}
 
 			for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
-				//this.flight.tickAsync(p);
+				CreativeFlightPower.tickPlayer(((CraftPlayer) p).getHandle(), null);
 //				if (!PowerHolderComponent.hasPowerType(p, GravityPower.class) && !PowerHolderComponent.hasPower(p, "origins:like_water")) {
 //					p.setGravity(true);
 //				}

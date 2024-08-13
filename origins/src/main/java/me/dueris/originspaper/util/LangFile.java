@@ -6,6 +6,7 @@ import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.storage.OriginConfiguration;
 import net.minecraft.resources.ResourceLocation;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -30,9 +31,10 @@ public class LangFile {
 	}
 
 	public static void init() {
-		String lang = OriginConfiguration.getConfiguration().getString("language", "en_us");
-		String langInput = Util.readResource("/assets/origins/lang/%%.json".replace("%%", lang));
-		ResourceLocation location = ResourceLocation.parse("origins:" + lang);
+		LANGUAGE = OriginConfiguration.getConfiguration().getString("language", "en_us");
+		String langInput = Util.readResource("/assets/origins/lang/%%.json".replace("%%", LANGUAGE));
+		ResourceLocation location = ResourceLocation.parse("origins:" + LANGUAGE);
+		Bukkit.getLogger().info("Loaded " + LANGUAGE + " lang-file for OriginsPaper");
 		OriginsPaper.getPlugin().registry.retrieve(Registries.LANG).register(new LangFile(new Gson().fromJson(langInput, JsonObject.class)), location);
 	}
 

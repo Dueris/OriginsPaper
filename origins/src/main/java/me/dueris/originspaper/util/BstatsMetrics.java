@@ -14,8 +14,8 @@
  */
 package me.dueris.originspaper.util;
 
-import me.dueris.originspaper.registry.registries.Origin;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
+import me.dueris.originspaper.origin.Origin;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;

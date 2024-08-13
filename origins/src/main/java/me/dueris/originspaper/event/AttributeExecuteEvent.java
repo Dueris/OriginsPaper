@@ -1,6 +1,6 @@
 package me.dueris.originspaper.event;
 
-import me.dueris.originspaper.registry.registries.PowerType;
+import me.dueris.originspaper.power.PowerType;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;

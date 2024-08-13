@@ -1,8 +1,12 @@
 package me.dueris.originspaper.registry;
 
 import me.dueris.originspaper.OriginsPaper;
-import me.dueris.originspaper.registry.registries.OriginLayer;
+import me.dueris.originspaper.data.types.Impact;
+import me.dueris.originspaper.origin.Origin;
+import me.dueris.originspaper.origin.OriginLayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.List;
 
@@ -18,5 +22,9 @@ public class BuiltinRegistry {
 		for (OriginLayer layer : builtinLayers) {
 			OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).register(layer, ResourceLocation.parse("apoli:command"));
 		}
+		OriginsPaper.EMPTY_ORIGIN = new Origin(
+			ResourceLocation.parse("origins:empty"), List.of(), new ItemStack(Items.AIR), true, Integer.MAX_VALUE, Impact.NONE, 0, null, net.minecraft.network.chat.Component.empty(), net.minecraft.network.chat.Component.empty()
+		);
+		OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).register(OriginsPaper.EMPTY_ORIGIN, ResourceLocation.parse("origins:empty"));
 	}
 }

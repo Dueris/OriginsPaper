@@ -1,10 +1,9 @@
 package me.dueris.originspaper.screen;
 
-import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
+import me.dueris.originspaper.origin.Origin;
+import me.dueris.originspaper.origin.OriginLayer;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.registry.registries.Origin;
-import me.dueris.originspaper.registry.registries.OriginLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +26,7 @@ public interface ChoosingPage {
 					ScreenNavigator.layerPages.put(layer, new ArrayList<>());
 					List<Origin> choosable = layer.getOriginIdentifiers()
 						.stream()
-						.map(CraftApoli::getOrigin)
+						.map(OriginsPaper::getOrigin)
 						.filter(origin -> !origin.unchoosable())
 						.sorted(Comparator.comparingInt(Origin::order))
 						.sorted(Comparator.comparingInt(Origin::impactValue))

@@ -2,15 +2,14 @@ package me.dueris.originspaper.screen;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import javassist.NotFoundException;
-import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.content.OrbOfOrigins;
 import me.dueris.originspaper.event.OrbInteractEvent;
-import me.dueris.originspaper.registry.registries.OriginLayer;
+import me.dueris.originspaper.origin.OriginLayer;
+import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.storage.OriginConfiguration;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import me.dueris.originspaper.util.Util;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -191,13 +190,9 @@ public class ScreenNavigator implements Listener {
 						if (!((CraftPlayer) p).getHandle().getAbilities().instabuild) {
 							Util.consumeItem(e.getItem());
 						}
-						CraftApoli.getLayersFromRegistry().forEach(layer -> {
-							try {
-								PowerHolderComponent.unassignPowers(p, layer);
-							} catch (NotFoundException ee) {
-								throw new RuntimeException(ee);
-							}
-							PowerHolderComponent.setOrigin(p, layer, CraftApoli.emptyOrigin());
+						OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values().forEach(layer -> {
+							PowerHolderComponent.unassignPowers(p, layer);
+							PowerHolderComponent.setOrigin(p, layer, OriginsPaper.EMPTY_ORIGIN);
 						});
 						OrbInteractEvent event = new OrbInteractEvent(p);
 						getServer().getPluginManager().callEvent(event);

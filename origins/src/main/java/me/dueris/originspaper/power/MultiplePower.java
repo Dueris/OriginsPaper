@@ -11,7 +11,6 @@ import io.github.dueris.calio.util.holder.ObjectProvider;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.condition.ConditionFactory;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.registry.registries.PowerType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;

@@ -8,7 +8,6 @@ import me.dueris.originspaper.data.ApoliDataTypes;
 import me.dueris.originspaper.data.types.HudRender;
 import me.dueris.originspaper.data.types.Keybind;
 import me.dueris.originspaper.event.KeybindTriggerEvent;
-import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.util.KeybindUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;

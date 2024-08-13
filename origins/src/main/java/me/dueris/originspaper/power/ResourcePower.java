@@ -4,7 +4,6 @@ import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import io.github.dueris.calio.util.holder.ObjectProvider;
 import io.github.dueris.calio.util.holder.Pair;
-import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.action.ActionFactory;
 import me.dueris.originspaper.condition.ConditionFactory;
@@ -13,9 +12,8 @@ import me.dueris.originspaper.data.types.Comparison;
 import me.dueris.originspaper.data.types.HudRender;
 import me.dueris.originspaper.event.PowerUpdateEvent;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.registry.registries.PowerType;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import me.dueris.originspaper.util.Util;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -259,7 +257,7 @@ public class ResourcePower extends PowerType implements ResourceInterface {
 			Arrays.stream(encoded.split(",")).forEach(key -> {
 				String a = key.split("<::>")[0];
 				double b = Double.parseDouble(key.split("<::>")[1]);
-				if (CraftApoli.getPower(a.split("_cooldown_")[0]) instanceof CooldownInterface cooldownInterface) {
+				if (OriginsPaper.getPower(ResourceLocation.parse(a.split("_cooldown_")[0])) instanceof CooldownInterface cooldownInterface) {
 					CooldownPower.addCooldown(p, cooldownInterface);
 				}
 			});

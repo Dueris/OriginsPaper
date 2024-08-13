@@ -4,7 +4,6 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.condition.ConditionFactory;
-import me.dueris.originspaper.registry.registries.PowerType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;

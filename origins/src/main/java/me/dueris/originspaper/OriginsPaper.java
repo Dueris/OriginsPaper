@@ -14,31 +14,32 @@ import me.dueris.originspaper.command.OriginCommand;
 import me.dueris.originspaper.condition.Conditions;
 import me.dueris.originspaper.condition.types.BiEntityConditions;
 import me.dueris.originspaper.content.OrbOfOrigins;
+import me.dueris.originspaper.data.ApoliDataTypes;
+import me.dueris.originspaper.data.OriginsDataTypes;
 import me.dueris.originspaper.data.types.modifier.ModifierOperations;
-import me.dueris.originspaper.integration.PlaceHolderAPI;
-import me.dueris.originspaper.integration.pehuki.CraftPehuki;
+import me.dueris.originspaper.integration.CraftPehuki;
+import me.dueris.originspaper.origin.Origin;
+import me.dueris.originspaper.origin.OriginLayer;
+import me.dueris.originspaper.power.PowerType;
 import me.dueris.originspaper.power.RecipePower;
 import me.dueris.originspaper.power.provider.origins.BounceSlimeBlock;
 import me.dueris.originspaper.power.provider.origins.WaterBreathe;
 import me.dueris.originspaper.registry.BuiltinRegistry;
 import me.dueris.originspaper.registry.Registries;
-import me.dueris.originspaper.registry.registries.Origin;
-import me.dueris.originspaper.registry.registries.OriginLayer;
-import me.dueris.originspaper.registry.registries.PowerType;
 import me.dueris.originspaper.screen.ChoosingPage;
 import me.dueris.originspaper.screen.GuiTicker;
 import me.dueris.originspaper.screen.RandomOriginPage;
 import me.dueris.originspaper.screen.ScreenNavigator;
 import me.dueris.originspaper.storage.OriginConfiguration;
-import me.dueris.originspaper.storage.OriginDataContainer;
-import me.dueris.originspaper.storage.nbt.NBTFixerUpper;
+import me.dueris.originspaper.storage.PlayerPowerRepository;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import me.dueris.originspaper.util.*;
 import me.dueris.originspaper.util.entity.GlowingEntitiesUtils;
 import me.dueris.originspaper.util.entity.PlayerManager;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
@@ -46,6 +47,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -54,7 +56,6 @@ import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -76,8 +77,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 	public static GlowingEntitiesUtils glowingEntitiesUtils;
 	public static BstatsMetrics metrics;
 	public static String apoliVersion = "2.12.0-alpha.3";
-	public static String LANGUAGE;
-	public static boolean placeholderapi = false;
+	public static String LANGUAGE = "en_us";
 	public static boolean showCommandOutput = false;
 	public static File playerDataFolder;
 	public static boolean forceUseCurrentVersion = false;
@@ -89,6 +89,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 	public static ExecutorService loaderThreadPool;
 	public static ArrayList<String> versions = new ArrayList<>();
 	public static MinecraftServer server;
+	public static Origin EMPTY_ORIGIN;
 	private static OriginsPaper plugin;
 	public IRegistry registry;
 
@@ -108,14 +109,24 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		return ResourceLocation.fromNamespaceAndPath("apoli", path);
 	}
 
+	public static OriginLayer getLayer(ResourceLocation location) {
+		return OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).get(location);
+	}
+
+	public static PowerType getPower(ResourceLocation location) {
+		return OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(location);
+	}
+
+	public static Origin getOrigin(ResourceLocation location) {
+		return OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(location);
+	}
+
 	public static @NotNull File getTmpFolder() {
 		return Path.of(getPlugin().getDataFolder().getAbsolutePath() + File.separator + ".tmp" + File.separator).toFile();
 	}
 
 	private static void patchPowers() {
 		for (Player p : Bukkit.getOnlinePlayers()) {
-			OriginDataContainer.loadData();
-			PowerHolderComponent.setupPowers(p);
 			PowerHolderComponent.assignPowers(p);
 		}
 	}
@@ -190,6 +201,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				OriginConfiguration.load();
 				showCommandOutput = OriginConfiguration.getConfiguration().getBoolean("show-command-output", false);
 				LANGUAGE = OriginConfiguration.getConfiguration().getString("language", LANGUAGE);
+				LangFile.init();
 			} catch (IOException var7) {
 				throw new RuntimeException(var7);
 			}
@@ -215,43 +227,32 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				Bukkit.getServer().getPluginManager().disablePlugin(this);
 			}
 			ThreadFactory threadFactory = new NamedTickThreadFactory("OriginParsingPool");
-			placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
-			if (placeholderapi) {
-				new PlaceHolderAPI(this).register();
-			}
 
 			if (!getTmpFolder().exists()) {
 				getTmpFolder().mkdirs();
 			}
 
-			OriginDataContainer.loadData();
 			int avalibleJVMThreads = Runtime.getRuntime().availableProcessors() * 2;
 			int dynamic_thread_count = avalibleJVMThreads < 4
 				? avalibleJVMThreads
 				: Math.min(avalibleJVMThreads, OriginConfiguration.getConfiguration().getInt("max-loader-threads"));
 			loaderThreadPool = Executors.newFixedThreadPool(dynamic_thread_count, threadFactory);
 			try {
-				LangFile.init();
+				io.github.dueris.calio.CraftCalio craftCalio = io.github.dueris.calio.CraftCalio.buildInstance(
+					new String[]{"--async=true"}
+				);
+				ApoliDataTypes.init();
+				OriginsDataTypes.init();
 				ModifierOperations.registerAll();
 				Conditions.registerAll();
 				Actions.registerAll();
 				PowerType.registerAll();
-				io.github.dueris.calio.CraftCalio craftCalio = io.github.dueris.calio.CraftCalio.buildInstance(
-					new String[]{"--async=true"}
-				);
-				try {
-					craftCalio.startBuilder()
-						.withAccessor(new AccessorKey<>(List.of("apoli", "origins"), "power", PowerType.class, 0, ParsingStrategy.TYPED, Registries.CRAFT_POWER))
-						.withAccessor(new AccessorKey<>(List.of("origins"), "origin", Origin.class, 1, ParsingStrategy.DEFAULT, Registries.ORIGIN))
-						.withAccessor(new AccessorKey<>(List.of("origins"), "origin_layer", OriginLayer.class, 2, ParsingStrategy.DEFAULT, Registries.LAYER))
-						.build().parse();
-					BuiltinRegistry.bootstrap();
-					NBTFixerUpper.runFixerUpper();
-				} catch (Throwable ex) {
-					ex.printStackTrace();
-					this.throwable(ex, true);
-					return false;
-				}
+				craftCalio.startBuilder()
+					.withAccessor(new AccessorKey<>(List.of("apoli", "origins"), "power", PowerType.class, 0, ParsingStrategy.TYPED, Registries.CRAFT_POWER))
+					.withAccessor(new AccessorKey<>(List.of("origins"), "origin", Origin.class, 1, ParsingStrategy.DEFAULT, Registries.ORIGIN))
+					.withAccessor(new AccessorKey<>(List.of("origins"), "origin_layer", OriginLayer.class, 2, ParsingStrategy.DEFAULT, Registries.LAYER))
+					.build().parse();
+				BuiltinRegistry.bootstrap();
 				return true;
 			} catch (Throwable throwable) {
 				this.getLog4JLogger().error("An unhandled exception occurred when starting OriginsPaper!");
@@ -355,16 +356,12 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				player.closeInventory();
 				player.getPersistentDataContainer()
-					.set(new NamespacedKey(this, "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(PowerHolderComponent.getOrigin(player), player));
+					.set(new NamespacedKey(this, "powers"), PersistentDataType.STRING, PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) player).getHandle()).serializePowers(new CompoundTag()).toString());
 				PowerHolderComponent.unassignPowers(player);
-				OriginDataContainer.unloadData(player);
 			}
 
 			preShutdownTasks.forEach(Runnable::run);
 			glowingEntitiesUtils.disable();
-			CraftApoli.unloadData();
-			PowerHolderComponent.playerPowerMapping.clear();
-			PowerHolderComponent.powersAppliedList.clear();
 			RecipePower.recipeMapping.clear();
 			RecipePower.tags.clear();
 			this.registry.clearRegistries();
@@ -385,12 +382,8 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void loadEvent(ServerLoadEvent e) {
-		CraftApoli.getPowersFromRegistry().addAll(this.registry.retrieve(Registries.CRAFT_POWER).values());
-		CraftApoli.getOriginsFromRegistry().addAll(this.registry.retrieve(Registries.ORIGIN).values());
-		CraftApoli.getLayersFromRegistry().addAll(this.registry.retrieve(Registries.LAYER).values());
 		ChoosingPage.registerInstances();
 		ScreenNavigator.layerPages.values().forEach(pages -> pages.add(pages.size(), new RandomOriginPage()));
-//		RecipePower.parseRecipes();
 		OrbOfOrigins.init();
 	}
 

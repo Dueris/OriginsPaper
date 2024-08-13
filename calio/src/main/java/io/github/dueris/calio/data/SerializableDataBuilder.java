@@ -6,7 +6,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

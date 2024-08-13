@@ -1,9 +1,8 @@
-package me.dueris.originspaper.registry.registries;
+package me.dueris.originspaper.origin;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.InstanceDefiner;
 import io.github.dueris.calio.registry.Registrar;
-import me.dueris.originspaper.CraftApoli;
 import me.dueris.originspaper.OriginsPaper;
 import me.dueris.originspaper.condition.ConditionFactory;
 import me.dueris.originspaper.data.ApoliDataTypes;
@@ -11,9 +10,9 @@ import me.dueris.originspaper.data.OriginsDataTypes;
 import me.dueris.originspaper.data.types.GuiTitle;
 import me.dueris.originspaper.registry.Registries;
 import me.dueris.originspaper.screen.ScreenNavigator;
+import me.dueris.originspaper.storage.PowerHolderComponent;
 import me.dueris.originspaper.util.LangFile;
 import me.dueris.originspaper.util.Util;
-import me.dueris.originspaper.util.entity.PowerHolderComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -101,7 +100,7 @@ public class OriginLayer {
 		List<Origin> tested = new ArrayList<>();
 
 		for (ConditionedOrigin origin : this.getOrigins()) {
-			List<Origin> conditionedOrigins = origin.origins.stream().map(CraftApoli::getOrigin).toList();
+			List<Origin> conditionedOrigins = origin.origins.stream().map(OriginsPaper::getOrigin).toList();
 			if (origin.condition != null) {
 				if (origin.condition.test(entity)) tested.addAll(conditionedOrigins);
 				continue;
@@ -116,12 +115,12 @@ public class OriginLayer {
 		boolean autoChoose = this.isAutoChoose();
 		if (defaultOrigin == null) return false;
 		if (autoChoose) {
-			PowerHolderComponent.setOrigin(entity.getBukkitEntityRaw(), this, CraftApoli.getOrigin(defaultOrigin));
+			PowerHolderComponent.setOrigin(entity.getBukkitEntityRaw(), this, OriginsPaper.getOrigin(defaultOrigin));
 			return true;
 		} else if (ScreenNavigator.orbChoosing.contains(entity)) {
 			return false;
 		} else {
-			if (!defaultOrigin.equals(CraftApoli.EMPTY_ORIGIN.key())) {
+			if (!defaultOrigin.equals(OriginsPaper.EMPTY_ORIGIN.key())) {
 				Origin origin = OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(defaultOrigin);
 				if (origin != null) {
 					PowerHolderComponent.setOrigin(entity.getBukkitEntityRaw(), this, origin);
@@ -141,7 +140,7 @@ public class OriginLayer {
 		return !this.isAllowRandom()
 			? new ArrayList<>()
 			: getOriginIdentifiers().stream()
-			.map(CraftApoli::getOrigin)
+			.map(OriginsPaper::getOrigin)
 			.filter(origin -> !origin.unchoosable() || this.isAllowRandomUnchoosable())
 			.filter(origin -> {
 				if (!this.getExcludeRandom().isEmpty()) {

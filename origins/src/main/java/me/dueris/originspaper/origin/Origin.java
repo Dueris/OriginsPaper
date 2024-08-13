@@ -1,4 +1,4 @@
-package me.dueris.originspaper.registry.registries;
+package me.dueris.originspaper.origin;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.InstanceDefiner;

@@ -1,0 +1,16 @@
+{
+  "PowerRepository": [
+    {
+      "Layer": "origins:origin",
+      "Powers": [
+        "origins:test",
+        "origins:elytra",
+        "origins:water_vulnerability"
+      ]
+    },
+    {
+      "Layer": "apoli:test",
+      "Powers": []
+    }
+  ]
+}
