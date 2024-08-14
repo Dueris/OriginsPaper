@@ -1,9 +1,0 @@
-{
-  "type": "origins:modify_swim_speed",
-  "modifier": {
-    "value": 1.5,
-    "operation": "multiply_base",
-    "id": "*:*"
-  },
-  "hidden": false
-}

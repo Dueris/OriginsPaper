@@ -97,7 +97,7 @@ public class PowerHolderComponent implements Listener {
 		if (!(p instanceof Player player)) return null;
 		return (PowerType) getPowers(player, (powerType) -> {
 			return powerType.getTag().equalsIgnoreCase(powerKey);
-		}).stream().findFirst().orElseThrow();
+		}).stream().findFirst().orElse(null);
 	}
 
 	public static @NotNull ArrayList<PowerType> getNestedPowerTypes(PowerType power) {
@@ -144,12 +144,23 @@ public class PowerHolderComponent implements Listener {
 
 			PlayerPowerRepository repository = PlayerPowerRepository.getOrCreateRepo(getNMS(player));
 			for (ResourceLocation power : origin.powers()) {
-				PowerType powerType = OriginsPaper.getPower(power);
-				if (powerType == null) {
-					OriginsPaper.getPlugin().getLog4JLogger().error("Specified PowerType '{}' in Origin '{}' was not found in the registry.", power.toString(), origin.getTag());
+				PowerType rootPower = OriginsPaper.getPower(power);
+				if (rootPower == null) {
+					printNotFound(power, origin);
 					continue;
 				}
-				repository.addPower(powerType, layer);
+				List<PowerType> types = new ArrayList<>(List.of(rootPower));
+				if (rootPower instanceof MultiplePower multiplePower) {
+					types.addAll(multiplePower.getSubPowers());
+				}
+
+				for (PowerType powerType : types) {
+					if (powerType == null) {
+						printNotFound(power, origin);
+						continue;
+					}
+					repository.addPower(powerType, layer);
+				}
 			}
 
 			PowerHolderComponent.loadPowers(player, layer, true);
@@ -158,6 +169,15 @@ public class PowerHolderComponent implements Listener {
 			Bukkit.getPluginManager().callEvent(e);
 			ScreenNavigator.inChoosingLayer.remove(getNMS(player));
 		}
+	}
+
+	private static void printNotFound(ResourceLocation location) {
+		printNotFound(location, null);
+	}
+
+	private static void printNotFound(@NotNull ResourceLocation location, @Nullable Origin origin) {
+		OriginsPaper.getPlugin().getLog4JLogger().error("Specified PowerType '{}'{} was not found in the registry.", location.toString(),
+			origin == null ? "" : " in Origin '{}'".replace("{}", origin.getTag()));
 	}
 
 	public static List<PowerType> getPowersApplied(Player p) {

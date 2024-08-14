@@ -1,0 +1,11 @@
+{
+	"type": "origins:prevent_sleep",
+	"block_condition": {
+		"type": "origins:height",
+		"comparison": "<",
+		"compare_to": 86
+	},
+	"message": {
+		"translate": "origins.avian_sleep_fail"
+	}
+}

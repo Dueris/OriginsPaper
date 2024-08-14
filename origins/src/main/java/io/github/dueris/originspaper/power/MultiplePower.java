@@ -34,6 +34,7 @@ public class MultiplePower extends PowerType {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void onBootstrap() {
 		for (String key : sourceObject.keySet()) {
 			JsonElement element = sourceObject.get(key);

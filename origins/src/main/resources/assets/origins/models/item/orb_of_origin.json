@@ -1,6 +1,6 @@
 {
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "origins:item/orb_of_origin"
-  }
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "origins:item/orb_of_origin"
+    }
 }

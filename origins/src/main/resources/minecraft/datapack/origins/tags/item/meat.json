@@ -1,0 +1,14 @@
+{
+	"replace": false,
+	"values": [
+		"#minecraft:meat",
+		"minecraft:cod",
+		"minecraft:tropical_fish",
+		"minecraft:pufferfish",
+		"minecraft:salmon",
+		"minecraft:rabbit_stew",
+		"minecraft:cooked_cod",
+		"minecraft:cooked_salmon",
+		"minecraft:spider_eye"
+	]
+}
