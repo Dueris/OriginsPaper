@@ -1,20 +1,14 @@
 {
-  "type": "origins:edible_item",
-  "item_condition": {
-    "type": "origins:ingredient",
-    "ingredient": {
-      "item": "minecraft:oak_log"
-    }
-  },
-  "food_component": {
-    "nutrition": 4,
-    "saturation": 1,
-    "always_edible": true,
-    "snack": false
-  },
-  "use_action": "eat",
-  "result_stack": {
-    "id": "minecraft:water_bucket",
-    "amount": 1
-  }
+  "type": "origins:keep_inventory",
+  "slots": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ]
 }

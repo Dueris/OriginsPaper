@@ -1,0 +1,42 @@
+package io.github.dueris.originspaper.power;
+
+import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.data.types.modifier.Modifier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.LinkedList;
+import java.util.List;
+
+public class ModifierPower extends PowerType {
+	private final List<Modifier> modifiers = new LinkedList<>();
+
+	public ModifierPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
+						 @Nullable Modifier modifier, @Nullable List<Modifier> modifiers) {
+		super(key, type, name, description, hidden, condition, loadingPriority);
+		if (modifier != null) {
+			this.modifiers.add(modifier);
+		}
+		if (modifiers != null) {
+			this.modifiers.addAll(modifiers);
+		}
+	}
+
+	public static InstanceDefiner buildFactory() {
+		return PowerType.buildFactory()
+			.add("modifier", Modifier.DATA_TYPE, null)
+			.add("modifiers", Modifier.LIST_TYPE, null);
+	}
+
+	public void addModifier(Modifier modifier) {
+		this.modifiers.add(modifier);
+	}
+
+	public List<Modifier> getModifiers() {
+		return modifiers;
+	}
+}

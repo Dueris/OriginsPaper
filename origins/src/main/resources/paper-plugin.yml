@@ -1,9 +1,9 @@
-bootstrapper: "me.dueris.originspaper.Bootstrap"
-loader: "me.dueris.originspaper.DependencyLoader"
+bootstrapper: "io.github.dueris.originspaper.Bootstrap"
+loader: "io.github.dueris.originspaper.DependencyLoader"
 load: POSTWORLD
 name: "OriginsPaper"
 version: "${fullVer}"
-main: "me.dueris.originspaper.OriginsPaper"
+main: "io.github.dueris.originspaper.OriginsPaper"
 api-version: "${apiVer}"
 authors: [ Dueris ]
 folia-supported: false

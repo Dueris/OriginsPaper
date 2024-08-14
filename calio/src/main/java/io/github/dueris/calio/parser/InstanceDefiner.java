@@ -1,6 +1,7 @@
 package io.github.dueris.calio.parser;
 
 import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
 import io.github.dueris.calio.util.holder.ObjectTiedEnumState;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +14,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 

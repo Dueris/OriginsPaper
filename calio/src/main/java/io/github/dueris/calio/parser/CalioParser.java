@@ -50,8 +50,8 @@ public class CalioParser {
 				try {
 					ConcurrentLinkedQueue<Class<? extends T>> instanceTypes = (ConcurrentLinkedQueue<Class<? extends T>>) ReflectionUtils.getStaticFieldValue(accessorKey.toBuild(), "INSTANCE_TYPES");
 					for (Class<? extends T> instanceType : instanceTypes) {
-						if (ReflectionUtils.hasMethod(instanceType, "buildDefiner", true)) {
-							typedTempInstance.add(new Tuple<>(ReflectionUtils.invokeStaticMethod(instanceType, "buildDefiner"), instanceType));
+						if (ReflectionUtils.hasMethod(instanceType, "buildFactory", true)) {
+							typedTempInstance.add(new Tuple<>(ReflectionUtils.invokeStaticMethod(instanceType, "buildFactory"), instanceType));
 						}
 					}
 					if (ReflectionUtils.hasField(accessorKey.toBuild(), "DEFAULT_TYPE", true)) {
@@ -72,7 +72,7 @@ public class CalioParser {
 				return concurrentLinkedQueue;
 			}
 		}
-		if (ReflectionUtils.hasMethod(clz, "buildDefiner", true)) {
+		if (ReflectionUtils.hasMethod(clz, "buildFactory", true)) {
 			List<CompletableFuture<Void>> parsingTasks = new ArrayList<>();
 			for (Tuple<String, String> Tuple : entry.getValue()) {
 				Optional<CompletableFuture<Void>> future = submitParseTask(() -> {
@@ -90,7 +90,7 @@ public class CalioParser {
 				throw new RuntimeException(e);
 			}
 		} else {
-			LOGGER.error("Provided class, {} has no static method 'buildDefiner'", clz.getSimpleName());
+			LOGGER.error("Provided class, {} has no static method 'buildFactory'", clz.getSimpleName());
 		}
 
 		return concurrentLinkedQueue;
@@ -136,9 +136,9 @@ public class CalioParser {
 		if (toBuild == null)
 			throw new RuntimeException("Unable to parse type for class '" + clz.getSimpleName() + "' and type value of '" + jsonSource.get("type").getAsString() + "'");
 		try {
-			if (!ReflectionUtils.hasMethod(toBuild, "buildDefiner", true))
-				throw new IllegalArgumentException("Class '" + toBuild.getSimpleName() + "' must have the method 'buildDefiner' but one was not found!");
-			definer = ReflectionUtils.invokeStaticMethod(toBuild, "buildDefiner");
+			if (!ReflectionUtils.hasMethod(toBuild, "buildFactory", true))
+				throw new IllegalArgumentException("Class '" + toBuild.getSimpleName() + "' must have the method 'buildFactory' but one was not found!");
+			definer = ReflectionUtils.invokeStaticMethod(toBuild, "buildFactory");
 		} catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}

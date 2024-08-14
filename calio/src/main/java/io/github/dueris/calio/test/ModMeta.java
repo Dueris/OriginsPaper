@@ -19,7 +19,7 @@ public class ModMeta {
 		this.priority = priority;
 	}
 
-	public static InstanceDefiner buildDefiner() {
+	public static InstanceDefiner buildFactory() {
 		return InstanceDefiner.instanceDefiner()
 			.add("priority", SerializableDataTypes.boundNumber(SerializableDataTypes.INT, 0, Integer.MAX_VALUE));
 	}

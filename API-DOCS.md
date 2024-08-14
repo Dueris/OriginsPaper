@@ -63,7 +63,7 @@ public class ApoliExamplePower extends PowerType {
 
 In Calio/Apoli, a PowerType is an object that defines the main logic and handling of powers for the players it has assigned to it.
 To create an instance of any class inside Calio during parsing, it reads the InstanceDefiner, which is defined by the
-method ``static InstanceDefiner buildDefiner()``. InstanceDefiners are definition of a Constructor for the FactoryHolder. The first instance
+method ``static InstanceDefiner buildFactory()``. InstanceDefiners are definition of a Constructor for the FactoryHolder. The first instance
 added is the first arg, the second being the second arg, etc. It also provides the key for the `"type"` field. However, in Calio, there
 is a required argument of a ResourceLocation at the beginning of the constructor your InstanceDefiner is creating, which is the `"key"` argument.
 The key argument is the argument assigned to the instance upon instance creation, named after the Namesace and Key of the json.
@@ -85,12 +85,12 @@ public class ApoliExamplePower extends PowerType {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	// buildDefiner method. We call the PowerType.buildDefiner method first to define those args
-	// from the base instead of Copy/Pasting its buildDefiner method and adding to it.
+	// buildFactory method. We call the PowerType.buildFactory method first to define those args
+	// from the base instead of Copy/Pasting its buildFactory method and adding to it.
 	// By default, the PowerType class does not contain a Namespace, which is why ofNamespace needs to be added.
 	// The way this is made allows for creating easy extensions of any power without too much struggle.
-	public static InstanceDefiner buildDefiner() {
-		return PowerType.buildDefiner().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"));
+	public static InstanceDefiner buildFactory() {
+		return PowerType.buildFactory().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"));
 	}
 }
 ```
@@ -114,8 +114,8 @@ public class ApoliExamplePower extends PowerType {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static InstanceDefiner buildDefiner() {
-		return PowerType.buildDefiner().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"))
+	public static InstanceDefiner buildFactory() {
+		return PowerType.buildFactory().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"))
 			/* |   Field name   |   SerializableDataType instance   |   Default value   | */
 			.add("welcome_message", SerializableDataTypes.STRING, "Hello World!");
 	}
@@ -157,8 +157,8 @@ public class ApoliExamplePower extends PowerType {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static InstanceDefiner buildDefiner() {
-		return PowerType.buildDefiner().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"))
+	public static InstanceDefiner buildFactory() {
+		return PowerType.buildFactory().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"))
 			.add("welcome_message", SerializableDataTypes.STRING, "Hello World!");
 	}
 
@@ -186,8 +186,8 @@ public class ApoliExamplePower extends PowerType {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static InstanceDefiner buildDefiner() {
-		return PowerType.buildDefiner().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"))
+	public static InstanceDefiner buildFactory() {
+		return PowerType.buildFactory().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"))
 			.add("welcome_message", SerializableDataTypes.STRING, "Hello World!");
 	}
 
