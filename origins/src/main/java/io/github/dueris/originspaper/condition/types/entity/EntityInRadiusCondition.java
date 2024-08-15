@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -16,7 +15,7 @@ import java.util.function.Predicate;
 
 public class EntityInRadiusCondition {
 
-	public static boolean condition(@NotNull DeserializedFactoryJson data, Entity entity) {
+	public static boolean condition(@NotNull SerializableData.Instance data, Entity entity) {
 
 		Predicate<Tuple<Entity, Entity>> biEntityCondition = data.get("bientity_condition");
 		Shape shape = data.get("shape");
@@ -51,7 +50,7 @@ public class EntityInRadiusCondition {
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("entity_in_radius"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION)
 				.add("shape", SerializableDataTypes.enumValue(Shape.class), Shape.CUBE)
 				.add("radius", SerializableDataTypes.DOUBLE)

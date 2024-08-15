@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.condition.ConditionFactory;
@@ -71,7 +71,7 @@ public class FireProjectilePower extends PowerType implements CooldownInterface 
 		this.shooterAction = shooterAction;
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("fire_projectile"))
 			.add("cooldown", SerializableDataTypes.INT, 1)
 			.add("count", SerializableDataTypes.INT, 1)

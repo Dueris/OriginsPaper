@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import net.minecraft.core.Holder;
@@ -54,7 +54,7 @@ public class DamageOverTimePower extends PowerType {
 		this.onsetDelay = onsetDelay.orElse(interval);
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("damage_over_time"))
 			.add("interval", SerializableDataTypes.POSITIVE_INT, 20)
 			.add("onset_delay", SerializableDataTypes.optional(SerializableDataTypes.INT), Optional.empty())

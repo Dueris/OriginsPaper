@@ -2,7 +2,7 @@ package io.github.dueris.calio.test;
 
 import com.google.gson.JsonObject;
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.annotations.SourceProvider;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,8 +19,8 @@ public class ModMeta {
 		this.priority = priority;
 	}
 
-	public static InstanceDefiner buildFactory() {
-		return InstanceDefiner.instanceDefiner()
+	public static SerializableData buildFactory() {
+		return SerializableData.serializableData()
 			.add("priority", SerializableDataTypes.boundNumber(SerializableDataTypes.INT, 0, Integer.MAX_VALUE));
 	}
 }

@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.action.types.block;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import net.minecraft.core.BlockPos;
@@ -16,7 +16,7 @@ public class SetBlockAction {
 	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionFactory<>(
 			OriginsPaper.apoliIdentifier("set_block"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("block", SerializableDataTypes.BLOCK_STATE),
 			(data, block) -> {
 				BlockState actualState = data.get("block");

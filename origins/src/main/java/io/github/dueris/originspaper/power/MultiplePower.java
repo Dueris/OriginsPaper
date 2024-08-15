@@ -4,8 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.dueris.calio.data.AccessorKey;
 import io.github.dueris.calio.parser.CalioParser;
-import io.github.dueris.calio.parser.InstanceDefiner;
 import io.github.dueris.calio.parser.ParsingStrategy;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.ReflectionUtils;
 import io.github.dueris.calio.util.holder.ObjectProvider;
 import io.github.dueris.originspaper.OriginsPaper;
@@ -29,7 +29,7 @@ public class MultiplePower extends PowerType {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("multiple"));
 	}
 
@@ -43,7 +43,7 @@ public class MultiplePower extends PowerType {
 			JsonObject jo = sourceObject.getAsJsonObject(key);
 			AccessorKey<PowerType> accessorKey = new AccessorKey<>(List.of("apoli", "origins"), "power", PowerType.class, 0, ParsingStrategy.TYPED, Registries.CRAFT_POWER);
 
-			ConcurrentLinkedQueue<Tuple<InstanceDefiner, Class<? extends PowerType>>> typedTempInstance = new ConcurrentLinkedQueue<>();
+			ConcurrentLinkedQueue<Tuple<SerializableData, Class<? extends PowerType>>> typedTempInstance = new ConcurrentLinkedQueue<>();
 			final Class<? extends PowerType>[] defaultType = new Class[]{null};
 			Class<PowerType> clz = accessorKey.strategy().equals(ParsingStrategy.DEFAULT) ? accessorKey.toBuild() :
 				((ObjectProvider<Class<PowerType>>) () -> {

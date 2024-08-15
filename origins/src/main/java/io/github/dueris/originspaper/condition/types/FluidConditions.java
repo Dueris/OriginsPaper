@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.types;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.condition.meta.MetaConditions;
@@ -16,23 +16,23 @@ public class FluidConditions {
 		MetaConditions.register(Registries.FLUID_CONDITION, FluidConditions::register);
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("empty"),
-			InstanceDefiner.instanceDefiner(),
+			SerializableData.serializableData(),
 			(data, fluid) -> fluid.isEmpty()
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("still"),
-			InstanceDefiner.instanceDefiner(),
+			SerializableData.serializableData(),
 			(data, fluid) -> fluid.isSource()
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("in_tag"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("tag", SerializableDataTypes.FLUID_TAG),
 			(data, fluid) -> fluid.holder().is((TagKey<Fluid>) data.get("tag"))
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("fluid"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("fluid", SerializableDataTypes.FLUID),
 			(data, fluid) -> fluid.getType() == data.get("fluid")
 		));

@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.condition.ConditionFactory;
@@ -60,7 +60,7 @@ public class ActionOnBlockUsePower extends PowerType {
 		this.hands = hands;
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("action_on_block_use"))
 			.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
 			.add("block_action", ApoliDataTypes.BLOCK_ACTION, null)

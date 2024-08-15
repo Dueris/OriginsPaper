@@ -1,7 +1,6 @@
 package io.github.dueris.originspaper.action.types.entity;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import net.minecraft.network.chat.Component;
@@ -17,7 +16,7 @@ public class EnderChestAction {
 
 	private static final Component TITLE = Component.translatable("container.enderchest");
 
-	public static void action(DeserializedFactoryJson data, Entity entity) {
+	public static void action(SerializableData.Instance data, Entity entity) {
 		if (!(entity instanceof Player player)) return;
 
 		PlayerEnderChestContainer enderChestContainer = player.getEnderChestInventory();
@@ -34,7 +33,7 @@ public class EnderChestAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("ender_chest"),
-			InstanceDefiner.instanceDefiner(),
+			SerializableData.serializableData(),
 			EnderChestAction::action
 		);
 	}

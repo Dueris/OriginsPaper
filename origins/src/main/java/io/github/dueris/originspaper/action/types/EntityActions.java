@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.action.types;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.action.Actions;
@@ -34,7 +34,7 @@ public class EntityActions {
 		register(SideAction.getFactory(ApoliDataTypes.ENTITY_ACTION, entity -> !entity.level().isClientSide));
 
 		register(new ActionFactory<>(OriginsPaper.apoliIdentifier("grant_power"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("power", SerializableDataTypes.IDENTIFIER)
 				.add("source", SerializableDataTypes.IDENTIFIER),
 			(data, entity) -> {
@@ -53,7 +53,7 @@ public class EntityActions {
 				}
 			}));
 		register(new ActionFactory<>(OriginsPaper.apoliIdentifier("remove_power"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("power", SerializableDataTypes.IDENTIFIER)
 				.add("source", SerializableDataTypes.IDENTIFIER),
 			(data, entity) -> {
@@ -72,7 +72,7 @@ public class EntityActions {
 				}
 			}));
 		register(new ActionFactory<>(OriginsPaper.apoliIdentifier("revoke_all_powers"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("source", SerializableDataTypes.IDENTIFIER),
 			(data, entity) -> {
 				if (entity instanceof Player p) {

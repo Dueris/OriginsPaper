@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import net.minecraft.world.effect.MobEffects;
@@ -16,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ElytraFlightPossibleCondition {
 
-	public static boolean condition(DeserializedFactoryJson data, Entity entity) {
+	public static boolean condition(SerializableData.Instance data, Entity entity) {
 		if (!(entity instanceof LivingEntity livingEntity)) {
 			return false;
 		}
@@ -34,7 +33,7 @@ public class ElytraFlightPossibleCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(OriginsPaper.apoliIdentifier("elytra_flight_possible"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("check_state", SerializableDataTypes.BOOLEAN, false)
 				.add("check_ability", SerializableDataTypes.BOOLEAN, true),
 			ElytraFlightPossibleCondition::condition

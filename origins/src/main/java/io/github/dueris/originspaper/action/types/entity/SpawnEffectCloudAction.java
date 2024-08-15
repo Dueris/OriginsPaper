@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -13,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SpawnEffectCloudAction {
 
-	public static void action(DeserializedFactoryJson data, @NotNull Entity entity) {
+	public static void action(SerializableData.Instance data, @NotNull Entity entity) {
 
 		AreaEffectCloud aec = new AreaEffectCloud(entity.level(), entity.getX(), entity.getY(), entity.getZ());
 		if (entity instanceof LivingEntity livingEntity) {
@@ -34,7 +33,7 @@ public class SpawnEffectCloudAction {
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
 			OriginsPaper.apoliIdentifier("spawn_effect_cloud"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("radius", SerializableDataTypes.FLOAT, 3.0F)
 				.add("radius_on_use", SerializableDataTypes.FLOAT, -0.5F)
 				.add("duration", SerializableDataTypes.INT, 600)

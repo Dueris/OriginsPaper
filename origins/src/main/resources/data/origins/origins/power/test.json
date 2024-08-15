@@ -1,0 +1,8 @@
+{
+  "type": "origins:toggle_night_vision",
+  "strength": 0.5,
+  "condition": {
+    "type": "origins:submerged_in",
+    "fluid": "minecraft:water"
+  }
+}

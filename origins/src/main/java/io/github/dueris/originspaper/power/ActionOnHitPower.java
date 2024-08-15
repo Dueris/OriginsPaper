@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.condition.ConditionFactory;
@@ -37,7 +37,7 @@ public class ActionOnHitPower extends PowerType implements CooldownInterface {
 		this.bientityCondition = bientityCondition;
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("action_on_hit"))
 			.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION)
 			.add("damage_condition", ApoliDataTypes.DAMAGE_CONDITION, null)

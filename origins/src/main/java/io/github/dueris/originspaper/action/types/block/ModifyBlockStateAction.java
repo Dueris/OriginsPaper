@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.block;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -20,7 +19,7 @@ import java.util.Optional;
 
 public class ModifyBlockStateAction {
 
-	public static void action(@NotNull DeserializedFactoryJson data, @NotNull Triple<Level, BlockPos, Direction> block) {
+	public static void action(@NotNull SerializableData.Instance data, @NotNull Triple<Level, BlockPos, Direction> block) {
 		BlockState state = block.getLeft().getBlockState(block.getMiddle());
 		Collection<Property<?>> properties = state.getProperties();
 		String desiredPropertyName = data.getString("property");
@@ -64,7 +63,7 @@ public class ModifyBlockStateAction {
 
 	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("modify_block_state"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("property", SerializableDataTypes.STRING)
 				.add("operation", ApoliDataTypes.RESOURCE_OPERATION, ResourceOperation.ADD)
 				.add("change", SerializableDataTypes.INT, null)

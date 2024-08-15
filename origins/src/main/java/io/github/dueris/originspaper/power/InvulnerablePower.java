@@ -1,6 +1,6 @@
 package io.github.dueris.originspaper.power;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.condition.types.item.AmountCondition;
@@ -31,9 +31,18 @@ public class InvulnerablePower extends PowerType {
 		this.damageCondition = damageCondition;
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("invulnerability"))
-			.add("damage_condition", ApoliDataTypes.DAMAGE_CONDITION);
+			.add("damage_condition", ApoliDataTypes.DAMAGE_CONDITION)
+			.postProcessor(data -> {
+
+				ConditionFactory<Tuple<DamageSource, Float>> damageCondition = data.get("damage_condition");
+
+				if (damageCondition.getSerializerId().equals(OriginsPaper.apoliIdentifier("amount"))) {
+					throw new IllegalArgumentException("Using the 'amount' damage condition type in a power that uses the 'invulnerability' power type is not allowed!");
+				}
+
+			});
 	}
 
 	@EventHandler

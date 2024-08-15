@@ -1,6 +1,6 @@
 package io.github.dueris.originspaper.condition.types.bientity;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -15,7 +15,7 @@ public class TargetCondition {
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("target_condition"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("condition", ApoliDataTypes.ENTITY_CONDITION),
 			(data, actorAndTarget) -> {
 				Entity target = actorAndTarget.getB();

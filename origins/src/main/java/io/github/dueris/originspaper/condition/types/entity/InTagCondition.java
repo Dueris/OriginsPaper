@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import net.minecraft.tags.TagKey;
@@ -12,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class InTagCondition {
 
-	public static boolean condition(@NotNull DeserializedFactoryJson data, @NotNull Entity entity) {
+	public static boolean condition(@NotNull SerializableData.Instance data, @NotNull Entity entity) {
 		TagKey<EntityType<?>> entityTypeTag = data.get("tag");
 		return entity.getType().is(entityTypeTag);
 	}
@@ -20,7 +19,7 @@ public class InTagCondition {
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("in_tag"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("tag", SerializableDataTypes.ENTITY_TAG),
 			InTagCondition::condition
 		);

@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.condition.ConditionFactory;
@@ -32,7 +32,7 @@ public class ActionOverTimePower extends PowerType {
 		this.fallingAction = fallingAction;
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("action_over_time"))
 			.add("interval", SerializableDataTypes.POSITIVE_INT, 20)
 			.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)

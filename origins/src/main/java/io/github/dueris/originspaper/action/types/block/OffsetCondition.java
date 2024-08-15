@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.action.types.block;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -16,7 +16,7 @@ public class OffsetCondition {
 	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionFactory<>(
 			OriginsPaper.apoliIdentifier("offset"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("action", ApoliDataTypes.BLOCK_ACTION)
 				.add("x", SerializableDataTypes.INT, 0)
 				.add("y", SerializableDataTypes.INT, 0)

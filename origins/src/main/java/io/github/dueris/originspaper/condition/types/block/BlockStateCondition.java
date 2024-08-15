@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.types.block;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -18,7 +18,7 @@ public class BlockStateCondition {
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("block_state"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("property", SerializableDataTypes.STRING)
 				.add("comparison", ApoliDataTypes.COMPARISON, null)
 				.add("compare_to", SerializableDataTypes.INT, null)

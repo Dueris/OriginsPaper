@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.power;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.holder.Pair;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
@@ -45,7 +45,7 @@ public class CooldownPower extends PowerType implements CooldownInterface {
 		this.cooldown = cooldown;
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("cooldown"))
 			.add("hud_render", ApoliDataTypes.HUD_RENDER, HudRender.DONT_RENDER)
 			.add("cooldown", SerializableDataTypes.INT, 0);

@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power.provider.origins;
 
-import io.github.dueris.originspaper.event.PlayerHitGroundEvent;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.event.PlayerHitGroundEvent;
 import io.github.dueris.originspaper.power.provider.PowerProvider;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.resources.ResourceLocation;

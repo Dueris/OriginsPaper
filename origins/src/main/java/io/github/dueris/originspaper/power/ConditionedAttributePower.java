@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.types.AttributedEntityAttributeModifier;
@@ -23,7 +23,7 @@ public class ConditionedAttributePower extends AttributePower {
 		this.tickRate = tickRate;
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return AttributePower.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("conditioned_attribute"))
 			.add("tick_rate", SerializableDataTypes.POSITIVE_INT, 20);
 	}

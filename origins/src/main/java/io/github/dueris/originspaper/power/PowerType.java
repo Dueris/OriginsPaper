@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.annotations.SourceProvider;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
@@ -22,6 +22,7 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -58,8 +59,8 @@ public class PowerType implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, OriginsPaper.getPlugin());
 	}
 
-	public static InstanceDefiner buildFactory() {
-		return InstanceDefiner.instanceDefiner()
+	public static SerializableData buildFactory() {
+		return SerializableData.serializableData()
 			.add("type", SerializableDataTypes.IDENTIFIER)
 			.add("name", SerializableDataTypes.TEXT, null)
 			.add("description", SerializableDataTypes.TEXT, null)
@@ -69,7 +70,20 @@ public class PowerType implements Listener {
 	}
 
 	public static void registerAll() {
-		List<Class<? extends PowerType>> holders = new ArrayList<>();
+		List<Class<? extends PowerType>> holders = new ArrayList<>() {
+			@Override
+			public boolean addAll(Collection<? extends Class<? extends PowerType>> c) {
+				for (Class<?> clazz : c) {
+					try {
+						Class.forName(clazz.getName(), true, clazz.getClassLoader());
+					} catch (ClassNotFoundException e) {
+						System.err.println("Error Preloading a powertype!");
+						e.printStackTrace();
+					}
+				}
+				return super.addAll(c);
+			}
+		};
 
 		try {
 			ScanResult result = new ClassGraph().whitelistPackages("io.github.dueris.originspaper.power").enableClassInfo().scan();
@@ -187,5 +201,9 @@ public class PowerType implements Listener {
 	}
 
 	public void onBootstrap() {
+	}
+
+	public boolean shouldTick() {
+		return true;
 	}
 }

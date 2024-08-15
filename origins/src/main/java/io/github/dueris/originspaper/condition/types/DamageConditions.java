@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.types;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.condition.meta.MetaConditions;
@@ -26,7 +26,7 @@ public class DamageConditions {
 		MetaConditions.register(Registries.DAMAGE_CONDITION, DamageConditions::register);
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("amount"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("comparison", ApoliDataTypes.COMPARISON)
 				.add("compare_to", SerializableDataTypes.FLOAT),
 			(data, event) -> {
@@ -35,14 +35,14 @@ public class DamageConditions {
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("name"),
-			InstanceDefiner.instanceDefiner(),
+			SerializableData.serializableData(),
 			(data, event) -> {
 				return event.getA().getMsgId().equals(data.getString("name"));
 			}
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("projectile"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("projectile", SerializableDataTypes.ENTITY_TYPE, null)
 				.add("projectile_condition", ApoliDataTypes.ENTITY_CONDITION, null),
 			(data, event) -> {
@@ -62,7 +62,7 @@ public class DamageConditions {
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("attacker"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("entity_condition", ApoliDataTypes.ENTITY_CONDITION, null),
 			(data, event) -> {
 				DamageSource source = event.getA();
@@ -75,49 +75,49 @@ public class DamageConditions {
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("fire"),
-			InstanceDefiner.instanceDefiner(),
+			SerializableData.serializableData(),
 			(data, event) -> {
 				return event.getA().is(DamageTypeTags.IS_FIRE);
 			}
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("bypasses_armor"),
-			InstanceDefiner.instanceDefiner(),
+			SerializableData.serializableData(),
 			(data, event) -> {
 				return event.getA().is(DamageTypeTags.BYPASSES_ARMOR);
 			}
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("explosive"),
-			InstanceDefiner.instanceDefiner(),
+			SerializableData.serializableData(),
 			(data, event) -> {
 				return event.getA().is(DamageTypeTags.IS_EXPLOSION);
 			}
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("from_falling"),
-			InstanceDefiner.instanceDefiner(),
+			SerializableData.serializableData(),
 			(data, event) -> {
 				return event.getA().is(DamageTypeTags.IS_FALL);
 			}
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("unblockable"),
-			InstanceDefiner.instanceDefiner(),
+			SerializableData.serializableData(),
 			(data, event) -> {
 				return event.getA().is(DamageTypeTags.BYPASSES_SHIELD);
 			}
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("out_of_world"),
-			InstanceDefiner.instanceDefiner(),
+			SerializableData.serializableData(),
 			(data, event) -> {
 				return event.getA().is(DamageTypeTags.BYPASSES_INVULNERABILITY);
 			}
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("in_tag"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("tag", SerializableDataTypes.tag(net.minecraft.core.registries.Registries.DAMAGE_TYPE)),
 			(data, event) -> {
 				return event.getA().is((TagKey<DamageType>) data.get("tag"));
@@ -125,7 +125,7 @@ public class DamageConditions {
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("type"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("damage_type", SerializableDataTypes.DAMAGE_TYPE),
 			(data, event) -> {
 				return event.getA().is((ResourceKey<DamageType>) data.get("damage_type"));

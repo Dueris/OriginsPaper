@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -17,7 +16,7 @@ import java.util.function.Predicate;
 
 public class EquippedCondition {
 
-	public static boolean condition(@NotNull DeserializedFactoryJson data, Entity entity) {
+	public static boolean condition(@NotNull SerializableData.Instance data, Entity entity) {
 		Predicate<Tuple<Level, ItemStack>> itemCondition = data.get("item_condition");
 		return entity instanceof LivingEntity livingEntity
 			&& itemCondition.test(new Tuple<>(livingEntity.level(), livingEntity.getItemBySlot(data.get("equipment_slot"))));
@@ -26,7 +25,7 @@ public class EquippedCondition {
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("equipped_item"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("equipment_slot", SerializableDataTypes.EQUIPMENT_SLOT)
 				.add("item_condition", ApoliDataTypes.ITEM_CONDITION),
 			EquippedCondition::condition

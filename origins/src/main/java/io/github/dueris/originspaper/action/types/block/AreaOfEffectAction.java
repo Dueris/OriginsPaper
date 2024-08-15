@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.block;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -19,7 +18,7 @@ import java.util.function.Predicate;
 
 public class AreaOfEffectAction {
 
-	public static void action(@NotNull DeserializedFactoryJson data, @NotNull Triple<Level, BlockPos, Direction> block) {
+	public static void action(@NotNull SerializableData.Instance data, @NotNull Triple<Level, BlockPos, Direction> block) {
 
 		Level world = block.getLeft();
 		BlockPos blockPos = block.getMiddle();
@@ -42,7 +41,7 @@ public class AreaOfEffectAction {
 	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionFactory<>(
 			OriginsPaper.apoliIdentifier("area_of_effect"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("block_action", ApoliDataTypes.BLOCK_ACTION)
 				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
 				.add("radius", SerializableDataTypes.INT, 16)

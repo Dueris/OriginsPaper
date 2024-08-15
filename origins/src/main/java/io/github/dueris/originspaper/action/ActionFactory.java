@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action;
 
 import com.google.gson.JsonObject;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.Factory;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -12,12 +11,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class ActionFactory<T> implements Factory, Consumer<T> {
-	protected final BiConsumer<DeserializedFactoryJson, T> effect;
-	protected final InstanceDefiner data;
+	protected final BiConsumer<SerializableData.Instance, T> effect;
+	protected final SerializableData data;
 	private final ResourceLocation location;
-	public DeserializedFactoryJson deserializedFactory = null;
+	public SerializableData.Instance deserializedFactory = null;
 
-	public ActionFactory(ResourceLocation location, InstanceDefiner data, @NotNull BiConsumer<DeserializedFactoryJson, T> effect) {
+	public ActionFactory(ResourceLocation location, SerializableData data, @NotNull BiConsumer<SerializableData.Instance, T> effect) {
 		this.location = location;
 		this.data = data;
 		this.effect = effect;
@@ -29,7 +28,7 @@ public class ActionFactory<T> implements Factory, Consumer<T> {
 	}
 
 	@Override
-	public InstanceDefiner getSerializableData() {
+	public SerializableData getSerializableData() {
 		return data;
 	}
 
@@ -45,7 +44,7 @@ public class ActionFactory<T> implements Factory, Consumer<T> {
 	}
 
 	public ActionFactory<T> decompile(JsonObject object) {
-		this.deserializedFactory = DeserializedFactoryJson.decompileJsonObject(object, data, "Action Factory", location.toString(), Optional.of(this.getClass()));
+		this.deserializedFactory = SerializableData.Instance.decompileJsonObject(object, data, "Action Factory", location.toString(), Optional.of(this.getClass()));
 		return this;
 	}
 }

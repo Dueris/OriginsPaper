@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -13,8 +13,6 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.craftbukkit.CraftParticle;
-import org.bukkit.craftbukkit.CraftWorld;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
@@ -49,6 +47,21 @@ public class ParticlePower extends PowerType {
 		this.visibleWhileInvisible = visibleWhileInvisible;
 	}
 
+	public static SerializableData buildFactory() {
+		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("particle"))
+			.add("particle", SerializableDataTypes.PARTICLE_EFFECT_OR_TYPE)
+			.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
+			.add("count", SerializableDataTypes.INT, 1)
+			.add("speed", SerializableDataTypes.FLOAT, 0.0F)
+			.add("force", SerializableDataTypes.BOOLEAN, false)
+			.add("spread", SerializableDataTypes.VECTOR, new Vec3(0.5, 0.5, 0.5))
+			.add("offset_x", SerializableDataTypes.DOUBLE, 0.0D)
+			.add("offset_y", SerializableDataTypes.DOUBLE, 0.5D)
+			.add("offset_z", SerializableDataTypes.DOUBLE, 0.0D)
+			.add("frequency", SerializableDataTypes.POSITIVE_INT)
+			.add("visible_while_invisible", SerializableDataTypes.BOOLEAN, false);
+	}
+
 	@Override
 	public void tick(Player player) {
 		double velocityX;
@@ -71,7 +84,7 @@ public class ParticlePower extends PowerType {
 			velocityY = spread.y() * speed;
 			velocityZ = spread.z() * speed;
 
-			((ServerLevel)player.level()).sendParticles(particleEffect, particlePos.x(), particlePos.y(), particlePos.z(), count, velocityX, velocityY, velocityZ, speed);
+			((ServerLevel) player.level()).sendParticles(particleEffect, particlePos.x(), particlePos.y(), particlePos.z(), count, velocityX, velocityY, velocityZ, speed);
 
 		} else {
 
@@ -84,7 +97,7 @@ public class ParticlePower extends PowerType {
 				velocityY = (2.0 * player.random.nextDouble() - 1.0) * speed;
 				velocityZ = (2.0 * player.random.nextDouble() - 1.0) * speed;
 
-				((ServerLevel)player.level()).sendParticles(particleEffect, newParticlePos.x(), newParticlePos.y(), newParticlePos.z(), count, velocityX, velocityY, velocityZ, speed);
+				((ServerLevel) player.level()).sendParticles(particleEffect, newParticlePos.x(), newParticlePos.y(), newParticlePos.z(), count, velocityX, velocityY, velocityZ, speed);
 
 			}
 
@@ -96,20 +109,5 @@ public class ParticlePower extends PowerType {
 			&& (viewer.blockPosition().closerToCenterThan(entity.position(), force ? 512 : 32))
 			&& (entity.tickCount % frequency == 0)
 			&& (biEntityCondition == null || biEntityCondition.test(new Tuple<>(entity, viewer)));
-	}
-
-	public static InstanceDefiner buildFactory() {
-		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("particle"))
-			.add("particle", SerializableDataTypes.PARTICLE_EFFECT_OR_TYPE)
-			.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
-			.add("count", SerializableDataTypes.INT, 1)
-			.add("speed", SerializableDataTypes.FLOAT, 0.0F)
-			.add("force", SerializableDataTypes.BOOLEAN, false)
-			.add("spread", SerializableDataTypes.VECTOR, new Vec3(0.5, 0.5, 0.5))
-			.add("offset_x", SerializableDataTypes.DOUBLE, 0.0D)
-			.add("offset_y", SerializableDataTypes.DOUBLE, 0.5D)
-			.add("offset_z", SerializableDataTypes.DOUBLE, 0.0D)
-			.add("frequency", SerializableDataTypes.POSITIVE_INT)
-			.add("visible_while_invisible", SerializableDataTypes.BOOLEAN, false);
 	}
 }

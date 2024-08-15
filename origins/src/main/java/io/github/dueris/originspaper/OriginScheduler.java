@@ -48,7 +48,9 @@ public class OriginScheduler {
 						}
 
 						try {
-							power.tick(p);
+							if (power.shouldTick()) {
+								power.tick(p);
+							}
 						} catch (Throwable var8) {
 							String[] stacktrace = new String[]{"\n"};
 							Arrays.stream(var8.getStackTrace())

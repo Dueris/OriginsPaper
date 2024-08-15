@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.bientity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.data.types.Space;
@@ -19,7 +18,7 @@ import java.util.function.BiFunction;
 
 public class AddVelocityAction {
 
-	public static void action(DeserializedFactoryJson data, @NotNull Tuple<Entity, Entity> entities) {
+	public static void action(SerializableData.Instance data, @NotNull Tuple<Entity, Entity> entities) {
 
 		Entity actor = entities.getA();
 		Entity target = entities.getB();
@@ -44,7 +43,7 @@ public class AddVelocityAction {
 	public static @NotNull ActionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ActionFactory<>(
 			OriginsPaper.apoliIdentifier("add_velocity"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("x", SerializableDataTypes.FLOAT, 0F)
 				.add("y", SerializableDataTypes.FLOAT, 0F)
 				.add("z", SerializableDataTypes.FLOAT, 0F)

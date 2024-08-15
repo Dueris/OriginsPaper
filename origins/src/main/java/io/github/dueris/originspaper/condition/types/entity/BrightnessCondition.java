@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -14,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class BrightnessCondition {
 
-	public static boolean condition(@NotNull DeserializedFactoryJson data, @NotNull Entity entity) {
+	public static boolean condition(@NotNull SerializableData.Instance data, @NotNull Entity entity) {
 		Level world = entity.level();
 
 		Comparison comparison = data.get("comparison");
@@ -30,7 +29,7 @@ public class BrightnessCondition {
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("brightness"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("comparison", ApoliDataTypes.COMPARISON)
 				.add("compare_to", SerializableDataTypes.FLOAT),
 			BrightnessCondition::condition

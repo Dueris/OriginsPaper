@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.holder.ObjectProvider;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
@@ -43,7 +43,7 @@ public class EntityGlowPower extends PowerType {
 		this.blue = blue;
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("entity_glow"))
 			.add("entity_condition", ApoliDataTypes.ENTITY_CONDITION, null)
 			.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)

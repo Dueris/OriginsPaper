@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.holder.ObjectProvider;
 import io.github.dueris.calio.util.holder.Pair;
 import io.github.dueris.originspaper.OriginsPaper;
@@ -67,7 +67,7 @@ public class ResourcePower extends PowerType implements ResourceInterface {
 		this.hudRender = hudRender;
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("resource"))
 			.add("min", SerializableDataTypes.INT)
 			.add("max", SerializableDataTypes.INT)

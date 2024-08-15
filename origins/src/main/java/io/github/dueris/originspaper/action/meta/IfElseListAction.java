@@ -4,8 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableDataBuilder;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.condition.ConditionFactory;
@@ -17,7 +16,7 @@ import java.util.function.Function;
 
 public class IfElseListAction {
 
-	public static <T, U> void action(@NotNull DeserializedFactoryJson data, T t, @NotNull Function<T, U> actionToConditionTypeFunction) {
+	public static <T, U> void action(@NotNull SerializableData.Instance data, T t, @NotNull Function<T, U> actionToConditionTypeFunction) {
 		List<Tuple<ConditionFactory<U>, ActionFactory<T>>> actions =
 			data.get("actions");
 		U u = actionToConditionTypeFunction.apply(t);
@@ -33,7 +32,7 @@ public class IfElseListAction {
 		SerializableDataBuilder<ActionFactory<T>> actionDataType,
 		SerializableDataBuilder<ConditionFactory<U>> conditionDataType,
 		Function<T, U> actionToConditionTypeFunction) {
-		return new ActionFactory<>(OriginsPaper.apoliIdentifier("if_else_list"), InstanceDefiner.instanceDefiner()
+		return new ActionFactory<>(OriginsPaper.apoliIdentifier("if_else_list"), SerializableData.serializableData()
 			.add("actions", SerializableDataTypes.list(SerializableDataBuilder.of(
 				(jsonElement) -> {
 					if (jsonElement.isJsonObject()) {

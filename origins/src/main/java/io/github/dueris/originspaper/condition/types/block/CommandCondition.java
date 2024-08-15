@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.condition.types.block;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -17,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandCondition {
 
-	public static boolean condition(DeserializedFactoryJson data, @NotNull BlockInWorld cachedBlockPosition) {
+	public static boolean condition(SerializableData.Instance data, @NotNull BlockInWorld cachedBlockPosition) {
 
 		MinecraftServer server = ((Level) cachedBlockPosition.getLevel()).getServer();
 		if (server == null) {
@@ -44,7 +43,7 @@ public class CommandCondition {
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("command"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("command", SerializableDataTypes.STRING)
 				.add("comparison", ApoliDataTypes.COMPARISON, Comparison.GREATER_THAN_OR_EQUAL)
 				.add("compare_to", SerializableDataTypes.INT, 1),

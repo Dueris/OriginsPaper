@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.types;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.condition.Conditions;
@@ -28,7 +28,7 @@ public class EntityConditions {
 		MetaConditions.register(Registries.ENTITY_CONDITION, EntityConditions::register);
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("power_type"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("power_type", SerializableDataTypes.IDENTIFIER),
 			(data, entity) -> {
 				ResourceLocation location = data.getId("power_type");
@@ -42,7 +42,7 @@ public class EntityConditions {
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("power"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("power", SerializableDataTypes.IDENTIFIER),
 			(data, entity) -> {
 				ResourceLocation location = data.getId("power");
@@ -51,7 +51,7 @@ public class EntityConditions {
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("origin"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("origin", SerializableDataTypes.IDENTIFIER),
 			(data, entity) -> {
 				ResourceLocation location = data.getId("origin");
@@ -60,7 +60,7 @@ public class EntityConditions {
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("power_active"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("power", SerializableDataTypes.IDENTIFIER),
 			(data, entity) -> {
 				if (!(entity instanceof Player player)) return false;
@@ -71,7 +71,7 @@ public class EntityConditions {
 		DistanceFromCoordinatesConditionRegistry.registerEntityCondition(EntityConditions::register);
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("resource"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("resource", SerializableDataTypes.IDENTIFIER)
 				.add("comparison", ApoliDataTypes.COMPARISON)
 				.add("compare_to", SerializableDataTypes.INT),

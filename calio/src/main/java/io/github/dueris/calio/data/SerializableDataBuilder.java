@@ -4,8 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -73,8 +72,8 @@ public interface SerializableDataBuilder<T> extends Codec<T> {
 		};
 	}
 
-	static @NotNull DeserializedFactoryJson compound(InstanceDefiner definer, JsonObject object, @NotNull Class<?> classType) {
-		return DeserializedFactoryJson
+	static @NotNull SerializableData.Instance compound(SerializableData definer, JsonObject object, @NotNull Class<?> classType) {
+		return SerializableData.Instance
 			.decompileJsonObject(object, definer, "null", classType.getSimpleName(), Optional.of(classType));
 	}
 

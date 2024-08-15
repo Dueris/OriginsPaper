@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.types.block;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -13,7 +13,7 @@ public class OffsetCondition {
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("offset"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("condition", ApoliDataTypes.BLOCK_CONDITION)
 				.add("x", SerializableDataTypes.INT, 0)
 				.add("y", SerializableDataTypes.INT, 0)

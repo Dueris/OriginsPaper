@@ -1,7 +1,6 @@
 package io.github.dueris.originspaper.action.types.bientity;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -13,7 +12,7 @@ import java.util.function.Consumer;
 
 public class ActorAction {
 
-	public static void action(DeserializedFactoryJson data, @NotNull Tuple<Entity, Entity> actorAndTarget) {
+	public static void action(SerializableData.Instance data, @NotNull Tuple<Entity, Entity> actorAndTarget) {
 
 		Entity actor = actorAndTarget.getA();
 
@@ -26,7 +25,7 @@ public class ActorAction {
 	public static @NotNull ActionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ActionFactory<>(
 			OriginsPaper.apoliIdentifier("actor_action"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("action", ApoliDataTypes.ENTITY_ACTION),
 			ActorAction::action
 		);

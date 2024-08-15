@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -15,7 +15,7 @@ public class SaturationLevelCondition {
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("saturation_level"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("comparison", ApoliDataTypes.COMPARISON)
 				.add("compare_to", SerializableDataTypes.FLOAT),
 			(data, entity) -> {

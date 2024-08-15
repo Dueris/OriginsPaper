@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import net.minecraft.core.Holder;
@@ -33,7 +33,7 @@ public class EffectImmunity extends PowerType {
 		}
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("effect_immunity"))
 			.add("effect", SerializableDataTypes.STATUS_EFFECT_ENTRY, null)
 			.add("effects", SerializableDataTypes.list(SerializableDataTypes.STATUS_EFFECT_ENTRY), null)

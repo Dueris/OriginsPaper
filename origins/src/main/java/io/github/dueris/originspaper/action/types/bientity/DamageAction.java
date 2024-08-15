@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.bientity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
@@ -21,7 +20,7 @@ import java.util.List;
 
 public class DamageAction {
 
-	public static void action(DeserializedFactoryJson data, @NotNull Tuple<Entity, Entity> entities) {
+	public static void action(SerializableData.Instance data, @NotNull Tuple<Entity, Entity> entities) {
 
 		Entity actor = entities.getA();
 		Entity target = entities.getB();
@@ -64,7 +63,7 @@ public class DamageAction {
 	public static @NotNull ActionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ActionFactory<>(
 			OriginsPaper.apoliIdentifier("damage"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("amount", SerializableDataTypes.FLOAT, null)
 				.add("damage_type", SerializableDataTypes.DAMAGE_TYPE, null)
 				.add("modifier", Modifier.DATA_TYPE, null)

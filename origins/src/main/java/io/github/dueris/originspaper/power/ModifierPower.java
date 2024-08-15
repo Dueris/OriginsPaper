@@ -1,6 +1,6 @@
 package io.github.dueris.originspaper.power;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import net.minecraft.network.chat.Component;
@@ -26,7 +26,7 @@ public class ModifierPower extends PowerType {
 		}
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory()
 			.add("modifier", Modifier.DATA_TYPE, null)
 			.add("modifiers", Modifier.LIST_TYPE, null);

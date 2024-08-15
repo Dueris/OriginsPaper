@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.action.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import net.minecraft.commands.CommandSource;
@@ -16,7 +16,7 @@ public class ExecuteCommandAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("execute_command"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("command", SerializableDataTypes.STRING),
 			(data, entity) -> {
 				MinecraftServer server = entity.level().getServer();

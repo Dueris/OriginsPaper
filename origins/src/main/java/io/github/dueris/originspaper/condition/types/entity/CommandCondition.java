@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -18,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandCondition {
 
-	public static boolean condition(DeserializedFactoryJson data, @NotNull Entity entity) {
+	public static boolean condition(SerializableData.Instance data, @NotNull Entity entity) {
 
 		MinecraftServer server = entity.getServer();
 		AtomicInteger result = new AtomicInteger();
@@ -48,7 +47,7 @@ public class CommandCondition {
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("command"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("command", SerializableDataTypes.STRING)
 				.add("comparison", ApoliDataTypes.COMPARISON)
 				.add("compare_to", SerializableDataTypes.INT),

@@ -2,8 +2,7 @@ package io.github.dueris.originspaper.condition;
 
 import com.google.gson.JsonObject;
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.Factory;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -13,12 +12,12 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 public class ConditionFactory<T> implements Factory, Predicate<T> {
-	protected final BiPredicate<DeserializedFactoryJson, T> effect;
-	protected final InstanceDefiner data;
+	protected final BiPredicate<SerializableData.Instance, T> effect;
+	protected final SerializableData data;
 	private final ResourceLocation location;
-	public DeserializedFactoryJson deserializedFactory = null;
+	public SerializableData.Instance deserializedFactory = null;
 
-	public ConditionFactory(ResourceLocation location, @NotNull InstanceDefiner data, @NotNull BiPredicate<DeserializedFactoryJson, T> effect) {
+	public ConditionFactory(ResourceLocation location, @NotNull SerializableData data, @NotNull BiPredicate<SerializableData.Instance, T> effect) {
 		this.location = location;
 		this.data = data.add("inverted", SerializableDataTypes.BOOLEAN, false);
 		this.effect = effect;
@@ -30,7 +29,7 @@ public class ConditionFactory<T> implements Factory, Predicate<T> {
 	}
 
 	@Override
-	public InstanceDefiner getSerializableData() {
+	public SerializableData getSerializableData() {
 		return data;
 	}
 
@@ -50,7 +49,7 @@ public class ConditionFactory<T> implements Factory, Predicate<T> {
 	}
 
 	public ConditionFactory<T> decompile(JsonObject object) {
-		this.deserializedFactory = DeserializedFactoryJson.decompileJsonObject(object, data, "Condition Factory", location.toString(), Optional.of(this.getClass()));
+		this.deserializedFactory = SerializableData.Instance.decompileJsonObject(object, data, "Condition Factory", location.toString(), Optional.of(this.getClass()));
 		return this;
 	}
 }

@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import net.minecraft.world.entity.Entity;
@@ -11,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class RemoveAdvancementAction {
 
-	public static void action(@NotNull DeserializedFactoryJson data, @NotNull Entity entity) {
+	public static void action(@NotNull SerializableData.Instance data, @NotNull Entity entity) {
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "advancement revoke $1 only $2"
 			.replace("$1", entity.getName().getString())
 			.replace("$2", data.getString("advancement")));
@@ -20,7 +19,7 @@ public class RemoveAdvancementAction {
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
 			OriginsPaper.apoliIdentifier("revoke_advancement"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("advancement", SerializableDataTypes.IDENTIFIER, null),
 			RemoveAdvancementAction::action
 		);

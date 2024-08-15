@@ -1,7 +1,7 @@
 {
-	"type": "origins:modify_swim_speed",
-	"modifier": {
-		"operation": "addition",
-		"value": 1.5
-	}
+  "type": "origins:modify_swim_speed",
+  "modifier": {
+    "operation": "addition",
+    "value": 1.5
+  }
 }

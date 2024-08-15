@@ -14,8 +14,7 @@ import com.mojang.serialization.codecs.PrimitiveCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.data.exceptions.DataException;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.github.dueris.calio.util.ArgumentWrapper;
@@ -100,7 +99,7 @@ import static net.minecraft.util.GsonHelper.getAsDouble;
 
 /**
  * The provided calio data types that can be defined by
- * your {@link io.github.dueris.calio.parser.InstanceDefiner}s.
+ * your {@link SerializableData}s.
  * Each SerializableDataType is an instanceof a {@link SerializableDataBuilder}, where T is the
  * actual instance of the type. When defined by the InstanceDefiner, this points to the type of class that is in your constructor. For example:
  * A {@code STRING} data type will define a String param of your constructor. Each SerializableDataBuilder has a method for converting the Gson {@link JsonElement}instance to a Java Object.
@@ -214,8 +213,8 @@ public class SerializableDataTypes {
 		(jsonElement) -> {
 			if (!(jsonElement instanceof JsonObject jo))
 				throw new JsonSyntaxException("StatusEffectInstance should be a JsonObject!");
-			DeserializedFactoryJson data = SerializableDataBuilder.compound(
-				InstanceDefiner.instanceDefiner()
+			SerializableData.Instance data = SerializableDataBuilder.compound(
+				SerializableData.serializableData()
 					.add("id", STATUS_EFFECT_ENTRY)
 					.add("duration", INT, 100)
 					.add("amplifier", INT, 0)
@@ -362,8 +361,8 @@ public class SerializableDataTypes {
 		(jsonElement) -> {
 			if (!(jsonElement instanceof JsonObject jo))
 				throw new JsonSyntaxException("Food Properties should be a JsonObject!");
-			DeserializedFactoryJson data = SerializableDataBuilder.compound(
-				InstanceDefiner.instanceDefiner()
+			SerializableData.Instance data = SerializableDataBuilder.compound(
+				SerializableData.serializableData()
 					.add("nutrition", NON_NEGATIVE_INT)
 					.add("saturation", FLOAT)
 					.add("can_always_eat", BOOLEAN, false)

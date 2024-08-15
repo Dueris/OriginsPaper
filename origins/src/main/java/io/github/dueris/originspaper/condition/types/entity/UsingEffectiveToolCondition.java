@@ -1,7 +1,6 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.util.Reflector;
@@ -15,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class UsingEffectiveToolCondition {
 
-	public static boolean condition(DeserializedFactoryJson data, Entity entity) {
+	public static boolean condition(SerializableData.Instance data, Entity entity) {
 
 		if (!(entity instanceof Player playerEntity)) {
 			return false;
@@ -42,7 +41,7 @@ public class UsingEffectiveToolCondition {
 	public static ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("using_effective_tool"),
-			InstanceDefiner.instanceDefiner(),
+			SerializableData.serializableData(),
 			UsingEffectiveToolCondition::condition
 		);
 	}

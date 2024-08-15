@@ -1,6 +1,6 @@
 package io.github.dueris.originspaper.power;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import net.minecraft.network.chat.Component;
@@ -14,25 +14,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class OverlayPower extends PowerType {
 	private static final CraftWorldBorder border;
+
 	static {
 		border = (CraftWorldBorder) Bukkit.createWorldBorder();
 		border.setWarningDistance(999999999);
 	}
+
 	public OverlayPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("overlay"));
-	}
-
-	@Override
-	public void tick(Player player) {
-		if (isActive(player)) {
-			init(player);
-		} else {
-			reset(player);
-		}
 	}
 
 	public static void init(@NotNull Player player) {
@@ -43,5 +36,14 @@ public class OverlayPower extends PowerType {
 
 	public static void reset(@NotNull Player player) {
 		((CraftPlayer) player.getBukkitEntity()).setWorldBorder(player.level().getWorld().getWorldBorder());
+	}
+
+	@Override
+	public void tick(Player player) {
+		if (isActive(player)) {
+			init(player);
+		} else {
+			reset(player);
+		}
 	}
 }

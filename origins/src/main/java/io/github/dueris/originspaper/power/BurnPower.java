@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import net.minecraft.network.chat.Component;
@@ -20,7 +20,7 @@ public class BurnPower extends PowerType {
 		this.burnDuration = burnDuration;
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("burn"))
 			.add("interval", SerializableDataTypes.POSITIVE_INT)
 			.add("burn_duration", SerializableDataTypes.POSITIVE_INT);

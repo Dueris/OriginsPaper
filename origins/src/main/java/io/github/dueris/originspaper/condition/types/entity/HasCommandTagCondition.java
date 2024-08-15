@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import net.minecraft.world.entity.Entity;
@@ -14,7 +13,7 @@ import java.util.Set;
 
 public class HasCommandTagCondition {
 
-	public static boolean condition(@NotNull DeserializedFactoryJson data, @NotNull Entity entity) {
+	public static boolean condition(@NotNull SerializableData.Instance data, @NotNull Entity entity) {
 
 		Set<String> commandTags = entity.getTags();
 		Set<String> specifiedCommandTags = new HashSet<>();
@@ -33,7 +32,7 @@ public class HasCommandTagCondition {
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("has_command_tag"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("tag", SerializableDataTypes.STRING, null)
 				.add("command_tag", SerializableDataTypes.STRING, null)
 				.add("tags", SerializableDataTypes.list(SerializableDataTypes.STRING), null)

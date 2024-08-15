@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -15,7 +14,7 @@ import static io.github.dueris.originspaper.util.Util.modifyInventory;
 
 public class ModifyInventoryAction {
 
-	public static void action(@NotNull DeserializedFactoryJson data, Entity entity) {
+	public static void action(@NotNull SerializableData.Instance data, Entity entity) {
 
 		InventoryType inventoryType = data.get("inventory_type");
 		Util.ProcessMode processMode = data.get("process_mode");
@@ -30,7 +29,7 @@ public class ModifyInventoryAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("modify_inventory"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("inventory_type", ApoliDataTypes.INVENTORY_TYPE, InventoryType.INVENTORY)
 				.add("process_mode", ApoliDataTypes.PROCESS_MODE, Util.ProcessMode.STACKS)
 				.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)

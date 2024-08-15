@@ -1,6 +1,6 @@
 package io.github.dueris.originspaper.power;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
@@ -10,20 +10,18 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
-import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-// TODO
 public class CreativeFlightPower extends PowerType {
 	public CreativeFlightPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("creative_flight"));
 	}
 
@@ -41,8 +39,8 @@ public class CreativeFlightPower extends PowerType {
 			} else {
 				boolean a = m.equals(GameType.SPECTATOR) || m.equals(GameType.CREATIVE) ||
 					// TODO
-					PowerHolderComponent.hasPowerType(p.getBukkitEntity(), ElytraFlightPower.class)/* || PowerHolderComponent.hasPowerType(p.getBukkitEntity(), GravityPower.class)*/ ||
-					PowerHolderComponent.hasPowerType(p.getBukkitEntity(), GroundedPower.class)/* || PowerHolderComponent.hasPowerType(p.getBukkitEntity(), Swimming.class) || PowerHolderComponent.isInPhantomForm(p.getBukkitEntity())*/;
+					PowerHolderComponent.hasPowerType(p.getBukkitEntity(), ElytraFlightPower.class) || PowerHolderComponent.hasPowerType(p.getBukkitEntity(), GroundedPower.class)
+					/* || PowerHolderComponent.hasPowerType(p.getBukkitEntity(), Swimming.class)*/ || isInPhantomForm((org.bukkit.entity.Player) p.getBukkitEntity());
 				if (a && !((org.bukkit.entity.Player) p.getBukkitEntity()).getAllowFlight()) {
 					((org.bukkit.entity.Player) p.getBukkitEntity()).setAllowFlight(true);
 				} else if (!a && ((org.bukkit.entity.Player) p.getBukkitEntity()).getAllowFlight()) {
@@ -50,17 +48,22 @@ public class CreativeFlightPower extends PowerType {
 				}
 			}
 		}
-		if (m.equals(GameMode.SPECTATOR)) {
+		if (m.equals(GameType.SPECTATOR)) {
 			((org.bukkit.entity.Player) p.getBukkitEntity()).setFlying(true);
 		}
 		if (p.getBukkitEntity().getChunk().isLoaded()) {
-			// TODO
-			/* if (Phasing.inPhantomFormBlocks.contains(p)) {
+			if (PhasingPower.PHASING_BLOCKS.contains(p)) {
 				container.set(CraftNamespacedKey.fromMinecraft(insideBlock), PersistentDataType.BOOLEAN, true);
 			} else {
 				container.set(CraftNamespacedKey.fromMinecraft(insideBlock), PersistentDataType.BOOLEAN, false);
-			} */
+			}
 		}
+	}
+
+	public static boolean isInPhantomForm(@NotNull org.bukkit.entity.Player player) {
+		return player.getPersistentDataContainer().has(CraftNamespacedKey.fromString("originspaper:in-phantomform"))
+			? player.getPersistentDataContainer().get(CraftNamespacedKey.fromString("originspaper:in-phantomform"), PersistentDataType.BOOLEAN)
+			: false;
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.meta;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
@@ -15,7 +15,7 @@ public class OrCondition {
 	public static <T> @NotNull ConditionFactory<T> getFactory(RegistryKey<ConditionFactory<T>> conditionDataType) {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("or"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("conditions", SerializableDataTypes.list(ApoliDataTypes.condition(conditionDataType))),
 			(data, t) -> {
 				List<ConditionFactory<T>> conditions = data.get("conditions");

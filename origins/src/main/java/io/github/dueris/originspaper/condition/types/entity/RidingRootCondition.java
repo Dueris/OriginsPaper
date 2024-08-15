@@ -1,6 +1,6 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -15,7 +15,7 @@ public class RidingRootCondition {
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("riding_root"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null),
 			(data, entity) -> {
 				if (entity.isPassenger()) {

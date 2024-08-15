@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.util.Util;
@@ -13,7 +13,7 @@ public class SubmergedInCondition {
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("submerged_in"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("fluid", SerializableDataTypes.FLUID_TAG),
 			(data, entity) -> {
 				return Util.apoli$isSubmergedInLoosely(entity, data.get("fluid"));

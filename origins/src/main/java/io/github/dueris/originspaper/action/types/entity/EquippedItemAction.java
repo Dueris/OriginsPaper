@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -18,7 +17,7 @@ import java.util.function.Consumer;
 
 public class EquippedItemAction {
 
-	public static void action(DeserializedFactoryJson data, Entity entity) {
+	public static void action(SerializableData.Instance data, Entity entity) {
 
 		if (!(entity instanceof LivingEntity livingEntity)) {
 			return;
@@ -35,7 +34,7 @@ public class EquippedItemAction {
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
 			OriginsPaper.apoliIdentifier("equipped_item_action"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("equipment_slot", SerializableDataTypes.EQUIPMENT_SLOT)
 				.add("action", ApoliDataTypes.ITEM_ACTION),
 			EquippedItemAction::action

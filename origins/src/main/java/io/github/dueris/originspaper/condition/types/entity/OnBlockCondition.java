@@ -1,6 +1,6 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -14,7 +14,7 @@ public class OnBlockCondition {
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("on_block"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null),
 			(data, entity) -> {
 				return entity.onGround() &&

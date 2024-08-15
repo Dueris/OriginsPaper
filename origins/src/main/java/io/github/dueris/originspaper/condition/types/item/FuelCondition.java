@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.condition.types.item;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -15,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class FuelCondition {
 
-	public static boolean condition(@NotNull DeserializedFactoryJson data, @NotNull Tuple<Level, ItemStack> worldAndStack) {
+	public static boolean condition(@NotNull SerializableData.Instance data, @NotNull Tuple<Level, ItemStack> worldAndStack) {
 
 		Integer fuelTime = AbstractFurnaceBlockEntity.getFuel().get(worldAndStack.getB().getItem().asItem());
 		Comparison comparison = data.get("comparison");
@@ -29,7 +28,7 @@ public class FuelCondition {
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("fuel"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("comparison", ApoliDataTypes.COMPARISON, Comparison.GREATER_THAN)
 				.add("compare_to", SerializableDataTypes.INT, 0),
 			FuelCondition::condition

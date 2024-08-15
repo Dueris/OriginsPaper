@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import net.minecraft.network.chat.Component;
@@ -21,6 +21,11 @@ public class NightVisionPower extends PowerType {
 		this.strength = strength;
 	}
 
+	public static SerializableData buildFactory() {
+		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("night_vision"))
+			.add("strength", SerializableDataTypes.FLOAT, 1.0F);
+	}
+
 	@Override
 	public void tick(Player player) {
 		if (isActive(player)) {
@@ -34,10 +39,5 @@ public class NightVisionPower extends PowerType {
 				player.removeEffect(MobEffects.NIGHT_VISION);
 			}
 		}
-	}
-
-	public static InstanceDefiner buildFactory() {
-		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("night_vision"))
-			.add("strength", SerializableDataTypes.FLOAT, 1.0F);
 	}
 }

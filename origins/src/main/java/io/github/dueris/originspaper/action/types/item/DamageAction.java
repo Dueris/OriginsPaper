@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.item;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.action.ItemActionFactory;
@@ -15,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class DamageAction {
 
-	public static void action(DeserializedFactoryJson data, @NotNull Tuple<Level, ItemStack> worldAndStack) {
+	public static void action(SerializableData.Instance data, @NotNull Tuple<Level, ItemStack> worldAndStack) {
 
 		if (!(worldAndStack.getA() instanceof ServerLevel serverWorld)) {
 			return;
@@ -42,7 +41,7 @@ public class DamageAction {
 	public static @NotNull ActionFactory<Tuple<Level, SlotAccess>> getFactory() {
 		return ItemActionFactory.createItemStackBased(
 			OriginsPaper.apoliIdentifier("damage"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("amount", SerializableDataTypes.INT, 1)
 				.add("ignore_unbreaking", SerializableDataTypes.BOOLEAN, false),
 			DamageAction::action

@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.entity;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.ArgumentWrapper;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
@@ -21,7 +20,7 @@ import java.util.function.Predicate;
 
 public class SelectorAction {
 
-	public static void action(DeserializedFactoryJson data, @NotNull Entity entity) {
+	public static void action(SerializableData.Instance data, @NotNull Entity entity) {
 
 		MinecraftServer server = entity.level().getServer();
 		if (server == null) return;
@@ -54,7 +53,7 @@ public class SelectorAction {
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
 			OriginsPaper.apoliIdentifier("selector_action"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("selector", ApoliDataTypes.ENTITIES_SELECTOR)
 				.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION)
 				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null),

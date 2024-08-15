@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.action.types.item;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.action.ItemActionFactory;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class ConsumeAction {
 
 	public static @NotNull ActionFactory<Tuple<Level, SlotAccess>> getFactory() {
-		return ItemActionFactory.createItemStackBased(OriginsPaper.apoliIdentifier("consume"), InstanceDefiner.instanceDefiner()
+		return ItemActionFactory.createItemStackBased(OriginsPaper.apoliIdentifier("consume"), SerializableData.serializableData()
 				.add("amount", SerializableDataTypes.INT, 1),
 			(data, worldAndStack) -> worldAndStack.getB().shrink(data.getInt("amount")));
 	}

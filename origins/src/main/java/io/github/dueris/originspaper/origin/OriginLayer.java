@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.origin;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.registry.Registrar;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
@@ -66,8 +66,8 @@ public class OriginLayer {
 		this.hidden = hidden;
 	}
 
-	public static InstanceDefiner buildFactory() {
-		return InstanceDefiner.instanceDefiner()
+	public static SerializableData buildFactory() {
+		return SerializableData.serializableData()
 			.add("order", SerializableDataTypes.INT, Integer.MAX_VALUE)
 			.add("loading_priority", SerializableDataTypes.INT, 0)
 			.add("origins", SerializableDataTypes.list(OriginsDataTypes.ORIGIN_OR_CONDITIONED_ORIGIN))
@@ -253,7 +253,7 @@ public class OriginLayer {
 	 */
 	public record ConditionedOrigin(ConditionFactory<net.minecraft.world.entity.Entity> condition,
 									List<ResourceLocation> origins) {
-		public static final InstanceDefiner DATA = InstanceDefiner.instanceDefiner()
+		public static final SerializableData DATA = SerializableData.serializableData()
 			.add("condition", ApoliDataTypes.ENTITY_CONDITION, null)
 			.add("origins", SerializableDataTypes.list(SerializableDataTypes.IDENTIFIER));
 

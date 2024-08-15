@@ -1,7 +1,6 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -17,7 +16,7 @@ import java.util.function.Predicate;
 
 public class UsingItemCondition {
 
-	public static boolean condition(DeserializedFactoryJson data, Entity entity) {
+	public static boolean condition(SerializableData.Instance data, Entity entity) {
 
 		if (!(entity instanceof LivingEntity livingEntity) || !livingEntity.isUsingItem()) {
 			return false;
@@ -34,7 +33,7 @@ public class UsingItemCondition {
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("using_item"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null),
 			UsingItemCondition::condition
 		);

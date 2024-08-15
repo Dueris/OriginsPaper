@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.block;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -22,7 +21,7 @@ import java.util.function.Consumer;
 
 public class SpawnEntityAction {
 
-	public static void action(DeserializedFactoryJson data, @NotNull Triple<Level, BlockPos, Direction> worldPosAndDirection) {
+	public static void action(SerializableData.Instance data, @NotNull Triple<Level, BlockPos, Direction> worldPosAndDirection) {
 
 		Level world = worldPosAndDirection.getLeft();
 		BlockPos pos = worldPosAndDirection.getMiddle();
@@ -55,7 +54,7 @@ public class SpawnEntityAction {
 	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionFactory<>(
 			OriginsPaper.apoliIdentifier("spawn_entity"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("entity_type", SerializableDataTypes.ENTITY_TYPE)
 				.add("tag", SerializableDataTypes.NBT, new CompoundTag())
 				.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null),

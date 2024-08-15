@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.origin;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.holder.TriPair;
 import io.github.dueris.originspaper.data.OriginsDataTypes;
 import io.github.dueris.originspaper.data.types.Impact;
@@ -55,8 +55,8 @@ public class Origin {
 		);
 	}
 
-	public static InstanceDefiner buildFactory() {
-		return InstanceDefiner.instanceDefiner()
+	public static SerializableData buildFactory() {
+		return SerializableData.serializableData()
 			.add("powers", SerializableDataTypes.list(SerializableDataTypes.IDENTIFIER), new LinkedList<>())
 			.add("icon", SerializableDataTypes.ITEM_STACK, Items.PLAYER_HEAD.getDefaultInstance())
 			.add("unchoosable", SerializableDataTypes.BOOLEAN, false)

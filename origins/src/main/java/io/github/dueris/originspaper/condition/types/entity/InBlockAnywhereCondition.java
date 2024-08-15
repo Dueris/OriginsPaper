@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -19,7 +19,7 @@ public class InBlockAnywhereCondition {
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("in_block_anywhere"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION)
 				.add("comparison", ApoliDataTypes.COMPARISON, Comparison.GREATER_THAN_OR_EQUAL)
 				.add("compare_to", SerializableDataTypes.INT, 1),

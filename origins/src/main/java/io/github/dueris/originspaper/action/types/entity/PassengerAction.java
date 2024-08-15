@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.action.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -16,7 +16,7 @@ public class PassengerAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("passenger_action"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("action", ApoliDataTypes.ENTITY_ACTION, null)
 				.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION, null)
 				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)

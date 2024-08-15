@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.block;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -19,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ExplodeAction {
 
-	public static void action(DeserializedFactoryJson data, @NotNull Triple<Level, BlockPos, Direction> block) {
+	public static void action(SerializableData.Instance data, @NotNull Triple<Level, BlockPos, Direction> block) {
 
 		Level level = block.getLeft();
 		if (level.isClientSide) {
@@ -53,7 +52,7 @@ public class ExplodeAction {
 	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionFactory<>(
 			OriginsPaper.apoliIdentifier("explode"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("power", SerializableDataTypes.FLOAT)
 				.add("destruction_type", ApoliDataTypes.BACKWARDS_COMPATIBLE_DESTRUCTION_TYPE, Explosion.BlockInteraction.DESTROY)
 				.add("indestructible", ApoliDataTypes.BLOCK_CONDITION, null)

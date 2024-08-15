@@ -11,16 +11,16 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DataResult.Error;
 import com.mojang.serialization.JsonOps;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.ArgumentWrapper;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.ints.IntLists;
-import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.power.PowerType;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntLists;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.commands.arguments.SlotArgument;
 import net.minecraft.core.BlockPos;
@@ -700,7 +700,7 @@ public class Util {
 		}
 	}
 
-	public static @NotNull Set<Integer> getSlots(@NotNull DeserializedFactoryJson data) {
+	public static @NotNull Set<Integer> getSlots(@NotNull SerializableData.Instance data) {
 
 		Set<Integer> slots = new HashSet<>();
 
@@ -807,7 +807,7 @@ public class Util {
 
 	}
 
-	public static int checkInventory(@NotNull DeserializedFactoryJson data, Entity entity, Function<ItemStack, Integer> processor) {
+	public static int checkInventory(@NotNull SerializableData.Instance data, Entity entity, Function<ItemStack, Integer> processor) {
 
 		Predicate<Tuple<Level, ItemStack>> itemCondition = data.get("item_condition");
 		Set<Integer> slots = getSlots(data);
@@ -898,7 +898,7 @@ public class Util {
 
 	}
 
-	public static void modifyInventory(DeserializedFactoryJson data, Entity entity, Function<ItemStack, Integer> processor, int limit) {
+	public static void modifyInventory(SerializableData.Instance data, Entity entity, Function<ItemStack, Integer> processor, int limit) {
 
 		if (limit <= 0) {
 			limit = Integer.MAX_VALUE;
@@ -942,7 +942,7 @@ public class Util {
 
 	}
 
-	public static void replaceInventory(DeserializedFactoryJson data, Entity entity) {
+	public static void replaceInventory(SerializableData.Instance data, Entity entity) {
 
 		Set<Integer> slots = getSlots(data);
 		deduplicateSlots(entity, slots);
@@ -983,7 +983,7 @@ public class Util {
 
 	}
 
-	public static void dropInventory(DeserializedFactoryJson data, Entity entity) {
+	public static void dropInventory(SerializableData.Instance data, Entity entity) {
 
 		Set<Integer> slots = getSlots(data);
 		deduplicateSlots(entity, slots);

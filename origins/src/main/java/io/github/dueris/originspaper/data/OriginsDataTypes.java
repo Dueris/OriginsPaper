@@ -6,7 +6,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableDataBuilder;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.data.types.GuiTitle;
 import io.github.dueris.originspaper.data.types.Impact;
 import io.github.dueris.originspaper.data.types.OriginUpgrade;
@@ -37,7 +37,7 @@ public class OriginsDataTypes {
 		(jsonElement) -> {
 			if (!(jsonElement instanceof JsonObject jo))
 				throw new JsonSyntaxException("Expected JsonObject for GuiTitle!");
-			DeserializedFactoryJson data = SerializableDataBuilder.compound(GuiTitle.DATA, jo, GuiTitle.class);
+			SerializableData.Instance data = SerializableDataBuilder.compound(GuiTitle.DATA, jo, GuiTitle.class);
 
 			Component viewOriginTitle = SerializableDataTypes.TEXT.deserialize(jo.get("view_origin"));
 			Component chooseOriginTitle = SerializableDataTypes.TEXT.deserialize(jo.get("choose_origin"));
@@ -49,7 +49,7 @@ public class OriginsDataTypes {
 	public static final SerializableDataBuilder<OriginLayer.ConditionedOrigin> CONDITIONED_ORIGIN = SerializableDataBuilder.of(
 		(jsonElement) -> {
 			if (jsonElement instanceof JsonObject jsonObject && !jsonObject.isEmpty()) {
-				DeserializedFactoryJson factoryJson = DeserializedFactoryJson.decompileJsonObject(jsonObject, OriginLayer.ConditionedOrigin.DATA, "Origin/ConditionedOrigin", "null", Optional.of(OriginLayer.ConditionedOrigin.class));
+				SerializableData.Instance factoryJson = SerializableData.Instance.decompileJsonObject(jsonObject, OriginLayer.ConditionedOrigin.DATA, "Origin/ConditionedOrigin", "null", Optional.of(OriginLayer.ConditionedOrigin.class));
 				return new OriginLayer.ConditionedOrigin(factoryJson.get("condition"), factoryJson.get("origins"));
 			} else throw new JsonSyntaxException("Expected JsonObject for ConditionedOrigin!");
 		}, OriginLayer.ConditionedOrigin.class

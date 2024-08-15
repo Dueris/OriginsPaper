@@ -43,7 +43,7 @@ public class CalioParser {
 	public static <T> @NotNull ConcurrentLinkedQueue<Tuple<?, ResourceLocation>> fromJsonFile(Map.@NotNull Entry<AccessorKey<?>, ConcurrentLinkedQueue<Tuple<String, String>>> entry) {
 		AccessorKey<?> accessorKey = entry.getKey();
 		// We return the same result, but implement a check that it's valid to ensure it's ready for parsing.
-		ConcurrentLinkedQueue<Tuple<InstanceDefiner, Class<? extends T>>> typedTempInstance = new ConcurrentLinkedQueue<>();
+		ConcurrentLinkedQueue<Tuple<SerializableData, Class<? extends T>>> typedTempInstance = new ConcurrentLinkedQueue<>();
 		final Class<? extends T>[] defaultType = new Class[]{null};
 		Class<T> clz = accessorKey.strategy().equals(ParsingStrategy.DEFAULT) ? (Class<T>) accessorKey.toBuild() :
 			((ObjectProvider<Class<T>>) () -> {
@@ -96,13 +96,13 @@ public class CalioParser {
 		return concurrentLinkedQueue;
 	}
 
-	public static <T> @Nullable T parseFile(@NotNull Tuple<ResourceLocation, String> Tuple, Class<T> clz, AccessorKey<?> accessorKey, Class<? extends T>[] defaultType, ConcurrentLinkedQueue<Tuple<InstanceDefiner, Class<? extends T>>> typedTempInstance) {
+	public static <T> @Nullable T parseFile(@NotNull Tuple<ResourceLocation, String> Tuple, Class<T> clz, AccessorKey<?> accessorKey, Class<? extends T>[] defaultType, ConcurrentLinkedQueue<Tuple<SerializableData, Class<? extends T>>> typedTempInstance) {
 		final AtomicBoolean[] kill = {new AtomicBoolean(false)};
 		ResourceLocation location = Tuple.getA();
 		String jsonContents = Tuple.getB();
 		if (location == null)
 			throw new RuntimeException("Unable to compile ResourceLocation for CalioParser!");
-		InstanceDefiner definer;
+		SerializableData definer;
 		Class<? extends T> toBuild = clz;
 
 		JsonObject jsonSource = REMAPPER.get().remap(GSON.fromJson(jsonContents, JsonObject.class), location).getAsJsonObject();
@@ -180,6 +180,13 @@ public class CalioParser {
 
 			argsArray[i] = arg;
 		}
+		// Post-processing start
+		if (definer.postProcessor != null) {
+			SerializableData.Instance factoryJson = SerializableData.Instance.decompileJsonObject(
+				jsonSource, definer, toBuild.getSimpleName(), location.toString(), Optional.of(toBuild)
+			);
+			definer.postProcessor.accept(factoryJson);
+		}
 
 		try {
 			return finalizeInstance((T) constructor.newInstance(argsArray), jsonSource, accessorKey, location);
@@ -212,7 +219,7 @@ public class CalioParser {
 		return Optional.of(voidCompletableFuture);
 	}
 
-	public static <T> Optional<Tuple<List<Tuple<String, ?>>, List<Tuple<String, ?>>>> compileFromInstanceDefinition(@NotNull InstanceDefiner definer, JsonObject jsonSource, Optional<String> location, Optional<Class<T>> clz) {
+	public static <T> Optional<Tuple<List<Tuple<String, ?>>, List<Tuple<String, ?>>>> compileFromInstanceDefinition(@NotNull SerializableData definer, JsonObject jsonSource, Optional<String> location, Optional<Class<T>> clz) {
 		List<Tuple<String, ?>> compiledParams = new ArrayList<>();
 		List<Tuple<String, ?>> compiledArguments = new ArrayList<>();
 		for (Map.Entry<String, ObjectTiedEnumState<SerializableDataBuilder<?>>> entry : definer.dataMap().entrySet()) {

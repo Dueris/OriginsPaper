@@ -1,6 +1,6 @@
 package io.github.dueris.originspaper.condition.types.block;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -13,7 +13,7 @@ public class FluidCondition {
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("fluid"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("fluid_condition", ApoliDataTypes.FLUID_CONDITION),
 			(data, block) -> ((ConditionFactory<FluidState>) data.get("fluid_condition")).test(block.getLevel().getFluidState(block.getPos()))
 		);

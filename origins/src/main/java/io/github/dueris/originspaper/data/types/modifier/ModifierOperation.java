@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.data.types.modifier;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.world.entity.Entity;
 
@@ -87,7 +86,7 @@ public enum ModifierOperation implements IModifierOperation {
 		return value;
 	});
 
-	public static final InstanceDefiner DATA = InstanceDefiner.instanceDefiner()
+	public static final SerializableData DATA = SerializableData.serializableData()
 		.add("value", SerializableDataTypes.DOUBLE)
 		.add("modifier", Modifier.LIST_TYPE, null);
 
@@ -112,12 +111,12 @@ public enum ModifierOperation implements IModifierOperation {
 	}
 
 	@Override
-	public InstanceDefiner getData() {
+	public SerializableData getData() {
 		return DATA;
 	}
 
 	@Override
-	public double apply(Entity entity, List<DeserializedFactoryJson> instances, double base, double current) {
+	public double apply(Entity entity, List<SerializableData.Instance> instances, double base, double current) {
 		return function.apply(
 			instances.stream()
 				.map(instance -> {

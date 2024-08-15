@@ -65,7 +65,8 @@ public final class PlayerPowerRepository {
 		origins.remove(layer, origin);
 	}
 
-	public void addPower(@NotNull PowerType type, OriginLayer layer) {
+	public void addPower(PowerType type, OriginLayer layer) {
+		if (type == null) return;
 		if (appliedPowers.containsKey(layer)) {
 			appliedPowers.get(layer).add(type);
 			return;
@@ -74,7 +75,8 @@ public final class PlayerPowerRepository {
 		appliedPowers.get(layer).add(type);
 	}
 
-	public void removePower(@NotNull PowerType type, OriginLayer layer) {
+	public void removePower(PowerType type, OriginLayer layer) {
+		if (type == null) return;
 		if (appliedPowers.containsKey(layer)) {
 			appliedPowers.get(layer).remove(type);
 			return;
@@ -85,12 +87,12 @@ public final class PlayerPowerRepository {
 
 	@Unmodifiable
 	public @NotNull List<PowerType> getAppliedPowers() {
-		return Util.collapseSet(appliedPowers.values()).stream().toList();
+		return Util.collapseSet(appliedPowers.values()).stream().filter(Objects::nonNull).toList();
 	}
 
 	@Unmodifiable
 	public @NotNull List<PowerType> getAppliedPowers(OriginLayer layer) {
-		return appliedPowers.get(layer).stream().toList();
+		return appliedPowers.get(layer).stream().filter(Objects::nonNull).toList();
 	}
 
 	public synchronized @NotNull CompoundTag serializePowers(@NotNull CompoundTag nbt) {
@@ -105,6 +107,7 @@ public final class PlayerPowerRepository {
 
 			ListTag powers = new ListTag();
 			for (PowerType type : this.appliedPowers.get(layer)) {
+				if (type == null) continue;
 				powers.add(StringTag.valueOf(type.getTag()));
 			}
 			tag.put("Powers", powers);

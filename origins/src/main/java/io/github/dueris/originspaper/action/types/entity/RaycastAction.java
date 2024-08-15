@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.condition.ConditionFactory;
@@ -31,7 +30,7 @@ import java.util.function.Consumer;
 
 public class RaycastAction {
 
-	public static void action(@NotNull DeserializedFactoryJson data, @NotNull Entity entity) {
+	public static void action(@NotNull SerializableData.Instance data, @NotNull Entity entity) {
 
 		Vec3 origin = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
 		Vec3 direction = entity.getViewVector(1);
@@ -115,7 +114,7 @@ public class RaycastAction {
 		}
 	}
 
-	private static double getEntityReach(@NotNull DeserializedFactoryJson data, Entity entity) {
+	private static double getEntityReach(@NotNull SerializableData.Instance data, Entity entity) {
 
 		if (!data.isPresent("entity_distance") && !data.isPresent("distance")) {
 			return entity instanceof LivingEntity livingEntity && livingEntity.getAttributes().hasAttribute(Attributes.ENTITY_INTERACTION_RANGE)
@@ -129,7 +128,7 @@ public class RaycastAction {
 
 	}
 
-	private static double getBlockReach(@NotNull DeserializedFactoryJson data, Entity entity) {
+	private static double getBlockReach(@NotNull SerializableData.Instance data, Entity entity) {
 
 		if (!data.isPresent("block_distance") && !data.isPresent("distance")) {
 			return entity instanceof LivingEntity livingEntity && livingEntity.getAttributes().hasAttribute(Attributes.BLOCK_INTERACTION_RANGE)
@@ -199,7 +198,7 @@ public class RaycastAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("raycast"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("distance", SerializableDataTypes.DOUBLE, null)
 				.add("block_distance", SerializableDataTypes.DOUBLE, null)
 				.add("entity_distance", SerializableDataTypes.DOUBLE, null)

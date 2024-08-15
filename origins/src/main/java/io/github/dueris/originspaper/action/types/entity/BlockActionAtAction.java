@@ -1,6 +1,6 @@
 package io.github.dueris.originspaper.action.types.entity;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -15,7 +15,7 @@ public class BlockActionAtAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("block_action_at"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("block_action", ApoliDataTypes.BLOCK_ACTION),
 			(data, entity) -> ((ActionFactory<Triple<Level, BlockPos, Direction>>) data.get("block_action")).accept(
 				Triple.of(entity.level(), entity.blockPosition(), Direction.UP)));

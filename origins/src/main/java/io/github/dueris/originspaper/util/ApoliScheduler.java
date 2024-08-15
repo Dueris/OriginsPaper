@@ -1,9 +1,9 @@
 package io.github.dueris.originspaper.util;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
+import io.github.dueris.originspaper.OriginsPaper;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import io.github.dueris.originspaper.OriginsPaper;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

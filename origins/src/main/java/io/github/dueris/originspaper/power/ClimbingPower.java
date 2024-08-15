@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import net.minecraft.network.chat.Component;
@@ -25,7 +25,7 @@ public class ClimbingPower extends PowerType {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("climbing"));
 	}
 

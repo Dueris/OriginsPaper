@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.condition.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import net.minecraft.core.registries.Registries;
@@ -20,7 +19,7 @@ import java.util.Optional;
 
 public class PredicateCondition {
 
-	public static boolean condition(DeserializedFactoryJson data, @NotNull Entity entity) {
+	public static boolean condition(SerializableData.Instance data, @NotNull Entity entity) {
 
 		if (!(entity.level() instanceof ServerLevel serverWorld)) {
 			return false;
@@ -46,7 +45,7 @@ public class PredicateCondition {
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("predicate"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("predicate", SerializableDataTypes.PREDICATE),
 			PredicateCondition::condition
 		);

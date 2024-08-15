@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.item;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.action.ItemActionFactory;
@@ -23,7 +22,7 @@ import java.util.List;
 
 public class RemoveEnchantmentAction {
 
-	public static void action(DeserializedFactoryJson data, @NotNull Tuple<Level, ItemStack> worldAndStack) {
+	public static void action(SerializableData.Instance data, @NotNull Tuple<Level, ItemStack> worldAndStack) {
 
 		ItemStack stack = worldAndStack.getB();
 		Level world = worldAndStack.getA();
@@ -77,7 +76,7 @@ public class RemoveEnchantmentAction {
 	public static @NotNull ActionFactory<Tuple<Level, SlotAccess>> getFactory() {
 		return ItemActionFactory.createItemStackBased(
 			OriginsPaper.apoliIdentifier("remove_enchantment"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("enchantment", SerializableDataTypes.ENCHANTMENT, null)
 				.add("enchantments", SerializableDataTypes.list(SerializableDataTypes.ENCHANTMENT), null)
 				.add("levels", SerializableDataTypes.INT, null)

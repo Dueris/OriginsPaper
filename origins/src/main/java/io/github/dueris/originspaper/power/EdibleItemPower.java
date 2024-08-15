@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.condition.ConditionFactory;
@@ -78,7 +78,7 @@ public class EdibleItemPower extends PowerType {
 		this.foodComponent = resolveFoodComponent(foodComponent);
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("edible_item"))
 			.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
 			.add("item_action", ApoliDataTypes.ITEM_ACTION, null)

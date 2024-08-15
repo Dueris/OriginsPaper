@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -16,7 +15,7 @@ import java.util.function.Predicate;
 
 public class AreaOfEffectAction {
 
-	public static void action(@NotNull DeserializedFactoryJson data, @NotNull Entity entity) {
+	public static void action(@NotNull SerializableData.Instance data, @NotNull Entity entity) {
 
 		Consumer<Tuple<Entity, Entity>> biEntityAction = data.get("bientity_action");
 		Predicate<Tuple<Entity, Entity>> biEntityCondition = data.get("bientity_condition");
@@ -43,7 +42,7 @@ public class AreaOfEffectAction {
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
 			OriginsPaper.apoliIdentifier("area_of_effect"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("radius", SerializableDataTypes.DOUBLE, 16D)
 				.add("shape", SerializableDataTypes.enumValue(Shape.class), Shape.CUBE)
 				.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION)

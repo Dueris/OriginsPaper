@@ -1,7 +1,5 @@
 package io.github.dueris.originspaper.screen;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.content.OrbOfOrigins;
 import io.github.dueris.originspaper.event.OrbInteractEvent;
@@ -10,6 +8,8 @@ import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.storage.OriginConfiguration;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import io.github.dueris.originspaper.util.Util;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;

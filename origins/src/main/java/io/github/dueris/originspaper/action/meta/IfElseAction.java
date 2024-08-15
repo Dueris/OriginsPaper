@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.action.meta;
 
 import io.github.dueris.calio.data.SerializableDataBuilder;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.condition.ConditionFactory;
@@ -16,7 +16,7 @@ public class IfElseAction {
 		SerializableDataBuilder<ConditionFactory<U>> conditionDataType,
 		Function<T, U> actionToConditionTypeFunction) {
 		return new ActionFactory<T>(OriginsPaper.apoliIdentifier("if_else"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("condition", conditionDataType)
 				.add("if_action", actionDataType)
 				.add("else_action", actionDataType, null),

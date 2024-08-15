@@ -2,8 +2,7 @@ package io.github.dueris.originspaper.data.types.modifier;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableDataBuilder;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.registry.Registries;
 import net.minecraft.world.entity.Entity;
 
@@ -52,7 +51,7 @@ public interface IModifierOperation {
 	/**
 	 * @return the serializable data of the modifier instance that this operation needs to operate.
 	 */
-	InstanceDefiner getData();
+	SerializableData getData();
 
 	/**
 	 * Applies all instances of this modifier operation to the specified value.
@@ -64,7 +63,7 @@ public interface IModifierOperation {
 	 * @param current   the current value, which differs from the base value only if prior modifiers have modified it in the same phase.
 	 * @return the new current value after applying all modifier instances with this operation.
 	 */
-	double apply(Entity entity, List<DeserializedFactoryJson> instances, double base, double current);
+	double apply(Entity entity, List<SerializableData.Instance> instances, double base, double current);
 
 	enum Phase {
 		BASE, TOTAL

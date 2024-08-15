@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.condition.types.multi;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -62,9 +61,9 @@ public class DistanceFromCoordinatesConditionRegistry {
 		return new String[]{"distance_from_spawn", "distance_from_coordinates"};
 	}
 
-	private static InstanceDefiner getSerializableData(String alias) {
+	private static SerializableData getSerializableData(String alias) {
 		// Using doubles and not ints because the player position is a vector of doubles and the sqrt function (for the distance) returns a double so we might as well use that precision
-		return InstanceDefiner.instanceDefiner()
+		return SerializableData.serializableData()
 			.add("reference", SerializableDataTypes.STRING, alias.equals("distance_from_coordinates") ? "world_origin" : "world_spawn") // the reference point
 //          .add("check_modified_spawn", SerializableDataTypes.BOOLEAN, true) // whether to check for modified spawns
 			.add("offset", SerializableDataTypes.VECTOR, new Vec3(0, 0, 0)) // offset to the reference point
@@ -100,7 +99,7 @@ public class DistanceFromCoordinatesConditionRegistry {
 	 * @param entity the entity to check the condition for
 	 * @return the result of the distance comparison
 	 */
-	private static boolean testCondition(DeserializedFactoryJson data, BlockInWorld block, Entity entity) {
+	private static boolean testCondition(SerializableData.Instance data, BlockInWorld block, Entity entity) {
 		boolean scaleReferenceToDimension = data.getBoolean("scale_reference_to_dimension"),
 			setResultOnWrongDimension = data.isPresent("result_on_wrong_dimension"),
 			resultOnWrongDimension = setResultOnWrongDimension && data.getBoolean("result_on_wrong_dimension");

@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.action.meta;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableDataBuilder;
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +13,7 @@ public class ChanceAction {
 
 	public static <T> @NotNull ActionFactory<T> getFactory(SerializableDataBuilder<ActionFactory<T>> dataType) {
 		return new ActionFactory<T>(OriginsPaper.apoliIdentifier("chance"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("action", dataType)
 				.add("chance", SerializableDataTypes.FLOAT)
 				.add("fail_action", dataType, null),

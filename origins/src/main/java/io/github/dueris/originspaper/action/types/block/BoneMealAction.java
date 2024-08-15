@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.block;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import net.minecraft.core.BlockPos;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class BoneMealAction {
 
-	public static void action(@NotNull DeserializedFactoryJson data, @NotNull Triple<Level, BlockPos, Direction> block) {
+	public static void action(@NotNull SerializableData.Instance data, @NotNull Triple<Level, BlockPos, Direction> block) {
 		Level world = block.getLeft();
 		BlockPos blockPos = block.getMiddle();
 		Direction side = block.getRight();
@@ -43,7 +42,7 @@ public class BoneMealAction {
 	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionFactory<>(
 			OriginsPaper.apoliIdentifier("bonemeal"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("effects", SerializableDataTypes.BOOLEAN, true),
 			BoneMealAction::action
 		);

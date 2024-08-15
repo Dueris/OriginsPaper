@@ -1,7 +1,6 @@
 package io.github.dueris.originspaper.condition.types.item;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import net.minecraft.util.Tuple;
@@ -13,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SmeltableCondition {
 
-	public static boolean condition(DeserializedFactoryJson data, @NotNull Tuple<Level, ItemStack> worldAndStack) {
+	public static boolean condition(SerializableData.Instance data, @NotNull Tuple<Level, ItemStack> worldAndStack) {
 		Level world = worldAndStack.getA();
 		return world != null && world.getRecipeManager()
 			.getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(worldAndStack.getB()), world)
@@ -23,7 +22,7 @@ public class SmeltableCondition {
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("smeltable"),
-			InstanceDefiner.instanceDefiner(),
+			SerializableData.serializableData(),
 			SmeltableCondition::condition
 		);
 	}

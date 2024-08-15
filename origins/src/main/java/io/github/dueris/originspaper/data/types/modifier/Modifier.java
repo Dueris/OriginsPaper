@@ -5,7 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.data.exceptions.DataException;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +28,7 @@ public class Modifier implements Comparable<Modifier> {
 			try {
 
 				IModifierOperation operation = IModifierOperation.DATA_TYPE.deserialize(jsonObject.get("operation"));
-				DeserializedFactoryJson data = DeserializedFactoryJson.decompileJsonObject(jsonObject, operation.getData(), "Modifier", "null", Optional.of(Modifier.class));
+				SerializableData.Instance data = SerializableData.Instance.decompileJsonObject(jsonObject, operation.getData(), "Modifier", "null", Optional.of(Modifier.class));
 
 				return new Modifier(operation, data);
 
@@ -40,9 +40,9 @@ public class Modifier implements Comparable<Modifier> {
 	);
 	public static final SerializableDataBuilder<List<Modifier>> LIST_TYPE = SerializableDataTypes.list(DATA_TYPE);
 	private final IModifierOperation operation;
-	private final DeserializedFactoryJson dataInstance;
+	private final SerializableData.Instance dataInstance;
 
-	public Modifier(IModifierOperation operation, DeserializedFactoryJson dataInstance) {
+	public Modifier(IModifierOperation operation, SerializableData.Instance dataInstance) {
 		this.operation = operation;
 		this.dataInstance = dataInstance;
 	}
@@ -51,7 +51,7 @@ public class Modifier implements Comparable<Modifier> {
 		return operation;
 	}
 
-	public DeserializedFactoryJson getData() {
+	public SerializableData.Instance getData() {
 		return dataInstance;
 	}
 

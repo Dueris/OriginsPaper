@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 public class PowerHolderComponent implements Listener {
@@ -84,7 +85,7 @@ public class PowerHolderComponent implements Listener {
 	public static <T> @NotNull List<T> getPowers(Player player, Predicate<PowerType> powerTypePredicate) {
 		List<PowerType> powers = PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers();
 		return (List<T>) powers.stream()
-			.filter(powerTypePredicate).toList();
+			.filter(Objects::nonNull).filter(powerTypePredicate).toList();
 	}
 
 	@Unmodifiable

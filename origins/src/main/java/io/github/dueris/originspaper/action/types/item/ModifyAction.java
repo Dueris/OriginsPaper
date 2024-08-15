@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.types.item;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.InstanceDefiner;
-import io.github.dueris.calio.parser.reader.DeserializedFactoryJson;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ItemActionFactory;
 import io.github.dueris.originspaper.util.ApoliLootContextTypes;
@@ -23,7 +22,7 @@ import java.util.Optional;
 
 public class ModifyAction {
 
-	public static void action(DeserializedFactoryJson data, @NotNull Tuple<Level, SlotAccess> worldAndStack) {
+	public static void action(SerializableData.Instance data, @NotNull Tuple<Level, SlotAccess> worldAndStack) {
 
 		if (!(worldAndStack.getA() instanceof ServerLevel serverWorld)) {
 			return;
@@ -51,7 +50,7 @@ public class ModifyAction {
 	public static @NotNull ItemActionFactory getFactory() {
 		return new ItemActionFactory(
 			OriginsPaper.apoliIdentifier("modify"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("modifier", SerializableDataTypes.ITEM_MODIFIER),
 			ModifyAction::action
 		);

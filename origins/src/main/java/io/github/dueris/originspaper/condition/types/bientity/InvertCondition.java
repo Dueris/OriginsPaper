@@ -1,6 +1,6 @@
 package io.github.dueris.originspaper.condition.types.bientity;
 
-import io.github.dueris.calio.parser.InstanceDefiner;
+import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -15,7 +15,7 @@ public class InvertCondition {
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("invert"),
-			InstanceDefiner.instanceDefiner()
+			SerializableData.serializableData()
 				.add("condition", ApoliDataTypes.BIENTITY_CONDITION),
 			(data, actorAndTarget) -> {
 				return data.<Predicate<Tuple<Entity, Entity>>>get("condition").test(new Tuple<>(actorAndTarget.getB(), actorAndTarget.getA()));
