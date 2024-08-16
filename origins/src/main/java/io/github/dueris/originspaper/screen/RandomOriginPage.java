@@ -101,7 +101,7 @@ public class RandomOriginPage implements ChoosingPage {
 		int r = this.random.nextInt(layer.getRandomOrigins().size());
 		Origin origin = layer.getRandomOrigins().get(Math.max(r, 1));
 		PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, origin);
-		OriginChangeEvent e = new OriginChangeEvent((org.bukkit.entity.Player) player.getBukkitEntity(), origin, ScreenNavigator.orbChoosing.contains(player));
+		OriginChangeEvent e = new OriginChangeEvent((org.bukkit.entity.Player) player.getBukkitEntity(), origin, layer, ScreenNavigator.orbChoosing.contains(player));
 		Bukkit.getPluginManager().callEvent(e);
 		player.getBukkitEntity().getOpenInventory().close();
 	}

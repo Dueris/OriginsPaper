@@ -168,7 +168,7 @@ public class PowerHolderComponent implements Listener {
 
 			PowerHolderComponent.loadPowers(player, layer, true);
 
-			OriginChangeEvent e = new OriginChangeEvent(player, origin, ScreenNavigator.orbChoosing.contains(getNMS(player)));
+			OriginChangeEvent e = new OriginChangeEvent(player, origin, layer, ScreenNavigator.orbChoosing.contains(getNMS(player)));
 			Bukkit.getPluginManager().callEvent(e);
 			ScreenNavigator.inChoosingLayer.remove(getNMS(player));
 		}

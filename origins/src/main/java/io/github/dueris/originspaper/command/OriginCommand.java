@@ -122,7 +122,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 																			false
 																		);
 																	OriginChangeEvent originChangeEvent = new OriginChangeEvent(
-																		player.getBukkitEntity(), origin, false
+																		player.getBukkitEntity(), origin, layer, false
 																	);
 																	Bukkit.getServer().getPluginManager().callEvent(originChangeEvent);
 																}
