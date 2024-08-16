@@ -1,6 +1,7 @@
 package io.github.dueris.calio.parser;
 
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.util.holder.ObjectTiedEnumState;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -29,10 +30,18 @@ public class SerializableData {
 		return new SerializableData();
 	}
 
+	public synchronized <T> SerializableData add(String key, @NotNull Tuple<Codec<T>, Class<T>> data) {
+		return add(key, SerializableDataBuilder.of(data.getA(), data.getB()));
+	}
+
 	public synchronized SerializableData add(String key, SerializableDataBuilder<?> data) {
 		dataMap.put(key, new ObjectTiedEnumState<>(data, SerializableType.REQUIRED));
 		keyPriorities.put(key, priorityCounter++);
 		return this;
+	}
+
+	public synchronized <T> SerializableData add(String key, @NotNull Tuple<Codec<T>, Class<T>> data, T defaultValue) {
+		return add(key, SerializableDataBuilder.of(data.getA(), data.getB()), defaultValue);
 	}
 
 	public synchronized <T> SerializableData add(String key, SerializableDataBuilder<T> data, T defaultValue) {
@@ -40,6 +49,10 @@ public class SerializableData {
 		defaultMap.put(key, defaultValue);
 		keyPriorities.put(key, priorityCounter++);
 		return this;
+	}
+
+	public synchronized <T> SerializableData add(String key, @NotNull Tuple<Codec<T>, Class<T>> data, Supplier<T> supplier) {
+		return addSupplied(key, SerializableDataBuilder.of(data.getA(), data.getB()), supplier);
 	}
 
 	public synchronized <T> SerializableData addSupplied(String key, SerializableDataBuilder<T> data, @NotNull Supplier<T> supplier) {
