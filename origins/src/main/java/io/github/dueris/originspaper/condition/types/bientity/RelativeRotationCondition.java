@@ -54,22 +54,22 @@ public class RelativeRotationCondition {
 
 	private static @NotNull Vec3 reduceAxes(Vec3 vector, @NotNull EnumSet<Direction.Axis> axesToKeep) {
 		return new Vec3(
-				axesToKeep.contains(Direction.Axis.X) ? vector.x : 0,
-				axesToKeep.contains(Direction.Axis.Y) ? vector.y : 0,
-				axesToKeep.contains(Direction.Axis.Z) ? vector.z : 0
+			axesToKeep.contains(Direction.Axis.X) ? vector.x : 0,
+			axesToKeep.contains(Direction.Axis.Y) ? vector.y : 0,
+			axesToKeep.contains(Direction.Axis.Z) ? vector.z : 0
 		);
 	}
 
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("relative_rotation"),
-				SerializableData.serializableData()
-						.add("axes", SerializableDataTypes.enumSet(Direction.Axis.class, SerializableDataTypes.AXIS), EnumSet.allOf(Direction.Axis.class))
-						.add("actor_rotation", SerializableDataTypes.enumValue(RotationType.class), RotationType.HEAD)
-						.add("target_rotation", SerializableDataTypes.enumValue(RotationType.class), RotationType.BODY)
-						.add("comparison", ApoliDataTypes.COMPARISON)
-						.add("compare_to", SerializableDataTypes.DOUBLE),
-				RelativeRotationCondition::condition
+			OriginsPaper.apoliIdentifier("relative_rotation"),
+			SerializableData.serializableData()
+				.add("axes", SerializableDataTypes.enumSet(Direction.Axis.class, SerializableDataTypes.AXIS), EnumSet.allOf(Direction.Axis.class))
+				.add("actor_rotation", SerializableDataTypes.enumValue(RotationType.class), RotationType.HEAD)
+				.add("target_rotation", SerializableDataTypes.enumValue(RotationType.class), RotationType.BODY)
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.DOUBLE),
+			RelativeRotationCondition::condition
 		);
 	}
 

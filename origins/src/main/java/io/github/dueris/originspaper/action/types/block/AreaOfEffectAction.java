@@ -40,13 +40,13 @@ public class AreaOfEffectAction {
 
 	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionFactory<>(
-				OriginsPaper.apoliIdentifier("area_of_effect"),
-				SerializableData.serializableData()
-						.add("block_action", ApoliDataTypes.BLOCK_ACTION)
-						.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
-						.add("radius", SerializableDataTypes.INT, 16)
-						.add("shape", SerializableDataTypes.enumValue(Shape.class), Shape.CUBE),
-				AreaOfEffectAction::action
+			OriginsPaper.apoliIdentifier("area_of_effect"),
+			SerializableData.serializableData()
+				.add("block_action", ApoliDataTypes.BLOCK_ACTION)
+				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
+				.add("radius", SerializableDataTypes.INT, 16)
+				.add("shape", SerializableDataTypes.enumValue(Shape.class), Shape.CUBE),
+			AreaOfEffectAction::action
 		);
 	}
 }

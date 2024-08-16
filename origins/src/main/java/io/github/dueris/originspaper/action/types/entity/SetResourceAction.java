@@ -14,16 +14,16 @@ public class SetResourceAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("set_resource"),
-				SerializableData.serializableData()
-						.add("resource", SerializableDataTypes.IDENTIFIER)
-						.add("value", SerializableDataTypes.INT),
-				(data, entity) -> {
-					Optional<ResourcePower.Bar> resourceBar = ResourcePower.getDisplayedBar(entity, data.getId("resource").toString());
-					resourceBar.ifPresent((bar) -> {
-						int val = data.get("value");
-						bar.change(val, "set");
-					});
-				}
+			SerializableData.serializableData()
+				.add("resource", SerializableDataTypes.IDENTIFIER)
+				.add("value", SerializableDataTypes.INT),
+			(data, entity) -> {
+				Optional<ResourcePower.Bar> resourceBar = ResourcePower.getDisplayedBar(entity, data.getId("resource").toString());
+				resourceBar.ifPresent((bar) -> {
+					int val = data.get("value");
+					bar.change(val, "set");
+				});
+			}
 		);
 	}
 }

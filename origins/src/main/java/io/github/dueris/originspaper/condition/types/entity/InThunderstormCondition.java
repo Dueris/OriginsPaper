@@ -21,9 +21,9 @@ public class InThunderstormCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("in_thunderstorm"),
-				SerializableData.serializableData(),
-				InThunderstormCondition::condition
+			OriginsPaper.apoliIdentifier("in_thunderstorm"),
+			SerializableData.serializableData(),
+			InThunderstormCondition::condition
 		);
 	}
 }

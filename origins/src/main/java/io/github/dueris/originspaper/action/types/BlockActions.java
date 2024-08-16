@@ -23,10 +23,10 @@ public class BlockActions {
 		register(AndAction.getFactory(SerializableDataTypes.list(ApoliDataTypes.BLOCK_ACTION)));
 		register(ChanceAction.getFactory(ApoliDataTypes.BLOCK_ACTION));
 		register(IfElseAction.getFactory(ApoliDataTypes.BLOCK_ACTION, ApoliDataTypes.BLOCK_CONDITION,
-				t -> new BlockInWorld(t.getLeft(), t.getMiddle(), true)));
+			t -> new BlockInWorld(t.getLeft(), t.getMiddle(), true)));
 		register(ChoiceAction.getFactory(ApoliDataTypes.BLOCK_ACTION));
 		register(IfElseListAction.getFactory(ApoliDataTypes.BLOCK_ACTION, ApoliDataTypes.BLOCK_CONDITION,
-				t -> new BlockInWorld(t.getLeft(), t.getMiddle(), true)));
+			t -> new BlockInWorld(t.getLeft(), t.getMiddle(), true)));
 		register(DelayAction.getFactory(ApoliDataTypes.BLOCK_ACTION));
 		register(NothingAction.getFactory());
 		register(SideAction.getFactory(ApoliDataTypes.BLOCK_ACTION, block -> !block.getLeft().isClientSide));

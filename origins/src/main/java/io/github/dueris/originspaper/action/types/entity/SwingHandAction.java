@@ -19,9 +19,9 @@ public class SwingHandAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("swing_hand"),
-				SerializableData.serializableData()
-						.add("hand", SerializableDataTypes.HAND, InteractionHand.MAIN_HAND),
-				SwingHandAction::action
+			SerializableData.serializableData()
+				.add("hand", SerializableDataTypes.HAND, InteractionHand.MAIN_HAND),
+			SwingHandAction::action
 		);
 	}
 }

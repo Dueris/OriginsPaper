@@ -33,10 +33,10 @@ public class ElytraFlightPossibleCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(OriginsPaper.apoliIdentifier("elytra_flight_possible"),
-				SerializableData.serializableData()
-						.add("check_state", SerializableDataTypes.BOOLEAN, false)
-						.add("check_ability", SerializableDataTypes.BOOLEAN, true),
-				ElytraFlightPossibleCondition::condition
+			SerializableData.serializableData()
+				.add("check_state", SerializableDataTypes.BOOLEAN, false)
+				.add("check_ability", SerializableDataTypes.BOOLEAN, true),
+			ElytraFlightPossibleCondition::condition
 		);
 	}
 }

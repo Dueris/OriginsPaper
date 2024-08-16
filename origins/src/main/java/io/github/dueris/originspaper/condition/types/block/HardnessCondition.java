@@ -14,14 +14,14 @@ public class HardnessCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("hardness"),
-				SerializableData.serializableData()
-						.add("comparison", ApoliDataTypes.COMPARISON)
-						.add("compare_to", SerializableDataTypes.FLOAT),
-				(data, block) -> {
-					BlockState state = block.getState();
-					return ((Comparison) data.get("comparison")).compare(state.getBlock().defaultDestroyTime(), data.getFloat("compare_to"));
-				}
+			OriginsPaper.apoliIdentifier("hardness"),
+			SerializableData.serializableData()
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.FLOAT),
+			(data, block) -> {
+				BlockState state = block.getState();
+				return ((Comparison) data.get("comparison")).compare(state.getBlock().defaultDestroyTime(), data.getFloat("compare_to"));
+			}
 		);
 	}
 }

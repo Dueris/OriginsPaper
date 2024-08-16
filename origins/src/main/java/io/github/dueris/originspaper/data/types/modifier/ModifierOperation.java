@@ -12,7 +12,7 @@ public enum ModifierOperation implements IModifierOperation {
 
 	ADD_BASE_EARLY(Phase.BASE, 0, (values, base, current) -> base + values.stream().reduce(0.0, Double::sum)),
 	MULTIPLY_BASE_ADDITIVE(Phase.BASE, 100, (values, base, current) ->
-			current + (base * values.stream().reduce(0.0, Double::sum))),
+		current + (base * values.stream().reduce(0.0, Double::sum))),
 	MULTIPLY_BASE_MULTIPLICATIVE(Phase.BASE, 200, (values, base, current) -> {
 		double value = current;
 		for (double v : values) {
@@ -49,7 +49,7 @@ public enum ModifierOperation implements IModifierOperation {
 		return value;
 	}),
 	MULTIPLY_TOTAL_ADDITIVE(Phase.TOTAL, 0, (values, base, current) ->
-			current + (base * values.stream().reduce(0.0, Double::sum))),
+		current + (base * values.stream().reduce(0.0, Double::sum))),
 	MULTIPLY_TOTAL_MULTIPLICATIVE(Phase.TOTAL, 100, (values, base, current) -> {
 		double value = current;
 		for (double v : values) {
@@ -87,8 +87,8 @@ public enum ModifierOperation implements IModifierOperation {
 	});
 
 	public static final SerializableData DATA = SerializableData.serializableData()
-			.add("value", SerializableDataTypes.DOUBLE)
-			.add("modifier", Modifier.LIST_TYPE, null);
+		.add("value", SerializableDataTypes.DOUBLE)
+		.add("modifier", Modifier.LIST_TYPE, null);
 
 	private final Phase phase;
 	private final int order;
@@ -118,17 +118,17 @@ public enum ModifierOperation implements IModifierOperation {
 	@Override
 	public double apply(Entity entity, List<SerializableData.Instance> instances, double base, double current) {
 		return function.apply(
-				instances.stream()
-						.map(instance -> {
-							double value = instance.get("value");
-							if (instance.isPresent("modifier")) {
-								List<Modifier> modifiers = instance.get("modifier");
-								value = ModifierUtil.applyModifiers(entity, modifiers, value);
-							}
-							return value;
-						})
-						.collect(Collectors.toList()),
-				base, current);
+			instances.stream()
+				.map(instance -> {
+					double value = instance.get("value");
+					if (instance.isPresent("modifier")) {
+						List<Modifier> modifiers = instance.get("modifier");
+						value = ModifierUtil.applyModifiers(entity, modifiers, value);
+					}
+					return value;
+				})
+				.collect(Collectors.toList()),
+			base, current);
 	}
 
 }

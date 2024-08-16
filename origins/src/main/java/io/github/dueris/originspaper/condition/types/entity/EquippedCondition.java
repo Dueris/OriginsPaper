@@ -19,16 +19,16 @@ public class EquippedCondition {
 	public static boolean condition(@NotNull SerializableData.Instance data, Entity entity) {
 		Predicate<Tuple<Level, ItemStack>> itemCondition = data.get("item_condition");
 		return entity instanceof LivingEntity livingEntity
-				&& itemCondition.test(new Tuple<>(livingEntity.level(), livingEntity.getItemBySlot(data.get("equipment_slot"))));
+			&& itemCondition.test(new Tuple<>(livingEntity.level(), livingEntity.getItemBySlot(data.get("equipment_slot"))));
 	}
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("equipped_item"),
-				SerializableData.serializableData()
-						.add("equipment_slot", SerializableDataTypes.EQUIPMENT_SLOT)
-						.add("item_condition", ApoliDataTypes.ITEM_CONDITION),
-				EquippedCondition::condition
+			OriginsPaper.apoliIdentifier("equipped_item"),
+			SerializableData.serializableData()
+				.add("equipment_slot", SerializableDataTypes.EQUIPMENT_SLOT)
+				.add("item_condition", ApoliDataTypes.ITEM_CONDITION),
+			EquippedCondition::condition
 		);
 	}
 }

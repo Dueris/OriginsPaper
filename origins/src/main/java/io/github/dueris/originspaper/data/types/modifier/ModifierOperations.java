@@ -11,7 +11,7 @@ public final class ModifierOperations {
 	public static void registerAll() {
 		for (ModifierOperation operation : ModifierOperation.values()) {
 			CalioRegistry.INSTANCE.retrieve(Registries.MODIFIER_OPERATION).register(
-					operation, OriginsPaper.apoliIdentifier(operation.toString().toLowerCase(Locale.ROOT))
+				operation, OriginsPaper.apoliIdentifier(operation.toString().toLowerCase(Locale.ROOT))
 			);
 		}
 	}

@@ -11,11 +11,11 @@ public class CreativeFlyingCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("creative_flying"),
-				SerializableData.serializableData(),
-				(data, entity) -> {
-					return entity instanceof Player && ((Player) entity).getAbilities().flying;
-				}
+			OriginsPaper.apoliIdentifier("creative_flying"),
+			SerializableData.serializableData(),
+			(data, entity) -> {
+				return entity instanceof Player && ((Player) entity).getAbilities().flying;
+			}
 		);
 	}
 }

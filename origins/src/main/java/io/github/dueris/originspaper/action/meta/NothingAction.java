@@ -9,9 +9,9 @@ public class NothingAction {
 
 	public static <T> @NotNull ActionFactory<T> getFactory() {
 		return new ActionFactory<T>(OriginsPaper.apoliIdentifier("nothing"),
-				SerializableData.serializableData(),
-				(inst, t) -> {
-				}
+			SerializableData.serializableData(),
+			(inst, t) -> {
+			}
 		);
 	}
 }

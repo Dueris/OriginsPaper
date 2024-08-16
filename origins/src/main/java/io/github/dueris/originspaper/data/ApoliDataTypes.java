@@ -65,155 +65,155 @@ public class ApoliDataTypes {
 	public static final SerializableDataBuilder<InventoryType> INVENTORY_TYPE = SerializableDataTypes.enumValue(InventoryType.class);
 	public static final SerializableDataBuilder<Util.ProcessMode> PROCESS_MODE = SerializableDataTypes.enumValue(Util.ProcessMode.class);
 	public static final SerializableDataBuilder<Keybind> KEYBIND = SerializableDataBuilder.of(
-			(jsonElement) -> {
-				if (jsonElement.isJsonPrimitive() && jsonElement.getAsJsonPrimitive().isString()) {
-					return new Keybind(SerializableDataTypes.STRING.deserialize(jsonElement), false);
-				} else if (jsonElement.isJsonObject()) {
-					JsonObject jo = jsonElement.getAsJsonObject();
-					String key = SerializableDataTypes.STRING.deserialize(jo.get("key"));
-					boolean continuous = jo.has("continuous") ? SerializableDataTypes.BOOLEAN.deserialize(jo.get("continuous")) : false;
-					return new Keybind(key, continuous);
-				} else throw new JsonSyntaxException("Keybind must be an instanceof a JsonObject!");
-			}, Keybind.class
+		(jsonElement) -> {
+			if (jsonElement.isJsonPrimitive() && jsonElement.getAsJsonPrimitive().isString()) {
+				return new Keybind(SerializableDataTypes.STRING.deserialize(jsonElement), false);
+			} else if (jsonElement.isJsonObject()) {
+				JsonObject jo = jsonElement.getAsJsonObject();
+				String key = SerializableDataTypes.STRING.deserialize(jo.get("key"));
+				boolean continuous = jo.has("continuous") ? SerializableDataTypes.BOOLEAN.deserialize(jo.get("continuous")) : false;
+				return new Keybind(key, continuous);
+			} else throw new JsonSyntaxException("Keybind must be an instanceof a JsonObject!");
+		}, Keybind.class
 	);
 	public static final SerializableDataBuilder<AttributedEntityAttributeModifier> ATTRIBUTED_ATTRIBUTE_MODIFIER = SerializableDataBuilder.of(
-			(jsonElement) -> {
-				if (!(jsonElement instanceof JsonObject jo))
-					throw new JsonSyntaxException("Expected a JsonObject for Attributed Attribute Modifier");
-				return new AttributedEntityAttributeModifier(
-						SerializableDataTypes.ATTRIBUTE_ENTRY.deserialize(jo.get("attribute")),
-						SerializableDataTypes.ATTRIBUTE_MODIFIER.deserialize(jo)
-				);
-			}, AttributedEntityAttributeModifier.class
+		(jsonElement) -> {
+			if (!(jsonElement instanceof JsonObject jo))
+				throw new JsonSyntaxException("Expected a JsonObject for Attributed Attribute Modifier");
+			return new AttributedEntityAttributeModifier(
+				SerializableDataTypes.ATTRIBUTE_ENTRY.deserialize(jo.get("attribute")),
+				SerializableDataTypes.ATTRIBUTE_MODIFIER.deserialize(jo)
+			);
+		}, AttributedEntityAttributeModifier.class
 	);
 	public static final SerializableDataBuilder<Tuple<Integer, net.minecraft.world.item.ItemStack>> POSITIONED_ITEM_STACK = SerializableDataBuilder.of(
-			(jsonElement) -> {
-				if (!(jsonElement instanceof JsonObject jo))
-					throw new JsonSyntaxException("Expected JsonObject for Positioned ItemStack!");
-				return new Tuple<>(
-						jo.has("slot") ? SerializableDataTypes.INT.deserialize(jo.get("slot")) : Integer.MIN_VALUE,
-						SerializableDataTypes.ITEM_STACK.deserialize(jo));
-			}, Tuple.class
+		(jsonElement) -> {
+			if (!(jsonElement instanceof JsonObject jo))
+				throw new JsonSyntaxException("Expected JsonObject for Positioned ItemStack!");
+			return new Tuple<>(
+				jo.has("slot") ? SerializableDataTypes.INT.deserialize(jo.get("slot")) : Integer.MIN_VALUE,
+				SerializableDataTypes.ITEM_STACK.deserialize(jo));
+		}, Tuple.class
 	);
 	public static final SerializableDataBuilder<Comparison> COMPARISON = SerializableDataTypes.enumValue(Comparison.class, Util.buildEnumMap(Comparison.class, Comparison::getComparisonString));
 	public static final SerializableDataBuilder<ArgumentWrapper<Integer>> ITEM_SLOT = SerializableDataTypes.argumentType(SlotArgument.slot());
 	public static final SerializableDataBuilder<Explosion.BlockInteraction> BACKWARDS_COMPATIBLE_DESTRUCTION_TYPE = SerializableDataTypes.mapped(Explosion.BlockInteraction.class,
-			HashBiMap.create(ImmutableBiMap.of(
-					"none", Explosion.BlockInteraction.KEEP,
-					"break", Explosion.BlockInteraction.DESTROY,
-					"destroy", Explosion.BlockInteraction.DESTROY_WITH_DECAY)
-			));
+		HashBiMap.create(ImmutableBiMap.of(
+			"none", Explosion.BlockInteraction.KEEP,
+			"break", Explosion.BlockInteraction.DESTROY,
+			"destroy", Explosion.BlockInteraction.DESTROY_WITH_DECAY)
+		));
 	public static final SerializableDataBuilder<ArgumentWrapper<EntitySelector>> ENTITIES_SELECTOR = SerializableDataTypes.argumentType(EntityArgument.entities());
 	public static final SerializableDataBuilder<ClickAction> CLICK_TYPE = SerializableDataTypes.enumValue(ClickAction.class);
 	public static final SerializableDataBuilder<TextDisplay.TextAlignment> TEXT_ALIGNMENT = SerializableDataTypes.enumValue(TextDisplay.TextAlignment.class);
 	public static final SerializableDataBuilder<Map<ResourceLocation, ResourceLocation>> IDENTIFIER_MAP = SerializableDataBuilder.of(
-			(jsonElement) -> {
-				if (!(jsonElement instanceof JsonObject jsonObject)) {
-					throw new JsonParseException("Expected a JSON object");
+		(jsonElement) -> {
+			if (!(jsonElement instanceof JsonObject jsonObject)) {
+				throw new JsonParseException("Expected a JSON object");
+			}
+
+			Map<ResourceLocation, ResourceLocation> map = new LinkedHashMap<>();
+			for (String key : jsonObject.keySet()) {
+
+				if (!(jsonObject.get(key) instanceof JsonPrimitive jsonPrimitive) || !jsonPrimitive.isString()) {
+					continue;
 				}
 
-				Map<ResourceLocation, ResourceLocation> map = new LinkedHashMap<>();
-				for (String key : jsonObject.keySet()) {
+				ResourceLocation keyId = ResourceLocation.parse(key);
+				ResourceLocation valId = ResourceLocation.parse(jsonPrimitive.getAsString());
 
-					if (!(jsonObject.get(key) instanceof JsonPrimitive jsonPrimitive) || !jsonPrimitive.isString()) {
-						continue;
-					}
+				map.put(keyId, valId);
 
-					ResourceLocation keyId = ResourceLocation.parse(key);
-					ResourceLocation valId = ResourceLocation.parse(jsonPrimitive.getAsString());
+			}
 
-					map.put(keyId, valId);
-
-				}
-
-				return map;
-			}, Map.class
+			return map;
+		}, Map.class
 	);
 	public static final SerializableDataBuilder<Map<Pattern, ResourceLocation>> REGEX_MAP = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			if (!(jsonElement instanceof JsonObject jsonObject)) {
+				throw new JsonSyntaxException("Expected a JSON object.");
+			}
+
+			Map<Pattern, ResourceLocation> regexMap = new HashMap<>();
+			for (String key : jsonObject.keySet()) {
+
+				if (!(jsonObject.get(key) instanceof JsonPrimitive jsonPrimitive) || !jsonPrimitive.isString()) {
+					continue;
+				}
+
+				Pattern pattern = Pattern.compile(key);
+				ResourceLocation id = SerializableDataTypes.IDENTIFIER.deserialize(jsonPrimitive);
+
+				regexMap.put(pattern, id);
+
+			}
+
+			return regexMap;
+		}, Map.class
+	);
+	public static final SerializableDataBuilder<GameType> GAME_MODE = SerializableDataTypes.enumValue(GameType.class);
+	public static final SerializableDataBuilder<Component> DEFAULT_TRANSLATABLE_TEXT = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			return jsonElement instanceof JsonPrimitive jsonPrimitive
+				? Component.translatable(jsonPrimitive.getAsString())
+				: SerializableDataTypes.TEXT.deserialize(jsonElement);
+		}, Comparison.class
+	);
+	public static final SerializableDataBuilder<Pose> ENTITY_POSE = SerializableDataTypes.enumValue(Pose.class);
+	public static final SerializableDataBuilder<HudRender> HUD_RENDER = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			if (!(jsonElement instanceof JsonObject jo)) {
+				throw new JsonSyntaxException("HudRender should be instanceof a JsonObject!");
+			}
+			return new HudRender(
+				jo.has("should_render") ? SerializableDataTypes.BOOLEAN.deserialize(jo.get("should_render")) : true,
+				jo.has("condition") ? ENTITY_CONDITION.deserialize(jo.get("condition")) : null
+			);
+		}, HudRender.class
+	);
+
+	public static <T> @NotNull SerializableDataBuilder<ActionFactory<T>> action(RegistryKey<ActionFactory<T>> registry) {
+		return SerializableDataBuilder.of(
 			(jsonElement) -> {
 				if (!(jsonElement instanceof JsonObject jsonObject)) {
 					throw new JsonSyntaxException("Expected a JSON object.");
 				}
 
-				Map<Pattern, ResourceLocation> regexMap = new HashMap<>();
-				for (String key : jsonObject.keySet()) {
-
-					if (!(jsonObject.get(key) instanceof JsonPrimitive jsonPrimitive) || !jsonPrimitive.isString()) {
-						continue;
+				ResourceLocation factoryID = SerializableDataTypes.IDENTIFIER.deserialize(jsonObject.get("type"));
+				try {
+					ActionFactory<T> actionFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
+					if (actionFactory == null) {
+						throw new IllegalArgumentException("Unable to retrieve action of: " + jsonObject.get("type").getAsString());
 					}
-
-					Pattern pattern = Pattern.compile(key);
-					ResourceLocation id = SerializableDataTypes.IDENTIFIER.deserialize(jsonPrimitive);
-
-					regexMap.put(pattern, id);
-
+					return actionFactory.copy().decompile(jsonObject);
+				} catch (Throwable e) {
+					OriginsPaper.getPlugin().getLog4JLogger().error("Unable to retrieve action of `{}` for Power!", factoryID.toString());
+					throw e;
 				}
-
-				return regexMap;
-			}, Map.class
-	);
-	public static final SerializableDataBuilder<GameType> GAME_MODE = SerializableDataTypes.enumValue(GameType.class);
-	public static final SerializableDataBuilder<Component> DEFAULT_TRANSLATABLE_TEXT = SerializableDataBuilder.of(
-			(jsonElement) -> {
-				return jsonElement instanceof JsonPrimitive jsonPrimitive
-						? Component.translatable(jsonPrimitive.getAsString())
-						: SerializableDataTypes.TEXT.deserialize(jsonElement);
-			}, Comparison.class
-	);
-	public static final SerializableDataBuilder<Pose> ENTITY_POSE = SerializableDataTypes.enumValue(Pose.class);
-	public static final SerializableDataBuilder<HudRender> HUD_RENDER = SerializableDataBuilder.of(
-			(jsonElement) -> {
-				if (!(jsonElement instanceof JsonObject jo)) {
-					throw new JsonSyntaxException("HudRender should be instanceof a JsonObject!");
-				}
-				return new HudRender(
-						jo.has("should_render") ? SerializableDataTypes.BOOLEAN.deserialize(jo.get("should_render")) : true,
-						jo.has("condition") ? ENTITY_CONDITION.deserialize(jo.get("condition")) : null
-				);
-			}, HudRender.class
-	);
-
-	public static <T> @NotNull SerializableDataBuilder<ActionFactory<T>> action(RegistryKey<ActionFactory<T>> registry) {
-		return SerializableDataBuilder.of(
-				(jsonElement) -> {
-					if (!(jsonElement instanceof JsonObject jsonObject)) {
-						throw new JsonSyntaxException("Expected a JSON object.");
-					}
-
-					ResourceLocation factoryID = SerializableDataTypes.IDENTIFIER.deserialize(jsonObject.get("type"));
-					try {
-						ActionFactory<T> actionFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
-						if (actionFactory == null) {
-							throw new IllegalArgumentException("Unable to retrieve action of: " + jsonObject.get("type").getAsString());
-						}
-						return actionFactory.copy().decompile(jsonObject);
-					} catch (Throwable e) {
-						OriginsPaper.getPlugin().getLog4JLogger().error("Unable to retrieve action of `{}` for Power!", factoryID.toString());
-						throw e;
-					}
-				}, ActionFactory.class
+			}, ActionFactory.class
 		);
 	}
 
 	public static <T> @NotNull SerializableDataBuilder<ConditionFactory<T>> condition(RegistryKey<ConditionFactory<T>> registry) {
 		return SerializableDataBuilder.of(
-				(jsonElement) -> {
-					if (!(jsonElement instanceof JsonObject jsonObject)) {
-						throw new JsonSyntaxException("Expected a JSON object.");
-					}
+			(jsonElement) -> {
+				if (!(jsonElement instanceof JsonObject jsonObject)) {
+					throw new JsonSyntaxException("Expected a JSON object.");
+				}
 
-					ResourceLocation factoryID = SerializableDataTypes.IDENTIFIER.deserialize(jsonObject.get("type"));
-					try {
-						ConditionFactory<T> conditionFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
-						if (conditionFactory == null) {
-							throw new IllegalArgumentException("Unable to retrieve action of: " + jsonObject.get("type").getAsString());
-						}
-						return conditionFactory.copy().decompile(jsonObject);
-					} catch (Throwable e) {
-						OriginsPaper.getPlugin().getLog4JLogger().error("Unable to retrieve condition of `{}` for Power!", factoryID.toString());
-						throw e;
+				ResourceLocation factoryID = SerializableDataTypes.IDENTIFIER.deserialize(jsonObject.get("type"));
+				try {
+					ConditionFactory<T> conditionFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
+					if (conditionFactory == null) {
+						throw new IllegalArgumentException("Unable to retrieve action of: " + jsonObject.get("type").getAsString());
 					}
-				}, ConditionFactory.class
+					return conditionFactory.copy().decompile(jsonObject);
+				} catch (Throwable e) {
+					OriginsPaper.getPlugin().getLog4JLogger().error("Unable to retrieve condition of `{}` for Power!", factoryID.toString());
+					throw e;
+				}
+			}, ConditionFactory.class
 		);
 	}
 

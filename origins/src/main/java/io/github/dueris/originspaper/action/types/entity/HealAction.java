@@ -12,13 +12,13 @@ public class HealAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("heal"),
-				SerializableData.serializableData()
-						.add("amount", SerializableDataTypes.FLOAT),
-				(data, entity) -> {
-					if (entity instanceof LivingEntity) {
-						((LivingEntity) entity).heal(data.getFloat("amount"));
-					}
+			SerializableData.serializableData()
+				.add("amount", SerializableDataTypes.FLOAT),
+			(data, entity) -> {
+				if (entity instanceof LivingEntity) {
+					((LivingEntity) entity).heal(data.getFloat("amount"));
 				}
+			}
 		);
 	}
 }

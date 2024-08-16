@@ -35,12 +35,12 @@ public class ScoreboardCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(OriginsPaper.apoliIdentifier("scoreboard"),
-				SerializableData.serializableData()
-						.add("name", SerializableDataTypes.STRING, null)
-						.add("objective", SerializableDataTypes.STRING)
-						.add("comparison", ApoliDataTypes.COMPARISON)
-						.add("compare_to", SerializableDataTypes.INT),
-				ScoreboardCondition::condition
+			SerializableData.serializableData()
+				.add("name", SerializableDataTypes.STRING, null)
+				.add("objective", SerializableDataTypes.STRING)
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.INT),
+			ScoreboardCondition::condition
 		);
 	}
 }

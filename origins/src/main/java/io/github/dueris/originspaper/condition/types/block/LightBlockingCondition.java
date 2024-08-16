@@ -10,11 +10,11 @@ public class LightBlockingCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("light_blocking"),
-				SerializableData.serializableData(),
-				(data, block) -> {
-					return block.getState().canOcclude();
-				}
+			OriginsPaper.apoliIdentifier("light_blocking"),
+			SerializableData.serializableData(),
+			(data, block) -> {
+				return block.getState().canOcclude();
+			}
 		);
 	}
 }

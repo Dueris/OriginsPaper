@@ -10,6 +10,6 @@ public record HudRender(boolean shouldRender, ConditionFactory<Entity> condition
 	public static final HudRender DONT_RENDER = new HudRender(false, null);
 
 	public static SerializableData DATA = SerializableData.serializableData()
-			.add("should_render", SerializableDataTypes.BOOLEAN, true)
-			.add("condition", ApoliDataTypes.ENTITY_CONDITION, null);
+		.add("should_render", SerializableDataTypes.BOOLEAN, true)
+		.add("condition", ApoliDataTypes.ENTITY_CONDITION, null);
 }

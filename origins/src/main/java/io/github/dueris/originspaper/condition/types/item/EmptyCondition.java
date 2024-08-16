@@ -16,9 +16,9 @@ public class EmptyCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("empty"),
-				SerializableData.serializableData(),
-				EmptyCondition::condition
+			OriginsPaper.apoliIdentifier("empty"),
+			SerializableData.serializableData(),
+			EmptyCondition::condition
 		);
 	}
 

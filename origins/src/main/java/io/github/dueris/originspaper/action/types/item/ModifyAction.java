@@ -30,16 +30,16 @@ public class ModifyAction {
 
 		ResourceKey<LootItemFunction> itemModifierKey = data.get("modifier");
 		LootItemFunction itemModifier = serverWorld.getServer().reloadableRegistries()
-				.get()
-				.registryOrThrow(Registries.ITEM_MODIFIER)
-				.getOrThrow(itemModifierKey);
+			.get()
+			.registryOrThrow(Registries.ITEM_MODIFIER)
+			.getOrThrow(itemModifierKey);
 
 		SlotAccess stack = worldAndStack.getB();
 
 		LootParams lootContextParameterSet = new LootParams.Builder(serverWorld)
-				.withParameter(LootContextParams.ORIGIN, serverWorld.getSharedSpawnPos().getCenter())
-				.withParameter(LootContextParams.TOOL, stack.get())
-				.create(ApoliLootContextTypes.ANY);
+			.withParameter(LootContextParams.ORIGIN, serverWorld.getSharedSpawnPos().getCenter())
+			.withParameter(LootContextParams.TOOL, stack.get())
+			.create(ApoliLootContextTypes.ANY);
 		LootContext lootContext = new LootContext.Builder(lootContextParameterSet).create(Optional.empty());
 
 		ItemStack newStack = itemModifier.apply(stack.get(), lootContext);
@@ -49,10 +49,10 @@ public class ModifyAction {
 
 	public static @NotNull ItemActionFactory getFactory() {
 		return new ItemActionFactory(
-				OriginsPaper.apoliIdentifier("modify"),
-				SerializableData.serializableData()
-						.add("modifier", SerializableDataTypes.ITEM_MODIFIER),
-				ModifyAction::action
+			OriginsPaper.apoliIdentifier("modify"),
+			SerializableData.serializableData()
+				.add("modifier", SerializableDataTypes.ITEM_MODIFIER),
+			ModifyAction::action
 		);
 	}
 }

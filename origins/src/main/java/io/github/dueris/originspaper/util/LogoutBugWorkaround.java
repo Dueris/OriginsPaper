@@ -52,12 +52,12 @@ public class LogoutBugWorkaround implements Listener {
 			String logoutData = p.getPersistentDataContainer().get(new NamespacedKey(OriginsPaper.getPlugin(), "logoutWorkaroundLocation"), PersistentDataType.STRING);
 			String[] splitData = logoutData.split("//");
 			Location location = new Location(
-					p.getWorld(),
-					Double.parseDouble(splitData[0]),
-					Double.parseDouble(splitData[1]),
-					Double.parseDouble(splitData[2]),
-					Float.parseFloat(splitData[3]),
-					Float.parseFloat(splitData[4])
+				p.getWorld(),
+				Double.parseDouble(splitData[0]),
+				Double.parseDouble(splitData[1]),
+				Double.parseDouble(splitData[2]),
+				Float.parseFloat(splitData[3]),
+				Float.parseFloat(splitData[4])
 			);
 			final int[] i = {0};
 			new BukkitRunnable() {

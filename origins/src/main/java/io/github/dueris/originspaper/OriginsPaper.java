@@ -183,13 +183,13 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 			Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 			System.out.println();
 			this.printComponent(
-					Component.text(
-									"* Loading Version OriginsPaper-{minecraftVersion-versionNumber} // CraftApoli-{apoliVersion}"
-											.replace("minecraftVersion", "mc" + version)
-											.replace("versionNumber", pluginVersion)
-											.replace("apoliVersion", apoliVersion)
-							)
-							.color(TextColor.fromHexString("#4fec4f"))
+				Component.text(
+						"* Loading Version OriginsPaper-{minecraftVersion-versionNumber} // CraftApoli-{apoliVersion}"
+							.replace("minecraftVersion", "mc" + version)
+							.replace("versionNumber", pluginVersion)
+							.replace("apoliVersion", apoliVersion)
+					)
+					.color(TextColor.fromHexString("#4fec4f"))
 			);
 			System.out.println();
 			server = ((CraftServer) Bukkit.getServer()).getServer();
@@ -234,12 +234,12 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 
 			int avalibleJVMThreads = Runtime.getRuntime().availableProcessors() * 2;
 			int dynamic_thread_count = avalibleJVMThreads < 4
-					? avalibleJVMThreads
-					: Math.min(avalibleJVMThreads, OriginConfiguration.getConfiguration().getInt("max-loader-threads"));
+				? avalibleJVMThreads
+				: Math.min(avalibleJVMThreads, OriginConfiguration.getConfiguration().getInt("max-loader-threads"));
 			loaderThreadPool = Executors.newFixedThreadPool(dynamic_thread_count, threadFactory);
 			try {
 				io.github.dueris.calio.CraftCalio craftCalio = io.github.dueris.calio.CraftCalio.buildInstance(
-						new String[]{"--async=true"}
+					new String[]{"--async=true"}
 				);
 				ApoliDataTypes.init();
 				OriginsDataTypes.init();
@@ -248,10 +248,10 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				Actions.registerAll();
 				PowerType.registerAll();
 				craftCalio.startBuilder()
-						.withAccessor(new AccessorKey<>(List.of("apoli", "origins"), "power", PowerType.class, 0, ParsingStrategy.TYPED, Registries.CRAFT_POWER))
-						.withAccessor(new AccessorKey<>(List.of("origins"), "origin", Origin.class, 1, ParsingStrategy.DEFAULT, Registries.ORIGIN))
-						.withAccessor(new AccessorKey<>(List.of("origins"), "origin_layer", OriginLayer.class, 2, ParsingStrategy.DEFAULT, Registries.LAYER))
-						.build().parse();
+					.withAccessor(new AccessorKey<>(List.of("apoli", "origins"), "power", PowerType.class, 0, ParsingStrategy.TYPED, Registries.CRAFT_POWER))
+					.withAccessor(new AccessorKey<>(List.of("origins"), "origin", Origin.class, 1, ParsingStrategy.DEFAULT, Registries.ORIGIN))
+					.withAccessor(new AccessorKey<>(List.of("origins"), "origin_layer", OriginLayer.class, 2, ParsingStrategy.DEFAULT, Registries.LAYER))
+					.build().parse();
 				BuiltinRegistry.bootstrap();
 				return true;
 			} catch (Throwable throwable) {
@@ -356,7 +356,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				player.closeInventory();
 				player.getPersistentDataContainer()
-						.set(new NamespacedKey(this, "powers"), PersistentDataType.STRING, PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) player).getHandle()).serializePowers(new CompoundTag()).toString());
+					.set(new NamespacedKey(this, "powers"), PersistentDataType.STRING, PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) player).getHandle()).serializePowers(new CompoundTag()).toString());
 				PowerHolderComponent.unloadPowers(player);
 			}
 

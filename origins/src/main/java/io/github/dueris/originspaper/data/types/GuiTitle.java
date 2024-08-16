@@ -10,8 +10,8 @@ import org.jetbrains.annotations.Nullable;
 public record GuiTitle(@Nullable Component viewOrigin, @Nullable Component chooseOrigin) {
 
 	public static final SerializableData DATA = SerializableData.serializableData()
-			.add("view_origin", SerializableDataTypes.KYORI_COMPONENT, null)
-			.add("choose_origin", SerializableDataTypes.KYORI_COMPONENT, null);
+		.add("view_origin", SerializableDataTypes.KYORI_COMPONENT, null)
+		.add("choose_origin", SerializableDataTypes.KYORI_COMPONENT, null);
 
 	@Contract("_ -> new")
 	public static @NotNull GuiTitle fromData(@NotNull SerializableData.Instance data) {

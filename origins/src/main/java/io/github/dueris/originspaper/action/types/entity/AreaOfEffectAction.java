@@ -41,15 +41,15 @@ public class AreaOfEffectAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
-				OriginsPaper.apoliIdentifier("area_of_effect"),
-				SerializableData.serializableData()
-						.add("radius", SerializableDataTypes.DOUBLE, 16D)
-						.add("shape", SerializableDataTypes.enumValue(Shape.class), Shape.CUBE)
-						.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION)
-						.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
-						.add("include_target", SerializableDataTypes.BOOLEAN, false)
-						.add("include_actor", SerializableDataTypes.BOOLEAN, false),
-				AreaOfEffectAction::action
+			OriginsPaper.apoliIdentifier("area_of_effect"),
+			SerializableData.serializableData()
+				.add("radius", SerializableDataTypes.DOUBLE, 16D)
+				.add("shape", SerializableDataTypes.enumValue(Shape.class), Shape.CUBE)
+				.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION)
+				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
+				.add("include_target", SerializableDataTypes.BOOLEAN, false)
+				.add("include_actor", SerializableDataTypes.BOOLEAN, false),
+			AreaOfEffectAction::action
 		);
 	}
 }

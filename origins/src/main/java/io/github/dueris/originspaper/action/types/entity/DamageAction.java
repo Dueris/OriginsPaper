@@ -55,13 +55,13 @@ public class DamageAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
-				OriginsPaper.apoliIdentifier("damage"),
-				SerializableData.serializableData()
-						.add("amount", SerializableDataTypes.FLOAT, null)
-						.add("damage_type", SerializableDataTypes.DAMAGE_TYPE, null)
-						.add("modifier", Modifier.DATA_TYPE, null)
-						.add("modifiers", Modifier.LIST_TYPE, null),
-				DamageAction::action
+			OriginsPaper.apoliIdentifier("damage"),
+			SerializableData.serializableData()
+				.add("amount", SerializableDataTypes.FLOAT, null)
+				.add("damage_type", SerializableDataTypes.DAMAGE_TYPE, null)
+				.add("modifier", Modifier.DATA_TYPE, null)
+				.add("modifiers", Modifier.LIST_TYPE, null),
+			DamageAction::action
 		);
 	}
 }

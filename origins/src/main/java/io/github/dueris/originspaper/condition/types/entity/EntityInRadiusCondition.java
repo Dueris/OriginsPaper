@@ -49,14 +49,14 @@ public class EntityInRadiusCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("entity_in_radius"),
-				SerializableData.serializableData()
-						.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION)
-						.add("shape", SerializableDataTypes.enumValue(Shape.class), Shape.CUBE)
-						.add("radius", SerializableDataTypes.DOUBLE)
-						.add("compare_to", SerializableDataTypes.INT, 1)
-						.add("comparison", ApoliDataTypes.COMPARISON, Comparison.GREATER_THAN_OR_EQUAL),
-				EntityInRadiusCondition::condition
+			OriginsPaper.apoliIdentifier("entity_in_radius"),
+			SerializableData.serializableData()
+				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION)
+				.add("shape", SerializableDataTypes.enumValue(Shape.class), Shape.CUBE)
+				.add("radius", SerializableDataTypes.DOUBLE)
+				.add("compare_to", SerializableDataTypes.INT, 1)
+				.add("comparison", ApoliDataTypes.COMPARISON, Comparison.GREATER_THAN_OR_EQUAL),
+			EntityInRadiusCondition::condition
 		);
 	}
 }

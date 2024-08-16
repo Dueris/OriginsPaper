@@ -29,16 +29,16 @@ public class ModifyInventoryAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("modify_inventory"),
-				SerializableData.serializableData()
-						.add("inventory_type", ApoliDataTypes.INVENTORY_TYPE, InventoryType.INVENTORY)
-						.add("process_mode", ApoliDataTypes.PROCESS_MODE, Util.ProcessMode.STACKS)
-						.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
-						.add("item_action", ApoliDataTypes.ITEM_ACTION)
-						.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
-						.add("slots", SerializableDataTypes.list(ApoliDataTypes.ITEM_SLOT), null)
-						.add("slot", ApoliDataTypes.ITEM_SLOT, null)
-						.add("limit", SerializableDataTypes.INT, 0),
-				ModifyInventoryAction::action
+			SerializableData.serializableData()
+				.add("inventory_type", ApoliDataTypes.INVENTORY_TYPE, InventoryType.INVENTORY)
+				.add("process_mode", ApoliDataTypes.PROCESS_MODE, Util.ProcessMode.STACKS)
+				.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
+				.add("item_action", ApoliDataTypes.ITEM_ACTION)
+				.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
+				.add("slots", SerializableDataTypes.list(ApoliDataTypes.ITEM_SLOT), null)
+				.add("slot", ApoliDataTypes.ITEM_SLOT, null)
+				.add("limit", SerializableDataTypes.INT, 0),
+			ModifyInventoryAction::action
 		);
 	}
 }

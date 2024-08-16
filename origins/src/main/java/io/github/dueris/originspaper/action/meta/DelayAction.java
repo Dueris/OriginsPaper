@@ -18,10 +18,10 @@ public class DelayAction {
 
 	public static <T> @NotNull ActionFactory<T> getFactory(SerializableDataBuilder<ActionFactory<T>> dataType) {
 		return new ActionFactory<T>(OriginsPaper.apoliIdentifier("delay"),
-				SerializableData.serializableData()
-						.add("ticks", SerializableDataTypes.INT)
-						.add("action", dataType),
-				DelayAction::action
+			SerializableData.serializableData()
+				.add("ticks", SerializableDataTypes.INT)
+				.add("action", dataType),
+			DelayAction::action
 		);
 	}
 }

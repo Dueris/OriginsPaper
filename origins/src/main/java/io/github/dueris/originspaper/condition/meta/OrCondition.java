@@ -14,13 +14,13 @@ public class OrCondition {
 
 	public static <T> @NotNull ConditionFactory<T> getFactory(RegistryKey<ConditionFactory<T>> conditionDataType) {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("or"),
-				SerializableData.serializableData()
-						.add("conditions", SerializableDataTypes.list(ApoliDataTypes.condition(conditionDataType))),
-				(data, t) -> {
-					List<ConditionFactory<T>> conditions = data.get("conditions");
-					return conditions.stream().anyMatch(condition -> condition.test(t));
-				}
+			OriginsPaper.apoliIdentifier("or"),
+			SerializableData.serializableData()
+				.add("conditions", SerializableDataTypes.list(ApoliDataTypes.condition(conditionDataType))),
+			(data, t) -> {
+				List<ConditionFactory<T>> conditions = data.get("conditions");
+				return conditions.stream().anyMatch(condition -> condition.test(t));
+			}
 		);
 	}
 }

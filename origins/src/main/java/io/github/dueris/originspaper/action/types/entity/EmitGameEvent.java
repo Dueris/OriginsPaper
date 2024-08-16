@@ -11,8 +11,8 @@ public class EmitGameEvent {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("emit_game_event"),
-				SerializableData.serializableData()
-						.add("event", SerializableDataTypes.GAME_EVENT),
-				(data, entity) -> entity.gameEvent(data.get("event")));
+			SerializableData.serializableData()
+				.add("event", SerializableDataTypes.GAME_EVENT),
+			(data, entity) -> entity.gameEvent(data.get("event")));
 	}
 }

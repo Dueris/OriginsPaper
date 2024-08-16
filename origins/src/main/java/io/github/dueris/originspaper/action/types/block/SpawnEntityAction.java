@@ -34,12 +34,12 @@ public class SpawnEntityAction {
 		CompoundTag entityNbt = data.get("tag");
 
 		Entity entityToSpawn = Util.getEntityWithPassengers(
-				serverWorld,
-				entityType,
-				entityNbt,
-				pos.getCenter(),
-				Optional.empty(),
-				Optional.empty()
+			serverWorld,
+			entityType,
+			entityNbt,
+			pos.getCenter(),
+			Optional.empty(),
+			Optional.empty()
 		).orElse(null);
 
 		if (entityToSpawn == null) {
@@ -53,12 +53,12 @@ public class SpawnEntityAction {
 
 	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionFactory<>(
-				OriginsPaper.apoliIdentifier("spawn_entity"),
-				SerializableData.serializableData()
-						.add("entity_type", SerializableDataTypes.ENTITY_TYPE)
-						.add("tag", SerializableDataTypes.NBT, new CompoundTag())
-						.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null),
-				SpawnEntityAction::action
+			OriginsPaper.apoliIdentifier("spawn_entity"),
+			SerializableData.serializableData()
+				.add("entity_type", SerializableDataTypes.ENTITY_TYPE)
+				.add("tag", SerializableDataTypes.NBT, new CompoundTag())
+				.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null),
+			SpawnEntityAction::action
 		);
 	}
 }

@@ -18,7 +18,7 @@ public class IfElseListAction {
 
 	public static <T, U> void action(@NotNull SerializableData.Instance data, T t, @NotNull Function<T, U> actionToConditionTypeFunction) {
 		List<Tuple<ConditionFactory<U>, ActionFactory<T>>> actions =
-				data.get("actions");
+			data.get("actions");
 		U u = actionToConditionTypeFunction.apply(t);
 		for (Tuple<ConditionFactory<U>, ActionFactory<T>> action : actions) {
 			if (action.getA().test(u)) {
@@ -29,27 +29,27 @@ public class IfElseListAction {
 	}
 
 	public static <T, U> @NotNull ActionFactory<T> getFactory(
-			SerializableDataBuilder<ActionFactory<T>> actionDataType,
-			SerializableDataBuilder<ConditionFactory<U>> conditionDataType,
-			Function<T, U> actionToConditionTypeFunction) {
+		SerializableDataBuilder<ActionFactory<T>> actionDataType,
+		SerializableDataBuilder<ConditionFactory<U>> conditionDataType,
+		Function<T, U> actionToConditionTypeFunction) {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("if_else_list"), SerializableData.serializableData()
-				.add("actions", SerializableDataTypes.list(SerializableDataBuilder.of(
-						(jsonElement) -> {
-							if (jsonElement.isJsonObject()) {
-								JsonObject jo = jsonElement.getAsJsonObject();
-								return new Tuple<>(
-										conditionDataType.deserialize(jo.get("condition")), actionDataType.deserialize(jo.get("action"))
-								);
-							}
-							throw new JsonSyntaxException("Unable to parse actions for the if_else_list action!");
-						}, Tuple.class
-				))),
-				(inst, t) -> action(inst, t, actionToConditionTypeFunction));
+			.add("actions", SerializableDataTypes.list(SerializableDataBuilder.of(
+				(jsonElement) -> {
+					if (jsonElement.isJsonObject()) {
+						JsonObject jo = jsonElement.getAsJsonObject();
+						return new Tuple<>(
+							conditionDataType.deserialize(jo.get("condition")), actionDataType.deserialize(jo.get("action"))
+						);
+					}
+					throw new JsonSyntaxException("Unable to parse actions for the if_else_list action!");
+				}, Tuple.class
+			))),
+			(inst, t) -> action(inst, t, actionToConditionTypeFunction));
 	}
 
 	public static <T> @NotNull ActionFactory<T> getFactory(
-			SerializableDataBuilder<ActionFactory<T>> actionDataType,
-			SerializableDataBuilder<ConditionFactory<T>> conditionDataType) {
+		SerializableDataBuilder<ActionFactory<T>> actionDataType,
+		SerializableDataBuilder<ConditionFactory<T>> conditionDataType) {
 		return getFactory(actionDataType, conditionDataType, t -> t);
 	}
 }

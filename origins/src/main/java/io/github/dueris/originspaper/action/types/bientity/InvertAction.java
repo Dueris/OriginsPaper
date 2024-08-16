@@ -18,10 +18,10 @@ public class InvertAction {
 
 	public static @NotNull ActionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ActionFactory<>(
-				OriginsPaper.apoliIdentifier("invert"),
-				SerializableData.serializableData()
-						.add("action", ApoliDataTypes.BIENTITY_ACTION),
-				InvertAction::action
+			OriginsPaper.apoliIdentifier("invert"),
+			SerializableData.serializableData()
+				.add("action", ApoliDataTypes.BIENTITY_ACTION),
+			InvertAction::action
 		);
 	}
 }

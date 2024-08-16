@@ -27,12 +27,12 @@ public class SpawnEntityAction {
 		CompoundTag entityNbt = data.get("tag");
 
 		Optional<Entity> opt$entityToSpawn = Util.getEntityWithPassengers(
-				serverWorld,
-				entityType,
-				entityNbt,
-				entity.position(),
-				entity.getYRot(),
-				entity.getXRot()
+			serverWorld,
+			entityType,
+			entityNbt,
+			entity.position(),
+			entity.getYRot(),
+			entity.getXRot()
 		);
 
 		if (opt$entityToSpawn.isEmpty()) return;
@@ -46,13 +46,13 @@ public class SpawnEntityAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
-				OriginsPaper.apoliIdentifier("spawn_entity"),
-				SerializableData.serializableData()
-						.add("entity_type", SerializableDataTypes.ENTITY_TYPE)
-						.add("tag", SerializableDataTypes.NBT, null)
-						.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
-						.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION, null),
-				SpawnEntityAction::action
+			OriginsPaper.apoliIdentifier("spawn_entity"),
+			SerializableData.serializableData()
+				.add("entity_type", SerializableDataTypes.ENTITY_TYPE)
+				.add("tag", SerializableDataTypes.NBT, null)
+				.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
+				.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION, null),
+			SpawnEntityAction::action
 		);
 	}
 }

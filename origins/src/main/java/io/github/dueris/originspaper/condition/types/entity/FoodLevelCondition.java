@@ -14,16 +14,16 @@ public class FoodLevelCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("food_level"),
-				SerializableData.serializableData()
-						.add("comparison", ApoliDataTypes.COMPARISON)
-						.add("compare_to", SerializableDataTypes.INT),
-				(data, entity) -> {
-					if (entity instanceof Player) {
-						return ((Comparison) data.get("comparison")).compare(((Player) entity).getFoodData().getFoodLevel(), data.getInt("compare_to"));
-					}
-					return false;
+			OriginsPaper.apoliIdentifier("food_level"),
+			SerializableData.serializableData()
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.INT),
+			(data, entity) -> {
+				if (entity instanceof Player) {
+					return ((Comparison) data.get("comparison")).compare(((Player) entity).getFoodData().getFoodLevel(), data.getInt("compare_to"));
 				}
+				return false;
+			}
 		);
 	}
 }

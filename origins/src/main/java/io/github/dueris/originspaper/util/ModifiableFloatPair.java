@@ -23,7 +23,7 @@ public final class ModifiableFloatPair {
 		if (obj == null || obj.getClass() != this.getClass()) return false;
 		var that = (ModifiableFloatPair) obj;
 		return Float.floatToIntBits(this.a) == Float.floatToIntBits(that.a) &&
-				Float.floatToIntBits(this.b) == Float.floatToIntBits(that.b);
+			Float.floatToIntBits(this.b) == Float.floatToIntBits(that.b);
 	}
 
 	public float setA(float a) {

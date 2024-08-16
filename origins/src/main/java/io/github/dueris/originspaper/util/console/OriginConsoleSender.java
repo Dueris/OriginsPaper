@@ -98,17 +98,17 @@ public class OriginConsoleSender extends OriginServerCommandSender implements Co
 				MinecraftServer server = entity.getServer();
 				if (server != null) {
 					CommandSourceStack source = new CommandSourceStack(
-							entity == null ? CommandSource.NULL : entity,
-							hitPosition,
-							entity.getRotationVector(),
-							entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
-							4,
-							entity.getName().getString(),
-							entity.getName(),
-							entity.getServer(),
-							entity
+						entity == null ? CommandSource.NULL : entity,
+						hitPosition,
+						entity.getRotationVector(),
+						entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
+						4,
+						entity.getName().getString(),
+						entity.getName(),
+						entity.getServer(),
+						entity
 					)
-							.withSuppressedOutput();
+						.withSuppressedOutput();
 
 					try {
 						server.getCommands().performPrefixedCommand(source, command);

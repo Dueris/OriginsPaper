@@ -10,11 +10,11 @@ public class SprintingCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("sprinting"),
-				SerializableData.serializableData(),
-				(data, entity) -> {
-					return entity.isSprinting();
-				}
+			OriginsPaper.apoliIdentifier("sprinting"),
+			SerializableData.serializableData(),
+			(data, entity) -> {
+				return entity.isSprinting();
+			}
 		);
 	}
 }

@@ -27,16 +27,16 @@ public class PredicateCondition {
 
 		ResourceKey<LootItemCondition> predicateKey = data.get("predicate");
 		LootItemCondition predicate = serverWorld.getServer().reloadableRegistries()
-				.get()
-				.registryOrThrow(Registries.PREDICATE)
-				.getOrThrow(predicateKey);
+			.get()
+			.registryOrThrow(Registries.PREDICATE)
+			.getOrThrow(predicateKey);
 
 		LootParams lootContextParameterSet = new LootParams.Builder(serverWorld)
-				.withParameter(LootContextParams.ORIGIN, entity.position())
-				.withOptionalParameter(LootContextParams.THIS_ENTITY, entity)
-				.create(LootContextParamSets.COMMAND);
+			.withParameter(LootContextParams.ORIGIN, entity.position())
+			.withOptionalParameter(LootContextParams.THIS_ENTITY, entity)
+			.create(LootContextParamSets.COMMAND);
 		LootContext lootContext = new LootContext.Builder(lootContextParameterSet)
-				.create(Optional.empty());
+			.create(Optional.empty());
 
 		return predicate.test(lootContext);
 
@@ -44,10 +44,10 @@ public class PredicateCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("predicate"),
-				SerializableData.serializableData()
-						.add("predicate", SerializableDataTypes.PREDICATE),
-				PredicateCondition::condition
+			OriginsPaper.apoliIdentifier("predicate"),
+			SerializableData.serializableData()
+				.add("predicate", SerializableDataTypes.PREDICATE),
+			PredicateCondition::condition
 		);
 	}
 }

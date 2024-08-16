@@ -21,17 +21,17 @@ public class FuelCondition {
 		int compareTo = data.get("compare_to");
 
 		return fuelTime != null
-				&& comparison.compare(fuelTime, compareTo);
+			&& comparison.compare(fuelTime, compareTo);
 
 	}
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("fuel"),
-				SerializableData.serializableData()
-						.add("comparison", ApoliDataTypes.COMPARISON, Comparison.GREATER_THAN)
-						.add("compare_to", SerializableDataTypes.INT, 0),
-				FuelCondition::condition
+			OriginsPaper.apoliIdentifier("fuel"),
+			SerializableData.serializableData()
+				.add("comparison", ApoliDataTypes.COMPARISON, Comparison.GREATER_THAN)
+				.add("compare_to", SerializableDataTypes.INT, 0),
+			FuelCondition::condition
 		);
 	}
 

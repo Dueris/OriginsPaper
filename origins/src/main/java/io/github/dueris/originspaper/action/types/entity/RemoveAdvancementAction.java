@@ -12,16 +12,16 @@ public class RemoveAdvancementAction {
 
 	public static void action(@NotNull SerializableData.Instance data, @NotNull Entity entity) {
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "advancement revoke $1 only $2"
-				.replace("$1", entity.getName().getString())
-				.replace("$2", data.getString("advancement")));
+			.replace("$1", entity.getName().getString())
+			.replace("$2", data.getString("advancement")));
 	}
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
-				OriginsPaper.apoliIdentifier("revoke_advancement"),
-				SerializableData.serializableData()
-						.add("advancement", SerializableDataTypes.IDENTIFIER, null),
-				RemoveAdvancementAction::action
+			OriginsPaper.apoliIdentifier("revoke_advancement"),
+			SerializableData.serializableData()
+				.add("advancement", SerializableDataTypes.IDENTIFIER, null),
+			RemoveAdvancementAction::action
 		);
 	}
 }

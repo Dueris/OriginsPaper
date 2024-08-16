@@ -32,10 +32,10 @@ public class UsingItemCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("using_item"),
-				SerializableData.serializableData()
-						.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null),
-				UsingItemCondition::condition
+			OriginsPaper.apoliIdentifier("using_item"),
+			SerializableData.serializableData()
+				.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null),
+			UsingItemCondition::condition
 		);
 	}
 }

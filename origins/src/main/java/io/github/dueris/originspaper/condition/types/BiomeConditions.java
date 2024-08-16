@@ -18,37 +18,37 @@ public class BiomeConditions {
 	public static void registerAll() {
 		MetaConditions.register(Registries.BIOME_CONDITION, BiomeConditions::register);
 		register(new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("high_humidity"),
-				SerializableData.serializableData(),
-				(data, biome) -> {
-					return biome.value().climateSettings.downfall() > 0.85F;
-				}
+			OriginsPaper.apoliIdentifier("high_humidity"),
+			SerializableData.serializableData(),
+			(data, biome) -> {
+				return biome.value().climateSettings.downfall() > 0.85F;
+			}
 		));
 		register(new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("temperature"),
-				SerializableData.serializableData()
-						.add("comparison", ApoliDataTypes.COMPARISON)
-						.add("compare_to", SerializableDataTypes.FLOAT),
-				(data, biome) -> {
-					return ((Comparison) data.get("comparison")).compare(biome.value().getBaseTemperature(), data.getFloat("compare_to"));
-				}
+			OriginsPaper.apoliIdentifier("temperature"),
+			SerializableData.serializableData()
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.FLOAT),
+			(data, biome) -> {
+				return ((Comparison) data.get("comparison")).compare(biome.value().getBaseTemperature(), data.getFloat("compare_to"));
+			}
 		));
 		register(new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("precipitation"),
-				SerializableData.serializableData()
-						.add("precipitation", SerializableDataTypes.enumValue(Biome.Precipitation.class)),
-				(data, biome) -> {
-					return biome.value().getPrecipitationAt(new BlockPos(0, 64, 0)).equals(data.get("precipitation"));
-				}
+			OriginsPaper.apoliIdentifier("precipitation"),
+			SerializableData.serializableData()
+				.add("precipitation", SerializableDataTypes.enumValue(Biome.Precipitation.class)),
+			(data, biome) -> {
+				return biome.value().getPrecipitationAt(new BlockPos(0, 64, 0)).equals(data.get("precipitation"));
+			}
 		));
 		register(new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("in_tag"),
-				SerializableData.serializableData()
-						.add("tag", SerializableDataTypes.BIOME_TAG),
-				(data, biome) -> {
-					TagKey<Biome> biomeTag = data.get("tag");
-					return biome.is(biomeTag);
-				}
+			OriginsPaper.apoliIdentifier("in_tag"),
+			SerializableData.serializableData()
+				.add("tag", SerializableDataTypes.BIOME_TAG),
+			(data, biome) -> {
+				TagKey<Biome> biomeTag = data.get("tag");
+				return biome.is(biomeTag);
+			}
 		));
 	}
 

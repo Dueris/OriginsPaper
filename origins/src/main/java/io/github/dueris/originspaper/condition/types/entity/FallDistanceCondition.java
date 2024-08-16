@@ -13,11 +13,11 @@ public class FallDistanceCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("fall_distance"),
-				SerializableData.serializableData()
-						.add("comparison", ApoliDataTypes.COMPARISON)
-						.add("compare_to", SerializableDataTypes.FLOAT),
-				(data, entity) -> ((Comparison) data.get("comparison")).compare(entity.fallDistance, data.getFloat("compare_to"))
+			OriginsPaper.apoliIdentifier("fall_distance"),
+			SerializableData.serializableData()
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.FLOAT),
+			(data, entity) -> ((Comparison) data.get("comparison")).compare(entity.fallDistance, data.getFloat("compare_to"))
 		);
 	}
 }

@@ -13,16 +13,16 @@ public class NbtCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("nbt"),
-				SerializableData.serializableData()
-						.add("nbt", SerializableDataTypes.NBT),
-				(data, block) -> {
-					CompoundTag nbt = new CompoundTag();
-					if (block.getEntity() != null) {
-						nbt = block.getEntity().saveWithFullMetadata(block.getLevel().registryAccess());
-					}
-					return NbtUtils.compareNbt(data.get("nbt"), nbt, true);
+			OriginsPaper.apoliIdentifier("nbt"),
+			SerializableData.serializableData()
+				.add("nbt", SerializableDataTypes.NBT),
+			(data, block) -> {
+				CompoundTag nbt = new CompoundTag();
+				if (block.getEntity() != null) {
+					nbt = block.getEntity().saveWithFullMetadata(block.getLevel().registryAccess());
 				}
+				return NbtUtils.compareNbt(data.get("nbt"), nbt, true);
+			}
 		);
 	}
 }

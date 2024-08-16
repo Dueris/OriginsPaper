@@ -24,10 +24,10 @@ public class TargetAction {
 
 	public static @NotNull ActionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ActionFactory<>(
-				OriginsPaper.apoliIdentifier("target_action"),
-				SerializableData.serializableData()
-						.add("action", ApoliDataTypes.ENTITY_ACTION),
-				TargetAction::action
+			OriginsPaper.apoliIdentifier("target_action"),
+			SerializableData.serializableData()
+				.add("action", ApoliDataTypes.ENTITY_ACTION),
+			TargetAction::action
 		);
 	}
 }

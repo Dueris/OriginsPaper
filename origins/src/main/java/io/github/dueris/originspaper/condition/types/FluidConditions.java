@@ -15,26 +15,26 @@ public class FluidConditions {
 	public static void registerAll() {
 		MetaConditions.register(Registries.FLUID_CONDITION, FluidConditions::register);
 		register(new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("empty"),
-				SerializableData.serializableData(),
-				(data, fluid) -> fluid.isEmpty()
+			OriginsPaper.apoliIdentifier("empty"),
+			SerializableData.serializableData(),
+			(data, fluid) -> fluid.isEmpty()
 		));
 		register(new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("still"),
-				SerializableData.serializableData(),
-				(data, fluid) -> fluid.isSource()
+			OriginsPaper.apoliIdentifier("still"),
+			SerializableData.serializableData(),
+			(data, fluid) -> fluid.isSource()
 		));
 		register(new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("in_tag"),
-				SerializableData.serializableData()
-						.add("tag", SerializableDataTypes.FLUID_TAG),
-				(data, fluid) -> fluid.holder().is((TagKey<Fluid>) data.get("tag"))
+			OriginsPaper.apoliIdentifier("in_tag"),
+			SerializableData.serializableData()
+				.add("tag", SerializableDataTypes.FLUID_TAG),
+			(data, fluid) -> fluid.holder().is((TagKey<Fluid>) data.get("tag"))
 		));
 		register(new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("fluid"),
-				SerializableData.serializableData()
-						.add("fluid", SerializableDataTypes.FLUID),
-				(data, fluid) -> fluid.getType() == data.get("fluid")
+			OriginsPaper.apoliIdentifier("fluid"),
+			SerializableData.serializableData()
+				.add("fluid", SerializableDataTypes.FLUID),
+			(data, fluid) -> fluid.getType() == data.get("fluid")
 		));
 	}
 

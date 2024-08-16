@@ -25,12 +25,12 @@ public class PowerCountCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("power_count"),
-				SerializableData.serializableData()
-						.add("slot", SerializableDataTypes.EQUIPMENT_SLOT, null)
-						.add("comparison", ApoliDataTypes.COMPARISON)
-						.add("compare_to", SerializableDataTypes.INT),
-				PowerCountCondition::condition
+			OriginsPaper.apoliIdentifier("power_count"),
+			SerializableData.serializableData()
+				.add("slot", SerializableDataTypes.EQUIPMENT_SLOT, null)
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.INT),
+			PowerCountCondition::condition
 		);
 	}
 

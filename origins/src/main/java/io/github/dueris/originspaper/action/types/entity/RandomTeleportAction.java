@@ -30,9 +30,9 @@ public class RandomTeleportAction {
 		}
 
 		Predicate<BlockInWorld> landingBlockCondition = data.isPresent("landing_block_condition") ? data.get("landing_block_condition")
-				: cachedBlockPosition -> cachedBlockPosition.getState().blocksMotion();
+			: cachedBlockPosition -> cachedBlockPosition.getState().blocksMotion();
 		Predicate<Entity> landingCondition = data.isPresent("landing_condition") ? data.get("landing_condition")
-				: _entity -> serverWorld.noCollision(_entity) && !serverWorld.containsAnyLiquid(_entity.getBoundingBox());
+			: _entity -> serverWorld.noCollision(_entity) && !serverWorld.containsAnyLiquid(_entity.getBoundingBox());
 
 		Heightmap.Types heightmap = data.get("heightmap");
 		RandomSource random = RandomSource.create();
@@ -147,19 +147,19 @@ public class RandomTeleportAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
-				OriginsPaper.apoliIdentifier("random_teleport"),
-				SerializableData.serializableData()
-						.add("area_width", SerializableDataTypes.DOUBLE, 8.0)
-						.add("area_height", SerializableDataTypes.DOUBLE, 8.0)
-						.add("heightmap", SerializableDataTypes.enumValue(Heightmap.Types.class), null)
-						.add("attempts", SerializableDataTypes.INT, 0)
-						.add("landing_block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
-						.add("landing_condition", ApoliDataTypes.ENTITY_CONDITION, null)
-						.add("landing_offset", SerializableDataTypes.VECTOR, Vec3.ZERO)
-						.add("loaded_chunks_only", SerializableDataTypes.BOOLEAN, true)
-						.add("success_action", ApoliDataTypes.ENTITY_ACTION, null)
-						.add("fail_action", ApoliDataTypes.ENTITY_ACTION, null),
-				RandomTeleportAction::action
+			OriginsPaper.apoliIdentifier("random_teleport"),
+			SerializableData.serializableData()
+				.add("area_width", SerializableDataTypes.DOUBLE, 8.0)
+				.add("area_height", SerializableDataTypes.DOUBLE, 8.0)
+				.add("heightmap", SerializableDataTypes.enumValue(Heightmap.Types.class), null)
+				.add("attempts", SerializableDataTypes.INT, 0)
+				.add("landing_block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
+				.add("landing_condition", ApoliDataTypes.ENTITY_CONDITION, null)
+				.add("landing_offset", SerializableDataTypes.VECTOR, Vec3.ZERO)
+				.add("loaded_chunks_only", SerializableDataTypes.BOOLEAN, true)
+				.add("success_action", ApoliDataTypes.ENTITY_ACTION, null)
+				.add("fail_action", ApoliDataTypes.ENTITY_ACTION, null),
+			RandomTeleportAction::action
 		);
 	}
 }

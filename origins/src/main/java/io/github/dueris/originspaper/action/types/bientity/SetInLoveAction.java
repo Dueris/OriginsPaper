@@ -21,9 +21,9 @@ public class SetInLoveAction {
 
 	public static @NotNull ActionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ActionFactory<>(
-				OriginsPaper.apoliIdentifier("set_in_love"),
-				SerializableData.serializableData(),
-				SetInLoveAction::action
+			OriginsPaper.apoliIdentifier("set_in_love"),
+			SerializableData.serializableData(),
+			SetInLoveAction::action
 		);
 	}
 }

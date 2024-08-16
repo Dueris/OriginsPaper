@@ -15,28 +15,28 @@ import java.util.Optional;
 public class Modifier implements Comparable<Modifier> {
 
 	public static final SerializableDataBuilder<Modifier> DATA_TYPE = SerializableDataBuilder.of(
-			(jsonElement) -> {
+		(jsonElement) -> {
 
-				if (!(jsonElement instanceof JsonObject jsonObject)) {
-					throw new JsonSyntaxException("Expected modifier to be a JSON object.");
-				}
+			if (!(jsonElement instanceof JsonObject jsonObject)) {
+				throw new JsonSyntaxException("Expected modifier to be a JSON object.");
+			}
 
-				if (!jsonObject.has("operation")) {
-					throw new JsonSyntaxException("Modifier requires an \"operation\" field.");
-				}
+			if (!jsonObject.has("operation")) {
+				throw new JsonSyntaxException("Modifier requires an \"operation\" field.");
+			}
 
-				try {
+			try {
 
-					IModifierOperation operation = IModifierOperation.DATA_TYPE.deserialize(jsonObject.get("operation"));
-					SerializableData.Instance data = SerializableData.Instance.decompileJsonObject(jsonObject, operation.getData(), "Modifier", "null", Optional.of(Modifier.class));
+				IModifierOperation operation = IModifierOperation.DATA_TYPE.deserialize(jsonObject.get("operation"));
+				SerializableData.Instance data = SerializableData.Instance.decompileJsonObject(jsonObject, operation.getData(), "Modifier", "null", Optional.of(Modifier.class));
 
-					return new Modifier(operation, data);
+				return new Modifier(operation, data);
 
-				} catch (Exception e) {
-					throw new DataException(DataException.Phase.READING, "operation", e);
-				}
+			} catch (Exception e) {
+				throw new DataException(DataException.Phase.READING, "operation", e);
+			}
 
-			}, Modifier.class
+		}, Modifier.class
 	);
 	public static final SerializableDataBuilder<List<Modifier>> LIST_TYPE = SerializableDataTypes.list(DATA_TYPE);
 	private final IModifierOperation operation;

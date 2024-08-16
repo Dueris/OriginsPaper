@@ -11,8 +11,8 @@ public class SetFallDistanceAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("set_fall_distance"),
-				SerializableData.serializableData()
-						.add("fall_distance", SerializableDataTypes.FLOAT),
-				(data, entity) -> entity.fallDistance = data.getFloat("fall_distance"));
+			SerializableData.serializableData()
+				.add("fall_distance", SerializableDataTypes.FLOAT),
+			(data, entity) -> entity.fallDistance = data.getFloat("fall_distance"));
 	}
 }

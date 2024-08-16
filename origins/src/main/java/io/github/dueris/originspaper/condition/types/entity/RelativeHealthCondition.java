@@ -14,17 +14,17 @@ public class RelativeHealthCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("relative_health"),
-				SerializableData.serializableData()
-						.add("comparison", ApoliDataTypes.COMPARISON)
-						.add("compare_to", SerializableDataTypes.FLOAT),
-				(data, entity) -> {
-					float health = 0f;
-					if (entity instanceof LivingEntity living) {
-						health = living.getHealth() / living.getMaxHealth();
-					}
-					return ((Comparison) data.get("comparison")).compare(health, data.getFloat("compare_to"));
+			OriginsPaper.apoliIdentifier("relative_health"),
+			SerializableData.serializableData()
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.FLOAT),
+			(data, entity) -> {
+				float health = 0f;
+				if (entity instanceof LivingEntity living) {
+					health = living.getHealth() / living.getMaxHealth();
 				}
+				return ((Comparison) data.get("comparison")).compare(health, data.getFloat("compare_to"));
+			}
 		);
 	}
 }

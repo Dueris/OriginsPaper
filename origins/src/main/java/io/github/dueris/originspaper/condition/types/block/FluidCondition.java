@@ -12,10 +12,10 @@ public class FluidCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("fluid"),
-				SerializableData.serializableData()
-						.add("fluid_condition", ApoliDataTypes.FLUID_CONDITION),
-				(data, block) -> ((ConditionFactory<FluidState>) data.get("fluid_condition")).test(block.getLevel().getFluidState(block.getPos()))
+			OriginsPaper.apoliIdentifier("fluid"),
+			SerializableData.serializableData()
+				.add("fluid_condition", ApoliDataTypes.FLUID_CONDITION),
+			(data, block) -> ((ConditionFactory<FluidState>) data.get("fluid_condition")).test(block.getLevel().getFluidState(block.getPos()))
 		);
 	}
 }

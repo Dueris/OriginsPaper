@@ -40,11 +40,11 @@ public class DamageAction {
 
 	public static @NotNull ActionFactory<Tuple<Level, SlotAccess>> getFactory() {
 		return ItemActionFactory.createItemStackBased(
-				OriginsPaper.apoliIdentifier("damage"),
-				SerializableData.serializableData()
-						.add("amount", SerializableDataTypes.INT, 1)
-						.add("ignore_unbreaking", SerializableDataTypes.BOOLEAN, false),
-				DamageAction::action
+			OriginsPaper.apoliIdentifier("damage"),
+			SerializableData.serializableData()
+				.add("amount", SerializableDataTypes.INT, 1)
+				.add("ignore_unbreaking", SerializableDataTypes.BOOLEAN, false),
+			DamageAction::action
 		);
 	}
 }

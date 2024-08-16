@@ -15,9 +15,9 @@ public class BlockActionAtAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("block_action_at"),
-				SerializableData.serializableData()
-						.add("block_action", ApoliDataTypes.BLOCK_ACTION),
-				(data, entity) -> ((ActionFactory<Triple<Level, BlockPos, Direction>>) data.get("block_action")).accept(
-						Triple.of(entity.level(), entity.blockPosition(), Direction.UP)));
+			SerializableData.serializableData()
+				.add("block_action", ApoliDataTypes.BLOCK_ACTION),
+			(data, entity) -> ((ActionFactory<Triple<Level, BlockPos, Direction>>) data.get("block_action")).accept(
+				Triple.of(entity.level(), entity.blockPosition(), Direction.UP)));
 	}
 }

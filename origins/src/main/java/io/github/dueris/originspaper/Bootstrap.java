@@ -130,41 +130,41 @@ public class Bootstrap implements PluginBootstrap {
 			Commands.bootstrap(((ApiMirrorRootNode) commands.getRoot()).getDispatcher());
 		})).priority(10));
 		io.github.dueris.calio.parser.JsonObjectRemapper remapper = new io.github.dueris.calio.parser.JsonObjectRemapper(
-				List.of(
-						new Tuple<>("origins", "apoli")
-				),
-				List.of(
-						new Tuple<>("apoli:restrict_armor", "apoli:conditioned_restrict_armor"),
-						new Tuple<>("apoli:has_tag", "apoli:has_command_tag"),
-						new Tuple<>("apoli:custom_data", "apoli:nbt"),
-						new Tuple<>("apoli:is_equippable", "apoli:equippable"),
-						new Tuple<>("apoli:fireproof", "apoli:fire_resistant"),
-						new Tuple<>("apoli:merge_nbt", "apoli:merge_custom_data"),
-						new Tuple<>("apoli:revoke_power", "apoli:remove_power"),
-						new Tuple<>("apoli:water_protection", "origins:water_protection") // fix water protection in namespace aliases
-				),
-				List.of(
-						"power_type", "type"
-				)
+			List.of(
+				new Tuple<>("origins", "apoli")
+			),
+			List.of(
+				new Tuple<>("apoli:restrict_armor", "apoli:conditioned_restrict_armor"),
+				new Tuple<>("apoli:has_tag", "apoli:has_command_tag"),
+				new Tuple<>("apoli:custom_data", "apoli:nbt"),
+				new Tuple<>("apoli:is_equippable", "apoli:equippable"),
+				new Tuple<>("apoli:fireproof", "apoli:fire_resistant"),
+				new Tuple<>("apoli:merge_nbt", "apoli:merge_custom_data"),
+				new Tuple<>("apoli:revoke_power", "apoli:remove_power"),
+				new Tuple<>("apoli:water_protection", "origins:water_protection") // fix water protection in namespace aliases
+			),
+			List.of(
+				"power_type", "type"
+			)
 		);
 		CalioParser.REMAPPER.set(remapper);
 		context.createRegistries(
-				Registries.ORIGIN,
-				Registries.LAYER,
-				Registries.CRAFT_POWER,
-				Registries.FLUID_CONDITION,
-				Registries.ENTITY_CONDITION,
-				Registries.BIOME_CONDITION,
-				Registries.BIENTITY_CONDITION,
-				Registries.BLOCK_CONDITION,
-				Registries.ITEM_CONDITION,
-				Registries.DAMAGE_CONDITION,
-				Registries.ENTITY_ACTION,
-				Registries.ITEM_ACTION,
-				Registries.BLOCK_ACTION,
-				Registries.BIENTITY_ACTION,
-				Registries.LANG,
-				Registries.CHOOSING_PAGE
+			Registries.ORIGIN,
+			Registries.LAYER,
+			Registries.CRAFT_POWER,
+			Registries.FLUID_CONDITION,
+			Registries.ENTITY_CONDITION,
+			Registries.BIOME_CONDITION,
+			Registries.BIENTITY_CONDITION,
+			Registries.BLOCK_CONDITION,
+			Registries.ITEM_CONDITION,
+			Registries.DAMAGE_CONDITION,
+			Registries.ENTITY_ACTION,
+			Registries.ITEM_ACTION,
+			Registries.BLOCK_ACTION,
+			Registries.BIENTITY_ACTION,
+			Registries.LANG,
+			Registries.CHOOSING_PAGE
 		);
 		BOOTSTRAPPED.set(true);
 	}

@@ -31,9 +31,9 @@ public class TameAction {
 
 	public static @NotNull ActionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ActionFactory<>(
-				OriginsPaper.apoliIdentifier("tame"),
-				SerializableData.serializableData(),
-				TameAction::action
+			OriginsPaper.apoliIdentifier("tame"),
+			SerializableData.serializableData(),
+			TameAction::action
 		);
 	}
 }

@@ -12,14 +12,14 @@ public class FeedAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("feed"),
-				SerializableData.serializableData()
-						.add("food", SerializableDataTypes.INT)
-						.add("saturation", SerializableDataTypes.FLOAT),
-				(data, entity) -> {
-					if (entity instanceof Player) {
-						((Player) entity).getFoodData().eat(data.getInt("food"), data.getFloat("saturation"));
-					}
+			SerializableData.serializableData()
+				.add("food", SerializableDataTypes.INT)
+				.add("saturation", SerializableDataTypes.FLOAT),
+			(data, entity) -> {
+				if (entity instanceof Player) {
+					((Player) entity).getFoodData().eat(data.getInt("food"), data.getFloat("saturation"));
 				}
+			}
 		);
 	}
 }

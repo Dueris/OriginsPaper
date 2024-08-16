@@ -12,10 +12,10 @@ public class BlockCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("block"),
-				SerializableData.serializableData()
-						.add("block", SerializableDataTypes.BLOCK),
-				(data, block) -> block.getState().is((Block) data.get("block"))
+			OriginsPaper.apoliIdentifier("block"),
+			SerializableData.serializableData()
+				.add("block", SerializableDataTypes.BLOCK),
+			(data, block) -> block.getState().is((Block) data.get("block"))
 		);
 	}
 }

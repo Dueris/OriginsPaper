@@ -11,11 +11,11 @@ public class WaterLoggableCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("water_loggable"),
-				SerializableData.serializableData(),
-				(data, block) -> {
-					return block.getState().getBlock() instanceof LiquidBlockContainer;
-				}
+			OriginsPaper.apoliIdentifier("water_loggable"),
+			SerializableData.serializableData(),
+			(data, block) -> {
+				return block.getState().getBlock() instanceof LiquidBlockContainer;
+			}
 		);
 	}
 }

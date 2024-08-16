@@ -21,15 +21,15 @@ public class OwnerCondition {
 		}
 
 		return (target instanceof OwnableEntity tamable && actor.equals(tamable.getOwner()))
-				|| (target instanceof TraceableEntity ownable && actor.equals(ownable.getOwner()));
+			|| (target instanceof TraceableEntity ownable && actor.equals(ownable.getOwner()));
 
 	}
 
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("owner"),
-				SerializableData.serializableData(),
-				OwnerCondition::condition
+			OriginsPaper.apoliIdentifier("owner"),
+			SerializableData.serializableData(),
+			OwnerCondition::condition
 		);
 	}
 }

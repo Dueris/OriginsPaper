@@ -54,16 +54,16 @@ public class ScreenNavigator implements Listener {
 		ItemStack next = new ItemStack(Material.ARROW);
 		ItemMeta nmeta = next.getItemMeta();
 		nmeta.displayName(
-				Component.text("Next Origin")
-						.decoration(TextDecoration.ITALIC, false)
+			Component.text("Next Origin")
+				.decoration(TextDecoration.ITALIC, false)
 		);
 		next.setItemMeta(nmeta);
 		NEXT_ITEMSTACK = next;
 		ItemStack back = new ItemStack(Material.ARROW);
 		ItemMeta bmeta = next.getItemMeta();
 		bmeta.displayName(
-				Component.text("Previous Origin")
-						.decoration(TextDecoration.ITALIC, false)
+			Component.text("Previous Origin")
+				.decoration(TextDecoration.ITALIC, false)
 		);
 		back.setItemMeta(bmeta);
 		BACK_ITEMSTACK = back;
@@ -98,13 +98,13 @@ public class ScreenNavigator implements Listener {
 		}
 
 		Inventory gui = Bukkit.createInventory(
-				player.getBukkitEntity(),
-				54,
-				Component.text(
-						layer.getGuiTitle() != null
-								? PlainTextComponentSerializer.plainText().serialize(layer.getGuiTitle().chooseOrigin())
-								: "Choosing - " + (layer.getTag())
-				)
+			player.getBukkitEntity(),
+			54,
+			Component.text(
+				layer.getGuiTitle() != null
+					? PlainTextComponentSerializer.plainText().serialize(layer.getGuiTitle().chooseOrigin())
+					: "Choosing - " + (layer.getTag())
+			)
 		);
 		gui.setContents(layerPages.get(layer).get(currentDisplayingPage.getInt(player)).createDisplay(player, layer));
 		OriginsPaper.scheduler.parent.scheduleMainThreadCall(() -> player.getBukkitEntity().openInventory(gui));
@@ -121,7 +121,7 @@ public class ScreenNavigator implements Listener {
 			return false;
 		} else {
 			return a == null && b == null || a.getType().equals(b.getType())
-					&& (!cD || a.displayName() != null && b.displayName() != null && a.getItemMeta().displayName().equals(b.getItemMeta().displayName()));
+				&& (!cD || a.displayName() != null && b.displayName() != null && a.getItemMeta().displayName().equals(b.getItemMeta().displayName()));
 		}
 	}
 
@@ -152,7 +152,7 @@ public class ScreenNavigator implements Listener {
 			e.getWhoClicked().getWorld().playSound(e.getWhoClicked().getLocation(), Sound.UI_BUTTON_CLICK, 2, 1);
 			if (layerPages.get(inChoosingLayer.get(getCraftPlayer(e.getWhoClicked()))).isEmpty()) return;
 			ChoosingPage page = layerPages.get(inChoosingLayer.get(getCraftPlayer(e.getWhoClicked())))
-					.get(currentDisplayingPage.getInt(getCraftPlayer(e.getWhoClicked())));
+				.get(currentDisplayingPage.getInt(getCraftPlayer(e.getWhoClicked())));
 			if (isSimilarEnough(e.getCurrentItem(), page.getChoosingStack(((CraftPlayer) e.getWhoClicked()).getHandle()), true)) { // 1.20.5 bug with ItemFlags
 				page.onChoose(((CraftPlayer) e.getWhoClicked()).getHandle(), inChoosingLayer.get(getCraftPlayer(e.getWhoClicked())));
 				new BukkitRunnable() {
@@ -185,8 +185,8 @@ public class ScreenNavigator implements Listener {
 			if (e.getAction().isRightClick()) {
 				if (e.getItem() != null) {
 					if ((isSimilarEnough(e.getItem(), OrbOfOrigins.orb, false)) &&
-							e.getItem().getItemMeta().getPersistentDataContainer().has(CraftNamespacedKey.fromMinecraft(OriginsPaper.identifier("origins"))) &&
-							e.getItem().getItemMeta().getPersistentDataContainer().get(CraftNamespacedKey.fromMinecraft(OriginsPaper.identifier("origins")), PersistentDataType.STRING).equalsIgnoreCase("orb_of_origin")) {
+						e.getItem().getItemMeta().getPersistentDataContainer().has(CraftNamespacedKey.fromMinecraft(OriginsPaper.identifier("origins"))) &&
+						e.getItem().getItemMeta().getPersistentDataContainer().get(CraftNamespacedKey.fromMinecraft(OriginsPaper.identifier("origins")), PersistentDataType.STRING).equalsIgnoreCase("orb_of_origin")) {
 						if (!((CraftPlayer) p).getHandle().getAbilities().instabuild) {
 							Util.consumeItem(e.getItem());
 						}

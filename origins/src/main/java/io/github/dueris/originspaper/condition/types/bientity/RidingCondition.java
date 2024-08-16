@@ -19,15 +19,15 @@ public class RidingCondition {
 		}
 
 		return actor.getVehicle() != null
-				&& actor.getVehicle().equals(target);
+			&& actor.getVehicle().equals(target);
 
 	}
 
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("riding"),
-				SerializableData.serializableData(),
-				RidingCondition::condition
+			OriginsPaper.apoliIdentifier("riding"),
+			SerializableData.serializableData(),
+			RidingCondition::condition
 		);
 	}
 }

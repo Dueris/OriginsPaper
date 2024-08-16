@@ -14,13 +14,13 @@ public class AndCondition {
 
 	public static <T> @NotNull ConditionFactory<T> getFactory(RegistryKey<ConditionFactory<T>> conditionDataType) {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("and"),
-				SerializableData.serializableData()
-						.add("conditions", SerializableDataTypes.list(ApoliDataTypes.condition(conditionDataType))),
-				(data, t) -> {
-					List<ConditionFactory<T>> conditions = data.get("conditions");
-					return conditions.stream().allMatch(condition -> condition.test(t));
-				}
+			OriginsPaper.apoliIdentifier("and"),
+			SerializableData.serializableData()
+				.add("conditions", SerializableDataTypes.list(ApoliDataTypes.condition(conditionDataType))),
+			(data, t) -> {
+				List<ConditionFactory<T>> conditions = data.get("conditions");
+				return conditions.stream().allMatch(condition -> condition.test(t));
+			}
 		);
 	}
 }

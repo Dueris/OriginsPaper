@@ -12,16 +12,16 @@ public class MovingCondition {
 
 	public static boolean condition(@NotNull SerializableData.Instance data, Entity entity) {
 		return (data.getBoolean("horizontally") && EntityConditions.isEntityMovingHorizontal(entity.getBukkitEntity()))
-				|| (data.getBoolean("vertically") && EntityConditions.isEntityMovingVertical(entity.getBukkitEntity()));
+			|| (data.getBoolean("vertically") && EntityConditions.isEntityMovingVertical(entity.getBukkitEntity()));
 	}
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("moving"),
-				SerializableData.serializableData()
-						.add("horizontally", SerializableDataTypes.BOOLEAN, true)
-						.add("vertically", SerializableDataTypes.BOOLEAN, true),
-				MovingCondition::condition
+			OriginsPaper.apoliIdentifier("moving"),
+			SerializableData.serializableData()
+				.add("horizontally", SerializableDataTypes.BOOLEAN, true)
+				.add("vertically", SerializableDataTypes.BOOLEAN, true),
+			MovingCondition::condition
 		);
 	}
 }

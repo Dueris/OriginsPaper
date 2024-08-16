@@ -35,16 +35,16 @@ public class InventoryCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("inventory"),
-				SerializableData.serializableData()
-						.add("inventory_types", SerializableDataTypes.enumSet(InventoryType.class, ApoliDataTypes.INVENTORY_TYPE), EnumSet.of(InventoryType.INVENTORY))
-						.add("process_mode", ApoliDataTypes.PROCESS_MODE, Util.ProcessMode.ITEMS)
-						.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
-						.add("slots", SerializableDataTypes.list(ApoliDataTypes.ITEM_SLOT), null)
-						.add("slot", ApoliDataTypes.ITEM_SLOT, null)
-						.add("comparison", ApoliDataTypes.COMPARISON, Comparison.GREATER_THAN)
-						.add("compare_to", SerializableDataTypes.INT, 0),
-				InventoryCondition::condition
+			OriginsPaper.apoliIdentifier("inventory"),
+			SerializableData.serializableData()
+				.add("inventory_types", SerializableDataTypes.enumSet(InventoryType.class, ApoliDataTypes.INVENTORY_TYPE), EnumSet.of(InventoryType.INVENTORY))
+				.add("process_mode", ApoliDataTypes.PROCESS_MODE, Util.ProcessMode.ITEMS)
+				.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
+				.add("slots", SerializableDataTypes.list(ApoliDataTypes.ITEM_SLOT), null)
+				.add("slot", ApoliDataTypes.ITEM_SLOT, null)
+				.add("comparison", ApoliDataTypes.COMPARISON, Comparison.GREATER_THAN)
+				.add("compare_to", SerializableDataTypes.INT, 0),
+			InventoryCondition::condition
 		);
 	}
 }

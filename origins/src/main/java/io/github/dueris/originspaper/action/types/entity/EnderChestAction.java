@@ -22,10 +22,10 @@ public class EnderChestAction {
 		PlayerEnderChestContainer enderChestContainer = player.getEnderChestInventory();
 
 		player.openMenu(
-				new SimpleMenuProvider((i, inventory, _player) ->
-						ChestMenu.threeRows(i, inventory, enderChestContainer),
-						TITLE
-				)
+			new SimpleMenuProvider((i, inventory, _player) ->
+				ChestMenu.threeRows(i, inventory, enderChestContainer),
+				TITLE
+			)
 		);
 
 		player.awardStat(Stats.OPEN_ENDERCHEST);
@@ -33,8 +33,8 @@ public class EnderChestAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("ender_chest"),
-				SerializableData.serializableData(),
-				EnderChestAction::action
+			SerializableData.serializableData(),
+			EnderChestAction::action
 		);
 	}
 }

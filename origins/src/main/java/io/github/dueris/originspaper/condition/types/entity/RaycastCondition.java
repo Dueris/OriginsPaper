@@ -61,7 +61,7 @@ public class RaycastCondition {
 			}
 			if (hitResult instanceof EntityHitResult ehr && data.isPresent("hit_bientity_condition")) {
 				return data.<Predicate<Tuple<Entity, Entity>>>get("hit_bientity_condition")
-						.test(new Tuple<>(entity, ehr.getEntity()));
+					.test(new Tuple<>(entity, ehr.getEntity()));
 			}
 			return true;
 		}
@@ -72,12 +72,12 @@ public class RaycastCondition {
 
 		if (!data.isPresent("entity_distance") && !data.isPresent("distance")) {
 			return entity instanceof LivingEntity livingEntity && livingEntity.getAttributes().hasAttribute(Attributes.ENTITY_INTERACTION_RANGE)
-					? livingEntity.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE)
-					: 3;
+				? livingEntity.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE)
+				: 3;
 		} else {
 			return data.isPresent("entity_distance")
-					? data.getDouble("entity_distance")
-					: data.getDouble("distance");
+				? data.getDouble("entity_distance")
+				: data.getDouble("distance");
 		}
 
 	}
@@ -87,12 +87,12 @@ public class RaycastCondition {
 
 		if (!data.isPresent("block_distance") && !data.isPresent("distance")) {
 			return entity instanceof LivingEntity livingEntity && livingEntity.getAttributes().hasAttribute(Attributes.ENTITY_INTERACTION_RANGE)
-					? livingEntity.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE)
-					: 4.5;
+				? livingEntity.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE)
+				: 4.5;
 		} else {
 			return data.isPresent("block_distance")
-					? data.getDouble("block_distance")
-					: data.getDouble("distance");
+				? data.getDouble("block_distance")
+				: data.getDouble("distance");
 		}
 
 	}
@@ -113,20 +113,20 @@ public class RaycastCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(OriginsPaper.apoliIdentifier("raycast"),
-				SerializableData.serializableData()
-						.add("distance", SerializableDataTypes.DOUBLE, null)
-						.add("block_distance", SerializableDataTypes.DOUBLE, null)
-						.add("entity_distance", SerializableDataTypes.DOUBLE, null)
-						.add("direction", SerializableDataTypes.VECTOR, null)
-						.add("space", ApoliDataTypes.SPACE, Space.WORLD)
-						.add("block", SerializableDataTypes.BOOLEAN, true)
-						.add("entity", SerializableDataTypes.BOOLEAN, true)
-						.add("shape_type", SerializableDataTypes.enumValue(ClipContext.Block.class), ClipContext.Block.OUTLINE)
-						.add("fluid_handling", SerializableDataTypes.enumValue(ClipContext.Fluid.class), ClipContext.Fluid.ANY)
-						.add("match_bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
-						.add("hit_bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
-						.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null),
-				RaycastCondition::condition
+			SerializableData.serializableData()
+				.add("distance", SerializableDataTypes.DOUBLE, null)
+				.add("block_distance", SerializableDataTypes.DOUBLE, null)
+				.add("entity_distance", SerializableDataTypes.DOUBLE, null)
+				.add("direction", SerializableDataTypes.VECTOR, null)
+				.add("space", ApoliDataTypes.SPACE, Space.WORLD)
+				.add("block", SerializableDataTypes.BOOLEAN, true)
+				.add("entity", SerializableDataTypes.BOOLEAN, true)
+				.add("shape_type", SerializableDataTypes.enumValue(ClipContext.Block.class), ClipContext.Block.OUTLINE)
+				.add("fluid_handling", SerializableDataTypes.enumValue(ClipContext.Fluid.class), ClipContext.Fluid.ANY)
+				.add("match_bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
+				.add("hit_bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
+				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null),
+			RaycastCondition::condition
 		);
 	}
 }

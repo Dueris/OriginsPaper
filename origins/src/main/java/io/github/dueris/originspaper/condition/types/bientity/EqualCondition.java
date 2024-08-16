@@ -17,9 +17,9 @@ public class EqualCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("equal"),
-				SerializableData.serializableData(),
-				EqualCondition::condition
+			OriginsPaper.apoliIdentifier("equal"),
+			SerializableData.serializableData(),
+			EqualCondition::condition
 		);
 	}
 }

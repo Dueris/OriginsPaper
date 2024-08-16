@@ -70,18 +70,18 @@ public class WrappedBootstrapContext {
 			data.mkdirs();
 		} else {
 			data = Arrays.stream(Objects.requireNonNull(Arrays.stream(datapackPath.toFile().listFiles())
-							.filter(Objects::nonNull)
-							.filter(f -> {
-								return f.getName().equalsIgnoreCase("datapack");
-							}).filter(File::isDirectory)
-							.findFirst().orElseThrow().listFiles())).filter(f -> {
-						return f.getName().equalsIgnoreCase("data");
+					.filter(Objects::nonNull)
+					.filter(f -> {
+						return f.getName().equalsIgnoreCase("datapack");
 					}).filter(File::isDirectory)
-					.findFirst().orElse(((ObjectProvider<File>) () -> {
-						File d = datapackPath.resolve("datapack").toFile();
-						d.mkdirs();
-						return d;
-					}).get());
+					.findFirst().orElseThrow().listFiles())).filter(f -> {
+					return f.getName().equalsIgnoreCase("data");
+				}).filter(File::isDirectory)
+				.findFirst().orElse(((ObjectProvider<File>) () -> {
+					File d = datapackPath.resolve("datapack").toFile();
+					d.mkdirs();
+					return d;
+				}).get());
 		}
 
 		if (!data.exists()) {

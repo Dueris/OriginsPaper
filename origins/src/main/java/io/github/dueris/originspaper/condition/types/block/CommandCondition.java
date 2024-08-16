@@ -25,10 +25,10 @@ public class CommandCondition {
 
 		AtomicInteger result = new AtomicInteger();
 		CommandSourceStack source = server.createCommandSourceStack()
-				.withPosition(cachedBlockPosition.getPos().getCenter())
-				.withPermission(4)
-				.withCallback((successful, returnValue) -> result.set(returnValue))
-				.withSuppressedOutput();
+			.withPosition(cachedBlockPosition.getPos().getCenter())
+			.withPermission(4)
+			.withCallback((successful, returnValue) -> result.set(returnValue))
+			.withSuppressedOutput();
 
 		Comparison comparison = data.get("comparison");
 		String command = data.get("command");
@@ -42,12 +42,12 @@ public class CommandCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("command"),
-				SerializableData.serializableData()
-						.add("command", SerializableDataTypes.STRING)
-						.add("comparison", ApoliDataTypes.COMPARISON, Comparison.GREATER_THAN_OR_EQUAL)
-						.add("compare_to", SerializableDataTypes.INT, 1),
-				CommandCondition::condition
+			OriginsPaper.apoliIdentifier("command"),
+			SerializableData.serializableData()
+				.add("command", SerializableDataTypes.STRING)
+				.add("comparison", ApoliDataTypes.COMPARISON, Comparison.GREATER_THAN_OR_EQUAL)
+				.add("compare_to", SerializableDataTypes.INT, 1),
+			CommandCondition::condition
 		);
 	}
 }

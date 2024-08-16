@@ -17,9 +17,9 @@ public class FoodCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("food"),
-				SerializableData.serializableData(),
-				FoodCondition::condition
+			OriginsPaper.apoliIdentifier("food"),
+			SerializableData.serializableData(),
+			FoodCondition::condition
 		);
 	}
 

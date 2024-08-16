@@ -14,16 +14,16 @@ public class XpPointsCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("xp_points"),
-				SerializableData.serializableData()
-						.add("comparison", ApoliDataTypes.COMPARISON)
-						.add("compare_to", SerializableDataTypes.INT),
-				(data, entity) -> {
-					if (entity instanceof Player) {
-						return ((Comparison) data.get("comparison")).compare(((Player) entity).totalExperience, data.getInt("compare_to"));
-					}
-					return false;
+			OriginsPaper.apoliIdentifier("xp_points"),
+			SerializableData.serializableData()
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.INT),
+			(data, entity) -> {
+				if (entity instanceof Player) {
+					return ((Comparison) data.get("comparison")).compare(((Player) entity).totalExperience, data.getInt("compare_to"));
 				}
+				return false;
+			}
 		);
 	}
 }

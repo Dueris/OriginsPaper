@@ -12,12 +12,12 @@ public class ExhaustAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("exhaust"),
-				SerializableData.serializableData()
-						.add("amount", SerializableDataTypes.FLOAT),
-				(data, entity) -> {
-					if (entity instanceof Player)
-						((Player) entity).getFoodData().addExhaustion(data.getFloat("amount"));
-				}
+			SerializableData.serializableData()
+				.add("amount", SerializableDataTypes.FLOAT),
+			(data, entity) -> {
+				if (entity instanceof Player)
+					((Player) entity).getFoodData().addExhaustion(data.getFloat("amount"));
+			}
 		);
 	}
 }

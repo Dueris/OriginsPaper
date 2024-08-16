@@ -27,9 +27,9 @@ public class LeashAction {
 
 	public static @NotNull ActionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ActionFactory<>(
-				OriginsPaper.apoliIdentifier("leash"),
-				SerializableData.serializableData(),
-				LeashAction::action
+			OriginsPaper.apoliIdentifier("leash"),
+			SerializableData.serializableData(),
+			LeashAction::action
 		);
 	}
 }

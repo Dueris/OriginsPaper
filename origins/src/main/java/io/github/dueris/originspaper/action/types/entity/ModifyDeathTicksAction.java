@@ -18,9 +18,9 @@ public class ModifyDeathTicksAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("modify_death_ticks"),
-				SerializableData.serializableData()
-						.add("modifier", Modifier.DATA_TYPE),
-				ModifyDeathTicksAction::action
+			SerializableData.serializableData()
+				.add("modifier", Modifier.DATA_TYPE),
+			ModifyDeathTicksAction::action
 		);
 	}
 }

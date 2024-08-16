@@ -75,12 +75,12 @@ public class GiveAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
-				OriginsPaper.apoliIdentifier("give"),
-				SerializableData.serializableData()
-						.add("stack", SerializableDataTypes.ITEM_STACK)
-						.add("item_action", ApoliDataTypes.ITEM_ACTION, null)
-						.add("preferred_slot", SerializableDataTypes.EQUIPMENT_SLOT, null),
-				GiveAction::action
+			OriginsPaper.apoliIdentifier("give"),
+			SerializableData.serializableData()
+				.add("stack", SerializableDataTypes.ITEM_STACK)
+				.add("item_action", ApoliDataTypes.ITEM_ACTION, null)
+				.add("preferred_slot", SerializableDataTypes.EQUIPMENT_SLOT, null),
+			GiveAction::action
 		);
 	}
 }

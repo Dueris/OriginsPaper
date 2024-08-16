@@ -14,12 +14,12 @@ public class InvertCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("invert"),
-				SerializableData.serializableData()
-						.add("condition", ApoliDataTypes.BIENTITY_CONDITION),
-				(data, actorAndTarget) -> {
-					return data.<Predicate<Tuple<Entity, Entity>>>get("condition").test(new Tuple<>(actorAndTarget.getB(), actorAndTarget.getA()));
-				}
+			OriginsPaper.apoliIdentifier("invert"),
+			SerializableData.serializableData()
+				.add("condition", ApoliDataTypes.BIENTITY_CONDITION),
+			(data, actorAndTarget) -> {
+				return data.<Predicate<Tuple<Entity, Entity>>>get("condition").test(new Tuple<>(actorAndTarget.getB(), actorAndTarget.getA()));
+			}
 		);
 	}
 }

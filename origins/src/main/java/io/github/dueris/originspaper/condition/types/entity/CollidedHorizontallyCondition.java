@@ -10,11 +10,11 @@ public class CollidedHorizontallyCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("collided_horizontally"),
-				SerializableData.serializableData(),
-				(data, entity) -> {
-					return entity.horizontalCollision;
-				}
+			OriginsPaper.apoliIdentifier("collided_horizontally"),
+			SerializableData.serializableData(),
+			(data, entity) -> {
+				return entity.horizontalCollision;
+			}
 		);
 	}
 }

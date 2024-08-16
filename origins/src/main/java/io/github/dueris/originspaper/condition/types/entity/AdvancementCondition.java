@@ -32,9 +32,9 @@ public class AdvancementCondition {
 			}
 
 			return ((ServerPlayer) playerEntity)
-					.getAdvancements()
-					.getOrStartProgress(advancementEntry)
-					.isDone();
+				.getAdvancements()
+				.getOrStartProgress(advancementEntry)
+				.isDone();
 
 		}
 
@@ -44,10 +44,10 @@ public class AdvancementCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("advancement"),
-				SerializableData.serializableData()
-						.add("advancement", SerializableDataTypes.IDENTIFIER),
-				AdvancementCondition::condition
+			OriginsPaper.apoliIdentifier("advancement"),
+			SerializableData.serializableData()
+				.add("advancement", SerializableDataTypes.IDENTIFIER),
+			AdvancementCondition::condition
 		);
 	}
 }

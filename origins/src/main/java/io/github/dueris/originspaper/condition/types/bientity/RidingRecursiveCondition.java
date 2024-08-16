@@ -29,9 +29,9 @@ public class RidingRecursiveCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("riding_recursive"),
-				SerializableData.serializableData(),
-				RidingRecursiveCondition::condition
+			OriginsPaper.apoliIdentifier("riding_recursive"),
+			SerializableData.serializableData(),
+			RidingRecursiveCondition::condition
 		);
 	}
 }

@@ -12,12 +12,12 @@ public class AndAction {
 
 	public static <T> @NotNull ActionFactory<T> getFactory(SerializableDataBuilder<List<ActionFactory<T>>> listDataType) {
 		return new ActionFactory<T>(OriginsPaper.apoliIdentifier("and"),
-				SerializableData.serializableData()
-						.add("actions", listDataType),
-				(data, t) -> {
-					List<ActionFactory<T>> actions = data.get("actions");
-					actions.forEach(a -> a.accept(t));
-				}
+			SerializableData.serializableData()
+				.add("actions", listDataType),
+			(data, t) -> {
+				List<ActionFactory<T>> actions = data.get("actions");
+				actions.forEach(a -> a.accept(t));
+			}
 		);
 	}
 }

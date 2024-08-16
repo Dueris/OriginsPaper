@@ -34,8 +34,8 @@ public class PowerUtils {
 				PowerHolderComponent.unloadPower(p, power, layer, suppress, true);
 				if (!suppress) {
 					executor.sendMessage("Entity %name% had the power %power% removed"
-							.replace("%power%", PlainTextComponentSerializer.plainText().serialize(power.name()))
-							.replace("%name%", p.getName())
+						.replace("%power%", PlainTextComponentSerializer.plainText().serialize(power.name()))
+						.replace("%name%", p.getName())
 					);
 				}
 			}
@@ -52,8 +52,8 @@ public class PowerUtils {
 				PowerHolderComponent.loadPower(p, power, layer, suppress, true);
 				if (!suppress) {
 					executor.sendMessage("Entity %name% was granted the power %power%"
-							.replace("%power%", PlainTextComponentSerializer.plainText().serialize(power.name()))
-							.replace("%name%", p.getName())
+						.replace("%power%", PlainTextComponentSerializer.plainText().serialize(power.name()))
+						.replace("%name%", p.getName())
 					);
 				}
 			}
@@ -65,8 +65,8 @@ public class PowerUtils {
 		String toAdd = power.getTag();
 		if (player.getPersistentDataContainer().has(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("gained_powers")))) {
 			gainedPowers = GSON.fromJson(
-					player.getPersistentDataContainer().get(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("gained_powers")), PersistentDataType.STRING),
-					JsonArray.class
+				player.getPersistentDataContainer().get(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("gained_powers")), PersistentDataType.STRING),
+				JsonArray.class
 			);
 		}
 
@@ -87,8 +87,8 @@ public class PowerUtils {
 		String toAdd = power.getTag();
 		if (player.getPersistentDataContainer().has(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("blacklisted_powers")))) {
 			markedBlacklisted = GSON.fromJson(
-					player.getPersistentDataContainer().get(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("blacklisted_powers")), PersistentDataType.STRING),
-					JsonArray.class
+				player.getPersistentDataContainer().get(CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("blacklisted_powers")), PersistentDataType.STRING),
+				JsonArray.class
 			);
 		}
 

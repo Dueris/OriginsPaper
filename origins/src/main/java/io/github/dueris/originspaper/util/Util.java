@@ -194,21 +194,21 @@ public class Util {
 
 	public static String getNameOrTag(@NotNull PowerType power) {
 		return PlainTextComponentSerializer.plainText().serialize(power.name()).equalsIgnoreCase(("power.$namespace.$path.name")
-				.replace("$namespace", power.key().getNamespace()).replace("$path", power.key().getPath())) ? power.getTag() : PlainTextComponentSerializer.plainText().serialize(power.name());
+			.replace("$namespace", power.key().getNamespace()).replace("$path", power.key().getPath())) ? power.getTag() : PlainTextComponentSerializer.plainText().serialize(power.name());
 	}
 
 	public static String getNameOrTag(@NotNull Origin origin) {
 		return PlainTextComponentSerializer.plainText().serialize(origin.name()).equalsIgnoreCase(("origin.$namespace.$path.name")
-				.replace("$namespace", origin.key().getNamespace()).replace("$path", origin.key().getPath())) ? origin.getTag() : PlainTextComponentSerializer.plainText().serialize(origin.name());
+			.replace("$namespace", origin.key().getNamespace()).replace("$path", origin.key().getPath())) ? origin.getTag() : PlainTextComponentSerializer.plainText().serialize(origin.name());
 	}
 
 	public static boolean inSnow(Level world, BlockPos... blockPositions) {
 		return Arrays.stream(blockPositions)
-				.anyMatch(blockPos -> {
-					Biome biome = world.getBiome(blockPos).value();
-					return biome.getPrecipitationAt(blockPos) == Biome.Precipitation.SNOW
-							&& isRainingAndExposed(world, blockPos);
-				});
+			.anyMatch(blockPos -> {
+				Biome biome = world.getBiome(blockPos).value();
+				return biome.getPrecipitationAt(blockPos) == Biome.Precipitation.SNOW
+					&& isRainingAndExposed(world, blockPos);
+			});
 	}
 
 	public static double apoli$getFluidHeightLoosely(Entity entity, TagKey<Fluid> tag) {
@@ -281,9 +281,9 @@ public class Util {
 
 	public static boolean hasChangedBlockCoordinates(@NotNull Location fromLoc, @NotNull Location toLoc) {
 		return !fromLoc.getWorld().equals(toLoc.getWorld())
-				|| fromLoc.getBlockX() != toLoc.getBlockX()
-				|| fromLoc.getBlockY() != toLoc.getBlockY()
-				|| fromLoc.getBlockZ() != toLoc.getBlockZ();
+			|| fromLoc.getBlockX() != toLoc.getBlockX()
+			|| fromLoc.getBlockY() != toLoc.getBlockY()
+			|| fromLoc.getBlockZ() != toLoc.getBlockZ();
 	}
 
 	public static @NotNull String compileStrings(@NotNull List<String> strings) {
@@ -421,12 +421,12 @@ public class Util {
 		String type = BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString();
 		entityToSpawnNbt.putString("id", type.equalsIgnoreCase("origins:enderian_pearl") ? "minecraft:ender_pearl" : type);
 		Entity entityToSpawn = EntityType.loadEntityRecursive(
-				entityToSpawnNbt,
-				serverWorld,
-				entity -> {
-					entity.moveTo(pos.x, pos.y, pos.z, yaw.orElse(entity.getYRot()), pitch.orElse(entity.getXRot()));
-					return entity;
-				}
+			entityToSpawnNbt,
+			serverWorld,
+			entity -> {
+				entity.moveTo(pos.x, pos.y, pos.z, yaw.orElse(entity.getYRot()), pitch.orElse(entity.getXRot()));
+				return entity;
+			}
 		);
 
 		if (entityToSpawn == null) {
@@ -717,10 +717,10 @@ public class Util {
 
 	public static List<Integer> getAllSlots() {
 		return SLOTS
-				.stream()
-				.flatMapToInt(slotRange -> slotRange.slots().intStream())
-				.boxed()
-				.toList();
+			.stream()
+			.flatMapToInt(slotRange -> slotRange.slots().intStream())
+			.boxed()
+			.toList();
 	}
 
 	private static void addSlots(@NotNull List<SlotRange> list, String name, int... slots) {
@@ -785,12 +785,12 @@ public class Util {
 
 	private static int getDuplicatedSlotIndex(Entity entity) {
 		SlotRange slotRange = entity instanceof Player player
-				? SlotRanges.nameToIds("hotbar." + player.getInventory().selected)
-				: null;
+			? SlotRanges.nameToIds("hotbar." + player.getInventory().selected)
+			: null;
 
 		return slotRange != null
-				? slotRange.slots().getFirst()
-				: Integer.MIN_VALUE;
+			? slotRange.slots().getFirst()
+			: Integer.MIN_VALUE;
 
 	}
 
@@ -799,10 +799,10 @@ public class Util {
 		int selectedHotbarSlot = getDuplicatedSlotIndex(entity);
 		if (selectedHotbarSlot != Integer.MIN_VALUE && slots.contains(selectedHotbarSlot)) {
 			SLOTS
-					.stream()
-					.filter(sr -> EXEMPT_SLOTS.contains(sr.getSerializedName()))
-					.flatMapToInt(sr -> sr.slots().intStream())
-					.forEach(slots::remove);
+				.stream()
+				.filter(sr -> EXEMPT_SLOTS.contains(sr.getSerializedName()))
+				.flatMapToInt(sr -> sr.slots().intStream())
+				.forEach(slots::remove);
 		}
 
 	}
@@ -888,9 +888,9 @@ public class Util {
 			float k = random.nextFloat() * 6.2831855F;
 			float l = 0.02F * random.nextFloat();
 			itemEntity.setDeltaMovement(
-					(double) (-i * h * f) + Math.cos(k) * (double) l,
-					(-g * f + 0.1F + (random.nextFloat() - random.nextFloat()) * 0.1F),
-					(double) (j * h * f) + Math.sin(k) * (double) l
+				(double) (-i * h * f) + Math.cos(k) * (double) l,
+				(-g * f + 0.1F + (random.nextFloat() - random.nextFloat()) * 0.1F),
+				(double) (j * h * f) + Math.sin(k) * (double) l
 			);
 		}
 

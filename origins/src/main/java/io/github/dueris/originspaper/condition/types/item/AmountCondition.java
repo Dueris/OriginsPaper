@@ -24,11 +24,11 @@ public class AmountCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("amount"),
-				SerializableData.serializableData()
-						.add("comparison", ApoliDataTypes.COMPARISON)
-						.add("compare_to", SerializableDataTypes.INT),
-				AmountCondition::condition
+			OriginsPaper.apoliIdentifier("amount"),
+			SerializableData.serializableData()
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.INT),
+			AmountCondition::condition
 		);
 	}
 

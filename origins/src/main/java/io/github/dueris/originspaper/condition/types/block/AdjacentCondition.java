@@ -14,21 +14,21 @@ public class AdjacentCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("adjacent"),
-				SerializableData.serializableData()
-						.add("comparison", ApoliDataTypes.COMPARISON)
-						.add("compare_to", SerializableDataTypes.INT)
-						.add("adjacent_condition", ApoliDataTypes.BLOCK_CONDITION),
-				(data, block) -> {
-					ConditionFactory<BlockInWorld> adjacentCondition = data.get("adjacent_condition");
-					int adjacent = 0;
-					for (Direction d : Direction.values()) {
-						if (adjacentCondition.test(new BlockInWorld(block.getLevel(), block.getPos().relative(d), true))) {
-							adjacent++;
-						}
+			OriginsPaper.apoliIdentifier("adjacent"),
+			SerializableData.serializableData()
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.INT)
+				.add("adjacent_condition", ApoliDataTypes.BLOCK_CONDITION),
+			(data, block) -> {
+				ConditionFactory<BlockInWorld> adjacentCondition = data.get("adjacent_condition");
+				int adjacent = 0;
+				for (Direction d : Direction.values()) {
+					if (adjacentCondition.test(new BlockInWorld(block.getLevel(), block.getPos().relative(d), true))) {
+						adjacent++;
 					}
-					return ((Comparison) data.get("comparison")).compare(adjacent, data.getInt("compare_to"));
 				}
+				return ((Comparison) data.get("comparison")).compare(adjacent, data.getInt("compare_to"));
+			}
 		);
 	}
 }

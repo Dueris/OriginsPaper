@@ -10,7 +10,7 @@ public class DismountAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("dismount"),
-				SerializableData.serializableData(),
-				(data, entity) -> entity.stopRiding());
+			SerializableData.serializableData(),
+			(data, entity) -> entity.stopRiding());
 	}
 }

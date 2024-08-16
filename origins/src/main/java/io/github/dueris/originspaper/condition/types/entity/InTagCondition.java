@@ -18,10 +18,10 @@ public class InTagCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("in_tag"),
-				SerializableData.serializableData()
-						.add("tag", SerializableDataTypes.ENTITY_TAG),
-				InTagCondition::condition
+			OriginsPaper.apoliIdentifier("in_tag"),
+			SerializableData.serializableData()
+				.add("tag", SerializableDataTypes.ENTITY_TAG),
+			InTagCondition::condition
 		);
 	}
 }

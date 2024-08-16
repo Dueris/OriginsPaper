@@ -40,17 +40,17 @@ public class RemoveEnchantmentAction {
 		ItemEnchantments.Mutable componentBuilder = new ItemEnchantments.Mutable(component);
 
 		Integer levels = data.isPresent("levels")
-				? data.getInt("levels")
-				: null;
+			? data.getInt("levels")
+			: null;
 
 		if (!enchantmentKeys.isEmpty()) {
 
 			for (ResourceKey<Enchantment> enchantmentKey : enchantmentKeys) {
 
 				Holder<Enchantment> enchantmentEntry = world.registryAccess()
-						.registryOrThrow(Registries.ENCHANTMENT)
-						.getHolder(enchantmentKey)
-						.orElseThrow();
+					.registryOrThrow(Registries.ENCHANTMENT)
+					.getHolder(enchantmentKey)
+					.orElseThrow();
 
 				if (component.keySet().contains(enchantmentEntry)) {
 					componentBuilder.set(enchantmentEntry, levels != null ? component.getLevel(enchantmentEntry) - levels : 0);
@@ -75,13 +75,13 @@ public class RemoveEnchantmentAction {
 
 	public static @NotNull ActionFactory<Tuple<Level, SlotAccess>> getFactory() {
 		return ItemActionFactory.createItemStackBased(
-				OriginsPaper.apoliIdentifier("remove_enchantment"),
-				SerializableData.serializableData()
-						.add("enchantment", SerializableDataTypes.ENCHANTMENT, null)
-						.add("enchantments", SerializableDataTypes.list(SerializableDataTypes.ENCHANTMENT), null)
-						.add("levels", SerializableDataTypes.INT, null)
-						.add("reset_repair_cost", SerializableDataTypes.BOOLEAN, false),
-				RemoveEnchantmentAction::action
+			OriginsPaper.apoliIdentifier("remove_enchantment"),
+			SerializableData.serializableData()
+				.add("enchantment", SerializableDataTypes.ENCHANTMENT, null)
+				.add("enchantments", SerializableDataTypes.list(SerializableDataTypes.ENCHANTMENT), null)
+				.add("levels", SerializableDataTypes.INT, null)
+				.add("reset_repair_cost", SerializableDataTypes.BOOLEAN, false),
+			RemoveEnchantmentAction::action
 		);
 	}
 }

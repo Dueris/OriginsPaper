@@ -14,13 +14,13 @@ public class ChoiceAction {
 
 	public static <T> @NotNull ActionFactory<T> getFactory(SerializableDataBuilder<ActionFactory<T>> dataType) {
 		return new ActionFactory<T>(OriginsPaper.apoliIdentifier("choice"),
-				SerializableData.serializableData()
-						.add("actions", SerializableDataTypes.weightedList(dataType)),
-				(data, t) -> {
-					FilterableWeightedList<ActionFactory<T>> actionList = data.get("actions");
-					ActionFactory<T> action = actionList.pickRandom(new Random());
-					action.accept(t);
-				}
+			SerializableData.serializableData()
+				.add("actions", SerializableDataTypes.weightedList(dataType)),
+			(data, t) -> {
+				FilterableWeightedList<ActionFactory<T>> actionList = data.get("actions");
+				ActionFactory<T> action = actionList.pickRandom(new Random());
+				action.accept(t);
+			}
 		);
 	}
 }

@@ -11,12 +11,12 @@ public class EntityTypeCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("entity_type"),
-				SerializableData.serializableData()
-						.add("entity_type", SerializableDataTypes.ENTITY_TYPE),
-				(data, entity) -> {
-					return entity.getType() == data.get("entity_type");
-				}
+			OriginsPaper.apoliIdentifier("entity_type"),
+			SerializableData.serializableData()
+				.add("entity_type", SerializableDataTypes.ENTITY_TYPE),
+			(data, entity) -> {
+				return entity.getType() == data.get("entity_type");
+			}
 		);
 	}
 }

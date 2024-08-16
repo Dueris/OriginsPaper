@@ -14,17 +14,17 @@ public class BothCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("both"),
-				SerializableData.serializableData()
-						.add("condition", ApoliDataTypes.ENTITY_CONDITION),
-				(data, actorAndTarget) -> {
-					Entity actor = actorAndTarget.getA();
-					Entity target = actorAndTarget.getB();
+			OriginsPaper.apoliIdentifier("both"),
+			SerializableData.serializableData()
+				.add("condition", ApoliDataTypes.ENTITY_CONDITION),
+			(data, actorAndTarget) -> {
+				Entity actor = actorAndTarget.getA();
+				Entity target = actorAndTarget.getB();
 
-					Predicate<Entity> entityCondition = data.get("condition");
-					return (actor != null && entityCondition.test(actor))
-							&& (target != null && entityCondition.test(target));
-				}
+				Predicate<Entity> entityCondition = data.get("condition");
+				return (actor != null && entityCondition.test(actor))
+					&& (target != null && entityCondition.test(target));
+			}
 		);
 	}
 }

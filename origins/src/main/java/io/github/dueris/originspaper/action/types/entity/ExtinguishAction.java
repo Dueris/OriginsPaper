@@ -10,7 +10,7 @@ public class ExtinguishAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("extinguish"),
-				SerializableData.serializableData(),
-				(data, entity) -> entity.clearFire());
+			SerializableData.serializableData(),
+			(data, entity) -> entity.clearFire());
 	}
 }

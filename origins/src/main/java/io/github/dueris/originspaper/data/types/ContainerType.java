@@ -33,6 +33,6 @@ public enum ContainerType {
 	public Inventory createInventory(Optional<String> string) {
 		Component name = Component.text(string.orElse("container.inventory"));
 		return this == DOUBLE_CHEST ? Bukkit.createInventory(null, this.getSize(), name) :
-				this == CHEST ? Bukkit.createInventory(null, this.getSize(), name) : Bukkit.createInventory(null, this.bukkit, name);
+			this == CHEST ? Bukkit.createInventory(null, this.getSize(), name) : Bukkit.createInventory(null, this.bukkit, name);
 	}
 }

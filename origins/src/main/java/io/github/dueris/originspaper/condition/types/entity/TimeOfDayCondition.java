@@ -13,13 +13,13 @@ public class TimeOfDayCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("time_of_day"),
-				SerializableData.serializableData()
-						.add("comparison", ApoliDataTypes.COMPARISON)
-						.add("compare_to", SerializableDataTypes.INT),
-				(data, entity) -> {
-					return ((Comparison) data.get("comparison")).compare(entity.level().getDayTime() % 24000L, data.getInt("compare_to"));
-				}
+			OriginsPaper.apoliIdentifier("time_of_day"),
+			SerializableData.serializableData()
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.INT),
+			(data, entity) -> {
+				return ((Comparison) data.get("comparison")).compare(entity.level().getDayTime() % 24000L, data.getInt("compare_to"));
+			}
 		);
 	}
 }

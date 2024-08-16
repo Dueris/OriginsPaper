@@ -10,11 +10,11 @@ public class ExistsCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("exists"),
-				SerializableData.serializableData(),
-				(data, entity) -> {
-					return entity != null;
-				}
+			OriginsPaper.apoliIdentifier("exists"),
+			SerializableData.serializableData(),
+			(data, entity) -> {
+				return entity != null;
+			}
 		);
 	}
 }

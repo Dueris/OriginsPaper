@@ -10,11 +10,11 @@ public class SwimmingCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("swimming"),
-				SerializableData.serializableData(),
-				(data, entity) -> {
-					return entity.isSwimming();
-				}
+			OriginsPaper.apoliIdentifier("swimming"),
+			SerializableData.serializableData(),
+			(data, entity) -> {
+				return entity.isSwimming();
+			}
 		);
 	}
 }

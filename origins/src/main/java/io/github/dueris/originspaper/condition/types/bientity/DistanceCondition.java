@@ -31,11 +31,11 @@ public class DistanceCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("distance"),
-				SerializableData.serializableData()
-						.add("comparison", ApoliDataTypes.COMPARISON)
-						.add("compare_to", SerializableDataTypes.DOUBLE),
-				DistanceCondition::condition
+			OriginsPaper.apoliIdentifier("distance"),
+			SerializableData.serializableData()
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.DOUBLE),
+			DistanceCondition::condition
 		);
 	}
 }

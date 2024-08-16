@@ -24,20 +24,20 @@ public class HasCommandTagCondition {
 		data.ifPresent("command_tags", specifiedCommandTags::addAll);
 
 		return specifiedCommandTags.isEmpty()
-				? !commandTags.isEmpty()
-				: !Collections.disjoint(commandTags, specifiedCommandTags);
+			? !commandTags.isEmpty()
+			: !Collections.disjoint(commandTags, specifiedCommandTags);
 
 	}
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("has_command_tag"),
-				SerializableData.serializableData()
-						.add("tag", SerializableDataTypes.STRING, null)
-						.add("command_tag", SerializableDataTypes.STRING, null)
-						.add("tags", SerializableDataTypes.list(SerializableDataTypes.STRING), null)
-						.add("commands_tags", SerializableDataTypes.list(SerializableDataTypes.STRING), null),
-				HasCommandTagCondition::condition
+			OriginsPaper.apoliIdentifier("has_command_tag"),
+			SerializableData.serializableData()
+				.add("tag", SerializableDataTypes.STRING, null)
+				.add("command_tag", SerializableDataTypes.STRING, null)
+				.add("tags", SerializableDataTypes.list(SerializableDataTypes.STRING), null)
+				.add("commands_tags", SerializableDataTypes.list(SerializableDataTypes.STRING), null),
+			HasCommandTagCondition::condition
 		);
 
 	}

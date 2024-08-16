@@ -14,14 +14,14 @@ public class FluidHeightCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-				OriginsPaper.apoliIdentifier("fluid_height"),
-				SerializableData.serializableData()
-						.add("fluid", SerializableDataTypes.FLUID_TAG)
-						.add("comparison", ApoliDataTypes.COMPARISON)
-						.add("compare_to", SerializableDataTypes.DOUBLE),
-				(data, entity) -> {
-					return ((Comparison) data.get("comparison")).compare(Util.apoli$getFluidHeightLoosely(entity, data.get("fluid")), data.getDouble("compare_to"));
-				}
+			OriginsPaper.apoliIdentifier("fluid_height"),
+			SerializableData.serializableData()
+				.add("fluid", SerializableDataTypes.FLUID_TAG)
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.DOUBLE),
+			(data, entity) -> {
+				return ((Comparison) data.get("comparison")).compare(Util.apoli$getFluidHeightLoosely(entity, data.get("fluid")), data.getDouble("compare_to"));
+			}
 		);
 	}
 }

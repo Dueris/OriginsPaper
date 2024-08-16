@@ -25,17 +25,17 @@ public class DropInventoryAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("drop_inventory"),
-				SerializableData.serializableData()
-						.add("inventory_type", ApoliDataTypes.INVENTORY_TYPE, InventoryType.INVENTORY)
-						.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
-						.add("item_action", ApoliDataTypes.ITEM_ACTION, null)
-						.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
-						.add("slots", SerializableDataTypes.list(ApoliDataTypes.ITEM_SLOT), null)
-						.add("slot", ApoliDataTypes.ITEM_SLOT, null)
-						.add("throw_randomly", SerializableDataTypes.BOOLEAN, false)
-						.add("retain_ownership", SerializableDataTypes.BOOLEAN, true)
-						.add("amount", SerializableDataTypes.INT, 0),
-				DropInventoryAction::action
+			SerializableData.serializableData()
+				.add("inventory_type", ApoliDataTypes.INVENTORY_TYPE, InventoryType.INVENTORY)
+				.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
+				.add("item_action", ApoliDataTypes.ITEM_ACTION, null)
+				.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
+				.add("slots", SerializableDataTypes.list(ApoliDataTypes.ITEM_SLOT), null)
+				.add("slot", ApoliDataTypes.ITEM_SLOT, null)
+				.add("throw_randomly", SerializableDataTypes.BOOLEAN, false)
+				.add("retain_ownership", SerializableDataTypes.BOOLEAN, true)
+				.add("amount", SerializableDataTypes.INT, 0),
+			DropInventoryAction::action
 		);
 	}
 }

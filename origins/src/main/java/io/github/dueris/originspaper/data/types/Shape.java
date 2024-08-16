@@ -27,9 +27,9 @@ public enum Shape {
 			for (int j = -radius; j <= radius; j++) {
 				for (int k = -radius; k <= radius; k++) {
 					if (shape == CUBE
-							|| shape == CHEBYSHEV
-							|| (shape == SPHERE || shape == EUCLIDEAN) && i * i + j * j + k * k <= radius * radius
-							|| Math.abs(i) + Math.abs(j) + Math.abs(k) <= radius) {
+						|| shape == CHEBYSHEV
+						|| (shape == SPHERE || shape == EUCLIDEAN) && i * i + j * j + k * k <= radius * radius
+						|| Math.abs(i) + Math.abs(j) + Math.abs(k) <= radius) {
 						positions.add(new BlockPos(center.offset(i, j, k)));
 					}
 				}
@@ -44,9 +44,9 @@ public enum Shape {
 			for (int j = -radius; j <= radius; j++) {
 				for (int k = -radius; k <= radius; k++) {
 					if (shape == CUBE
-							|| shape == CHEBYSHEV
-							|| (shape == SPHERE || shape == EUCLIDEAN) && i * i + j * j + k * k <= radius * radius
-							|| Math.abs(i) + Math.abs(j) + Math.abs(k) <= radius) {
+						|| shape == CHEBYSHEV
+						|| (shape == SPHERE || shape == EUCLIDEAN) && i * i + j * j + k * k <= radius * radius
+						|| Math.abs(i) + Math.abs(j) + Math.abs(k) <= radius) {
 						consumer.accept(new BlockPos(center.offset(i, j, k)));
 					}
 				}
