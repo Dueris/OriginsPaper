@@ -1,4 +1,4 @@
 {
-  "type": "origins:conduit_power_on_land",
+  "type": "origins:simple",
   "hidden": true
 }

@@ -164,6 +164,8 @@ public class PowerHolderComponent implements Listener {
 				}
 			}
 
+			repository.origins.put(layer, origin);
+
 			PowerHolderComponent.loadPowers(player, layer, true);
 
 			OriginChangeEvent e = new OriginChangeEvent(player, origin, ScreenNavigator.orbChoosing.contains(getNMS(player)));

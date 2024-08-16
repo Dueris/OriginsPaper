@@ -20,7 +20,6 @@ import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.power.PowerType;
 import io.github.dueris.originspaper.power.RecipePower;
-import io.github.dueris.originspaper.power.provider.origins.BounceSlimeBlock;
 import io.github.dueris.originspaper.power.provider.origins.WaterBreathe;
 import io.github.dueris.originspaper.registry.BuiltinRegistry;
 import io.github.dueris.originspaper.registry.Registries;
@@ -328,7 +327,6 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new ScreenNavigator(), this);
 		this.getServer().getPluginManager().registerEvents(new OriginCommand(), this);
 		this.getServer().getPluginManager().registerEvents(new LogoutBugWorkaround(), this);
-		this.getServer().getPluginManager().registerEvents(new BounceSlimeBlock(), this);
 		this.getServer().getPluginManager().registerEvents(new BiEntityConditions(), this);
 		this.getServer().getPluginManager().registerEvents(new OriginScheduler.MainTickerThread(), this);
 		this.getServer().getPluginManager().registerEvents(new KeybindUtil(), this);

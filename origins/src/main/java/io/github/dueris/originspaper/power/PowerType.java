@@ -13,6 +13,7 @@ import io.github.dueris.originspaper.power.provider.OriginSimpleContainer;
 import io.github.dueris.originspaper.power.provider.origins.*;
 import io.github.dueris.originspaper.util.LangFile;
 import net.kyori.adventure.text.TextComponent;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -20,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -114,14 +116,9 @@ public class PowerType implements Listener {
 		}
 
 		INSTANCE_TYPES.addAll(holders);
-		OriginSimpleContainer.registerPower(BounceSlimeBlock.class);
 		OriginSimpleContainer.registerPower(LikeWater.class);
-		OriginSimpleContainer.registerPower(PiglinNoAttack.class);
 		OriginSimpleContainer.registerPower(ScareCreepers.class);
 		OriginSimpleContainer.registerPower(WaterBreathe.class);
-		OriginSimpleContainer.registerPower(SlimelingSizeChangers.AddSize.class);
-		OriginSimpleContainer.registerPower(SlimelingSizeChangers.RemoveSize.class);
-		Bukkit.getServer().getPluginManager().registerEvents(new SlimelingSizeChangers(), OriginsPaper.getPlugin());
 	}
 
 	public ResourceLocation key() {
@@ -205,5 +202,19 @@ public class PowerType implements Listener {
 
 	public boolean shouldTick() {
 		return true;
+	}
+
+	/**
+	 * Allows for saving data in the player repository for that power
+	 */
+	@Nullable
+	public CompoundTag saveData() {
+		return null;
+	}
+
+	/**
+	 * Allows parsing the data provided from the player repository for that power
+	 */
+	public void loadFromData(@NotNull CompoundTag tag) {
 	}
 }

@@ -110,7 +110,13 @@ public final class PlayerPowerRepository {
 			ListTag powers = new ListTag();
 			for (PowerType type : this.appliedPowers.get(layer)) {
 				if (type == null) continue;
-				powers.add(StringTag.valueOf(type.getTag()));
+				CompoundTag powerTag = new CompoundTag();
+				powerTag.put("Power", StringTag.valueOf(type.getTag()));
+				@Nullable CompoundTag extra = type.saveData();
+				if (extra != null) {
+					powerTag.merge(extra);
+				}
+				powers.add(powerTag);
 			}
 			tag.put("Powers", powers);
 			tag.putString("Origin", origins.getOrDefault(layer, OriginsPaper.EMPTY_ORIGIN).getTag());
@@ -137,9 +143,12 @@ public final class PlayerPowerRepository {
 				ResourceLocation originLocation = ResourceLocation.parse(tag.getString("Origin"));
 				Set<PowerType> powerTypes = new CopyOnWriteArraySet<>();
 
-				tag.getList("Powers", 8).forEach(powerTag -> {
-					ResourceLocation powerLocation = ResourceLocation.parse(powerTag.getAsString());
-					powerTypes.add(OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(powerLocation));
+				tag.getList("Powers", 10).forEach(powerTag -> {
+					CompoundTag power = (CompoundTag) powerTag;
+					ResourceLocation powerLocation = ResourceLocation.parse(power.getString("Power"));
+					PowerType powerType = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(powerLocation);
+					powerType.loadFromData(power);
+					powerTypes.add(powerType);
 				});
 
 				OriginLayer layer = OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).get(layerLocation);

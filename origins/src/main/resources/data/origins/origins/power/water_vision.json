@@ -24,12 +24,5 @@
         }
       ]
     }
-  },
-  "no_delay": {
-    "type": "origins:water_vision",
-    "condition": {
-      "type": "origins:power_active",
-      "power": "*:*_toggle"
-    }
   }
 }

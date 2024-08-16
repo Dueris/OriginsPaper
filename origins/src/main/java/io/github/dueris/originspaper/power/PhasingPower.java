@@ -50,7 +50,7 @@ public class PhasingPower extends PowerType {
 	public static ArrayList<Player> PHASING_BLOCKS = new ArrayList<>();
 	public static HashMap<Player, Boolean> RESYNCED = new HashMap<>();
 	public static HashMap<Player, HashMap<BlockPos, Integer>> TRACKED_BLOCKPOS = new HashMap<>();
-	public static AttributeModifier PHASING_SPEED_FIX = new AttributeModifier("PhasingSpeedFix", 1, AttributeModifier.Operation.ADD_NUMBER);
+	public static AttributeModifier PHASING_SPEED_FIX = new AttributeModifier(NamespacedKey.fromString("origins:phasing_patch"), 1, AttributeModifier.Operation.ADD_NUMBER);
 	static Vector[] offsets = new Vector[]{
 		new Vector(0.55, 0, 0.55),
 		new Vector(0.55, 0, 0),
@@ -150,7 +150,7 @@ public class PhasingPower extends PowerType {
 					org.bukkit.entity.Player p = e.getPlayer();
 					Player player = ((CraftPlayer) p).getHandle();
 					if (getPlayers().contains(player)) {
-						if (isActive(player) && (p.getLocation().getBlock().isCollidable() || p.getLocation().getBlock().isSolid())) {
+						if (isActive(player) && (p.getLocation().add(0, -0.5, 0).getBlock().isCollidable() || p.getLocation().add(0, -0.5, 0).getBlock().isSolid())) {
 							if (phaseDownCondition.test(player)) {
 								p.teleportAsync(p.getLocation().add(0, -0.1, 0));
 							}
@@ -158,7 +158,7 @@ public class PhasingPower extends PowerType {
 					}
 				}
 			}
-		}.runTaskLater(OriginsPaper.getPlugin(), 1);
+		}.runTaskLater(OriginsPaper.getPlugin(), 2);
 	}
 
 	@EventHandler
@@ -278,7 +278,7 @@ public class PhasingPower extends PowerType {
 			if (p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED) == null) continue;
 			if (PHASING_BLOCKS.contains(p.getHandle())) {
 				if (!p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getModifiers().contains(PHASING_SPEED_FIX)) {
-					p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).addModifier(PHASING_SPEED_FIX);
+					p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).addTransientModifier(PHASING_SPEED_FIX);
 				}
 			} else {
 				if (p.getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).getModifiers().contains(PHASING_SPEED_FIX)) {
