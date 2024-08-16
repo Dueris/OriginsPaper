@@ -18,21 +18,21 @@ public class TriggerCooldownAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("trigger_cooldown"),
-			SerializableData.serializableData()
-				.add("power", SerializableDataTypes.IDENTIFIER),
-			(data, entity) -> {
-				if (entity instanceof Player player) {
-					Arrays.stream(new String[]{"apoli:action_on_hit", "apoli:action_when_damage_taken", "apoli:action_when_hit",
-						"apoli:action_self", "apoli:attacker_action_when_hit", "apoli:self_action_on_hit",
-						"apoli:self_action_on_kill", "apoli:self_action_when_hit", "apoli:target_action_on_hit", "apoli:cooldown"}).forEach(type -> {
-						for (PowerType powerContainer : PowerHolderComponent.getPowers((org.bukkit.entity.Player) player.getBukkitEntity(), type)) {
-							if (powerContainer instanceof CooldownInterface cooldownInterface) {
-								CooldownPower.addCooldown(player.getBukkitEntity(), cooldownInterface);
+				SerializableData.serializableData()
+						.add("power", SerializableDataTypes.IDENTIFIER),
+				(data, entity) -> {
+					if (entity instanceof Player player) {
+						Arrays.stream(new String[]{"apoli:action_on_hit", "apoli:action_when_damage_taken", "apoli:action_when_hit",
+								"apoli:action_self", "apoli:attacker_action_when_hit", "apoli:self_action_on_hit",
+								"apoli:self_action_on_kill", "apoli:self_action_when_hit", "apoli:target_action_on_hit", "apoli:cooldown"}).forEach(type -> {
+							for (PowerType powerContainer : PowerHolderComponent.getPowers((org.bukkit.entity.Player) player.getBukkitEntity(), type)) {
+								if (powerContainer instanceof CooldownInterface cooldownInterface) {
+									CooldownPower.addCooldown(player.getBukkitEntity(), cooldownInterface);
+								}
 							}
-						}
-					});
+						});
+					}
 				}
-			}
 		);
 	}
 }

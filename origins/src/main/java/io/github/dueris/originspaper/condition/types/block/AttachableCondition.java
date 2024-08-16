@@ -12,17 +12,17 @@ public class AttachableCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("attachable"),
-			SerializableData.serializableData(),
-			(data, block) -> {
-				for (Direction d : Direction.values()) {
-					BlockPos adjacent = block.getPos().relative(d);
-					if (block.getLevel().getBlockState(adjacent).isFaceSturdy(block.getLevel(), block.getPos(), d.getOpposite())) {
-						return true;
+				OriginsPaper.apoliIdentifier("attachable"),
+				SerializableData.serializableData(),
+				(data, block) -> {
+					for (Direction d : Direction.values()) {
+						BlockPos adjacent = block.getPos().relative(d);
+						if (block.getLevel().getBlockState(adjacent).isFaceSturdy(block.getLevel(), block.getPos(), d.getOpposite())) {
+							return true;
+						}
 					}
+					return false;
 				}
-				return false;
-			}
 		);
 	}
 }

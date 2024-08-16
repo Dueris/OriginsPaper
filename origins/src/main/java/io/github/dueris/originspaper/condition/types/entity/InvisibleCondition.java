@@ -10,11 +10,11 @@ public class InvisibleCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("invisible"),
-			SerializableData.serializableData(),
-			(data, entity) -> {
-				return entity.isInvisible();
-			}
+				OriginsPaper.apoliIdentifier("invisible"),
+				SerializableData.serializableData(),
+				(data, entity) -> {
+					return entity.isInvisible();
+				}
 		);
 	}
 }

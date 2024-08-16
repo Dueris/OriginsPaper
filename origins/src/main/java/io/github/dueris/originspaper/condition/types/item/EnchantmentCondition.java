@@ -22,28 +22,28 @@ public class EnchantmentCondition {
 
 		ResourceKey<Enchantment> enchantmentKey = data.get("enchantment");
 		Holder<Enchantment> enchantment = enchantmentKey == null ? null : worldAndStack.getA().registryAccess().registryOrThrow(Registries.ENCHANTMENT)
-			.getHolder(enchantmentKey)
-			.orElseThrow();
+				.getHolder(enchantmentKey)
+				.orElseThrow();
 
 		Comparison comparison = data.get("comparison");
 		int compareTo = data.get("compare_to");
 
 		ItemEnchantments component = worldAndStack.getB().getEnchantments();
 		int level = enchantment != null ? component.getLevel(enchantment)
-			: component.keySet().size();
+				: component.keySet().size();
 		return comparison.compare(level, compareTo);
 
 	}
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("enchantment"),
-			SerializableData.serializableData()
-				.add("enchantment", SerializableDataTypes.ENCHANTMENT, null)
-				.add("comparison", ApoliDataTypes.COMPARISON, Comparison.GREATER_THAN)
-				.add("compare_to", SerializableDataTypes.INT, 0)
-				.add("use_modifications", SerializableDataTypes.BOOLEAN, true),
-			EnchantmentCondition::condition
+				OriginsPaper.apoliIdentifier("enchantment"),
+				SerializableData.serializableData()
+						.add("enchantment", SerializableDataTypes.ENCHANTMENT, null)
+						.add("comparison", ApoliDataTypes.COMPARISON, Comparison.GREATER_THAN)
+						.add("compare_to", SerializableDataTypes.INT, 0)
+						.add("use_modifications", SerializableDataTypes.BOOLEAN, true),
+				EnchantmentCondition::condition
 		);
 	}
 

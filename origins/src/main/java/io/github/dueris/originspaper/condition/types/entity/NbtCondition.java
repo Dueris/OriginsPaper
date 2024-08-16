@@ -13,14 +13,14 @@ public class NbtCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("nbt"),
-			SerializableData.serializableData()
-				.add("nbt", SerializableDataTypes.NBT),
-			(data, entity) -> {
-				CompoundTag nbt = new CompoundTag();
-				entity.saveWithoutId(nbt);
-				return NbtUtils.compareNbt(data.get("nbt"), nbt, true);
-			}
+				OriginsPaper.apoliIdentifier("nbt"),
+				SerializableData.serializableData()
+						.add("nbt", SerializableDataTypes.NBT),
+				(data, entity) -> {
+					CompoundTag nbt = new CompoundTag();
+					entity.saveWithoutId(nbt);
+					return NbtUtils.compareNbt(data.get("nbt"), nbt, true);
+				}
 		);
 	}
 }

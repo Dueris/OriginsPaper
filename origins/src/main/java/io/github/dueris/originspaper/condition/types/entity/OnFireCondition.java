@@ -10,11 +10,11 @@ public class OnFireCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("on_fire"),
-			SerializableData.serializableData(),
-			(data, entity) -> {
-				return entity.isOnFire();
-			}
+				OriginsPaper.apoliIdentifier("on_fire"),
+				SerializableData.serializableData(),
+				(data, entity) -> {
+					return entity.isOnFire();
+				}
 		);
 	}
 }

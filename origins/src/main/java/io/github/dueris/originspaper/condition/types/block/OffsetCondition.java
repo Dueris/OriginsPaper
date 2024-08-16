@@ -12,20 +12,20 @@ public class OffsetCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("offset"),
-			SerializableData.serializableData()
-				.add("condition", ApoliDataTypes.BLOCK_CONDITION)
-				.add("x", SerializableDataTypes.INT, 0)
-				.add("y", SerializableDataTypes.INT, 0)
-				.add("z", SerializableDataTypes.INT, 0),
-			(data, block) -> ((ConditionFactory<BlockInWorld>) data.get("condition"))
-				.test(new BlockInWorld(
-					block.getLevel(),
-					block.getPos().offset(
-						data.getInt("x"),
-						data.getInt("y"),
-						data.getInt("z")
-					), true))
+				OriginsPaper.apoliIdentifier("offset"),
+				SerializableData.serializableData()
+						.add("condition", ApoliDataTypes.BLOCK_CONDITION)
+						.add("x", SerializableDataTypes.INT, 0)
+						.add("y", SerializableDataTypes.INT, 0)
+						.add("z", SerializableDataTypes.INT, 0),
+				(data, block) -> ((ConditionFactory<BlockInWorld>) data.get("condition"))
+						.test(new BlockInWorld(
+								block.getLevel(),
+								block.getPos().offset(
+										data.getInt("x"),
+										data.getInt("y"),
+										data.getInt("z")
+								), true))
 		);
 	}
 }

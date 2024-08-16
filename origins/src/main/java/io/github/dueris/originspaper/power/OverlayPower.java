@@ -39,6 +39,11 @@ public class OverlayPower extends PowerType {
 	}
 
 	@Override
+	public void onRemoved(Player player) {
+		reset(player);
+	}
+
+	@Override
 	public void tick(Player player) {
 		if (isActive(player)) {
 			init(player);

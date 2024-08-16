@@ -12,17 +12,17 @@ public class ClearEffectAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("clear_effect"),
-			SerializableData.serializableData()
-				.add("effect", SerializableDataTypes.STATUS_EFFECT_ENTRY, null),
-			(data, entity) -> {
-				if (entity instanceof LivingEntity le) {
-					if (data.isPresent("effect")) {
-						le.removeEffect(data.get("effect"));
-					} else {
-						le.removeAllEffects();
+				SerializableData.serializableData()
+						.add("effect", SerializableDataTypes.STATUS_EFFECT_ENTRY, null),
+				(data, entity) -> {
+					if (entity instanceof LivingEntity le) {
+						if (data.isPresent("effect")) {
+							le.removeEffect(data.get("effect"));
+						} else {
+							le.removeAllEffects();
+						}
 					}
 				}
-			}
 		);
 	}
 }

@@ -12,12 +12,12 @@ public class ToggleAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("toggle"),
-			SerializableData.serializableData()
-				.add("power", SerializableDataTypes.IDENTIFIER),
-			(data, entity) -> {
-				if (entity instanceof LivingEntity) {
+				SerializableData.serializableData()
+						.add("power", SerializableDataTypes.IDENTIFIER),
+				(data, entity) -> {
+					if (entity instanceof LivingEntity) {
+					}
 				}
-			}
 		);
 	}
 }

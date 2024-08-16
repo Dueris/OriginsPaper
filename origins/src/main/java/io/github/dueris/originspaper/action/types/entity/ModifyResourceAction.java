@@ -24,10 +24,10 @@ public class ModifyResourceAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("modify_resource"),
-			SerializableData.serializableData()
-				.add("modifier", Modifier.DATA_TYPE)
-				.add("resource", SerializableDataTypes.IDENTIFIER),
-			ModifyResourceAction::action
+				SerializableData.serializableData()
+						.add("modifier", Modifier.DATA_TYPE)
+						.add("resource", SerializableDataTypes.IDENTIFIER),
+				ModifyResourceAction::action
 		);
 	}
 }

@@ -81,9 +81,9 @@ public class RaycastAction {
 						} else {
 							offset = entity.getBbWidth() / 2;
 							offsetDirection = new Vec3(
-								bhr.getDirection().getStepX(),
-								bhr.getDirection().getStepY(),
-								bhr.getDirection().getStepZ()
+									bhr.getDirection().getStepX(),
+									bhr.getDirection().getStepY(),
+									bhr.getDirection().getStepZ()
 							).scale(-1);
 						}
 					}
@@ -118,12 +118,12 @@ public class RaycastAction {
 
 		if (!data.isPresent("entity_distance") && !data.isPresent("distance")) {
 			return entity instanceof LivingEntity livingEntity && livingEntity.getAttributes().hasAttribute(Attributes.ENTITY_INTERACTION_RANGE)
-				? livingEntity.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE)
-				: 3;
+					? livingEntity.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE)
+					: 3;
 		} else {
 			return data.isPresent("entity_distance")
-				? data.getDouble("entity_distance")
-				: data.getDouble("distance");
+					? data.getDouble("entity_distance")
+					: data.getDouble("distance");
 		}
 
 	}
@@ -132,12 +132,12 @@ public class RaycastAction {
 
 		if (!data.isPresent("block_distance") && !data.isPresent("distance")) {
 			return entity instanceof LivingEntity livingEntity && livingEntity.getAttributes().hasAttribute(Attributes.BLOCK_INTERACTION_RANGE)
-				? livingEntity.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE)
-				: 4.5;
+					? livingEntity.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE)
+					: 4.5;
 		} else {
 			return data.isPresent("block_distance")
-				? data.getDouble("block_distance")
-				: data.getDouble("distance");
+					? data.getDouble("block_distance")
+					: data.getDouble("distance");
 		}
 
 	}
@@ -150,15 +150,15 @@ public class RaycastAction {
 			for (double current = 0; current < length; current += step) {
 				boolean validOutput = !(entity instanceof ServerPlayer) || ((ServerPlayer) entity).connection != null;
 				CommandSourceStack source = new CommandSourceStack(
-					OriginsPaper.showCommandOutput && validOutput ? entity : CommandSource.NULL,
-					origin.add(direction.scale(current)),
-					entity.getRotationVector(),
-					entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
-					4,
-					entity.getName().getString(),
-					entity.getDisplayName(),
-					entity.level().getServer(),
-					entity);
+						OriginsPaper.showCommandOutput && validOutput ? entity : CommandSource.NULL,
+						origin.add(direction.scale(current)),
+						entity.getRotationVector(),
+						entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
+						4,
+						entity.getName().getString(),
+						entity.getDisplayName(),
+						entity.level().getServer(),
+						entity);
 				server.getCommands().performPrefixedCommand(source, command);
 			}
 		}
@@ -169,15 +169,15 @@ public class RaycastAction {
 		if (server != null) {
 			boolean validOutput = !(entity instanceof ServerPlayer) || ((ServerPlayer) entity).connection != null;
 			CommandSourceStack source = new CommandSourceStack(
-				OriginsPaper.showCommandOutput && validOutput ? entity : CommandSource.NULL,
-				hitPosition,
-				entity.getRotationVector(),
-				entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
-				4,
-				entity.getName().getString(),
-				entity.getDisplayName(),
-				entity.level().getServer(),
-				entity);
+					OriginsPaper.showCommandOutput && validOutput ? entity : CommandSource.NULL,
+					hitPosition,
+					entity.getRotationVector(),
+					entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
+					4,
+					entity.getName().getString(),
+					entity.getDisplayName(),
+					entity.level().getServer(),
+					entity);
 			server.getCommands().performPrefixedCommand(source, command);
 		}
 	}
@@ -198,28 +198,28 @@ public class RaycastAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("raycast"),
-			SerializableData.serializableData()
-				.add("distance", SerializableDataTypes.DOUBLE, null)
-				.add("block_distance", SerializableDataTypes.DOUBLE, null)
-				.add("entity_distance", SerializableDataTypes.DOUBLE, null)
-				.add("direction", SerializableDataTypes.VECTOR, null)
-				.add("space", ApoliDataTypes.SPACE, Space.WORLD)
-				.add("block", SerializableDataTypes.BOOLEAN, true)
-				.add("entity", SerializableDataTypes.BOOLEAN, true)
-				.add("shape_type", SerializableDataTypes.enumValue(ClipContext.Block.class), ClipContext.Block.OUTLINE)
-				.add("fluid_handling", SerializableDataTypes.enumValue(ClipContext.Fluid.class), ClipContext.Fluid.ANY)
-				.add("block_action", ApoliDataTypes.BLOCK_ACTION, null)
-				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
-				.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION, null)
-				.add("command_at_hit", SerializableDataTypes.STRING, null)
-				.add("command_hit_offset", SerializableDataTypes.DOUBLE, null)
-				.add("command_along_ray", SerializableDataTypes.STRING, null)
-				.add("command_step", SerializableDataTypes.DOUBLE, 1.0)
-				.add("command_along_ray_only_on_hit", SerializableDataTypes.BOOLEAN, false)
-				.add("before_action", ApoliDataTypes.ENTITY_ACTION, null)
-				.add("hit_action", ApoliDataTypes.ENTITY_ACTION, null)
-				.add("miss_action", ApoliDataTypes.ENTITY_ACTION, null),
-			RaycastAction::action
+				SerializableData.serializableData()
+						.add("distance", SerializableDataTypes.DOUBLE, null)
+						.add("block_distance", SerializableDataTypes.DOUBLE, null)
+						.add("entity_distance", SerializableDataTypes.DOUBLE, null)
+						.add("direction", SerializableDataTypes.VECTOR, null)
+						.add("space", ApoliDataTypes.SPACE, Space.WORLD)
+						.add("block", SerializableDataTypes.BOOLEAN, true)
+						.add("entity", SerializableDataTypes.BOOLEAN, true)
+						.add("shape_type", SerializableDataTypes.enumValue(ClipContext.Block.class), ClipContext.Block.OUTLINE)
+						.add("fluid_handling", SerializableDataTypes.enumValue(ClipContext.Fluid.class), ClipContext.Fluid.ANY)
+						.add("block_action", ApoliDataTypes.BLOCK_ACTION, null)
+						.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
+						.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION, null)
+						.add("command_at_hit", SerializableDataTypes.STRING, null)
+						.add("command_hit_offset", SerializableDataTypes.DOUBLE, null)
+						.add("command_along_ray", SerializableDataTypes.STRING, null)
+						.add("command_step", SerializableDataTypes.DOUBLE, 1.0)
+						.add("command_along_ray_only_on_hit", SerializableDataTypes.BOOLEAN, false)
+						.add("before_action", ApoliDataTypes.ENTITY_ACTION, null)
+						.add("hit_action", ApoliDataTypes.ENTITY_ACTION, null)
+						.add("miss_action", ApoliDataTypes.ENTITY_ACTION, null),
+				RaycastAction::action
 		);
 	}
 }

@@ -20,15 +20,15 @@ public class AttackerCondition {
 		}
 
 		return target instanceof LivingEntity livingTarget
-			&& actor.equals(livingTarget.getLastHurtByMob());
+				&& actor.equals(livingTarget.getLastHurtByMob());
 
 	}
 
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("attacker"),
-			SerializableData.serializableData(),
-			AttackerCondition::condition
+				OriginsPaper.apoliIdentifier("attacker"),
+				SerializableData.serializableData(),
+				AttackerCondition::condition
 		);
 	}
 }

@@ -15,8 +15,8 @@ public class DataConverter {
 			return Attribute.PLAYER_BLOCK_INTERACTION_RANGE;
 		} else {
 			return att.equalsIgnoreCase("reach-entity-attributes:attack_range")
-				? Attribute.PLAYER_ENTITY_INTERACTION_RANGE
-				: Attribute.valueOf(att.toUpperCase().split(":")[1]);
+					? Attribute.PLAYER_ENTITY_INTERACTION_RANGE
+					: Attribute.valueOf(att.toUpperCase().split(":")[1]);
 		}
 	}
 

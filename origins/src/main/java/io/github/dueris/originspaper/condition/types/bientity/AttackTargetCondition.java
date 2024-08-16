@@ -21,15 +21,15 @@ public class AttackTargetCondition {
 		}
 
 		return (actor instanceof Mob mobActor && target.equals(mobActor.getTarget()))
-			|| (actor instanceof NeutralMob angerableActor && target.equals(angerableActor.getTarget()));
+				|| (actor instanceof NeutralMob angerableActor && target.equals(angerableActor.getTarget()));
 
 	}
 
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("attack_target"),
-			SerializableData.serializableData(),
-			AttackTargetCondition::condition
+				OriginsPaper.apoliIdentifier("attack_target"),
+				SerializableData.serializableData(),
+				AttackTargetCondition::condition
 		);
 	}
 }

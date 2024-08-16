@@ -14,20 +14,20 @@ public class RidingRootCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("riding_root"),
-			SerializableData.serializableData()
-				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null),
-			(data, entity) -> {
-				if (entity.isPassenger()) {
-					if (data.isPresent("bientity_condition")) {
-						Predicate<Tuple<Entity, Entity>> condition = data.get("bientity_condition");
-						Entity vehicle = entity.getRootVehicle();
-						return condition.test(new Tuple<>(entity, vehicle));
+				OriginsPaper.apoliIdentifier("riding_root"),
+				SerializableData.serializableData()
+						.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null),
+				(data, entity) -> {
+					if (entity.isPassenger()) {
+						if (data.isPresent("bientity_condition")) {
+							Predicate<Tuple<Entity, Entity>> condition = data.get("bientity_condition");
+							Entity vehicle = entity.getRootVehicle();
+							return condition.test(new Tuple<>(entity, vehicle));
+						}
+						return true;
 					}
-					return true;
+					return false;
 				}
-				return false;
-			}
 		);
 	}
 }

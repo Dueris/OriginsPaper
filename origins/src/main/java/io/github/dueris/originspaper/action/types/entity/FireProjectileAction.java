@@ -34,8 +34,8 @@ public class FireProjectileAction {
 		Vec3 rotationVector = entity.getLookAngle();
 		Vec3 velocity = entity.getDeltaMovement();
 		Vec3 verticalOffset = entity
-			.position()
-			.add(0, entity.getEyeHeight(entity.getPose()), 0);
+				.position()
+				.add(0, entity.getEyeHeight(entity.getPose()), 0);
 
 		float divergence = data.get("divergence");
 		float speed = data.get("speed");
@@ -46,8 +46,8 @@ public class FireProjectileAction {
 		for (int i = 0; i < count; i++) {
 
 			Entity entityToSpawn = Util
-				.getEntityWithPassengers(serverWorld, entityType, entityNbt, verticalOffset, yaw, pitch)
-				.orElse(null);
+					.getEntityWithPassengers(serverWorld, entityType, entityNbt, verticalOffset, yaw, pitch)
+					.orElse(null);
 
 			if (entityToSpawn == null) {
 				return;
@@ -72,9 +72,9 @@ public class FireProjectileAction {
 				float n = Mth.cos(yaw * j) * Mth.cos(pitch * j);
 
 				Vec3 entityToSpawnVelocity = new Vec3(l, m, n)
-					.normalize()
-					.add(random.nextGaussian() * k * divergence, random.nextGaussian() * k * divergence, random.nextGaussian() * k * divergence)
-					.scale(speed);
+						.normalize()
+						.add(random.nextGaussian() * k * divergence, random.nextGaussian() * k * divergence, random.nextGaussian() * k * divergence)
+						.scale(speed);
 
 				entityToSpawn.setDeltaMovement(entityToSpawnVelocity);
 				entityToSpawn.push(velocity.x, entity.onGround() ? 0.0D : velocity.y, velocity.z);
@@ -99,15 +99,15 @@ public class FireProjectileAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
-			OriginsPaper.apoliIdentifier("fire_projectile"),
-			SerializableData.serializableData()
-				.add("entity_type", SerializableDataTypes.ENTITY_TYPE)
-				.add("divergence", SerializableDataTypes.FLOAT, 1F)
-				.add("speed", SerializableDataTypes.FLOAT, 1.5F)
-				.add("count", SerializableDataTypes.INT, 1)
-				.add("tag", SerializableDataTypes.NBT, new CompoundTag())
-				.add("projectile_action", ApoliDataTypes.ENTITY_ACTION, null),
-			FireProjectileAction::action
+				OriginsPaper.apoliIdentifier("fire_projectile"),
+				SerializableData.serializableData()
+						.add("entity_type", SerializableDataTypes.ENTITY_TYPE)
+						.add("divergence", SerializableDataTypes.FLOAT, 1F)
+						.add("speed", SerializableDataTypes.FLOAT, 1.5F)
+						.add("count", SerializableDataTypes.INT, 1)
+						.add("tag", SerializableDataTypes.NBT, new CompoundTag())
+						.add("projectile_action", ApoliDataTypes.ENTITY_ACTION, null),
+				FireProjectileAction::action
 		);
 	}
 }

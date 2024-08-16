@@ -32,15 +32,15 @@ public class SpawnEffectCloudAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
-			OriginsPaper.apoliIdentifier("spawn_effect_cloud"),
-			SerializableData.serializableData()
-				.add("radius", SerializableDataTypes.FLOAT, 3.0F)
-				.add("radius_on_use", SerializableDataTypes.FLOAT, -0.5F)
-				.add("duration", SerializableDataTypes.INT, 600)
-				.add("duration_on_use", SerializableDataTypes.INT, 0)
-				.add("wait_time", SerializableDataTypes.INT, 10)
-				.add("effect_component", SerializableDataTypes.POTION_CONTENTS_COMPONENT, PotionContents.EMPTY),
-			SpawnEffectCloudAction::action
+				OriginsPaper.apoliIdentifier("spawn_effect_cloud"),
+				SerializableData.serializableData()
+						.add("radius", SerializableDataTypes.FLOAT, 3.0F)
+						.add("radius_on_use", SerializableDataTypes.FLOAT, -0.5F)
+						.add("duration", SerializableDataTypes.INT, 600)
+						.add("duration_on_use", SerializableDataTypes.INT, 0)
+						.add("wait_time", SerializableDataTypes.INT, 10)
+						.add("effect_component", SerializableDataTypes.POTION_CONTENTS_COMPONENT, PotionContents.EMPTY),
+				SpawnEffectCloudAction::action
 		);
 	}
 }

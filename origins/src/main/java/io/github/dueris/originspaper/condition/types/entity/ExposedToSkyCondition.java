@@ -12,12 +12,12 @@ public class ExposedToSkyCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("exposed_to_sky"),
-			SerializableData.serializableData(),
-			(data, entity) -> {
-				BlockPos blockPos = entity.getVehicle() instanceof Boat ? (BlockPos.containing(entity.getX(), (double) Math.round(entity.getY()), entity.getZ())).above() : BlockPos.containing(entity.getX(), (double) Math.round(entity.getY()), entity.getZ());
-				return entity.level().canSeeSky(blockPos);
-			}
+				OriginsPaper.apoliIdentifier("exposed_to_sky"),
+				SerializableData.serializableData(),
+				(data, entity) -> {
+					BlockPos blockPos = entity.getVehicle() instanceof Boat ? (BlockPos.containing(entity.getX(), (double) Math.round(entity.getY()), entity.getZ())).above() : BlockPos.containing(entity.getX(), (double) Math.round(entity.getY()), entity.getZ());
+					return entity.level().canSeeSky(blockPos);
+				}
 		);
 	}
 }

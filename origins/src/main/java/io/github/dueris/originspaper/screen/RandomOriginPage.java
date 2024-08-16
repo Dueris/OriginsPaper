@@ -78,7 +78,7 @@ public class RandomOriginPage implements ChoosingPage {
 				Material impactMaterial = Material.GRAY_STAINED_GLASS_PANE;
 				Component impactComponent = Component.text("None").color(TextColor.color(11053224));
 				Component fullImpactComponent = Component.textOfChildren(new ComponentLike[]{Component.text("Impact: "), impactComponent})
-					.decorate(TextDecoration.ITALIC.as(false).decoration());
+						.decorate(TextDecoration.ITALIC.as(false).decoration());
 				ItemStack impact = OriginPage.itemProperties(new ItemStack(impactMaterial), fullImpactComponent, ItemFlag.values(), null, null);
 				stacks.add(impact);
 			}

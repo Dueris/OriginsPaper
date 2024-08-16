@@ -33,23 +33,23 @@ public class PlayerManager implements Listener {
 	}
 
 	@EventHandler(
-		priority = EventPriority.HIGHEST
+			priority = EventPriority.HIGHEST
 	)
 	public void playerJoin(PlayerJoinEvent e) {
 		final Player p = e.getPlayer();
 		PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) e.getPlayer()).getHandle()).readPowers(
-			p.getPersistentDataContainer().has(identifier("powers")) ? p.getPersistentDataContainer().get(identifier("powers"), PersistentDataType.STRING) : "{}"
+				p.getPersistentDataContainer().has(identifier("powers")) ? p.getPersistentDataContainer().get(identifier("powers"), PersistentDataType.STRING) : "{}"
 		);
 		PersistentDataContainer data = p.getPersistentDataContainer();
 		if (data.has(identifier("shulker-box"), PersistentDataType.STRING)) {
 			String save = data.get(identifier("shulker-box"), PersistentDataType.STRING);
 			PersistentDataContainer container = p.getPersistentDataContainer();
 			container.set(
-				CraftNamespacedKey.fromMinecraft(
-					OriginsPaper.apoliIdentifier("inventorydata_" + "origins:inventory".replace(":", "_").replace("/", "_").replace("\\", "_"))
-				),
-				PersistentDataType.STRING,
-				save
+					CraftNamespacedKey.fromMinecraft(
+							OriginsPaper.apoliIdentifier("inventorydata_" + "origins:inventory".replace(":", "_").replace("/", "_").replace("\\", "_"))
+					),
+					PersistentDataType.STRING,
+					save
 			);
 			p.saveData();
 			data.remove(identifier("shulker-box"));
@@ -61,15 +61,15 @@ public class PlayerManager implements Listener {
 
 		try {
 			if (!p.getPersistentDataContainer().has(identifier("modified-skin-url"), PersistentDataType.STRING)
-				|| p.getPersistentDataContainer().get(identifier("modified-skin-url"), PersistentDataType.STRING) == null) {
+					|| p.getPersistentDataContainer().get(identifier("modified-skin-url"), PersistentDataType.STRING) == null) {
 				p.getPersistentDataContainer()
-					.set(identifier("modified-skin-url"), PersistentDataType.STRING, p.getPlayerProfile().getTextures().getSkin().getFile());
+						.set(identifier("modified-skin-url"), PersistentDataType.STRING, p.getPlayerProfile().getTextures().getSkin().getFile());
 			}
 
 			if (!p.getPersistentDataContainer().has(identifier("original-skin-url"), PersistentDataType.STRING)
-				|| p.getPersistentDataContainer().get(identifier("original-skin-url"), PersistentDataType.STRING) == null) {
+					|| p.getPersistentDataContainer().get(identifier("original-skin-url"), PersistentDataType.STRING) == null) {
 				p.getPersistentDataContainer()
-					.set(identifier("original-skin-url"), PersistentDataType.STRING, p.getPlayerProfile().getTextures().getSkin().getFile());
+						.set(identifier("original-skin-url"), PersistentDataType.STRING, p.getPlayerProfile().getTextures().getSkin().getFile());
 			}
 		} catch (Exception ignored) {
 		}
@@ -84,9 +84,9 @@ public class PlayerManager implements Listener {
 		}).runTaskLater(OriginsPaper.getPlugin(), OriginConfiguration.getConfiguration().getInt("choosing_delay"));
 		OriginLayer originLayer = OriginsPaper.getLayer(ResourceLocation.parse("origins:origin"));
 		if (!p.getPersistentDataContainer().has(identifier("updated"))
-			&& !PowerHolderComponent.getOrigin(p, originLayer).equals(OriginsPaper.EMPTY_ORIGIN)) {
+				&& !PowerHolderComponent.getOrigin(p, originLayer).equals(OriginsPaper.EMPTY_ORIGIN)) {
 			PowerHolderComponent.setOrigin(
-				p, originLayer, PowerHolderComponent.getOrigin(p, originLayer)
+					p, originLayer, PowerHolderComponent.getOrigin(p, originLayer)
 			);
 			p.getPersistentDataContainer().set(identifier("updated"), PersistentDataType.BOOLEAN, true);
 		}
@@ -98,7 +98,7 @@ public class PlayerManager implements Listener {
 		e.getPlayer().saveData();
 		String saveData = PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) e.getPlayer()).getHandle()).serializePowers(new CompoundTag()).toString();
 		e.getPlayer().getPersistentDataContainer()
-			.set(identifier("powers"), PersistentDataType.STRING, saveData);
+				.set(identifier("powers"), PersistentDataType.STRING, saveData);
 		PowerHolderComponent.unloadPowers(e.getPlayer());
 		e.getPlayer().saveData();
 		playersLeaving.remove(e.getPlayer());

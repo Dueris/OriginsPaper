@@ -64,20 +64,20 @@ public class DistanceFromCoordinatesConditionRegistry {
 	private static SerializableData getSerializableData(String alias) {
 		// Using doubles and not ints because the player position is a vector of doubles and the sqrt function (for the distance) returns a double so we might as well use that precision
 		return SerializableData.serializableData()
-			.add("reference", SerializableDataTypes.STRING, alias.equals("distance_from_coordinates") ? "world_origin" : "world_spawn") // the reference point
+				.add("reference", SerializableDataTypes.STRING, alias.equals("distance_from_coordinates") ? "world_origin" : "world_spawn") // the reference point
 //          .add("check_modified_spawn", SerializableDataTypes.BOOLEAN, true) // whether to check for modified spawns
-			.add("offset", SerializableDataTypes.VECTOR, new Vec3(0, 0, 0)) // offset to the reference point
-			.add("coordinates", SerializableDataTypes.VECTOR, new Vec3(0, 0, 0)) // adds up (instead of replacing, for simplicity) to the prior for aliasing
-			.add("ignore_x", SerializableDataTypes.BOOLEAN, false) // ignore the axis in the distance calculation
-			.add("ignore_y", SerializableDataTypes.BOOLEAN, false) // idem
-			.add("ignore_z", SerializableDataTypes.BOOLEAN, false) // idem
-			.add("shape", SerializableDataTypes.enumValue(Shape.class), Shape.CUBE) // the shape / distance type
-			.add("scale_reference_to_dimension", SerializableDataTypes.BOOLEAN, true) // whether to scale the reference's coordinates according to the dimension it's in and the player is in
-			.add("scale_distance_to_dimension", SerializableDataTypes.BOOLEAN, false) // whether to scale the calculated distance to the current dimension
-			.add("comparison", ApoliDataTypes.COMPARISON)
-			.add("compare_to", SerializableDataTypes.DOUBLE)
-			.add("result_on_wrong_dimension", SerializableDataTypes.BOOLEAN, null) // if set and the dimension is not the same as the reference's, the value to set the condition to
-			.add("round_to_digit", SerializableDataTypes.INT, null); // if set, rounds the distance to this amount of digits (e.g. 0 for unitary values, 1 for decimals, -1 for multiples of ten)
+				.add("offset", SerializableDataTypes.VECTOR, new Vec3(0, 0, 0)) // offset to the reference point
+				.add("coordinates", SerializableDataTypes.VECTOR, new Vec3(0, 0, 0)) // adds up (instead of replacing, for simplicity) to the prior for aliasing
+				.add("ignore_x", SerializableDataTypes.BOOLEAN, false) // ignore the axis in the distance calculation
+				.add("ignore_y", SerializableDataTypes.BOOLEAN, false) // idem
+				.add("ignore_z", SerializableDataTypes.BOOLEAN, false) // idem
+				.add("shape", SerializableDataTypes.enumValue(Shape.class), Shape.CUBE) // the shape / distance type
+				.add("scale_reference_to_dimension", SerializableDataTypes.BOOLEAN, true) // whether to scale the reference's coordinates according to the dimension it's in and the player is in
+				.add("scale_distance_to_dimension", SerializableDataTypes.BOOLEAN, false) // whether to scale the calculated distance to the current dimension
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.DOUBLE)
+				.add("result_on_wrong_dimension", SerializableDataTypes.BOOLEAN, null) // if set and the dimension is not the same as the reference's, the value to set the condition to
+				.add("round_to_digit", SerializableDataTypes.INT, null); // if set, rounds the distance to this amount of digits (e.g. 0 for unitary values, 1 for decimals, -1 for multiples of ten)
 	}
 
 	/**
@@ -101,8 +101,8 @@ public class DistanceFromCoordinatesConditionRegistry {
 	 */
 	private static boolean testCondition(SerializableData.Instance data, BlockInWorld block, Entity entity) {
 		boolean scaleReferenceToDimension = data.getBoolean("scale_reference_to_dimension"),
-			setResultOnWrongDimension = data.isPresent("result_on_wrong_dimension"),
-			resultOnWrongDimension = setResultOnWrongDimension && data.getBoolean("result_on_wrong_dimension");
+				setResultOnWrongDimension = data.isPresent("result_on_wrong_dimension"),
+				resultOnWrongDimension = setResultOnWrongDimension && data.getBoolean("result_on_wrong_dimension");
 		double x = 0, y = 0, z = 0;
 		Vec3 pos;
 		Level world;
@@ -166,9 +166,9 @@ public class DistanceFromCoordinatesConditionRegistry {
 
 		// Get the distance to these coordinates
 		double distance,
-			xDistance = data.getBoolean("ignore_x") ? 0 : Math.abs(pos.x() - x),
-			yDistance = data.getBoolean("ignore_y") ? 0 : Math.abs(pos.y() - y),
-			zDistance = data.getBoolean("ignore_z") ? 0 : Math.abs(pos.z() - z);
+				xDistance = data.getBoolean("ignore_x") ? 0 : Math.abs(pos.x() - x),
+				yDistance = data.getBoolean("ignore_y") ? 0 : Math.abs(pos.y() - y),
+				zDistance = data.getBoolean("ignore_z") ? 0 : Math.abs(pos.z() - z);
 		if (data.getBoolean("scale_distance_to_dimension")) {
 			xDistance *= currentDimensionCoordinateScale;
 			zDistance *= currentDimensionCoordinateScale;
@@ -187,14 +187,14 @@ public class DistanceFromCoordinatesConditionRegistry {
 	public static void registerBlockCondition(Consumer<ConditionFactory<BlockInWorld>> registryFunction) {
 		for (String alias : getAliases())
 			registryFunction.accept(new ConditionFactory<>(OriginsPaper.apoliIdentifier(alias),
-				getSerializableData(alias),
-				(data, block) -> testCondition(data, block, null)));
+					getSerializableData(alias),
+					(data, block) -> testCondition(data, block, null)));
 	}
 
 	public static void registerEntityCondition(Consumer<ConditionFactory<Entity>> registryFunction) {
 		for (String alias : getAliases())
 			registryFunction.accept(new ConditionFactory<>(OriginsPaper.apoliIdentifier(alias),
-				getSerializableData(alias),
-				(data, entity) -> testCondition(data, null, entity)));
+					getSerializableData(alias),
+					(data, entity) -> testCondition(data, null, entity)));
 	}
 }

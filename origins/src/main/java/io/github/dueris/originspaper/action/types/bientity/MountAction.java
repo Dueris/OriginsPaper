@@ -23,9 +23,9 @@ public class MountAction {
 
 	public static @NotNull ActionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ActionFactory<>(
-			OriginsPaper.apoliIdentifier("mount"),
-			SerializableData.serializableData(),
-			MountAction::action
+				OriginsPaper.apoliIdentifier("mount"),
+				SerializableData.serializableData(),
+				MountAction::action
 		);
 	}
 }

@@ -11,14 +11,14 @@ public class TamedCondition {
 
 	public static boolean condition(SerializableData.Instance data, Entity entity) {
 		return entity instanceof OwnableEntity tameable
-			&& tameable.getOwnerUUID() != null;
+				&& tameable.getOwnerUUID() != null;
 	}
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("tamed"),
-			SerializableData.serializableData(),
-			TamedCondition::condition
+				OriginsPaper.apoliIdentifier("tamed"),
+				SerializableData.serializableData(),
+				TamedCondition::condition
 		);
 	}
 }

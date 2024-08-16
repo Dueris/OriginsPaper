@@ -27,11 +27,11 @@ public class DurabilityCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("durability"),
-			SerializableData.serializableData()
-				.add("comparison", ApoliDataTypes.COMPARISON)
-				.add("compare_to", SerializableDataTypes.INT),
-			DurabilityCondition::condition
+				OriginsPaper.apoliIdentifier("durability"),
+				SerializableData.serializableData()
+						.add("comparison", ApoliDataTypes.COMPARISON)
+						.add("compare_to", SerializableDataTypes.INT),
+				DurabilityCondition::condition
 		);
 	}
 

@@ -27,10 +27,10 @@ public class MergeCustomDataAction {
 
 	public static @NotNull ActionFactory<Tuple<Level, SlotAccess>> getFactory() {
 		return ItemActionFactory.createItemStackBased(
-			OriginsPaper.apoliIdentifier("merge_custom_data"),
-			SerializableData.serializableData()
-				.add("nbt", SerializableDataTypes.NBT),
-			MergeCustomDataAction::action
+				OriginsPaper.apoliIdentifier("merge_custom_data"),
+				SerializableData.serializableData()
+						.add("nbt", SerializableDataTypes.NBT),
+				MergeCustomDataAction::action
 		);
 
 	}

@@ -12,24 +12,24 @@ import java.util.Locale;
 public interface IModifierOperation {
 
 	SerializableDataBuilder<IModifierOperation> STRICT_DATA_TYPE =
-		SerializableDataTypes.calioRegistry(IModifierOperation.class, Registries.MODIFIER_OPERATION, "apoli");
+			SerializableDataTypes.calioRegistry(IModifierOperation.class, Registries.MODIFIER_OPERATION, "apoli");
 
 	SerializableDataBuilder<IModifierOperation> DATA_TYPE = SerializableDataBuilder.of(
-		(jsonElement) -> {
+			(jsonElement) -> {
 
-			if (!jsonElement.isJsonPrimitive()) {
-				return STRICT_DATA_TYPE.deserialize(jsonElement);
-			}
+				if (!jsonElement.isJsonPrimitive()) {
+					return STRICT_DATA_TYPE.deserialize(jsonElement);
+				}
 
-			String operation = jsonElement.getAsString().toLowerCase(Locale.ROOT);
-			return switch (operation) {
-				case "addition" -> ModifierOperation.ADD_BASE_EARLY;
-				case "multiply_base" -> ModifierOperation.MULTIPLY_BASE_ADDITIVE;
-				case "multiply_total" -> ModifierOperation.MULTIPLY_TOTAL_MULTIPLICATIVE;
-				default -> STRICT_DATA_TYPE.deserialize(jsonElement);
-			};
+				String operation = jsonElement.getAsString().toLowerCase(Locale.ROOT);
+				return switch (operation) {
+					case "addition" -> ModifierOperation.ADD_BASE_EARLY;
+					case "multiply_base" -> ModifierOperation.MULTIPLY_BASE_ADDITIVE;
+					case "multiply_total" -> ModifierOperation.MULTIPLY_TOTAL_MULTIPLICATIVE;
+					default -> STRICT_DATA_TYPE.deserialize(jsonElement);
+				};
 
-		}, IModifierOperation.class
+			}, IModifierOperation.class
 	);
 
 	/**

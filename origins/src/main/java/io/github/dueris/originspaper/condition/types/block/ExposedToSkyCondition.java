@@ -10,11 +10,11 @@ public class ExposedToSkyCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("exposed_to_sky"),
-			SerializableData.serializableData(),
-			(data, block) -> {
-				return block.getLevel().canSeeSky(block.getPos());
-			}
+				OriginsPaper.apoliIdentifier("exposed_to_sky"),
+				SerializableData.serializableData(),
+				(data, block) -> {
+					return block.getLevel().canSeeSky(block.getPos());
+				}
 		);
 	}
 }

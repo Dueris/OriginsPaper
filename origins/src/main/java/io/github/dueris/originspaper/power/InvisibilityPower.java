@@ -24,18 +24,11 @@ public class InvisibilityPower extends PowerType {
 	public void tick(Player p) {
 		boolean shouldSetInvisible = isActive(p);
 
-		p.setInvisible(shouldSetInvisible || p.getBukkitEntity().getActivePotionEffects().stream().map(PotionEffect::getType).toList().contains(PotionEffectType.INVISIBILITY));
+		p.getBukkitEntity().setInvisible(shouldSetInvisible || p.getBukkitEntity().getActivePotionEffects().stream().map(PotionEffect::getType).toList().contains(PotionEffectType.INVISIBILITY));
 	}
 
 	@Override
-	public void onLost(Player player) {
-		reloadOnPowerLost(player);
-	}
-
-	public void reloadOnPowerLost(@NotNull Player p) {
-		if (p.getBukkitEntity().getActivePotionEffects().stream().map(PotionEffect::getType).toList().contains(PotionEffectType.INVISIBILITY)) {
-			return;
-		}
-		p.setInvisible(false);
+	public void onRemoved(Player player) {
+		player.getBukkitEntity().setInvisible(false);
 	}
 }

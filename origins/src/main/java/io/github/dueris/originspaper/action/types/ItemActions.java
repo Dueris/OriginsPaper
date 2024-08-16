@@ -21,10 +21,10 @@ public class ItemActions {
 		register(AndAction.getFactory(SerializableDataTypes.list(ApoliDataTypes.ITEM_ACTION)));
 		register(ChanceAction.getFactory(ApoliDataTypes.ITEM_ACTION));
 		register(IfElseAction.getFactory(ApoliDataTypes.ITEM_ACTION, ApoliDataTypes.ITEM_CONDITION,
-			worldItemStackPair -> new Tuple<>(worldItemStackPair.getA(), worldItemStackPair.getB().get())));
+				worldItemStackPair -> new Tuple<>(worldItemStackPair.getA(), worldItemStackPair.getB().get())));
 		register(ChoiceAction.getFactory(ApoliDataTypes.ITEM_ACTION));
 		register(IfElseListAction.getFactory(ApoliDataTypes.ITEM_ACTION, ApoliDataTypes.ITEM_CONDITION,
-			worldItemStackPair -> new Tuple<>(worldItemStackPair.getA(), worldItemStackPair.getB().get())));
+				worldItemStackPair -> new Tuple<>(worldItemStackPair.getA(), worldItemStackPair.getB().get())));
 		register(DelayAction.getFactory(ApoliDataTypes.ITEM_ACTION));
 		register(NothingAction.getFactory());
 		register(SideAction.getFactory(ApoliDataTypes.ITEM_ACTION, worldAndStack -> !worldAndStack.getA().isClientSide));

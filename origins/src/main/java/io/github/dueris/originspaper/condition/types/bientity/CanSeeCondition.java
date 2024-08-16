@@ -39,11 +39,11 @@ public class CanSeeCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("can_see"),
-			SerializableData.serializableData()
-				.add("shape_type", SerializableDataTypes.SHAPE_TYPE, ClipContext.Block.VISUAL)
-				.add("fluid_handling", SerializableDataTypes.FLUID_HANDLING, ClipContext.Fluid.NONE),
-			CanSeeCondition::condition
+				OriginsPaper.apoliIdentifier("can_see"),
+				SerializableData.serializableData()
+						.add("shape_type", SerializableDataTypes.SHAPE_TYPE, ClipContext.Block.VISUAL)
+						.add("fluid_handling", SerializableDataTypes.FLUID_HANDLING, ClipContext.Fluid.NONE),
+				CanSeeCondition::condition
 		);
 	}
 }

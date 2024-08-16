@@ -12,13 +12,13 @@ public class GainAirAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("gain_air"),
-			SerializableData.serializableData()
-				.add("value", SerializableDataTypes.INT),
-			(data, entity) -> {
-				if (entity instanceof LivingEntity le) {
-					le.setAirSupply(Math.min(le.getAirSupply() + data.getInt("value"), le.getMaxAirSupply()));
+				SerializableData.serializableData()
+						.add("value", SerializableDataTypes.INT),
+				(data, entity) -> {
+					if (entity instanceof LivingEntity le) {
+						le.setAirSupply(Math.min(le.getAirSupply() + data.getInt("value"), le.getMaxAirSupply()));
+					}
 				}
-			}
 		);
 	}
 }

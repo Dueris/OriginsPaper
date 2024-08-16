@@ -13,13 +13,13 @@ public class AirCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("air"),
-			SerializableData.serializableData()
-				.add("comparison", ApoliDataTypes.COMPARISON)
-				.add("compare_to", SerializableDataTypes.INT),
-			(data, entity) -> {
-				return ((Comparison) data.get("comparison")).compare(entity.getAirSupply(), data.getInt("compare_to"));
-			}
+				OriginsPaper.apoliIdentifier("air"),
+				SerializableData.serializableData()
+						.add("comparison", ApoliDataTypes.COMPARISON)
+						.add("compare_to", SerializableDataTypes.INT),
+				(data, entity) -> {
+					return ((Comparison) data.get("comparison")).compare(entity.getAirSupply(), data.getInt("compare_to"));
+				}
 		);
 	}
 }

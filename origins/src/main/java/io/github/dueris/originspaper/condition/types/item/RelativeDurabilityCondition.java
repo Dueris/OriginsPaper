@@ -27,11 +27,11 @@ public class RelativeDurabilityCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("relative_durability"),
-			SerializableData.serializableData()
-				.add("comparison", ApoliDataTypes.COMPARISON)
-				.add("compare_to", SerializableDataTypes.FLOAT),
-			RelativeDurabilityCondition::condition
+				OriginsPaper.apoliIdentifier("relative_durability"),
+				SerializableData.serializableData()
+						.add("comparison", ApoliDataTypes.COMPARISON)
+						.add("compare_to", SerializableDataTypes.FLOAT),
+				RelativeDurabilityCondition::condition
 		);
 	}
 

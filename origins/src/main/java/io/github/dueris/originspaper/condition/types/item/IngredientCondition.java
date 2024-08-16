@@ -18,10 +18,10 @@ public class IngredientCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("ingredient"),
-			SerializableData.serializableData()
-				.add("ingredient", SerializableDataTypes.INGREDIENT),
-			IngredientCondition::condition
+				OriginsPaper.apoliIdentifier("ingredient"),
+				SerializableData.serializableData()
+						.add("ingredient", SerializableDataTypes.INGREDIENT),
+				IngredientCondition::condition
 		);
 	}
 

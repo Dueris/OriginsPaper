@@ -33,10 +33,10 @@ public class GameModeCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("gamemode"),
-			SerializableData.serializableData()
-				.add("gamemode", ApoliDataTypes.GAME_MODE),
-			GameModeCondition::condition
+				OriginsPaper.apoliIdentifier("gamemode"),
+				SerializableData.serializableData()
+						.add("gamemode", ApoliDataTypes.GAME_MODE),
+				GameModeCondition::condition
 		);
 	}
 }

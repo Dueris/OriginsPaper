@@ -21,26 +21,26 @@ public class ExecuteCommandAction {
 
 	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionFactory<>(
-			OriginsPaper.apoliIdentifier("execute_command"),
-			SerializableData.serializableData()
-				.add("command", SerializableDataTypes.STRING),
-			(data, block) -> {
-				MinecraftServer server = block.getLeft().getServer();
-				if (server != null) {
-					String blockName = block.getLeft().getBlockState(block.getMiddle()).getBlock().getDescriptionId();
-					CommandSourceStack source = new CommandSourceStack(
-						OriginsPaper.showCommandOutput ? server : CommandSource.NULL,
-						new Vec3(block.getMiddle().getX() + 0.5, block.getMiddle().getY() + 0.5, block.getMiddle().getZ() + 0.5),
-						new Vec2(0, 0),
-						(ServerLevel) block.getLeft(),
-						4,
-						blockName,
-						Component.translatable(blockName),
-						server,
-						null);
-					server.getCommands().performPrefixedCommand(source, data.getString("command"));
+				OriginsPaper.apoliIdentifier("execute_command"),
+				SerializableData.serializableData()
+						.add("command", SerializableDataTypes.STRING),
+				(data, block) -> {
+					MinecraftServer server = block.getLeft().getServer();
+					if (server != null) {
+						String blockName = block.getLeft().getBlockState(block.getMiddle()).getBlock().getDescriptionId();
+						CommandSourceStack source = new CommandSourceStack(
+								OriginsPaper.showCommandOutput ? server : CommandSource.NULL,
+								new Vec3(block.getMiddle().getX() + 0.5, block.getMiddle().getY() + 0.5, block.getMiddle().getZ() + 0.5),
+								new Vec2(0, 0),
+								(ServerLevel) block.getLeft(),
+								4,
+								blockName,
+								Component.translatable(blockName),
+								server,
+								null);
+						server.getCommands().performPrefixedCommand(source, data.getString("command"));
+					}
 				}
-			}
 		);
 	}
 }

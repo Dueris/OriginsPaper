@@ -21,15 +21,15 @@ public class ExposedToSunCondition {
 		float brightness = world.getLightLevelDependentMagicValue(blockPos);
 
 		return brightness > 0.5
-			&& world.canSeeSky(blockPos);
+				&& world.canSeeSky(blockPos);
 
 	}
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("exposed_to_sun"),
-			SerializableData.serializableData(),
-			ExposedToSunCondition::condition
+				OriginsPaper.apoliIdentifier("exposed_to_sun"),
+				SerializableData.serializableData(),
+				ExposedToSunCondition::condition
 		);
 	}
 }

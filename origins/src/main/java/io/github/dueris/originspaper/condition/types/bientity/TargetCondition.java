@@ -14,13 +14,13 @@ public class TargetCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("target_condition"),
-			SerializableData.serializableData()
-				.add("condition", ApoliDataTypes.ENTITY_CONDITION),
-			(data, actorAndTarget) -> {
-				Entity target = actorAndTarget.getB();
-				return target != null && data.<Predicate<Entity>>get("condition").test(target);
-			}
+				OriginsPaper.apoliIdentifier("target_condition"),
+				SerializableData.serializableData()
+						.add("condition", ApoliDataTypes.ENTITY_CONDITION),
+				(data, actorAndTarget) -> {
+					Entity target = actorAndTarget.getB();
+					return target != null && data.<Predicate<Entity>>get("condition").test(target);
+				}
 		);
 	}
 }

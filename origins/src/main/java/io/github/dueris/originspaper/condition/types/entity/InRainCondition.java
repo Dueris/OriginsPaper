@@ -10,11 +10,11 @@ public class InRainCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("in_rain"),
-			SerializableData.serializableData(),
-			(data, entity) -> {
-				return entity.getBukkitEntity().isInRain();
-			}
+				OriginsPaper.apoliIdentifier("in_rain"),
+				SerializableData.serializableData(),
+				(data, entity) -> {
+					return entity.getBukkitEntity().isInRain();
+				}
 		);
 	}
 }

@@ -25,16 +25,16 @@ public class ReplaceInventoryAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("replace_inventory"),
-			SerializableData.serializableData()
-				.add("inventory_type", ApoliDataTypes.INVENTORY_TYPE, InventoryType.INVENTORY)
-				.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
-				.add("item_action", ApoliDataTypes.ITEM_ACTION, null)
-				.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
-				.add("slots", SerializableDataTypes.list(ApoliDataTypes.ITEM_SLOT), null)
-				.add("slot", ApoliDataTypes.ITEM_SLOT, null)
-				.add("stack", SerializableDataTypes.ITEM_STACK)
-				.add("merge_nbt", SerializableDataTypes.BOOLEAN, false),
-			ReplaceInventoryAction::action
+				SerializableData.serializableData()
+						.add("inventory_type", ApoliDataTypes.INVENTORY_TYPE, InventoryType.INVENTORY)
+						.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
+						.add("item_action", ApoliDataTypes.ITEM_ACTION, null)
+						.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
+						.add("slots", SerializableDataTypes.list(ApoliDataTypes.ITEM_SLOT), null)
+						.add("slot", ApoliDataTypes.ITEM_SLOT, null)
+						.add("stack", SerializableDataTypes.ITEM_STACK)
+						.add("merge_nbt", SerializableDataTypes.BOOLEAN, false),
+				ReplaceInventoryAction::action
 		);
 	}
 }

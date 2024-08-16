@@ -10,11 +10,11 @@ public class MovementBlockingCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("movement_blocking"),
-			SerializableData.serializableData(),
-			(data, block) -> {
-				return block.getState().blocksMotion() && !block.getState().getCollisionShape(block.getLevel(), block.getPos()).isEmpty();
-			}
+				OriginsPaper.apoliIdentifier("movement_blocking"),
+				SerializableData.serializableData(),
+				(data, block) -> {
+					return block.getState().blocksMotion() && !block.getState().getCollisionShape(block.getLevel(), block.getPos()).isEmpty();
+				}
 		);
 	}
 }

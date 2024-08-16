@@ -75,8 +75,8 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 
 	private static @NotNull Component noItalic(String string) {
 		return Component.text(string)
-			.decoration(TextDecoration.ITALIC, false)
-			.color(NamedTextColor.GRAY);
+				.decoration(TextDecoration.ITALIC, false)
+				.color(NamedTextColor.GRAY);
 	}
 
 	public static List<String> cutStringIntoLines(@NotNull String string) {
@@ -118,37 +118,37 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 	public ItemStack @NotNull [] createDisplay(net.minecraft.world.entity.player.Player player, OriginLayer layer) {
 		List<ItemStack> stacks = new ArrayList<>();
 		List<PowerType> powerContainers = new ArrayList<>(this.origin.powers().stream()
-			.filter(Objects::nonNull).map(OriginsPaper::getPower).filter(p -> p != null && !p.isHidden()).toList());
+				.filter(Objects::nonNull).map(OriginsPaper::getPower).filter(p -> p != null && !p.isHidden()).toList());
 
 		for (int i = 0; i < 54; i++) {
 			if (i <= 2 || i >= 6 && i <= 8) {
 				Impact originImpact = this.origin.impact();
 				int impactInt = originImpact.getImpactValue();
 				Material impactMaterial = originImpact.equals(Impact.LOW)
-					? Material.GREEN_STAINED_GLASS_PANE
-					: (
-					originImpact.equals(Impact.MEDIUM)
-						? Material.YELLOW_STAINED_GLASS_PANE
-						: (originImpact.equals(Impact.HIGH) ? Material.RED_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE)
+						? Material.GREEN_STAINED_GLASS_PANE
+						: (
+						originImpact.equals(Impact.MEDIUM)
+								? Material.YELLOW_STAINED_GLASS_PANE
+								: (originImpact.equals(Impact.HIGH) ? Material.RED_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE)
 				);
 				Component impactComponent = originImpact.equals(Impact.LOW)
-					? Component.text("Low").color(TextColor.color(5569620))
-					: (
-					originImpact.equals(Impact.MEDIUM)
-						? Component.text("Medium").color(TextColor.color(14535987))
+						? Component.text("Low").color(TextColor.color(5569620))
 						: (
-						originImpact.equals(Impact.HIGH)
-							? Component.text("High").color(TextColor.color(16536660))
-							: Component.text("None").color(TextColor.color(11053224))
-					)
+						originImpact.equals(Impact.MEDIUM)
+								? Component.text("Medium").color(TextColor.color(14535987))
+								: (
+								originImpact.equals(Impact.HIGH)
+										? Component.text("High").color(TextColor.color(16536660))
+										: Component.text("None").color(TextColor.color(11053224))
+						)
 				);
 				Component fullImpactComponent = Component.textOfChildren(Component.text("Impact: "), impactComponent)
-					.decoration(TextDecoration.ITALIC, false);
+						.decoration(TextDecoration.ITALIC, false);
 				ItemStack impact = itemProperties(new ItemStack(impactMaterial), fullImpactComponent, ItemFlag.values(), null, null);
 				if ((impactInt != 1 || i != 0 && i != 8)
-					&& (impactInt != 2 || i != 0 && i != 8 && i != 1 && i != 7)
-					&& impactInt != 3
-					&& impactInt != 0) {
+						&& (impactInt != 2 || i != 0 && i != 8 && i != 1 && i != 7)
+						&& impactInt != 3
+						&& impactInt != 0) {
 					stacks.add(new ItemStack(Material.AIR));
 				} else {
 					stacks.add(impact);
@@ -183,7 +183,7 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 					ItemStack blank = new ItemStack(Material.MAP);
 					ItemMeta meta = blank.getItemMeta();
 					meta.displayName(
-						Component.text("")
+							Component.text("")
 					);
 					meta.setHideTooltip(true);
 					blank.setItemMeta(meta);
@@ -210,8 +210,8 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 		}
 
 		return itemProperties(originIcon, this.origin.name()
-			.decoration(TextDecoration.ITALIC, false)
-			.color(NamedTextColor.WHITE), ItemFlag.values(), null, PlainTextComponentSerializer.plainText().serialize(this.origin.description()));
+				.decoration(TextDecoration.ITALIC, false)
+				.color(NamedTextColor.WHITE), ItemFlag.values(), null, PlainTextComponentSerializer.plainText().serialize(this.origin.description()));
 	}
 
 	@Override

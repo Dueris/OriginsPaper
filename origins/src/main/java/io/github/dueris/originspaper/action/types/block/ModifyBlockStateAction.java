@@ -63,14 +63,14 @@ public class ModifyBlockStateAction {
 
 	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("modify_block_state"),
-			SerializableData.serializableData()
-				.add("property", SerializableDataTypes.STRING)
-				.add("operation", ApoliDataTypes.RESOURCE_OPERATION, ResourceOperation.ADD)
-				.add("change", SerializableDataTypes.INT, null)
-				.add("value", SerializableDataTypes.BOOLEAN, null)
-				.add("enum", SerializableDataTypes.STRING, null)
-				.add("cycle", SerializableDataTypes.BOOLEAN, false),
-			ModifyBlockStateAction::action
+				SerializableData.serializableData()
+						.add("property", SerializableDataTypes.STRING)
+						.add("operation", ApoliDataTypes.RESOURCE_OPERATION, ResourceOperation.ADD)
+						.add("change", SerializableDataTypes.INT, null)
+						.add("value", SerializableDataTypes.BOOLEAN, null)
+						.add("enum", SerializableDataTypes.STRING, null)
+						.add("cycle", SerializableDataTypes.BOOLEAN, false),
+				ModifyBlockStateAction::action
 		);
 	}
 }

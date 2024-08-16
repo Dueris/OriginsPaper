@@ -16,9 +16,9 @@ public class EnchantableCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("enchantable"),
-			SerializableData.serializableData(),
-			EnchantableCondition::condition
+				OriginsPaper.apoliIdentifier("enchantable"),
+				SerializableData.serializableData(),
+				EnchantableCondition::condition
 		);
 	}
 

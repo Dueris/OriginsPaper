@@ -42,16 +42,16 @@ public class AddVelocityAction {
 
 	public static @NotNull ActionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ActionFactory<>(
-			OriginsPaper.apoliIdentifier("add_velocity"),
-			SerializableData.serializableData()
-				.add("x", SerializableDataTypes.FLOAT, 0F)
-				.add("y", SerializableDataTypes.FLOAT, 0F)
-				.add("z", SerializableDataTypes.FLOAT, 0F)
-				.add("client", SerializableDataTypes.BOOLEAN, true)
-				.add("server", SerializableDataTypes.BOOLEAN, true)
-				.add("set", SerializableDataTypes.BOOLEAN, false)
-				.add("reference", SerializableDataTypes.enumValue(Reference.class), Reference.POSITION),
-			AddVelocityAction::action
+				OriginsPaper.apoliIdentifier("add_velocity"),
+				SerializableData.serializableData()
+						.add("x", SerializableDataTypes.FLOAT, 0F)
+						.add("y", SerializableDataTypes.FLOAT, 0F)
+						.add("z", SerializableDataTypes.FLOAT, 0F)
+						.add("client", SerializableDataTypes.BOOLEAN, true)
+						.add("server", SerializableDataTypes.BOOLEAN, true)
+						.add("set", SerializableDataTypes.BOOLEAN, false)
+						.add("reference", SerializableDataTypes.enumValue(Reference.class), Reference.POSITION),
+				AddVelocityAction::action
 		);
 	}
 

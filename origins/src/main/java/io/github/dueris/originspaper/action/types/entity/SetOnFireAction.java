@@ -11,8 +11,8 @@ public class SetOnFireAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("set_on_fire"),
-			SerializableData.serializableData()
-				.add("duration", SerializableDataTypes.INT),
-			(data, entity) -> entity.igniteForSeconds(data.getInt("duration")));
+				SerializableData.serializableData()
+						.add("duration", SerializableDataTypes.INT),
+				(data, entity) -> entity.igniteForSeconds(data.getInt("duration")));
 	}
 }

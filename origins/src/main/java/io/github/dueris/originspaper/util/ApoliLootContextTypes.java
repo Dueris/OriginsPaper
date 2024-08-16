@@ -11,18 +11,18 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 public class ApoliLootContextTypes {
 
 	public static final LootContextParamSet ANY = register(
-		OriginsPaper.apoliIdentifier("any"),
-		LootContextParamSet.builder()
-			.optional(LootContextParams.THIS_ENTITY)
-			.optional(LootContextParams.LAST_DAMAGE_PLAYER)
-			.optional(LootContextParams.DAMAGE_SOURCE)
-			.optional(LootContextParams.ATTACKING_ENTITY)
-			.optional(LootContextParams.DIRECT_ATTACKING_ENTITY)
-			.optional(LootContextParams.ORIGIN)
-			.optional(LootContextParams.BLOCK_STATE)
-			.optional(LootContextParams.BLOCK_ENTITY)
-			.optional(LootContextParams.TOOL)
-			.optional(LootContextParams.EXPLOSION_RADIUS)
+			OriginsPaper.apoliIdentifier("any"),
+			LootContextParamSet.builder()
+					.optional(LootContextParams.THIS_ENTITY)
+					.optional(LootContextParams.LAST_DAMAGE_PLAYER)
+					.optional(LootContextParams.DAMAGE_SOURCE)
+					.optional(LootContextParams.ATTACKING_ENTITY)
+					.optional(LootContextParams.DIRECT_ATTACKING_ENTITY)
+					.optional(LootContextParams.ORIGIN)
+					.optional(LootContextParams.BLOCK_STATE)
+					.optional(LootContextParams.BLOCK_ENTITY)
+					.optional(LootContextParams.TOOL)
+					.optional(LootContextParams.EXPLOSION_RADIUS)
 	);
 
 	private ApoliLootContextTypes() {

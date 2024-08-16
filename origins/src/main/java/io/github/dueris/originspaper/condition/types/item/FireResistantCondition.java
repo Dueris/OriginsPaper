@@ -17,9 +17,9 @@ public class FireResistantCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("fire_resistant"),
-			SerializableData.serializableData(),
-			FireResistantCondition::condition
+				OriginsPaper.apoliIdentifier("fire_resistant"),
+				SerializableData.serializableData(),
+				FireResistantCondition::condition
 		);
 
 	}

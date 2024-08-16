@@ -13,11 +13,11 @@ public class HeightCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("height"),
-			SerializableData.serializableData()
-				.add("comparison", ApoliDataTypes.COMPARISON)
-				.add("compare_to", SerializableDataTypes.INT),
-			(data, block) -> ((Comparison) data.get("comparison")).compare(block.getPos().getY(), data.getInt("compare_to"))
+				OriginsPaper.apoliIdentifier("height"),
+				SerializableData.serializableData()
+						.add("comparison", ApoliDataTypes.COMPARISON)
+						.add("compare_to", SerializableDataTypes.INT),
+				(data, block) -> ((Comparison) data.get("comparison")).compare(block.getPos().getY(), data.getInt("compare_to"))
 		);
 	}
 }

@@ -25,111 +25,111 @@ public class DamageConditions {
 	public static void registerAll() {
 		MetaConditions.register(Registries.DAMAGE_CONDITION, DamageConditions::register);
 		register(new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("amount"),
-			SerializableData.serializableData()
-				.add("comparison", ApoliDataTypes.COMPARISON)
-				.add("compare_to", SerializableDataTypes.FLOAT),
-			(data, event) -> {
-				return ((Comparison) data.get("comparison")).compare(event.getB(), data.getFloat("compare_to"));
-			}
+				OriginsPaper.apoliIdentifier("amount"),
+				SerializableData.serializableData()
+						.add("comparison", ApoliDataTypes.COMPARISON)
+						.add("compare_to", SerializableDataTypes.FLOAT),
+				(data, event) -> {
+					return ((Comparison) data.get("comparison")).compare(event.getB(), data.getFloat("compare_to"));
+				}
 		));
 		register(new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("name"),
-			SerializableData.serializableData(),
-			(data, event) -> {
-				return event.getA().getMsgId().equals(data.getString("name"));
-			}
+				OriginsPaper.apoliIdentifier("name"),
+				SerializableData.serializableData(),
+				(data, event) -> {
+					return event.getA().getMsgId().equals(data.getString("name"));
+				}
 		));
 		register(new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("projectile"),
-			SerializableData.serializableData()
-				.add("projectile", SerializableDataTypes.ENTITY_TYPE, null)
-				.add("projectile_condition", ApoliDataTypes.ENTITY_CONDITION, null),
-			(data, event) -> {
-				DamageSource source = event.getA();
-				if (source.is(DamageTypeTags.IS_PROJECTILE)) {
-					Entity projectile = source.getDirectEntity();
-					if (projectile != null) {
-						if (data.isPresent("projectile") && projectile.getType() != data.get("projectile")) {
-							return false;
+				OriginsPaper.apoliIdentifier("projectile"),
+				SerializableData.serializableData()
+						.add("projectile", SerializableDataTypes.ENTITY_TYPE, null)
+						.add("projectile_condition", ApoliDataTypes.ENTITY_CONDITION, null),
+				(data, event) -> {
+					DamageSource source = event.getA();
+					if (source.is(DamageTypeTags.IS_PROJECTILE)) {
+						Entity projectile = source.getDirectEntity();
+						if (projectile != null) {
+							if (data.isPresent("projectile") && projectile.getType() != data.get("projectile")) {
+								return false;
+							}
+							Predicate<Entity> projectileCondition = data.get("projectile_condition");
+							return projectileCondition == null || projectileCondition.test(projectile);
 						}
-						Predicate<Entity> projectileCondition = data.get("projectile_condition");
-						return projectileCondition == null || projectileCondition.test(projectile);
 					}
+					return false;
 				}
-				return false;
-			}
 		));
 		register(new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("attacker"),
-			SerializableData.serializableData()
-				.add("entity_condition", ApoliDataTypes.ENTITY_CONDITION, null),
-			(data, event) -> {
-				DamageSource source = event.getA();
-				Entity attacker = source.getEntity();
-				if (attacker instanceof LivingEntity) {
-					return !data.isPresent("entity_condition") || ((ConditionFactory<Entity>) data.get("entity_condition")).test(attacker);
+				OriginsPaper.apoliIdentifier("attacker"),
+				SerializableData.serializableData()
+						.add("entity_condition", ApoliDataTypes.ENTITY_CONDITION, null),
+				(data, event) -> {
+					DamageSource source = event.getA();
+					Entity attacker = source.getEntity();
+					if (attacker instanceof LivingEntity) {
+						return !data.isPresent("entity_condition") || ((ConditionFactory<Entity>) data.get("entity_condition")).test(attacker);
+					}
+					return false;
 				}
-				return false;
-			}
 		));
 		register(new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("fire"),
-			SerializableData.serializableData(),
-			(data, event) -> {
-				return event.getA().is(DamageTypeTags.IS_FIRE);
-			}
+				OriginsPaper.apoliIdentifier("fire"),
+				SerializableData.serializableData(),
+				(data, event) -> {
+					return event.getA().is(DamageTypeTags.IS_FIRE);
+				}
 		));
 		register(new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("bypasses_armor"),
-			SerializableData.serializableData(),
-			(data, event) -> {
-				return event.getA().is(DamageTypeTags.BYPASSES_ARMOR);
-			}
+				OriginsPaper.apoliIdentifier("bypasses_armor"),
+				SerializableData.serializableData(),
+				(data, event) -> {
+					return event.getA().is(DamageTypeTags.BYPASSES_ARMOR);
+				}
 		));
 		register(new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("explosive"),
-			SerializableData.serializableData(),
-			(data, event) -> {
-				return event.getA().is(DamageTypeTags.IS_EXPLOSION);
-			}
+				OriginsPaper.apoliIdentifier("explosive"),
+				SerializableData.serializableData(),
+				(data, event) -> {
+					return event.getA().is(DamageTypeTags.IS_EXPLOSION);
+				}
 		));
 		register(new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("from_falling"),
-			SerializableData.serializableData(),
-			(data, event) -> {
-				return event.getA().is(DamageTypeTags.IS_FALL);
-			}
+				OriginsPaper.apoliIdentifier("from_falling"),
+				SerializableData.serializableData(),
+				(data, event) -> {
+					return event.getA().is(DamageTypeTags.IS_FALL);
+				}
 		));
 		register(new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("unblockable"),
-			SerializableData.serializableData(),
-			(data, event) -> {
-				return event.getA().is(DamageTypeTags.BYPASSES_SHIELD);
-			}
+				OriginsPaper.apoliIdentifier("unblockable"),
+				SerializableData.serializableData(),
+				(data, event) -> {
+					return event.getA().is(DamageTypeTags.BYPASSES_SHIELD);
+				}
 		));
 		register(new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("out_of_world"),
-			SerializableData.serializableData(),
-			(data, event) -> {
-				return event.getA().is(DamageTypeTags.BYPASSES_INVULNERABILITY);
-			}
+				OriginsPaper.apoliIdentifier("out_of_world"),
+				SerializableData.serializableData(),
+				(data, event) -> {
+					return event.getA().is(DamageTypeTags.BYPASSES_INVULNERABILITY);
+				}
 		));
 		register(new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("in_tag"),
-			SerializableData.serializableData()
-				.add("tag", SerializableDataTypes.tag(net.minecraft.core.registries.Registries.DAMAGE_TYPE)),
-			(data, event) -> {
-				return event.getA().is((TagKey<DamageType>) data.get("tag"));
-			}
+				OriginsPaper.apoliIdentifier("in_tag"),
+				SerializableData.serializableData()
+						.add("tag", SerializableDataTypes.tag(net.minecraft.core.registries.Registries.DAMAGE_TYPE)),
+				(data, event) -> {
+					return event.getA().is((TagKey<DamageType>) data.get("tag"));
+				}
 		));
 		register(new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("type"),
-			SerializableData.serializableData()
-				.add("damage_type", SerializableDataTypes.DAMAGE_TYPE),
-			(data, event) -> {
-				return event.getA().is((ResourceKey<DamageType>) data.get("damage_type"));
-			}
+				OriginsPaper.apoliIdentifier("type"),
+				SerializableData.serializableData()
+						.add("damage_type", SerializableDataTypes.DAMAGE_TYPE),
+				(data, event) -> {
+					return event.getA().is((ResourceKey<DamageType>) data.get("damage_type"));
+				}
 		));
 	}
 

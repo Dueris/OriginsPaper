@@ -10,11 +10,11 @@ public class ReplaceableCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("replaceable"),
-			SerializableData.serializableData(),
-			(data, block) -> {
-				return block.getState().canBeReplaced();
-			}
+				OriginsPaper.apoliIdentifier("replaceable"),
+				SerializableData.serializableData(),
+				(data, block) -> {
+					return block.getState().canBeReplaced();
+				}
 		);
 	}
 }

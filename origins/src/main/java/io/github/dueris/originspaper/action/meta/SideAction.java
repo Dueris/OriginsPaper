@@ -22,10 +22,10 @@ public class SideAction {
 
 	public static <T> @NotNull ActionFactory<T> getFactory(SerializableDataBuilder<ActionFactory<T>> dataType, Function<T, Boolean> serverCheck) {
 		return new ActionFactory<T>(OriginsPaper.apoliIdentifier("side"),
-			SerializableData.serializableData()
-				.add("side", SerializableDataTypes.enumValue(Side.class))
-				.add("action", dataType),
-			(data, t) -> SideAction.action(data, t, serverCheck)
+				SerializableData.serializableData()
+						.add("side", SerializableDataTypes.enumValue(Side.class))
+						.add("action", dataType),
+				(data, t) -> SideAction.action(data, t, serverCheck)
 		);
 	}
 

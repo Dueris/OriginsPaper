@@ -15,13 +15,13 @@ public class SetBlockAction {
 
 	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionFactory<>(
-			OriginsPaper.apoliIdentifier("set_block"),
-			SerializableData.serializableData()
-				.add("block", SerializableDataTypes.BLOCK_STATE),
-			(data, block) -> {
-				BlockState actualState = data.get("block");
-				block.getLeft().setBlockAndUpdate(block.getMiddle(), actualState);
-			}
+				OriginsPaper.apoliIdentifier("set_block"),
+				SerializableData.serializableData()
+						.add("block", SerializableDataTypes.BLOCK_STATE),
+				(data, block) -> {
+					BlockState actualState = data.get("block");
+					block.getLeft().setBlockAndUpdate(block.getMiddle(), actualState);
+				}
 		);
 	}
 }

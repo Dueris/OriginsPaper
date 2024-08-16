@@ -19,10 +19,10 @@ public class CustomDataCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("custom_data"),
-			SerializableData.serializableData()
-				.add("nbt", SerializableDataTypes.NBT),
-			CustomDataCondition::condition
+				OriginsPaper.apoliIdentifier("custom_data"),
+				SerializableData.serializableData()
+						.add("nbt", SerializableDataTypes.NBT),
+				CustomDataCondition::condition
 		);
 
 	}

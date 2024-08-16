@@ -54,19 +54,19 @@ public class OriginScheduler {
 						} catch (Throwable var8) {
 							String[] stacktrace = new String[]{"\n"};
 							Arrays.stream(var8.getStackTrace())
-								.map(StackTraceElement::toString)
-								.forEach(string -> stacktrace[0] = stacktrace[0] + "\tat " + string + "\n");
+									.map(StackTraceElement::toString)
+									.forEach(string -> stacktrace[0] = stacktrace[0] + "\tat " + string + "\n");
 							OriginsPaper.getPlugin()
-								.getLog4JLogger()
-								.error("An unhandled exception occurred when ticking a Power! [{}]", var8.getClass().getSimpleName());
+									.getLog4JLogger()
+									.error("An unhandled exception occurred when ticking a Power! [{}]", var8.getClass().getSimpleName());
 							String t = power.getType();
 							if (t == null) {
 								t = power.key().toString();
 							}
 
 							OriginsPaper.getPlugin()
-								.getLog4JLogger()
-								.error("Player: {} | Power: {} | CraftPower: {} | Throwable: {} {}", p.getName(), power.getTag(), t, var8.getMessage() == null ? var8.getClass().getSimpleName() : var8.getMessage(), stacktrace[0]);
+									.getLog4JLogger()
+									.error("Player: {} | Power: {} | CraftPower: {} | Throwable: {} {}", p.getName(), power.getTag(), t, var8.getMessage() == null ? var8.getClass().getSimpleName() : var8.getMessage(), stacktrace[0]);
 						}
 					}
 				}

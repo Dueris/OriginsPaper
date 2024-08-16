@@ -16,9 +16,9 @@ public class DamageableCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("damageable"),
-			SerializableData.serializableData(),
-			DamageableCondition::condition
+				OriginsPaper.apoliIdentifier("damageable"),
+				SerializableData.serializableData(),
+				DamageableCondition::condition
 		);
 
 	}

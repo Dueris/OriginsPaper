@@ -24,9 +24,9 @@ public class RidingRootCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("riding_root"),
-			SerializableData.serializableData(),
-			RidingRootCondition::condition
+				OriginsPaper.apoliIdentifier("riding_root"),
+				SerializableData.serializableData(),
+				RidingRootCondition::condition
 		);
 	}
 }

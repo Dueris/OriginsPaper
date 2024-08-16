@@ -13,12 +13,12 @@ public class DimensionCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("dimension"),
-			SerializableData.serializableData()
-				.add("dimension", SerializableDataTypes.IDENTIFIER),
-			(data, entity) -> {
-				return entity.level().dimension() == ResourceKey.create(Registries.DIMENSION, data.getId("dimension"));
-			}
+				OriginsPaper.apoliIdentifier("dimension"),
+				SerializableData.serializableData()
+						.add("dimension", SerializableDataTypes.IDENTIFIER),
+				(data, entity) -> {
+					return entity.level().dimension() == ResourceKey.create(Registries.DIMENSION, data.getId("dimension"));
+				}
 		);
 	}
 }

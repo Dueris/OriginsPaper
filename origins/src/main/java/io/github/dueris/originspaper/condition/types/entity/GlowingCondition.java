@@ -14,9 +14,9 @@ public class GlowingCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("glowing"),
-			SerializableData.serializableData(),
-			GlowingCondition::condition
+				OriginsPaper.apoliIdentifier("glowing"),
+				SerializableData.serializableData(),
+				GlowingCondition::condition
 		);
 	}
 }

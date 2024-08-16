@@ -23,9 +23,9 @@ public class CraftingTableAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
-			OriginsPaper.apoliIdentifier("crafting_table"),
-			SerializableData.serializableData(),
-			CraftingTableAction::action
+				OriginsPaper.apoliIdentifier("crafting_table"),
+				SerializableData.serializableData(),
+				CraftingTableAction::action
 		);
 	}
 }

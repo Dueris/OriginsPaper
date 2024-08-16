@@ -85,7 +85,7 @@ public class PowerHolderComponent implements Listener {
 	public static <T> @NotNull List<T> getPowers(Player player, Predicate<PowerType> powerTypePredicate) {
 		List<PowerType> powers = PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers();
 		return (List<T>) powers.stream()
-			.filter(Objects::nonNull).filter(powerTypePredicate).toList();
+				.filter(Objects::nonNull).filter(powerTypePredicate).toList();
 	}
 
 	@Unmodifiable
@@ -115,13 +115,13 @@ public class PowerHolderComponent implements Listener {
 	public static boolean hasPower(Entity p, String powerKey) {
 		if (!(p instanceof Player player)) return false;
 		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers()
-			.stream().map(PowerType::getTag).toList().contains(powerKey);
+				.stream().map(PowerType::getTag).toList().contains(powerKey);
 	}
 
 	public static boolean hasPowerType(Entity p, Class<? extends PowerType> typeOf) {
 		if (!(p instanceof Player player)) return false;
 		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers()
-			.stream().map(PowerType::getClass).toList().contains(typeOf);
+				.stream().map(PowerType::getClass).toList().contains(typeOf);
 	}
 
 	public static void setOrigin(final @NotNull Entity entity, final OriginLayer layer, final Origin origin) {
@@ -178,7 +178,7 @@ public class PowerHolderComponent implements Listener {
 
 	private static void printNotFound(@NotNull ResourceLocation location, @Nullable Origin origin) {
 		OriginsPaper.getPlugin().getLog4JLogger().error("Specified PowerType '{}'{} was not found in the registry.", location.toString(),
-			origin == null ? "" : " in Origin '{}'".replace("{}", origin.getTag()));
+				origin == null ? "" : " in Origin '{}'".replace("{}", origin.getTag()));
 	}
 
 	public static List<PowerType> getPowersApplied(Player p) {

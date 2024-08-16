@@ -11,11 +11,11 @@ public class LivingCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("living"),
-			SerializableData.serializableData(),
-			(data, entity) -> {
-				return entity instanceof LivingEntity;
-			}
+				OriginsPaper.apoliIdentifier("living"),
+				SerializableData.serializableData(),
+				(data, entity) -> {
+					return entity instanceof LivingEntity;
+				}
 		);
 	}
 }

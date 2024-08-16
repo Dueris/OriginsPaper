@@ -18,11 +18,11 @@ public class HasPowerCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("has_power"),
-			SerializableData.serializableData()
-				.add("slot", SerializableDataTypes.EQUIPMENT_SLOT, null)
-				.add("power", SerializableDataTypes.IDENTIFIER),
-			HasPowerCondition::condition
+				OriginsPaper.apoliIdentifier("has_power"),
+				SerializableData.serializableData()
+						.add("slot", SerializableDataTypes.EQUIPMENT_SLOT, null)
+						.add("power", SerializableDataTypes.IDENTIFIER),
+				HasPowerCondition::condition
 		);
 	}
 

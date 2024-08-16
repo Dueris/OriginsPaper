@@ -33,11 +33,11 @@ public class EquippedItemAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
-			OriginsPaper.apoliIdentifier("equipped_item_action"),
-			SerializableData.serializableData()
-				.add("equipment_slot", SerializableDataTypes.EQUIPMENT_SLOT)
-				.add("action", ApoliDataTypes.ITEM_ACTION),
-			EquippedItemAction::action
+				OriginsPaper.apoliIdentifier("equipped_item_action"),
+				SerializableData.serializableData()
+						.add("equipment_slot", SerializableDataTypes.EQUIPMENT_SLOT)
+						.add("action", ApoliDataTypes.ITEM_ACTION),
+				EquippedItemAction::action
 		);
 	}
 }

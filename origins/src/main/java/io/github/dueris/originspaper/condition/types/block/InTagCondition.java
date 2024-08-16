@@ -13,15 +13,15 @@ public class InTagCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("in_tag"),
-			SerializableData.serializableData()
-				.add("tag", SerializableDataTypes.BLOCK_TAG),
-			(data, block) -> {
-				if (block == null || block.getState() == null) {
-					return false;
+				OriginsPaper.apoliIdentifier("in_tag"),
+				SerializableData.serializableData()
+						.add("tag", SerializableDataTypes.BLOCK_TAG),
+				(data, block) -> {
+					if (block == null || block.getState() == null) {
+						return false;
+					}
+					return block.getState().is((TagKey<Block>) data.get("tag"));
 				}
-				return block.getState().is((TagKey<Block>) data.get("tag"));
-			}
 		);
 	}
 }

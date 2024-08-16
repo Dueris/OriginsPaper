@@ -10,11 +10,11 @@ public class BlockEntityCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("block_entity"),
-			SerializableData.serializableData(),
-			(data, block) -> {
-				return block.getEntity() != null;
-			}
+				OriginsPaper.apoliIdentifier("block_entity"),
+				SerializableData.serializableData(),
+				(data, block) -> {
+					return block.getEntity() != null;
+				}
 		);
 	}
 }

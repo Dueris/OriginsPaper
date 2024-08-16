@@ -10,11 +10,11 @@ public class SneakingCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("sneaking"),
-			SerializableData.serializableData(),
-			(data, entity) -> {
-				return entity.isShiftKeyDown();
-			}
+				OriginsPaper.apoliIdentifier("sneaking"),
+				SerializableData.serializableData(),
+				(data, entity) -> {
+					return entity.isShiftKeyDown();
+				}
 		);
 	}
 }

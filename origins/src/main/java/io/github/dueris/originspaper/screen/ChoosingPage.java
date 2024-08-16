@@ -16,37 +16,37 @@ import java.util.stream.Collectors;
 public interface ChoosingPage {
 	static void registerInstances() {
 		OriginsPaper.getPlugin()
-			.registry
-			.retrieve(Registries.LAYER)
-			.values()
-			.stream()
-			.filter(OriginLayer::isEnabled)
-			.forEach(
-				layer -> {
-					ScreenNavigator.layerPages.put(layer, new ArrayList<>());
-					List<Origin> choosable = layer.getOriginIdentifiers()
-						.stream()
-						.map(OriginsPaper::getOrigin)
-						.filter(origin -> !origin.unchoosable())
-						.sorted(Comparator.comparingInt(Origin::order))
-						.sorted(Comparator.comparingInt(Origin::impactValue))
-						.collect(Collectors.toCollection(ArrayList::new));
-					Origin defaultOrigin = null;
-					if (layer.getDefaultOrigin() != null && !layer.getDefaultOrigin().toString().equalsIgnoreCase("origins:empty")) {
-						defaultOrigin = choosable.stream()
-							.filter(origin -> origin.getTag().equalsIgnoreCase(layer.getDefaultOrigin().toString()))
-							.findFirst()
-							.orElse(null);
-					}
+				.registry
+				.retrieve(Registries.LAYER)
+				.values()
+				.stream()
+				.filter(OriginLayer::isEnabled)
+				.forEach(
+						layer -> {
+							ScreenNavigator.layerPages.put(layer, new ArrayList<>());
+							List<Origin> choosable = layer.getOriginIdentifiers()
+									.stream()
+									.map(OriginsPaper::getOrigin)
+									.filter(origin -> !origin.unchoosable())
+									.sorted(Comparator.comparingInt(Origin::order))
+									.sorted(Comparator.comparingInt(Origin::impactValue))
+									.collect(Collectors.toCollection(ArrayList::new));
+							Origin defaultOrigin = null;
+							if (layer.getDefaultOrigin() != null && !layer.getDefaultOrigin().toString().equalsIgnoreCase("origins:empty")) {
+								defaultOrigin = choosable.stream()
+										.filter(origin -> origin.getTag().equalsIgnoreCase(layer.getDefaultOrigin().toString()))
+										.findFirst()
+										.orElse(null);
+							}
 
-					if (defaultOrigin != null) {
-						choosable.remove(defaultOrigin);
-						choosable.addFirst(defaultOrigin);
-					}
+							if (defaultOrigin != null) {
+								choosable.remove(defaultOrigin);
+								choosable.addFirst(defaultOrigin);
+							}
 
-					ScreenNavigator.layerPages.get(layer).addAll(choosable.stream().map(OriginPage::new).toList());
-				}
-			);
+							ScreenNavigator.layerPages.get(layer).addAll(choosable.stream().map(OriginPage::new).toList());
+						}
+				);
 		ScreenNavigator.layerPages.values().forEach(list -> {
 			for (ChoosingPage page : list) {
 				OriginsPaper.getPlugin().registry.retrieve(Registries.CHOOSING_PAGE).register(page, page.key());

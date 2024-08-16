@@ -33,21 +33,21 @@ public class EnchantmentCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("enchantment"),
-			SerializableData.serializableData()
-				.add("enchantment", SerializableDataTypes.ENCHANTMENT)
-				.add("calculation", SerializableDataTypes.enumValue(Calculation.class), Calculation.SUM)
-				.add("comparison", ApoliDataTypes.COMPARISON)
-				.add("compare_to", SerializableDataTypes.INT)
-				.add("use_modifications", SerializableDataTypes.BOOLEAN, true),
-			(data, entity) -> condition(
-				entity,
-				data.get("enchantment"),
-				data.get("calculation"),
-				data.get("comparison"),
-				data.get("compare_to"),
-				data.get("use_modifications")
-			)
+				OriginsPaper.apoliIdentifier("enchantment"),
+				SerializableData.serializableData()
+						.add("enchantment", SerializableDataTypes.ENCHANTMENT)
+						.add("calculation", SerializableDataTypes.enumValue(Calculation.class), Calculation.SUM)
+						.add("comparison", ApoliDataTypes.COMPARISON)
+						.add("compare_to", SerializableDataTypes.INT)
+						.add("use_modifications", SerializableDataTypes.BOOLEAN, true),
+				(data, entity) -> condition(
+						entity,
+						data.get("enchantment"),
+						data.get("calculation"),
+						data.get("comparison"),
+						data.get("compare_to"),
+						data.get("use_modifications")
+				)
 		);
 	}
 

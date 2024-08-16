@@ -10,11 +10,11 @@ public class DaytimeCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("daytime"),
-			SerializableData.serializableData(),
-			(data, entity) -> {
-				return entity.level().getDayTime() % 24000L < 13000L;
-			}
+				OriginsPaper.apoliIdentifier("daytime"),
+				SerializableData.serializableData(),
+				(data, entity) -> {
+					return entity.level().getDayTime() % 24000L < 13000L;
+				}
 		);
 	}
 }

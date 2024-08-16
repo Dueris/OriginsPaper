@@ -14,13 +14,13 @@ public class HealthCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("health"),
-			SerializableData.serializableData()
-				.add("comparison", ApoliDataTypes.COMPARISON)
-				.add("compare_to", SerializableDataTypes.FLOAT),
-			(data, entity) -> {
-				return ((Comparison) data.get("comparison")).compare(entity instanceof LivingEntity ? ((LivingEntity) entity).getHealth() : 0f, data.getFloat("compare_to"));
-			}
+				OriginsPaper.apoliIdentifier("health"),
+				SerializableData.serializableData()
+						.add("comparison", ApoliDataTypes.COMPARISON)
+						.add("compare_to", SerializableDataTypes.FLOAT),
+				(data, entity) -> {
+					return ((Comparison) data.get("comparison")).compare(entity instanceof LivingEntity ? ((LivingEntity) entity).getHealth() : 0f, data.getFloat("compare_to"));
+				}
 		);
 	}
 }

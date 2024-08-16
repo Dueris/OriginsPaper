@@ -25,9 +25,6 @@
                 {
                   "type": "origins:sneaking",
                   "inverted": true
-                },
-                {
-                  "type": "origins:collided_horizontally"
                 }
               ]
             },

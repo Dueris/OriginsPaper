@@ -20,17 +20,17 @@ public class ArmorValueCondition {
 		int compareTo = data.get("compare_to");
 
 		return worldAndStack.getB().getItem() instanceof ArmorItem armorItem
-			&& comparison.compare(armorItem.getDefense(), compareTo);
+				&& comparison.compare(armorItem.getDefense(), compareTo);
 
 	}
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("armor_value"),
-			SerializableData.serializableData()
-				.add("comparison", ApoliDataTypes.COMPARISON)
-				.add("compare_to", SerializableDataTypes.INT),
-			ArmorValueCondition::condition
+				OriginsPaper.apoliIdentifier("armor_value"),
+				SerializableData.serializableData()
+						.add("comparison", ApoliDataTypes.COMPARISON)
+						.add("compare_to", SerializableDataTypes.INT),
+				ArmorValueCondition::condition
 		);
 	}
 

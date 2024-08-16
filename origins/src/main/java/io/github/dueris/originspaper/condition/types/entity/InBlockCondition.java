@@ -12,13 +12,13 @@ public class InBlockCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("in_block"),
-			SerializableData.serializableData()
-				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION),
-			(data, entity) -> {
-				return ((ConditionFactory<BlockInWorld>) data.get("block_condition")).test(
-					new BlockInWorld(entity.level(), entity.blockPosition(), true));
-			}
+				OriginsPaper.apoliIdentifier("in_block"),
+				SerializableData.serializableData()
+						.add("block_condition", ApoliDataTypes.BLOCK_CONDITION),
+				(data, entity) -> {
+					return ((ConditionFactory<BlockInWorld>) data.get("block_condition")).test(
+							new BlockInWorld(entity.level(), entity.blockPosition(), true));
+				}
 		);
 	}
 }

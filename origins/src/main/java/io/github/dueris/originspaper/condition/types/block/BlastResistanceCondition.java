@@ -14,14 +14,14 @@ public class BlastResistanceCondition {
 
 	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("blast_resistance"),
-			SerializableData.serializableData()
-				.add("comparison", ApoliDataTypes.COMPARISON)
-				.add("compare_to", SerializableDataTypes.FLOAT),
-			(data, block) -> {
-				BlockState state = block.getState();
-				return ((Comparison) data.get("comparison")).compare(state.getBlock().getExplosionResistance(), data.getFloat("compare_to"));
-			}
+				OriginsPaper.apoliIdentifier("blast_resistance"),
+				SerializableData.serializableData()
+						.add("comparison", ApoliDataTypes.COMPARISON)
+						.add("compare_to", SerializableDataTypes.FLOAT),
+				(data, block) -> {
+					BlockState state = block.getState();
+					return ((Comparison) data.get("comparison")).compare(state.getBlock().getExplosionResistance(), data.getFloat("compare_to"));
+				}
 		);
 	}
 }

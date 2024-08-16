@@ -20,16 +20,16 @@ public class EquippableCondition {
 
 		EquipmentSlot equipmentSlot = data.get("equipment_slot");
 		return (equipmentSlot == null && equipment != null)
-			|| (equipment != null && equipment.getEquipmentSlot() == equipmentSlot);
+				|| (equipment != null && equipment.getEquipmentSlot() == equipmentSlot);
 
 	}
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("equippable"),
-			SerializableData.serializableData()
-				.add("equipment_slot", SerializableDataTypes.EQUIPMENT_SLOT, null),
-			EquippableCondition::condition
+				OriginsPaper.apoliIdentifier("equippable"),
+				SerializableData.serializableData()
+						.add("equipment_slot", SerializableDataTypes.EQUIPMENT_SLOT, null),
+				EquippableCondition::condition
 		);
 
 	}

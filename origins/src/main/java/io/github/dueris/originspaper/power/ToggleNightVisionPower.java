@@ -17,26 +17,36 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ToggleNightVisionPower extends NightVisionPower {
 	private final Keybind keybind;
+	private final boolean activeByDefault;
 
+	private final Map<Player, Boolean> playerToggledStates = new HashMap<>();
 	private final List<Player> TICKED = new ArrayList<>();
-	private boolean toggled;
 
 	public ToggleNightVisionPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
 								  float strength, boolean activeByDefault, Keybind keybind) {
 		super(key, type, name, description, hidden, condition, loadingPriority, strength);
-		this.toggled = activeByDefault;
+		this.activeByDefault = activeByDefault;
 		this.keybind = keybind;
+	}
+
+	public static SerializableData buildFactory() {
+		return NightVisionPower.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("toggle_night_vision"))
+			.add("active_by_default", SerializableDataTypes.BOOLEAN, false)
+			.add("key", ApoliDataTypes.KEYBIND, Keybind.DEFAULT_KEYBIND);
 	}
 
 	@EventHandler
 	public void onKey(@NotNull KeybindTriggerEvent e) {
 		Player player = ((CraftPlayer) e.getPlayer()).getHandle();
 		if (e.getKey().equalsIgnoreCase(keybind.key()) && getPlayers().contains(player) && !TICKED.contains(player)) {
-			this.toggled = !this.toggled;
+			boolean currentState = playerToggledStates.getOrDefault(player, activeByDefault);
+			playerToggledStates.put(player, !currentState);
 			TICKED.add(player);
 			new BukkitRunnable() {
 				@Override
@@ -49,12 +59,11 @@ public class ToggleNightVisionPower extends NightVisionPower {
 
 	@Override
 	public boolean isActive(@NotNull Entity player) {
-		return this.toggled && super.isActive(player);
+		boolean isToggled = playerToggledStates.getOrDefault(player, activeByDefault);
+		return isToggled && super.isActive(player);
 	}
 
-	public static SerializableData buildFactory() {
-		return NightVisionPower.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("toggle_night_vision"))
-			.add("active_by_default", SerializableDataTypes.BOOLEAN, false)
-			.add("key", ApoliDataTypes.KEYBIND, Keybind.DEFAULT_KEYBIND);
+	public Keybind getKeybind() {
+		return keybind;
 	}
 }

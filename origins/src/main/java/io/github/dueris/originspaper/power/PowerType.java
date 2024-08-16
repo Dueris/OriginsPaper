@@ -175,7 +175,7 @@ public class PowerType implements Listener {
 	}
 
 	public boolean isActive(@NotNull Entity player) {
-		if (!(player instanceof Player)) return false;
+		if (!(player instanceof Player) || !getPlayers().contains(player)) return false;
 		return condition == null || condition.test(player);
 	}
 

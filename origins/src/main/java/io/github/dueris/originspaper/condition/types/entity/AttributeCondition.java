@@ -35,17 +35,17 @@ public class AttributeCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("attribute"),
-			SerializableData.serializableData()
-				.add("attribute", SerializableDataTypes.ATTRIBUTE_ENTRY)
-				.add("comparison", ApoliDataTypes.COMPARISON)
-				.add("compare_to", SerializableDataTypes.DOUBLE),
-			(data, entity) -> condition(
-				entity,
-				data.get("attribute"),
-				data.get("comparison"),
-				data.getDouble("compare_to")
-			)
+				OriginsPaper.apoliIdentifier("attribute"),
+				SerializableData.serializableData()
+						.add("attribute", SerializableDataTypes.ATTRIBUTE_ENTRY)
+						.add("comparison", ApoliDataTypes.COMPARISON)
+						.add("compare_to", SerializableDataTypes.DOUBLE),
+				(data, entity) -> condition(
+						entity,
+						data.get("attribute"),
+						data.get("comparison"),
+						data.getDouble("compare_to")
+				)
 		);
 	}
 }

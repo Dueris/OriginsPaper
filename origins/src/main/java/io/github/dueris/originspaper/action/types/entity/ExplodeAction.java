@@ -30,19 +30,19 @@ public class ExplodeAction {
 		Vec3 location = entity.position();
 
 		Explosion explosion = new Explosion(
-			level,
-			null,
-			level.damageSources().generic(),
-			new ExplosionDamageCalculator(),
-			location.x,
-			location.y,
-			location.z,
-			explosionPower,
-			create_fire,
-			data.get("destruction_type"),
-			ParticleTypes.EXPLOSION,
-			ParticleTypes.EXPLOSION_EMITTER,
-			SoundEvents.GENERIC_EXPLODE
+				level,
+				null,
+				level.damageSources().generic(),
+				new ExplosionDamageCalculator(),
+				location.x,
+				location.y,
+				location.z,
+				explosionPower,
+				create_fire,
+				data.get("destruction_type"),
+				ParticleTypes.EXPLOSION,
+				ParticleTypes.EXPLOSION_EMITTER,
+				SoundEvents.GENERIC_EXPLODE
 		);
 		ExplosionMask.getExplosionMask(explosion, level).apply(true, data.get("indestructible"), data.get("destructible"), true);
 
@@ -50,15 +50,15 @@ public class ExplodeAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
-			OriginsPaper.apoliIdentifier("explode"),
-			SerializableData.serializableData()
-				.add("power", SerializableDataTypes.FLOAT)
-				.add("destruction_type", ApoliDataTypes.BACKWARDS_COMPATIBLE_DESTRUCTION_TYPE, Explosion.BlockInteraction.DESTROY)
-				.add("indestructible", ApoliDataTypes.BLOCK_CONDITION, null)
-				.add("indestructible_resistance", SerializableDataTypes.FLOAT, 10.0f)
-				.add("destructible", ApoliDataTypes.BLOCK_CONDITION, null)
-				.add("create_fire", SerializableDataTypes.BOOLEAN, false),
-			ExplodeAction::action
+				OriginsPaper.apoliIdentifier("explode"),
+				SerializableData.serializableData()
+						.add("power", SerializableDataTypes.FLOAT)
+						.add("destruction_type", ApoliDataTypes.BACKWARDS_COMPATIBLE_DESTRUCTION_TYPE, Explosion.BlockInteraction.DESTROY)
+						.add("indestructible", ApoliDataTypes.BLOCK_CONDITION, null)
+						.add("indestructible_resistance", SerializableDataTypes.FLOAT, 10.0f)
+						.add("destructible", ApoliDataTypes.BLOCK_CONDITION, null)
+						.add("create_fire", SerializableDataTypes.BOOLEAN, false),
+				ExplodeAction::action
 		);
 	}
 }

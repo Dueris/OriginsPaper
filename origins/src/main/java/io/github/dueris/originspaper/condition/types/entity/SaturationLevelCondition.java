@@ -14,16 +14,16 @@ public class SaturationLevelCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("saturation_level"),
-			SerializableData.serializableData()
-				.add("comparison", ApoliDataTypes.COMPARISON)
-				.add("compare_to", SerializableDataTypes.FLOAT),
-			(data, entity) -> {
-				if (entity instanceof Player) {
-					return ((Comparison) data.get("comparison")).compare(((Player) entity).getFoodData().getSaturationLevel(), data.getFloat("compare_to"));
+				OriginsPaper.apoliIdentifier("saturation_level"),
+				SerializableData.serializableData()
+						.add("comparison", ApoliDataTypes.COMPARISON)
+						.add("compare_to", SerializableDataTypes.FLOAT),
+				(data, entity) -> {
+					if (entity instanceof Player) {
+						return ((Comparison) data.get("comparison")).compare(((Player) entity).getFoodData().getSaturationLevel(), data.getFloat("compare_to"));
+					}
+					return false;
 				}
-				return false;
-			}
 		);
 	}
 }

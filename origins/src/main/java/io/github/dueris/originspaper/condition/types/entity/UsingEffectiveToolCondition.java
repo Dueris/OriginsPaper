@@ -40,9 +40,9 @@ public class UsingEffectiveToolCondition {
 
 	public static ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("using_effective_tool"),
-			SerializableData.serializableData(),
-			UsingEffectiveToolCondition::condition
+				OriginsPaper.apoliIdentifier("using_effective_tool"),
+				SerializableData.serializableData(),
+				UsingEffectiveToolCondition::condition
 		);
 	}
 }

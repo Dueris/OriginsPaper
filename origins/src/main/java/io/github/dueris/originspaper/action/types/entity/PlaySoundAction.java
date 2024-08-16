@@ -17,13 +17,13 @@ public class PlaySoundAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
-			OriginsPaper.apoliIdentifier("play_sound"),
-			SerializableData.serializableData()
-				.add("sound", SerializableDataTypes.SOUND_EVENT)
-				.add("category", SerializableDataTypes.enumValue(SoundSource.class), null)
-				.add("volume", SerializableDataTypes.FLOAT, 1.0f)
-				.add("pitch", SerializableDataTypes.FLOAT, 1.0f),
-			PlaySoundAction::action
+				OriginsPaper.apoliIdentifier("play_sound"),
+				SerializableData.serializableData()
+						.add("sound", SerializableDataTypes.SOUND_EVENT)
+						.add("category", SerializableDataTypes.enumValue(SoundSource.class), null)
+						.add("volume", SerializableDataTypes.FLOAT, 1.0f)
+						.add("pitch", SerializableDataTypes.FLOAT, 1.0f),
+				PlaySoundAction::action
 		);
 	}
 }

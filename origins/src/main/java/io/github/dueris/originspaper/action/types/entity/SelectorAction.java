@@ -30,34 +30,35 @@ public class SelectorAction {
 		Consumer<Tuple<Entity, Entity>> biEntityAction = data.get("bientity_action");
 
 		CommandSourceStack source = new CommandSourceStack(
-			CommandSource.NULL,
-			entity.position(),
-			entity.getRotationVector(),
-			(ServerLevel) entity.level(),
-			2,
-			entity.getScoreboardName(),
-			entity.getName(),
-			server,
-			entity
+				CommandSource.NULL,
+				entity.position(),
+				entity.getRotationVector(),
+				(ServerLevel) entity.level(),
+				2,
+				entity.getScoreboardName(),
+				entity.getName(),
+				server,
+				entity
 		);
 
 		try {
 			selector.findEntities(source)
-				.stream()
-				.filter(e -> biEntityCondition == null || biEntityCondition.test(new Tuple<>(entity, e)))
-				.forEach(e -> biEntityAction.accept(new Tuple<>(entity, e)));
-		} catch (CommandSyntaxException ignored) {}
+					.stream()
+					.filter(e -> biEntityCondition == null || biEntityCondition.test(new Tuple<>(entity, e)))
+					.forEach(e -> biEntityAction.accept(new Tuple<>(entity, e)));
+		} catch (CommandSyntaxException ignored) {
+		}
 
 	}
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(
-			OriginsPaper.apoliIdentifier("selector_action"),
-			SerializableData.serializableData()
-				.add("selector", ApoliDataTypes.ENTITIES_SELECTOR)
-				.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION)
-				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null),
-			SelectorAction::action
+				OriginsPaper.apoliIdentifier("selector_action"),
+				SerializableData.serializableData()
+						.add("selector", ApoliDataTypes.ENTITIES_SELECTOR)
+						.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION)
+						.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null),
+				SelectorAction::action
 		);
 	}
 }

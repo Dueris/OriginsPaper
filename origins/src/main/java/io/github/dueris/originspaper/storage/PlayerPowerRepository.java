@@ -19,19 +19,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 public final class PlayerPowerRepository {
-	static final ConcurrentMap<ServerPlayer, PlayerPowerRepository> REPO = new ConcurrentHashMap<>() {};
+	static final ConcurrentMap<ServerPlayer, PlayerPowerRepository> REPO = new ConcurrentHashMap<>() {
+	};
 	final Map<OriginLayer, Origin> origins = new ConcurrentHashMap<>();
 	private final ServerPlayer player;
-	private final Map<OriginLayer, Set<PowerType>> appliedPowers = new ConcurrentHashMap<>() {};
+	private final Map<OriginLayer, Set<PowerType>> appliedPowers = new ConcurrentHashMap<>() {
+	};
 
 	public PlayerPowerRepository(ServerPlayer player) {
 		this.player = player;
@@ -92,7 +91,7 @@ public final class PlayerPowerRepository {
 
 	@Unmodifiable
 	public @NotNull List<PowerType> getAppliedPowers(OriginLayer layer) {
-		return appliedPowers.get(layer).stream().filter(Objects::nonNull).toList();
+		return appliedPowers.getOrDefault(layer, new CopyOnWriteArraySet<>()).stream().filter(Objects::nonNull).toList();
 	}
 
 	public synchronized @NotNull CompoundTag serializePowers(@NotNull CompoundTag nbt) {
@@ -145,5 +144,17 @@ public final class PlayerPowerRepository {
 				origins.put(layer, OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(originLocation));
 			} else throw new JsonSyntaxException("Layer value not found in CompoundTag!");
 		});
+
+		// Final check to ensure all layers have a value
+		for (OriginLayer layer : OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values()) {
+			if (!appliedPowers.containsKey(layer)) {
+				appliedPowers.put(layer, new CopyOnWriteArraySet<>());
+			}
+			if (!origins.containsKey(layer)) {
+				origins.put(layer, OriginsPaper.EMPTY_ORIGIN);
+			}
+
+		}
+
 	}
 }

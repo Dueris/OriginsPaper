@@ -14,7 +14,7 @@ public class ConsumeAction {
 
 	public static @NotNull ActionFactory<Tuple<Level, SlotAccess>> getFactory() {
 		return ItemActionFactory.createItemStackBased(OriginsPaper.apoliIdentifier("consume"), SerializableData.serializableData()
-				.add("amount", SerializableDataTypes.INT, 1),
-			(data, worldAndStack) -> worldAndStack.getB().shrink(data.getInt("amount")));
+						.add("amount", SerializableDataTypes.INT, 1),
+				(data, worldAndStack) -> worldAndStack.getB().shrink(data.getInt("amount")));
 	}
 }

@@ -12,12 +12,12 @@ public class SubmergedInCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("submerged_in"),
-			SerializableData.serializableData()
-				.add("fluid", SerializableDataTypes.FLUID_TAG),
-			(data, entity) -> {
-				return Util.apoli$isSubmergedInLoosely(entity, data.get("fluid"));
-			}
+				OriginsPaper.apoliIdentifier("submerged_in"),
+				SerializableData.serializableData()
+						.add("fluid", SerializableDataTypes.FLUID_TAG),
+				(data, entity) -> {
+					return Util.apoli$isSubmergedInLoosely(entity, data.get("fluid"));
+				}
 		);
 	}
 }

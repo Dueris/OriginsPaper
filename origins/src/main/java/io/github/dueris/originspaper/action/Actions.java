@@ -27,19 +27,19 @@ public class Actions {
 
 			try {
 				result.getAllClasses().loadClasses()
-					.stream()
-					.filter(clz -> !clz.isAnnotation() && !clz.isInterface() && !clz.isEnum())
-					.forEach(
-						clz -> {
-							try {
-								ActionFactory<T> factory = ReflectionUtils.invokeStaticMethod(clz, "getFactory");
-								factoryConsumer.accept(factory);
-							} catch (InvocationTargetException | IllegalAccessException |
-									 NoSuchMethodException e) {
-								throw new RuntimeException(e);
-							}
-						}
-					);
+						.stream()
+						.filter(clz -> !clz.isAnnotation() && !clz.isInterface() && !clz.isEnum())
+						.forEach(
+								clz -> {
+									try {
+										ActionFactory<T> factory = ReflectionUtils.invokeStaticMethod(clz, "getFactory");
+										factoryConsumer.accept(factory);
+									} catch (InvocationTargetException | IllegalAccessException |
+											 NoSuchMethodException e) {
+										throw new RuntimeException(e);
+									}
+								}
+						);
 			} catch (Throwable var5) {
 				if (result != null) {
 					try {

@@ -15,17 +15,17 @@ public class OffsetCondition {
 
 	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionFactory<>(
-			OriginsPaper.apoliIdentifier("offset"),
-			SerializableData.serializableData()
-				.add("action", ApoliDataTypes.BLOCK_ACTION)
-				.add("x", SerializableDataTypes.INT, 0)
-				.add("y", SerializableDataTypes.INT, 0)
-				.add("z", SerializableDataTypes.INT, 0),
-			(data, block) -> ((ActionFactory<Triple<Level, BlockPos, Direction>>) data.get("action")).accept(Triple.of(
-				block.getLeft(),
-				block.getMiddle().offset(data.getInt("x"), data.getInt("y"), data.getInt("z")),
-				block.getRight())
-			)
+				OriginsPaper.apoliIdentifier("offset"),
+				SerializableData.serializableData()
+						.add("action", ApoliDataTypes.BLOCK_ACTION)
+						.add("x", SerializableDataTypes.INT, 0)
+						.add("y", SerializableDataTypes.INT, 0)
+						.add("z", SerializableDataTypes.INT, 0),
+				(data, block) -> ((ActionFactory<Triple<Level, BlockPos, Direction>>) data.get("action")).accept(Triple.of(
+						block.getLeft(),
+						block.getMiddle().offset(data.getInt("x"), data.getInt("y"), data.getInt("z")),
+						block.getRight())
+				)
 		);
 	}
 }

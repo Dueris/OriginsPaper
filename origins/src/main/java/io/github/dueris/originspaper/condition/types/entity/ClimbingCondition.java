@@ -15,9 +15,9 @@ public class ClimbingCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("climbing"),
-			SerializableData.serializableData(),
-			ClimbingCondition::condition
+				OriginsPaper.apoliIdentifier("climbing"),
+				SerializableData.serializableData(),
+				ClimbingCondition::condition
 		);
 	}
 }

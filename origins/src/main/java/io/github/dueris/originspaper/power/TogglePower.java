@@ -17,21 +17,24 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TogglePower extends PowerType {
 	private final boolean retainState;
 	private final Keybind keybind;
+	private final boolean activeByDefault;
 
+	private final Map<Player, Boolean> playerToggledStates = new HashMap<>();
 	private final List<Player> TICKED = new ArrayList<>();
-	private boolean toggled;
 
 	public TogglePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
 					   boolean activeByDefault, boolean retainState, Keybind keybind) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
+		this.activeByDefault = activeByDefault;
 		this.retainState = retainState;
 		this.keybind = keybind;
-		this.toggled = activeByDefault;
 	}
 
 	public static SerializableData buildFactory() {
@@ -48,9 +51,10 @@ public class TogglePower extends PowerType {
 
 	@Override
 	public void tick(Player player) {
-
-		if (!super.isActive(player) && this.toggled) {
-			this.toggled = false;
+		if (!super.isActive(player)) {
+			if (playerToggledStates.getOrDefault(player, activeByDefault)) {
+				playerToggledStates.put(player, false);
+			}
 		}
 	}
 
@@ -58,7 +62,8 @@ public class TogglePower extends PowerType {
 	public void onKey(@NotNull KeybindTriggerEvent e) {
 		Player player = ((CraftPlayer) e.getPlayer()).getHandle();
 		if (e.getKey().equalsIgnoreCase(keybind.key()) && getPlayers().contains(player) && !TICKED.contains(player)) {
-			this.toggled = !this.toggled;
+			boolean currentState = playerToggledStates.getOrDefault(player, activeByDefault);
+			playerToggledStates.put(player, !currentState);
 			TICKED.add(player);
 			new BukkitRunnable() {
 				@Override
@@ -71,7 +76,8 @@ public class TogglePower extends PowerType {
 
 	@Override
 	public boolean isActive(@NotNull Entity player) {
-		return this.toggled && super.isActive(player);
+		boolean isToggled = playerToggledStates.getOrDefault(player, activeByDefault);
+		return isToggled && super.isActive(player);
 	}
 
 	public Keybind getKeybind() {

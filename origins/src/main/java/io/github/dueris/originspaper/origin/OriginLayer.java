@@ -53,8 +53,8 @@ public class OriginLayer {
 		this.replace = replace;
 		this.enabled = enabled;
 		this.name = net.kyori.adventure.text.Component.text(
-			LangFile.transform((name != null ? name.getString() : "origin.$namespace.$path.name")
-				.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
+				LangFile.transform((name != null ? name.getString() : "origin.$namespace.$path.name")
+						.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
 		);
 		this.guiTitle = guiTitle;
 		this.allowRandom = allowRandom;
@@ -68,20 +68,20 @@ public class OriginLayer {
 
 	public static SerializableData buildFactory() {
 		return SerializableData.serializableData()
-			.add("order", SerializableDataTypes.INT, Integer.MAX_VALUE)
-			.add("loading_priority", SerializableDataTypes.INT, 0)
-			.add("origins", SerializableDataTypes.list(OriginsDataTypes.ORIGIN_OR_CONDITIONED_ORIGIN))
-			.add("replace", SerializableDataTypes.BOOLEAN, false)
-			.add("enabled", SerializableDataTypes.BOOLEAN, true)
-			.add("name", SerializableDataTypes.TEXT, null)
-			.add("gui_title", OriginsDataTypes.GUI_TITLE, null)
-			.add("allow_random", SerializableDataTypes.BOOLEAN, false)
-			.add("allow_random_unchoosable", SerializableDataTypes.BOOLEAN, false)
-			.add("exclude_random", SerializableDataTypes.list(SerializableDataTypes.IDENTIFIER), new LinkedList<>())
-			.add("replace_exclude_random", SerializableDataTypes.BOOLEAN, false)
-			.add("default_origin", SerializableDataTypes.IDENTIFIER, null)
-			.add("auto_choose", SerializableDataTypes.BOOLEAN, false)
-			.add("hidden", SerializableDataTypes.BOOLEAN, false);
+				.add("order", SerializableDataTypes.INT, Integer.MAX_VALUE)
+				.add("loading_priority", SerializableDataTypes.INT, 0)
+				.add("origins", SerializableDataTypes.list(OriginsDataTypes.ORIGIN_OR_CONDITIONED_ORIGIN))
+				.add("replace", SerializableDataTypes.BOOLEAN, false)
+				.add("enabled", SerializableDataTypes.BOOLEAN, true)
+				.add("name", SerializableDataTypes.TEXT, null)
+				.add("gui_title", OriginsDataTypes.GUI_TITLE, null)
+				.add("allow_random", SerializableDataTypes.BOOLEAN, false)
+				.add("allow_random_unchoosable", SerializableDataTypes.BOOLEAN, false)
+				.add("exclude_random", SerializableDataTypes.list(SerializableDataTypes.IDENTIFIER), new LinkedList<>())
+				.add("replace_exclude_random", SerializableDataTypes.BOOLEAN, false)
+				.add("default_origin", SerializableDataTypes.IDENTIFIER, null)
+				.add("auto_choose", SerializableDataTypes.BOOLEAN, false)
+				.add("hidden", SerializableDataTypes.BOOLEAN, false);
 	}
 
 	public int getOrder() {
@@ -138,22 +138,22 @@ public class OriginLayer {
 
 	public List<Origin> getRandomOrigins() {
 		return !this.isAllowRandom()
-			? new ArrayList<>()
-			: getOriginIdentifiers().stream()
-			.map(OriginsPaper::getOrigin)
-			.filter(origin -> !origin.unchoosable() || this.isAllowRandomUnchoosable())
-			.filter(origin -> {
-				if (!this.getExcludeRandom().isEmpty()) {
-					for (ResourceLocation identifier : this.getExcludeRandom().stream().toList()) {
-						if (origin.key().equals(identifier)) {
-							return false;
+				? new ArrayList<>()
+				: getOriginIdentifiers().stream()
+				.map(OriginsPaper::getOrigin)
+				.filter(origin -> !origin.unchoosable() || this.isAllowRandomUnchoosable())
+				.filter(origin -> {
+					if (!this.getExcludeRandom().isEmpty()) {
+						for (ResourceLocation identifier : this.getExcludeRandom().stream().toList()) {
+							if (origin.key().equals(identifier)) {
+								return false;
+							}
 						}
 					}
-				}
 
-				return true;
-			})
-			.toList();
+					return true;
+				})
+				.toList();
 	}
 
 	public boolean isReplace() {
@@ -213,9 +213,9 @@ public class OriginLayer {
 			}
 
 			otherLayer.origins
-				.stream()
-				.filter(Predicate.not(this.origins::contains))
-				.forEach(this.origins::add);
+					.stream()
+					.filter(Predicate.not(this.origins::contains))
+					.forEach(this.origins::add);
 
 			this.name = otherLayer.name;
 			this.guiTitle = otherLayer.guiTitle;
@@ -227,9 +227,9 @@ public class OriginLayer {
 			}
 
 			otherLayer.excludeRandom
-				.stream()
-				.filter(Predicate.not(this.excludeRandom::contains))
-				.forEach(this.excludeRandom::add);
+					.stream()
+					.filter(Predicate.not(this.excludeRandom::contains))
+					.forEach(this.excludeRandom::add);
 
 			this.defaultOrigin = otherLayer.defaultOrigin;
 			this.autoChoose = otherLayer.autoChoose;
@@ -254,8 +254,8 @@ public class OriginLayer {
 	public record ConditionedOrigin(ConditionFactory<net.minecraft.world.entity.Entity> condition,
 									List<ResourceLocation> origins) {
 		public static final SerializableData DATA = SerializableData.serializableData()
-			.add("condition", ApoliDataTypes.ENTITY_CONDITION, null)
-			.add("origins", SerializableDataTypes.list(SerializableDataTypes.IDENTIFIER));
+				.add("condition", ApoliDataTypes.ENTITY_CONDITION, null)
+				.add("origins", SerializableDataTypes.list(SerializableDataTypes.IDENTIFIER));
 
 		public boolean isConditionFulfilled(Player playerEntity) {
 			return condition == null || condition.test(playerEntity);
@@ -274,8 +274,8 @@ public class OriginLayer {
 		@Override
 		public String toString() {
 			return "ConditionedOrigin{" +
-				"origins=" + origins +
-				'}';
+					"origins=" + origins +
+					'}';
 		}
 	}
 }

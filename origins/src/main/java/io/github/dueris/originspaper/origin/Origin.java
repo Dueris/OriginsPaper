@@ -46,26 +46,26 @@ public class Origin {
 			AsyncUpgradeTracker.upgrades.put(this, new TriPair<>(upgrade.advancementCondition(), upgrade.upgradeToOrigin(), upgrade.announcement()));
 		}
 		this.name = Component.text(
-			LangFile.transform((name != null ? name.getString() : "origin.$namespace.$path.name")
-				.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
+				LangFile.transform((name != null ? name.getString() : "origin.$namespace.$path.name")
+						.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
 		);
 		this.description = Component.text(
-			LangFile.transform((description != null ? description.getString() : "origin.$namespace.$path.description")
-				.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
+				LangFile.transform((description != null ? description.getString() : "origin.$namespace.$path.description")
+						.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
 		);
 	}
 
 	public static SerializableData buildFactory() {
 		return SerializableData.serializableData()
-			.add("powers", SerializableDataTypes.list(SerializableDataTypes.IDENTIFIER), new LinkedList<>())
-			.add("icon", SerializableDataTypes.ITEM_STACK, Items.PLAYER_HEAD.getDefaultInstance())
-			.add("unchoosable", SerializableDataTypes.BOOLEAN, false)
-			.add("order", SerializableDataTypes.INT, Integer.MAX_VALUE)
-			.add("impact", OriginsDataTypes.IMPACT, Impact.NONE)
-			.add("loading_priority", SerializableDataTypes.INT, 0)
-			.add("upgrades", OriginsDataTypes.ORIGIN_UPGRADE, null)
-			.add("name", SerializableDataTypes.TEXT, null)
-			.add("description", SerializableDataTypes.TEXT, null);
+				.add("powers", SerializableDataTypes.list(SerializableDataTypes.IDENTIFIER), new LinkedList<>())
+				.add("icon", SerializableDataTypes.ITEM_STACK, Items.PLAYER_HEAD.getDefaultInstance())
+				.add("unchoosable", SerializableDataTypes.BOOLEAN, false)
+				.add("order", SerializableDataTypes.INT, Integer.MAX_VALUE)
+				.add("impact", OriginsDataTypes.IMPACT, Impact.NONE)
+				.add("loading_priority", SerializableDataTypes.INT, 0)
+				.add("upgrades", OriginsDataTypes.ORIGIN_UPGRADE, null)
+				.add("name", SerializableDataTypes.TEXT, null)
+				.add("description", SerializableDataTypes.TEXT, null);
 	}
 
 	public List<ResourceLocation> powers() {
@@ -121,13 +121,13 @@ public class Origin {
 	@Override
 	public @NotNull String toString() {
 		return "Origin[" +
-			"powers=" + powers + ", " +
-			"icon=" + icon + ", " +
-			"unchoosable=" + unchoosable + ", " +
-			"order=" + order + ", " +
-			"impact=" + impact + ", " +
-			"loadingPriority=" + loadingPriority + ", " +
-			"name=" + name + ", " +
-			"description=" + description + ']';
+				"powers=" + powers + ", " +
+				"icon=" + icon + ", " +
+				"unchoosable=" + unchoosable + ", " +
+				"order=" + order + ", " +
+				"impact=" + impact + ", " +
+				"loadingPriority=" + loadingPriority + ", " +
+				"name=" + name + ", " +
+				"description=" + description + ']';
 	}
 }

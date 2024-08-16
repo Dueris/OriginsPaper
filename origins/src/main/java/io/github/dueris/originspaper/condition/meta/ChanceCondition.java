@@ -13,12 +13,12 @@ public class ChanceCondition {
 
 	public static <T> @NotNull ConditionFactory<T> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("chance"),
-			SerializableData.serializableData()
-				.add("chance", SerializableDataTypes.FLOAT),
-			(data, t) -> {
-				return random.nextFloat() < data.getFloat("chance");
-			}
+				OriginsPaper.apoliIdentifier("chance"),
+				SerializableData.serializableData()
+						.add("chance", SerializableDataTypes.FLOAT),
+				(data, t) -> {
+					return random.nextFloat() < data.getFloat("chance");
+				}
 		);
 	}
 }

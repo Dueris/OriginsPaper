@@ -12,19 +12,19 @@ public class AddXpAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("add_xp"),
-			SerializableData.serializableData()
-				.add("points", SerializableDataTypes.INT, 0)
-				.add("levels", SerializableDataTypes.INT, 0),
-			(data, entity) -> {
-				if (entity instanceof Player) {
-					int points = data.getInt("points");
-					int levels = data.getInt("levels");
-					if (points > 0) {
-						((Player) entity).giveExperiencePoints(points);
+				SerializableData.serializableData()
+						.add("points", SerializableDataTypes.INT, 0)
+						.add("levels", SerializableDataTypes.INT, 0),
+				(data, entity) -> {
+					if (entity instanceof Player) {
+						int points = data.getInt("points");
+						int levels = data.getInt("levels");
+						if (points > 0) {
+							((Player) entity).giveExperiencePoints(points);
+						}
+						((Player) entity).giveExperienceLevels(levels);
 					}
-					((Player) entity).giveExperienceLevels(levels);
 				}
-			}
 		);
 	}
 }

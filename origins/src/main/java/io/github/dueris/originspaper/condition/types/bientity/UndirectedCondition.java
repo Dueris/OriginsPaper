@@ -14,14 +14,14 @@ public class UndirectedCondition {
 
 	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("undirected"),
-			SerializableData.serializableData()
-				.add("condition", ApoliDataTypes.BIENTITY_CONDITION),
-			(data, actorAndTarget) -> {
-				Predicate<Tuple<Entity, Entity>> biEntityCondition = data.get("condition");
-				return biEntityCondition.test(actorAndTarget)
-					|| biEntityCondition.test(new Tuple<>(actorAndTarget.getB(), actorAndTarget.getA()));
-			}
+				OriginsPaper.apoliIdentifier("undirected"),
+				SerializableData.serializableData()
+						.add("condition", ApoliDataTypes.BIENTITY_CONDITION),
+				(data, actorAndTarget) -> {
+					Predicate<Tuple<Entity, Entity>> biEntityCondition = data.get("condition");
+					return biEntityCondition.test(actorAndTarget)
+							|| biEntityCondition.test(new Tuple<>(actorAndTarget.getB(), actorAndTarget.getA()));
+				}
 		);
 	}
 }

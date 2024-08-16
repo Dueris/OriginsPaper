@@ -32,10 +32,10 @@ public class ModifyStatAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("modify_stat"),
-			SerializableData.serializableData()
-				.add("stat", SerializableDataTypes.STAT)
-				.add("modifier", Modifier.DATA_TYPE),
-			ModifyStatAction::action
+				SerializableData.serializableData()
+						.add("stat", SerializableDataTypes.STAT)
+						.add("modifier", Modifier.DATA_TYPE),
+				ModifyStatAction::action
 		);
 	}
 }

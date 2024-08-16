@@ -15,20 +15,20 @@ public class ApplyEffectAction {
 
 	public static @NotNull ActionFactory<Entity> getFactory() {
 		return new ActionFactory<>(OriginsPaper.apoliIdentifier("apply_effect"),
-			SerializableData.serializableData()
-				.add("effect", SerializableDataTypes.STATUS_EFFECT_INSTANCE, null)
-				.add("effects", SerializableDataTypes.list(SerializableDataTypes.STATUS_EFFECT_INSTANCE), null),
-			(data, entity) -> {
-				if (entity instanceof LivingEntity le && !entity.level().isClientSide) {
-					if (data.isPresent("effect")) {
-						MobEffectInstance effect = data.get("effect");
-						le.addEffect(new MobEffectInstance(effect));
-					}
-					if (data.isPresent("effects")) {
-						((List<MobEffectInstance>) data.get("effects")).forEach(e -> le.addEffect(new MobEffectInstance(e)));
+				SerializableData.serializableData()
+						.add("effect", SerializableDataTypes.STATUS_EFFECT_INSTANCE, null)
+						.add("effects", SerializableDataTypes.list(SerializableDataTypes.STATUS_EFFECT_INSTANCE), null),
+				(data, entity) -> {
+					if (entity instanceof LivingEntity le && !entity.level().isClientSide) {
+						if (data.isPresent("effect")) {
+							MobEffectInstance effect = data.get("effect");
+							le.addEffect(new MobEffectInstance(effect));
+						}
+						if (data.isPresent("effects")) {
+							((List<MobEffectInstance>) data.get("effects")).forEach(e -> le.addEffect(new MobEffectInstance(e)));
+						}
 					}
 				}
-			}
 		);
 	}
 }

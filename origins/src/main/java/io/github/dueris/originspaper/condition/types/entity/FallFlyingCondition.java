@@ -11,11 +11,11 @@ public class FallFlyingCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("fall_flying"),
-			SerializableData.serializableData(),
-			(data, entity) -> {
-				return entity instanceof LivingEntity && ((LivingEntity) entity).isFallFlying();
-			}
+				OriginsPaper.apoliIdentifier("fall_flying"),
+				SerializableData.serializableData(),
+				(data, entity) -> {
+					return entity instanceof LivingEntity && ((LivingEntity) entity).isFallFlying();
+				}
 		);
 	}
 }

@@ -13,19 +13,19 @@ public class ChanceAction {
 
 	public static <T> @NotNull ActionFactory<T> getFactory(SerializableDataBuilder<ActionFactory<T>> dataType) {
 		return new ActionFactory<T>(OriginsPaper.apoliIdentifier("chance"),
-			SerializableData.serializableData()
-				.add("action", dataType)
-				.add("chance", SerializableDataTypes.FLOAT)
-				.add("fail_action", dataType, null),
-			(data, t) -> {
-				ActionFactory<T> action = data.get("action");
-				if (new Random().nextFloat() < data.getFloat("chance")) {
-					action.accept(t);
-				} else if (data.isPresent("fail_action")) {
-					ActionFactory<T> fail = data.get("fail_action");
-					fail.accept(t);
+				SerializableData.serializableData()
+						.add("action", dataType)
+						.add("chance", SerializableDataTypes.FLOAT)
+						.add("fail_action", dataType, null),
+				(data, t) -> {
+					ActionFactory<T> action = data.get("action");
+					if (new Random().nextFloat() < data.getFloat("chance")) {
+						action.accept(t);
+					} else if (data.isPresent("fail_action")) {
+						ActionFactory<T> fail = data.get("fail_action");
+						fail.accept(t);
+					}
 				}
-			}
 		);
 	}
 }

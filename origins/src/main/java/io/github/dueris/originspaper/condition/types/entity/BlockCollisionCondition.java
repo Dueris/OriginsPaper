@@ -21,9 +21,9 @@ public class BlockCollisionCondition {
 
 		AABB entityBoundingBox = entity.getBoundingBox();
 		AABB offsetEntityBoundingBox = entityBoundingBox.move(
-			data.getFloat("offset_x") * entityBoundingBox.getXsize(),
-			data.getFloat("offset_y") * entityBoundingBox.getYsize(),
-			data.getFloat("offset_z") * entityBoundingBox.getZsize()
+				data.getFloat("offset_x") * entityBoundingBox.getXsize(),
+				data.getFloat("offset_y") * entityBoundingBox.getYsize(),
+				data.getFloat("offset_z") * entityBoundingBox.getZsize()
 		);
 
 		Predicate<BlockInWorld> blockCondition = data.get("block_condition");
@@ -47,13 +47,13 @@ public class BlockCollisionCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("block_collision"),
-			SerializableData.serializableData()
-				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
-				.add("offset_x", SerializableDataTypes.FLOAT, 0F)
-				.add("offset_y", SerializableDataTypes.FLOAT, 0F)
-				.add("offset_z", SerializableDataTypes.FLOAT, 0F),
-			BlockCollisionCondition::condition
+				OriginsPaper.apoliIdentifier("block_collision"),
+				SerializableData.serializableData()
+						.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
+						.add("offset_x", SerializableDataTypes.FLOAT, 0F)
+						.add("offset_y", SerializableDataTypes.FLOAT, 0F)
+						.add("offset_z", SerializableDataTypes.FLOAT, 0F),
+				BlockCollisionCondition::condition
 		);
 	}
 }

@@ -21,9 +21,9 @@ public class InSnowCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("in_snow"),
-			SerializableData.serializableData(),
-			InSnowCondition::condition
+				OriginsPaper.apoliIdentifier("in_snow"),
+				SerializableData.serializableData(),
+				InSnowCondition::condition
 		);
 	}
 }

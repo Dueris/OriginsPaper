@@ -27,12 +27,12 @@ public class CommandCondition {
 		}
 
 		CommandSource commandOutput = OriginsPaper.showCommandOutput && (!(entity instanceof ServerPlayer player) || player.connection != null)
-			? entity
-			: CommandSource.NULL;
+				? entity
+				: CommandSource.NULL;
 		CommandSourceStack source = entity.createCommandSourceStack()
-			.withSource(commandOutput)
-			.withPermission(4)
-			.withCallback((successful, returnValue) -> result.set(returnValue));
+				.withSource(commandOutput)
+				.withPermission(4)
+				.withCallback((successful, returnValue) -> result.set(returnValue));
 
 		Comparison comparison = data.get("comparison");
 		String command = data.get("command");
@@ -46,12 +46,12 @@ public class CommandCondition {
 
 	public static @NotNull ConditionFactory<Entity> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("command"),
-			SerializableData.serializableData()
-				.add("command", SerializableDataTypes.STRING)
-				.add("comparison", ApoliDataTypes.COMPARISON)
-				.add("compare_to", SerializableDataTypes.INT),
-			CommandCondition::condition
+				OriginsPaper.apoliIdentifier("command"),
+				SerializableData.serializableData()
+						.add("command", SerializableDataTypes.STRING)
+						.add("comparison", ApoliDataTypes.COMPARISON)
+						.add("compare_to", SerializableDataTypes.INT),
+				CommandCondition::condition
 		);
 	}
 }

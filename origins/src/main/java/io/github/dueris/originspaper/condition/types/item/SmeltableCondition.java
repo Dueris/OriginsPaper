@@ -15,15 +15,15 @@ public class SmeltableCondition {
 	public static boolean condition(SerializableData.Instance data, @NotNull Tuple<Level, ItemStack> worldAndStack) {
 		Level world = worldAndStack.getA();
 		return world != null && world.getRecipeManager()
-			.getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(worldAndStack.getB()), world)
-			.isPresent();
+				.getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(worldAndStack.getB()), world)
+				.isPresent();
 	}
 
 	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionFactory<>(
-			OriginsPaper.apoliIdentifier("smeltable"),
-			SerializableData.serializableData(),
-			SmeltableCondition::condition
+				OriginsPaper.apoliIdentifier("smeltable"),
+				SerializableData.serializableData(),
+				SmeltableCondition::condition
 		);
 	}
 

@@ -41,10 +41,10 @@ public class BoneMealAction {
 
 	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionFactory<>(
-			OriginsPaper.apoliIdentifier("bonemeal"),
-			SerializableData.serializableData()
-				.add("effects", SerializableDataTypes.BOOLEAN, true),
-			BoneMealAction::action
+				OriginsPaper.apoliIdentifier("bonemeal"),
+				SerializableData.serializableData()
+						.add("effects", SerializableDataTypes.BOOLEAN, true),
+				BoneMealAction::action
 		);
 	}
 }
