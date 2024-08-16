@@ -16,7 +16,7 @@
         },
         "if_action": {
           "type": "origins:set_block",
-          "block": "origins:temporary_cobweb"
+          "block": "minecraft:cobweb"
         }
       }
     },

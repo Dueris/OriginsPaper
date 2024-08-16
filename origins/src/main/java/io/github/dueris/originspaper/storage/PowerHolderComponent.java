@@ -213,7 +213,9 @@ public class PowerHolderComponent implements Listener {
 			power.forPlayer(((CraftPlayer) player).getHandle());
 			PlayerPowerRepository.getOrCreateRepo(getNMS(player)).addPower(power, layer);
 
-			power.onAdded(((CraftPlayer) player).getHandle());
+			if (isNew) {
+				power.onAdded(((CraftPlayer) player).getHandle());
+			}
 			PowerUtils.markGained(power, player);
 			if (!suppress) {
 				Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
@@ -229,7 +231,9 @@ public class PowerHolderComponent implements Listener {
 
 	public static void unloadPower(Player player, PowerType power, OriginLayer layer, boolean suppress, boolean isNew) {
 		if (power != null) {
-			power.onRemoved(((CraftPlayer) player).getHandle());
+			if (isNew) {
+				power.onRemoved(((CraftPlayer) player).getHandle());
+			}
 			PlayerPowerRepository.getOrCreateRepo(getNMS(player)).removePower(power, layer);
 			power.removePlayer(((CraftPlayer) player).getHandle());
 			if (!suppress) {

@@ -88,36 +88,7 @@ public class EntityGlowPower extends PowerType {
 						utils.setGlowing(entity.getBukkitEntity(), p, (color == null || color.toString().equalsIgnoreCase("§r")) ? ChatColor.WHITE : color);
 					} else {
 						java.awt.Color awtColor = new Color(Math.round(red * 255), Math.round(green * 255), Math.round(blue * 255));
-						utils.setGlowing(entity.getBukkitEntity(), p, translateBarColor(new ObjectProvider<BarColor>() {
-							@Override
-							public BarColor get() {
-								return BarColor.WHITE;
-							}
-
-							public BarColor getColor(java.awt.Color color) {
-								int rgb = color.getRGB();
-								int red = (rgb >> 16) & 0xFF;
-								int green = (rgb >> 8) & 0xFF;
-								int blue = rgb & 0xFF;
-
-								if (red > green && red > blue) {
-									if (red - green < 30) return BarColor.YELLOW;
-									return BarColor.RED;
-								} else if (green > red && green > blue) {
-									return BarColor.GREEN;
-								} else if (blue > red && blue > green) {
-									return BarColor.BLUE;
-								} else if (red == green && red == blue) {
-									return BarColor.WHITE;
-								} else if (red == green) {
-									return BarColor.YELLOW;
-								} else if (red == blue) {
-									return BarColor.PURPLE;
-								} else {
-									return BarColor.GREEN;
-								}
-							}
-						}.getColor(awtColor)));
+						utils.setGlowing(entity.getBukkitEntity(), p, translateBarColor(GlowTranslator.getColor(awtColor)));
 					}
 				}
 			} else {
@@ -127,6 +98,37 @@ public class EntityGlowPower extends PowerType {
 			}
 		} catch (ReflectiveOperationException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	protected static class GlowTranslator implements ObjectProvider<BarColor> {
+		public static BarColor getColor(java.awt.Color color) {
+			int rgb = color.getRGB();
+			int red = (rgb >> 16) & 0xFF;
+			int green = (rgb >> 8) & 0xFF;
+			int blue = rgb & 0xFF;
+
+			if (red > green && red > blue) {
+				if (red - green < 30) return BarColor.YELLOW;
+				return BarColor.RED;
+			} else if (green > red && green > blue) {
+				return BarColor.GREEN;
+			} else if (blue > red && blue > green) {
+				return BarColor.BLUE;
+			} else if (red == green && red == blue) {
+				return BarColor.WHITE;
+			} else if (red == green) {
+				return BarColor.YELLOW;
+			} else if (red == blue) {
+				return BarColor.PURPLE;
+			} else {
+				return BarColor.GREEN;
+			}
+		}
+
+		@Override
+		public BarColor get() {
+			return BarColor.WHITE;
 		}
 	}
 }

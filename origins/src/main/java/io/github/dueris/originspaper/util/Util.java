@@ -63,12 +63,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.CraftRegistry;
-import org.bukkit.craftbukkit.block.CraftBlockType;
 import org.bukkit.craftbukkit.damage.CraftDamageSource;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
@@ -131,20 +129,7 @@ public class Util {
 	private static final List<String> EXEMPT_SLOTS = List.of("weapon", "weapon.mainhand");
 	public static Registry<DamageType> DAMAGE_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
 	public static MinecraftServer server = OriginsPaper.server;
-	public static HashMap<String, Material> KNOWN_MATERIALS = new HashMap<>();
 	public static Logger LOGGER = LogManager.getLogger("OriginsPaper");
-
-	static {
-		BuiltInRegistries.BLOCK.forEach(block -> {
-			String k = CraftBlockType.minecraftToBukkit(block).getKey().asString();
-			if (k.contains(":")) {
-				KNOWN_MATERIALS.put(k, block.defaultBlockState().getBukkitMaterial());
-				k = k.split(":")[1];
-			}
-
-			KNOWN_MATERIALS.put(k, block.defaultBlockState().getBukkitMaterial());
-		});
-	}
 
 	public static DamageSource getDamageSource(DamageType type) {
 		return getDamageSource(type, null);

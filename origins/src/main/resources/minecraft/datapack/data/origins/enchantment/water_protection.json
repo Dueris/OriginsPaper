@@ -1,6 +1,6 @@
 {
   "description": {
-    "translate": "enchantment.origins.water_protection"
+    "text": "Water Protection"
   },
   "exclusive_set": "#origins:exclusive_set/water_protection",
   "supported_items": "#minecraft:enchantable/armor",

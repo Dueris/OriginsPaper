@@ -52,7 +52,9 @@ public class ActionOnCallbackPower extends PowerType {
 
 	@Override
 	public void onAdded(Player player) {
-		super.onAdded(player);
+		if (this.isActive(player) && entityActionAdded != null) {
+			entityActionAdded.accept(player);
+		}
 	}
 
 	@Override
