@@ -12,9 +12,7 @@ public class CollidedHorizontallyCondition {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("collided_horizontally"),
 			SerializableData.serializableData(),
-			(data, entity) -> {
-				return entity.horizontalCollision;
-			}
+			(data, entity) -> entity.horizontalCollision
 		);
 	}
 }

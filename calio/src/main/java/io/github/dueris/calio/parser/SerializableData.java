@@ -23,7 +23,7 @@ public class SerializableData {
 	private final Object2IntOpenHashMap<String> keyPriorities = new Object2IntOpenHashMap<>();
 	@Nullable
 	protected ResourceLocation typedInstance;
-	Consumer<Instance> postProcessor;
+	public Consumer<Instance> postProcessor;
 	private int priorityCounter = 0;
 
 	public static @NotNull SerializableData serializableData() {

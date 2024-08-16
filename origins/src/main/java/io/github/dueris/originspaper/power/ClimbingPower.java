@@ -32,9 +32,9 @@ public class ClimbingPower extends PowerType {
 	@Override
 	public void tick(@NotNull Player p) {
 		if (!p.level().getBlockStates(p.getBoundingBox().inflate(0.1, 0, 0.1)).filter(state -> state.getBukkitMaterial().isCollidable()).toList().isEmpty()) {
-			if (isActive(p) && allowedToClimb.contains(p)) {
+			if (isActive(p) && allowedToClimb.contains((org.bukkit.entity.Player) p.getBukkitEntity())) {
 				active_climbing.add(p);
-				p.getBukkitEntity().addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 4, 2, false, false, false));
+				p.getBukkitEntity().addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 3, 2, false, false, false));
 			} else active_climbing.remove(p);
 		}
 	}
