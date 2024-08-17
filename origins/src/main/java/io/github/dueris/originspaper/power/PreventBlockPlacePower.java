@@ -123,22 +123,6 @@ public class PreventBlockPlacePower extends PowerType {
 			&& (placeToCondition == null || placeToCondition.test(new BlockInWorld(entity.level(), toPos, true))));
 	}
 
-	@EventHandler
-	public void onBlockPlace(@NotNull BlockPlaceEvent e) {
-		Player player = ((CraftPlayer) e.getPlayer()).getHandle();
-		if (getPlayers().contains(player) && isActive(player)) {
-			ItemStack held = CraftItemStack.unwrap(e.getItemInHand());
-			InteractionHand hand = CraftEquipmentSlot.getHand(e.getHand());
-			BlockPos toPos = ((CraftBlock)e.getBlock()).getPosition();
-			BlockPos onPos = ((CraftBlock)e.getBlockAgainst()).getPosition();
-			Direction direction = CraftBlock.blockFaceToNotch(e.getBlockAgainst().getFace(e.getBlockPlaced()));
-			if (doesPrevent(player, held,  hand, toPos, onPos, direction)) {
-				executeActions(player, hand, toPos, onPos, direction);
-				e.setCancelled(true);
-			}
-		}
-	}
-
 	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("prevent_block_place"))
 			.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)

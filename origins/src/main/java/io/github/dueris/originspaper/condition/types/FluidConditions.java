@@ -22,11 +22,7 @@ public class FluidConditions {
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("still"),
 			SerializableData.serializableData(),
-			(data, fluid) -> {
-				System.out.println(fluid.getType());
-				System.out.println(fluid.isSource());
-				return fluid.isSource();
-			}
+			(data, fluid) -> fluid.isSource()
 		));
 		register(new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("in_tag"),

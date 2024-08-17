@@ -16,6 +16,8 @@ import org.objectweb.asm.tree.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 public class ASMUtils {
@@ -141,7 +143,11 @@ public class ASMUtils {
 
 		if (MixBukkit.WRITE_TRANSFORMED_CLASS) {
 			try {
-				File outFile = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID() + ".class");
+				Path mixinOut = Paths.get("cache/mixin/output");
+				if (!mixinOut.toFile().exists()) {
+					mixinOut.toFile().mkdirs();
+				}
+				File outFile = new File(mixinOut.toFile(), UUID.randomUUID() + ".class");
 				Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "// Wrote output class to " + outFile);
 				FileOutputStream outputStream = new FileOutputStream(outFile);
 				outputStream.write(writer.toByteArray());
