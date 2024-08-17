@@ -151,7 +151,7 @@ public class AutoMapper {
 				outputStream.write(read);
 			}
 			try {
-				mapUtil.makeFieldMaps(new String(outputStream.toByteArray()), mappingFile, true);
+				mapUtil.makeFieldMaps(outputStream.toString(), mappingFile, true);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -173,7 +173,7 @@ public class AutoMapper {
 	}
 
 	public static String getMCVersion() {
-		return Bukkit.getBukkitVersion().split("-")[0];
+		return "1.21.1";
 	}
 
 	private static boolean shouldLoadMapping() {
@@ -198,12 +198,12 @@ public class AutoMapper {
 	private static class VersionInfo {
 
 		private static final Pattern URL_PATTERN = Pattern.compile("https://launcher.mojang.com/v1/objects/([0-9a-f]{40})/.*");
-		private String minecraftVersion;
-		private String accessTransforms;
-		private String classMappings;
-		private String memberMappings;
-		private String packageMappings;
-		private String minecraftHash;
+		private final String minecraftVersion;
+		private final String accessTransforms;
+		private final String classMappings;
+		private final String memberMappings;
+		private final String packageMappings;
+		private final String minecraftHash;
 		private String classMapCommand;
 		private String memberMapCommand;
 		private String finalMapCommand;
@@ -211,7 +211,7 @@ public class AutoMapper {
 		private String serverUrl;
 		private String mappingsUrl;
 		private String spigotVersion;
-		private int toolsVersion = -1;
+		private final int toolsVersion = -1;
 
 		public VersionInfo(String minecraftVersion, String accessTransforms, String classMappings, String memberMappings, String packageMappings, String minecraftHash) {
 			this.minecraftVersion = minecraftVersion;
@@ -256,7 +256,7 @@ public class AutoMapper {
 		private final BiMap<String, String> obf2Buk = HashBiMap.create();
 		private final BiMap<String, String> moj2Obf = HashBiMap.create();
 		//
-		private List<String> header = new ArrayList<>();
+		private final List<String> header = new ArrayList<>();
 
 		public static String deobfClass(String obf, Map<String, String> classMaps) {
 			String buk = classMaps.get(obf);
@@ -403,7 +403,6 @@ public class AutoMapper {
 			List<String> outFields = new ArrayList<>(header);
 
 			String currentClass = null;
-			outer:
 			for (String line : mojIn.split("\n")) {
 				if (line.startsWith("#")) {
 					continue;

@@ -9,11 +9,13 @@ import com.dragoncommissions.mixbukkit.utils.io.BukkitErrorOutputStream;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +33,7 @@ public class MixBukkit {
 	public final static BuildType BUILD_TYPE = BuildType.SNAPSHOT;
 	@Getter
 	private static final Map<String, MixinPlugin> plugins = new HashMap<>();
+	private static final org.slf4j.Logger log = LoggerFactory.getLogger(MixBukkit.class);
 	public static boolean DEBUG = BUILD_TYPE.isDevBuild();
 	public static boolean WRITE_TRANSFORMED_CLASS = false;
 	public static boolean SAFE_MODE = true;
@@ -57,55 +60,47 @@ public class MixBukkit {
 	}
 
 	@SneakyThrows
-	public void onEnable(JavaPlugin plugin, File pluginFile, URLClassLoader parent) {
+	public void onEnable(Logger logger, File pluginFile, URLClassLoader parent) {
 		// ((URLClassLoader) plugin.getClassLoader().getParent());
 		this.pluginFile = pluginFile; // plugin.getFile()
 
 		loadConfig();
 
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "=-=-=-=-= MixBukkit Loader =-=-=-=-=");
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "Version: " + VERSION);
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "Build Type: " + BUILD_TYPE);
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "MC Version: " + AutoMapper.getMCVersion());
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "Server Remapped: " + !AutoMapper.isObfuscatedBuild());
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "");
-		if (!SAFE_MODE) {
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "// Warning: Safe mode is disabled! It might load invalid class and crash the Server/JVM");
-		}
-		if (!DEBUG) {
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "// If you wish to see debug messages, please enable \"debug-mode\" in your config file");
-		} else {
-			if (!WRITE_TRANSFORMED_CLASS) {
-				plugin.getServer().getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "// If you wish to see transformed version of class (for testing purposes), you can enable \"write-transformed-class\" in config!");
-			}
-		}
-		if (WRITE_TRANSFORMED_CLASS) {
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "// Write output class enabled! Transformed classes will be renamed and go into your temp folder.");
-		}
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "");
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "~~ Started loading ~~");
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + " - Attaching to JVM...");
+		logger.info("=-=-=-=-= MIXIN LOADER =-=-=-=-=");
+		logger.info(" Starting MIXIN loader on server:");
+		logger.info(" - Version: " + VERSION);
+		logger.info(" - Build Type: " + BUILD_TYPE);
+		logger.info(" - MC Version: " + AutoMapper.getMCVersion());
+		logger.info("");
+
+		logger.info("Attaching to JVM...");
 		jvmAttacher = new JVMAttacher(this);
 		jvmAttacher.attach();
 		if (INSTRUMENTATION == null) {
-//            plugin.setEnabled(false);
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "- Failed grabbing instrumentation! If you believe this is an issue, please open a ticket");
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "");
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "======= FAILED GETTING INSTRUMENTATION ======");
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Please check those things before opening an issue:");
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "1. Do you have -XX:+DisableAttachMechanism? If yes, remove it from server start command.");
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "2. Does the server have permission to spawn a process? If no, give it. Normally yes unless you are using server panel that limits the privilege");
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "");
-			throw new NullPointerException("Instrumentation is null");
+			try {
+				logger.warn("Failed grabbing instrumentation! If you believe this is an issue, please open a ticket");
+				logger.warn("");
+				logger.warn("======= FAILED GETTING INSTRUMENTATION ======");
+				logger.warn("Please check those things before opening an issue:");
+				logger.warn("1. Do you have -XX:+DisableAttachMechanism? If yes, remove it from server start command.");
+				logger.warn("2. Does the server have permission to spawn a process? If no, give it. Normally yes unless you are using a server panel that limits the privilege");
+				logger.warn("");
+
+				throw new NullPointerException("Instrumentation is null");
+			} catch (Exception e) {
+				logger.error("An error occurred:", e);
+			}
 		}
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "- Finished Attaching!");
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "- Preparing class transformers...");
+
+		logger.info("- Finished Attaching!");
+		logger.info("- Preparing class transformers...");
+
 		ClassesManager.init();
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "- Finished preparing class transformers!");
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "");
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "");
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[!] Finished loading MixBukkit!");
-		plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+
+		logger.info("- Finished preparing class transformers!");
+		logger.info("");
+		logger.info("Finished loading MIXIN!");
+		logger.info("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
 		PREPARED = true;
 	}
 
@@ -113,7 +108,7 @@ public class MixBukkit {
 		try {
 			SAFE_MODE = true;
 			DEBUG = true;
-			WRITE_TRANSFORMED_CLASS = true;
+			WRITE_TRANSFORMED_CLASS = false;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

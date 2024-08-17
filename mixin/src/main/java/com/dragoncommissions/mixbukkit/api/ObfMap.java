@@ -15,8 +15,8 @@ import java.util.Scanner;
 public class ObfMap {
 
 	// Deobf -> obf
-	private Map<FieldMapping, String> fieldMappings = new HashMap<>();
-	private Map<MethodMapping, String> methodMappings = new HashMap<>();
+	private final Map<FieldMapping, String> fieldMappings = new HashMap<>();
+	private final Map<MethodMapping, String> methodMappings = new HashMap<>();
 
 	public ObfMap(InputStream memberMap) {
 		if (memberMap == null) {

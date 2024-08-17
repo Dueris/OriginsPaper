@@ -20,14 +20,6 @@ public class CallbackInfo {
 	@Setter
 	private boolean returned;
 
-	public boolean isReturned() {
-		return returned;
-	}
-
-	public Object getReturnValue() {
-		return returnValue;
-	}
-
 	@SneakyThrows
 	public static InsnList generateCallBackInfo() {
 		InsnList out = new InsnList();
@@ -78,8 +70,16 @@ public class CallbackInfo {
 		return out;
 	}
 
+	public boolean isReturned() {
+		return returned;
+	}
+
 	public void setReturned(boolean returned) {
 		this.returned = returned;
+	}
+
+	public Object getReturnValue() {
+		return returnValue;
 	}
 
 	public void setReturnValue(Object returnValue) {

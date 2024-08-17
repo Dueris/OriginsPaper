@@ -17,8 +17,8 @@ import java.util.List;
 @Getter
 public class MActionInsertShellCode implements MixinAction {
 
-	private ShellCode shellCode;
-	private HookLocator hookLocator;
+	private final ShellCode shellCode;
+	private final HookLocator hookLocator;
 
 	public MActionInsertShellCode(ShellCode shellCode, HookLocator hookLocator) {
 		this.shellCode = shellCode;

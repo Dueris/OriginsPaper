@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 @AllArgsConstructor
 public class ShellCodeReflectionMixinPluginMethodCall extends ShellCode {
 
-	private Method handler;
+	private final Method handler;
 
 	public ShellCodeReflectionMixinPluginMethodCall(Method handler) {
 		this.handler = handler;

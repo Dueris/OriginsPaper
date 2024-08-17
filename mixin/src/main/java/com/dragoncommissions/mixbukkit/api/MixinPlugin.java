@@ -33,11 +33,11 @@ import java.util.List;
 public class MixinPlugin {
 
 	@Getter
-	private ObfMap obfMap;
+	private final ObfMap obfMap;
 	@Getter
-	private Plugin plugin;
+	private final Plugin plugin;
 
-	private List<String> registeredMixins = new ArrayList<>();
+	private final List<String> registeredMixins = new ArrayList<>();
 
 	public MixinPlugin(Plugin plugin, ObfMap obfMap) {
 		this.plugin = plugin;

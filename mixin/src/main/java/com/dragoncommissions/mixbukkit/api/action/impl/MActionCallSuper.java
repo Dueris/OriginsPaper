@@ -13,7 +13,7 @@ import java.lang.reflect.Modifier;
 
 public class MActionCallSuper implements MixinAction {
 
-	private MixinPlugin plugin;
+	private final MixinPlugin plugin;
 
 	public MActionCallSuper(MixinPlugin plugin) {
 		this.plugin = plugin;

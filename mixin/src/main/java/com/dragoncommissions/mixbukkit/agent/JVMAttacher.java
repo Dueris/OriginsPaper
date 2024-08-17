@@ -12,7 +12,7 @@ import java.lang.management.ManagementFactory;
 public class JVMAttacher {
 
 	static final UnsafeAccess UA = UnsafeAccess.getInstance();
-	private MixBukkit mixBukkit;
+	private final MixBukkit mixBukkit;
 
 	public JVMAttacher(MixBukkit mixBukkit) {
 		this.mixBukkit = mixBukkit;

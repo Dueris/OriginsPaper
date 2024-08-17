@@ -1,9 +1,11 @@
 package io.github.dueris.originspaper;
 
+import com.dragoncommissions.mixbukkit.MixBukkit;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.dueris.calio.parser.CalioParser;
 import io.github.dueris.originspaper.command.Commands;
 import io.github.dueris.originspaper.content.NMSBootstrap;
+import io.github.dueris.originspaper.mixin.OriginsMixins;
 import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.util.WrappedBootstrapContext;
 import io.papermc.paper.command.brigadier.ApiMirrorRootNode;
@@ -18,12 +20,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.ProtectionDomain;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -32,6 +36,7 @@ import java.util.logging.Logger;
 public class Bootstrap implements PluginBootstrap {
 	public static ArrayList<Consumer<WrappedBootstrapContext>> apiCalls = new ArrayList<>();
 	public static AtomicBoolean BOOTSTRAPPED = new AtomicBoolean(false);
+	public static AtomicReference<MixBukkit> MIXIN_LOADER = new AtomicReference<>();
 
 	public static void copyOriginDatapack(Path datapackPath) {
 		String jarPath = getJarPath();
@@ -168,6 +173,11 @@ public class Bootstrap implements PluginBootstrap {
 			Registries.LANG,
 			Registries.CHOOSING_PAGE
 		);
+
+		MixBukkit bukkit = new MixBukkit();
+		bukkit.onEnable(context.LOGGER, bootContext.getPluginSource().toFile(), (URLClassLoader) this.getClass().getClassLoader());
+
+		MIXIN_LOADER.set(bukkit);
 		BOOTSTRAPPED.set(true);
 	}
 

@@ -80,7 +80,7 @@ public abstract class CustomPrinter extends Printer {
 
 	static void main(String[] args, String usage, CustomPrinter printer, PrintWriter output, PrintWriter logger) throws IOException {
 		if (args.length >= 1 && args.length <= 2 && (!args[0].equals("-debug") && !args[0].equals("-nodebug") || args.length == 2)) {
-			TraceClassVisitor traceClassVisitor = new TraceClassVisitor((ClassVisitor) null, printer, output);
+			TraceClassVisitor traceClassVisitor = new TraceClassVisitor(null, printer, output);
 			String className;
 			byte parsingOptions;
 			if (args[0].equals("-nodebug")) {

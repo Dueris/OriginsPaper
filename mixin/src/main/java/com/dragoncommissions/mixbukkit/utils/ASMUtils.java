@@ -44,7 +44,7 @@ public class ASMUtils {
 			default:
 				if (type.endsWith("[]")) {
 					String s = toDescriptorTypeName(type.substring(0, type.length() - 2));
-					return "[" + s.substring(0, s.length());
+					return "[" + s;
 				}
 				String clazzType = type.replace('.', '/');
 				if (type.startsWith("[") && type.endsWith(";")) {

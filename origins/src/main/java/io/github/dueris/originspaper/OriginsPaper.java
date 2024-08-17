@@ -172,17 +172,19 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 	}
 
 	@Override
-	public void onEnable() {
+	public void onLoad() {
 		if (!Bootstrap.BOOTSTRAPPED.get()) {
 			Bootstrap bootstrap = new Bootstrap();
 			bootstrap.bootstrap(null);
 		}
 
-		MixBukkit bukkit = new MixBukkit();
-		bukkit.onEnable(this, this.getFile(), (URLClassLoader) this.getClassLoader());
-
 		Bootstrap.BOOTSTRAPPED.set(false);
 		plugin = this;
+		OriginsMixins.init(Bootstrap.MIXIN_LOADER.get());
+	}
+
+	@Override
+	public void onEnable() {
 		Getter<Boolean> startup = () -> {
 			this.finalizePreboot();
 			this.registry = CalioRegistry.INSTANCE;
@@ -198,7 +200,6 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 					.color(TextColor.fromHexString("#4fec4f"))
 			);
 			System.out.println();
-			OriginsMixins.init(bukkit);
 			server = ((CraftServer) Bukkit.getServer()).getServer();
 			world_container = server.options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
 			playerDataFolder = server.playerDataStorage.getPlayerDir();

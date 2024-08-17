@@ -26,7 +26,7 @@ import java.util.List;
 @Getter
 public class IShellCodeReflectionMethodInvoke extends ShellCode {
 
-	private Method method;
+	private final Method method;
 	private List<Integer> argumentVarIndex = new ArrayList<>();
 
 	public IShellCodeReflectionMethodInvoke(Method method) {

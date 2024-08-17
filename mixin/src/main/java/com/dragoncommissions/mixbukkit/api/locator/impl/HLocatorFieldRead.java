@@ -25,8 +25,7 @@ public class HLocatorFieldRead implements HookLocator {
 		List<Integer> out = new ArrayList<>();
 		int amount = 0;
 		for (int i = 0; i < insnList.size(); i++) {
-			if (insnList.get(i) instanceof FieldInsnNode) {
-				FieldInsnNode fieldInsnNode = (FieldInsnNode) insnList.get(i);
+			if (insnList.get(i) instanceof FieldInsnNode fieldInsnNode) {
 				String owner = field.getDeclaringClass().getName().replace(".", "/");
 				String name = field.getName();
 				String desc = ASMUtils.toDescriptorTypeName(field.getType().getName());

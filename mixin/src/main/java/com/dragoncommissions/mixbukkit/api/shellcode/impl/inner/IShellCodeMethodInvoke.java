@@ -24,7 +24,7 @@ import java.lang.reflect.Modifier;
 @Getter
 public class IShellCodeMethodInvoke extends ShellCode {
 
-	private Method method;
+	private final Method method;
 
 	public IShellCodeMethodInvoke(Method method) {
 		this.method = method;

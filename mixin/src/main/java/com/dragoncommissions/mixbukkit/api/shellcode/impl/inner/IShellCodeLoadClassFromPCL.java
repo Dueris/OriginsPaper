@@ -20,7 +20,7 @@ import org.objectweb.asm.tree.MethodNode;
 )
 public class IShellCodeLoadClassFromPCL extends ShellCode {
 
-	private String name;
+	private final String name;
 
 	public IShellCodeLoadClassFromPCL(String className) {
 		this.name = className.replace("/", ".");

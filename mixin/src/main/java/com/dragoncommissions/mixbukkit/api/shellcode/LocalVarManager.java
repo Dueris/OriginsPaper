@@ -7,7 +7,7 @@ import org.objectweb.asm.tree.MethodNode;
 public class LocalVarManager {
 
 	@Getter
-	private MethodNode methodNode;
+	private final MethodNode methodNode;
 
 	private int latestVarNumber;
 

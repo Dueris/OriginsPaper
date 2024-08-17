@@ -11,6 +11,7 @@ public class TestMixin {
 
 	public static void hurt(EnderMan test, DamageSource damageSource, float damage, CallbackInfo callBackInfo) {
 		Bukkit.broadcastMessage(test.getDisplayName().getString() + " gets hurt from " + damageSource.getMsgId() + "  (Damage amount: " + damage + "), but i say neigh");
+		callBackInfo.setReturned(true);
 		callBackInfo.setReturnValue(false);
 	}
 }

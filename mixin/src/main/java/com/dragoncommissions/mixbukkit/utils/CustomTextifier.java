@@ -160,7 +160,7 @@ public class CustomTextifier extends MethodVisitor {
 
 		this.stringBuilder.append("module ").append(name).append(" { ").append(version == null ? "" : "// " + version).append("\n\n");
 		this.text.add(this.stringBuilder.toString());
-		return this.addNewTextifier((String) null);
+		return this.addNewTextifier(null);
 	}
 
 	public void visitNestHost(String nestHost) {
@@ -237,7 +237,7 @@ public class CustomTextifier extends MethodVisitor {
 		this.stringBuilder.append(' ').append(name);
 
 		this.text.add(this.stringBuilder.toString());
-		return this.addNewTextifier((String) null);
+		return this.addNewTextifier(null);
 	}
 
 	public CustomTextifier visitField(int access, String name, String descriptor, String signature, Object value) {
@@ -271,7 +271,7 @@ public class CustomTextifier extends MethodVisitor {
 
 
 		this.text.add(this.stringBuilder.toString());
-		return this.addNewTextifier((String) null);
+		return this.addNewTextifier(null);
 	}
 
 	public CustomTextifier visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
@@ -324,7 +324,7 @@ public class CustomTextifier extends MethodVisitor {
 
 
 		this.text.add(this.stringBuilder.toString());
-		return this.addNewTextifier((String) null);
+		return this.addNewTextifier(null);
 	}
 
 	public void visitClassEnd() {
@@ -443,57 +443,49 @@ public class CustomTextifier extends MethodVisitor {
 		} else if (value.getClass().isArray()) {
 			this.stringBuilder.append('{');
 			int i;
-			if (value instanceof byte[]) {
-				byte[] byteArray = (byte[]) value;
+			if (value instanceof byte[] byteArray) {
 
 				for (i = 0; i < byteArray.length; ++i) {
 					this.maybeAppendComma(i);
 					this.visitByte(byteArray[i]);
 				}
-			} else if (value instanceof boolean[]) {
-				boolean[] booleanArray = (boolean[]) value;
+			} else if (value instanceof boolean[] booleanArray) {
 
 				for (i = 0; i < booleanArray.length; ++i) {
 					this.maybeAppendComma(i);
 					this.visitBoolean(booleanArray[i]);
 				}
-			} else if (value instanceof short[]) {
-				short[] shortArray = (short[]) value;
+			} else if (value instanceof short[] shortArray) {
 
 				for (i = 0; i < shortArray.length; ++i) {
 					this.maybeAppendComma(i);
 					this.visitShort(shortArray[i]);
 				}
-			} else if (value instanceof char[]) {
-				char[] charArray = (char[]) value;
+			} else if (value instanceof char[] charArray) {
 
 				for (i = 0; i < charArray.length; ++i) {
 					this.maybeAppendComma(i);
 					this.visitChar(charArray[i]);
 				}
-			} else if (value instanceof int[]) {
-				int[] intArray = (int[]) value;
+			} else if (value instanceof int[] intArray) {
 
 				for (i = 0; i < intArray.length; ++i) {
 					this.maybeAppendComma(i);
 					this.visitInt(intArray[i]);
 				}
-			} else if (value instanceof long[]) {
-				long[] longArray = (long[]) value;
+			} else if (value instanceof long[] longArray) {
 
 				for (i = 0; i < longArray.length; ++i) {
 					this.maybeAppendComma(i);
 					this.visitLong(longArray[i]);
 				}
-			} else if (value instanceof float[]) {
-				float[] floatArray = (float[]) value;
+			} else if (value instanceof float[] floatArray) {
 
 				for (i = 0; i < floatArray.length; ++i) {
 					this.maybeAppendComma(i);
 					this.visitFloat(floatArray[i]);
 				}
-			} else if (value instanceof double[]) {
-				double[] doubleArray = (double[]) value;
+			} else if (value instanceof double[] doubleArray) {
 
 				for (i = 0; i < doubleArray.length; ++i) {
 					this.maybeAppendComma(i);
@@ -721,8 +713,7 @@ public class CustomTextifier extends MethodVisitor {
 				this.stringBuilder.append(this.tab3);
 				if (value instanceof String) {
 					CustomPrinter.appendString(this.stringBuilder, (String) value);
-				} else if (value instanceof Type) {
-					Type type = (Type) value;
+				} else if (value instanceof Type type) {
 					if (type.getSort() == 11) {
 						this.appendDescriptor(3, type.getDescriptor());
 					} else {
@@ -989,7 +980,7 @@ public class CustomTextifier extends MethodVisitor {
 			this.labelNames = new HashMap();
 		}
 
-		String name = (String) this.labelNames.get(label);
+		String name = this.labelNames.get(label);
 		if (name == null) {
 			name = "L" + this.labelNames.size();
 			this.labelNames.put(label, name);
@@ -1200,15 +1191,14 @@ public class CustomTextifier extends MethodVisitor {
 				this.stringBuilder.append(' ');
 			}
 
-			if (frameTypes[i] instanceof String) {
-				String descriptor = (String) frameTypes[i];
+			if (frameTypes[i] instanceof String descriptor) {
 				if (descriptor.charAt(0) == '[') {
 					this.appendDescriptor(1, descriptor);
 				} else {
 					this.appendDescriptor(0, descriptor);
 				}
 			} else if (frameTypes[i] instanceof Integer) {
-				this.stringBuilder.append((String) FRAME_TYPES.get((Integer) frameTypes[i]));
+				this.stringBuilder.append(FRAME_TYPES.get((Integer) frameTypes[i]));
 			} else {
 				this.appendLabel((Label) frameTypes[i]);
 			}

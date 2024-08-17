@@ -19,7 +19,7 @@ import org.objectweb.asm.tree.MethodNode;
 @Getter
 public class IShellCodePushInt extends ShellCode {
 
-	private int value;
+	private final int value;
 
 	public IShellCodePushInt(int value) {
 		this.value = value;

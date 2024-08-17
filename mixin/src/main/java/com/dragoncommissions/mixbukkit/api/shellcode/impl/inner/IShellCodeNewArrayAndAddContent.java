@@ -24,9 +24,9 @@ import org.objectweb.asm.tree.TypeInsnNode;
 @Getter
 public class IShellCodeNewArrayAndAddContent extends ShellCode {
 
-	private int arraySize;
-	private Class<?> type;
-	private ForLoopInstructionGenerator gen;
+	private final int arraySize;
+	private final Class<?> type;
+	private final ForLoopInstructionGenerator gen;
 
 	public IShellCodeNewArrayAndAddContent(int arraySize, Class<?> type, ForLoopInstructionGenerator gen) {
 		this.arraySize = arraySize;

@@ -16,9 +16,9 @@ import java.util.function.Predicate;
 @SuppressWarnings("Untested")
 public class MActionMethodCallSpoofer implements MixinAction {
 
-	private static Map<String, ReturnValueGetter> getters = new HashMap<>();
-	private Method method;
-	private String key;
+	private static final Map<String, ReturnValueGetter> getters = new HashMap<>();
+	private final Method method;
+	private final String key;
 	private Predicate<Integer> filter;
 
 	private MActionMethodCallSpoofer(Method method, ReturnValueGetter returnValueGetter, Predicate<Integer> filter) {
@@ -48,8 +48,7 @@ public class MActionMethodCallSpoofer implements MixinAction {
 		int amount = 0;
 		for (AbstractInsnNode instruction : methodNode.instructions) {
 			out.add(instruction);
-			if (instruction instanceof MethodInsnNode) {
-				MethodInsnNode insn = (MethodInsnNode) instruction;
+			if (instruction instanceof MethodInsnNode insn) {
 				if (insn.name.equals(method.getName()) && insn.owner.equals(method.getDeclaringClass().getName().replace(".", "/"))
 					&& insn.desc.equals(ASMUtils.getDescriptor(method.getReturnType(), method.getParameterTypes())) && filter.test(amount++)) {
 					out.add(new InsnNode(Opcode.POP)); // Pop the return value first

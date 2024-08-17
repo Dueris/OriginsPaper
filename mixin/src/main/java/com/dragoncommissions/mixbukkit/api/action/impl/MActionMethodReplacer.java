@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 
 public class MActionMethodReplacer implements MixinAction {
 
-	private Method handler;
+	private final Method handler;
 
 	public MActionMethodReplacer(Method handler) {
 		this.handler = handler;
