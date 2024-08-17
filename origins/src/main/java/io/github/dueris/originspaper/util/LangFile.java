@@ -34,7 +34,6 @@ public class LangFile {
 		LANGUAGE = OriginConfiguration.getConfiguration().getString("language", "en_us");
 		String langInput = Util.readResource("/assets/origins/lang/%%.json".replace("%%", LANGUAGE));
 		ResourceLocation location = ResourceLocation.parse("origins:" + LANGUAGE);
-		Bukkit.getLogger().info("Loaded " + LANGUAGE + " lang-file for OriginsPaper");
 		OriginsPaper.getPlugin().registry.retrieve(Registries.LANG).register(new LangFile(new Gson().fromJson(langInput, JsonObject.class)), location);
 	}
 

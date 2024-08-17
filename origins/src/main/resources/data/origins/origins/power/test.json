@@ -1,16 +1,14 @@
 {
-  "type": "origins:target_action_on_hit",
+  "type": "origins:prevent_block_place",
   "entity_action": {
-    "type": "origins:apply_effect",
-    "effect": {
-      "id": "minecraft:slowness",
-      "amplifier": 3,
-      "duration": 100
-    }
+    "type": "origins:execute_command",
+    "command": "tellraw @s {\"text\": \"Cannot place a block here!\", \"color\": \"red\"}"
   },
-  "cooldown": 200,
-  "hud_render": {
-    "should_render": true,
-    "bar_index": 5
+  "place_to_condition": {
+    "type": "origins:fluid",
+    "fluid_condition": {
+      "type": "origins:still",
+      "inverted": true
+    }
   }
 }

@@ -53,7 +53,7 @@ public record CraftCalio(boolean threaded, int threadCount) {
 		OptionSet options = parser.parse(args);
 
 		boolean threaded = (Boolean) options.valueOf("async");
-		int threadCount = 1;
+		int threadCount = 4;
 		if (threaded) {
 			CalioParser.threadedParser = Executors.newFixedThreadPool(threadCount, new ParserFactory(threadCount));
 			CalioParser.threaded = true;

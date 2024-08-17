@@ -193,7 +193,6 @@ public class CalioParser {
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
 				 InvocationTargetException e) {
 			LOGGER.error("Error compiling instanceof {} : {}", toBuild.getSimpleName(), e.getMessage());
-			e.printStackTrace();
 		}
 		return null;
 	}

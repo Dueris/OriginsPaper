@@ -20,7 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -39,7 +38,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -95,21 +93,10 @@ public class PhasingPower extends PowerType {
 	}
 
 	protected static void resyncJavaPlayer(@NotNull ServerPlayer player) {
-		if (player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR)) {
-			player.gameMode.changeGameModeForPlayer(GameType.SURVIVAL);
-		}
 		GameType gamemode = player.gameMode.getGameModeForPlayer();
 		ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(player.getUUID(), player.getGameProfile(), true, 1, gamemode, player.getTabListDisplayName(), Optionull.map(player.getChatSession(), RemoteChatSession::asData));
 		ClientboundPlayerInfoUpdatePacket packet = new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE), entry);
 		player.connection.send(packet);
-	}
-
-	public static boolean isBedrock(Player p) {
-		if (Bukkit.getPluginManager().isPluginEnabled("floodgate")) {
-			return FloodgateApi.getInstance().isFloodgateId(p.getBukkitEntity().getUniqueId());
-		} else {
-			return false;
-		}
 	}
 
 	public void sendPhasingPackets(ServerPlayer player) {
@@ -190,18 +177,12 @@ public class PhasingPower extends PowerType {
 	}
 
 	@Override
-	public void tick(Player player) {
+	public void tick(@NotNull Player player) {
 		CraftPlayer p = (CraftPlayer) player.getBukkitEntity();
 		if (isActive(player)) {
 			Set<Block> blocks = getBlocksInCollision(p);
 			if (!blocks.isEmpty()) {
-				if (!isBedrock(player)) {
-					sendPhasingPackets((ServerPlayer) player);
-				} else {
-					if (p.getGameMode() != GameMode.SPECTATOR) {
-						p.setGameMode(GameMode.SPECTATOR);
-					}
-				}
+				sendPhasingPackets((ServerPlayer) player);
 
 				if (renderType.equals(RenderType.BLINDNESS)) {
 					p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100000, 112, false, false, false));
@@ -210,17 +191,7 @@ public class PhasingPower extends PowerType {
 				p.setFlySpeed(0.03F);
 				p.getPersistentDataContainer().set(INSIDE_BLOCK_KEY, PersistentDataType.BOOLEAN, true);
 			} else {
-				if (!isBedrock(player)) {
-					resyncJavaPlayer((ServerPlayer) player);
-				} else {
-					if (p.getGameMode() == GameMode.SPECTATOR) {
-						GameMode gameMode = p.getPreviousGameMode();
-						if (gameMode.equals(GameMode.SPECTATOR)) {
-							gameMode = GameMode.SURVIVAL;
-						}
-						p.setGameMode(gameMode);
-					}
-				}
+				resyncJavaPlayer((ServerPlayer) player);
 				if (renderType.equals(RenderType.BLINDNESS)) {
 					p.removePotionEffect(PotionEffectType.BLINDNESS);
 				}
@@ -238,15 +209,7 @@ public class PhasingPower extends PowerType {
 			if (RESYNCED.get(player) == null) {
 				RESYNCED.put(player, false);
 			} else if (RESYNCED.get(player)) {
-				if (!isBedrock(player)) {
-					resyncJavaPlayer((ServerPlayer) player);
-				} else {
-					GameMode gameMode = p.getPreviousGameMode();
-					if (gameMode.equals(GameMode.SPECTATOR)) {
-						gameMode = GameMode.SURVIVAL;
-					}
-					p.setGameMode(gameMode);
-				}
+				resyncJavaPlayer((ServerPlayer) player);
 				if (renderType.equals(RenderType.BLINDNESS)) {
 					p.removePotionEffect(PotionEffectType.BLINDNESS);
 				}

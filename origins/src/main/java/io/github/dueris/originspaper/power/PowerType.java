@@ -74,7 +74,7 @@ public class PowerType implements Listener {
 	public static void registerAll() {
 		List<Class<? extends PowerType>> holders = new ArrayList<>() {
 			@Override
-			public boolean addAll(Collection<? extends Class<? extends PowerType>> c) {
+			public boolean addAll(@NotNull Collection<? extends Class<? extends PowerType>> c) {
 				for (Class<?> clazz : c) {
 					try {
 						Class.forName(clazz.getName(), true, clazz.getClassLoader());

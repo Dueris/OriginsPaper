@@ -23,7 +23,7 @@ tickRate: 12000
 max-loader-threads: 6
 
 # Shows the command output for actions and conditions that use it
-show-command-output: true
+show-command-output: false
 
 language: en_us
 

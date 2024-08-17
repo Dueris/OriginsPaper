@@ -85,7 +85,6 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 	public static boolean isCompatible = false;
 	public static String pluginVersion;
 	public static String world_container;
-	public static ExecutorService loaderThreadPool;
 	public static ArrayList<String> versions = new ArrayList<>();
 	public static MinecraftServer server;
 	public static Origin EMPTY_ORIGIN;
@@ -118,10 +117,6 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 
 	public static Origin getOrigin(ResourceLocation location) {
 		return OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(location);
-	}
-
-	public static @NotNull File getTmpFolder() {
-		return Path.of(getPlugin().getDataFolder().getAbsolutePath() + File.separator + ".tmp" + File.separator).toFile();
 	}
 
 	private static void patchPowers() {
@@ -225,17 +220,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 				Bukkit.getServer().getPluginManager().disablePlugin(this);
 			}
-			ThreadFactory threadFactory = new NamedTickThreadFactory("OriginParsingPool");
 
-			if (!getTmpFolder().exists()) {
-				getTmpFolder().mkdirs();
-			}
-
-			int avalibleJVMThreads = Runtime.getRuntime().availableProcessors() * 2;
-			int dynamic_thread_count = avalibleJVMThreads < 4
-				? avalibleJVMThreads
-				: Math.min(avalibleJVMThreads, OriginConfiguration.getConfiguration().getInt("max-loader-threads"));
-			loaderThreadPool = Executors.newFixedThreadPool(dynamic_thread_count, threadFactory);
 			try {
 				io.github.dueris.calio.CraftCalio craftCalio = io.github.dueris.calio.CraftCalio.buildInstance(
 					new String[]{"--async=true"}
@@ -291,7 +276,6 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 			this.start();
 			patchPowers();
 			this.debug(Component.text("  - Power thread starting with {originScheduler}".replace("originScheduler", scheduler.toString())));
-			loaderThreadPool.shutdown();
 			CommandDispatcher<CommandSourceStack> commandDispatcher = server.getCommands().getDispatcher();
 			if (commandDispatcher.getRoot().getChildren().stream().map(CommandNode::getName).toList().contains("origin")) {
 				Commands.unload(commandDispatcher);
