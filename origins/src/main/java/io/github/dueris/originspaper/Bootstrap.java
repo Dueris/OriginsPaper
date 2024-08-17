@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Logger;
 
 public class Bootstrap implements PluginBootstrap {
 	public static ArrayList<Consumer<WrappedBootstrapContext>> apiCalls = new ArrayList<>();
@@ -129,6 +130,7 @@ public class Bootstrap implements PluginBootstrap {
 			CommandDispatcher<CommandSourceStack> commands = PaperCommands.INSTANCE.getDispatcher();
 			Commands.bootstrap(((ApiMirrorRootNode) commands.getRoot()).getDispatcher());
 		})).priority(10));
+
 		io.github.dueris.calio.parser.JsonObjectRemapper remapper = new io.github.dueris.calio.parser.JsonObjectRemapper(
 			List.of(
 				new Tuple<>("origins", "apoli")

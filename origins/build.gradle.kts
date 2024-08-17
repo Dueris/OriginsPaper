@@ -21,7 +21,7 @@ dependencies {
     compileOnly("org.geysermc.floodgate:api:2.2.2-SNAPSHOT")
     compileOnly("net.skinsrestorer:skinsrestorer-api:15.0.4")
     compileOnly("me.clip:placeholderapi:2.11.4")
-
+    implementation(project(mapOf("path" to ":mixin")))
 }
 
 tasks {

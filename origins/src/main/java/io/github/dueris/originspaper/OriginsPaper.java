@@ -1,5 +1,12 @@
 package io.github.dueris.originspaper;
 
+import com.dragoncommissions.mixbukkit.MixBukkit;
+import com.dragoncommissions.mixbukkit.addons.AutoMapper;
+import com.dragoncommissions.mixbukkit.api.MixinPlugin;
+import com.dragoncommissions.mixbukkit.api.action.impl.MActionInsertShellCode;
+import com.dragoncommissions.mixbukkit.api.locator.impl.HLocatorHead;
+import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
+import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.ShellCodeReflectionMixinPluginMethodCall;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 import io.github.dueris.calio.data.AccessorKey;
@@ -16,6 +23,8 @@ import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.OriginsDataTypes;
 import io.github.dueris.originspaper.data.types.modifier.ModifierOperations;
 import io.github.dueris.originspaper.integration.CraftPehuki;
+import io.github.dueris.originspaper.mixin.OriginsMixins;
+import io.github.dueris.originspaper.mixin.TestMixin;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.power.PowerType;
@@ -41,6 +50,9 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.EnderMan;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -60,14 +72,11 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 public final class OriginsPaper extends JavaPlugin implements Listener {
 	public static final boolean isFolia = classExists("io.papermc.paper.threadedregions.RegionizedServer");
@@ -169,6 +178,9 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 			bootstrap.bootstrap(null);
 		}
 
+		MixBukkit bukkit = new MixBukkit();
+		bukkit.onEnable(this, this.getFile(), (URLClassLoader) this.getClassLoader());
+
 		Bootstrap.BOOTSTRAPPED.set(false);
 		plugin = this;
 		Getter<Boolean> startup = () -> {
@@ -186,6 +198,7 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 					.color(TextColor.fromHexString("#4fec4f"))
 			);
 			System.out.println();
+			OriginsMixins.init(bukkit);
 			server = ((CraftServer) Bukkit.getServer()).getServer();
 			world_container = server.options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
 			playerDataFolder = server.playerDataStorage.getPlayerDir();
