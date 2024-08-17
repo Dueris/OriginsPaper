@@ -6,6 +6,7 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,6 +22,7 @@ import net.minecraft.world.inventory.SlotRanges;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.craftbukkit.CraftEquipmentSlot;
 import org.bukkit.craftbukkit.block.CraftBlock;
@@ -33,39 +35,39 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 
-public class ActionOnBlockUsePower extends PowerType {
+public class PreventBlockUsePower extends PowerType {
 	private final ActionFactory<Entity> entityAction;
 	private final ActionFactory<Triple<Level, BlockPos, Direction>> blockAction;
-	private final ActionFactory<Tuple<Level, SlotAccess>> heldItemAction;
 	private final ActionFactory<Tuple<Level, SlotAccess>> resultItemAction;
+	private final ActionFactory<Tuple<Level, SlotAccess>> heldItemAction;
 	private final ConditionFactory<BlockInWorld> blockCondition;
 	private final ConditionFactory<Tuple<Level, ItemStack>> itemCondition;
-	private final ItemStack itemResult;
+	private final ItemStack resultStack;
 	private final EnumSet<Direction> directions;
 	private final EnumSet<InteractionHand> hands;
 
-	public ActionOnBlockUsePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-								 ActionFactory<Entity> entityAction, ActionFactory<Triple<Level, BlockPos, Direction>> blockAction, ActionFactory<Tuple<Level, SlotAccess>> heldItemAction,
-								 ActionFactory<Tuple<Level, SlotAccess>> resultItemAction, ConditionFactory<BlockInWorld> blockCondition, ConditionFactory<Tuple<Level, ItemStack>> itemCondition, ItemStack itemResult, EnumSet<Direction> directions,
-								 EnumSet<InteractionHand> hands) {
+	public PreventBlockUsePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
+								ActionFactory<Entity> entityAction, ActionFactory<Triple<Level, BlockPos, Direction>> blockAction, ActionFactory<Tuple<Level, SlotAccess>> resultItemAction,
+								ActionFactory<Tuple<Level, SlotAccess>> heldItemAction, ConditionFactory<BlockInWorld> blockCondition, ConditionFactory<Tuple<Level, ItemStack>> itemCondition, ItemStack resultStack,
+								EnumSet<Direction> directions, EnumSet<InteractionHand> hands) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.entityAction = entityAction;
 		this.blockAction = blockAction;
-		this.heldItemAction = heldItemAction;
 		this.resultItemAction = resultItemAction;
+		this.heldItemAction = heldItemAction;
 		this.blockCondition = blockCondition;
 		this.itemCondition = itemCondition;
-		this.itemResult = itemResult;
+		this.resultStack = resultStack;
 		this.directions = directions;
 		this.hands = hands;
 	}
 
 	public static SerializableData buildFactory() {
-		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("action_on_block_use"))
+		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("prevent_block_use"))
 			.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
 			.add("block_action", ApoliDataTypes.BLOCK_ACTION, null)
-			.add("held_item_action", ApoliDataTypes.ITEM_ACTION, null)
 			.add("result_item_action", ApoliDataTypes.ITEM_ACTION, null)
+			.add("held_item_action", ApoliDataTypes.ITEM_ACTION, null)
 			.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
 			.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
 			.add("result_stack", SerializableDataTypes.ITEM_STACK, null)
@@ -88,13 +90,7 @@ public class ActionOnBlockUsePower extends PowerType {
 		return itemCondition == null || itemCondition.test(new Tuple<>(level, heldStack));
 	}
 
-	public boolean shouldExecute(InteractionHand hand, ItemStack heldStack, Direction direction, BlockPos pos, Entity entity) {
-		return directions.contains(direction)
-			&& shouldExecute$apoli$super(hand, heldStack, (ServerLevel) entity.level())
-			&& (blockCondition == null || blockCondition.test(new BlockInWorld(entity.level(), pos, true)));
-	}
-
-	public void executeAction(Direction direction, BlockPos pos, InteractionHand hand, Entity entity) {
+	public void executeActions(Entity entity, Direction direction, BlockPos pos, InteractionHand hand) {
 
 		if (blockAction != null) {
 			this.blockAction.accept(Triple.of(entity.level(), pos, direction));
@@ -109,11 +105,11 @@ public class ActionOnBlockUsePower extends PowerType {
 			if (heldItemAction != null) {
 				heldItemAction.accept(new Tuple<>(other.level(), heldStack));
 			}
-			if (itemResult != null) {
-				heldStack.set(itemResult);
+			if (resultStack != null) {
+				heldStack.set(resultStack);
 			}
-			SlotAccess resultingStack = Util.createStackReference(itemResult == null ? heldStack.get() : itemResult.copy());
-			boolean modified = itemResult != null;
+			SlotAccess resultingStack = Util.createStackReference(resultStack == null ? heldStack.get() : resultStack.copy());
+			boolean modified = resultStack != null;
 			if (resultItemAction != null) {
 				resultItemAction.accept(new Tuple<>(other.level(), heldStack));
 				modified = true;
@@ -129,6 +125,12 @@ public class ActionOnBlockUsePower extends PowerType {
 
 	}
 
+	public boolean doesPrevent(Entity entity, Direction direction, BlockPos pos, ItemStack heldStack, InteractionHand hand) {
+		return directions.contains(direction)
+			&& shouldExecute$apoli$super(hand, heldStack, (ServerLevel) entity.level())
+			&& (blockCondition == null || blockCondition.test(new BlockInWorld(entity.level(), pos, true)));
+	}
+
 	@EventHandler
 	public void onBlockUse(@NotNull PlayerInteractEvent e) {
 		if (e.getClickedBlock() != null) {
@@ -137,9 +139,13 @@ public class ActionOnBlockUsePower extends PowerType {
 			BlockPos pos = CraftLocation.toBlockPosition(e.getClickedBlock().getLocation());
 			InteractionHand hand = CraftEquipmentSlot.getHand(e.getHand());
 
-			if (getPlayers().contains(player) && isActive(player) && shouldExecute(hand, e.getItem() != null ? CraftItemStack.unwrap(e.getItem()) : ItemStack.EMPTY, direction, pos, player)) {
-				executeAction(direction, pos, hand, player);
+			if (!getPlayers().contains(player) || !isActive(player)) return;
+
+			if (doesPrevent(player, direction, pos, player.getItemInHand(hand), hand)) {
+				executeActions(player, direction, pos, hand);
+				e.setCancelled(true);
 			}
 		}
 	}
+
 }

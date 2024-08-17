@@ -118,7 +118,7 @@ public class PreventBlockPlacePower extends PowerType {
 	}
 
 	public boolean doesPrevent(@NotNull Entity entity, ItemStack heldStack, InteractionHand hand, BlockPos toPos, BlockPos onPos, Direction direction) {
-		return (shouldExecute$apoli$super(hand, heldStack, (ServerLevel) entity.level()) && directions.contains(direction))
+		return (shouldExecute$apoli$super(hand, heldStack, (ServerLevel) entity.level()) && directions.contains(direction)) && isActive(entity)
 			&& ((placeOnCondition == null || placeOnCondition.test(new BlockInWorld(entity.level(), onPos, true)))
 			&& (placeToCondition == null || placeToCondition.test(new BlockInWorld(entity.level(), toPos, true))));
 	}

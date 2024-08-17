@@ -148,7 +148,7 @@ public class ActionOnBlockPlacePower extends PowerType {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlace(@NotNull BlockPlaceEvent e) {
 		Player player = ((CraftPlayer) e.getPlayer()).getHandle();
-		if (!getPlayers().contains(player)) return;
+		if (!getPlayers().contains(player) || !isActive(player)) return;
 
 		PlaceData data = new PlaceData(e);
 		if (shouldExecute(e.getItemInHand() != null ? CraftItemStack.unwrap(e.getItemInHand()) : ItemStack.EMPTY, data.hand, data.pos, data.onPos, data.direction, (ServerLevel) player.level())) {

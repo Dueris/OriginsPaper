@@ -82,7 +82,7 @@ public class ActionOnBeingUsedPower extends PowerType {
 			Player other = (Player) ((CraftEntity) event.getPlayer()).getHandle();
 			InteractionHand hand = CraftEquipmentSlot.getHand(event.getHand());
 
-			if (getPlayers().contains(entity) && (bientityCondition == null || bientityCondition.test(new Tuple<>(other, entity)))
+			if (getPlayers().contains(entity) && isActive(entity) && (bientityCondition == null || bientityCondition.test(new Tuple<>(other, entity)))
 				&& shouldExecute$apoli$super(hand, CraftItemStack.unwrap(event.getPlayer().getInventory().getItem(event.getHand())), (ServerLevel) entity.level())) {
 
 				if (biEntityAction != null) {

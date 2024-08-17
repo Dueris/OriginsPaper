@@ -115,7 +115,7 @@ public class ActionOnEntityUsePower extends PowerType {
 	@EventHandler
 	public void onEntityUse(@NotNull PlayerInteractAtEntityEvent e) {
 		Player player = ((CraftPlayer) e.getPlayer()).getHandle();
-		if (getPlayers().contains(player)) {
+		if (isActive(player)) {
 			Entity target = ((CraftEntity) e.getRightClicked()).getHandle();
 			InteractionHand hand = CraftEquipmentSlot.getHand(e.getHand());
 			ItemStack stack = e.getPlayer().getInventory().getItem(e.getHand()) != null ? player.getItemInHand(hand) : ItemStack.EMPTY;

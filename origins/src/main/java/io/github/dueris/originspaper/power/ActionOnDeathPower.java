@@ -52,7 +52,7 @@ public class ActionOnDeathPower extends PowerType {
 	public void onDamage(@NotNull EntityDamageEvent e) {
 		if (e.getEntity() instanceof org.bukkit.entity.Player p) {
 			Player player = ((CraftPlayer) p).getHandle();
-			if (!((player.getHealth() - e.getFinalDamage()) <= 0.0F) || !getPlayers().contains(player)) return;
+			if (!((player.getHealth() - e.getFinalDamage()) <= 0.0F) || !getPlayers().contains(player) || !isActive(player)) return;
 			new BukkitRunnable() {
 				@Override
 				public void run() {

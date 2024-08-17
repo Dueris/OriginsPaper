@@ -1,14 +1,7 @@
 {
-  "type": "origins:prevent_block_place",
-  "entity_action": {
-    "type": "origins:execute_command",
-    "command": "tellraw @s {\"text\": \"Cannot place a block here!\", \"color\": \"red\"}"
-  },
-  "place_to_condition": {
-    "type": "origins:fluid",
-    "fluid_condition": {
-      "type": "origins:still",
-      "inverted": true
-    }
+  "type": "origins:prevent_block_use",
+  "block_condition": {
+    "type": "origins:block",
+    "block": "minecraft:crafting_table"
   }
 }

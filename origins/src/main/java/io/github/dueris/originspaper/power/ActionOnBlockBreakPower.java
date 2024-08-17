@@ -51,7 +51,7 @@ public class ActionOnBlockBreakPower extends PowerType {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBreak(@NotNull BlockBreakEvent e) {
 		Player player = ((CraftPlayer) e.getPlayer()).getHandle();
-		if (!getPlayers().contains(player)) return;
+		if (!getPlayers().contains(player) || !isActive(player)) return;
 		boolean harvestedSuccessfully = player.hasCorrectToolForDrops(((CraftBlock) e.getBlock()).getNMS());
 		BlockPos pos = CraftLocation.toBlockPosition(e.getBlock().getLocation());
 
