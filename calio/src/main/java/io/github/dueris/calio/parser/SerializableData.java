@@ -8,7 +8,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,9 +20,9 @@ public class SerializableData {
 	protected final Map<String, Object> defaultMap = new HashMap<>();
 	private final HashMap<String, ObjectTiedEnumState<SerializableDataBuilder<?>>> dataMap = new HashMap<>();
 	private final Object2IntOpenHashMap<String> keyPriorities = new Object2IntOpenHashMap<>();
+	public Consumer<Instance> postProcessor;
 	@Nullable
 	protected ResourceLocation typedInstance;
-	public Consumer<Instance> postProcessor;
 	private int priorityCounter = 0;
 
 	public static @NotNull SerializableData serializableData() {

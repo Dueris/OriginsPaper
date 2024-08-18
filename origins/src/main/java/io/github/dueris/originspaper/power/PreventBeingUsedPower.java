@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
@@ -50,6 +49,17 @@ public class PreventBeingUsedPower extends PowerType {
 		this.resultItemAction = resultItemAction;
 	}
 
+	public static SerializableData buildFactory() {
+		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("prevent_being_used"))
+			.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION, null)
+			.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
+			.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
+			.add("hands", SerializableDataTypes.enumSet(InteractionHand.class, SerializableDataTypes.HAND), EnumSet.allOf(InteractionHand.class))
+			.add("result_stack", SerializableDataTypes.ITEM_STACK, null)
+			.add("held_item_action", ApoliDataTypes.ITEM_ACTION, null)
+			.add("result_item_action", ApoliDataTypes.ITEM_ACTION, null);
+	}
+
 	public boolean shouldExecute$apoli$super(InteractionHand hand, ItemStack heldStack, ServerLevel level) {
 		if (!doesApplyToHand(hand)) {
 			return false;
@@ -66,7 +76,7 @@ public class PreventBeingUsedPower extends PowerType {
 	}
 
 	public boolean doesApply(Player other, @NotNull Entity entity, InteractionHand hand, ItemStack heldStack) {
-		if(!shouldExecute$apoli$super(hand, heldStack, (ServerLevel) entity.level())) {
+		if (!shouldExecute$apoli$super(hand, heldStack, (ServerLevel) entity.level())) {
 			return false;
 		}
 		return bientityCondition == null || bientityCondition.test(new Tuple<>(other, entity));
@@ -75,8 +85,8 @@ public class PreventBeingUsedPower extends PowerType {
 	@EventHandler
 	public void onInteract(@NotNull PlayerInteractEntityEvent e) {
 		if (e.getRightClicked() instanceof org.bukkit.entity.Player p) {
-			Player player = ((CraftPlayer)p).getHandle();
-			Player interacter = ((CraftPlayer)e.getPlayer()).getHandle();
+			Player player = ((CraftPlayer) p).getHandle();
+			Player interacter = ((CraftPlayer) e.getPlayer()).getHandle();
 			ItemStack stack = CraftItemStack.unwrap(e.getPlayer().getInventory().getItem(e.getHand()));
 			InteractionHand hand = CraftEquipmentSlot.getHand(e.getHand());
 			if (getPlayers().contains(player) && isActive(player) && doesApply(interacter, player, hand, stack)) {
@@ -112,16 +122,5 @@ public class PreventBeingUsedPower extends PowerType {
 				other.getInventory().placeItemBackInInventory(resultingStack.get());
 			}
 		}
-	}
-
-	public static SerializableData buildFactory() {
-		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("prevent_being_used"))
-			.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION, null)
-			.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
-			.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
-			.add("hands", SerializableDataTypes.enumSet(InteractionHand.class, SerializableDataTypes.HAND), EnumSet.allOf(InteractionHand.class))
-			.add("result_stack", SerializableDataTypes.ITEM_STACK, null)
-			.add("held_item_action", ApoliDataTypes.ITEM_ACTION, null)
-			.add("result_item_action", ApoliDataTypes.ITEM_ACTION, null);
 	}
 }

@@ -1,11 +1,8 @@
 package io.github.dueris.originspaper.util;
 
-import com.destroystokyo.paper.event.server.ServerTickEndEvent;
-import io.github.dueris.originspaper.OriginsPaper;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.server.MinecraftServer;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
@@ -14,18 +11,18 @@ import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 
 public class ApoliScheduler implements Listener {
+	public static ApoliScheduler INSTANCE = new ApoliScheduler();
 	private final Int2ObjectMap<List<Consumer<MinecraftServer>>> taskQueue = new Int2ObjectOpenHashMap<>();
 	private int currentTick = 0;
 
-	@EventHandler
-	public void tickEnd(ServerTickEndEvent e) {
-		this.currentTick = OriginsPaper.server.getTickCount();
+	public void tick(MinecraftServer m) {
+		this.currentTick = m.getTickCount();
 		List<Consumer<MinecraftServer>> runnables = this.taskQueue.remove(this.currentTick);
 		if (runnables != null) for (int i = 0; i < runnables.size(); i++) {
 			Consumer<MinecraftServer> runnable = runnables.get(i);
-			runnable.accept(OriginsPaper.server);
+			runnable.accept(m);
 
-			if (runnable instanceof Repeating repeating) {
+			if (runnable instanceof Repeating repeating) {// reschedule repeating tasks
 				if (repeating.shouldQueue(this.currentTick))
 					this.queue(runnable, ((Repeating) runnable).next);
 			}

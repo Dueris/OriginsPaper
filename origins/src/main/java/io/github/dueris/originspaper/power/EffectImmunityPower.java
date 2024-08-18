@@ -8,19 +8,19 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EffectImmunity extends PowerType {
+public class EffectImmunityPower extends PowerType {
 	private final boolean inverted;
 	private final ArrayList<Holder<MobEffect>> effects;
 
-	public EffectImmunity(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-						  Holder<MobEffect> mobEffect, List<Holder<MobEffect>> mobEffects, boolean inverted) {
+	public EffectImmunityPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
+							   Holder<MobEffect> mobEffect, List<Holder<MobEffect>> mobEffects, boolean inverted) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.inverted = inverted;
 		this.effects = new ArrayList<>();
@@ -40,18 +40,19 @@ public class EffectImmunity extends PowerType {
 			.add("inverted", SerializableDataTypes.BOOLEAN, false);
 	}
 
-	@Override
-	public void tick(Player p) {
-		if (!effects.isEmpty() && isActive(p)) {
-			List<Holder<MobEffect>> toRemove = new ArrayList<>();
-			for (Holder<MobEffect> effect : p.activeEffects.keySet()) {
-				boolean shouldRemove = inverted != effects.contains(effect);
-				if (shouldRemove) {
-					toRemove.add(effect);
-				}
-			}
+	public boolean doesApply(MobEffectInstance instance) {
+		return doesApply(instance.getEffect());
+	}
 
-			toRemove.forEach(p::removeEffect);
-		}
+	public boolean doesApply(Holder<MobEffect> effect) {
+		return inverted ^ effects.contains(effect);
+	}
+
+	public ArrayList<Holder<MobEffect>> getEffects() {
+		return effects;
+	}
+
+	public boolean isInverted() {
+		return inverted;
 	}
 }

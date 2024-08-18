@@ -22,12 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import org.apache.commons.lang3.tuple.Triple;
-import org.bukkit.craftbukkit.CraftEquipmentSlot;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
@@ -61,6 +55,21 @@ public class PreventBlockPlacePower extends PowerType {
 		this.resultStack = resultStack;
 		this.resultItemAction = resultItemAction;
 		this.heldItemAction = heldItemAction;
+	}
+
+	public static SerializableData buildFactory() {
+		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("prevent_block_place"))
+			.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
+			.add("place_to_action", ApoliDataTypes.BLOCK_ACTION, null)
+			.add("place_on_action", ApoliDataTypes.BLOCK_ACTION, null)
+			.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
+			.add("place_to_condition", ApoliDataTypes.BLOCK_CONDITION, null)
+			.add("place_on_condition", ApoliDataTypes.BLOCK_CONDITION, null)
+			.add("directions", SerializableDataTypes.DIRECTION_SET, EnumSet.allOf(Direction.class))
+			.add("hands", SerializableDataTypes.enumSet(InteractionHand.class, SerializableDataTypes.HAND), EnumSet.allOf(InteractionHand.class))
+			.add("result_stack", SerializableDataTypes.ITEM_STACK, null)
+			.add("result_item_action", ApoliDataTypes.ITEM_ACTION, null)
+			.add("held_item_action", ApoliDataTypes.ITEM_ACTION, null);
 	}
 
 	public boolean shouldExecute$apoli$super(InteractionHand hand, ItemStack heldStack, ServerLevel level) {
@@ -121,20 +130,5 @@ public class PreventBlockPlacePower extends PowerType {
 		return (shouldExecute$apoli$super(hand, heldStack, (ServerLevel) entity.level()) && directions.contains(direction)) && isActive(entity)
 			&& ((placeOnCondition == null || placeOnCondition.test(new BlockInWorld(entity.level(), onPos, true)))
 			&& (placeToCondition == null || placeToCondition.test(new BlockInWorld(entity.level(), toPos, true))));
-	}
-
-	public static SerializableData buildFactory() {
-		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("prevent_block_place"))
-			.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
-			.add("place_to_action", ApoliDataTypes.BLOCK_ACTION, null)
-			.add("place_on_action", ApoliDataTypes.BLOCK_ACTION, null)
-			.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
-			.add("place_to_condition", ApoliDataTypes.BLOCK_CONDITION, null)
-			.add("place_on_condition", ApoliDataTypes.BLOCK_CONDITION, null)
-			.add("directions", SerializableDataTypes.DIRECTION_SET, EnumSet.allOf(Direction.class))
-			.add("hands", SerializableDataTypes.enumSet(InteractionHand.class, SerializableDataTypes.HAND), EnumSet.allOf(InteractionHand.class))
-			.add("result_stack", SerializableDataTypes.ITEM_STACK, null)
-			.add("result_item_action", ApoliDataTypes.ITEM_ACTION, null)
-			.add("held_item_action", ApoliDataTypes.ITEM_ACTION, null);
 	}
 }

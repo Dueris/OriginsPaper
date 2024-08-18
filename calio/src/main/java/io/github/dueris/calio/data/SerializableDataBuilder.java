@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public interface SerializableDataBuilder<T> extends Codec<T> {
-	static DynamicOps<JsonElement> JSON_OPS = JsonOps.INSTANCE;
+	DynamicOps<JsonElement> JSON_OPS = JsonOps.INSTANCE;
 
 	static <T> @NotNull SerializableDataBuilder<List<T>> of(Codec<List<T>> listCodec) {
 		return of(listCodec, List.class);
@@ -106,7 +106,7 @@ public interface SerializableDataBuilder<T> extends Codec<T> {
 
 		@Override
 		public <S> Codec<S> comapFlatMap(Function<? super T, ? extends DataResult<? extends S>> to, Function<? super S, ? extends T> from, Class<?> type) {
-			return SerializableDataBuilder.of(comap(from), flatMap(to), toString() + "[comapFlatMapped]", type);
+			return SerializableDataBuilder.of(comap(from), flatMap(to), this + "[comapFlatMapped]", type);
 		}
 	}
 }

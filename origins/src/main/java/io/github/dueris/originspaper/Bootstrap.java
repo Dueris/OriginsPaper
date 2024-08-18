@@ -5,7 +5,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import io.github.dueris.calio.parser.CalioParser;
 import io.github.dueris.originspaper.command.Commands;
 import io.github.dueris.originspaper.content.NMSBootstrap;
-import io.github.dueris.originspaper.mixin.OriginsMixins;
 import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.util.WrappedBootstrapContext;
 import io.papermc.paper.command.brigadier.ApiMirrorRootNode;
@@ -31,7 +30,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.logging.Logger;
 
 public class Bootstrap implements PluginBootstrap {
 	public static ArrayList<Consumer<WrappedBootstrapContext>> apiCalls = new ArrayList<>();

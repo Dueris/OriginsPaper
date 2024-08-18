@@ -5,6 +5,7 @@ import com.dragoncommissions.mixbukkit.utils.ASMUtils;
 import com.dragoncommissions.mixbukkit.utils.PostPreState;
 import javassist.bytecode.Opcode;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 
@@ -16,12 +17,18 @@ import java.util.function.Predicate;
 @AllArgsConstructor
 public class HLocatorFieldRead implements HookLocator {
 
-	private Field field;
-	private PostPreState state;
-	private Predicate<Integer> filter;
+	private final Field field;
+	private final PostPreState state;
+	private final Predicate<Integer> filter;
+
+	public HLocatorFieldRead(Field field, PostPreState state, Predicate<Integer> filter) {
+		this.field = field;
+		this.state = state;
+		this.filter = filter;
+	}
 
 	@Override
-	public List<Integer> getLineNumber(InsnList insnList) {
+	public List<Integer> getLineNumber(@NotNull InsnList insnList) {
 		List<Integer> out = new ArrayList<>();
 		int amount = 0;
 		for (int i = 0; i < insnList.size(); i++) {

@@ -6,7 +6,6 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.storage.OriginConfiguration;
 import net.minecraft.resources.ResourceLocation;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

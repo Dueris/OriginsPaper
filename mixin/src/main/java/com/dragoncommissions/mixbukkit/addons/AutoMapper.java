@@ -58,16 +58,14 @@ public class AutoMapper {
 
 	@SneakyThrows
 	private static void prepareMapping() {
-		Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Detecting mapping info...");
 		if (!shouldLoadMapping()) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[!] You don't need any mapping for this build!");
 			return;
 		}
-		Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Mappings required! Preparing mapping...");
 		mappingFile = new File("mappings.csrg");
 		if (mappingFile.exists()) {
 			if (!mappingFile.isDirectory()) {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[!] Pre-downloaded mapping detected! Using it. If anything went wrong, please try deleting " + ChatColor.DARK_GRAY + mappingFile.getAbsolutePath() + ChatColor.GREEN + " and try again");
+				Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Pre-downloaded mapping detected! Using it. If anything went wrong, please try deleting " + ChatColor.DARK_GRAY + mappingFile.getAbsolutePath() + ChatColor.YELLOW + " and try again");
 				return;
 			}
 			mappingFile.delete();
@@ -204,6 +202,7 @@ public class AutoMapper {
 		private final String memberMappings;
 		private final String packageMappings;
 		private final String minecraftHash;
+		private final int toolsVersion = -1;
 		private String classMapCommand;
 		private String memberMapCommand;
 		private String finalMapCommand;
@@ -211,7 +210,6 @@ public class AutoMapper {
 		private String serverUrl;
 		private String mappingsUrl;
 		private String spigotVersion;
-		private final int toolsVersion = -1;
 
 		public VersionInfo(String minecraftVersion, String accessTransforms, String classMappings, String memberMappings, String packageMappings, String minecraftHash) {
 			this.minecraftVersion = minecraftVersion;

@@ -7,8 +7,6 @@ import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.bytecode.Opcode;
 import lombok.SneakyThrows;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.*;
@@ -18,7 +16,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
 
 public class ASMUtils {
 
@@ -147,8 +144,7 @@ public class ASMUtils {
 				if (!mixinOut.toFile().exists()) {
 					mixinOut.toFile().mkdirs();
 				}
-				File outFile = new File(mixinOut.toFile(), UUID.randomUUID() + ".class");
-				Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "// Wrote output class to " + outFile);
+				File outFile = new File(mixinOut.toFile(), node.sourceFile + ".class");
 				FileOutputStream outputStream = new FileOutputStream(outFile);
 				outputStream.write(writer.toByteArray());
 				outputStream.close();

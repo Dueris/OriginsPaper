@@ -9,14 +9,18 @@ import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.ShellCodeReflectio
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import io.github.dueris.originspaper.OriginsPaper;
+import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.Method;
-import java.util.logging.Logger;
 
 public class OriginsMixins {
 
-	public static void init(MixBukkit bukkit) {
+	public static void init(@NotNull MixBukkit bukkit) {
 		MixinPlugin mixinPlugin = bukkit.registerMixinPlugin(OriginsPaper.getPlugin(), AutoMapper.getMappingAsStream());
 		ScanResult result = new ClassGraph().whitelistPackages("io.github.dueris.originspaper.mixin").enableClassInfo().scan();
+
+		OriginsPaper.getPlugin().getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Starting Mixin transformers...");
 
 		try {
 			result.getAllClasses().loadClasses()
@@ -31,34 +35,31 @@ public class OriginsMixins {
 							for (Method method : clz.getDeclaredMethods()) {
 								if (method.isAnnotationPresent(Inject.class)) {
 									Inject inject = method.getAnnotation(Inject.class);
-									try {
-										HookLocator locatorInstance = inject.locator().newInstance();
+									HookLocator locatorInstance = inject.locator().getLocator();
 
-										MActionInsertShellCode shellCode = new MActionInsertShellCode(
-											new ShellCodeReflectionMixinPluginMethodCall(method), locatorInstance
-										);
+									MActionInsertShellCode shellCode = new MActionInsertShellCode(
+										new ShellCodeReflectionMixinPluginMethodCall(method), locatorInstance
+									);
 
-										Method toMixin = null;
-										Class<?>[] params = new Class[0];
-										for (Method declared : mixin.getDeclaredMethods()) {
-											String methodName = declared.getName();
-											String injectMethodName = inject.method().toString().trim();
+									Method toMixin = null;
+									Class<?>[] params = new Class[0];
+									for (Method declared : mixin.getDeclaredMethods()) {
+										String methodName = declared.getName();
+										String injectMethodName = inject.method().trim();
 
-											if (methodName.equalsIgnoreCase(injectMethodName)) {
-												toMixin = declared;
-												params = declared.getParameterTypes();
-												break;
-											}
+										if (methodName.equalsIgnoreCase(injectMethodName)) {
+											toMixin = declared;
+											params = declared.getParameterTypes();
+											break;
 										}
-										if (toMixin == null) throw new IllegalArgumentException("Unable to locate method to mixin to!");
-
-										mixinPlugin.registerMixin(
-											baseNamespace + "(" + method.getName() + ")",
-											shellCode, mixin, toMixin.getName(), toMixin.getReturnType(), params
-										);
-									} catch (InstantiationException | IllegalAccessException e) {
-										throw new RuntimeException(e);
 									}
+									if (toMixin == null)
+										throw new IllegalArgumentException("Unable to locate method to mixin to!");
+
+									mixinPlugin.registerMixin(
+										baseNamespace + "(" + method.getName() + ")",
+										shellCode, mixin, toMixin.getName(), toMixin.getReturnType(), params
+									);
 								}
 							}
 						}
@@ -77,5 +78,6 @@ public class OriginsMixins {
 		}
 
 		result.close();
+		OriginsPaper.getPlugin().getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[!] Mixin transforming successful!");
 	}
 }

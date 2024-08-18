@@ -93,12 +93,9 @@ public class MixinPlugin {
 	public boolean registerMixin(String namespace, MixinAction mixinAction, Class<?> owner, String deObfMethodName, Class<?> returnType, Class<?>... arguments) {
 		if (registeredMixins.contains(namespace)) {
 			if (MixBukkit.DEBUG) {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "// Mixin with namespace: " + namespace + " is already registered! Skipping...");
+				Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Mixin with namespace: " + namespace + " is already registered! Skipping...");
 			}
 			return false;
-		}
-		if (MixBukkit.DEBUG) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "// Registering Mixin: " + plugin.getName() + ":" + namespace);
 		}
 		String descriptor = ASMUtils.getDescriptor(returnType, arguments);
 		String obfMethodName = obfMap.resolveMapping(new ObfMap.MethodMapping(owner.getName().replace(".", "/"), descriptor, deObfMethodName));
@@ -110,24 +107,11 @@ public class MixinPlugin {
 		}
 		PrintWriter printWriter = new PrintWriter(MixBukkit.ERROR_OUTPUT_STREAM, true);
 		for (MethodNode method : classNode.methods) {
-//            System.out.println(method.name + method.desc + "  /   " + obfMethodName + descriptor);
 			if (method.name.equals(obfMethodName) && method.desc.equals(descriptor)) {
-				if (MixBukkit.DEBUG) {
-					Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "// Found Method to hook!");
-				}
-
-				if (MixBukkit.DEBUG) {
-					Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "// Processing...");
-				}
 				mixinAction.action(owner, method);
 
-
-				if (MixBukkit.DEBUG) {
-					Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "// Assembling...");
-				}
 				byte[] data = ASMUtils.fromClassNode(classNode);
 
-				Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "// Verifying...");
 				ClassReader classReader = new ClassReader(data);
 				boolean[] illegal = new boolean[]{false};
 				CheckClassAdapter.verify(classReader, getClass().getClassLoader().getParent(), false, new PrintWriter(new OutputStream() {
@@ -158,19 +142,12 @@ public class MixinPlugin {
 				}
 
 				try {
-					if (MixBukkit.DEBUG) {
-						Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "// Redefining class...");
-					}
-
 					MixBukkit.INSTRUMENTATION.redefineClasses(new ClassDefinition(owner, data));
 					ClassesManager.classNodes.put(owner.getName(), classNode);
 					ClassesManager.classes.put(owner.getName(), data);
 				} catch (Exception e) {
 					e.printStackTrace();
 					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[!] Failed to load mixin: " + plugin.getName() + ":" + namespace + ", Reason: Could not redefine class: " + owner.getSimpleName());
-				}
-				if (MixBukkit.DEBUG) {
-					Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[!] Successfully hooked " + namespace);
 				}
 				registeredMixins.add(namespace);
 				return true;

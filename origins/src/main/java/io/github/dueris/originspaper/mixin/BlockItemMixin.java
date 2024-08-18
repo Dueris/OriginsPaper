@@ -1,6 +1,5 @@
 package io.github.dueris.originspaper.mixin;
 
-import com.dragoncommissions.mixbukkit.api.locator.impl.HLocatorReturn;
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
 import io.github.dueris.originspaper.power.PreventBlockPlacePower;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
@@ -21,8 +20,8 @@ import org.jetbrains.annotations.NotNull;
 @Mixin(BlockItem.class)
 public class BlockItemMixin {
 
-	@Inject(locator = HLocatorReturn.class, method = "canPlace")
-	public static void canPlace$apoli(BlockItem item, BlockPlaceContext context, BlockState state, @NotNull CallbackInfo info) {
+	@Inject(locator = At.Value.RETURN, method = "canPlace")
+	public static void apoli$canPlace(BlockItem item, BlockPlaceContext context, BlockState state, @NotNull CallbackInfo info) {
 		Player player = context.getPlayer();
 		if (player == null) {
 			return;
@@ -48,6 +47,5 @@ public class BlockItemMixin {
 			info.setReturnValue(false);
 			info.setReturned(true);
 		}
-		return;
 	}
 }

@@ -3,6 +3,7 @@ package com.dragoncommissions.mixbukkit.api.locator.impl;
 import com.dragoncommissions.mixbukkit.api.locator.HookLocator;
 import com.dragoncommissions.mixbukkit.utils.ASMUtils;
 import com.dragoncommissions.mixbukkit.utils.PostPreState;
+import org.jetbrains.annotations.NotNull;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
 
@@ -19,7 +20,7 @@ public class HLocatorMethodInvoke implements HookLocator {
 	private final PostPreState state;
 	private final Predicate<Integer> filter;
 
-	public HLocatorMethodInvoke(Method method, PostPreState state, Predicate<Integer> filter) {
+	public HLocatorMethodInvoke(@NotNull Method method, PostPreState state, Predicate<Integer> filter) {
 		owner = method.getDeclaringClass().getName().replace(".", "/");
 		desc = ASMUtils.getDescriptor(method.getReturnType(), method.getParameterTypes());
 		name = method.getName();
@@ -27,7 +28,7 @@ public class HLocatorMethodInvoke implements HookLocator {
 		this.state = state;
 	}
 
-	public HLocatorMethodInvoke(Class<?> owner, Method method, PostPreState state, Predicate<Integer> filter) {
+	public HLocatorMethodInvoke(@NotNull Class<?> owner, @NotNull Method method, PostPreState state, Predicate<Integer> filter) {
 		this.owner = owner.getName().replace(".", "/");
 		desc = ASMUtils.getDescriptor(method.getReturnType(), method.getParameterTypes());
 		name = method.getName();
@@ -36,7 +37,7 @@ public class HLocatorMethodInvoke implements HookLocator {
 	}
 
 	@Override
-	public List<Integer> getLineNumber(InsnList insnList) {
+	public List<Integer> getLineNumber(@NotNull InsnList insnList) {
 		int amount = 0;
 		List<Integer> out = new ArrayList<>();
 		for (int i = 0; i < insnList.size(); i++) {

@@ -14,9 +14,9 @@ import java.util.Map;
 public class ClassesManager {
 
 
+	private static final ClassPool cp = ClassPool.getDefault();
 	public static Map<String, byte[]> classes = new HashMap<>();
 	public static Map<String, ClassNode> classNodes = new HashMap<>();
-	private static final ClassPool cp = ClassPool.getDefault();
 
 	public static void init() {
 		MixBukkit.INSTRUMENTATION.addTransformer(new ClassFileTransformer() {
