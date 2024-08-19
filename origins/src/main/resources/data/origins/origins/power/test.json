@@ -1,8 +1,7 @@
 {
-  "type": "origins:modify_block_render",
-  "block_condition": {
-    "type": "origins:block",
-    "block": "minecraft:grass_block"
-  },
-  "block": "minecraft:diamond_block"
+  "type": "origins:modify_crafting",
+  "recipe": "minecraft:wooden_sword",
+  "result": {
+    "id": "minecraft:diamond_sword"
+  }
 }

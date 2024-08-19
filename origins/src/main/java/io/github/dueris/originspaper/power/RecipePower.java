@@ -46,6 +46,7 @@ public class RecipePower extends PowerType {
 			.add("recipe", SerializableDataTypes.RECIPE);
 	}
 
+	@NotNull
 	public static String computeTag(org.bukkit.inventory.Recipe recipe) {
 		if (recipe instanceof ShapedRecipe ee) {
 			return ee.key().asString();
