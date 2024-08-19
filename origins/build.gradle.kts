@@ -25,13 +25,6 @@ dependencies {
 }
 
 tasks {
-    jar {
-        manifest {
-            attributes(
-                "Main-Class" to "me.dueris.originspaper.util.LaunchWarning"
-            )
-        }
-    }
     compileJava {
         options.encoding = Charsets.UTF_8.name()
 
