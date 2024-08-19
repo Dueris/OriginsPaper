@@ -47,7 +47,9 @@ public class ModifyBreakSpeedPower extends ModifierPower {
 		List<Modifier> copy = new LinkedList<>(getModifiers());
 		getModifiers().clear();
 		for (Modifier m : copy) {
-			getModifiers().add(new Modifier(m.getOperation(), m.getData().set("amount", m.getData().getDouble("amount") * 100)));
+			double original = m.getData().getDouble("amount");
+			getModifiers().add(new Modifier(m.getOperation(), m.getData().set("amount",
+				original < 0 ? original * 10 : original * 100)));
 		}
 	}
 
