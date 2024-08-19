@@ -1,6 +1,10 @@
 {
-  "type": "origins:prevent_item_use",
-  "item_condition": {
-    "type": "origins:food"
+  "type": "origins:modify_air_speed",
+  "modifier": {
+    "operation": "multiply_total",
+    "value": 1.5
+  },
+  "condition": {
+    "type": "origins:in_rain"
   }
 }
