@@ -1,3 +1,6 @@
 {
-  "type": "origins:freeze"
+  "type": "origins:prevent_item_use",
+  "item_condition": {
+    "type": "origins:food"
+  }
 }

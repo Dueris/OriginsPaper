@@ -234,39 +234,21 @@ public class ASMUtils {
 
 	@SneakyThrows
 	public static Class<?> descriptorToClass(String s) {
-		Class<?> type = null;
-		switch (s) {
-			case "Z":
-				type = boolean.class;
-				break;
-			case "C":
-				type = char.class;
-				break;
-			case "B":
-				type = byte.class;
-				break;
-			case "S":
-				type = short.class;
-				break;
-			case "I":
-				type = int.class;
-				break;
-			case "J":
-				type = long.class;
-				break;
-			case "F":
-				type = float.class;
-				break;
-			case "D":
-				type = double.class;
-				break;
-			case "V":
-				type = void.class;
-				break;
-		}
+		Class<?> type = switch (s) {
+			case "Z" -> boolean.class;
+			case "C" -> char.class;
+			case "B" -> byte.class;
+			case "S" -> short.class;
+			case "I" -> int.class;
+			case "J" -> long.class;
+			case "F" -> float.class;
+			case "D" -> double.class;
+			case "V" -> void.class;
+			default -> null;
+		};
 		if (s.startsWith("L")) {
 			try {
-				type = Class.forName(s.substring(1, s.length() - 1));
+				type = Class.forName(s.substring(1, s.length() - 1).replace("/", "."));
 			} catch (ClassNotFoundException e) {
 				throw new RuntimeException(e);
 			}

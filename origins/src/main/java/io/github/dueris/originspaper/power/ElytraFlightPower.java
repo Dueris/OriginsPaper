@@ -4,6 +4,7 @@ import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.event.PowerUpdateEvent;
+import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -65,7 +66,7 @@ public class ElytraFlightPower extends PowerType {
 		if (getPlayers().contains(((CraftPlayer) e.getPlayer()).getHandle())) {
 			e.setCancelled(true);
 			p.setFlying(false);
-			if (isActive(((CraftPlayer) p).getHandle())/* TODO && !PowerHolderComponent.hasPowerType(p, PreventElytraFlight.class)*/) {
+			if (isActive(((CraftPlayer) p).getHandle()) && !PowerHolderComponent.doesHaveConditionedPower(p, PreventElytraFlightPower.class, (preventElytraFlight) -> preventElytraFlight.isActive(((CraftPlayer) p).getHandle()))) {
 				if (!p.isGliding() && !p.getLocation().add(0, 1, 0).getBlock().isCollidable()) {
 					if (p.getGameMode() == GameMode.SPECTATOR) return;
 					glidingPlayers.add(p.getUniqueId());

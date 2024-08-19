@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class OriginsMixins {
 
@@ -55,6 +56,10 @@ public class OriginsMixins {
 									}
 									if (toMixin == null)
 										throw new IllegalArgumentException("Unable to locate method to mixin to!");
+
+									if (!Arrays.stream(inject.params()).toList().isEmpty()) {
+										params = inject.params();
+									}
 
 									mixinPlugin.registerMixin(
 										baseNamespace + "(" + method.getName() + ")",

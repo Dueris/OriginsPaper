@@ -38,9 +38,9 @@ public class CreativeFlightPower extends PowerType {
 				((org.bukkit.entity.Player) p.getBukkitEntity()).setAllowFlight((power == null || power.isActive(p)) || m.equals(GameType.SPECTATOR) || m.equals(GameType.CREATIVE));
 			} else {
 				boolean a = m.equals(GameType.SPECTATOR) || m.equals(GameType.CREATIVE) ||
-					// TODO
-					PowerHolderComponent.hasPowerType(p.getBukkitEntity(), ElytraFlightPower.class) || PowerHolderComponent.hasPowerType(p.getBukkitEntity(), GroundedPower.class)
-					/* || PowerHolderComponent.hasPowerType(p.getBukkitEntity(), Swimming.class)*/ || isInPhantomForm((org.bukkit.entity.Player) p.getBukkitEntity());
+					PowerHolderComponent.hasPowerType(p.getBukkitEntity(), ElytraFlightPower.class) ||
+					PowerHolderComponent.hasPowerType(p.getBukkitEntity(), GroundedPower.class) ||
+					isInPhantomForm((org.bukkit.entity.Player) p.getBukkitEntity());
 				if (a && !((org.bukkit.entity.Player) p.getBukkitEntity()).getAllowFlight()) {
 					((org.bukkit.entity.Player) p.getBukkitEntity()).setAllowFlight(true);
 				} else if (!a && ((org.bukkit.entity.Player) p.getBukkitEntity()).getAllowFlight()) {

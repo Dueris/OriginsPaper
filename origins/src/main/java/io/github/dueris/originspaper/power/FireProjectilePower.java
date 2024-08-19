@@ -5,7 +5,6 @@ import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionFactory;
 import io.github.dueris.originspaper.condition.ConditionFactory;
-import io.github.dueris.originspaper.content.NMSBootstrap;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.HudRender;
 import io.github.dueris.originspaper.data.types.Keybind;
@@ -30,9 +29,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class FireProjectilePower extends PowerType implements CooldownInterface {
+	public static final List<ResourceLocation> IS_ENDERIAN_PEARL = new ArrayList<>();
 	private final int cooldown;
 	private final int projectileCount;
 	private final int interval;
@@ -222,9 +224,10 @@ public class FireProjectilePower extends PowerType implements CooldownInterface 
 		if (entityToSpawn instanceof Projectile projectileToSpawn) {
 			projectileToSpawn.setOwner(entity);
 
-			if (entityType.equals(NMSBootstrap.ENDERIAN_PEARL_ENTITYTYPE)) {
+			if (IS_ENDERIAN_PEARL.contains(key())) {
 				enderian_pearl.add(entity.getBukkitEntity());
 			}
+
 		}
 
 		if (projectileAction != null) {

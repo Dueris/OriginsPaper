@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CanSeeCondition {
 
-	public static boolean condition(SerializableData.Instance data, @NotNull Tuple<Entity, Entity> actorAndTarget) {
+	public static boolean condition(ClipContext.Block shapeType, ClipContext.Fluid fluidHandling, @NotNull Tuple<Entity, Entity> actorAndTarget) {
 
 		Entity actor = actorAndTarget.getA();
 		Entity target = actorAndTarget.getB();
@@ -21,9 +21,6 @@ public class CanSeeCondition {
 		if ((actor == null || target == null) || actor.level() != target.level()) {
 			return false;
 		}
-
-		ClipContext.Block shapeType = data.get("shape_type");
-		ClipContext.Fluid fluidHandling = data.get("fluid_handling");
 
 		Vec3 actorEyePos = actor.getEyePosition();
 		Vec3 targetEyePos = target.getEyePosition();
@@ -43,7 +40,7 @@ public class CanSeeCondition {
 			SerializableData.serializableData()
 				.add("shape_type", SerializableDataTypes.SHAPE_TYPE, ClipContext.Block.VISUAL)
 				.add("fluid_handling", SerializableDataTypes.FLUID_HANDLING, ClipContext.Fluid.NONE),
-			CanSeeCondition::condition
+			(data, entityPair) -> condition(data.get("shape_type"), data.get("fluid_handling"), entityPair)
 		);
 	}
 }

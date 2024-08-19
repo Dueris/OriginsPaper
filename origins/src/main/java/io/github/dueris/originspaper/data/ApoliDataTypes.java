@@ -158,7 +158,7 @@ public class ApoliDataTypes {
 			return jsonElement instanceof JsonPrimitive jsonPrimitive
 				? Component.translatable(jsonPrimitive.getAsString())
 				: SerializableDataTypes.TEXT.deserialize(jsonElement);
-		}, Comparison.class
+		}, Component.class
 	);
 	public static final SerializableDataBuilder<Pose> ENTITY_POSE = SerializableDataTypes.enumValue(Pose.class);
 	public static final SerializableDataBuilder<HudRender> HUD_RENDER = SerializableDataBuilder.of(
@@ -206,7 +206,7 @@ public class ApoliDataTypes {
 				try {
 					ConditionFactory<T> conditionFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
 					if (conditionFactory == null) {
-						throw new IllegalArgumentException("Unable to retrieve action of: " + jsonObject.get("type").getAsString());
+						throw new IllegalArgumentException("Unable to retrieve condition of: " + jsonObject.get("type").getAsString());
 					}
 					return conditionFactory.copy().decompile(jsonObject);
 				} catch (Throwable e) {

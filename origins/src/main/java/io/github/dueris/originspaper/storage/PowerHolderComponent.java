@@ -288,6 +288,30 @@ public class PowerHolderComponent implements Listener {
 		}
 	}
 
+	public static <T extends PowerType> List<T> gatherConditionedPowers(Entity p, Class<T> type, Predicate<T> predicate) {
+		ArrayList<T> powers = new ArrayList<>();
+		if (hasPowerType(p, type)) {
+			for (T power : getPowers(p, type)) {
+				if (predicate.test(power)) {
+					powers.add(power);
+				}
+			}
+		}
+		return powers;
+	}
+
+	public static <T extends PowerType> boolean doesHaveConditionedPower(Entity p, Class<T> type, Predicate<T> predicate) {
+		boolean pass = false;
+		if (hasPowerType(p, type)) {
+			for (T power : getPowers(p, type)) {
+				if (predicate.test(power)) {
+					pass = true;
+				}
+			}
+		}
+		return pass;
+	}
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void sprint(@NotNull PlayerToggleSprintEvent e) {
 		if (e.isSprinting()) {

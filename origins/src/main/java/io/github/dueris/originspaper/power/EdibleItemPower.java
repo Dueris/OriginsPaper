@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-// TODO: ask paper why this freezes the eating process after eat seconds are over bc this is weird af
 public class EdibleItemPower extends PowerType {
 	private final ActionFactory<Entity> entityAction;
 	private final ActionFactory<Tuple<Level, SlotAccess>> consumedItemAction;

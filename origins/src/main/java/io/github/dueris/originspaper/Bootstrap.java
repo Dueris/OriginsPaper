@@ -3,8 +3,10 @@ package io.github.dueris.originspaper;
 import com.dragoncommissions.mixbukkit.MixBukkit;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.dueris.calio.parser.CalioParser;
+import io.github.dueris.calio.parser.JsonObjectRemapper;
 import io.github.dueris.originspaper.command.Commands;
 import io.github.dueris.originspaper.content.NMSBootstrap;
+import io.github.dueris.originspaper.power.FireProjectilePower;
 import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.util.WrappedBootstrapContext;
 import io.papermc.paper.command.brigadier.ApiMirrorRootNode;
@@ -134,6 +136,11 @@ public class Bootstrap implements PluginBootstrap {
 			Commands.bootstrap(((ApiMirrorRootNode) commands.getRoot()).getDispatcher());
 		})).priority(10));
 
+		try {
+			Class.forName("com.mojang.datafixers.util.Either");
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
 		io.github.dueris.calio.parser.JsonObjectRemapper remapper = new io.github.dueris.calio.parser.JsonObjectRemapper(
 			List.of(
 				new Tuple<>("origins", "apoli")
@@ -146,12 +153,19 @@ public class Bootstrap implements PluginBootstrap {
 				new Tuple<>("apoli:fireproof", "apoli:fire_resistant"),
 				new Tuple<>("apoli:merge_nbt", "apoli:merge_custom_data"),
 				new Tuple<>("apoli:revoke_power", "apoli:remove_power"),
-				new Tuple<>("apoli:water_protection", "origins:water_protection") // fix water protection in namespace aliases
+				new Tuple<>("apoli:water_protection", "origins:water_protection"), // fix water protection in namespace aliases
+				new Tuple<>("apoli:enderian_pearl", "minecraft:ender_pearl")
 			),
 			List.of(
-				"power_type", "type"
+				"power_type", "type", "entity_type"
 			)
 		);
+		JsonObjectRemapper.PRE_REMAP_HOOK.add(new Tuple<>(
+			"apoli:enderian_pearl",
+			(tuple) -> {
+				FireProjectilePower.IS_ENDERIAN_PEARL.add(tuple.getB());
+			}
+		));
 		CalioParser.REMAPPER.set(remapper);
 		context.createRegistries(
 			Registries.ORIGIN,

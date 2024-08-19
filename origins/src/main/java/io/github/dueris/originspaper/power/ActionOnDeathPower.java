@@ -12,7 +12,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-// TODO : mixin?
 public class ActionOnDeathPower extends PowerType {
 	private final ActionFactory<Tuple<Entity, Entity>> bientityAction;
 	private final ConditionFactory<Tuple<DamageSource, Float>> damageCondition;
