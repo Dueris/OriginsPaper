@@ -74,8 +74,8 @@ public class ModifyBreakSpeedPower extends ModifierPower {
 		if (modifyHardness ? getHardnessModifiers().isEmpty() : getModifiers().isEmpty())
 			return; // Don't apply empty modifiers
 		instance.setBaseValue(
-			doesApply(pos, player) ? ModifierUtil.applyModifiers(player,
-				modifyHardness ? getHardnessModifiers() : getModifiers(), b) : b
+			Math.abs(doesApply(pos, player) ? ModifierUtil.applyModifiers(player,
+				modifyHardness ? getHardnessModifiers() : getModifiers(), b) : b)
 		);
 
 	}
