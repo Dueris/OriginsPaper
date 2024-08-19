@@ -136,11 +136,6 @@ public class Bootstrap implements PluginBootstrap {
 			Commands.bootstrap(((ApiMirrorRootNode) commands.getRoot()).getDispatcher());
 		})).priority(10));
 
-		try {
-			Class.forName("com.mojang.datafixers.util.Either");
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		}
 		io.github.dueris.calio.parser.JsonObjectRemapper remapper = new io.github.dueris.calio.parser.JsonObjectRemapper(
 			List.of(
 				new Tuple<>("origins", "apoli")
