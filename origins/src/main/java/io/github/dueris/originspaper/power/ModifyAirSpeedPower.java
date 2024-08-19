@@ -5,6 +5,7 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
+import io.github.dueris.originspaper.util.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -55,9 +56,9 @@ public class ModifyAirSpeedPower extends ModifierPower {
 		CraftPlayer craftPlayer = (CraftPlayer) player.getBukkitEntity();
 		double modified = ModifierUtil.applyModifiers(player, getModifiers(), craftPlayer.getFlySpeed());
 
-		original2Modified.put(player, new Tuple<>(craftPlayer.getFlySpeed(), (float) modified));
+		original2Modified.put(player, new Tuple<>(Util.range(-1F, 1F, craftPlayer.getFlySpeed()), Util.range(-1F, 1F, (float) modified)));
 
-		craftPlayer.setFlySpeed((float) modified);
+		craftPlayer.setFlySpeed(original2Modified.get(player).getB());
 	}
 
 	@Override
