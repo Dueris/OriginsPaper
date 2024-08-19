@@ -45,7 +45,9 @@ public class ModifyAirSpeedPower extends ModifierPower {
 	 */
 	@EventHandler
 	public void onLeave(@NotNull PlayerQuitEvent e) {
-		e.getPlayer().setFlySpeed(original2Modified.get(((CraftPlayer)e.getPlayer()).getHandle()).getA());
+		if (original2Modified.containsKey(((CraftPlayer)e.getPlayer()).getHandle())) {
+			e.getPlayer().setFlySpeed(original2Modified.get(((CraftPlayer)e.getPlayer()).getHandle()).getA());
+		}
 	}
 
 	@Override
