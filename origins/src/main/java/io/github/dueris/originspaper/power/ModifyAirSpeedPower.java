@@ -29,6 +29,10 @@ public class ModifyAirSpeedPower extends ModifierPower {
 		super(key, type, name, description, hidden, condition, loadingPriority, modifier, modifiers);
 	}
 
+	public static SerializableData buildFactory() {
+		return ModifierPower.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("modify_air_speed"));
+	}
+
 	@Override
 	public void tick(Player player) {
 		if (!original2Modified.containsKey(player)) {
@@ -46,8 +50,8 @@ public class ModifyAirSpeedPower extends ModifierPower {
 	 */
 	@EventHandler
 	public void onLeave(@NotNull PlayerQuitEvent e) {
-		if (original2Modified.containsKey(((CraftPlayer)e.getPlayer()).getHandle())) {
-			e.getPlayer().setFlySpeed(original2Modified.get(((CraftPlayer)e.getPlayer()).getHandle()).getA());
+		if (original2Modified.containsKey(((CraftPlayer) e.getPlayer()).getHandle())) {
+			e.getPlayer().setFlySpeed(original2Modified.get(((CraftPlayer) e.getPlayer()).getHandle()).getA());
 		}
 	}
 
@@ -65,9 +69,5 @@ public class ModifyAirSpeedPower extends ModifierPower {
 	public void onRemoved(@NotNull Player player) {
 		CraftPlayer craftPlayer = (CraftPlayer) player.getBukkitEntity();
 		craftPlayer.setFlySpeed(original2Modified.get(player).getA());
-	}
-
-	public static SerializableData buildFactory() {
-		return ModifierPower.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("modify_air_speed"));
 	}
 }

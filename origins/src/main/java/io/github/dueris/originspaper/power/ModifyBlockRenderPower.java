@@ -42,10 +42,16 @@ public class ModifyBlockRenderPower extends PowerType {
 		this.state = state;
 	}
 
+	public static SerializableData buildFactory() {
+		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("modify_block_render"))
+			.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
+			.add("block", SerializableDataTypes.BLOCK_STATE);
+	}
+
 	@EventHandler
 	public void chunkLoad(@NotNull PlayerChunkLoadEvent e) {
 		Player p = e.getPlayer();
-		if (!getPlayers().contains(((CraftPlayer)p).getHandle())) return;
+		if (!getPlayers().contains(((CraftPlayer) p).getHandle())) return;
 		final LevelChunkUtil worldChunkAccessor = new LevelChunkUtil(e.getWorld());
 		ServerLevel level = ((CraftWorld) e.getWorld()).getHandle();
 		que.add(() -> {
@@ -54,7 +60,8 @@ public class ModifyBlockRenderPower extends PowerType {
 			for (Block block : worldChunkAccessor.getAllBlocksInChunk(e.getChunk())) {
 				if (block == null) continue;
 				Location location = block.getLocation();
-				if (!blockCondition.test(new BlockInWorld(level, CraftLocation.toBlockPosition(location), true))) continue;
+				if (!blockCondition.test(new BlockInWorld(level, CraftLocation.toBlockPosition(location), true)))
+					continue;
 				updates.put(location, toSend);
 			}
 			// We send in multi-block-changes to save on network spam
@@ -85,11 +92,5 @@ public class ModifyBlockRenderPower extends PowerType {
 			que.getFirst().run();
 			que.removeFirst();
 		}
-	}
-
-	public static SerializableData buildFactory() {
-		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("modify_block_render"))
-			.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
-			.add("block", SerializableDataTypes.BLOCK_STATE);
 	}
 }

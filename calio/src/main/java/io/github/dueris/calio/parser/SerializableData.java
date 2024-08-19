@@ -109,8 +109,9 @@ public class SerializableData {
 			}
 		}
 
-		public void set(String name, Object value) {
+		public Instance set(String name, Object value) {
 			this.data.put(name, value);
+			return this;
 		}
 
 		public <T> T get(String name) {

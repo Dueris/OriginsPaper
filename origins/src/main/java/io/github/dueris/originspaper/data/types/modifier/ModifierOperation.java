@@ -87,7 +87,7 @@ public enum ModifierOperation implements IModifierOperation {
 	});
 
 	public static final SerializableData DATA = SerializableData.serializableData()
-		.add("value", SerializableDataTypes.DOUBLE)
+		.add("amount", SerializableDataTypes.DOUBLE)
 		.add("modifier", Modifier.LIST_TYPE, null);
 
 	private final Phase phase;
@@ -120,7 +120,7 @@ public enum ModifierOperation implements IModifierOperation {
 		return function.apply(
 			instances.stream()
 				.map(instance -> {
-					double value = instance.get("value");
+					double value = instance.get("amount");
 					if (instance.isPresent("modifier")) {
 						List<Modifier> modifiers = instance.get("modifier");
 						value = ModifierUtil.applyModifiers(entity, modifiers, value);
