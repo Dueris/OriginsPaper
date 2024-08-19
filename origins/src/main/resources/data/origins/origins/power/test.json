@@ -1,10 +1,8 @@
 {
-  "type": "origins:modify_air_speed",
-  "modifier": {
-    "operation": "multiply_total",
-    "value": 1.5
+  "type": "origins:modify_block_render",
+  "block_condition": {
+    "type": "origins:block",
+    "block": "minecraft:grass_block"
   },
-  "condition": {
-    "type": "origins:in_rain"
-  }
+  "block": "minecraft:diamond_block"
 }
