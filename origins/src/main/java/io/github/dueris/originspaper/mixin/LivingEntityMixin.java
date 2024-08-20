@@ -1,8 +1,10 @@
 package io.github.dueris.originspaper.mixin;
 
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
+import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
 import io.github.dueris.originspaper.power.ActionOnDeathPower;
 import io.github.dueris.originspaper.power.EffectImmunityPower;
+import io.github.dueris.originspaper.power.ModifyFallingPowerType;
 import io.github.dueris.originspaper.power.PreventDeathPower;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.tags.EntityTypeTags;
@@ -11,6 +13,8 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+import org.bukkit.attribute.Attribute;
 import org.jetbrains.annotations.NotNull;
 
 @Mixin(LivingEntity.class)
@@ -63,6 +67,29 @@ public class LivingEntityMixin {
 		info.setReturnValue(
 			original && applies
 		);
+	}
+
+	@Inject(method = "travel", locator = At.Value.HEAD)
+	public static void apoli$modifyFalling(LivingEntity instance, Vec3 movementInput, CallbackInfo info) {
+		if (instance instanceof Player player) {
+
+			if (player.getDeltaMovement().y >= -0.06D || player.fallDistance <= 0) {
+				player.getBukkitEntity().getAttribute(Attribute.GENERIC_GRAVITY).setBaseValue(player.getBukkitEntity().getAttribute(Attribute.GENERIC_GRAVITY).getDefaultValue());
+				return;
+			}
+
+			for (ModifyFallingPowerType power : PowerHolderComponent.getPowers(player.getBukkitEntity(), ModifyFallingPowerType.class)) {
+
+				if (!power.shouldTakeFallDamage()) {
+					player.fallDistance = 0;
+				}
+
+				double original = player.getBukkitEntity().getAttribute(Attribute.GENERIC_GRAVITY).getDefaultValue();
+				double modified = ModifierUtil.applyModifiers(player, power.getModifiers(), original);
+
+				player.getBukkitEntity().getAttribute(Attribute.GENERIC_GRAVITY).setBaseValue(modified);
+			}
+		}
 	}
 
 }

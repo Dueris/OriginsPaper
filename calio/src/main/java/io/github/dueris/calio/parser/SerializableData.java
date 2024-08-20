@@ -83,7 +83,7 @@ public class SerializableData {
 	}
 
 	@SuppressWarnings("unchecked")
-	public record Instance(HashMap<String, Object> data) {
+	public record Instance(Map<String, Object> data) {
 
 		public static <T> @NotNull Instance decompileJsonObject(JsonObject jsonObject, SerializableData definer, String instanceType, String key, Optional<Class<T>> classType) {
 			Optional<Tuple<List<Tuple<String, ?>>, List<Tuple<String, ?>>>> compiledInstance = CalioParser.compileFromInstanceDefinition(

@@ -9,8 +9,10 @@ import io.github.dueris.calio.parser.SerializableData;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class Modifier implements Comparable<Modifier> {
 
@@ -45,6 +47,19 @@ public class Modifier implements Comparable<Modifier> {
 	public Modifier(IModifierOperation operation, SerializableData.Instance dataInstance) {
 		this.operation = operation;
 		this.dataInstance = dataInstance;
+	}
+
+	public static Modifier of(IModifierOperation operation, Consumer<SerializableData.Instance> processor) {
+
+		SerializableData.Instance data = new SerializableData.Instance(new HashMap<>());
+		processor.accept(data);
+
+		return new Modifier(operation, data);
+
+	}
+
+	public static Modifier of(ModifierOperation operation, double amount) {
+		return of(operation, data -> data.set("amount", amount));
 	}
 
 	public IModifierOperation getOperation() {
