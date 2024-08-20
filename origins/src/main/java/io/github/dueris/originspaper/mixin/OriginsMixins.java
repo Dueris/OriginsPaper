@@ -61,9 +61,17 @@ public class OriginsMixins {
 										params = inject.params();
 									}
 
+									String namespace = baseNamespace + "(" + method.getName() + ")";
+									OriginsPaper.getPlugin().getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Injecting mixin with arguments: [{1}, {2}, {3}, {4}, {5}, {6}]"
+										.replace("{1}", namespace)
+										.replace("{2}", shellCode.getClass().getSimpleName())
+										.replace("{3}", mixin.getName())
+										.replace("{4}", toMixin.getName())
+										.replace("{5}", toMixin.getReturnType().getName())
+										.replace("{6}", Arrays.stream(params).toList().stream().map(Class::getSimpleName).toList().toString())
+									);
 									mixinPlugin.registerMixin(
-										baseNamespace + "(" + method.getName() + ")",
-										shellCode, mixin, toMixin.getName(), toMixin.getReturnType(), params
+										namespace, shellCode, mixin, toMixin.getName(), toMixin.getReturnType(), params
 									);
 								}
 							}

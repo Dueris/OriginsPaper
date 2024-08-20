@@ -64,10 +64,7 @@ public class PreventEntityUsePower extends PowerType {
 		if (!doesApplyToHand(hand)) {
 			return false;
 		}
-		if (!doesApplyToItem(heldStack, entity)) {
-			return false;
-		}
-		return true;
+		return doesApplyToItem(heldStack, entity);
 	}
 
 	public boolean doesApplyToHand(InteractionHand hand) {

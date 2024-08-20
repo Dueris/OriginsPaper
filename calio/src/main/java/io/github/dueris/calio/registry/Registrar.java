@@ -8,10 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 public class Registrar<T> {
@@ -98,6 +95,14 @@ public class Registrar<T> {
 
 	public void forEach(BiConsumer<ResourceLocation, T> consumer) {
 		this.rawRegistry.forEach(consumer);
+	}
+
+	public void filterAndThen(Predicate<T> filter, Consumer<T> andThen) {
+		for (T value : this.values()) {
+			if (filter.test(value)) {
+				andThen.accept(value);
+			}
+		}
 	}
 
 	public synchronized void freeze() {

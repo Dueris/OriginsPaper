@@ -8,6 +8,7 @@ import com.dragoncommissions.mixbukkit.api.locator.impl.HLocatorReturn;
 import com.dragoncommissions.mixbukkit.utils.PostPreState;
 import io.github.dueris.calio.util.holder.ObjectProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.jetbrains.annotations.ApiStatus;
 
 public final class At {
@@ -74,6 +76,13 @@ public final class At {
 		SET_BED_RESPAWN_POS(((ObjectProvider<HLocatorMethodInvoke>) () -> {
 			try {
 				return new HLocatorMethodInvoke(ServerPlayer.class.getDeclaredMethod("setRespawnPosition", ResourceKey.class, BlockPos.class, float.class, boolean.class, boolean.class, PlayerSetSpawnEvent.Cause.class), PostPreState.PRE, (i) -> i == 0);
+			} catch (NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			}
+		}).get()),
+		GET_ENCHANT_LEVEL(((ObjectProvider<HLocatorMethodInvoke>) () -> {
+			try {
+				return new HLocatorMethodInvoke(ItemEnchantments.class.getDeclaredMethod("getLevel", Holder.class), PostPreState.PRE, (i) -> i == 0);
 			} catch (NoSuchMethodException e) {
 				throw new RuntimeException(e);
 			}

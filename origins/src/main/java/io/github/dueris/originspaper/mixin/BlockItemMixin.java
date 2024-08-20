@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class BlockItemMixin {
 
 	@Inject(locator = At.Value.RETURN, method = "canPlace")
-	public static void apoli$canPlace(BlockItem item, BlockPlaceContext context, BlockState state, @NotNull CallbackInfo info) {
+	public static void apoli$canPlace(BlockItem item, @NotNull BlockPlaceContext context, BlockState state, @NotNull CallbackInfo info) {
 		Player player = context.getPlayer();
 		if (player == null) {
 			return;

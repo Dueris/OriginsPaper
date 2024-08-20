@@ -51,7 +51,7 @@ public class LivingEntityMixin {
 	public static void apoli$canHaveStatusEffect(@NotNull LivingEntity entity, MobEffectInstance effect, CallbackInfo info) {
 		boolean original = entity.getType().is(EntityTypeTags.IMMUNE_TO_INFESTED) ?
 			!effect.is(MobEffects.INFESTED) : (entity.getType().is(EntityTypeTags.IMMUNE_TO_OOZING) ? !effect.is(MobEffects.OOZING) :
-			(!entity.getType().is(EntityTypeTags.IGNORES_POISON_AND_REGEN) ? true : !effect.is(MobEffects.REGENERATION) && !effect.is(MobEffects.POISON)));
+			(!entity.getType().is(EntityTypeTags.IGNORES_POISON_AND_REGEN) || !effect.is(MobEffects.REGENERATION) && !effect.is(MobEffects.POISON)));
 		boolean applies = true;
 		for (EffectImmunityPower power : PowerHolderComponent.getPowers(entity.getBukkitEntity(), EffectImmunityPower.class)) {
 			if (power.doesApply(effect)) {
