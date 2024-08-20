@@ -9,6 +9,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.PrimitiveCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -35,10 +36,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtAccounter;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.TagParser;
+import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -309,7 +307,12 @@ public class SerializableDataTypes {
 	public static final SerializableDataBuilder<SoundEvent> SOUND_EVENT = SerializableDataBuilder.of(IDENTIFIER.xmap(SoundEvent::createVariableRangeEvent, SoundEvent::getLocation), SoundEvent.class);
 	public static final SerializableDataBuilder<EntityType<?>> ENTITY_TYPE = registry(Util.castClass(EntityType.class), BuiltInRegistries.ENTITY_TYPE);
 	public static final SerializableDataBuilder<ParticleType<?>> PARTICLE_TYPE = registry(Util.castClass(ParticleType.class), BuiltInRegistries.PARTICLE_TYPE);
-	public static final SerializableDataBuilder<CompoundTag> NBT = SerializableDataBuilder.of(Codec.withAlternative(CompoundTag.CODEC, TagParser.LENIENT_CODEC), CompoundTag.class);
+	public static final SerializableDataBuilder<Tag> NBT_ELEMENT = SerializableDataBuilder.of(
+		Codec.PASSTHROUGH.xmap(dynamic -> dynamic.convert(NbtOps.INSTANCE).getValue(), nbtElement -> new Dynamic<>(NbtOps.INSTANCE, nbtElement.copy())),
+		Tag.class
+	);
+
+	public static final SerializableDataBuilder<CompoundTag> NBT_COMPOUND = SerializableDataBuilder.of(Codec.withAlternative(CompoundTag.CODEC, TagParser.LENIENT_CODEC), CompoundTag.class);
 	public static final SerializableDataBuilder<ParticleOptions> PARTICLE_EFFECT = SerializableDataBuilder.of(
 		(jsonElement) -> {
 			ParticleType<? extends ParticleOptions> particleType;
@@ -317,7 +320,7 @@ public class SerializableDataTypes {
 			if (jsonElement.isJsonObject()) {
 				JsonObject jo = jsonElement.getAsJsonObject();
 				if (jo.has("params")) {
-					paramsNbt = NBT.deserialize(jo.get("params"));
+					paramsNbt = NBT_COMPOUND.deserialize(jo.get("params"));
 				}
 				particleType = PARTICLE_TYPE.deserialize(jo.get("type"));
 			} else {
