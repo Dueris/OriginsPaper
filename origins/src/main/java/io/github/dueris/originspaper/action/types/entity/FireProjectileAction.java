@@ -21,28 +21,20 @@ import java.util.function.Consumer;
 
 public class FireProjectileAction {
 
-	public static void action(SerializableData.Instance data, @NotNull Entity entity) {
+	public static void action(Entity entity, EntityType<?> entityType, Consumer<Entity> projectileAction, CompoundTag entityNbt, float divergence, float speed, int count) {
 
 		if (!(entity.level() instanceof ServerLevel serverWorld)) {
 			return;
 		}
 
-		EntityType<?> entityType = data.get("entity_type");
-		CompoundTag entityNbt = data.get("tag");
 		RandomSource random = serverWorld.getRandom();
 
-		Vec3 rotationVector = entity.getLookAngle();
 		Vec3 velocity = entity.getDeltaMovement();
-		Vec3 verticalOffset = entity
-			.position()
-			.add(0, entity.getEyeHeight(entity.getPose()), 0);
+		Vec3 verticalOffset = entity.position().add(0, entity.getEyeHeight(entity.getPose()), 0);
 
-		float divergence = data.get("divergence");
-		float speed = data.get("speed");
 		float pitch = entity.getXRot();
 		float yaw = entity.getYRot();
 
-		int count = data.get("count");
 		for (int i = 0; i < count; i++) {
 
 			Entity entityToSpawn = Util
@@ -71,12 +63,12 @@ public class FireProjectileAction {
 				float m = -Mth.sin(pitch * j);
 				float n = Mth.cos(yaw * j) * Mth.cos(pitch * j);
 
-				Vec3 entityToSpawnVelocity = new Vec3(l, m, n)
+				Vec3 velocityToApply = new Vec3(l, m, n)
 					.normalize()
 					.add(random.nextGaussian() * k * divergence, random.nextGaussian() * k * divergence, random.nextGaussian() * k * divergence)
 					.scale(speed);
 
-				entityToSpawn.setDeltaMovement(entityToSpawnVelocity);
+				entityToSpawn.setDeltaMovement(velocityToApply);
 				entityToSpawn.push(velocity.x, entity.onGround() ? 0.0D : velocity.y, velocity.z);
 
 			}
@@ -91,7 +83,7 @@ public class FireProjectileAction {
 			}
 
 			serverWorld.tryAddFreshEntityWithPassengers(entityToSpawn);
-			data.<Consumer<Entity>>ifPresent("projectile_action", projectileAction -> projectileAction.accept(entityToSpawn));
+			projectileAction.accept(entityToSpawn);
 
 		}
 
@@ -105,9 +97,18 @@ public class FireProjectileAction {
 				.add("divergence", SerializableDataTypes.FLOAT, 1F)
 				.add("speed", SerializableDataTypes.FLOAT, 1.5F)
 				.add("count", SerializableDataTypes.INT, 1)
-				.add("tag", SerializableDataTypes.NBT, new CompoundTag())
+				.add("tag", SerializableDataTypes.NBT_COMPOUND, new CompoundTag())
 				.add("projectile_action", ApoliDataTypes.ENTITY_ACTION, null),
-			FireProjectileAction::action
+			(data, entity) -> {
+				action(entity,
+					data.get("entity_type"),
+					data.getOrDefault("projectile_action", e -> {}),
+					data.get("tag"),
+					data.get("divergence"),
+					data.get("speed"),
+					data.get("count")
+				);
+			}
 		);
 	}
 }

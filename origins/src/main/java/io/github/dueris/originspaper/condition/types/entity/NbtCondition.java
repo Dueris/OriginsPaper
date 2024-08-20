@@ -15,7 +15,7 @@ public class NbtCondition {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("nbt"),
 			SerializableData.serializableData()
-				.add("nbt", SerializableDataTypes.NBT),
+				.add("nbt", SerializableDataTypes.NBT_COMPOUND),
 			(data, entity) -> {
 				CompoundTag nbt = new CompoundTag();
 				entity.saveWithoutId(nbt);

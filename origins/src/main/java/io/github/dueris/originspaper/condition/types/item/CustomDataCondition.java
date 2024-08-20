@@ -21,7 +21,7 @@ public class CustomDataCondition {
 		return new ConditionFactory<>(
 			OriginsPaper.apoliIdentifier("custom_data"),
 			SerializableData.serializableData()
-				.add("nbt", SerializableDataTypes.NBT),
+				.add("nbt", SerializableDataTypes.NBT_COMPOUND),
 			CustomDataCondition::condition
 		);
 

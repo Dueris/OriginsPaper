@@ -56,7 +56,7 @@ public class SpawnEntityAction {
 			OriginsPaper.apoliIdentifier("spawn_entity"),
 			SerializableData.serializableData()
 				.add("entity_type", SerializableDataTypes.ENTITY_TYPE)
-				.add("tag", SerializableDataTypes.NBT, new CompoundTag())
+				.add("tag", SerializableDataTypes.NBT_COMPOUND, new CompoundTag())
 				.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null),
 			SpawnEntityAction::action
 		);

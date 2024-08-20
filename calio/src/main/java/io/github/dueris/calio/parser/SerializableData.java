@@ -123,6 +123,14 @@ public class SerializableData {
 			return (T) data.get(name);
 		}
 
+		public <T> T getOrDefault(String name, T def) {
+			if (isPresent(name)) {
+				return get(name);
+			}
+
+			return def;
+		}
+
 		public int getInt(String name) {
 			return get(name);
 		}

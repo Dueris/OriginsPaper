@@ -29,7 +29,7 @@ public class MergeCustomDataAction {
 		return ItemActionFactory.createItemStackBased(
 			OriginsPaper.apoliIdentifier("merge_custom_data"),
 			SerializableData.serializableData()
-				.add("nbt", SerializableDataTypes.NBT),
+				.add("nbt", SerializableDataTypes.NBT_COMPOUND),
 			MergeCustomDataAction::action
 		);
 

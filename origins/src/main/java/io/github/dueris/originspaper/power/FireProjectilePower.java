@@ -23,6 +23,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.level.levelgen.structure.pools.alias.Random;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+@Deprecated
 public class FireProjectilePower extends PowerType implements CooldownInterface {
 	public static final List<ResourceLocation> IS_ENDERIAN_PEARL = new ArrayList<>();
 	private final int cooldown;
@@ -84,7 +86,7 @@ public class FireProjectilePower extends PowerType implements CooldownInterface 
 			.add("sound", SerializableDataTypes.SOUND_EVENT, null)
 			.add("entity_type", SerializableDataTypes.ENTITY_TYPE)
 			.add("hud_render", ApoliDataTypes.HUD_RENDER, HudRender.DONT_RENDER)
-			.add("tag", SerializableDataTypes.NBT, new CompoundTag())
+			.add("tag", SerializableDataTypes.NBT_COMPOUND, new CompoundTag())
 			.add("key", ApoliDataTypes.KEYBIND, Keybind.DEFAULT_KEYBIND)
 			.add("projectile_action", ApoliDataTypes.ENTITY_ACTION, null)
 			.add("shooter_action", ApoliDataTypes.ENTITY_ACTION, null);
@@ -163,23 +165,26 @@ public class FireProjectilePower extends PowerType implements CooldownInterface 
 
 	private void fireProjectile(Entity entity) {
 
-		if (entityType == null || entity.level().isClientSide) return;
+		if (entityType == null || !(entity.level() instanceof ServerLevel serverWorld)) {
+			return;
+		}
 
-		ServerLevel serverWorld = (ServerLevel) entity.level();
-		float yaw = entity.getYRot();
+		RandomSource random = serverWorld.getRandom();
+
+		Vec3 velocity = entity.getDeltaMovement();
+		Vec3 verticalOffset = entity.position().add(0, entity.getEyeHeight(entity.getPose()), 0);
+
 		float pitch = entity.getXRot();
+		float yaw = entity.getYRot();
 
 		Entity entityToSpawn = Util
-			.getEntityWithPassengers(serverWorld, entityType, tag, entity.position().add(0, entity.getEyeHeight(entity.getPose()), 0), yaw, pitch)
+			.getEntityWithPassengers(serverWorld, entityType, tag, verticalOffset, yaw, pitch)
 			.orElse(null);
 
 		if (entityToSpawn == null) {
 			return;
 		}
 
-		Vec3 rotationVector = entity.getLookAngle();
-		Vec3 velocity = entity.getDeltaMovement();
-		RandomSource random = serverWorld.getRandom();
 
 		if (entityToSpawn instanceof Projectile projectileToSpawn) {
 
@@ -192,24 +197,24 @@ public class FireProjectilePower extends PowerType implements CooldownInterface 
 
 		} else {
 
-			float f = 0.017453292F;
-			double g = 0.007499999832361937D;
+			float j = 0.017453292F;
+			double k = 0.007499999832361937D;
 
-			float h = -Mth.sin(yaw * f) * Mth.cos(pitch * f);
-			float i = -Mth.sin(pitch * f);
-			float j = Mth.cos(yaw * f) * Mth.cos(pitch * f);
+			float l = -Mth.sin(yaw * j) * Mth.cos(pitch * j);
+			float m = -Mth.sin(pitch * j);
+			float n = Mth.cos(yaw * j) * Mth.cos(pitch * j);
 
-			Vec3 vec3d = new Vec3(h, i, j)
+			Vec3 velocityToApply = new Vec3(l, m, n)
 				.normalize()
-				.add(random.nextGaussian() * g * divergence, random.nextGaussian() * g * divergence, random.nextGaussian() * g * divergence)
+				.add(random.nextGaussian() * k * divergence, random.nextGaussian() * k * divergence, random.nextGaussian() * k * divergence)
 				.scale(speed);
 
-			entityToSpawn.setDeltaMovement(vec3d);
+			entityToSpawn.setDeltaMovement(velocityToApply);
 			entityToSpawn.push(velocity.x, entity.onGround() ? 0.0D : velocity.y, velocity.z);
 
 		}
 
-		if (tag.isEmpty()) {
+		if (!tag.isEmpty()) {
 
 			CompoundTag mergedTag = entityToSpawn.saveWithoutId(new CompoundTag());
 			mergedTag.merge(tag);
