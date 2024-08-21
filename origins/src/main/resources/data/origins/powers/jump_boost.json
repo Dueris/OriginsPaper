@@ -1,8 +1,0 @@
-{
-  "type": "origins:modify_jump",
-  "modifier": {
-    "operation": "multiply_base",
-    "value": 0.12
-  },
-  "hidden": false
-}

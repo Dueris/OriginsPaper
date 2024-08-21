@@ -1,9 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    {
-      "id": "minecraft:powder_snow",
-      "required": false
-    }
-  ]
-}

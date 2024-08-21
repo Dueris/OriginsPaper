@@ -1,0 +1,7 @@
+THIS SOFTWARE IS A FORK OF THE MIXBUKKIT SOURCE CODE, ALLOWING FOR MIXINS TO BE USED FOR ORIGINSPAPER
+ALL CREDIT GOES TO THE DEVELOPMENT TEAM OF MIXBUKKIT
+
+ALL CHANGES ARE TO BE DOCUMENTED HERE:
+- Made compatible with Java 21 compilation
+- Made MixBukkit an extension of a plugin rather than a plugin itself
+- Changed BuildData output to cache
