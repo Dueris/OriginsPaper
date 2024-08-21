@@ -1,7 +1,7 @@
 {
-  "type": "origins:modify_xp_gain",
+  "type": "origins:modify_lava_speed",
   "modifier": {
-    "operation": "multiply_base",
-    "amount": 242.0
+    "operation": "addition",
+    "amount": 0.4
   }
 }

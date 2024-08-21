@@ -72,7 +72,7 @@ public class OriginScheduler {
 				}
 			}
 
-			for (PowerProvider provider : OriginSimpleContainer.registeredPowers) {
+			for (PowerProvider provider : OriginSimpleContainer.location2PowerMap.values()) {
 				provider.tick();
 
 				for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {

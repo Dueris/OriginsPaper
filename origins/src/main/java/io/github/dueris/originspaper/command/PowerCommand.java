@@ -120,19 +120,13 @@ public class PowerCommand {
 														powersToEdit.add(poweR);
 
 														for (PowerType power : powersToEdit) {
-															try {
-																PowerUtils.grantPower(
-																	context.getSource().getBukkitSender(),
-																	power,
-																	player.getBukkitEntity(),
-																	OriginsPaper.getLayer(ResourceLocation.parse("apoli:command")),
-																	context.getSource().isSilent()
-																);
-															} catch (
-																IllegalAccessException |
-																InstantiationException var7) {
-																throw new RuntimeException(var7);
-															}
+															PowerUtils.grantPower(
+																context.getSource().getBukkitSender(),
+																power,
+																player.getBukkitEntity(),
+																OriginsPaper.getLayer(ResourceLocation.parse("apoli:command")),
+																context.getSource().isSilent()
+															);
 														}
 													}
 												);
@@ -154,19 +148,13 @@ public class PowerCommand {
 																powersToEdit.add(poweR);
 
 																for (PowerType power : powersToEdit) {
-																	try {
-																		PowerUtils.grantPower(
-																			context.getSource().getBukkitSender(),
-																			power,
-																			player.getBukkitEntity(),
-																			OriginsPaper.getLayer(ResourceLocationArgument.getId(context, "layer")),
-																			context.getSource().isSilent()
-																		);
-																	} catch (
-																		IllegalAccessException |
-																		InstantiationException var7) {
-																		throw new RuntimeException(var7);
-																	}
+																	PowerUtils.grantPower(
+																		context.getSource().getBukkitSender(),
+																		power,
+																		player.getBukkitEntity(),
+																		OriginsPaper.getLayer(ResourceLocationArgument.getId(context, "layer")),
+																		context.getSource().isSilent()
+																	);
 																}
 															}
 														);
@@ -243,6 +231,14 @@ public class PowerCommand {
 			)
 			.then(
 				net.minecraft.commands.Commands.literal("clear")
+					.executes(context -> {
+						if (context.getSource().isPlayer()) {
+							clear(context, context.getSource().getPlayer());
+							return 1;
+						}
+						context.getSource().sendFailure(Component.literal("Only a player can execute the command on themselves."));
+						return 0;
+					})
 					.then(
 						net.minecraft.commands.Commands.argument("targets", EntityArgument.entities())
 							.executes(
@@ -250,26 +246,7 @@ public class PowerCommand {
 									EntityArgument.getPlayers(context, "targets")
 										.forEach(
 											p -> {
-												for (PowerType power : PowerHolderComponent.getPowers(p.getBukkitEntity())) {
-													OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values()
-														.forEach(
-															layer -> {
-																try {
-																	PowerUtils.removePower(
-																		context.getSource().getBukkitSender(),
-																		power,
-																		p.getBukkitEntity(),
-																		layer,
-																		context.getSource().isSilent()
-																	);
-																} catch (
-																	IllegalAccessException |
-																	InstantiationException var5) {
-																	throw new RuntimeException(var5);
-																}
-															}
-														);
-												}
+												clear(context, p);
 											}
 										);
 									return 1;
@@ -280,6 +257,27 @@ public class PowerCommand {
 		addRemoveArg(main, "remove");
 		addRemoveArg(main, "revoke");
 		dispatcher.register(main);
+	}
+
+	private static void clear(CommandContext<CommandSourceStack> context, ServerPlayer player) {
+		int completed = 0;
+		for (OriginLayer layer : OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values()) {
+			for (PowerType power : PowerHolderComponent.getPowers(player.getBukkitEntity(), layer)) {
+				PowerUtils.removePower(
+					context.getSource().getBukkitSender(), power, player.getBukkitEntity(), layer, true
+				);
+				completed++;
+			}
+		}
+
+		if (completed > 0) {
+			context.getSource().sendSystemMessage(Component.literal("Entity %name% had %x% powers cleared."
+				.replace("%name%", player.displayName)
+				.replace("%x%", String.valueOf(completed))));
+		} else {
+			context.getSource().sendFailure(Component.literal("Entity %name% did not have any powers to clear."
+				.replace("%name%", player.displayName)));
+		}
 	}
 
 	private static int list(CommandContext<CommandSourceStack> context, boolean subPowers) throws CommandSyntaxException {
@@ -344,22 +342,16 @@ public class PowerCommand {
 													OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values()
 														.forEach(
 															layer -> {
-																try {
-																	if (name.equalsIgnoreCase("revoke")) {
-																		PowerUtils.markBlacklist(OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(arg), p.getBukkitEntity());
-																	}
-																	PowerUtils.removePower(
-																		context.getSource().getBukkitSender(),
-																		OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(arg),
-																		p.getBukkitEntity(),
-																		layer,
-																		context.getSource().isSilent()
-																	);
-																} catch (
-																	IllegalAccessException |
-																	InstantiationException var5) {
-																	throw new RuntimeException(var5);
+																if (name.equalsIgnoreCase("revoke")) {
+																	PowerUtils.markBlacklist(OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(arg), p.getBukkitEntity());
 																}
+																PowerUtils.removePower(
+																	context.getSource().getBukkitSender(),
+																	OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(arg),
+																	p.getBukkitEntity(),
+																	layer,
+																	context.getSource().isSilent()
+																);
 															}
 														);
 												}
@@ -377,19 +369,13 @@ public class PowerCommand {
 															ResourceLocation arg = ResourceLocationArgument.getId(context, "power");
 															ResourceLocation layer = ResourceLocationArgument.getId(context, "layer");
 
-															try {
-																PowerUtils.removePower(
-																	context.getSource().getBukkitSender(),
-																	OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(arg),
-																	p.getBukkitEntity(),
-																	OriginsPaper.getLayer(layer),
-																	context.getSource().isSilent()
-																);
-															} catch (
-																IllegalAccessException |
-																InstantiationException var5) {
-																throw new RuntimeException(var5);
-															}
+															PowerUtils.removePower(
+																context.getSource().getBukkitSender(),
+																OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(arg),
+																p.getBukkitEntity(),
+																OriginsPaper.getLayer(layer),
+																context.getSource().isSilent()
+															);
 														}
 													);
 												return 1;

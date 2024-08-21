@@ -102,7 +102,8 @@ public class FireProjectileAction {
 			(data, entity) -> {
 				action(entity,
 					data.get("entity_type"),
-					data.getOrDefault("projectile_action", e -> {}),
+					data.getOrDefault("projectile_action", e -> {
+					}),
 					data.get("tag"),
 					data.get("divergence"),
 					data.get("speed"),

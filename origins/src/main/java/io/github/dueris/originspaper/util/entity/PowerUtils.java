@@ -24,7 +24,7 @@ import java.util.Set;
 public class PowerUtils {
 	public static Gson GSON = new Gson();
 
-	public static void removePower(CommandSender executor, PowerType powerType, Player p, OriginLayer layer, boolean suppress) throws InstantiationException, IllegalAccessException {
+	public static void removePower(CommandSender executor, PowerType powerType, Player p, OriginLayer layer, boolean suppress) {
 		ArrayList<PowerType> powersToEdit = new ArrayList<>();
 		powersToEdit.add(powerType);
 		powersToEdit.addAll(PowerHolderComponent.getNestedPowerTypes(powerType));
@@ -42,7 +42,7 @@ public class PowerUtils {
 		}
 	}
 
-	public static void grantPower(CommandSender executor, PowerType powerType, Player p, OriginLayer layer, boolean suppress) throws InstantiationException, IllegalAccessException {
+	public static void grantPower(CommandSender executor, PowerType powerType, Player p, OriginLayer layer, boolean suppress) {
 		ArrayList<PowerType> powersToEdit = new ArrayList<>();
 		powersToEdit.add(powerType);
 		powersToEdit.addAll(PowerHolderComponent.getNestedPowerTypes(powerType));

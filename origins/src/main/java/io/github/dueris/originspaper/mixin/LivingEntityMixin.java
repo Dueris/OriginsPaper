@@ -2,20 +2,23 @@ package io.github.dueris.originspaper.mixin;
 
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
-import io.github.dueris.originspaper.power.ActionOnDeathPower;
-import io.github.dueris.originspaper.power.EffectImmunityPower;
-import io.github.dueris.originspaper.power.ModifyFallingPowerType;
-import io.github.dueris.originspaper.power.PreventDeathPower;
+import io.github.dueris.originspaper.power.*;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
@@ -90,6 +93,43 @@ public class LivingEntityMixin {
 				player.getBukkitEntity().getAttribute(Attribute.GENERIC_GRAVITY).setBaseValue(modified);
 			}
 		}
+	}
+
+	@Inject(method = "addEffect", locator = At.Value.HEAD, params = {MobEffectInstance.class, Entity.class, EntityPotionEffectEvent.Cause.class})
+	public static void apoli$modifyEffect(LivingEntity instance, @NotNull MobEffectInstance mobeffect, @Nullable Entity entity, EntityPotionEffectEvent.Cause cause, CallbackInfo info) {
+		Holder<MobEffect> effectType = mobeffect.getEffect();
+
+		float amplifier = mobeffect.getAmplifier();
+		float duration = mobeffect.getDuration();
+
+		if (instance instanceof Player player) {
+			for (ModifyStatusEffectAmplifierPower power : PowerHolderComponent.getPowers(player.getBukkitEntity(), ModifyStatusEffectAmplifierPower.class)) {
+				if (power.doesApply(effectType)) {
+					amplifier = (float) ModifierUtil.applyModifiers(player, power.getModifiers(), amplifier);
+				}
+
+			}
+
+			for (ModifyStatusEffectDurationPower power : PowerHolderComponent.getPowers(player.getBukkitEntity(), ModifyStatusEffectDurationPower.class)) {
+				if (power.doesApply(effectType)) {
+					duration = (float) ModifierUtil.applyModifiers(player, power.getModifiers(), duration);
+				}
+
+			}
+		}
+
+		MobEffectInstance modifiedEffect = new MobEffectInstance(
+			effectType,
+			Math.round(duration),
+			Math.round(amplifier),
+			mobeffect.isAmbient(),
+			mobeffect.isVisible(),
+			mobeffect.showIcon(),
+			mobeffect.hiddenEffect
+		);
+
+		info.setReturnValue(instance.addEffect(modifiedEffect, entity, cause, true));
+		info.setReturned(true);
 	}
 
 }

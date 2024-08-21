@@ -33,6 +33,21 @@ From Pehuki, to other mods, OriginsPaper will attempt to include as much custom 
 origin
 can be played.
 
+## PowerTypes that don't work with OriginsPaper
+- ModifyFovPower -- requires render modifications
+- OverlayPower -- specifically with custom colors
+- PreventFeatureRenderPower -- requires render modifications
+- ShaderPower -- requires render moifications
+- SprintingPower -- vanilla/paper doesnt sync the sprinting attribute correctly
+- WalkOnFluidPower -- collisions are controlled mostly by the client, this would need to work on both c/s
+- IgnoreWaterPower -- collisions are controlled mostly by the client, this would need to work on both c/s
+- ModifyFluidRenderPower -- requires render modifications
+- PosePower -- causes visual glitch that would require an epilepsy warning, not implementing.
+- ShakingPower -- requires render modifications
+- LavaVisionPower -- requires render modifications
+- ModifyCameraSubmersionPower -- requires render modifications
+- ModifyVelocityPower -- causes visual glitches and cant be synced with the client to smooth it out
+
 ## Donate
 
 If you like the plugin and want to support me, consider donating! I have put thousands of hours and millions of lines of

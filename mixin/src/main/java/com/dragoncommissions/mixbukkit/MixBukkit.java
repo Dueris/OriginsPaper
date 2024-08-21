@@ -108,7 +108,7 @@ public class MixBukkit {
 		try {
 			SAFE_MODE = true;
 			DEBUG = true;
-			WRITE_TRANSFORMED_CLASS = true;
+			WRITE_TRANSFORMED_CLASS = false;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -2,6 +2,7 @@ package io.github.dueris.originspaper.mixin;
 
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
 import io.github.dueris.originspaper.power.ModifyBreakSpeedPower;
+import io.github.dueris.originspaper.power.ModifyHarvestPower;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -9,6 +10,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Mixin(BlockBehaviour.class)
 public class BlockBehaviorMixin {
@@ -21,7 +24,11 @@ public class BlockBehaviorMixin {
 			info.setReturnValue(modifyBreakSpeed(player, pos, 0.0F, false));
 			info.setReturned(true);
 		} else {
-			int i = player.hasCorrectToolForDrops(state) ? 30 : 100;
+			AtomicBoolean modifyHarvest = new AtomicBoolean(false);
+			PowerHolderComponent.getPowers(player.getBukkitEntity(), ModifyHarvestPower.class).stream()
+				.filter(modifyHarvestPower -> modifyHarvestPower.doesApply(pos, player))
+				.map(ModifyHarvestPower::isHarvestAllowed).forEach(modifyHarvest::set);
+			int i = (modifyHarvest.get() || player.hasCorrectToolForDrops(state)) ? 30 : 100;
 
 			info.setReturnValue(modifyBreakSpeed(player, pos, player.getDestroySpeed(state) / f / (float) i, false));
 			info.setReturned(true);

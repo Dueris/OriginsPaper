@@ -45,11 +45,7 @@ public class EntityActions {
 						return;
 					}
 					OriginLayer layer = OriginsPaper.getLayer(data.getId("source"));
-					try {
-						PowerUtils.grantPower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
-					} catch (InstantiationException | IllegalAccessException e) {
-						throw new RuntimeException(e);
-					}
+					PowerUtils.grantPower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
 				}
 			}));
 		register(new ActionFactory<>(OriginsPaper.apoliIdentifier("remove_power"),
@@ -64,11 +60,7 @@ public class EntityActions {
 						return;
 					}
 					OriginLayer layer = OriginsPaper.getLayer(data.getId("source"));
-					try {
-						PowerUtils.removePower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
-					} catch (InstantiationException | IllegalAccessException e) {
-						throw new RuntimeException(e);
-					}
+					PowerUtils.removePower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
 				}
 			}));
 		register(new ActionFactory<>(OriginsPaper.apoliIdentifier("revoke_all_powers"),
@@ -83,11 +75,7 @@ public class EntityActions {
 							return;
 						}
 						OriginLayer layer = OriginsPaper.getLayer(data.getId("source"));
-						try {
-							PowerUtils.removePower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
-						} catch (InstantiationException | IllegalAccessException e) {
-							throw new RuntimeException(e);
-						}
+						PowerUtils.removePower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
 					}
 				}
 			}));

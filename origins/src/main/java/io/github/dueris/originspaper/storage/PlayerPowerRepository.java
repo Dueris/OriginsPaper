@@ -15,6 +15,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -30,6 +32,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public final class PlayerPowerRepository {
 	static final ConcurrentMap<ServerPlayer, PlayerPowerRepository> REPO = new ConcurrentHashMap<>() {
 	};
+	private static final Logger log = LogManager.getLogger(PlayerPowerRepository.class);
 	final Map<OriginLayer, Origin> origins = new ConcurrentHashMap<>();
 	private final ServerPlayer player;
 	private final Map<OriginLayer, Set<PowerType>> appliedPowers = new ConcurrentHashMap<>() {
@@ -147,13 +150,20 @@ public final class PlayerPowerRepository {
 					CompoundTag power = (CompoundTag) powerTag;
 					ResourceLocation powerLocation = ResourceLocation.parse(power.getString("Power"));
 					PowerType powerType = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(powerLocation);
+					if (powerType == null) {
+						log.error("Stored PowerType not found! ID: {}, skipping power..", powerLocation.toString());
+					}
 					powerType.loadFromData(power);
 					powerTypes.add(powerType);
 				});
 
 				OriginLayer layer = OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).get(layerLocation);
-				appliedPowers.put(layer, powerTypes);
-				origins.put(layer, OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(originLocation));
+				if (layer == null) {
+					log.error("Stored Layer not found! ID: {}, skipping layer..", layerLocation.toString());
+				} else {
+					appliedPowers.put(layer, powerTypes);
+					origins.put(layer, OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).getOptional(originLocation).orElse(OriginsPaper.EMPTY_ORIGIN));
+				}
 			} else throw new JsonSyntaxException("Layer value not found in CompoundTag!");
 		});
 

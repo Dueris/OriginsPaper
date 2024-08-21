@@ -1,5 +1,5 @@
 {
   "type": "origins:modify_type_tag",
-  "tag": "minecraft:aquatic",
+  "tag": "minecraft:sensitive_to_impaling",
   "hidden": true
 }

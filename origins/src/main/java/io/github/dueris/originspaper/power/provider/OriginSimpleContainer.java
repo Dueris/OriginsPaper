@@ -1,15 +1,18 @@
 package io.github.dueris.originspaper.power.provider;
 
+import io.github.dueris.calio.util.ReflectionUtils;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.power.SimplePower;
+import net.minecraft.resources.ResourceLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.mineskin.com.google.common.base.Preconditions;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class OriginSimpleContainer {
-	public static ArrayList<PowerProvider> registeredPowers = new ArrayList<>();
+	public static HashMap<ResourceLocation, PowerProvider> location2PowerMap = new HashMap<>();
 
 	public static void registerPower(@NotNull Class<?> clz) {
 		try {
@@ -17,7 +20,7 @@ public class OriginSimpleContainer {
 			Preconditions.checkArgument(clz.getDeclaredField("powerReference") != null, "Unable to access required field \"powerReference\" inside Power. This is required to point to what powerFile this PowerProvider will use");
 
 			PowerProvider instance = (PowerProvider) clz.newInstance();
-			registeredPowers.add(instance);
+			location2PowerMap.put((ResourceLocation) ReflectionUtils.getStaticFieldValue(clz, "powerReference"), instance);
 			if (instance instanceof Listener || Listener.class.isAssignableFrom(clz)) {
 				Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, OriginsPaper.getPlugin());
 			}
@@ -25,5 +28,9 @@ public class OriginSimpleContainer {
 				 InstantiationException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static PowerProvider getFromSimple(@NotNull SimplePower simplePower) {
+		return location2PowerMap.get(simplePower.key());
 	}
 }

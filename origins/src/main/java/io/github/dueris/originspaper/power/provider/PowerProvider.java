@@ -8,4 +8,7 @@ public interface PowerProvider {
 
 	default void tick() {
 	}
+
+	default void onRemove(Player player) {
+	}
 }

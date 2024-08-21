@@ -1,5 +1,5 @@
 {
   "type": "origins:modify_type_tag",
-  "tag": "minecraft:arthropod",
+  "tag": "minecraft:sensitive_to_bane_of_arthropods",
   "hidden": true
 }

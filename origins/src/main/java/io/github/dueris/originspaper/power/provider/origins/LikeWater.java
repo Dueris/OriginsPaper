@@ -8,6 +8,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 public class LikeWater implements Listener, PowerProvider {
 	private static final AttributeModifier modifier = new AttributeModifier("LikeWater", -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
@@ -28,4 +29,10 @@ public class LikeWater implements Listener, PowerProvider {
 		}
 	}
 
+	@Override
+	public void onRemove(@NotNull Player player) {
+		if (player.getAttribute(Attribute.GENERIC_GRAVITY).getModifiers().contains(modifier)) {
+			player.getAttribute(Attribute.GENERIC_GRAVITY).removeModifier(modifier);
+		}
+	}
 }
