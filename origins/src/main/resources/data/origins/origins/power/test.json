@@ -1,7 +1,0 @@
-{
-  "type": "origins:modify_lava_speed",
-  "modifier": {
-    "operation": "addition",
-    "amount": 0.4
-  }
-}
