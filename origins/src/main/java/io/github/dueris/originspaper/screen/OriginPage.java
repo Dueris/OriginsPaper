@@ -1,9 +1,11 @@
 package io.github.dueris.originspaper.screen;
 
+import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.data.types.Impact;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
+import io.github.dueris.originspaper.power.ModifyPlayerSpawnPower;
 import io.github.dueris.originspaper.power.PowerType;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import io.github.dueris.originspaper.util.ComponentUtil;
@@ -15,6 +17,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.resources.ResourceLocation;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -223,13 +226,14 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-//					if (PowerHolderComponent.hasPowerType(bukkitEntity, ModifyPlayerSpawnPower.class)) {
-//						ModifyPlayerSpawnPower.suspendPlayer(bukkitEntity);
-//					}
-//
-//					for (ModifyPlayerSpawnPower power : PowerHolderComponent.getPowers(bukkitEntity, ModifyPlayerSpawnPower.class)) {
-//						power.runD(new PlayerPostRespawnEvent(bukkitEntity, bukkitEntity.getLocation(), false));
-//					}
+					if (PowerHolderComponent.hasPowerType(bukkitEntity, ModifyPlayerSpawnPower.class)) {
+						for (ModifyPlayerSpawnPower power : PowerHolderComponent.getPowers(bukkitEntity, ModifyPlayerSpawnPower.class)) {
+							// We build a new event with only the value we need :)
+							power.onRespawn(new PlayerPostRespawnEvent(
+								bukkitEntity, new Location(null, 0, 60, 0), false
+							));
+						}
+					}
 
 					PlayerManager.firstJoin.remove(bukkitEntity);
 				}

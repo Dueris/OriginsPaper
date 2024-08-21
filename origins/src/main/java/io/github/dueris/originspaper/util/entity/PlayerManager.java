@@ -1,5 +1,6 @@
 package io.github.dueris.originspaper.util.entity;
 
+import io.github.dueris.calio.util.holder.ObjectProvider;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.event.PowerUpdateEvent;
 import io.github.dueris.originspaper.origin.OriginLayer;
@@ -21,6 +22,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -28,17 +31,20 @@ public class PlayerManager implements Listener {
 	public static ArrayList<Player> firstJoin = new ArrayList<>();
 	public static ArrayList<Player> playersLeaving = new ArrayList<>();
 
-	private static NamespacedKey identifier(String id) {
+	private static @NotNull NamespacedKey identifier(String id) {
 		return new NamespacedKey(OriginsPaper.getPlugin(), id);
 	}
 
 	@EventHandler(
 		priority = EventPriority.HIGHEST
 	)
-	public void playerJoin(PlayerJoinEvent e) {
+	public void playerJoin(@NotNull PlayerJoinEvent e) {
 		final Player p = e.getPlayer();
 		PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) e.getPlayer()).getHandle()).readPowers(
-			p.getPersistentDataContainer().has(identifier("powers")) ? p.getPersistentDataContainer().get(identifier("powers"), PersistentDataType.STRING) : "{}"
+			p.getPersistentDataContainer().has(identifier("powers")) ? p.getPersistentDataContainer().get(identifier("powers"), PersistentDataType.STRING) : ((ObjectProvider<String>) () -> {
+				firstJoin.add(p);
+				return "{}";
+			}).get()
 		);
 		PersistentDataContainer data = p.getPersistentDataContainer();
 		if (data.has(identifier("shulker-box"), PersistentDataType.STRING)) {
