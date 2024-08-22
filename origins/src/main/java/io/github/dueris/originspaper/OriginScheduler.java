@@ -2,8 +2,6 @@ package io.github.dueris.originspaper;
 
 import io.github.dueris.originspaper.power.CreativeFlightPower;
 import io.github.dueris.originspaper.power.PowerType;
-import io.github.dueris.originspaper.power.provider.OriginSimpleContainer;
-import io.github.dueris.originspaper.power.provider.PowerProvider;
 import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.world.entity.player.Player;
@@ -69,14 +67,6 @@ public class OriginScheduler {
 								.error("Player: {} | Power: {} | CraftPower: {} | Throwable: {} {}", p.getName(), power.getTag(), t, var8.getMessage() == null ? var8.getClass().getSimpleName() : var8.getMessage(), stacktrace[0]);
 						}
 					}
-				}
-			}
-
-			for (PowerProvider provider : OriginSimpleContainer.location2PowerMap.values()) {
-				provider.tick();
-
-				for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
-					provider.tick(p);
 				}
 			}
 		}

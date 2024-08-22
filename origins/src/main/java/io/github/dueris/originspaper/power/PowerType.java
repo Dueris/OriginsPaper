@@ -9,10 +9,6 @@ import io.github.dueris.calio.util.annotations.SourceProvider;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.ConditionFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.power.provider.OriginSimpleContainer;
-import io.github.dueris.originspaper.power.provider.origins.LikeWater;
-import io.github.dueris.originspaper.power.provider.origins.ScareCreepers;
-import io.github.dueris.originspaper.power.provider.origins.WaterBreathe;
 import io.github.dueris.originspaper.util.LangFile;
 import net.kyori.adventure.text.TextComponent;
 import net.minecraft.nbt.CompoundTag;
@@ -118,9 +114,6 @@ public class PowerType implements Listener {
 		}
 
 		INSTANCE_TYPES.addAll(holders);
-		OriginSimpleContainer.registerPower(LikeWater.class);
-		OriginSimpleContainer.registerPower(ScareCreepers.class);
-		OriginSimpleContainer.registerPower(WaterBreathe.class);
 	}
 
 	public ResourceLocation key() {

@@ -7,9 +7,6 @@ import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.power.MultiplePower;
 import io.github.dueris.originspaper.power.PowerType;
-import io.github.dueris.originspaper.power.SimplePower;
-import io.github.dueris.originspaper.power.provider.OriginSimpleContainer;
-import io.github.dueris.originspaper.power.provider.PowerProvider;
 import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.screen.ScreenNavigator;
 import io.github.dueris.originspaper.util.BstatsMetrics;
@@ -244,11 +241,6 @@ public class PowerHolderComponent implements Listener {
 		if (power != null) {
 			if (isNew) {
 				power.onRemoved(((CraftPlayer) player).getHandle());
-
-				if (power instanceof SimplePower simplePower) {
-					PowerProvider provider = OriginSimpleContainer.getFromSimple(simplePower);
-					provider.onRemove(player);
-				}
 			}
 			PlayerPowerRepository.getOrCreateRepo(getNMS(player)).removePower(power, layer);
 			power.removePlayer(((CraftPlayer) player).getHandle());

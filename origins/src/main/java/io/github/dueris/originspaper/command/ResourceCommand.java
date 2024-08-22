@@ -217,7 +217,6 @@ public class ResourceCommand {
 														ResourcePower.getDisplayedBar(player, resourcePower.getTag())
 															.ifPresentOrElse(
 																bar -> {
-																	System.out.println(bar.getMappedProgress() + setTo);
 																	bar.change(setTo, "add");
 																	context.getSource()
 																		.sendSystemMessage(

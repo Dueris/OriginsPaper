@@ -12,6 +12,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -83,6 +84,13 @@ public final class At {
 		GET_ENCHANT_LEVEL(((ObjectProvider<HLocatorMethodInvoke>) () -> {
 			try {
 				return new HLocatorMethodInvoke(ItemEnchantments.class.getDeclaredMethod("getLevel", Holder.class), PostPreState.PRE, (i) -> i == 0);
+			} catch (NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			}
+		}).get()),
+		IN_WATER_OR_RAIN_CHECK(((ObjectProvider<HLocatorMethodInvoke>) () -> {
+			try {
+				return new HLocatorMethodInvoke(Entity.class.getDeclaredMethod("isInWaterOrRain"), PostPreState.PRE, (i) -> i == 0);
 			} catch (NoSuchMethodException e) {
 				throw new RuntimeException(e);
 			}

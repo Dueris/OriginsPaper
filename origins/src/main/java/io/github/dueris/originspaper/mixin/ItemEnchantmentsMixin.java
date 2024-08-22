@@ -18,7 +18,6 @@ public class ItemEnchantmentsMixin {
 
 	public static void mark(ItemEnchantments itemEnchantments, ModifyEnchantmentLevelPower power) {
 		TO_MODIFY.put(itemEnchantments, power);
-		System.out.println(itemEnchantments.toString());
 	}
 
 	public static void unmark(ItemEnchantments itemEnchantments) {

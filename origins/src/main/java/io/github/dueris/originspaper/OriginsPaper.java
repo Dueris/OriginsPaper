@@ -21,7 +21,6 @@ import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.power.PowerType;
 import io.github.dueris.originspaper.power.RecipePower;
-import io.github.dueris.originspaper.power.provider.origins.WaterBreathe;
 import io.github.dueris.originspaper.registry.BuiltinRegistry;
 import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.screen.ChoosingPage;
@@ -87,6 +86,18 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 	public static Origin EMPTY_ORIGIN;
 	private static OriginsPaper plugin;
 	public IRegistry registry;
+
+	public OriginsPaper() {
+		if (!Bootstrap.BOOTSTRAPPED.get()) {
+			Bootstrap bootstrap = new Bootstrap();
+			bootstrap.bootstrap(null);
+		}
+
+		Bootstrap.BOOTSTRAPPED.set(false);
+
+		plugin = this;
+		OriginsMixins.init(Bootstrap.MIXIN_LOADER.get());
+	}
 
 	public static OriginScheduler.MainTickerThread getScheduler() {
 		return scheduler;
@@ -157,18 +168,6 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 
 			metrics = new BstatsMetrics(this, 18536);
 		}
-	}
-
-	@Override
-	public void onLoad() {
-		if (!Bootstrap.BOOTSTRAPPED.get()) {
-			Bootstrap bootstrap = new Bootstrap();
-			bootstrap.bootstrap(null);
-		}
-
-		Bootstrap.BOOTSTRAPPED.set(false);
-		plugin = this;
-		OriginsMixins.init(Bootstrap.MIXIN_LOADER.get());
 	}
 
 	@Override
@@ -327,7 +326,6 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 			}
 		});
 		BukkitRunnable[] independentTickers = new BukkitRunnable[]{new GuiTicker(), new OriginCommand()};
-		WaterBreathe.start();
 
 		for (BukkitRunnable runnable : independentTickers) {
 			runnable.runTaskTimerAsynchronously(getPlugin(), 0L, 1L);

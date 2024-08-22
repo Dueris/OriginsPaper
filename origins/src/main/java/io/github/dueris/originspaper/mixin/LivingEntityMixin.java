@@ -3,6 +3,7 @@ package io.github.dueris.originspaper.mixin;
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
 import io.github.dueris.originspaper.power.*;
+import io.github.dueris.originspaper.power.origins.WaterBreathingPower;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.EntityTypeTags;
@@ -130,6 +131,18 @@ public class LivingEntityMixin {
 
 		info.setReturnValue(instance.addEffect(modifiedEffect, entity, cause, true));
 		info.setReturned(true);
+	}
+
+	@Inject(method = "canBreatheUnderwater", locator = At.Value.RETURN)
+	public static void origins$waterBreathing(@NotNull LivingEntity instance, @NotNull CallbackInfo info) {
+		info.setReturned(true);
+		boolean original = instance.getType().is(EntityTypeTags.CAN_BREATHE_UNDER_WATER);
+		info.setReturnValue(original || PowerHolderComponent.hasPower(instance.getBukkitEntity(), "origins:water_breathing"));
+	}
+
+	@Inject(method = "baseTick", locator = At.Value.RETURN)
+	public static void origins$waterBreathingTick(LivingEntity instance, CallbackInfo info) {
+		WaterBreathingPower.tick(instance);
 	}
 
 }

@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class ElytraFlightPower extends PowerType {
-	public static ArrayList<UUID> glidingPlayers = new ArrayList<>();
+	private final ArrayList<UUID> glidingPlayers = new ArrayList<>();
 
 	public ElytraFlightPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
@@ -45,7 +45,7 @@ public class ElytraFlightPower extends PowerType {
 		return PowerType.buildFactory().typedRegistry(OriginsPaper.apoliIdentifier("elytra_flight"));
 	}
 
-	public static ArrayList<UUID> getGlidingPlayers() {
+	public ArrayList<UUID> getGlidingPlayers() {
 		return glidingPlayers;
 	}
 

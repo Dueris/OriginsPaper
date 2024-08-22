@@ -62,10 +62,10 @@ public class ApoliExamplePower extends PowerType {
 ```
 
 In Calio/Apoli, a PowerType is an object that defines the main logic and handling of powers for the players it has assigned to it.
-To create an instance of any class inside Calio during parsing, it reads the InstanceDefiner, which is defined by the
-method ``static InstanceDefiner buildFactory()``. InstanceDefiners are definition of a Constructor for the FactoryHolder. The first instance
+To create an instance of any class inside Calio during parsing, it reads the SerializableData, which is defined by the
+method ``static SerializableData buildFactory()``. SerializableDatas are definition of a Constructor for the FactoryHolder. The first instance
 added is the first arg, the second being the second arg, etc. It also provides the key for the `"type"` field. However, in Calio, there
-is a required argument of a ResourceLocation at the beginning of the constructor your InstanceDefiner is creating, which is the `"key"` argument.
+is a required argument of a ResourceLocation at the beginning of the constructor your SerializableData is creating, which is the `"key"` argument.
 The key argument is the argument assigned to the instance upon instance creation, named after the Namesace and Key of the json.
 With adding the constructor, it becomes:
 
@@ -77,7 +77,7 @@ public class ApoliExamplePower extends PowerType {
 }
 ```
 
-Adding the method to create the InstanceDefiner:
+Adding the method to create the SerializableData:
 
 ```java
 public class ApoliExamplePower extends PowerType {
@@ -89,7 +89,7 @@ public class ApoliExamplePower extends PowerType {
 	// from the base instead of Copy/Pasting its buildFactory method and adding to it.
 	// By default, the PowerType class does not contain a Namespace, which is why ofNamespace needs to be added.
 	// The way this is made allows for creating easy extensions of any power without too much struggle.
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"));
 	}
 }
@@ -102,9 +102,9 @@ create your own!
 
 | Method Name                                                          | Description                                                                                             |
 |----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
-| required(String key, SerializableDataBuilder<T> dataType)            | Adds a required field to the InstanceDefiner                                                            |
-| add(String key, SerializableDataBuilder<T> dataType)                 | Adds a nullable field to the InstanceDefiner, when the field is not present, it returns null            |
-| add(String key, SerializableDataBuilder<T> dataType, T defaultValue) | Adds a field to the InstanceDefiner with a default value that is provided when the field is not present |
+| required(String key, SerializableDataBuilder<T> dataType)            | Adds a required field to the SerializableData                                                            |
+| add(String key, SerializableDataBuilder<T> dataType)                 | Adds a nullable field to the SerializableData, when the field is not present, it returns null            |
+| add(String key, SerializableDataBuilder<T> dataType, T defaultValue) | Adds a field to the SerializableData with a default value that is provided when the field is not present |
 
 ```java
 public class ApoliExamplePower extends PowerType {
@@ -114,7 +114,7 @@ public class ApoliExamplePower extends PowerType {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"))
 			/* |   Field name   |   SerializableDataType instance   |   Default value   | */
 			.add("welcome_message", SerializableDataTypes.STRING, "Hello World!");
@@ -157,7 +157,7 @@ public class ApoliExamplePower extends PowerType {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"))
 			.add("welcome_message", SerializableDataTypes.STRING, "Hello World!");
 	}
@@ -186,7 +186,7 @@ public class ApoliExamplePower extends PowerType {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static InstanceDefiner buildFactory() {
+	public static SerializableData buildFactory() {
 		return PowerType.buildFactory().typedRegistry(ResourceLocation.fromNamespaceAndPath("example", "apoli"))
 			.add("welcome_message", SerializableDataTypes.STRING, "Hello World!");
 	}
@@ -235,14 +235,13 @@ Now, we are going to add our `"type"` param, which defines the type associated i
 register(new ConditionFactory<>(ResourceLocation.fromNamespaceAndPath("test", "example")));
 ```
 
-The 2nd arg is an InstanceDefiner, which functions exactly how the PowerType instance definer works for building! The 3rd
-and final arg is a `BiPredicate<DeserializedFactoryJson, T>`. A DeserializedFactoryJson is similar to the Apoli SerializableData.Instance
-class, which acts as an accessor for getting values defined in the InstanceDefiner.
+The 2nd arg is an SerializableData, which functions exactly how the PowerType instance definer works for building! The 3rd
+and final arg is a `BiPredicate<SerializableData.Instance, T>`. A SerializableData.Instance acts as an accessor for getting values defined in the SerializableData.
 
 ```java
 register(new ConditionFactory<>(
 	ResourceLocation.fromNamespaceAndPath("test", "example"),
-	InstanceDefiner.instanceDefiner(),
+	SerializableData.serializableData(),
         (data, entity) -> {
 		    return entity.isAlive();
 	    }

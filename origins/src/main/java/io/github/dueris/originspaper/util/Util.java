@@ -612,6 +612,26 @@ public class Util {
 		}
 	}
 
+	public static <T> Predicate<T> combineOr(Predicate<T> a, Predicate<T> b) {
+		if (a == null) {
+			return b;
+		}
+		if (b == null) {
+			return a;
+		}
+		return a.or(b);
+	}
+
+	public static <T> Predicate<T> combineAnd(Predicate<T> a, Predicate<T> b) {
+		if (a == null) {
+			return b;
+		}
+		if (b == null) {
+			return a;
+		}
+		return a.and(b);
+	}
+
 	public static boolean attemptToTeleport(Entity entity, ServerLevel serverWorld, double destX, double destY, double destZ, double offsetX, double offsetY, double offsetZ, double areaHeight, boolean loadedChunksOnly, Heightmap.Types heightmap, Predicate<BlockInWorld> landingBlockCondition, Predicate<Entity> landingCondition) {
 
 		BlockPos.MutableBlockPos blockPos = BlockPos.containing(destX, destY, destZ).mutable();
