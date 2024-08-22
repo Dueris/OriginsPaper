@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "me.dueris"
-version = "${rootProject.extra["mcVer"]}-${rootProject.extra["pluginVer"]}"
+version = "1.${rootProject.extra["mcMajorVer"]}-${rootProject.extra["pluginVer"]}"
 description = "Bringing the Origins Mod to PaperMC"
 
 println("Loaded subproject \"${project.name}\" with version {$version}")
