@@ -98,7 +98,7 @@ tasks {
             }
             Files.copy(
                 file("origins/build/libs/origins-${subProject.version}-all.jar").toPath().toAbsolutePath(),
-                targetJarDirectory.resolve("originspaper-mc1.${subProject.version}.jar"),
+                targetJarDirectory.resolve("originspaper-mc${subProject.version}.jar"),
                 StandardCopyOption.REPLACE_EXISTING
             )
         }
