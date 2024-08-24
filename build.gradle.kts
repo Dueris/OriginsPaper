@@ -6,9 +6,9 @@ import kotlin.io.path.isDirectory
 plugins {
     `java-library`
     `maven-publish`
-    id("io.papermc.paperweight.userdev") version "1.7.2-SNAPSHOT" apply true
+    id("io.papermc.paperweight.userdev") version "1.7.1" apply true
     id("xyz.jpenilla.run-paper") version "2.2.3"
-    id("io.github.goooler.shadow") version "8.1.7" apply true
+    id("com.gradleup.shadow") version "8.3.0" apply true
 }
 
 val paperweightVersion: String = "1.21-R0.1-SNAPSHOT"
@@ -32,7 +32,7 @@ allprojects {
     apply(plugin = "java")
     apply(plugin = "maven-publish")
     apply(plugin = "io.papermc.paperweight.userdev")
-    apply(plugin = "io.github.goooler.shadow")
+    apply(plugin = "com.gradleup.shadow")
     paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
     java {

@@ -11,15 +11,6 @@ description: "A port of the Origins mod to PaperMC servers with Custom Origins s
 website: "https://ko-fi.com/dueris"
 dependencies:
   server:
-    PlaceholderAPI:
-      load: BEFORE
-      required: false
-    Geyser-Spigot:
-      load: AFTER
-      required: false
-    Floodgate:
-      load: AFTER
-      required: false
     SkinsRestorer:
       load: BEFORE
       required: false

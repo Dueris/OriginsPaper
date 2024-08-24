@@ -11,6 +11,7 @@ println("Loaded subproject \"${project.name}\" with version {$version}")
 dependencies {
     // Project
     implementation(project(mapOf("path" to ":calio")))
+    implementation(project(mapOf("path" to ":mixin")))
     // Required Dependencies
     implementation("com.github.Dueris:ModelColorAPI:1.0.5-SNAPSHOT")
     implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
@@ -18,10 +19,7 @@ dependencies {
     compileOnly("org.reflections:reflections:0.9.12") // - in DependencyLoader - shaded in calio
     compileOnly("org.mineskin:java-client:1.2.4-SNAPSHOT") // - in DependencyLoader
     // Optional Hook
-    compileOnly("org.geysermc.floodgate:api:2.2.2-SNAPSHOT")
     compileOnly("net.skinsrestorer:skinsrestorer-api:15.0.4")
-    compileOnly("me.clip:placeholderapi:2.11.4")
-    implementation(project(mapOf("path" to ":mixin")))
 }
 
 tasks {
