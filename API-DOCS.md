@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.Dueris:OriginsPaper:mc1.21~0-v1.2.0")
+    implementation("io.github.Dueris:OriginsPaper:mc1.21~0-v1.2.1")
 }
 ```
 
