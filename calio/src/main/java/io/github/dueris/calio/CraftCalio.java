@@ -101,19 +101,19 @@ public record CraftCalio(boolean threaded, int threadCount) {
 
 			File datapackDirectory = datapackDirPath.toFile();
 			if (!datapackDirectory.isDirectory()) {
-				throw new IllegalStateException("'datapack' directory is not a directory! Corrupted?");
+				throw new IllegalStateException("'datapacks' directory is not a directory! Corrupted?");
 			} else {
 				for (Path pathToParse : new Path[]{Paths.get("plugins"), datapackDirPath}) {
 					Object2ObjectLinkedOpenHashMap<AccessorKey<?>, ConcurrentLinkedQueue<Tuple<String, String>>> priorityParsingQueue = new Object2ObjectLinkedOpenHashMap<>();
 					CalioParserBuilder.accessorKeys.forEach((key) -> {
 						priorityParsingQueue.put(key, new ConcurrentLinkedQueue<>());
 					});
-					if (datapackDirectory.listFiles() != null) {
+					if (pathToParse.toFile().listFiles() != null) {
 						BiConsumer<String, String> jsonVerificationFilter = (path, jsonContents) -> {
 
 							for (AccessorKey<?> key : CalioParserBuilder.accessorKeys) {
 								if (jsonContents != null && path != null && Util.pathMatchesAccessor(path, key)) {
-									priorityParsingQueue.get(key).add(new Tuple(path, jsonContents));
+									priorityParsingQueue.get(key).add(new Tuple<>(path, jsonContents));
 								}
 							}
 

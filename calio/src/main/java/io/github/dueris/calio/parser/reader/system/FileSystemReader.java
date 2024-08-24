@@ -45,8 +45,8 @@ public class FileSystemReader {
 
 		for (Path filePath : paths) {
 			boolean isZipBased = filePath.toString().endsWith(".zip") || filePath.toString().endsWith(".jar");
-			if (!isZipBased && filePath.toString().endsWith(".json")) {
-				fileContentConsumer.accept(filePath.toString(), accessFileContent(filePath));
+			if (!isZipBased && filePath.toString().endsWith(".json") && filePath.toString().contains("data/")) {
+				fileContentConsumer.accept("data/" + filePath.toString().split("data/")[1], accessFileContent(filePath));
 			} else if (isZipBased) {
 				try (ZipFile file = new ZipFile(filePath.toFile())) {
 					file.stream().toList().forEach(entry -> {
