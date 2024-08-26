@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.Set;
 
 public class KeepInventoryPower extends PowerType {
-	private final ConditionFactory<Tuple<Level, ItemStack>> itemCondition;
+	private final ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition;
 	private final Set<Integer> slots;
 
-	public KeepInventoryPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-							  ConditionFactory<Tuple<Level, ItemStack>> itemCondition, List<Integer> slots) {
+	public KeepInventoryPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+							  ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition, List<Integer> slots) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.itemCondition = itemCondition;
 		this.slots = slots == null ? null : new HashSet<>(slots);

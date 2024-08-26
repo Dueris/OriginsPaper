@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.entity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import io.github.dueris.originspaper.power.ResourcePower;
 import net.minecraft.world.entity.Entity;
@@ -22,8 +22,8 @@ public class ModifyResourceAction {
 		});
 	}
 
-	public static @NotNull ActionFactory<Entity> getFactory() {
-		return new ActionFactory<>(OriginsPaper.apoliIdentifier("modify_resource"),
+	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+		return new ActionTypeFactory<>(OriginsPaper.apoliIdentifier("modify_resource"),
 			SerializableData.serializableData()
 				.add("modifier", Modifier.DATA_TYPE)
 				.add("resource", SerializableDataTypes.IDENTIFIER),

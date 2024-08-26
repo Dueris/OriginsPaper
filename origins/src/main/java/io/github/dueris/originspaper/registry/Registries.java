@@ -2,17 +2,15 @@ package io.github.dueris.originspaper.registry;
 
 import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.util.Util;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.types.modifier.IModifierOperation;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.power.PowerType;
 import io.github.dueris.originspaper.screen.ChoosingPage;
 import io.github.dueris.originspaper.util.LangFile;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
+import net.minecraft.core.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.damagesource.DamageSource;
@@ -32,18 +30,18 @@ public class Registries {
 	public static final RegistryKey<OriginLayer> LAYER = new RegistryKey<>(OriginLayer.class, apoliIdentifier("layer"));
 	public static final RegistryKey<PowerType> CRAFT_POWER = new RegistryKey<>(PowerType.class, apoliIdentifier("craft_power"));
 
-	public static final RegistryKey<ConditionFactory<FluidState>> FLUID_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("fluid_condition"));
-	public static final RegistryKey<ConditionFactory<Tuple<Level, ItemStack>>> ITEM_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("item_condition"));
-	public static final RegistryKey<ConditionFactory<Entity>> ENTITY_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("entity_condition"));
-	public static final RegistryKey<ConditionFactory<Tuple<DamageSource, Float>>> DAMAGE_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("damage_condition"));
-	public static final RegistryKey<ConditionFactory<Tuple<Entity, Entity>>> BIENTITY_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("bientity_condition"));
-	public static final RegistryKey<ConditionFactory<BlockInWorld>> BLOCK_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("block_condition"));
-	public static final RegistryKey<ConditionFactory<Holder<Biome>>> BIOME_CONDITION = new RegistryKey<>(Util.castClass(ConditionFactory.class), apoliIdentifier("biome_condition"));
+	public static final RegistryKey<ConditionTypeFactory<FluidState>> FLUID_CONDITION = new RegistryKey<>(Util.castClass(ConditionTypeFactory.class), apoliIdentifier("fluid_condition"));
+	public static final RegistryKey<ConditionTypeFactory<Tuple<Level, ItemStack>>> ITEM_CONDITION = new RegistryKey<>(Util.castClass(ConditionTypeFactory.class), apoliIdentifier("item_condition"));
+	public static final RegistryKey<ConditionTypeFactory<Entity>> ENTITY_CONDITION = new RegistryKey<>(Util.castClass(ConditionTypeFactory.class), apoliIdentifier("entity_condition"));
+	public static final RegistryKey<ConditionTypeFactory<Tuple<DamageSource, Float>>> DAMAGE_CONDITION = new RegistryKey<>(Util.castClass(ConditionTypeFactory.class), apoliIdentifier("damage_condition"));
+	public static final RegistryKey<ConditionTypeFactory<Tuple<Entity, Entity>>> BIENTITY_CONDITION = new RegistryKey<>(Util.castClass(ConditionTypeFactory.class), apoliIdentifier("bientity_condition"));
+	public static final RegistryKey<ConditionTypeFactory<BlockInWorld>> BLOCK_CONDITION = new RegistryKey<>(Util.castClass(ConditionTypeFactory.class), apoliIdentifier("block_condition"));
+	public static final RegistryKey<ConditionTypeFactory<Holder<Biome>>> BIOME_CONDITION = new RegistryKey<>(Util.castClass(ConditionTypeFactory.class), apoliIdentifier("biome_condition"));
 
-	public static final RegistryKey<ActionFactory<Tuple<Level, SlotAccess>>> ITEM_ACTION = new RegistryKey<>(Util.castClass(ActionFactory.class), apoliIdentifier("item_action"));
-	public static final RegistryKey<ActionFactory<Entity>> ENTITY_ACTION = new RegistryKey<>(Util.castClass(ActionFactory.class), apoliIdentifier("entity_action"));
-	public static final RegistryKey<ActionFactory<Tuple<Entity, Entity>>> BIENTITY_ACTION = new RegistryKey<>(Util.castClass(ActionFactory.class), apoliIdentifier("bientity_action"));
-	public static final RegistryKey<ActionFactory<Triple<Level, BlockPos, Direction>>> BLOCK_ACTION = new RegistryKey<>(Util.castClass(ActionFactory.class), apoliIdentifier("block_action"));
+	public static final RegistryKey<ActionTypeFactory<Tuple<Level, SlotAccess>>> ITEM_ACTION = new RegistryKey<>(Util.castClass(ActionTypeFactory.class), apoliIdentifier("item_action"));
+	public static final RegistryKey<ActionTypeFactory<Entity>> ENTITY_ACTION = new RegistryKey<>(Util.castClass(ActionTypeFactory.class), apoliIdentifier("entity_action"));
+	public static final RegistryKey<ActionTypeFactory<Tuple<Entity, Entity>>> BIENTITY_ACTION = new RegistryKey<>(Util.castClass(ActionTypeFactory.class), apoliIdentifier("bientity_action"));
+	public static final RegistryKey<ActionTypeFactory<Triple<Level, BlockPos, Direction>>> BLOCK_ACTION = new RegistryKey<>(Util.castClass(ActionTypeFactory.class), apoliIdentifier("block_action"));
 
 	public static final RegistryKey<LangFile> LANG = new RegistryKey<>(LangFile.class, identifier("lang_file"));
 	public static final RegistryKey<ChoosingPage> CHOOSING_PAGE = new RegistryKey<>(ChoosingPage.class, originIdentifier("choosing_page"));

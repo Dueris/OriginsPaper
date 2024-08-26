@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.block;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
@@ -19,8 +19,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ExecuteCommandAction {
 
-	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
-		return new ActionFactory<>(
+	public static @NotNull ActionTypeFactory<Triple<Level, BlockPos, Direction>> getFactory() {
+		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("execute_command"),
 			SerializableData.serializableData()
 				.add("command", SerializableDataTypes.STRING),

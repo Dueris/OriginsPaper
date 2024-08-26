@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.entity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.ResourceOperation;
 import io.github.dueris.originspaper.power.ResourcePower;
@@ -15,8 +15,8 @@ import java.util.Optional;
 
 public class ChangeResourceAction {
 
-	public static @NotNull ActionFactory<Entity> getFactory() {
-		return new ActionFactory<>(OriginsPaper.apoliIdentifier("change_resource"),
+	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+		return new ActionTypeFactory<>(OriginsPaper.apoliIdentifier("change_resource"),
 			SerializableData.serializableData()
 				.add("resource", SerializableDataTypes.IDENTIFIER)
 				.add("change", SerializableDataTypes.INT)

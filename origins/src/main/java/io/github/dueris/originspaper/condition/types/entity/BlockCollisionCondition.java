@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.condition.types.entity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -45,8 +45,8 @@ public class BlockCollisionCondition {
 
 	}
 
-	public static @NotNull ConditionFactory<Entity> getFactory() {
-		return new ConditionFactory<>(
+	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("block_collision"),
 			SerializableData.serializableData()
 				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)

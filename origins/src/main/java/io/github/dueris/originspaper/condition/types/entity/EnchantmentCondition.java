@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.condition.types.entity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Comparison;
 import net.minecraft.core.Holder;
@@ -31,8 +31,8 @@ public class EnchantmentCondition {
 
 	}
 
-	public static @NotNull ConditionFactory<Entity> getFactory() {
-		return new ConditionFactory<>(
+	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("enchantment"),
 			SerializableData.serializableData()
 				.add("enchantment", SerializableDataTypes.ENCHANTMENT)

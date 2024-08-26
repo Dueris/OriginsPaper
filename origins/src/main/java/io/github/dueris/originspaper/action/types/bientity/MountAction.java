@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.action.types.bientity;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +21,8 @@ public class MountAction {
 		actor.startRiding(target, true);
 	}
 
-	public static @NotNull ActionFactory<Tuple<Entity, Entity>> getFactory() {
-		return new ActionFactory<>(
+	public static @NotNull ActionTypeFactory<Tuple<Entity, Entity>> getFactory() {
+		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("mount"),
 			SerializableData.serializableData(),
 			MountAction::action

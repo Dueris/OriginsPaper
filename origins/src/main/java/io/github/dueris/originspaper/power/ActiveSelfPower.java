@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.HudRender;
 import io.github.dueris.originspaper.data.types.Keybind;
@@ -23,14 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActiveSelfPower extends PowerType implements CooldownInterface {
-	private final ActionFactory<Entity> entityAction;
+	private final ActionTypeFactory<Entity> entityAction;
 	private final int cooldown;
 	private final HudRender hudRender;
 	private final Keybind keybind;
 	private final List<Player> alreadyTicked = new ArrayList<>();
 
-	public ActiveSelfPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-						   ActionFactory<Entity> entityAction, int cooldown, HudRender hudRender, Keybind keybind) {
+	public ActiveSelfPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+						   ActionTypeFactory<Entity> entityAction, int cooldown, HudRender hudRender, Keybind keybind) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.entityAction = entityAction;
 		this.cooldown = cooldown;

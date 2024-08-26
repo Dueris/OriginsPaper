@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.block;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.ResourceOperation;
 import net.minecraft.core.BlockPos;
@@ -61,8 +61,8 @@ public class ModifyBlockStateAction {
 		enumValue.ifPresent(v -> world.setBlockAndUpdate(pos, originalState.setValue(property, v)));
 	}
 
-	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
-		return new ActionFactory<>(OriginsPaper.apoliIdentifier("modify_block_state"),
+	public static @NotNull ActionTypeFactory<Triple<Level, BlockPos, Direction>> getFactory() {
+		return new ActionTypeFactory<>(OriginsPaper.apoliIdentifier("modify_block_state"),
 			SerializableData.serializableData()
 				.add("property", SerializableDataTypes.STRING)
 				.add("operation", ApoliDataTypes.RESOURCE_OPERATION, ResourceOperation.ADD)

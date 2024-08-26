@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.block;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Shape;
 import net.minecraft.core.BlockPos;
@@ -38,8 +38,8 @@ public class AreaOfEffectAction {
 
 	}
 
-	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
-		return new ActionFactory<>(
+	public static @NotNull ActionTypeFactory<Triple<Level, BlockPos, Direction>> getFactory() {
+		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("area_of_effect"),
 			SerializableData.serializableData()
 				.add("block_action", ApoliDataTypes.BLOCK_ACTION)

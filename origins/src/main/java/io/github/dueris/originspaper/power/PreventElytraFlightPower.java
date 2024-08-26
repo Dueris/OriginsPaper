@@ -2,8 +2,8 @@ package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -15,10 +15,10 @@ import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class PreventElytraFlightPower extends PowerType {
-	private final ActionFactory<Entity> entityAction;
+	private final ActionTypeFactory<Entity> entityAction;
 
-	public PreventElytraFlightPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-									ActionFactory<Entity> entityAction) {
+	public PreventElytraFlightPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+									ActionTypeFactory<Entity> entityAction) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.entityAction = entityAction;
 	}

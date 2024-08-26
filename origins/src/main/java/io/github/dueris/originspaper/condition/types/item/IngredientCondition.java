@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.condition.types.item;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -16,8 +16,8 @@ public class IngredientCondition {
 		return data.<Ingredient>get("ingredient").test(worldAndStack.getB());
 	}
 
-	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
-		return new ConditionFactory<>(
+	public static @NotNull ConditionTypeFactory<Tuple<Level, ItemStack>> getFactory() {
+		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("ingredient"),
 			SerializableData.serializableData()
 				.add("ingredient", SerializableDataTypes.INGREDIENT),

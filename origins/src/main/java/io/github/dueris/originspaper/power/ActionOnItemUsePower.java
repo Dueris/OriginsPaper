@@ -2,8 +2,8 @@ package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -20,12 +20,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class ActionOnItemUsePower extends PowerType {
-	private final ConditionFactory<Tuple<Level, ItemStack>> itemCondition;
-	private final ActionFactory<Entity> entityAction;
-	private final ActionFactory<Tuple<Level, SlotAccess>> itemAction;
+	private final ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition;
+	private final ActionTypeFactory<Entity> entityAction;
+	private final ActionTypeFactory<Tuple<Level, SlotAccess>> itemAction;
 
-	public ActionOnItemUsePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-								ConditionFactory<Tuple<Level, ItemStack>> itemCondition, ActionFactory<Entity> entityAction, ActionFactory<Tuple<Level, SlotAccess>> itemAction) {
+	public ActionOnItemUsePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+								ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition, ActionTypeFactory<Entity> entityAction, ActionTypeFactory<Tuple<Level, SlotAccess>> itemAction) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.itemCondition = itemCondition;
 		this.entityAction = entityAction;

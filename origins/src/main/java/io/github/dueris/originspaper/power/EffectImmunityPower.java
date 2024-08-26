@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +19,7 @@ public class EffectImmunityPower extends PowerType {
 	private final boolean inverted;
 	private final ArrayList<Holder<MobEffect>> effects;
 
-	public EffectImmunityPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
+	public EffectImmunityPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
 							   Holder<MobEffect> mobEffect, List<Holder<MobEffect>> mobEffects, boolean inverted) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.inverted = inverted;

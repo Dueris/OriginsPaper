@@ -4,7 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.network.chat.Component;
@@ -27,8 +27,8 @@ public class ConditionedRestrictArmorPower extends PowerType {
 	private final HashMap<EquipmentSlot, Predicate<Tuple<Level, ItemStack>>> armorConditions;
 	private final int tickRate;
 
-	public ConditionedRestrictArmorPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-										 ConditionFactory<Tuple<Level, ItemStack>> head, ConditionFactory<Tuple<Level, ItemStack>> chest, ConditionFactory<Tuple<Level, ItemStack>> legs, ConditionFactory<Tuple<Level, ItemStack>> feet, int tickRate) {
+	public ConditionedRestrictArmorPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+										 ConditionTypeFactory<Tuple<Level, ItemStack>> head, ConditionTypeFactory<Tuple<Level, ItemStack>> chest, ConditionTypeFactory<Tuple<Level, ItemStack>> legs, ConditionTypeFactory<Tuple<Level, ItemStack>> feet, int tickRate) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.tickRate = tickRate;
 

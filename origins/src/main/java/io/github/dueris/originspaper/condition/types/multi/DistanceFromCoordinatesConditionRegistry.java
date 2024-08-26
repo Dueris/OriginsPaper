@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.condition.types.multi;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Comparison;
 import io.github.dueris.originspaper.data.types.Shape;
@@ -184,16 +184,16 @@ public class DistanceFromCoordinatesConditionRegistry {
 
 	// Watch Java generic type erasure destroy DRY
 
-	public static void registerBlockCondition(Consumer<ConditionFactory<BlockInWorld>> registryFunction) {
+	public static void registerBlockCondition(Consumer<ConditionTypeFactory<BlockInWorld>> registryFunction) {
 		for (String alias : getAliases())
-			registryFunction.accept(new ConditionFactory<>(OriginsPaper.apoliIdentifier(alias),
+			registryFunction.accept(new ConditionTypeFactory<>(OriginsPaper.apoliIdentifier(alias),
 				getSerializableData(alias),
 				(data, block) -> testCondition(data, block, null)));
 	}
 
-	public static void registerEntityCondition(Consumer<ConditionFactory<Entity>> registryFunction) {
+	public static void registerEntityCondition(Consumer<ConditionTypeFactory<Entity>> registryFunction) {
 		for (String alias : getAliases())
-			registryFunction.accept(new ConditionFactory<>(OriginsPaper.apoliIdentifier(alias),
+			registryFunction.accept(new ConditionTypeFactory<>(OriginsPaper.apoliIdentifier(alias),
 				getSerializableData(alias),
 				(data, entity) -> testCondition(data, null, entity)));
 	}

@@ -2,8 +2,8 @@ package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -13,12 +13,12 @@ import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 public class ActionOnDeathPower extends PowerType {
-	private final ActionFactory<Tuple<Entity, Entity>> bientityAction;
-	private final ConditionFactory<Tuple<DamageSource, Float>> damageCondition;
-	private final ConditionFactory<Tuple<Entity, Entity>> bientityCondition;
+	private final ActionTypeFactory<Tuple<Entity, Entity>> bientityAction;
+	private final ConditionTypeFactory<Tuple<DamageSource, Float>> damageCondition;
+	private final ConditionTypeFactory<Tuple<Entity, Entity>> bientityCondition;
 
-	public ActionOnDeathPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-							  ActionFactory<Tuple<Entity, Entity>> bientityAction, ConditionFactory<Tuple<DamageSource, Float>> damageCondition, ConditionFactory<Tuple<Entity, Entity>> bientityCondition) {
+	public ActionOnDeathPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+							  ActionTypeFactory<Tuple<Entity, Entity>> bientityAction, ConditionTypeFactory<Tuple<DamageSource, Float>> damageCondition, ConditionTypeFactory<Tuple<Entity, Entity>> bientityCondition) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.bientityAction = bientityAction;
 		this.damageCondition = damageCondition;

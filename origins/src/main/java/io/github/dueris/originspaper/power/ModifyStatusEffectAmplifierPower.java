@@ -4,7 +4,7 @@ import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -21,7 +21,7 @@ import java.util.Set;
 public class ModifyStatusEffectAmplifierPower extends ModifierPower {
 	private final Set<Holder<MobEffect>> statusEffects;
 
-	public ModifyStatusEffectAmplifierPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
+	public ModifyStatusEffectAmplifierPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
 											@Nullable Modifier modifier, @Nullable List<Modifier> modifiers, Holder<MobEffect> statusEffect, List<Holder<MobEffect>> statusEffects) {
 		super(key, type, name, description, hidden, condition, loadingPriority, modifier, modifiers);
 

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
 
-public class Actions {
+public class ActionTypes {
 
 	public static void registerAll() {
 		BiEntityActions.registerAll();
@@ -21,7 +21,7 @@ public class Actions {
 		ItemActions.registerAll();
 	}
 
-	public static <T> void registerPackage(@NotNull Consumer<ActionFactory<T>> factoryConsumer, String directory) {
+	public static <T> void registerPackage(@NotNull Consumer<ActionTypeFactory<T>> factoryConsumer, String directory) {
 		try {
 			ScanResult result = new ClassGraph().whitelistPackages(directory).enableClassInfo().scan();
 
@@ -32,7 +32,7 @@ public class Actions {
 					.forEach(
 						clz -> {
 							try {
-								ActionFactory<T> factory = ReflectionUtils.invokeStaticMethod(clz, "getFactory");
+								ActionTypeFactory<T> factory = ReflectionUtils.invokeStaticMethod(clz, "getFactory");
 								factoryConsumer.accept(factory);
 							} catch (InvocationTargetException | IllegalAccessException |
 									 NoSuchMethodException e) {

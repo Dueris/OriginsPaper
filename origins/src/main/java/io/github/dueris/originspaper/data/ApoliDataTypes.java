@@ -12,8 +12,8 @@ import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.github.dueris.calio.util.ArgumentWrapper;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.types.*;
 import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.util.Util;
@@ -49,17 +49,17 @@ import java.util.regex.Pattern;
 
 @SuppressWarnings("unused")
 public class ApoliDataTypes {
-	public static final SerializableDataBuilder<ActionFactory<Entity>> ENTITY_ACTION = action(Registries.ENTITY_ACTION);
-	public static final SerializableDataBuilder<ActionFactory<Tuple<Entity, Entity>>> BIENTITY_ACTION = action(Registries.BIENTITY_ACTION);
-	public static final SerializableDataBuilder<ActionFactory<Triple<Level, BlockPos, Direction>>> BLOCK_ACTION = action(Registries.BLOCK_ACTION);
-	public static final SerializableDataBuilder<ActionFactory<Tuple<Level, SlotAccess>>> ITEM_ACTION = action(Registries.ITEM_ACTION);
-	public static final SerializableDataBuilder<ConditionFactory<Tuple<Entity, Entity>>> BIENTITY_CONDITION = condition(Registries.BIENTITY_CONDITION);
-	public static final SerializableDataBuilder<ConditionFactory<Holder<Biome>>> BIOME_CONDITION = condition(Registries.BIOME_CONDITION);
-	public static final SerializableDataBuilder<ConditionFactory<BlockInWorld>> BLOCK_CONDITION = condition(Registries.BLOCK_CONDITION);
-	public static final SerializableDataBuilder<ConditionFactory<Tuple<DamageSource, Float>>> DAMAGE_CONDITION = condition(Registries.DAMAGE_CONDITION);
-	public static final SerializableDataBuilder<ConditionFactory<Entity>> ENTITY_CONDITION = condition(Registries.ENTITY_CONDITION);
-	public static final SerializableDataBuilder<ConditionFactory<Tuple<Level, ItemStack>>> ITEM_CONDITION = condition(Registries.ITEM_CONDITION);
-	public static final SerializableDataBuilder<ConditionFactory<FluidState>> FLUID_CONDITION = condition(Registries.FLUID_CONDITION);
+	public static final SerializableDataBuilder<ActionTypeFactory<Entity>> ENTITY_ACTION = action(Registries.ENTITY_ACTION);
+	public static final SerializableDataBuilder<ActionTypeFactory<Tuple<Entity, Entity>>> BIENTITY_ACTION = action(Registries.BIENTITY_ACTION);
+	public static final SerializableDataBuilder<ActionTypeFactory<Triple<Level, BlockPos, Direction>>> BLOCK_ACTION = action(Registries.BLOCK_ACTION);
+	public static final SerializableDataBuilder<ActionTypeFactory<Tuple<Level, SlotAccess>>> ITEM_ACTION = action(Registries.ITEM_ACTION);
+	public static final SerializableDataBuilder<ConditionTypeFactory<Tuple<Entity, Entity>>> BIENTITY_CONDITION = condition(Registries.BIENTITY_CONDITION);
+	public static final SerializableDataBuilder<ConditionTypeFactory<Holder<Biome>>> BIOME_CONDITION = condition(Registries.BIOME_CONDITION);
+	public static final SerializableDataBuilder<ConditionTypeFactory<BlockInWorld>> BLOCK_CONDITION = condition(Registries.BLOCK_CONDITION);
+	public static final SerializableDataBuilder<ConditionTypeFactory<Tuple<DamageSource, Float>>> DAMAGE_CONDITION = condition(Registries.DAMAGE_CONDITION);
+	public static final SerializableDataBuilder<ConditionTypeFactory<Entity>> ENTITY_CONDITION = condition(Registries.ENTITY_CONDITION);
+	public static final SerializableDataBuilder<ConditionTypeFactory<Tuple<Level, ItemStack>>> ITEM_CONDITION = condition(Registries.ITEM_CONDITION);
+	public static final SerializableDataBuilder<ConditionTypeFactory<FluidState>> FLUID_CONDITION = condition(Registries.FLUID_CONDITION);
 	public static final SerializableDataBuilder<Space> SPACE = SerializableDataTypes.enumValue(Space.class);
 	public static final SerializableDataBuilder<ResourceOperation> RESOURCE_OPERATION = SerializableDataTypes.enumValue(ResourceOperation.class);
 	public static final SerializableDataBuilder<InventoryType> INVENTORY_TYPE = SerializableDataTypes.enumValue(InventoryType.class);
@@ -173,7 +173,7 @@ public class ApoliDataTypes {
 		}, HudRender.class
 	);
 
-	public static <T> @NotNull SerializableDataBuilder<ActionFactory<T>> action(RegistryKey<ActionFactory<T>> registry) {
+	public static <T> @NotNull SerializableDataBuilder<ActionTypeFactory<T>> action(RegistryKey<ActionTypeFactory<T>> registry) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
 				if (!(jsonElement instanceof JsonObject jsonObject)) {
@@ -182,7 +182,7 @@ public class ApoliDataTypes {
 
 				ResourceLocation factoryID = SerializableDataTypes.IDENTIFIER.deserialize(jsonObject.get("type"));
 				try {
-					ActionFactory<T> actionFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
+					ActionTypeFactory<T> actionFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
 					if (actionFactory == null) {
 						throw new IllegalArgumentException("Unable to retrieve action of: " + jsonObject.get("type").getAsString());
 					}
@@ -191,11 +191,11 @@ public class ApoliDataTypes {
 					OriginsPaper.getPlugin().getLog4JLogger().error("Unable to retrieve action of `{}` for Power!", factoryID.toString());
 					throw e;
 				}
-			}, ActionFactory.class
+			}, ActionTypeFactory.class
 		);
 	}
 
-	public static <T> @NotNull SerializableDataBuilder<ConditionFactory<T>> condition(RegistryKey<ConditionFactory<T>> registry) {
+	public static <T> @NotNull SerializableDataBuilder<ConditionTypeFactory<T>> condition(RegistryKey<ConditionTypeFactory<T>> registry) {
 		return SerializableDataBuilder.of(
 			(jsonElement) -> {
 				if (!(jsonElement instanceof JsonObject jsonObject)) {
@@ -204,16 +204,16 @@ public class ApoliDataTypes {
 
 				ResourceLocation factoryID = SerializableDataTypes.IDENTIFIER.deserialize(jsonObject.get("type"));
 				try {
-					ConditionFactory<T> conditionFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
-					if (conditionFactory == null) {
+					ConditionTypeFactory<T> conditionTypeFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
+					if (conditionTypeFactory == null) {
 						throw new IllegalArgumentException("Unable to retrieve condition of: " + jsonObject.get("type").getAsString());
 					}
-					return conditionFactory.copy().decompile(jsonObject);
+					return conditionTypeFactory.copy().decompile(jsonObject);
 				} catch (Throwable e) {
 					OriginsPaper.getPlugin().getLog4JLogger().error("Unable to retrieve condition of `{}` for Power!", factoryID.toString());
 					throw e;
 				}
-			}, ConditionFactory.class
+			}, ConditionTypeFactory.class
 		);
 	}
 

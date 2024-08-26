@@ -5,8 +5,8 @@ import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.holder.ObjectProvider;
 import io.github.dueris.calio.util.holder.Pair;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Comparison;
 import io.github.dueris.originspaper.data.types.HudRender;
@@ -52,12 +52,12 @@ public class ResourcePower extends PowerType implements ResourceInterface {
 	protected final int min;
 	protected final int max;
 	protected final int startValue;
-	protected final ActionFactory<Entity> minAction;
-	protected final ActionFactory<Entity> maxAction;
+	protected final ActionTypeFactory<Entity> minAction;
+	protected final ActionTypeFactory<Entity> maxAction;
 	protected final HudRender hudRender;
 
-	public ResourcePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-						 int min, int max, Optional<Integer> startValue, ActionFactory<Entity> minAction, ActionFactory<Entity> maxAction, HudRender hudRender) {
+	public ResourcePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+						 int min, int max, Optional<Integer> startValue, ActionTypeFactory<Entity> minAction, ActionTypeFactory<Entity> maxAction, HudRender hudRender) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.min = min;
 		this.max = max;

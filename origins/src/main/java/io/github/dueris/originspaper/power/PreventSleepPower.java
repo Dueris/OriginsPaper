@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -14,12 +14,12 @@ import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import org.jetbrains.annotations.NotNull;
 
 public class PreventSleepPower extends PowerType {
-	private final ConditionFactory<BlockInWorld> blockCondition;
+	private final ConditionTypeFactory<BlockInWorld> blockCondition;
 	private final Component message;
 	private final boolean setSpawnPoint;
 
-	public PreventSleepPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-							 ConditionFactory<BlockInWorld> blockCondition, Component message, boolean setSpawnPoint) {
+	public PreventSleepPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+							 ConditionTypeFactory<BlockInWorld> blockCondition, Component message, boolean setSpawnPoint) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.blockCondition = blockCondition;
 		this.message = message;

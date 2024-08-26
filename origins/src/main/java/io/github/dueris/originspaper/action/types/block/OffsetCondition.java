@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.block;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,15 +13,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class OffsetCondition {
 
-	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
-		return new ActionFactory<>(
+	public static @NotNull ActionTypeFactory<Triple<Level, BlockPos, Direction>> getFactory() {
+		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("offset"),
 			SerializableData.serializableData()
 				.add("action", ApoliDataTypes.BLOCK_ACTION)
 				.add("x", SerializableDataTypes.INT, 0)
 				.add("y", SerializableDataTypes.INT, 0)
 				.add("z", SerializableDataTypes.INT, 0),
-			(data, block) -> ((ActionFactory<Triple<Level, BlockPos, Direction>>) data.get("action")).accept(Triple.of(
+			(data, block) -> ((ActionTypeFactory<Triple<Level, BlockPos, Direction>>) data.get("action")).accept(Triple.of(
 				block.getLeft(),
 				block.getMiddle().offset(data.getInt("x"), data.getInt("y"), data.getInt("z")),
 				block.getRight())

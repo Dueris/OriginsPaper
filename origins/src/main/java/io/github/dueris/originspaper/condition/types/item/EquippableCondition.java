@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.condition.types.item;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Equipable;
@@ -24,8 +24,8 @@ public class EquippableCondition {
 
 	}
 
-	public static @NotNull ConditionFactory<Tuple<Level, ItemStack>> getFactory() {
-		return new ConditionFactory<>(
+	public static @NotNull ConditionTypeFactory<Tuple<Level, ItemStack>> getFactory() {
+		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("equippable"),
 			SerializableData.serializableData()
 				.add("equipment_slot", SerializableDataTypes.EQUIPMENT_SLOT, null),

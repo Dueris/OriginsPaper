@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.action.types.item;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.action.ItemActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.action.ItemActionTypeFactory;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.SlotAccess;
@@ -38,8 +38,8 @@ public class DamageAction {
 
 	}
 
-	public static @NotNull ActionFactory<Tuple<Level, SlotAccess>> getFactory() {
-		return ItemActionFactory.createItemStackBased(
+	public static @NotNull ActionTypeFactory<Tuple<Level, SlotAccess>> getFactory() {
+		return ItemActionTypeFactory.createItemStackBased(
 			OriginsPaper.apoliIdentifier("damage"),
 			SerializableData.serializableData()
 				.add("amount", SerializableDataTypes.INT, 1)

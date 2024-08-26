@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.item;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ItemActionFactory;
+import io.github.dueris.originspaper.action.ItemActionTypeFactory;
 import io.github.dueris.originspaper.util.ApoliLootContextTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -47,8 +47,8 @@ public class ModifyAction {
 
 	}
 
-	public static @NotNull ItemActionFactory getFactory() {
-		return new ItemActionFactory(
+	public static @NotNull ItemActionTypeFactory getFactory() {
+		return new ItemActionTypeFactory(
 			OriginsPaper.apoliIdentifier("modify"),
 			SerializableData.serializableData()
 				.add("modifier", SerializableDataTypes.ITEM_MODIFIER),

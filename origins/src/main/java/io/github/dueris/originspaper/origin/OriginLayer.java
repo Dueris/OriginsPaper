@@ -4,7 +4,7 @@ import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.registry.Registrar;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.OriginsDataTypes;
 import io.github.dueris.originspaper.data.types.GuiTitle;
@@ -251,7 +251,7 @@ public class OriginLayer {
 	/**
 	 * Acts as a wrapper for origins inside layers, allowing for an ENTITY_CONDITION value(Nullable) to be present.
 	 */
-	public record ConditionedOrigin(ConditionFactory<net.minecraft.world.entity.Entity> condition,
+	public record ConditionedOrigin(ConditionTypeFactory<Entity> condition,
 									List<ResourceLocation> origins) {
 		public static final SerializableData DATA = SerializableData.serializableData()
 			.add("condition", ApoliDataTypes.ENTITY_CONDITION, null)
@@ -262,7 +262,7 @@ public class OriginLayer {
 		}
 
 		@Deprecated
-		public ConditionFactory<Entity> getCondition() {
+		public ConditionTypeFactory<Entity> getCondition() {
 			return condition;
 		}
 

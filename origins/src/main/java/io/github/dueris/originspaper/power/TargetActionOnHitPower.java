@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.HudRender;
 import net.minecraft.network.chat.Component;
@@ -20,14 +20,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class TargetActionOnHitPower extends PowerType implements CooldownInterface {
-	private final ActionFactory<Entity> entityAction;
-	private final ConditionFactory<Tuple<DamageSource, Float>> damageCondition;
+	private final ActionTypeFactory<Entity> entityAction;
+	private final ConditionTypeFactory<Tuple<DamageSource, Float>> damageCondition;
 	private final int cooldown;
 	private final HudRender hudRender;
-	private final ConditionFactory<Entity> targetCondition;
+	private final ConditionTypeFactory<Entity> targetCondition;
 
-	public TargetActionOnHitPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-								  ActionFactory<Entity> entityAction, ConditionFactory<Tuple<DamageSource, Float>> damageCondition, int cooldown, HudRender hudRender, ConditionFactory<Entity> targetCondition) {
+	public TargetActionOnHitPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+								  ActionTypeFactory<Entity> entityAction, ConditionTypeFactory<Tuple<DamageSource, Float>> damageCondition, int cooldown, HudRender hudRender, ConditionTypeFactory<Entity> targetCondition) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.entityAction = entityAction;
 		this.damageCondition = damageCondition;

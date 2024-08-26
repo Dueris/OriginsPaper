@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.action.types.item;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.action.ItemActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.action.ItemActionTypeFactory;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -73,8 +73,8 @@ public class RemoveEnchantmentAction {
 
 	}
 
-	public static @NotNull ActionFactory<Tuple<Level, SlotAccess>> getFactory() {
-		return ItemActionFactory.createItemStackBased(
+	public static @NotNull ActionTypeFactory<Tuple<Level, SlotAccess>> getFactory() {
+		return ItemActionTypeFactory.createItemStackBased(
 			OriginsPaper.apoliIdentifier("remove_enchantment"),
 			SerializableData.serializableData()
 				.add("enchantment", SerializableDataTypes.ENCHANTMENT, null)

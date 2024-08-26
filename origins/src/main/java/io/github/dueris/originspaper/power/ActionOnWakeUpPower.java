@@ -2,8 +2,8 @@ package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,13 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActionOnWakeUpPower extends PowerType {
-	private final ActionFactory<Entity> entityAction;
-	private final ActionFactory<Triple<Level, BlockPos, Direction>> blockAction;
-	private final ConditionFactory<BlockInWorld> blockCondition;
+	private final ActionTypeFactory<Entity> entityAction;
+	private final ActionTypeFactory<Triple<Level, BlockPos, Direction>> blockAction;
+	private final ConditionTypeFactory<BlockInWorld> blockCondition;
 	private final List<org.bukkit.entity.Player> tickedAlready = new ArrayList<>();
 
-	public ActionOnWakeUpPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-							   ActionFactory<Entity> entityAction, ActionFactory<Triple<Level, BlockPos, Direction>> blockAction, ConditionFactory<BlockInWorld> blockCondition) {
+	public ActionOnWakeUpPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+							   ActionTypeFactory<Entity> entityAction, ActionTypeFactory<Triple<Level, BlockPos, Direction>> blockAction, ConditionTypeFactory<BlockInWorld> blockCondition) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.entityAction = entityAction;
 		this.blockAction = blockAction;

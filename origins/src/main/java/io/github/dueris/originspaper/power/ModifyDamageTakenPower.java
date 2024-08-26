@@ -2,8 +2,8 @@ package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
@@ -23,15 +23,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class ModifyDamageTakenPower extends ModifierPower {
-	private final ActionFactory<Entity> selfAction;
-	private final ActionFactory<Entity> attackerAction;
-	private final ActionFactory<Tuple<Entity, Entity>> biEntityAction;
-	private final ConditionFactory<Tuple<Entity, Entity>> biEntityCondition;
-	private final ConditionFactory<Tuple<DamageSource, Float>> damageCondition;
+	private final ActionTypeFactory<Entity> selfAction;
+	private final ActionTypeFactory<Entity> attackerAction;
+	private final ActionTypeFactory<Tuple<Entity, Entity>> biEntityAction;
+	private final ConditionTypeFactory<Tuple<Entity, Entity>> biEntityCondition;
+	private final ConditionTypeFactory<Tuple<DamageSource, Float>> damageCondition;
 
-	public ModifyDamageTakenPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-								  @Nullable Modifier modifier, @Nullable List<Modifier> modifiers, ActionFactory<Entity> selfAction, ActionFactory<Entity> attackerAction, ActionFactory<Tuple<Entity, Entity>> biEntityAction,
-								  ConditionFactory<Tuple<Entity, Entity>> biEntityCondition, ConditionFactory<Tuple<DamageSource, Float>> damageCondition) {
+	public ModifyDamageTakenPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+								  @Nullable Modifier modifier, @Nullable List<Modifier> modifiers, ActionTypeFactory<Entity> selfAction, ActionTypeFactory<Entity> attackerAction, ActionTypeFactory<Tuple<Entity, Entity>> biEntityAction,
+								  ConditionTypeFactory<Tuple<Entity, Entity>> biEntityCondition, ConditionTypeFactory<Tuple<DamageSource, Float>> damageCondition) {
 		super(key, type, name, description, hidden, condition, loadingPriority, modifier, modifiers);
 		this.selfAction = selfAction;
 		this.attackerAction = attackerAction;

@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -14,17 +14,17 @@ import org.jetbrains.annotations.NotNull;
 
 public class ActionOverTimePower extends PowerType {
 	private final int interval;
-	private final ActionFactory<Entity> entityAction;
-	private final ActionFactory<Entity> risingAction;
-	private final ActionFactory<Entity> fallingAction;
+	private final ActionTypeFactory<Entity> entityAction;
+	private final ActionTypeFactory<Entity> risingAction;
+	private final ActionTypeFactory<Entity> fallingAction;
 
 	private Integer startTicks = null;
 	private Integer endTicks = null;
 
 	private boolean wasActive = false;
 
-	public ActionOverTimePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-							   int interval, ActionFactory<Entity> entityAction, ActionFactory<Entity> risingAction, ActionFactory<Entity> fallingAction) {
+	public ActionOverTimePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+							   int interval, ActionTypeFactory<Entity> entityAction, ActionTypeFactory<Entity> risingAction, ActionTypeFactory<Entity> fallingAction) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.interval = interval;
 		this.entityAction = entityAction;

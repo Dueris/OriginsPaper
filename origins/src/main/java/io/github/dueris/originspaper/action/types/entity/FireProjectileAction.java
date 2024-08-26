@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.entity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.nbt.CompoundTag;
@@ -89,8 +89,8 @@ public class FireProjectileAction {
 
 	}
 
-	public static @NotNull ActionFactory<Entity> getFactory() {
-		return new ActionFactory<>(
+	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("fire_projectile"),
 			SerializableData.serializableData()
 				.add("entity_type", SerializableDataTypes.ENTITY_TYPE)

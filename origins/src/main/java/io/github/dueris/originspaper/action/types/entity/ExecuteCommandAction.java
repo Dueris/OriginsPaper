@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.entity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
@@ -14,8 +14,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ExecuteCommandAction {
 
-	public static @NotNull ActionFactory<Entity> getFactory() {
-		return new ActionFactory<>(OriginsPaper.apoliIdentifier("execute_command"),
+	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+		return new ActionTypeFactory<>(OriginsPaper.apoliIdentifier("execute_command"),
 			SerializableData.serializableData()
 				.add("command", SerializableDataTypes.STRING),
 			(data, entity) -> {

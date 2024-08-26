@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
@@ -40,10 +40,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class EdibleItemPower extends PowerType {
-	private final ActionFactory<Entity> entityAction;
-	private final ActionFactory<Tuple<Level, SlotAccess>> consumedItemAction;
-	private final ActionFactory<Tuple<Level, SlotAccess>> resultItemAction;
-	private final ConditionFactory<Tuple<Level, ItemStack>> itemCondition;
+	private final ActionTypeFactory<Entity> entityAction;
+	private final ActionTypeFactory<Tuple<Level, SlotAccess>> consumedItemAction;
+	private final ActionTypeFactory<Tuple<Level, SlotAccess>> resultItemAction;
+	private final ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition;
 	private final FoodProperties foodComponent;
 	private final ItemStack resultStack;
 	private final ConsumeAnimation consumeAnimation;
@@ -53,8 +53,8 @@ public class EdibleItemPower extends PowerType {
 	private final NamespacedKey EDIBLE_ITEM_MODIFIED_KEY = CraftNamespacedKey.fromMinecraft(OriginsPaper.apoliIdentifier("edible_item_modified"));
 	private final List<org.bukkit.entity.Player> tickedAlready = new ArrayList<>();
 
-	public EdibleItemPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-						   ActionFactory<Entity> entityAction, ActionFactory<Tuple<Level, SlotAccess>> consumedItemAction, ActionFactory<Tuple<Level, SlotAccess>> resultItemAction, ConditionFactory<Tuple<Level, ItemStack>> itemCondition,
+	public EdibleItemPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+						   ActionTypeFactory<Entity> entityAction, ActionTypeFactory<Tuple<Level, SlotAccess>> consumedItemAction, ActionTypeFactory<Tuple<Level, SlotAccess>> resultItemAction, ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition,
 						   FoodProperties foodComponent, ItemStack resultStack, ConsumeAnimation consumeAnimation, SoundEvent consumeSoundEvent, Modifier consumingTimeModifier, List<Modifier> consumingTimeModifiers) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.entityAction = entityAction;

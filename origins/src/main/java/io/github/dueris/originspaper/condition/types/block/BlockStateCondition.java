@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.condition.types.block;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Comparison;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,8 +15,8 @@ import java.util.Collection;
 
 public class BlockStateCondition {
 
-	public static @NotNull ConditionFactory<BlockInWorld> getFactory() {
-		return new ConditionFactory<>(
+	public static @NotNull ConditionTypeFactory<BlockInWorld> getFactory() {
+		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("block_state"),
 			SerializableData.serializableData()
 				.add("property", SerializableDataTypes.STRING)

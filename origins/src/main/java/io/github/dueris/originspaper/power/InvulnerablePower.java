@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.condition.types.item.AmountCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.network.chat.Component;
@@ -18,10 +18,10 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class InvulnerablePower extends PowerType {
-	private final ConditionFactory<Tuple<DamageSource, Float>> damageCondition;
+	private final ConditionTypeFactory<Tuple<DamageSource, Float>> damageCondition;
 
-	public InvulnerablePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-							 @NotNull ConditionFactory<Tuple<DamageSource, Float>> damageCondition) {
+	public InvulnerablePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+							 @NotNull ConditionTypeFactory<Tuple<DamageSource, Float>> damageCondition) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 
 		if (damageCondition.getSerializableData() == AmountCondition.getFactory().getSerializableData()) {
@@ -36,7 +36,7 @@ public class InvulnerablePower extends PowerType {
 			.add("damage_condition", ApoliDataTypes.DAMAGE_CONDITION)
 			.postProcessor(data -> {
 
-				ConditionFactory<Tuple<DamageSource, Float>> damageCondition = data.get("damage_condition");
+				ConditionTypeFactory<Tuple<DamageSource, Float>> damageCondition = data.get("damage_condition");
 
 				if (damageCondition.getSerializerId().equals(OriginsPaper.apoliIdentifier("amount"))) {
 					throw new IllegalArgumentException("Using the 'amount' damage condition type in a power that uses the 'invulnerability' power type is not allowed!");

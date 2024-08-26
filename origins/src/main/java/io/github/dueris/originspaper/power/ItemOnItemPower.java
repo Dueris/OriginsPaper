@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.network.chat.Component;
@@ -24,21 +24,21 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemOnItemPower extends PowerType {
-	private final ConditionFactory<Tuple<Level, ItemStack>> usingItemCondition;
-	private final ConditionFactory<Tuple<Level, ItemStack>> onItemCondition;
+	private final ConditionTypeFactory<Tuple<Level, ItemStack>> usingItemCondition;
+	private final ConditionTypeFactory<Tuple<Level, ItemStack>> onItemCondition;
 
-	private final ActionFactory<Tuple<Level, SlotAccess>> usingItemAction;
-	private final ActionFactory<Tuple<Level, SlotAccess>> onItemAction;
-	private final ActionFactory<Tuple<Level, SlotAccess>> resultItemAction;
-	private final ActionFactory<Entity> entityAction;
+	private final ActionTypeFactory<Tuple<Level, SlotAccess>> usingItemAction;
+	private final ActionTypeFactory<Tuple<Level, SlotAccess>> onItemAction;
+	private final ActionTypeFactory<Tuple<Level, SlotAccess>> resultItemAction;
+	private final ActionTypeFactory<Entity> entityAction;
 
 	private final ItemStack resultStack;
 
 	private final int resultFromOnStack;
 
-	public ItemOnItemPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-						   ActionFactory<Entity> entityAction, ActionFactory<Tuple<Level, SlotAccess>> usingItemAction, ActionFactory<Tuple<Level, SlotAccess>> onItemAction, ActionFactory<Tuple<Level, SlotAccess>> resultItemAction,
-						   ConditionFactory<Tuple<Level, ItemStack>> usingItemCondition, ConditionFactory<Tuple<Level, ItemStack>> onItemCondition, ItemStack resultStack, int resultFromOnStack) {
+	public ItemOnItemPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+						   ActionTypeFactory<Entity> entityAction, ActionTypeFactory<Tuple<Level, SlotAccess>> usingItemAction, ActionTypeFactory<Tuple<Level, SlotAccess>> onItemAction, ActionTypeFactory<Tuple<Level, SlotAccess>> resultItemAction,
+						   ConditionTypeFactory<Tuple<Level, ItemStack>> usingItemCondition, ConditionTypeFactory<Tuple<Level, ItemStack>> onItemCondition, ItemStack resultStack, int resultFromOnStack) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.usingItemCondition = usingItemCondition;
 		this.onItemCondition = onItemCondition;

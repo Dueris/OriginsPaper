@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.action.types.entity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Space;
 import net.minecraft.commands.CommandSource;
@@ -96,12 +96,12 @@ public class RaycastAction {
 				executeStepCommands(entity, origin, hitResult.getLocation(), data.getString("command_along_ray"), data.getDouble("command_step"));
 			}
 			if (data.isPresent("block_action") && hitResult instanceof BlockHitResult bhr) {
-				ActionFactory<Triple<Level, BlockPos, Direction>> blockAction = data.get("block_action");
+				ActionTypeFactory<Triple<Level, BlockPos, Direction>> blockAction = data.get("block_action");
 				Triple<Level, BlockPos, Direction> blockActionContext = Triple.of(entity.level(), bhr.getBlockPos(), bhr.getDirection());
 				blockAction.accept(blockActionContext);
 			}
 			if (data.isPresent("bientity_action") && hitResult instanceof EntityHitResult ehr) {
-				ActionFactory<Tuple<Entity, Entity>> bientityAction = data.get("bientity_action");
+				ActionTypeFactory<Tuple<Entity, Entity>> bientityAction = data.get("bientity_action");
 				Tuple<Entity, Entity> bientityActionContext = new Tuple<>(entity, ehr.getEntity());
 				bientityAction.accept(bientityActionContext);
 			}
@@ -187,7 +187,7 @@ public class RaycastAction {
 		return source.level().clip(context);
 	}
 
-	private static EntityHitResult performEntityRaycast(@NotNull Entity source, Vec3 origin, @NotNull Vec3 target, ConditionFactory<Tuple<Entity, Entity>> biEntityCondition) {
+	private static EntityHitResult performEntityRaycast(@NotNull Entity source, Vec3 origin, @NotNull Vec3 target, ConditionTypeFactory<Tuple<Entity, Entity>> biEntityCondition) {
 		Vec3 ray = target.subtract(origin);
 		AABB box = source.getBoundingBox().expandTowards(ray).inflate(1.0D, 1.0D, 1.0D);
 		EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(source, origin, target, box, (entityx) -> {
@@ -196,8 +196,8 @@ public class RaycastAction {
 		return entityHitResult;
 	}
 
-	public static @NotNull ActionFactory<Entity> getFactory() {
-		return new ActionFactory<>(OriginsPaper.apoliIdentifier("raycast"),
+	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+		return new ActionTypeFactory<>(OriginsPaper.apoliIdentifier("raycast"),
 			SerializableData.serializableData()
 				.add("distance", SerializableDataTypes.DOUBLE, null)
 				.add("block_distance", SerializableDataTypes.DOUBLE, null)

@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.ContainerType;
 import io.github.dueris.originspaper.data.types.Keybind;
@@ -43,12 +43,12 @@ public class InventoryPower extends PowerType {
 	private final String title;
 	private final ContainerType containerType;
 	private final boolean dropOnDeath;
-	private final ConditionFactory<Tuple<Level, net.minecraft.world.item.ItemStack>> dropOnDeathFilter;
+	private final ConditionTypeFactory<Tuple<Level, net.minecraft.world.item.ItemStack>> dropOnDeathFilter;
 	private final boolean recoverable;
 	private final Keybind keybind;
 
-	public InventoryPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-						  String title, ContainerType containerType, boolean dropOnDeath, ConditionFactory<Tuple<Level, net.minecraft.world.item.ItemStack>> dropOnDeathFilter, Keybind keybind, boolean recoverable) {
+	public InventoryPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+						  String title, ContainerType containerType, boolean dropOnDeath, ConditionTypeFactory<Tuple<Level, net.minecraft.world.item.ItemStack>> dropOnDeathFilter, Keybind keybind, boolean recoverable) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.title = title;
 		this.containerType = containerType;

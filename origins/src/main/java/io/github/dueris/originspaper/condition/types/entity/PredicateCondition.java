@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.condition.types.entity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -42,8 +42,8 @@ public class PredicateCondition {
 
 	}
 
-	public static @NotNull ConditionFactory<Entity> getFactory() {
-		return new ConditionFactory<>(
+	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("predicate"),
 			SerializableData.serializableData()
 				.add("predicate", SerializableDataTypes.PREDICATE),

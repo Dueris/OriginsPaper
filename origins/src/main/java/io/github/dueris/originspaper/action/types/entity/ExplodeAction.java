@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.entity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.ExplosionMask;
 import net.minecraft.core.particles.ParticleTypes;
@@ -48,8 +48,8 @@ public class ExplodeAction {
 
 	}
 
-	public static @NotNull ActionFactory<Entity> getFactory() {
-		return new ActionFactory<>(
+	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("explode"),
 			SerializableData.serializableData()
 				.add("power", SerializableDataTypes.FLOAT)

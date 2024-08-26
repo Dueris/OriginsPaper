@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.entity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.ServerStatsCounter;
@@ -30,8 +30,8 @@ public class ModifyStatAction {
 		serverPlayerEntity.awardStat(stat, newValue);
 	}
 
-	public static @NotNull ActionFactory<Entity> getFactory() {
-		return new ActionFactory<>(OriginsPaper.apoliIdentifier("modify_stat"),
+	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+		return new ActionTypeFactory<>(OriginsPaper.apoliIdentifier("modify_stat"),
 			SerializableData.serializableData()
 				.add("stat", SerializableDataTypes.STAT)
 				.add("modifier", Modifier.DATA_TYPE),

@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.bientity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
 import io.github.dueris.originspaper.util.Util;
@@ -60,8 +60,8 @@ public class DamageAction {
 
 	}
 
-	public static @NotNull ActionFactory<Tuple<Entity, Entity>> getFactory() {
-		return new ActionFactory<>(
+	public static @NotNull ActionTypeFactory<Tuple<Entity, Entity>> getFactory() {
+		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("damage"),
 			SerializableData.serializableData()
 				.add("amount", SerializableDataTypes.FLOAT, null)

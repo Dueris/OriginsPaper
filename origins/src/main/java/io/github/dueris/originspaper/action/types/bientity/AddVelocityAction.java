@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.bientity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import io.github.dueris.originspaper.data.types.Space;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
@@ -40,8 +40,8 @@ public class AddVelocityAction {
 
 	}
 
-	public static @NotNull ActionFactory<Tuple<Entity, Entity>> getFactory() {
-		return new ActionFactory<>(
+	public static @NotNull ActionTypeFactory<Tuple<Entity, Entity>> getFactory() {
+		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("add_velocity"),
 			SerializableData.serializableData()
 				.add("x", SerializableDataTypes.FLOAT, 0F)

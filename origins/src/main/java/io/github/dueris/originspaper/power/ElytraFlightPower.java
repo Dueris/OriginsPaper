@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.event.PowerUpdateEvent;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.core.BlockPos;
@@ -37,7 +37,7 @@ import java.util.UUID;
 public class ElytraFlightPower extends PowerType {
 	private final ArrayList<UUID> glidingPlayers = new ArrayList<>();
 
-	public ElytraFlightPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority) {
+	public ElytraFlightPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 

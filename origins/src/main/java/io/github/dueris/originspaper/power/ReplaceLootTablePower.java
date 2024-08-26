@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -42,12 +42,12 @@ import java.util.regex.Pattern;
 
 public class ReplaceLootTablePower extends PowerType {
 	private final Map<Pattern, ResourceLocation> replace;
-	private final ConditionFactory<Tuple<Entity, Entity>> bientityCondition;
-	private final ConditionFactory<BlockInWorld> blockCondition;
-	private final ConditionFactory<Tuple<Level, ItemStack>> itemCondition;
+	private final ConditionTypeFactory<Tuple<Entity, Entity>> bientityCondition;
+	private final ConditionTypeFactory<BlockInWorld> blockCondition;
+	private final ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition;
 
-	public ReplaceLootTablePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-								 Map<Pattern, ResourceLocation> replace, ConditionFactory<Tuple<Entity, Entity>> bientityCondition, ConditionFactory<BlockInWorld> blockCondition, ConditionFactory<Tuple<Level, ItemStack>> itemCondition) {
+	public ReplaceLootTablePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+								 Map<Pattern, ResourceLocation> replace, ConditionTypeFactory<Tuple<Entity, Entity>> bientityCondition, ConditionTypeFactory<BlockInWorld> blockCondition, ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.replace = replace;
 		this.bientityCondition = bientityCondition;

@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.HudRender;
 import io.github.dueris.originspaper.util.Util;
@@ -20,13 +20,13 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class SelfActionWhenHitPower extends PowerType implements CooldownInterface {
-	private final ActionFactory<Entity> entityAction;
-	private final ConditionFactory<Tuple<DamageSource, Float>> damageCondition;
+	private final ActionTypeFactory<Entity> entityAction;
+	private final ConditionTypeFactory<Tuple<DamageSource, Float>> damageCondition;
 	private final HudRender hudRender;
 	private final int cooldown;
 
-	public SelfActionWhenHitPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-								  ActionFactory<Entity> entityAction, ConditionFactory<Tuple<DamageSource, Float>> damageCondition, HudRender hudRender, int cooldown) {
+	public SelfActionWhenHitPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+								  ActionTypeFactory<Entity> entityAction, ConditionTypeFactory<Tuple<DamageSource, Float>> damageCondition, HudRender hudRender, int cooldown) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.entityAction = entityAction;
 		this.damageCondition = damageCondition;

@@ -4,7 +4,7 @@ import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.holder.ObjectProvider;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Shape;
 import io.github.dueris.originspaper.util.entity.GlowingEntitiesUtils;
@@ -25,15 +25,15 @@ import java.awt.*;
 import java.util.Set;
 
 public class EntityGlowPower extends PowerType {
-	private final ConditionFactory<Entity> entityCondition;
-	private final ConditionFactory<Tuple<Entity, Entity>> bientityCondition;
+	private final ConditionTypeFactory<Entity> entityCondition;
+	private final ConditionTypeFactory<Tuple<Entity, Entity>> bientityCondition;
 	private final boolean useTeams;
 	private final float red;
 	private final float green;
 	private final float blue;
 
-	public EntityGlowPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-						   ConditionFactory<Entity> entityCondition, ConditionFactory<Tuple<Entity, Entity>> bientityCondition, boolean useTeams, float red, float green, float blue) {
+	public EntityGlowPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+						   ConditionTypeFactory<Entity> entityCondition, ConditionTypeFactory<Tuple<Entity, Entity>> bientityCondition, boolean useTeams, float red, float green, float blue) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.entityCondition = entityCondition;
 		this.bientityCondition = bientityCondition;

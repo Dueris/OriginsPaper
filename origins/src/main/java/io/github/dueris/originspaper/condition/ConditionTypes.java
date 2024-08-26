@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
 
-public class Conditions {
+public class ConditionTypes {
 
 	public static void registerAll() {
 		BiEntityConditions.registerAll();
@@ -21,7 +21,7 @@ public class Conditions {
 		ItemConditions.registerAll();
 	}
 
-	public static <T> void registerPackage(@NotNull Consumer<ConditionFactory<T>> factoryConsumer, String directory) {
+	public static <T> void registerPackage(@NotNull Consumer<ConditionTypeFactory<T>> factoryConsumer, String directory) {
 		try {
 			ScanResult result = new ClassGraph().whitelistPackages(directory).enableClassInfo().scan();
 
@@ -32,7 +32,7 @@ public class Conditions {
 					.forEach(
 						clz -> {
 							try {
-								ConditionFactory<T> factory = ReflectionUtils.invokeStaticMethod(clz, "getFactory");
+								ConditionTypeFactory<T> factory = ReflectionUtils.invokeStaticMethod(clz, "getFactory");
 								factoryConsumer.accept(factory);
 							} catch (InvocationTargetException | IllegalAccessException |
 									 NoSuchMethodException e) {

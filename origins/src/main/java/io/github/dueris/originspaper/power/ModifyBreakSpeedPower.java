@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
@@ -27,11 +27,11 @@ import java.util.List;
  */
 public class ModifyBreakSpeedPower extends ModifierPower {
 
-	private final ConditionFactory<BlockInWorld> blockCondition;
+	private final ConditionTypeFactory<BlockInWorld> blockCondition;
 	private final LinkedList<Modifier> hardnessModifiers;
 
-	public ModifyBreakSpeedPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-								 @Nullable Modifier modifier, @Nullable List<Modifier> modifiers, ConditionFactory<BlockInWorld> blockCondition, @Nullable Modifier hardnessModifier, @Nullable List<Modifier> hardnessModifiers) {
+	public ModifyBreakSpeedPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+								 @Nullable Modifier modifier, @Nullable List<Modifier> modifiers, ConditionTypeFactory<BlockInWorld> blockCondition, @Nullable Modifier hardnessModifier, @Nullable List<Modifier> hardnessModifiers) {
 		super(key, type, name, description, hidden, condition, loadingPriority, modifier, modifiers);
 		this.blockCondition = blockCondition;
 		this.hardnessModifiers = new LinkedList<>();
@@ -87,7 +87,7 @@ public class ModifyBreakSpeedPower extends ModifierPower {
 		player.getBukkitEntity().getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).setBaseValue(1.0F);
 	}
 
-	public ConditionFactory<BlockInWorld> getBlockCondition() {
+	public ConditionTypeFactory<BlockInWorld> getBlockCondition() {
 		return blockCondition;
 	}
 }

@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.condition.types.entity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -30,8 +30,8 @@ public class StatusEffectCondition {
 
 	}
 
-	public static ConditionFactory<Entity> getFactory() {
-		return new ConditionFactory<>(
+	public static ConditionTypeFactory<Entity> getFactory() {
+		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("status_effect"),
 			SerializableData.serializableData()
 				.add("effect", SerializableDataTypes.STATUS_EFFECT_ENTRY)

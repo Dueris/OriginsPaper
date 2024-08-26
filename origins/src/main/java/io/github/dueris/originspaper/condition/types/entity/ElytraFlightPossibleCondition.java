@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.condition.types.entity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -31,8 +31,8 @@ public class ElytraFlightPossibleCondition {
 		return ability && state;
 	}
 
-	public static @NotNull ConditionFactory<Entity> getFactory() {
-		return new ConditionFactory<>(OriginsPaper.apoliIdentifier("elytra_flight_possible"),
+	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+		return new ConditionTypeFactory<>(OriginsPaper.apoliIdentifier("elytra_flight_possible"),
 			SerializableData.serializableData()
 				.add("check_state", SerializableDataTypes.BOOLEAN, false)
 				.add("check_ability", SerializableDataTypes.BOOLEAN, true),

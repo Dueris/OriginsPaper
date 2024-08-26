@@ -2,8 +2,8 @@ package io.github.dueris.originspaper.action.types;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.action.Actions;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.action.ActionTypes;
 import io.github.dueris.originspaper.action.meta.*;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.registry.Registries;
@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 
 public class ItemActions {
 
-	public static void register(ActionFactory<Tuple<Level, SlotAccess>> factory) {
+	public static void register(ActionTypeFactory<Tuple<Level, SlotAccess>> factory) {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.ITEM_ACTION).register(factory, factory.getSerializerId());
 	}
 
@@ -29,7 +29,7 @@ public class ItemActions {
 		register(NothingAction.getFactory());
 		register(SideAction.getFactory(ApoliDataTypes.ITEM_ACTION, worldAndStack -> !worldAndStack.getA().isClientSide));
 
-		Actions.registerPackage(ItemActions::register, "io.github.dueris.originspaper.action.types.item");
+		ActionTypes.registerPackage(ItemActions::register, "io.github.dueris.originspaper.action.types.item");
 	}
 
 }

@@ -2,8 +2,8 @@ package io.github.dueris.originspaper.action.types;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.action.Actions;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.action.ActionTypes;
 import io.github.dueris.originspaper.action.meta.*;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.registry.Registries;
@@ -13,7 +13,7 @@ import net.minecraft.world.entity.Entity;
 // Left is the actor, right is the target.
 public class BiEntityActions {
 
-	public static void register(ActionFactory<Tuple<Entity, Entity>> factory) {
+	public static void register(ActionTypeFactory<Tuple<Entity, Entity>> factory) {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.BIENTITY_ACTION).register(factory, factory.getSerializerId());
 	}
 
@@ -27,7 +27,7 @@ public class BiEntityActions {
 		register(NothingAction.getFactory());
 		register(SideAction.getFactory(ApoliDataTypes.BIENTITY_ACTION, entities -> !entities.getA().level().isClientSide));
 
-		Actions.registerPackage(BiEntityActions::register, "io.github.dueris.originspaper.action.types.bientity");
+		ActionTypes.registerPackage(BiEntityActions::register, "io.github.dueris.originspaper.action.types.bientity");
 	}
 
 }

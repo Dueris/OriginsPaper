@@ -2,8 +2,8 @@ package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.network.chat.Component;
@@ -21,13 +21,13 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class ActionOnItemPickupPower extends PowerType {
-	private final ActionFactory<Tuple<Entity, Entity>> biEntityAction;
-	private final ActionFactory<Tuple<Level, SlotAccess>> itemAction;
-	private final ConditionFactory<Tuple<Entity, Entity>> biEntityCondition;
-	private final ConditionFactory<Tuple<Level, ItemStack>> itemCondition;
+	private final ActionTypeFactory<Tuple<Entity, Entity>> biEntityAction;
+	private final ActionTypeFactory<Tuple<Level, SlotAccess>> itemAction;
+	private final ConditionTypeFactory<Tuple<Entity, Entity>> biEntityCondition;
+	private final ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition;
 
-	public ActionOnItemPickupPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-								   ActionFactory<Tuple<Entity, Entity>> biEntityAction, ActionFactory<Tuple<Level, SlotAccess>> itemAction, ConditionFactory<Tuple<Entity, Entity>> biEntityCondition, ConditionFactory<Tuple<Level, ItemStack>> itemCondition) {
+	public ActionOnItemPickupPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+								   ActionTypeFactory<Tuple<Entity, Entity>> biEntityAction, ActionTypeFactory<Tuple<Level, SlotAccess>> itemAction, ConditionTypeFactory<Tuple<Entity, Entity>> biEntityCondition, ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.biEntityAction = biEntityAction;
 		this.itemAction = itemAction;

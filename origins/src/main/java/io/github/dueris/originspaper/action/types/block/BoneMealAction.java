@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.block;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.BoneMealItem;
@@ -39,8 +39,8 @@ public class BoneMealAction {
 		}
 	}
 
-	public static @NotNull ActionFactory<Triple<Level, BlockPos, Direction>> getFactory() {
-		return new ActionFactory<>(
+	public static @NotNull ActionTypeFactory<Triple<Level, BlockPos, Direction>> getFactory() {
+		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("bonemeal"),
 			SerializableData.serializableData()
 				.add("effects", SerializableDataTypes.BOOLEAN, true),

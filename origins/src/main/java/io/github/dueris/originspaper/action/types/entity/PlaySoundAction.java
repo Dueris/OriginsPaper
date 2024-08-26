@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.action.types.entity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
@@ -15,8 +15,8 @@ public class PlaySoundAction {
 		entity.level().playSound(null, entity.blockPosition(), data.get("sound"), category, data.getFloat("volume"), data.getFloat("pitch"));
 	}
 
-	public static @NotNull ActionFactory<Entity> getFactory() {
-		return new ActionFactory<>(
+	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("play_sound"),
 			SerializableData.serializableData()
 				.add("sound", SerializableDataTypes.SOUND_EVENT)

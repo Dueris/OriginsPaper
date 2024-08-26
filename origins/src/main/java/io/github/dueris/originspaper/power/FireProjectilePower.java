@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.HudRender;
 import io.github.dueris.originspaper.data.types.Keybind;
@@ -47,17 +47,17 @@ public class FireProjectilePower extends PowerType implements CooldownInterface 
 	private final HudRender hudRender;
 	private final CompoundTag tag;
 	private final Keybind keybind;
-	private final ActionFactory<Entity> projectileAction;
-	private final ActionFactory<Entity> shooterAction;
+	private final ActionTypeFactory<Entity> projectileAction;
+	private final ActionTypeFactory<Entity> shooterAction;
 	private final ConcurrentLinkedQueue<org.bukkit.entity.Entity> enderian_pearl = new ConcurrentLinkedQueue<>();
 	protected long lastUseTime;
 	private boolean isFiringProjectiles;
 	private boolean finishedStartDelay;
 	private int shotProjectiles;
 
-	public FireProjectilePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
+	public FireProjectilePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
 							   int cooldown, int count, int interval, int startDelay, float speed, float divergence, SoundEvent sound, EntityType<?> entityType, HudRender hudRender, CompoundTag tag,
-							   Keybind keybind, ActionFactory<Entity> projectileAction, ActionFactory<Entity> shooterAction) {
+							   Keybind keybind, ActionTypeFactory<Entity> projectileAction, ActionTypeFactory<Entity> shooterAction) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.cooldown = cooldown;
 		this.projectileCount = count;

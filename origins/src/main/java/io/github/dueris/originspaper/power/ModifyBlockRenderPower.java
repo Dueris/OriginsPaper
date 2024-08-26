@@ -4,7 +4,7 @@ import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Shape;
 import io.github.dueris.originspaper.util.chunk.LevelChunkUtil;
@@ -32,11 +32,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ModifyBlockRenderPower extends PowerType {
 	public static ArrayList<Runnable> que = new ArrayList<>();
-	private final ConditionFactory<BlockInWorld> blockCondition;
+	private final ConditionTypeFactory<BlockInWorld> blockCondition;
 	private final BlockState state;
 
-	public ModifyBlockRenderPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-								  ConditionFactory<BlockInWorld> blockCondition, BlockState state) {
+	public ModifyBlockRenderPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+								  ConditionTypeFactory<BlockInWorld> blockCondition, BlockState state) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.blockCondition = blockCondition;
 		this.state = state;

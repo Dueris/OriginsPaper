@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.condition.types.entity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Space;
 import net.minecraft.util.Tuple;
@@ -102,7 +102,7 @@ public class RaycastCondition {
 		return source.level().clip(context);
 	}
 
-	private static EntityHitResult performEntityRaycast(@NotNull Entity source, Vec3 origin, @NotNull Vec3 target, ConditionFactory<Tuple<Entity, Entity>> biEntityCondition) {
+	private static EntityHitResult performEntityRaycast(@NotNull Entity source, Vec3 origin, @NotNull Vec3 target, ConditionTypeFactory<Tuple<Entity, Entity>> biEntityCondition) {
 		Vec3 ray = target.subtract(origin);
 		AABB box = source.getBoundingBox().expandTowards(ray).inflate(1.0D, 1.0D, 1.0D);
 		EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(source, origin, target, box, (entityx) -> {
@@ -111,8 +111,8 @@ public class RaycastCondition {
 		return entityHitResult;
 	}
 
-	public static @NotNull ConditionFactory<Entity> getFactory() {
-		return new ConditionFactory<>(OriginsPaper.apoliIdentifier("raycast"),
+	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+		return new ConditionTypeFactory<>(OriginsPaper.apoliIdentifier("raycast"),
 			SerializableData.serializableData()
 				.add("distance", SerializableDataTypes.DOUBLE, null)
 				.add("block_distance", SerializableDataTypes.DOUBLE, null)

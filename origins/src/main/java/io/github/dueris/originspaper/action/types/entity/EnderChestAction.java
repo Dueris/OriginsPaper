@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.action.types.entity;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.SimpleMenuProvider;
@@ -31,8 +31,8 @@ public class EnderChestAction {
 		player.awardStat(Stats.OPEN_ENDERCHEST);
 	}
 
-	public static @NotNull ActionFactory<Entity> getFactory() {
-		return new ActionFactory<>(OriginsPaper.apoliIdentifier("ender_chest"),
+	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+		return new ActionTypeFactory<>(OriginsPaper.apoliIdentifier("ender_chest"),
 			SerializableData.serializableData(),
 			EnderChestAction::action
 		);

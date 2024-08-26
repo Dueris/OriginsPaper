@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
@@ -18,7 +18,7 @@ import java.util.Objects;
 public class ModifyTypeTagPower extends PowerType {
 	private final TagKey<EntityType<?>> tag;
 
-	public ModifyTypeTagPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
+	public ModifyTypeTagPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
 							  TagKey<EntityType<?>> tag) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.tag = tag;

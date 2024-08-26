@@ -4,7 +4,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.ArgumentWrapper;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
@@ -51,8 +51,8 @@ public class SelectorAction {
 
 	}
 
-	public static @NotNull ActionFactory<Entity> getFactory() {
-		return new ActionFactory<>(
+	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("selector_action"),
 			SerializableData.serializableData()
 				.add("selector", ApoliDataTypes.ENTITIES_SELECTOR)

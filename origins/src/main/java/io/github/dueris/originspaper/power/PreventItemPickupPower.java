@@ -2,8 +2,8 @@ package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import io.github.dueris.originspaper.util.Util;
@@ -19,12 +19,12 @@ import org.jetbrains.annotations.NotNull;
 
 // TODO : track thrower
 public class PreventItemPickupPower extends PowerType {
-	private final ActionFactory<Tuple<Entity, Entity>> biEntityActionItem;
-	private final ActionFactory<Tuple<Level, SlotAccess>> itemAction;
-	private final ConditionFactory<Tuple<Level, ItemStack>> itemCondition;
+	private final ActionTypeFactory<Tuple<Entity, Entity>> biEntityActionItem;
+	private final ActionTypeFactory<Tuple<Level, SlotAccess>> itemAction;
+	private final ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition;
 
-	public PreventItemPickupPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-								  ActionFactory<Tuple<Entity, Entity>> biEntityActionItem, ActionFactory<Tuple<Level, SlotAccess>> itemAction, ConditionFactory<Tuple<Level, ItemStack>> itemCondition) {
+	public PreventItemPickupPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+								  ActionTypeFactory<Tuple<Entity, Entity>> biEntityActionItem, ActionTypeFactory<Tuple<Level, SlotAccess>> itemAction, ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.biEntityActionItem = biEntityActionItem;
 		this.itemAction = itemAction;

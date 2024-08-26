@@ -9,7 +9,7 @@ import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.ReflectionUtils;
 import io.github.dueris.calio.util.holder.ObjectProvider;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.registry.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class MultiplePower extends PowerType {
 	private final List<PowerType> subPowers = new ArrayList<>();
 
-	public MultiplePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority) {
+	public MultiplePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 

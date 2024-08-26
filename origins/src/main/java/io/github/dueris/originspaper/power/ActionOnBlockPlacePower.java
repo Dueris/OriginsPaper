@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.core.BlockPos;
@@ -36,22 +36,22 @@ import org.jetbrains.annotations.NotNull;
 import java.util.EnumSet;
 
 public class ActionOnBlockPlacePower extends PowerType {
-	private final ActionFactory<Entity> entityAction;
-	private final ActionFactory<Triple<Level, BlockPos, Direction>> placeToAction;
-	private final ActionFactory<Triple<Level, BlockPos, Direction>> placeOnAction;
-	private final ConditionFactory<Tuple<Level, ItemStack>> itemCondition;
-	private final ConditionFactory<BlockInWorld> placeToCondition;
-	private final ConditionFactory<BlockInWorld> placeOnCondition;
+	private final ActionTypeFactory<Entity> entityAction;
+	private final ActionTypeFactory<Triple<Level, BlockPos, Direction>> placeToAction;
+	private final ActionTypeFactory<Triple<Level, BlockPos, Direction>> placeOnAction;
+	private final ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition;
+	private final ConditionTypeFactory<BlockInWorld> placeToCondition;
+	private final ConditionTypeFactory<BlockInWorld> placeOnCondition;
 	private final EnumSet<Direction> directions;
 	private final EnumSet<InteractionHand> hands;
 	private final ItemStack resultStack;
-	private final ActionFactory<Tuple<Level, SlotAccess>> resultItemAction;
-	private final ActionFactory<Tuple<Level, SlotAccess>> heldItemAction;
+	private final ActionTypeFactory<Tuple<Level, SlotAccess>> resultItemAction;
+	private final ActionTypeFactory<Tuple<Level, SlotAccess>> heldItemAction;
 
-	public ActionOnBlockPlacePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-								   ActionFactory<Entity> entityAction, ActionFactory<Triple<Level, BlockPos, Direction>> placeToAction, ActionFactory<Triple<Level, BlockPos, Direction>> placeOnAction,
-								   ConditionFactory<Tuple<Level, ItemStack>> itemCondition, ConditionFactory<BlockInWorld> placeToCondition, ConditionFactory<BlockInWorld> placeOnCondition, EnumSet<Direction> directions,
-								   EnumSet<InteractionHand> hands, ItemStack resultStack, ActionFactory<Tuple<Level, SlotAccess>> resultItemAction, ActionFactory<Tuple<Level, SlotAccess>> heldItemAction) {
+	public ActionOnBlockPlacePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+								   ActionTypeFactory<Entity> entityAction, ActionTypeFactory<Triple<Level, BlockPos, Direction>> placeToAction, ActionTypeFactory<Triple<Level, BlockPos, Direction>> placeOnAction,
+								   ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition, ConditionTypeFactory<BlockInWorld> placeToCondition, ConditionTypeFactory<BlockInWorld> placeOnCondition, EnumSet<Direction> directions,
+								   EnumSet<InteractionHand> hands, ItemStack resultStack, ActionTypeFactory<Tuple<Level, SlotAccess>> resultItemAction, ActionTypeFactory<Tuple<Level, SlotAccess>> heldItemAction) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.entityAction = entityAction;
 		this.placeToAction = placeToAction;

@@ -6,10 +6,10 @@ import io.github.dueris.calio.data.AccessorKey;
 import io.github.dueris.calio.parser.ParsingStrategy;
 import io.github.dueris.calio.registry.IRegistry;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
-import io.github.dueris.originspaper.action.Actions;
+import io.github.dueris.originspaper.action.ActionTypes;
 import io.github.dueris.originspaper.command.Commands;
 import io.github.dueris.originspaper.command.OriginCommand;
-import io.github.dueris.originspaper.condition.Conditions;
+import io.github.dueris.originspaper.condition.ConditionTypes;
 import io.github.dueris.originspaper.condition.types.BiEntityConditions;
 import io.github.dueris.originspaper.content.OrbOfOrigins;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -229,8 +229,8 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 				ApoliDataTypes.init();
 				OriginsDataTypes.init();
 				ModifierOperations.registerAll();
-				Conditions.registerAll();
-				Actions.registerAll();
+				ConditionTypes.registerAll();
+				ActionTypes.registerAll();
 				PowerType.registerAll();
 				craftCalio.startBuilder()
 					.withAccessor(new AccessorKey<>(List.of("apoli", "origins"), "power", PowerType.class, 0, ParsingStrategy.TYPED, Registries.CRAFT_POWER))

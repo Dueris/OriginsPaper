@@ -7,7 +7,7 @@ import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.annotations.SourceProvider;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.util.LangFile;
 import net.kyori.adventure.text.TextComponent;
@@ -33,7 +33,7 @@ public class PowerType implements Listener {
 	private final @NotNull TextComponent name;
 	private final @NotNull TextComponent description;
 	private final boolean hidden;
-	private final ConditionFactory<Entity> condition;
+	private final ConditionTypeFactory<Entity> condition;
 	private final int loadingPriority;
 	private final String cachedTagString;
 	private final String cachedTypeString;
@@ -41,7 +41,7 @@ public class PowerType implements Listener {
 	public @SourceProvider JsonObject sourceObject;
 	private boolean hasPlayers = false;
 
-	public PowerType(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority) {
+	public PowerType(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority) {
 		this.key = key;
 		this.cachedTagString = key.toString();
 		this.cachedTypeString = type.toString();
@@ -136,7 +136,7 @@ public class PowerType implements Listener {
 		return hidden;
 	}
 
-	public ConditionFactory<Entity> getCondition() {
+	public ConditionTypeFactory<Entity> getCondition() {
 		return condition;
 	}
 

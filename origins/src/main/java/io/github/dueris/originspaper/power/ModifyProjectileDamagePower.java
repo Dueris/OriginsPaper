@@ -2,8 +2,8 @@ package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
@@ -27,14 +27,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class ModifyProjectileDamagePower extends ModifierPower {
-	private final ActionFactory<Entity> selfAction;
-	private final ActionFactory<Entity> targetAction;
-	private final ConditionFactory<Entity> targetCondition;
-	private final ConditionFactory<Tuple<DamageSource, Float>> damageCondition;
+	private final ActionTypeFactory<Entity> selfAction;
+	private final ActionTypeFactory<Entity> targetAction;
+	private final ConditionTypeFactory<Entity> targetCondition;
+	private final ConditionTypeFactory<Tuple<DamageSource, Float>> damageCondition;
 
-	public ModifyProjectileDamagePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-									   @Nullable Modifier modifier, @Nullable List<Modifier> modifiers, ActionFactory<Entity> selfAction, ActionFactory<Entity> targetAction, ConditionFactory<Entity> targetCondition,
-									   ConditionFactory<Tuple<DamageSource, Float>> damageCondition) {
+	public ModifyProjectileDamagePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+									   @Nullable Modifier modifier, @Nullable List<Modifier> modifiers, ActionTypeFactory<Entity> selfAction, ActionTypeFactory<Entity> targetAction, ConditionTypeFactory<Entity> targetCondition,
+									   ConditionTypeFactory<Tuple<DamageSource, Float>> damageCondition) {
 		super(key, type, name, description, hidden, condition, loadingPriority, modifier, modifiers);
 		this.selfAction = selfAction;
 		this.targetAction = targetAction;

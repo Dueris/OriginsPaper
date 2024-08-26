@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.power;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
 import io.github.dueris.originspaper.util.Util;
@@ -26,7 +26,7 @@ import static org.bukkit.attribute.Attribute.GENERIC_JUMP_STRENGTH;
 public class ModifyJumpPower extends ModifierPower {
 	private final Map<Player, Tuple<Float, Float>> original2Modified = new ConcurrentHashMap<>();
 
-	public ModifyJumpPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
+	public ModifyJumpPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
 						   @Nullable Modifier modifier, @Nullable List<Modifier> modifiers) {
 		super(key, type, name, description, hidden, condition, loadingPriority, modifier, modifiers);
 	}

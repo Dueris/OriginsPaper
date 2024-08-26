@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.action.types;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
-import io.github.dueris.originspaper.action.Actions;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.action.ActionTypes;
 import io.github.dueris.originspaper.action.meta.*;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.origin.OriginLayer;
@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
 
 public class EntityActions {
 
-	public static void register(ActionFactory<Entity> factory) {
+	public static void register(ActionTypeFactory<Entity> factory) {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.ENTITY_ACTION).register(factory, factory.getSerializerId());
 	}
 
@@ -33,7 +33,7 @@ public class EntityActions {
 		register(NothingAction.getFactory());
 		register(SideAction.getFactory(ApoliDataTypes.ENTITY_ACTION, entity -> !entity.level().isClientSide));
 
-		register(new ActionFactory<>(OriginsPaper.apoliIdentifier("grant_power"),
+		register(new ActionTypeFactory<>(OriginsPaper.apoliIdentifier("grant_power"),
 			SerializableData.serializableData()
 				.add("power", SerializableDataTypes.IDENTIFIER)
 				.add("source", SerializableDataTypes.IDENTIFIER),
@@ -48,7 +48,7 @@ public class EntityActions {
 					PowerUtils.grantPower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
 				}
 			}));
-		register(new ActionFactory<>(OriginsPaper.apoliIdentifier("remove_power"),
+		register(new ActionTypeFactory<>(OriginsPaper.apoliIdentifier("remove_power"),
 			SerializableData.serializableData()
 				.add("power", SerializableDataTypes.IDENTIFIER)
 				.add("source", SerializableDataTypes.IDENTIFIER),
@@ -63,7 +63,7 @@ public class EntityActions {
 					PowerUtils.removePower(Bukkit.getConsoleSender(), powerContainer, p, layer, false);
 				}
 			}));
-		register(new ActionFactory<>(OriginsPaper.apoliIdentifier("revoke_all_powers"),
+		register(new ActionTypeFactory<>(OriginsPaper.apoliIdentifier("revoke_all_powers"),
 			SerializableData.serializableData()
 				.add("source", SerializableDataTypes.IDENTIFIER),
 			(data, entity) -> {
@@ -79,7 +79,7 @@ public class EntityActions {
 					}
 				}
 			}));
-		Actions.registerPackage(EntityActions::register, "io.github.dueris.originspaper.action.types.entity");
+		ActionTypes.registerPackage(EntityActions::register, "io.github.dueris.originspaper.action.types.entity");
 	}
 
 }

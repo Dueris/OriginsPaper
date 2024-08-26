@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.condition.types;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
-import io.github.dueris.originspaper.condition.Conditions;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
+import io.github.dueris.originspaper.condition.ConditionTypes;
 import io.github.dueris.originspaper.condition.meta.MetaConditions;
 import io.github.dueris.originspaper.condition.types.multi.DistanceFromCoordinatesConditionRegistry;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -26,7 +26,7 @@ public class EntityConditions {
 
 	public static void registerAll() {
 		MetaConditions.register(Registries.ENTITY_CONDITION, EntityConditions::register);
-		register(new ConditionFactory<>(
+		register(new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("power_type"),
 			SerializableData.serializableData()
 				.add("power_type", SerializableDataTypes.IDENTIFIER),
@@ -40,7 +40,7 @@ public class EntityConditions {
 				return false;
 			}
 		));
-		register(new ConditionFactory<>(
+		register(new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("power"),
 			SerializableData.serializableData()
 				.add("power", SerializableDataTypes.IDENTIFIER),
@@ -49,7 +49,7 @@ public class EntityConditions {
 				return PowerHolderComponent.hasPower(entity.getBukkitEntity(), location.toString());
 			}
 		));
-		register(new ConditionFactory<>(
+		register(new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("origin"),
 			SerializableData.serializableData()
 				.add("origin", SerializableDataTypes.IDENTIFIER),
@@ -58,7 +58,7 @@ public class EntityConditions {
 				return entity.getBukkitEntity() instanceof org.bukkit.entity.Player p && PowerHolderComponent.hasOrigin(p, location.toString());
 			}
 		));
-		register(new ConditionFactory<>(
+		register(new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("power_active"),
 			SerializableData.serializableData()
 				.add("power", SerializableDataTypes.IDENTIFIER),
@@ -69,7 +69,7 @@ public class EntityConditions {
 			}
 		));
 		DistanceFromCoordinatesConditionRegistry.registerEntityCondition(EntityConditions::register);
-		register(new ConditionFactory<>(
+		register(new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("resource"),
 			SerializableData.serializableData()
 				.add("resource", SerializableDataTypes.IDENTIFIER)
@@ -88,10 +88,10 @@ public class EntityConditions {
 			}
 		));
 
-		Conditions.registerPackage(EntityConditions::register, "io.github.dueris.originspaper.condition.types.entity");
+		ConditionTypes.registerPackage(EntityConditions::register, "io.github.dueris.originspaper.condition.types.entity");
 	}
 
-	public static void register(@NotNull ConditionFactory<net.minecraft.world.entity.Entity> factory) {
+	public static void register(@NotNull ConditionTypeFactory<net.minecraft.world.entity.Entity> factory) {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.ENTITY_CONDITION).register(factory, factory.getSerializerId());
 	}
 

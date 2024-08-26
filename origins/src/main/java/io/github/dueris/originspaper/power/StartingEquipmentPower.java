@@ -5,7 +5,7 @@ import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -27,7 +27,7 @@ public class StartingEquipmentPower extends PowerType {
 	private final List<ItemStack> itemStacks = new LinkedList<>();
 	private final HashMap<Integer, ItemStack> slottedStacks = new HashMap<>();
 
-	public StartingEquipmentPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
+	public StartingEquipmentPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
 								  Tuple<Integer, ItemStack> positionedItemStack, List<Tuple<Integer, ItemStack>> positionedItemStacks, boolean recurrent) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.recurrent = recurrent;

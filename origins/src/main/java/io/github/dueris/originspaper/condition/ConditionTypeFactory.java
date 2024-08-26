@@ -11,13 +11,13 @@ import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-public class ConditionFactory<T> implements Factory, Predicate<T> {
+public class ConditionTypeFactory<T> implements Factory, Predicate<T> {
 	protected final BiPredicate<SerializableData.Instance, T> effect;
 	protected final SerializableData data;
 	private final ResourceLocation location;
 	public SerializableData.Instance deserializedFactory = null;
 
-	public ConditionFactory(ResourceLocation location, @NotNull SerializableData data, @NotNull BiPredicate<SerializableData.Instance, T> effect) {
+	public ConditionTypeFactory(ResourceLocation location, @NotNull SerializableData data, @NotNull BiPredicate<SerializableData.Instance, T> effect) {
 		this.location = location;
 		this.data = data.add("inverted", SerializableDataTypes.BOOLEAN, false);
 		this.effect = effect;
@@ -44,11 +44,11 @@ public class ConditionFactory<T> implements Factory, Predicate<T> {
 		return effect.test(deserializedFactory, t);
 	}
 
-	public ConditionFactory<T> copy() {
-		return new ConditionFactory<T>(location, data, effect);
+	public ConditionTypeFactory<T> copy() {
+		return new ConditionTypeFactory<T>(location, data, effect);
 	}
 
-	public ConditionFactory<T> decompile(JsonObject object) {
+	public ConditionTypeFactory<T> decompile(JsonObject object) {
 		this.deserializedFactory = SerializableData.Instance.decompileJsonObject(object, data, "Condition Factory", location.toString(), Optional.of(this.getClass()));
 		if (data.postProcessor != null) {
 			data.postProcessor.accept(deserializedFactory);

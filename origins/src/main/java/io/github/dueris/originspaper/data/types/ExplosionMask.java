@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.data.types;
 
 import com.mojang.datafixers.util.Pair;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -70,7 +70,7 @@ public class ExplosionMask {
 		stacks.add(Pair.of(stack, pos));
 	}
 
-	public ExplosionMask apply(boolean fire, @Nullable ConditionFactory<CraftBlock> indestructible, @Nullable ConditionFactory<CraftBlock> destructible, boolean destroyAfterMask) {
+	public ExplosionMask apply(boolean fire, @Nullable ConditionTypeFactory<CraftBlock> indestructible, @Nullable ConditionTypeFactory<CraftBlock> destructible, boolean destroyAfterMask) {
 		this.explosion.explode(); // Setup explosion stuff -- includes iterator for explosions
 		this.fire = fire;
 		this.blocks = createBlockList(this.explosion.getToBlow(), this.level);

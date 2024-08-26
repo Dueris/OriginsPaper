@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import io.github.dueris.originspaper.mixin.ItemEnchantmentsMixin;
@@ -27,10 +27,10 @@ import java.util.List;
 
 public class ModifyEnchantmentLevelPower extends ModifierPower {
 	private final ResourceKey<Enchantment> enchantment;
-	private final ConditionFactory<Tuple<Level, ItemStack>> itemCondition;
+	private final ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition;
 
-	public ModifyEnchantmentLevelPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-									   @Nullable Modifier modifier, @Nullable List<Modifier> modifiers, ResourceKey<Enchantment> enchantment, ConditionFactory<Tuple<Level, ItemStack>> itemCondition) {
+	public ModifyEnchantmentLevelPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+									   @Nullable Modifier modifier, @Nullable List<Modifier> modifiers, ResourceKey<Enchantment> enchantment, ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition) {
 		super(key, type, name, description, hidden, condition, loadingPriority, modifier, modifiers);
 		this.enchantment = enchantment;
 		this.itemCondition = itemCondition;
@@ -56,7 +56,7 @@ public class ModifyEnchantmentLevelPower extends ModifierPower {
 		}
 	}
 
-	public ConditionFactory<Tuple<Level, ItemStack>> getItemCondition() {
+	public ConditionTypeFactory<Tuple<Level, ItemStack>> getItemCondition() {
 		return itemCondition;
 	}
 

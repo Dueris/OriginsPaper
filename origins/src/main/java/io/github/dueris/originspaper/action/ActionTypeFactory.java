@@ -10,13 +10,13 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class ActionFactory<T> implements Factory, Consumer<T> {
+public class ActionTypeFactory<T> implements Factory, Consumer<T> {
 	protected final BiConsumer<SerializableData.Instance, T> effect;
 	protected final SerializableData data;
 	private final ResourceLocation location;
 	public SerializableData.Instance deserializedFactory = null;
 
-	public ActionFactory(ResourceLocation location, SerializableData data, @NotNull BiConsumer<SerializableData.Instance, T> effect) {
+	public ActionTypeFactory(ResourceLocation location, SerializableData data, @NotNull BiConsumer<SerializableData.Instance, T> effect) {
 		this.location = location;
 		this.data = data;
 		this.effect = effect;
@@ -39,11 +39,11 @@ public class ActionFactory<T> implements Factory, Consumer<T> {
 		effect.accept(deserializedFactory, t);
 	}
 
-	public ActionFactory<T> copy() {
-		return new ActionFactory<T>(location, data, effect);
+	public ActionTypeFactory<T> copy() {
+		return new ActionTypeFactory<T>(location, data, effect);
 	}
 
-	public ActionFactory<T> decompile(JsonObject object) {
+	public ActionTypeFactory<T> decompile(JsonObject object) {
 		this.deserializedFactory = SerializableData.Instance.decompileJsonObject(object, data, "Action Factory", location.toString(), Optional.of(this.getClass()));
 		if (data.postProcessor != null) {
 			data.postProcessor.accept(deserializedFactory);

@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.condition.types;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.condition.meta.MetaConditions;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Comparison;
@@ -17,14 +17,14 @@ import org.jetbrains.annotations.NotNull;
 public class BiomeConditions {
 	public static void registerAll() {
 		MetaConditions.register(Registries.BIOME_CONDITION, BiomeConditions::register);
-		register(new ConditionFactory<>(
+		register(new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("high_humidity"),
 			SerializableData.serializableData(),
 			(data, biome) -> {
 				return biome.value().climateSettings.downfall() > 0.85F;
 			}
 		));
-		register(new ConditionFactory<>(
+		register(new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("temperature"),
 			SerializableData.serializableData()
 				.add("comparison", ApoliDataTypes.COMPARISON)
@@ -33,7 +33,7 @@ public class BiomeConditions {
 				return ((Comparison) data.get("comparison")).compare(biome.value().getBaseTemperature(), data.getFloat("compare_to"));
 			}
 		));
-		register(new ConditionFactory<>(
+		register(new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("precipitation"),
 			SerializableData.serializableData()
 				.add("precipitation", SerializableDataTypes.enumValue(Biome.Precipitation.class)),
@@ -41,7 +41,7 @@ public class BiomeConditions {
 				return biome.value().getPrecipitationAt(new BlockPos(0, 64, 0)).equals(data.get("precipitation"));
 			}
 		));
-		register(new ConditionFactory<>(
+		register(new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("in_tag"),
 			SerializableData.serializableData()
 				.add("tag", SerializableDataTypes.BIOME_TAG),
@@ -52,7 +52,7 @@ public class BiomeConditions {
 		));
 	}
 
-	public static void register(@NotNull ConditionFactory<Holder<Biome>> factory) {
+	public static void register(@NotNull ConditionTypeFactory<Holder<Biome>> factory) {
 		OriginsPaper.getPlugin().registry.retrieve(Registries.BIOME_CONDITION).register(factory, factory.getSerializerId());
 	}
 

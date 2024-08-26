@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public class Commands {
 	public static void bootstrap(CommandDispatcher<CommandSourceStack> dispatcher) {
 		OriginCommand.register(dispatcher);
-		PowerCommand.register(dispatcher);
+//		PowerCommand.register(dispatcher); // TODO
 		ResourceCommand.register(dispatcher);
 	}
 

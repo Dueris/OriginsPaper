@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.condition.types.bientity;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
@@ -34,8 +34,8 @@ public class CanSeeCondition {
 
 	}
 
-	public static @NotNull ConditionFactory<Tuple<Entity, Entity>> getFactory() {
-		return new ConditionFactory<>(
+	public static @NotNull ConditionTypeFactory<Tuple<Entity, Entity>> getFactory() {
+		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("can_see"),
 			SerializableData.serializableData()
 				.add("shape_type", SerializableDataTypes.SHAPE_TYPE, ClipContext.Block.VISUAL)

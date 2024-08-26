@@ -14,7 +14,7 @@ import com.mojang.serialization.JsonOps;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.util.ArgumentWrapper;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionFactory;
+import io.github.dueris.originspaper.action.ActionTypeFactory;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.power.PowerType;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -918,7 +918,7 @@ public class Util {
 
 		Consumer<Entity> entityAction = data.get("entity_action");
 		Predicate<Tuple<Level, ItemStack>> itemCondition = data.get("item_condition");
-		ActionFactory<Tuple<ServerLevel, org.bukkit.inventory.ItemStack>> itemAction = data.get("item_action");
+		ActionTypeFactory<Tuple<ServerLevel, org.bukkit.inventory.ItemStack>> itemAction = data.get("item_action");
 
 		int processedItems = 0;
 		slots.removeIf(slot -> slotNotWithinBounds(entity, slot));

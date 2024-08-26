@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.condition.types.entity;
 
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.util.Reflector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,8 +38,8 @@ public class UsingEffectiveToolCondition {
 
 	}
 
-	public static ConditionFactory<Entity> getFactory() {
-		return new ConditionFactory<>(
+	public static ConditionTypeFactory<Entity> getFactory() {
+		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("using_effective_tool"),
 			SerializableData.serializableData(),
 			UsingEffectiveToolCondition::condition

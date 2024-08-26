@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
@@ -30,8 +30,8 @@ public class ParticlePower extends PowerType {
 	private final int frequency;
 	private final boolean visibleWhileInvisible;
 
-	public ParticlePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
-						 ParticleOptions particleEffect, ConditionFactory<Tuple<Entity, Entity>> biEntityCondition, int count, float speed, boolean force, Vec3 spread, double offsetX, double offsetY,
+	public ParticlePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
+						 ParticleOptions particleEffect, ConditionTypeFactory<Tuple<Entity, Entity>> biEntityCondition, int count, float speed, boolean force, Vec3 spread, double offsetX, double offsetY,
 						 double offsetZ, int frequency, boolean visibleWhileInvisible) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.particleEffect = particleEffect;

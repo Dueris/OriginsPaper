@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionFactory;
+import io.github.dueris.originspaper.condition.ConditionTypeFactory;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -42,7 +42,7 @@ public class DamageOverTimePower extends PowerType {
 	private final ConcurrentHashMap<Player, Integer> outTicks = new ConcurrentHashMap<>();
 	private DamageSource damageSource;
 
-	public DamageOverTimePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionFactory<Entity> condition, int loadingPriority,
+	public DamageOverTimePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
 							   int interval, @NotNull Optional<Integer> onsetDelay, float damageAmount, @NotNull Optional<Float> damageAmountEasy, ResourceKey<DamageType> damageType, ResourceKey<Enchantment> protectionEnchantment, float effectiveness) {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 		this.interval = interval;
