@@ -7,7 +7,7 @@ import com.mojang.serialization.JsonOps;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.power.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.nbt.CompoundTag;
@@ -15,30 +15,30 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicReference;
 
-public final class PlayerPowerRepository {
+public final class PlayerPowerRepository extends RepositoryComponent {
 	static final ConcurrentMap<ServerPlayer, PlayerPowerRepository> REPO = new ConcurrentHashMap<>() {
 	};
 	private static final Logger log = LogManager.getLogger(PlayerPowerRepository.class);
-	final Map<OriginLayer, Origin> origins = new ConcurrentHashMap<>();
 	private final ServerPlayer player;
-	private final Map<OriginLayer, Set<PowerType>> appliedPowers = new ConcurrentHashMap<>() {
-	};
 
-	public PlayerPowerRepository(ServerPlayer player) {
+	public PlayerPowerRepository(ServerPlayer player, RepositoryComponent component) {
 		this.player = player;
 	}
 
@@ -46,13 +46,10 @@ public final class PlayerPowerRepository {
 		if (REPO.containsKey(player)) {
 			return REPO.get(player);
 		}
-		REPO.put(player, new PlayerPowerRepository(player));
+		REPO.put(player, new PlayerPowerRepository(player, new RepositoryComponent()));
 		return REPO.get(player);
 	}
 
-	public ServerPlayer player() {
-		return player;
-	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -62,67 +59,39 @@ public final class PlayerPowerRepository {
 		return Objects.equals(this.player, that.player);
 	}
 
-	public void addOrigin(Origin origin, OriginLayer layer) {
-		origins.put(layer, origin);
-	}
-
-	public void removeOrigin(Origin origin, OriginLayer layer) {
-		origins.remove(layer, origin);
-	}
-
-	public void addPower(PowerType type, OriginLayer layer) {
-		if (type == null) return;
-		if (appliedPowers.containsKey(layer)) {
-			appliedPowers.get(layer).add(type);
-			return;
-		}
-		appliedPowers.put(layer, new CopyOnWriteArraySet<>());
-		appliedPowers.get(layer).add(type);
-	}
-
-	public void removePower(PowerType type, OriginLayer layer) {
-		if (type == null) return;
-		if (appliedPowers.containsKey(layer)) {
-			appliedPowers.get(layer).remove(type);
-			return;
-		}
-		appliedPowers.put(layer, new CopyOnWriteArraySet<>());
-		appliedPowers.get(layer).remove(type);
-	}
-
 	@Unmodifiable
 	public @NotNull List<PowerType> getAppliedPowers() {
-		return Util.collapseSet(appliedPowers.values()).stream().filter(Objects::nonNull).toList();
+		return Util.collapseList(repo.values().stream().map(Tuple::getA).toList());
 	}
 
 	@Unmodifiable
 	public @NotNull List<PowerType> getAppliedPowers(OriginLayer layer) {
-		return appliedPowers.getOrDefault(layer, new CopyOnWriteArraySet<>()).stream().filter(Objects::nonNull).toList();
+		return new CopyOnWriteArrayList<>(layer == null ? getAppliedPowers() : repo.get(layer).getA());
 	}
 
-	public synchronized @NotNull CompoundTag serializePowers(@NotNull CompoundTag nbt) {
+	public synchronized @NotNull CompoundTag serializePowers(@NotNull CompoundTag nbt, ServerPlayer player) {
 		if (nbt.contains("PowerRepository")) {
 			nbt.put("PowerRepository", new ListTag());
 		}
 
 		ListTag repository = nbt.getList("PowerRepository", 10);
-		for (OriginLayer layer : this.appliedPowers.keySet()) {
+		for (OriginLayer layer : this.repo.keySet()) {
 			CompoundTag tag = new CompoundTag();
 			tag.putString("Layer", layer.getTag());
 
 			ListTag powers = new ListTag();
-			for (PowerType type : this.appliedPowers.get(layer)) {
+			for (PowerType type : this.repo.get(layer).getA()) {
 				if (type == null) continue;
 				CompoundTag powerTag = new CompoundTag();
 				powerTag.put("Power", StringTag.valueOf(type.getTag()));
-				@Nullable CompoundTag extra = type.saveData();
+				@Nullable CompoundTag extra = type.saveData(player);
 				if (extra != null) {
 					powerTag.merge(extra);
 				}
 				powers.add(powerTag);
 			}
 			tag.put("Powers", powers);
-			tag.putString("Origin", origins.getOrDefault(layer, OriginsPaper.EMPTY_ORIGIN).getTag());
+			tag.putString("Origin", this.getOriginOrDefault(Origin.EMPTY, layer).getTag());
 			repository.add(tag);
 		}
 
@@ -130,12 +99,12 @@ public final class PlayerPowerRepository {
 		return nbt;
 	}
 
-	public void readPowers(@Nullable String nbt) {
+	public void readPowers(@Nullable String nbt, ServerPlayer player) {
 		if (nbt == null) throw new IllegalArgumentException("Provided NBT was null!");
-		readPowers(CompoundTag.CODEC.decode(JsonOps.INSTANCE, new Gson().fromJson(nbt, JsonElement.class)).getOrThrow().getFirst());
+		readPowers(CompoundTag.CODEC.decode(JsonOps.INSTANCE, new Gson().fromJson(nbt, JsonElement.class)).getOrThrow().getFirst(), player);
 	}
 
-	public synchronized void readPowers(@NotNull CompoundTag nbt) {
+	public synchronized void readPowers(@NotNull CompoundTag nbt, ServerPlayer player) {
 		if (!nbt.contains("PowerRepository")) return;
 		ListTag repository = nbt.getList("PowerRepository", 10);
 		repository.forEach(layerObject -> {
@@ -149,34 +118,39 @@ public final class PlayerPowerRepository {
 				tag.getList("Powers", 10).forEach(powerTag -> {
 					CompoundTag power = (CompoundTag) powerTag;
 					ResourceLocation powerLocation = ResourceLocation.parse(power.getString("Power"));
-					PowerType powerType = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(powerLocation);
+					PowerType powerType = OriginsPaper.getRegistry().retrieve(Registries.POWER).get(powerLocation);
 					if (powerType == null) {
 						log.error("Stored PowerType not found! ID: {}, skipping power..", powerLocation.toString());
+						return;
 					}
-					powerType.loadFromData(power);
+					powerType.loadFromData(power, player);
 					powerTypes.add(powerType);
 				});
 
-				OriginLayer layer = OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).get(layerLocation);
+				OriginLayer layer = OriginsPaper.getRegistry().retrieve(Registries.LAYER).get(layerLocation);
 				if (layer == null) {
 					log.error("Stored Layer not found! ID: {}, skipping layer..", layerLocation.toString());
 				} else {
-					appliedPowers.put(layer, powerTypes);
-					origins.put(layer, OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).getOptional(originLocation).orElse(OriginsPaper.EMPTY_ORIGIN));
+					for (PowerType type : powerTypes) {
+						this.addPower(type, layer);
+					}
+					this.setOrigin(OriginsPaper.getRegistry().retrieve(Registries.ORIGIN).getOptional(originLocation).orElse(Origin.EMPTY), layer);
 				}
 			} else throw new JsonSyntaxException("Layer value not found in CompoundTag!");
 		});
 
 		// Final check to ensure all layers have a value
-		for (OriginLayer layer : OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values()) {
-			if (!appliedPowers.containsKey(layer)) {
-				appliedPowers.put(layer, new CopyOnWriteArraySet<>());
-			}
-			if (!origins.containsKey(layer)) {
-				origins.put(layer, OriginsPaper.EMPTY_ORIGIN);
+		for (OriginLayer layer : OriginsPaper.getRegistry().retrieve(Registries.LAYER).values()) {
+			if (!this.repo.containsKey(layer)) {
+				this.repo.put(layer, new Tuple<>(new LinkedList<>(), new AtomicReference<>(Origin.EMPTY)));
 			}
 
 		}
 
 	}
+
+	public ServerPlayer player() {
+		return player;
+	}
+
 }

@@ -1,21 +1,45 @@
 package io.github.dueris.originspaper.util;
 
+import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.power.type.CreativeFlightPower;
+import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.screen.GuiTicker;
+import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.server.MinecraftServer;
-import org.bukkit.event.Listener;
+import net.minecraft.world.entity.player.Player;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 
-public class ApoliScheduler implements Listener {
+public class ApoliScheduler {
 	public static ApoliScheduler INSTANCE = new ApoliScheduler();
 	private final Int2ObjectMap<List<Consumer<MinecraftServer>>> taskQueue = new Int2ObjectOpenHashMap<>();
 	private int currentTick = 0;
 
-	public void tick(MinecraftServer m) {
+	public static void tickAsyncScheduler() {
+		for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
+			for (PowerType c : PowerHolderComponent.getPowersApplied(p)) {
+				c.tickAsync(((CraftPlayer) p).getHandle());
+			}
+		}
+
+		for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
+			CreativeFlightPower.tickPlayer(((CraftPlayer) p).getHandle(), null);
+		}
+
+		GuiTicker.tick();
+	}
+
+	public void tick(@NotNull MinecraftServer m) {
 		this.currentTick = m.getTickCount();
 		List<Consumer<MinecraftServer>> runnables = this.taskQueue.remove(this.currentTick);
 		if (runnables != null) for (int i = 0; i < runnables.size(); i++) {
@@ -27,6 +51,8 @@ public class ApoliScheduler implements Listener {
 					this.queue(runnable, ((Repeating) runnable).next);
 			}
 		}
+
+		tick();
 	}
 
 	/**
@@ -36,7 +62,7 @@ public class ApoliScheduler implements Listener {
 	 * @param task the action to perform
 	 */
 	public void queue(Consumer<MinecraftServer> task, int tick) {
-		this.taskQueue.computeIfAbsent(this.currentTick + tick + 1, t -> new ArrayList<>()).add(task);
+		this.taskQueue.computeIfAbsent(this.currentTick + tick + 1, t -> new LinkedList<>()).add(task);
 	}
 
 	/**
@@ -79,6 +105,43 @@ public class ApoliScheduler implements Listener {
 				return this.remaining-- > 0;
 			}
 		}, tick, interval);
+	}
+
+	public String toString() {
+		return "OriginSchedulerTree$run()";
+	}
+
+	public void tick() {
+		for (PowerType power : OriginsPaper.getRegistry().retrieve(Registries.POWER).values()) {
+			power.tick();
+			if (power.hasPlayers()) {
+				for (Player p : power.getPlayers()) {
+					if (Bukkit.getServer().getCurrentTick() % 20 == 0) {
+						PowerHolderComponent.checkForDuplicates((CraftPlayer) p.getBukkitEntity());
+					}
+
+					try {
+						if (power.shouldTick()) {
+							power.tick(p);
+						}
+					} catch (Throwable var8) {
+						String[] stacktrace = new String[]{"\n"};
+						Arrays.stream(var8.getStackTrace())
+							.map(StackTraceElement::toString)
+							.forEach(string -> stacktrace[0] = stacktrace[0] + "\tat " + string + "\n");
+						OriginsPaper.LOGGER
+							.error("An unhandled exception occurred when ticking a Power! [{}]", var8.getClass().getSimpleName());
+						String t = power.getType();
+						if (t == null) {
+							t = power.getId().toString();
+						}
+
+						OriginsPaper.LOGGER
+							.error("Player: {} | Power: {} | CraftPower: {} | Throwable: {} {}", p.getName(), power.getTag(), t, var8.getMessage() == null ? var8.getClass().getSimpleName() : var8.getMessage(), stacktrace[0]);
+					}
+				}
+			}
+		}
 	}
 
 	private static final class Repeating implements Consumer<MinecraftServer> {

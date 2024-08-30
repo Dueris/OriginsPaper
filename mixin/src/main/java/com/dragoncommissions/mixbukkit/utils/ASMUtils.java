@@ -62,6 +62,35 @@ public class ASMUtils {
 		return out.toString();
 	}
 
+	public static String getFieldDescriptor(Class<?> fieldType) {
+		return toDescriptorTypeName(fieldType);
+	}
+
+	private static String toDescriptorTypeName(Class<?> type) {
+		if (type.isArray()) {
+			return '[' + toDescriptorTypeName(type.getComponentType());
+		} else if (type == void.class) {
+			return "V";
+		} else if (type == boolean.class) {
+			return "Z";
+		} else if (type == byte.class) {
+			return "B";
+		} else if (type == char.class) {
+			return "C";
+		} else if (type == double.class) {
+			return "D";
+		} else if (type == float.class) {
+			return "F";
+		} else if (type == int.class) {
+			return "I";
+		} else if (type == long.class) {
+			return "J";
+		} else if (type == short.class) {
+			return "S";
+		} else {
+			return 'L' + type.getName().replace('.', '/') + ';';
+		}
+	}
 
 	@SneakyThrows
 	public static AbstractInsnNode loadVar(Class<?> type, int varNumber) {
@@ -140,7 +169,7 @@ public class ASMUtils {
 
 		if (MixBukkit.WRITE_TRANSFORMED_CLASS) {
 			try {
-				Path mixinOut = Paths.get("cache/mixin/output");
+				Path mixinOut = Paths.get("cache/mixins/output");
 				if (!mixinOut.toFile().exists()) {
 					mixinOut.toFile().mkdirs();
 				}

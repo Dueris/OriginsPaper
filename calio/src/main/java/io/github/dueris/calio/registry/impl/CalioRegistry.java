@@ -7,11 +7,12 @@ import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.exceptions.AlreadyRegisteredException;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 @SuppressWarnings("unchecked")
 public class CalioRegistry implements IRegistry {
 	public static final CalioRegistry INSTANCE = new CalioRegistry();
-	private final HashMap<RegistryKey<?>, Registrar<?>> registry = new HashMap<>();
+	private final HashMap<RegistryKey<?>, Registrar<?>> registry = new LinkedHashMap<>();
 
 	public void freezeAll() {
 		this.registry.values().forEach(Registrar::freeze);

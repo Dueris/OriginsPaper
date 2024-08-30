@@ -15,9 +15,10 @@
 package io.github.dueris.originspaper.util;
 
 import io.github.dueris.originspaper.origin.Origin;
-import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import io.github.dueris.originspaper.storage.PlayerPowerRepository;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,7 +40,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPOutputStream;
 
-import static io.github.dueris.originspaper.OriginsPaper.metrics;
+import static io.github.dueris.originspaper.plugin.OriginsPlugin.metrics;
 
 public class BstatsMetrics {
 
@@ -105,7 +106,7 @@ public class BstatsMetrics {
 	}
 
 	public static void originPopularity(Player p) {
-		for (Origin origin : PowerHolderComponent.getOrigin(p).values()) {
+		for (Origin origin : PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) p).getHandle()).getAllOrigins()) {
 			metrics.addCustomChart(new BstatsMetrics.DrilldownPie("originPopularity", () -> {
 				Map<String, Map<String, Integer>> map = new HashMap<>();
 				Map<String, Integer> entry = new HashMap<>();

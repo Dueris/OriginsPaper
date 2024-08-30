@@ -3,10 +3,13 @@ package io.github.dueris.originspaper.screen;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.content.OrbOfOrigins;
 import io.github.dueris.originspaper.event.OrbInteractEvent;
+import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.storage.OriginComponent;
 import io.github.dueris.originspaper.storage.OriginConfiguration;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import io.github.dueris.originspaper.util.ApoliScheduler;
 import io.github.dueris.originspaper.util.Util;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -33,8 +36,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -44,11 +47,11 @@ public class ScreenNavigator implements Listener {
 	public static final ItemStack NEXT_ITEMSTACK;
 	public static final ItemStack BACK_ITEMSTACK;
 	public static HashMap<Player, OriginLayer> inChoosingLayer = new HashMap<>();
-	public static ArrayList<Player> orbChoosing = new ArrayList<>();
+	public static LinkedList<Player> orbChoosing = new LinkedList<>();
 	public static HashMap<OriginLayer, List<ChoosingPage>> layerPages = new HashMap<>();
 	public static Object2IntMap<Player> currentDisplayingPage = new Object2IntOpenHashMap();
 	public static HashMap<ItemStack, BiConsumer<Player, OriginLayer>> itemActions = new HashMap<>();
-	public static ArrayList<HumanEntity> tickCooldown = new ArrayList<>();
+	public static LinkedList<HumanEntity> tickCooldown = new LinkedList<>();
 
 	static {
 		ItemStack next = new ItemStack(Material.ARROW);
@@ -107,7 +110,9 @@ public class ScreenNavigator implements Listener {
 			)
 		);
 		gui.setContents(layerPages.get(layer).get(currentDisplayingPage.getInt(player)).createDisplay(player, layer));
-		OriginsPaper.scheduler.parent.scheduleMainThreadCall(() -> player.getBukkitEntity().openInventory(gui));
+		ApoliScheduler.INSTANCE.queue((m) -> {
+			player.getBukkitEntity().openInventory(gui);
+		}, 1);
 	}
 
 	public static void open(org.bukkit.entity.Player player, OriginLayer layer, boolean inOrbChoosing) {
@@ -190,9 +195,9 @@ public class ScreenNavigator implements Listener {
 						if (!((CraftPlayer) p).getHandle().getAbilities().instabuild) {
 							Util.consumeItem(e.getItem());
 						}
-						OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values().forEach(layer -> {
-							PowerHolderComponent.unloadPowers(p, layer);
-							PowerHolderComponent.setOrigin(p, layer, OriginsPaper.EMPTY_ORIGIN);
+						OriginsPaper.getRegistry().retrieve(Registries.LAYER).values().forEach(layer -> {
+							PowerHolderComponent.unloadPowers(p, layer, true);
+							OriginComponent.setOrigin(p, layer, Origin.EMPTY);
 						});
 						OrbInteractEvent event = new OrbInteractEvent(p);
 						getServer().getPluginManager().callEvent(event);

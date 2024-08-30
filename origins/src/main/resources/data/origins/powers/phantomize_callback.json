@@ -1,0 +1,16 @@
+{
+	"type": "origins:action_on_callback",
+	"entity_action_respawned": {
+		"type": "origins:if_else",
+		"condition": {
+			"type": "origins:power_active",
+			"power": "origins:phantomize",
+			"inverted": true
+		},
+		"if_action": {
+			"type": "origins:toggle",
+			"power": "origins:phantomize"
+		}
+	},
+	"hidden": true
+}

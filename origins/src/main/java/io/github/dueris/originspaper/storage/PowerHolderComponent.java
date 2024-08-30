@@ -1,21 +1,14 @@
 package io.github.dueris.originspaper.storage;
 
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.event.OriginChangeEvent;
 import io.github.dueris.originspaper.event.PowerUpdateEvent;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.power.MultiplePower;
-import io.github.dueris.originspaper.power.PowerType;
-import io.github.dueris.originspaper.registry.Registries;
-import io.github.dueris.originspaper.screen.ScreenNavigator;
-import io.github.dueris.originspaper.util.BstatsMetrics;
+import io.github.dueris.originspaper.power.type.MultiplePower;
+import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.util.entity.PowerUtils;
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -23,61 +16,26 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 
 public class PowerHolderComponent implements Listener {
-	public static ArrayList<Player> currentSprintingPlayersFallback = new ArrayList<>();
+	public static LinkedList<Player> currentSprintingPlayersFallback = new LinkedList<>();
 
 	private static ServerPlayer getNMS(Player player) {
 		return ((CraftPlayer) player).getHandle();
-	}
-
-	public static void moveEquipmentInventory(@NotNull Player player, EquipmentSlot equipmentSlot) {
-		ItemStack item = player.getInventory().getItem(equipmentSlot);
-		if (item != null && item.getType() != Material.AIR) {
-			int emptySlot = player.getInventory().firstEmpty();
-			if (emptySlot != -1) {
-				player.getInventory().setItem(equipmentSlot, null);
-				player.getInventory().setItem(emptySlot, item);
-			} else {
-				player.getWorld().dropItem(player.getLocation(), item);
-				player.getInventory().setItem(equipmentSlot, null);
-			}
-		}
-	}
-
-	public static boolean hasOrigin(Player player, String originTag) {
-		Origin origin = OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(ResourceLocation.parse(originTag));
-		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).origins.containsValue(origin);
-	}
-
-	public static Origin getOrigin(Player player, OriginLayer layer) {
-		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).origins.getOrDefault(layer, OriginsPaper.EMPTY_ORIGIN);
-	}
-
-	public static Map<OriginLayer, Origin> getOrigin(Player player) {
-		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).origins;
 	}
 
 	@Unmodifiable
 	public static <T extends PowerType> @NotNull List<T> getPowers(Entity entity, Class<T> typeOf) {
 		if (!(entity instanceof Player player)) return List.of();
 		return getPowers(player, (powerType) -> powerType.getClass().equals(typeOf));
-	}
-
-	@Unmodifiable
-	public static @NotNull List<PowerType> getPowers(Player p, String typeOf) {
-		return getPowers(p, (powerType) -> powerType.getType().equalsIgnoreCase(typeOf));
 	}
 
 	@Unmodifiable
@@ -90,25 +48,43 @@ public class PowerHolderComponent implements Listener {
 
 	@Unmodifiable
 	public static @NotNull List<PowerType> getPowers(Entity p) {
-		if (!(p instanceof Player player)) return new ArrayList<>();
+		if (!(p instanceof Player player)) return new LinkedList<>();
 		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers();
 	}
 
 	@Unmodifiable
 	public static @NotNull List<PowerType> getPowers(Entity p, OriginLayer layer) {
-		if (!(p instanceof Player player)) return new ArrayList<>();
+		if (!(p instanceof Player player)) return new LinkedList<>();
 		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers(layer);
 	}
 
-	public static @Nullable PowerType getPower(Entity p, String powerKey) {
+	public static @Nullable PowerType getPower(Entity p, ResourceLocation powerKey) {
 		if (!(p instanceof Player player)) return null;
 		return (PowerType) getPowers(player, (powerType) -> {
-			return powerType.getTag().equalsIgnoreCase(powerKey);
+			return powerType.getTag().equalsIgnoreCase(powerKey.toString());
 		}).stream().findFirst().orElse(null);
 	}
 
-	public static @NotNull ArrayList<PowerType> getNestedPowerTypes(PowerType power) {
-		ArrayList<PowerType> nested = new ArrayList<>();
+	public static @NotNull List<PowerType> getPowersFromSource(OriginLayer layer, Entity entity) {
+		if (!(entity instanceof Player player)) return new LinkedList<>();
+		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers(layer);
+	}
+
+	/**
+	 * @return the power and all nested powers if its a multiple power instance
+	 */
+	public static @NotNull LinkedList<PowerType> getAllPowers(ResourceLocation location) {
+		PowerType source = OriginsPaper.getPower(location);
+		LinkedList<PowerType> powers = new LinkedList<>(List.of(source));
+		if (source instanceof MultiplePower) {
+			powers.addAll(getNestedPowerTypes(source));
+		}
+
+		return powers;
+	}
+
+	public static @NotNull LinkedList<PowerType> getNestedPowerTypes(PowerType power) {
+		LinkedList<PowerType> nested = new LinkedList<>();
 		if (power != null) {
 			if (power instanceof MultiplePower multiple) {
 				nested.addAll(multiple.getSubPowers());
@@ -124,99 +100,66 @@ public class PowerHolderComponent implements Listener {
 			.stream().map(PowerType::getTag).toList().contains(powerKey);
 	}
 
+	public static boolean hasPower(Entity p, PowerType type) {
+		if (!(p instanceof Player player)) return false;
+		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers().contains(type);
+	}
+
+	public static boolean hasPowerType(Entity p, ResourceLocation typeOf) {
+		if (!(p instanceof Player player)) return false;
+		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers()
+			.stream().map(PowerType::getType).toList().contains(typeOf.toString());
+	}
+
 	public static boolean hasPowerType(Entity p, Class<? extends PowerType> typeOf) {
 		if (!(p instanceof Player player)) return false;
 		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers()
 			.stream().map(PowerType::getClass).toList().contains(typeOf);
 	}
 
-	public static void setOrigin(final @NotNull Entity entity, final OriginLayer layer, final Origin origin) {
-		if (!(entity instanceof Player player)) return;
-		Map<OriginLayer, Origin> origins = getOrigin(player);
-		if (OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values().contains(layer)) {
-			if (!origin.getTag().equals(OriginsPaper.EMPTY_ORIGIN.getTag())) {
-				unloadPowers(player, layer);
-			}
-
-			for (OriginLayer layers : origins.keySet()) {
-				if (layer.getTag().equals(layers.getTag())) {
-					origins.replace(layers, origin);
-				}
-			}
-
-			String originTag = origin.getTag();
-			if (!originTag.equals(OriginsPaper.EMPTY_ORIGIN.getTag())) {
-				BstatsMetrics.originPopularity(player);
-			}
-
-			PlayerPowerRepository repository = PlayerPowerRepository.getOrCreateRepo(getNMS(player));
-			for (ResourceLocation power : origin.powers()) {
-				PowerType rootPower = OriginsPaper.getPower(power);
-				if (rootPower == null) {
-					printNotFound(power, origin);
-					continue;
-				}
-				List<PowerType> types = new ArrayList<>(List.of(rootPower));
-				if (rootPower instanceof MultiplePower multiplePower) {
-					types.addAll(multiplePower.getSubPowers());
-				}
-
-				for (PowerType powerType : types) {
-					if (powerType == null) {
-						printNotFound(power, origin);
-						continue;
-					}
-					repository.addPower(powerType, layer);
-				}
-			}
-
-			repository.origins.put(layer, origin);
-
-			PowerHolderComponent.loadPowers(player, layer, true);
-
-			OriginChangeEvent e = new OriginChangeEvent(player, origin, layer, ScreenNavigator.orbChoosing.contains(getNMS(player)));
-			Bukkit.getPluginManager().callEvent(e);
-			ScreenNavigator.inChoosingLayer.remove(getNMS(player));
-		}
-	}
-
-	private static void printNotFound(ResourceLocation location) {
+	protected static void printNotFound(ResourceLocation location) {
 		printNotFound(location, null);
 	}
 
-	private static void printNotFound(@NotNull ResourceLocation location, @Nullable Origin origin) {
-		OriginsPaper.getPlugin().getLog4JLogger().error("Specified PowerType '{}'{} was not found in the registry.", location.toString(),
+	protected static void printNotFound(@NotNull ResourceLocation location, @Nullable Origin origin) {
+		OriginsPaper.LOGGER.error("Specified PowerType '{}'{} was not found in the registry.", location.toString(),
 			origin == null ? "" : " in Origin '{}'".replace("{}", origin.getTag()));
 	}
 
-	public static List<PowerType> getPowersApplied(Player p) {
+	public static @NotNull @Unmodifiable List<PowerType> getPowersApplied(Player p) {
 		return PlayerPowerRepository.getOrCreateRepo(getNMS(p)).getAppliedPowers();
 	}
 
 	public static void checkForDuplicates(Player p) {
-		List<ResourceLocation> keys = new ArrayList<>();
-		List<PowerType> duplicates = new ArrayList<>();
+		PlayerPowerRepository repo = PlayerPowerRepository.getOrCreateRepo(getNMS(p));
 
-		for (PowerType power : getPowersApplied(p)) {
-			if (keys.contains(power.key())) {
-				duplicates.add(power);
-			} else {
-				keys.add(power.key());
+		for (OriginLayer layer : OriginComponent.getLayers(p)) {
+			List<ResourceLocation> keys = new LinkedList<>();
+			List<PowerType> duplicates = new LinkedList<>();
+
+			for (PowerType power : getPowersFromSource(layer, p)) {
+				if (keys.contains(power.getId())) {
+					duplicates.add(power);
+				} else {
+					keys.add(power.getId());
+				}
 			}
-		}
 
-		duplicates.forEach(powerx -> getPowersApplied(p).remove(powerx));
+			duplicates.forEach(powerx -> {
+				repo.removePower(powerx, layer);
+			});
+		}
 	}
 
 	public static boolean isOfType(@NotNull PowerType type, Class<? extends PowerType> typeOf) {
 		return type.getClass().equals(typeOf);
 	}
 
-	public static void loadPower(Player player, PowerType power, OriginLayer layer, boolean suppress) {
-		loadPower(player, power, layer, suppress, false);
+	public static void loadPower(Player player, PowerType power, OriginLayer layer) {
+		loadPower(player, power, layer, false);
 	}
 
-	public static void loadPower(Player player, PowerType power, OriginLayer layer, boolean suppress, boolean isNew) {
+	public static void loadPower(Player player, PowerType power, OriginLayer layer, boolean isNew) {
 		if (power != null) {
 			power.forPlayer(((CraftPlayer) player).getHandle());
 			PlayerPowerRepository.getOrCreateRepo(getNMS(player)).addPower(power, layer);
@@ -225,57 +168,51 @@ public class PowerHolderComponent implements Listener {
 				power.onAdded(((CraftPlayer) player).getHandle());
 			}
 			PowerUtils.markGained(power, player);
-			if (!suppress) {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
-			}
 
 			new PowerUpdateEvent(player, power, false, isNew).callEvent();
 		}
 	}
 
-	public static void unloadPower(Player player, PowerType power, OriginLayer layer, boolean suppress) {
-		unloadPower(player, power, layer, suppress, false);
+	public static void unloadPower(Player player, PowerType power, OriginLayer layer) {
+		unloadPower(player, power, layer, false);
 	}
 
-	public static void unloadPower(Player player, PowerType power, OriginLayer layer, boolean suppress, boolean isNew) {
+	public static void unloadPower(Player player, PowerType power, OriginLayer layer, boolean isNew) {
 		if (power != null) {
 			if (isNew) {
 				power.onRemoved(((CraftPlayer) player).getHandle());
 			}
 			PlayerPowerRepository.getOrCreateRepo(getNMS(player)).removePower(power, layer);
 			power.removePlayer(((CraftPlayer) player).getHandle());
-			if (!suppress) {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
-			}
 
 			new PowerUpdateEvent(player, power, true, isNew).callEvent();
 		}
 	}
 
 	public static void unloadPowers(@NotNull Player player) {
-		Map<OriginLayer, Origin> origins = getOrigin(player);
-
-		for (OriginLayer layer : origins.keySet()) {
+		for (OriginLayer layer : OriginComponent.getLayers(player)) {
 			unloadPowers(player, layer);
 		}
 	}
 
 	public static void loadPowers(@NotNull Player player) {
-		Map<OriginLayer, Origin> origins = getOrigin(player);
-
-		for (OriginLayer layer : origins.keySet()) {
+		for (OriginLayer layer : OriginComponent.getLayers(player)) {
 			loadPowers(player, layer);
 		}
 	}
 
 	public static void unloadPowers(@NotNull Player player, OriginLayer layer) {
+		unloadPowers(player, layer, false);
+	}
+
+	public static void unloadPowers(@NotNull Player player, OriginLayer layer, boolean isNew) {
 		if (layer == null) {
-			OriginsPaper.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
+			OriginsPaper.LOGGER.error("Provided layer was null! Was it removed? Skipping power application...");
 			return;
 		}
 
 		for (PowerType power : PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers(layer)) {
-			unloadPower(player, power, layer, false);
+			unloadPower(player, power, layer, isNew);
 		}
 	}
 
@@ -285,17 +222,17 @@ public class PowerHolderComponent implements Listener {
 
 	public static void loadPowers(@NotNull Player player, OriginLayer layer, boolean isNew) {
 		if (layer == null) {
-			OriginsPaper.getPlugin().getLogger().severe("Provided layer was null! Was it removed? Skipping power application...");
+			OriginsPaper.LOGGER.error("Provided layer was null! Was it removed? Skipping power application...");
 			return;
 		}
 
 		for (PowerType power : PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers(layer)) {
-			loadPower(player, power, layer, false, isNew);
+			loadPower(player, power, layer, isNew);
 		}
 	}
 
-	public static <T extends PowerType> List<T> gatherConditionedPowers(Entity p, Class<T> type, Predicate<T> predicate) {
-		ArrayList<T> powers = new ArrayList<>();
+	public static <T extends PowerType> @NotNull List<T> gatherConditionedPowers(Entity p, Class<T> type, Predicate<T> predicate) {
+		LinkedList<T> powers = new LinkedList<>();
 		if (hasPowerType(p, type)) {
 			for (T power : getPowers(p, type)) {
 				if (predicate.test(power)) {
@@ -316,6 +253,21 @@ public class PowerHolderComponent implements Listener {
 			}
 		}
 		return pass;
+	}
+
+	public static @NotNull List<ResourceLocation> getSources(PowerType power, Entity entity) {
+		if (!(entity instanceof Player player)) return new LinkedList<>();
+		List<ResourceLocation> locations = new LinkedList<>();
+
+		PlayerPowerRepository repo = PlayerPowerRepository.getOrCreateRepo(getNMS(player));
+		for (OriginLayer layer : repo.getLayers()) {
+
+			if (repo.getAppliedPowers(layer).contains(power)) {
+				locations.add(layer.getId());
+			}
+		}
+
+		return locations;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

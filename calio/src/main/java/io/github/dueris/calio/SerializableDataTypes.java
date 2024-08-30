@@ -13,9 +13,9 @@ import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.PrimitiveCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.data.exceptions.DataException;
-import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.github.dueris.calio.util.ArgumentWrapper;
@@ -268,7 +268,7 @@ public class SerializableDataTypes {
 					}
 				}
 			};
-			List<Ingredient.Value> entries = new ArrayList<>();
+			List<Ingredient.Value> entries = new LinkedList<>();
 			if (jsonElement.isJsonObject()) {
 				initValues.accept(jsonElement.getAsJsonObject(), entries);
 			} else if (jsonElement.isJsonArray()) {
@@ -376,7 +376,7 @@ public class SerializableDataTypes {
 				jo, FoodProperties.class
 			);
 
-			List<FoodProperties.PossibleEffect> effects = new ArrayList<>();
+			List<FoodProperties.PossibleEffect> effects = new LinkedList<>();
 
 			data.<FoodProperties.PossibleEffect>ifPresent("effect", effects::add);
 			data.<List<FoodProperties.PossibleEffect>>ifPresent("effects", effects::addAll);

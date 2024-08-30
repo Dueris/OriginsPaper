@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -17,7 +17,7 @@ public class JsonObjectRemapper {
 	 * For hooking into where type aliases get checked and then returned
 	 * The Tuple provided will be <ORIGINAL, FILE_TAG>
 	 */
-	public static List<Tuple<String, Consumer<Tuple<String, ResourceLocation>>>> PRE_REMAP_HOOK = new ArrayList<>();
+	public static List<Tuple<String, Consumer<Tuple<String, ResourceLocation>>>> PRE_REMAP_HOOK = new LinkedList<>();
 	private final List<Tuple<String, String>> namespaceRemappings;
 	private final List<Tuple<String, String>> typeAliases;
 	private final List<String> aliasKeys;

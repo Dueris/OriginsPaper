@@ -1,9 +1,7 @@
 package io.github.dueris.originspaper.storage;
 
-import io.github.dueris.originspaper.OriginsPaper;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -17,13 +15,13 @@ public class OriginConfiguration {
 	private static File orb;
 
 	public static void load() throws IOException {
-		JavaPlugin plugin = OriginsPaper.getPlugin();
-		if (!plugin.getDataFolder().exists()) {
-			plugin.getDataFolder().mkdirs();
+		File dataFolder = new File("plugins/OriginsPaper/");
+		if (!dataFolder.exists()) {
+			dataFolder.mkdirs();
 		}
 
-		File orbFile = fillFile("orb-of-origin.yml", new File(plugin.getDataFolder(), "orb-of-origin.yml"));
-		File originServer = fillFile("origin-server.yml", new File(plugin.getDataFolder(), "origin-server.yml"));
+		File orbFile = fillFile("orb-of-origin.yml", new File(dataFolder, "orb-of-origin.yml"));
+		File originServer = fillFile("origin-server.yml", new File(dataFolder, "origin-server.yml"));
 		server = originServer;
 		orb = orbFile;
 		if (getConfiguration() == null) {

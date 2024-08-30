@@ -1,14 +1,19 @@
 package io.github.dueris.originspaper.origin;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.SerializableData;
+import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.parser.RootResult;
+import io.github.dueris.calio.util.Util;
 import io.github.dueris.calio.util.holder.TriPair;
 import io.github.dueris.originspaper.data.OriginsDataTypes;
 import io.github.dueris.originspaper.data.types.Impact;
 import io.github.dueris.originspaper.data.types.OriginUpgrade;
 import io.github.dueris.originspaper.util.AsyncUpgradeTracker;
+import io.github.dueris.originspaper.util.ComponentUtil;
 import io.github.dueris.originspaper.util.LangFile;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -21,6 +26,23 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Origin {
+	public static Origin EMPTY;
+	public static SerializableDataBuilder<RootResult<Origin>> DATA = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			if (!(jsonElement instanceof JsonObject jo)) {
+				throw new JsonSyntaxException("Expected JsonObject for root 'Origin'");
+			}
+
+			try {
+				SerializableData.Instance compound = SerializableDataBuilder.compound(getFactory(), jo, Origin.class);
+				return new RootResult<>(
+					Util.generateConstructor(Origin.class, getFactory()), compound
+				);
+			} catch (NoSuchMethodException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}, Origin.class
+	);
 	private final List<ResourceLocation> powers;
 	private final net.minecraft.world.item.ItemStack icon;
 	private final boolean unchoosable;
@@ -45,17 +67,17 @@ public class Origin {
 		if (upgrade != null) {
 			AsyncUpgradeTracker.upgrades.put(this, new TriPair<>(upgrade.advancementCondition(), upgrade.upgradeToOrigin(), upgrade.announcement()));
 		}
-		this.name = Component.text(
-			LangFile.transform((name != null ? name.getString() : "origin.$namespace.$path.name")
+		this.name = ComponentUtil.nmsToKyori(
+			LangFile.translatable((name != null ? name.getString() : "origin.$namespace.$path.name")
 				.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
 		);
-		this.description = Component.text(
-			LangFile.transform((description != null ? description.getString() : "origin.$namespace.$path.description")
+		this.description = ComponentUtil.nmsToKyori(
+			LangFile.translatable((description != null ? description.getString() : "origin.$namespace.$path.description")
 				.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
 		);
 	}
 
-	public static SerializableData buildFactory() {
+	public static SerializableData getFactory() {
 		return SerializableData.serializableData()
 			.add("powers", SerializableDataTypes.list(SerializableDataTypes.IDENTIFIER), new LinkedList<>())
 			.add("icon", SerializableDataTypes.ITEM_STACK, Items.PLAYER_HEAD.getDefaultInstance())
@@ -96,15 +118,15 @@ public class Origin {
 		return loadingPriority;
 	}
 
-	public TextComponent name() {
+	public TextComponent getName() {
 		return name;
 	}
 
-	public TextComponent description() {
+	public TextComponent getDescription() {
 		return description;
 	}
 
-	public @NotNull ResourceLocation key() {
+	public @NotNull ResourceLocation getId() {
 		return key;
 	}
 

@@ -27,11 +27,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class KeybindUtil implements Listener {
-	public static HashMap<Player, ArrayList<String>> activeKeys = new HashMap<>();
+	public static HashMap<Player, LinkedList<String>> activeKeys = new HashMap<>();
 
 	private static void clearOldData(Player player) {
 		for (ItemStack itemStack : player.getInventory().getContents().clone()) {
@@ -81,7 +81,7 @@ public class KeybindUtil implements Listener {
 	}
 
 	private static void triggerActiveKey(Player player, String key) {
-		activeKeys.putIfAbsent(player, new ArrayList<>());
+		activeKeys.putIfAbsent(player, new LinkedList<>());
 		activeKeys.get(player).add(key);
 		new BukkitRunnable() {
 			@Override
@@ -94,7 +94,7 @@ public class KeybindUtil implements Listener {
 	// Keybind triggers end
 
 	public static boolean isKeyActive(String key, Player player) {
-		activeKeys.putIfAbsent(player, new ArrayList<>());
+		activeKeys.putIfAbsent(player, new LinkedList<>());
 		return activeKeys.get(player).contains(key);
 	}
 

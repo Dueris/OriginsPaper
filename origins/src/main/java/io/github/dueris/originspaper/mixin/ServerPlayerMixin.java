@@ -3,8 +3,9 @@ package io.github.dueris.originspaper.mixin;
 import com.destroystokyo.paper.event.player.PlayerSetSpawnEvent;
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
 import com.mojang.datafixers.util.Either;
-import io.github.dueris.originspaper.power.PreventSleepPower;
+import io.github.dueris.originspaper.power.type.PreventSleepPower;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import io.github.dueris.originspaper.util.LangFile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -12,7 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import static io.github.dueris.originspaper.mixin.EntityTypeMixin.PLAYER_TAG_TIE;
 
@@ -27,7 +28,7 @@ public class ServerPlayerMixin {
 			return p.doesPrevent(player.level(), blockposition);
 		})) {
 			prevent = true;
-			Component component = power.getMessage();
+			Component component = LangFile.translatable(power.getMessage().getString());
 
 			if (power.doesAllowSpawnPoint() && !respawnSet) {
 				player.setRespawnPosition(player.level().dimension(), blockposition, player.getYRot(), false, true, PlayerSetSpawnEvent.Cause.BED);
@@ -44,9 +45,9 @@ public class ServerPlayerMixin {
 	}
 
 	@Inject(method = "tick", locator = At.Value.HEAD)
-	public static void apoli$modifyTypeTagUpdater(ServerPlayer player, CallbackInfo info) {
+	public static void apoli$modifyTypeTagUpdater(@NotNull ServerPlayer player, CallbackInfo info) {
 		if (!PLAYER_TAG_TIE.containsKey(player.getType())) {
-			PLAYER_TAG_TIE.put(player.getType(), new ArrayList<>());
+			PLAYER_TAG_TIE.put(player.getType(), new LinkedList<>());
 			PLAYER_TAG_TIE.get(player.getType()).add(player);
 		} else if (!PLAYER_TAG_TIE.get(player.getType()).contains(player)) {
 			PLAYER_TAG_TIE.get(player.getType()).add(player);

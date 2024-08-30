@@ -15,7 +15,7 @@ val paperweightVersion: String = "1.21-R0.1-SNAPSHOT"
 
 extra["mcMajorVer"] = "21"
 extra["mcMinorVer"] = "1"
-extra["pluginVer"] = "v1.2.1"
+extra["pluginVer"] = "v1.2.2"
 
 val mcMajorVer = extra["mcMajorVer"] as String
 val mcMinorVer = extra["mcMinorVer"] as String
@@ -66,7 +66,8 @@ allprojects {
                 "pluginVer" to pluginVer,
                 "fullVer" to "mc$mcVer-$pluginVer",
                 "apiVer" to "1.$mcMajorVer",
-                "supportedVersions" to listOf("1.21", "1.21.1")
+                "supported" to listOf("1.21", "1.21.1"),
+                "apoli" to "2.12.0-alpha.10+mc.1.21.x"
             )
             inputs.properties(props)
             filesMatching("paper-plugin.yml") {

@@ -1,16 +1,21 @@
 package io.github.dueris.originspaper.origin;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.SerializableData;
+import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.parser.RootResult;
 import io.github.dueris.calio.registry.Registrar;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.ConditionTypeFactory;
+import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.OriginsDataTypes;
 import io.github.dueris.originspaper.data.types.GuiTitle;
 import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.screen.ScreenNavigator;
-import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import io.github.dueris.originspaper.storage.OriginComponent;
+import io.github.dueris.originspaper.util.ComponentUtil;
 import io.github.dueris.originspaper.util.LangFile;
 import io.github.dueris.originspaper.util.Util;
 import net.kyori.adventure.text.TextComponent;
@@ -20,12 +25,27 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
 
 public class OriginLayer {
+	public static SerializableDataBuilder<RootResult<OriginLayer>> DATA = SerializableDataBuilder.of(
+		(jsonElement) -> {
+			if (!(jsonElement instanceof JsonObject jo)) {
+				throw new JsonSyntaxException("Expected JsonObject for root 'OriginLayer'");
+			}
+
+			try {
+				SerializableData.Instance compound = SerializableDataBuilder.compound(getFactory(), jo, OriginLayer.class);
+				return new RootResult<>(
+					io.github.dueris.calio.util.Util.generateConstructor(OriginLayer.class, getFactory()), compound
+				);
+			} catch (NoSuchMethodException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}, OriginLayer.class
+	);
 	private final ResourceLocation key;
 	private final String tag;
 	private final int loadingPriority;
@@ -52,8 +72,8 @@ public class OriginLayer {
 		this.origins = origins;
 		this.replace = replace;
 		this.enabled = enabled;
-		this.name = net.kyori.adventure.text.Component.text(
-			LangFile.transform((name != null ? name.getString() : "origin.$namespace.$path.name")
+		this.name = ComponentUtil.nmsToKyori(
+			LangFile.translatable((name != null ? name.getString() : "origin.$namespace.$path.name")
 				.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
 		);
 		this.guiTitle = guiTitle;
@@ -66,7 +86,7 @@ public class OriginLayer {
 		this.hidden = hidden;
 	}
 
-	public static SerializableData buildFactory() {
+	public static SerializableData getFactory() {
 		return SerializableData.serializableData()
 			.add("order", SerializableDataTypes.INT, Integer.MAX_VALUE)
 			.add("loading_priority", SerializableDataTypes.INT, 0)
@@ -97,7 +117,7 @@ public class OriginLayer {
 	}
 
 	public List<Origin> testChoosable(net.minecraft.world.entity.Entity entity) {
-		List<Origin> tested = new ArrayList<>();
+		List<Origin> tested = new LinkedList<>();
 
 		for (ConditionedOrigin origin : this.getOrigins()) {
 			List<Origin> conditionedOrigins = origin.origins.stream().map(OriginsPaper::getOrigin).toList();
@@ -115,15 +135,15 @@ public class OriginLayer {
 		boolean autoChoose = this.isAutoChoose();
 		if (defaultOrigin == null) return false;
 		if (autoChoose) {
-			PowerHolderComponent.setOrigin(entity.getBukkitEntityRaw(), this, OriginsPaper.getOrigin(defaultOrigin));
+			OriginComponent.setOrigin(entity.getBukkitEntityRaw(), this, OriginsPaper.getOrigin(defaultOrigin));
 			return true;
 		} else if (ScreenNavigator.orbChoosing.contains(entity)) {
 			return false;
 		} else {
-			if (!defaultOrigin.equals(OriginsPaper.EMPTY_ORIGIN.key())) {
-				Origin origin = OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(defaultOrigin);
+			if (!defaultOrigin.equals(Origin.EMPTY.getId())) {
+				Origin origin = OriginsPaper.getRegistry().retrieve(Registries.ORIGIN).get(defaultOrigin);
 				if (origin != null) {
-					PowerHolderComponent.setOrigin(entity.getBukkitEntityRaw(), this, origin);
+					OriginComponent.setOrigin(entity.getBukkitEntityRaw(), this, origin);
 					return true;
 				}
 			}
@@ -137,15 +157,15 @@ public class OriginLayer {
 	}
 
 	public List<Origin> getRandomOrigins() {
-		return !this.isAllowRandom()
-			? new ArrayList<>()
+		return !this.isRandomAllowed()
+			? new LinkedList<>()
 			: getOriginIdentifiers().stream()
 			.map(OriginsPaper::getOrigin)
 			.filter(origin -> !origin.unchoosable() || this.isAllowRandomUnchoosable())
 			.filter(origin -> {
 				if (!this.getExcludeRandom().isEmpty()) {
 					for (ResourceLocation identifier : this.getExcludeRandom().stream().toList()) {
-						if (origin.key().equals(identifier)) {
+						if (origin.getId().equals(identifier)) {
 							return false;
 						}
 					}
@@ -172,7 +192,7 @@ public class OriginLayer {
 		return guiTitle;
 	}
 
-	public boolean isAllowRandom() {
+	public boolean isRandomAllowed() {
 		return allowRandom;
 	}
 
@@ -201,7 +221,7 @@ public class OriginLayer {
 	}
 
 	public boolean canRegister() {
-		Registrar<OriginLayer> registrar = OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER);
+		Registrar<OriginLayer> registrar = OriginsPaper.getRegistry().retrieve(Registries.LAYER);
 		boolean merge = registrar.keySet().contains(this.key);
 		if (merge) {
 			OriginLayer otherLayer = registrar.get(this.key);
@@ -240,7 +260,7 @@ public class OriginLayer {
 		return true;
 	}
 
-	public ResourceLocation key() {
+	public ResourceLocation getId() {
 		return key;
 	}
 
@@ -264,11 +284,6 @@ public class OriginLayer {
 		@Deprecated
 		public ConditionTypeFactory<Entity> getCondition() {
 			return condition;
-		}
-
-		@Deprecated
-		public List<ResourceLocation> getOrigins() {
-			return origins;
 		}
 
 		@Override

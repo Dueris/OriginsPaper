@@ -3,13 +3,16 @@ package io.github.dueris.originspaper.util.entity;
 import io.github.dueris.calio.util.holder.ObjectProvider;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.event.PowerUpdateEvent;
+import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.screen.GuiTicker;
+import io.github.dueris.originspaper.storage.OriginComponent;
 import io.github.dueris.originspaper.storage.OriginConfiguration;
 import io.github.dueris.originspaper.storage.PlayerPowerRepository;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
@@ -24,26 +27,27 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class PlayerManager implements Listener {
-	public static ArrayList<Player> firstJoin = new ArrayList<>();
-	public static ArrayList<Player> playersLeaving = new ArrayList<>();
+	public static LinkedList<Player> firstJoin = new LinkedList<>();
+	public static LinkedList<Player> playersLeaving = new LinkedList<>();
 
 	private static @NotNull NamespacedKey identifier(String id) {
 		return new NamespacedKey(OriginsPaper.getPlugin(), id);
 	}
 
 	@EventHandler(
-		priority = EventPriority.HIGHEST
+		priority = EventPriority.LOWEST
 	)
 	public void playerJoin(@NotNull PlayerJoinEvent e) {
 		final Player p = e.getPlayer();
+		ServerPlayer nms = ((CraftPlayer) p).getHandle();
 		PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) e.getPlayer()).getHandle()).readPowers(
 			p.getPersistentDataContainer().has(identifier("powers")) ? p.getPersistentDataContainer().get(identifier("powers"), PersistentDataType.STRING) : ((ObjectProvider<String>) () -> {
 				firstJoin.add(p);
 				return "{}";
-			}).get()
+			}).get(), nms
 		);
 		PersistentDataContainer data = p.getPersistentDataContainer();
 		if (data.has(identifier("shulker-box"), PersistentDataType.STRING)) {
@@ -89,19 +93,20 @@ public class PlayerManager implements Listener {
 		}).runTaskLater(OriginsPaper.getPlugin(), OriginConfiguration.getConfiguration().getInt("choosing_delay"));
 		OriginLayer originLayer = OriginsPaper.getLayer(ResourceLocation.parse("origins:origin"));
 		if (!p.getPersistentDataContainer().has(identifier("updated"))
-			&& !PowerHolderComponent.getOrigin(p, originLayer).equals(OriginsPaper.EMPTY_ORIGIN)) {
-			PowerHolderComponent.setOrigin(
-				p, originLayer, PowerHolderComponent.getOrigin(p, originLayer)
+			&& !OriginComponent.getOrigin(p, originLayer).equals(Origin.EMPTY)) {
+			OriginComponent.setOrigin(
+				p, originLayer, OriginComponent.getOrigin(p, originLayer)
 			);
 			p.getPersistentDataContainer().set(identifier("updated"), PersistentDataType.BOOLEAN, true);
 		}
 	}
 
 	@EventHandler
-	public void playerQuitHandler(PlayerQuitEvent e) {
+	public void playerQuitHandler(@NotNull PlayerQuitEvent e) {
 		playersLeaving.add(e.getPlayer());
 		e.getPlayer().saveData();
-		String saveData = PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) e.getPlayer()).getHandle()).serializePowers(new CompoundTag()).toString();
+		ServerPlayer nms = ((CraftPlayer) e.getPlayer()).getHandle();
+		String saveData = PlayerPowerRepository.getOrCreateRepo(nms).serializePowers(new CompoundTag(), nms).toString();
 		e.getPlayer().getPersistentDataContainer()
 			.set(identifier("powers"), PersistentDataType.STRING, saveData);
 		PowerHolderComponent.unloadPowers(e.getPlayer());
@@ -110,7 +115,7 @@ public class PlayerManager implements Listener {
 	}
 
 	@EventHandler
-	public void powerUpdate(PowerUpdateEvent e) {
+	public void powerUpdate(@NotNull PowerUpdateEvent e) {
 		Player p = e.getPlayer();
 		p.setGravity(true);
 	}

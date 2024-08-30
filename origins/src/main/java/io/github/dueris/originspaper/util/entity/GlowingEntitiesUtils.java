@@ -587,7 +587,7 @@ public class GlowingEntitiesUtils implements Listener {
 										byte newFlags = computeFlags(glowingData);
 										if (newFlags != flags) {
 											edited = true;
-											items = new ArrayList<>(items);
+											items = new LinkedList<>(items);
 											// we cannot simply edit the item as it may be backed in the datawatcher, so we
 											// make a copy of the list
 											items.set(i, createFlagWatcherItem(newFlags));
@@ -611,7 +611,7 @@ public class GlowingEntitiesUtils implements Listener {
 									byte flags = computeFlags(glowingData);
 									if (flags != 0) {
 										edited = true;
-										items = new ArrayList<>(items);
+										items = new LinkedList<>(items);
 										items.add(createFlagWatcherItem(flags));
 									}
 								}

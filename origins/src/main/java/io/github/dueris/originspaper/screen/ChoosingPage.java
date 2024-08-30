@@ -8,29 +8,28 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public interface ChoosingPage {
 	static void registerInstances() {
-		OriginsPaper.getPlugin()
-			.registry
+		OriginsPaper.getRegistry()
 			.retrieve(Registries.LAYER)
 			.values()
 			.stream()
 			.filter(OriginLayer::isEnabled)
 			.forEach(
 				layer -> {
-					ScreenNavigator.layerPages.put(layer, new ArrayList<>());
+					ScreenNavigator.layerPages.put(layer, new LinkedList<>());
 					List<Origin> choosable = layer.getOriginIdentifiers()
 						.stream()
 						.map(OriginsPaper::getOrigin)
 						.filter(origin -> !origin.unchoosable())
 						.sorted(Comparator.comparingInt(Origin::order))
 						.sorted(Comparator.comparingInt(Origin::impactValue))
-						.collect(Collectors.toCollection(ArrayList::new));
+						.collect(Collectors.toCollection(LinkedList::new));
 					Origin defaultOrigin = null;
 					if (layer.getDefaultOrigin() != null && !layer.getDefaultOrigin().toString().equalsIgnoreCase("origins:empty")) {
 						defaultOrigin = choosable.stream()
@@ -49,7 +48,7 @@ public interface ChoosingPage {
 			);
 		ScreenNavigator.layerPages.values().forEach(list -> {
 			for (ChoosingPage page : list) {
-				OriginsPaper.getPlugin().registry.retrieve(Registries.CHOOSING_PAGE).register(page, page.key());
+				OriginsPaper.getRegistry().retrieve(Registries.CHOOSING_PAGE).register(page, page.key());
 			}
 		});
 	}

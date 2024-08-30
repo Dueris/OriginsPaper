@@ -1,15 +1,15 @@
 package io.github.dueris.originspaper.mixin;
 
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
-import io.github.dueris.originspaper.power.ModifyTypeTagPower;
+import io.github.dueris.originspaper.power.type.ModifyTypeTagPower;
 import net.minecraft.core.HolderSet;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 @Mixin(EntityType.class)
@@ -21,7 +21,7 @@ public class EntityTypeMixin {
 		boolean original = entryList.contains(instance.builtInRegistryHolder());
 		boolean modifyTypeTag = false;
 
-		for (Player player : PLAYER_TAG_TIE.getOrDefault(instance, new ArrayList<>())) {
+		for (Player player : PLAYER_TAG_TIE.getOrDefault(instance, new LinkedList<>())) {
 			if (ModifyTypeTagPower.doesApply(player, entryList)) {
 				modifyTypeTag = true;
 				break;
@@ -39,7 +39,7 @@ public class EntityTypeMixin {
 		boolean original = instance.builtInRegistryHolder().is(tag);
 		boolean modifyTypeTag = false;
 
-		for (Player player : PLAYER_TAG_TIE.getOrDefault(instance, new ArrayList<>())) {
+		for (Player player : PLAYER_TAG_TIE.getOrDefault(instance, new LinkedList<>())) {
 			if (ModifyTypeTagPower.doesApply(player, tag)) {
 				modifyTypeTag = true;
 				break;

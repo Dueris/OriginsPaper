@@ -11,12 +11,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DataResult.Error;
 import com.mojang.serialization.JsonOps;
-import io.github.dueris.calio.parser.SerializableData;
+import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.util.ArgumentWrapper;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionTypeFactory;
+import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.origin.Origin;
-import io.github.dueris.originspaper.power.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerType;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntLists;
@@ -27,14 +27,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
@@ -51,26 +54,23 @@ import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.damage.CraftDamageSource;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -83,9 +83,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -96,7 +93,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class Util {
-	private static final List<SlotRange> SLOTS = net.minecraft.Util.make(new ArrayList<>(), list -> {
+	private static final List<SlotRange> SLOTS = net.minecraft.Util.make(new LinkedList<>(), list -> {
 		addSingleSlot(list, "contents", 0);
 		addSlotRange(list, "container.", 0, 54);
 		addSlotRange(list, "hotbar.", 0, 9);
@@ -127,7 +124,6 @@ public class Util {
 		addSlotRange(list, "player.crafting.", 500, 4);
 	});
 	private static final List<String> EXEMPT_SLOTS = List.of("weapon", "weapon.mainhand");
-	public static Registry<DamageType> DAMAGE_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
 	public static MinecraftServer server = OriginsPaper.server;
 	public static Logger LOGGER = LogManager.getLogger("OriginsPaper");
 
@@ -135,12 +131,14 @@ public class Util {
 		return getDamageSource(type, null);
 	}
 
-	public static DamageSource getDamageSource(DamageType type, Entity attacker) {
+	public static DamageSource getDamageSource(@NotNull DamageType type, Entity attacker) {
 		DamageSource source = null;
 
-		for (ResourceKey<DamageType> dkey : DAMAGE_REGISTRY.registryKeySet()) {
-			if (DAMAGE_REGISTRY.get(dkey).equals(type)) {
-				source = new DamageSource(DAMAGE_REGISTRY.getHolderOrThrow(dkey), attacker, attacker, attacker == null ? null : attacker.position());
+		Registry<DamageType> registry = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
+		for (ResourceKey<DamageType> dkey : registry.registryKeySet()) {
+			if (dkey == null) continue;
+			if (registry.get(dkey) == type) {
+				source = new DamageSource(registry.getHolderOrThrow(dkey), attacker, attacker, attacker == null ? null : attacker.position());
 				break;
 			}
 		}
@@ -179,12 +177,12 @@ public class Util {
 
 	public static String getNameOrTag(@NotNull PowerType power) {
 		return PlainTextComponentSerializer.plainText().serialize(power.name()).equalsIgnoreCase(("power.$namespace.$path.name")
-			.replace("$namespace", power.key().getNamespace()).replace("$path", power.key().getPath())) ? power.getTag() : PlainTextComponentSerializer.plainText().serialize(power.name());
+			.replace("$namespace", power.getId().getNamespace()).replace("$path", power.getId().getPath())) ? power.getTag() : PlainTextComponentSerializer.plainText().serialize(power.name());
 	}
 
 	public static String getNameOrTag(@NotNull Origin origin) {
-		return PlainTextComponentSerializer.plainText().serialize(origin.name()).equalsIgnoreCase(("origin.$namespace.$path.name")
-			.replace("$namespace", origin.key().getNamespace()).replace("$path", origin.key().getPath())) ? origin.getTag() : PlainTextComponentSerializer.plainText().serialize(origin.name());
+		return PlainTextComponentSerializer.plainText().serialize(origin.getName()).equalsIgnoreCase(("origin.$namespace.$path.name")
+			.replace("$namespace", origin.getId().getNamespace()).replace("$path", origin.getId().getPath())) ? origin.getTag() : PlainTextComponentSerializer.plainText().serialize(origin.getName());
 	}
 
 	public static boolean inSnow(Level world, BlockPos... blockPositions) {
@@ -199,7 +197,7 @@ public class Util {
 	public static double apoli$getFluidHeightLoosely(Entity entity, TagKey<Fluid> tag) {
 		if (tag == null) return 0;
 		Optional<Object2DoubleMap<TagKey<Fluid>>> fluidHeightMap = getFluidHeightMap(entity);
-		if (fluidHeightMap.isPresent() && fluidHeightMap.get() != null) {
+		if (fluidHeightMap.isPresent()) {
 			Object2DoubleMap<TagKey<Fluid>> fluidHeight = fluidHeightMap.get();
 			if (fluidHeight.containsKey(tag)) {
 				return fluidHeight.getDouble(tag);
@@ -219,7 +217,7 @@ public class Util {
 			return false;
 		} else {
 			Optional<Set<TagKey<Fluid>>> submergedSet = getSubmergedSet(entity);
-			return submergedSet.isPresent() && submergedSet.get() != null && submergedSet.get().contains(tag);
+			return submergedSet.isPresent() && submergedSet.get().contains(tag);
 		}
 	}
 
@@ -233,6 +231,7 @@ public class Util {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected static Optional<Object2DoubleMap<TagKey<Fluid>>> getFluidHeightMap(Entity entity) {
 		try {
 			return Optional.of(Reflector.accessField("fluidHeight", Entity.class, entity, Object2DoubleMap.class));
@@ -242,6 +241,7 @@ public class Util {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected static Optional<Set<TagKey<Fluid>>> getSubmergedSet(Entity entity) {
 		try {
 			return Optional.of(Reflector.accessField("fluidOnEyes", Entity.class, entity, Set.class));
@@ -277,55 +277,9 @@ public class Util {
 		return builder.toString();
 	}
 
-	public static void downloadFileFromURL(String fileUrl) throws IOException {
-		URL url = new URL(fileUrl);
-
-		try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
-			Path savePath = Path.of(System.getProperty("user.home"), "Downloads");
-			Files.createDirectories(savePath);
-			String fileName = url.getFile().substring(url.getFile().lastIndexOf(47) + 1);
-			Path filePath = savePath.resolve(fileName);
-			Files.copy(in, filePath, StandardCopyOption.REPLACE_EXISTING);
-		}
-	}
-
-	public static void downloadFileFromURL(String fileUrl, String saveDirectory) throws IOException {
-		URL url = new URL(fileUrl);
-
-		try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
-			Path savePath = Path.of(saveDirectory);
-			Files.createDirectories(savePath);
-			Path filePath = savePath.resolve(getFileNameFromUrl(fileUrl));
-			Files.copy(in, filePath, StandardCopyOption.REPLACE_EXISTING);
-		}
-	}
-
-	public static void downloadFileFromURL(String fileUrl, String saveDirectory, String fileName) throws IOException {
-		URL url = new URL(fileUrl);
-
-		try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
-			Path savePath = Path.of(saveDirectory);
-			Files.createDirectories(savePath);
-			Path filePath = savePath.resolve(fileName);
-			Files.copy(in, filePath, StandardCopyOption.REPLACE_EXISTING);
-		}
-	}
-
-	public static PotionEffectType getPotionEffectType(String key) {
-		return key == null ? null : org.bukkit.Registry.EFFECT.get(NamespacedKey.fromString(key));
-	}
-
-	public static PotionEffectType getPotionEffectType(NamespacedKey key) {
-		return key == null ? null : org.bukkit.Registry.EFFECT.get(key);
-	}
-
-	public static @NotNull String makeDescriptionId(String type, @Nullable ResourceLocation id) {
-		return id == null ? type + ".unregistered_sadface" : type + "." + id.getNamespace() + "." + id.getPath().replace('/', '.');
-	}
-
 	@Unmodifiable
 	public static <T> @NotNull List<T> collapseList(@NotNull Collection<List<T>> collection) {
-		List<T> lC = new ArrayList<>();
+		List<T> lC = new LinkedList<>();
 		collection.forEach(lC::addAll);
 		return Collections.unmodifiableList(lC);
 	}
@@ -335,28 +289,6 @@ public class Util {
 		Set<T> lC = new HashSet<>();
 		collection.forEach(lC::addAll);
 		return Collections.unmodifiableSet(lC);
-	}
-
-	@Contract(pure = true)
-	private static String getFileNameFromUrl(@NotNull String fileUrl) {
-		String[] segments = fileUrl.split("/");
-		return segments[segments.length - 1];
-	}
-
-	public static void printValues(@NotNull ConfigurationSection section, String indent) {
-		StringBuilder values = new StringBuilder();
-
-		for (String key : section.getKeys(false)) {
-			String path = section.getCurrentPath() + "|" + key;
-			Object value = section.get(key);
-			if (value instanceof ConfigurationSection subsection) {
-				printValues(subsection, indent + "  ");
-			} else {
-				values.append(indent).append(path).append(": ").append(value).append("  ");
-			}
-		}
-
-		Bukkit.getLogger().info(values.toString());
 	}
 
 	@Contract(value = "_, !null -> !null", pure = true)
@@ -379,6 +311,34 @@ public class Util {
 		return optional;
 	}
 
+	public static boolean allPresent(SerializableData.Instance data, String @NotNull ... fieldNames) {
+
+		for (String field : fieldNames) {
+
+			if (!data.isPresent(field)) {
+				return false;
+			}
+
+		}
+
+		return true;
+
+	}
+
+	public static boolean anyPresent(SerializableData.Instance data, String @NotNull ... fields) {
+
+		for (String field : fields) {
+
+			if (data.isPresent(field)) {
+				return true;
+			}
+
+		}
+
+		return false;
+
+	}
+
 	public static @NotNull JsonArray toJsonStringArray(@NotNull List<String> strings) {
 		JsonArray array = new JsonArray();
 
@@ -387,6 +347,62 @@ public class Util {
 		}
 
 		return array;
+	}
+
+	public static void createExplosion(Level world, Vec3 pos, float power, boolean createFire, Explosion.BlockInteraction destructionType, ExplosionDamageCalculator behavior) {
+		createExplosion(world, null, pos, power, createFire, destructionType, behavior);
+	}
+
+	public static void createExplosion(Level world, Entity entity, @NotNull Vec3 pos, float power, boolean createFire, Explosion.BlockInteraction destructionType, ExplosionDamageCalculator behavior) {
+		createExplosion(world, entity, null, pos.x(), pos.y(), pos.z(), power, createFire, destructionType, behavior);
+	}
+
+	public static void createExplosion(Level world, @Nullable Entity entity, @Nullable DamageSource damageSource, double x, double y, double z, float power, boolean createFire, Explosion.BlockInteraction destructionType, ExplosionDamageCalculator behavior) {
+
+		Explosion explosion = new Explosion(world, entity, damageSource, behavior, x, y, z, power, createFire, destructionType, ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, SoundEvents.GENERIC_EXPLODE);
+
+		explosion.explode();
+		explosion.finalizeExplosion(world.isClientSide);
+
+		//  Sync the explosion effect to the client if the explosion is created on the server
+		if (!(world instanceof ServerLevel serverWorld)) {
+			return;
+		}
+
+		if (!explosion.interactsWithBlocks()) {
+			explosion.clearToBlow();
+		}
+
+		for (ServerPlayer serverPlayerEntity : serverWorld.players()) {
+			if (serverPlayerEntity.distanceToSqr(x, y, z) < 4096.0) {
+				serverPlayerEntity.connection.send(new ClientboundExplodePacket(x, y, z, power, explosion.getToBlow(), explosion.getHitPlayers().get(serverPlayerEntity), explosion.getBlockInteraction(), explosion.getSmallExplosionParticles(), explosion.getLargeExplosionParticles(), explosion.getExplosionSound()));
+			}
+		}
+
+	}
+
+	@Nullable
+	public static ExplosionDamageCalculator getExplosionBehavior(Level world, float indestructibleResistance, @Nullable Predicate<BlockInWorld> indestructibleCondition) {
+		return indestructibleCondition == null ? null : new ExplosionDamageCalculator() {
+
+			@Override
+			public Optional<Float> getBlockExplosionResistance(Explosion explosion, BlockGetter blockView, BlockPos pos, BlockState blockState, FluidState fluidState) {
+
+				BlockInWorld cachedBlockPosition = new BlockInWorld(world, pos, true);
+
+				Optional<Float> defaultValue = super.getBlockExplosionResistance(explosion, world, pos, blockState, fluidState);
+				Optional<Float> newValue = indestructibleCondition.test(cachedBlockPosition) ? Optional.of(indestructibleResistance) : Optional.empty();
+
+				return defaultValue.isPresent() ? (newValue.isPresent() ? (defaultValue.get() > newValue.get() ? (defaultValue) : newValue) : defaultValue) : defaultValue;
+
+			}
+
+			@Override
+			public boolean shouldBlockExplode(Explosion explosion, BlockGetter blockView, BlockPos pos, BlockState state, float power) {
+				return !indestructibleCondition.test(new BlockInWorld(world, pos, true));
+			}
+
+		};
 	}
 
 	public static Optional<Entity> getEntityWithPassengers(Level world, EntityType<?> entityType, @Nullable CompoundTag entityNbt, Vec3 pos, float yaw, float pitch) {
@@ -469,74 +485,6 @@ public class Util {
 			zipFile.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-
-	public static void fillMissingNumbers(List<Integer> numbers, int min, int max) {
-		Set<Integer> numberSet = new HashSet<>(numbers);
-
-		for (int i = min; i <= max; i++) {
-			if (!numberSet.contains(i)) {
-				numbers.add(i);
-			}
-		}
-	}
-
-	@Contract(pure = true)
-	public static int @NotNull [] missingNumbers(Integer @NotNull [] array, int minRange, int maxRange) {
-		boolean[] found = new boolean[maxRange - minRange + 1];
-		int missingCount = 0;
-		Integer[] missingNumbers = array;
-		int index = array.length;
-
-		for (int i = 0; i < index; i++) {
-			int num = missingNumbers[i];
-			int adjustedIndex = num - minRange;
-			if (adjustedIndex >= 0 && adjustedIndex < found.length) {
-				found[adjustedIndex] = true;
-			}
-		}
-
-		for (boolean val : found) {
-			if (!val) {
-				missingCount++;
-			}
-		}
-
-		int[] missingNumbersx = new int[missingCount];
-		index = 0;
-
-		for (int ix = minRange; ix <= maxRange; ix++) {
-			int adjustedIndex = ix - minRange;
-			if (adjustedIndex >= 0 && adjustedIndex < found.length && !found[adjustedIndex]) {
-				missingNumbersx[index++] = ix;
-			}
-		}
-
-		return missingNumbersx;
-	}
-
-	public static BarColor convertToBarColor(java.awt.@NotNull Color color) {
-		int rgb = color.getRGB();
-		int red = (rgb >> 16) & 0xFF;
-		int green = (rgb >> 8) & 0xFF;
-		int blue = rgb & 0xFF;
-
-		if (red > green && red > blue) {
-			if (red - green < 30) return BarColor.YELLOW;
-			return BarColor.RED;
-		} else if (green > red && green > blue) {
-			return BarColor.GREEN;
-		} else if (blue > red && blue > green) {
-			return BarColor.BLUE;
-		} else if (red == green && red == blue) {
-			return BarColor.WHITE;
-		} else if (red == green) {
-			return BarColor.YELLOW;
-		} else if (red == blue) {
-			return BarColor.PURPLE;
-		} else {
-			return BarColor.GREEN;
 		}
 	}
 
@@ -853,11 +801,11 @@ public class Util {
 		return new SlotAccess() {
 			ItemStack stack = startingStack;
 
-			public ItemStack get() {
+			public @NotNull ItemStack get() {
 				return this.stack;
 			}
 
-			public boolean set(ItemStack stack) {
+			public boolean set(@NotNull ItemStack stack) {
 				this.stack = stack;
 				return true;
 			}

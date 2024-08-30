@@ -5,7 +5,7 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.registry.Registries;
-import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import io.github.dueris.originspaper.storage.OriginComponent;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.resources.ResourceLocation;
@@ -33,20 +33,20 @@ public class AsyncUpgradeTracker implements Listener {
 				MinecraftServer server = OriginsPaper.server;
 				for (Map.Entry<Origin, TriPair<ResourceLocation, ResourceLocation, String>> entry : upgrades.entrySet()) {
 					for (CraftPlayer player : ((CraftServer) Bukkit.getServer()).getOnlinePlayers()) {
-						for (OriginLayer layer : OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values()) {
-							if (PowerHolderComponent.getOrigin(player, layer).equals(entry.getKey())) {
+						for (OriginLayer layer : OriginsPaper.getRegistry().retrieve(Registries.LAYER).values()) {
+							if (OriginComponent.getOrigin(player, layer).equals(entry.getKey())) {
 								ResourceLocation advancement = entry.getValue().a();
 								ResourceLocation originToSet = entry.getValue().b();
 								String announcement = entry.getValue().c();
 
 								AdvancementHolder advancementHolder = server.getAdvancements().get(advancement);
 								if (advancementHolder == null) {
-									OriginsPaper.getPlugin().getLog4JLogger().error("Advancement \"{}\" did not exist but was referenced in the an origin upgrade!", advancement);
+									OriginsPaper.LOGGER.error("Advancement \"{}\" did not exist but was referenced in the an origin upgrade!", advancement);
 								}
 
 								AdvancementProgress progress = player.getHandle().getAdvancements().getOrStartProgress(advancementHolder);
 								if (progress.isDone()) {
-									PowerHolderComponent.setOrigin(player, layer, OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(originToSet));
+									OriginComponent.setOrigin(player, layer, OriginsPaper.getRegistry().retrieve(Registries.ORIGIN).get(originToSet));
 									if (!announcement.equals(NO_ANNOUNCEMENT)) {
 										player.sendMessage(announcement);
 									}

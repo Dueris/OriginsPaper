@@ -1,6 +1,6 @@
 package io.github.dueris.originspaper.event;
 
-import io.github.dueris.originspaper.power.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;

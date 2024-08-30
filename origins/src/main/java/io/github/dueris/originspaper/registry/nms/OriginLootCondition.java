@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.registry.Registries;
-import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import io.github.dueris.originspaper.storage.OriginComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -39,8 +39,8 @@ public class OriginLootCondition implements LootItemCondition {
 		Entity entity = context.getParam(LootContextParams.THIS_ENTITY);
 		CraftEntity var4 = entity.getBukkitEntity();
 		if (var4 instanceof Player player) {
-			Origin origin = OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(this.originId);
-			return PowerHolderComponent.hasOrigin(player, origin.getTag());
+			Origin origin = OriginsPaper.getRegistry().retrieve(Registries.ORIGIN).get(this.originId);
+			return OriginComponent.hasOrigin(player, origin.getTag());
 		} else {
 			return false;
 		}

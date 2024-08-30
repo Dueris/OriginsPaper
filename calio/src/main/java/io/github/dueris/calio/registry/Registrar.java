@@ -8,7 +8,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class Registrar<T> {
@@ -16,7 +19,7 @@ public class Registrar<T> {
 	private final ConcurrentHashMap<ResourceLocation, T> rawRegistry = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<T, ResourceLocation> reverseLookup = new ConcurrentHashMap<>();
 	private final Map<ResourceLocation, T> defaultValues = new ConcurrentHashMap<>();
-	private final List<Consumer<RegistryEvent<T>>> eventListeners = Collections.synchronizedList(new ArrayList<>());
+	private final List<Consumer<RegistryEvent<T>>> eventListeners = Collections.synchronizedList(new LinkedList<>());
 	private volatile boolean frozen = false;
 	private BiFunction<ResourceLocation, T, String> serializer;
 	private BiFunction<ResourceLocation, String, T> deserializer;

@@ -1,8 +1,8 @@
 package io.github.dueris.originspaper.data.types.modifier;
 
 import io.github.dueris.calio.SerializableDataTypes;
+import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataBuilder;
-import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.registry.Registries;
 import net.minecraft.world.entity.Entity;
 

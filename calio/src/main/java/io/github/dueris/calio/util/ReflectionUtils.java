@@ -62,7 +62,6 @@ public class ReflectionUtils {
 			method.setAccessible(true);
 			method.invoke(instance);
 		} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {
-			ignored.printStackTrace();
 		}
 	}
 

@@ -1,107 +1,60 @@
 package io.github.dueris.originspaper;
 
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.tree.CommandNode;
-import io.github.dueris.calio.data.AccessorKey;
-import io.github.dueris.calio.parser.ParsingStrategy;
+import com.dragoncommissions.mixbukkit.MixBukkit;
+import io.github.dueris.calio.parser.CalioParser;
+import io.github.dueris.calio.parser.JsonObjectRemapper;
 import io.github.dueris.calio.registry.IRegistry;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
-import io.github.dueris.originspaper.action.ActionTypes;
-import io.github.dueris.originspaper.command.Commands;
+import io.github.dueris.originspaper.action.factory.BiEntityActions;
+import io.github.dueris.originspaper.action.factory.BlockActions;
+import io.github.dueris.originspaper.action.factory.EntityActions;
+import io.github.dueris.originspaper.action.factory.ItemActions;
 import io.github.dueris.originspaper.command.OriginCommand;
-import io.github.dueris.originspaper.condition.ConditionTypes;
-import io.github.dueris.originspaper.condition.types.BiEntityConditions;
-import io.github.dueris.originspaper.content.OrbOfOrigins;
+import io.github.dueris.originspaper.command.PowerCommand;
+import io.github.dueris.originspaper.command.ResourceCommand;
+import io.github.dueris.originspaper.condition.factory.*;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.OriginsDataTypes;
 import io.github.dueris.originspaper.data.types.modifier.ModifierOperations;
-import io.github.dueris.originspaper.integration.CraftPehuki;
 import io.github.dueris.originspaper.mixin.OriginsMixins;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.power.PowerType;
-import io.github.dueris.originspaper.power.RecipePower;
-import io.github.dueris.originspaper.registry.BuiltinRegistry;
+import io.github.dueris.originspaper.plugin.OriginsPlugin;
+import io.github.dueris.originspaper.power.type.FireProjectilePower;
+import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.registry.Registries;
-import io.github.dueris.originspaper.screen.ChoosingPage;
-import io.github.dueris.originspaper.screen.GuiTicker;
-import io.github.dueris.originspaper.screen.RandomOriginPage;
-import io.github.dueris.originspaper.screen.ScreenNavigator;
 import io.github.dueris.originspaper.storage.OriginConfiguration;
-import io.github.dueris.originspaper.storage.PlayerPowerRepository;
-import io.github.dueris.originspaper.storage.PowerHolderComponent;
-import io.github.dueris.originspaper.util.*;
-import io.github.dueris.originspaper.util.entity.GlowingEntitiesUtils;
-import io.github.dueris.originspaper.util.entity.PlayerManager;
-import io.papermc.paper.event.player.PlayerFailMoveEvent;
-import io.papermc.paper.plugin.configuration.PluginMeta;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.nbt.CompoundTag;
+import io.github.dueris.originspaper.util.LangFile;
+import io.github.dueris.originspaper.util.Renderer;
+import io.github.dueris.originspaper.util.Util;
+import io.github.dueris.originspaper.util.WrappedBootstrapContext;
+import io.papermc.paper.ServerBuildInfo;
+import io.papermc.paper.plugin.bootstrap.BootstrapContext;
+import io.papermc.paper.plugin.entrypoint.classloader.PaperPluginClassLoader;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.InvalidConfigurationException;
+import net.minecraft.util.Tuple;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.ServerLoadEvent;
-import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.StringReader;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
-public final class OriginsPaper extends JavaPlugin implements Listener {
-	public static final boolean isFolia = classExists("io.papermc.paper.threadedregions.RegionizedServer");
-	public static final boolean isExpandedScheduler = classExists("io.papermc.paper.threadedregions.scheduler.ScheduledTask");
-	public static List<Runnable> preShutdownTasks = new ArrayList<>();
-	public static GlowingEntitiesUtils glowingEntitiesUtils;
-	public static BstatsMetrics metrics;
-	public static String apoliVersion = "2.12.0-alpha.9+mc.1.21.x";
+public class OriginsPaper {
+	public static final Logger LOGGER = LogManager.getLogger("OriginsPaper");
 	public static String LANGUAGE = "en_us";
 	public static boolean showCommandOutput = false;
-	public static File playerDataFolder;
-	public static boolean forceUseCurrentVersion = false;
-	public static OriginScheduler.MainTickerThread scheduler = null;
-	public static String version = Bukkit.getVersion().split("\\(MC: ")[1].replace(")", "");
-	public static boolean isCompatible = false;
-	public static String pluginVersion;
-	public static String world_container;
-	public static ArrayList<String> versions = new ArrayList<>();
 	public static MinecraftServer server;
-	public static Origin EMPTY_ORIGIN;
-	private static OriginsPaper plugin;
-	public IRegistry registry;
-
-	public OriginsPaper() {
-		if (!Bootstrap.BOOTSTRAPPED.get()) {
-			Bootstrap bootstrap = new Bootstrap();
-			bootstrap.bootstrap(null);
-		}
-
-		Bootstrap.BOOTSTRAPPED.set(false);
-
-		plugin = this;
-		OriginsMixins.init(Bootstrap.MIXIN_LOADER.get());
-	}
-
-	public static OriginScheduler.MainTickerThread getScheduler() {
-		return scheduler;
-	}
+	public static PluginData pluginData;
+	public static Path jarFile;
+	private static WrappedBootstrapContext context;
 
 	public static @NotNull ResourceLocation identifier(String path) {
 		return ResourceLocation.fromNamespaceAndPath("originspaper", path);
@@ -116,260 +69,157 @@ public final class OriginsPaper extends JavaPlugin implements Listener {
 	}
 
 	public static OriginLayer getLayer(ResourceLocation location) {
-		return OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).get(location);
+		return getRegistry().retrieve(Registries.LAYER).get(location);
 	}
 
 	public static PowerType getPower(ResourceLocation location) {
-		return OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(location);
+		return getRegistry().retrieve(Registries.POWER).get(location);
 	}
 
 	public static Origin getOrigin(ResourceLocation location) {
-		return OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).get(location);
+		return getRegistry().retrieve(Registries.ORIGIN).get(location);
 	}
 
-	private static void patchPowers() {
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			PowerHolderComponent.loadPowers(p);
+	public static IRegistry getRegistry() {
+		return CalioRegistry.INSTANCE;
+	}
+
+	public static OriginsPlugin getPlugin() {
+		return OriginsPlugin.plugin;
+	}
+
+	public static void init(@NotNull WrappedBootstrapContext context) throws Throwable {
+		pluginData = new PluginData(YamlConfiguration.loadConfiguration(new StringReader(Util.readResource("/paper-plugin.yml"))));
+		jarFile = context.context().getPluginSource();
+		OriginsPaper.context = context;
+
+		String runningVersion = ServerBuildInfo.buildInfo().minecraftVersionId();
+		if (!pluginData.getSupportedVersions().contains(runningVersion)) {
+			throw new IllegalStateException("This version of OriginsPaper does not support this version! Please use {}".replace("{}", pluginData.getSupportedVersions().toString()));
 		}
+		MixBukkit bukkit = new MixBukkit((PaperPluginClassLoader) OriginsPaper.class.getClassLoader());
+		bukkit.onEnable(context.LOGGER, context.context().getPluginSource().toFile());
+
+		OriginsMixins.init(bukkit);
+
+		ApiCall.call(ApiCall.INIT, context);
+
+		LifecycleEventManager<BootstrapContext> lifecycleManager = context.context().getLifecycleManager();
+		lifecycleManager.registerEventHandler((LifecycleEvents.COMMANDS.newHandler(event -> {
+			PowerCommand.register(event.registrar());
+			OriginCommand.register(event.registrar());
+			ResourceCommand.register(event.registrar());
+		})).priority(4));
+
+		io.github.dueris.calio.parser.JsonObjectRemapper remapper = new io.github.dueris.calio.parser.JsonObjectRemapper(
+			List.of(new Tuple<>("origins", "apoli")),
+			List.of(
+				new Tuple<>("apoli:restrict_armor", "apoli:conditioned_restrict_armor"),
+				new Tuple<>("apoli:has_tag", "apoli:has_command_tag"),
+				new Tuple<>("apoli:custom_data", "apoli:nbt"),
+				new Tuple<>("apoli:is_equippable", "apoli:equippable"),
+				new Tuple<>("apoli:fireproof", "apoli:fire_resistant"),
+				new Tuple<>("apoli:merge_nbt", "apoli:merge_custom_data"),
+				new Tuple<>("apoli:revoke_power", "apoli:remove_power"),
+				new Tuple<>("apoli:water_protection", "origins:water_protection"),
+				new Tuple<>("apoli:enderian_pearl", "minecraft:ender_pearl")
+			),
+			List.of("power_type", "type", "entity_type")
+		);
+		JsonObjectRemapper.PRE_REMAP_HOOK.add(new Tuple<>(
+			"apoli:enderian_pearl",
+			(tuple) -> FireProjectilePower.IS_ENDERIAN_PEARL.add(tuple.getB())
+		));
+		CalioParser.REMAPPER.set(remapper);
+		context.createRegistries(
+			Registries.ORIGIN,
+			Registries.LAYER,
+			Registries.POWER,
+			Registries.FLUID_CONDITION,
+			Registries.ENTITY_CONDITION,
+			Registries.BIOME_CONDITION,
+			Registries.BIENTITY_CONDITION,
+			Registries.BLOCK_CONDITION,
+			Registries.ITEM_CONDITION,
+			Registries.DAMAGE_CONDITION,
+			Registries.ENTITY_ACTION,
+			Registries.ITEM_ACTION,
+			Registries.BLOCK_ACTION,
+			Registries.BIENTITY_ACTION,
+			Registries.LANG,
+			Registries.CHOOSING_PAGE
+		);
+
+		OriginConfiguration.load();
+		showCommandOutput = OriginConfiguration.getConfiguration().getBoolean("show-command-output", false);
+		LANGUAGE = OriginConfiguration.getConfiguration().getString("language", LANGUAGE);
+		LangFile.init();
+		Renderer.init();
+
+		OriginsDataTypes.init();
+		ApoliDataTypes.init();
+
+		ModifierOperations.registerAll();
+		PowerType.registerAll();
+		EntityConditions.register();
+		BiEntityConditions.register();
+		ItemConditions.register();
+		BlockConditions.register();
+		DamageConditions.register();
+		FluidConditions.register();
+		BiomeConditions.register();
+		EntityActions.register();
+		ItemActions.register();
+		BlockActions.register();
+		BiEntityActions.register();
+
+		ApiCall.call(ApiCall.PRE_PARSE, context);
 	}
 
-	public static OriginsPaper getPlugin() {
-		return plugin;
-	}
+	public enum ApiCall {
+		INIT, PRE_PARSE;
+		private static final List<Tuple<ApiCall, Consumer<WrappedBootstrapContext>>> REGISTERED = new CopyOnWriteArrayList<>();
 
-	public static boolean classExists(String className) {
-		try {
-			Class.forName(className);
-			return true;
-		} catch (ClassNotFoundException var2) {
-			return false;
+		public static void registerCall(ApiCall call, Consumer<WrappedBootstrapContext> consumer) {
+			REGISTERED.add(new Tuple<>(
+				call, consumer
+			));
 		}
-	}
 
-	public void finalizePreboot() {
-		PluginMeta meta = this.getPluginMeta();
-		if (meta == null) {
-			throw new RuntimeException("PluginMeta was null?");
-		} else {
-			pluginVersion = meta.getVersion().split("-")[1];
-
-			try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream("paper-plugin.yml")) {
-				byte[] bytes = stream.readAllBytes();
-				String contents = new String(bytes, StandardCharsets.UTF_8);
-				YamlConfiguration yamlConfiguration = new YamlConfiguration();
-				yamlConfiguration.loadFromString(contents);
-				if (!yamlConfiguration.contains("supportedVersions"))
-					throw new RuntimeException("Supported Versions list not found in plugin yaml!");
-				versions.addAll(yamlConfiguration.getStringList("supportedVersions"));
-				LANGUAGE = yamlConfiguration.getString("default-language");
-			} catch (InvalidConfigurationException | IOException var8) {
-				throw new RuntimeException(var8);
-			}
-
-			metrics = new BstatsMetrics(this, 18536);
-		}
-	}
-
-	@Override
-	public void onEnable() {
-		Getter<Boolean> startup = () -> {
-			this.finalizePreboot();
-			this.registry = CalioRegistry.INSTANCE;
-			Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-			System.out.println();
-			this.printComponent(
-				Component.text(
-						"* Loading Version OriginsPaper-{minecraftVersion-versionNumber} // CraftApoli-{apoliVersion}"
-							.replace("minecraftVersion", "mc" + version)
-							.replace("versionNumber", pluginVersion)
-							.replace("apoliVersion", apoliVersion)
-					)
-					.color(TextColor.fromHexString("#4fec4f"))
-			);
-			System.out.println();
-			server = ((CraftServer) Bukkit.getServer()).getServer();
-			world_container = server.options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
-			playerDataFolder = server.playerDataStorage.getPlayerDir();
-			glowingEntitiesUtils = new GlowingEntitiesUtils(this);
-
-			try {
-				OriginConfiguration.load();
-				showCommandOutput = OriginConfiguration.getConfiguration().getBoolean("show-command-output", false);
-				LANGUAGE = OriginConfiguration.getConfiguration().getString("language", LANGUAGE);
-				LangFile.init();
-			} catch (IOException var7) {
-				throw new RuntimeException(var7);
-			}
-
-			isCompatible = !isFolia && isExpandedScheduler;
-			boolean isCorrectVersion = false;
-
-			for (String vers : versions) {
-				if (vers.equalsIgnoreCase(String.valueOf(version))) {
-					isCorrectVersion = true;
-					break;
+		private static void call(ApiCall call, WrappedBootstrapContext context) {
+			for (Tuple<ApiCall, Consumer<WrappedBootstrapContext>> apiCall : REGISTERED) {
+				if (apiCall.getA().equals(call)) {
+					apiCall.getB().accept(context);
+					REGISTERED.remove(apiCall);
 				}
 			}
-
-			if ((!isCompatible || !isCorrectVersion) && !forceUseCurrentVersion) {
-				if (isCorrectVersion) {
-					this.getLog4JLogger().error("Unable to start OriginsPaper due to it not being compatible with this server type");
-				} else {
-					this.getLog4JLogger().error("Unable to start OriginsPaper due to it not being compatible with this server version, {}", version);
-				}
-
-				Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-				Bukkit.getServer().getPluginManager().disablePlugin(this);
-			}
-
-			try {
-				io.github.dueris.calio.CraftCalio craftCalio = io.github.dueris.calio.CraftCalio.buildInstance(
-					new String[]{"--async=true"}
-				);
-				ApoliDataTypes.init();
-				OriginsDataTypes.init();
-				ModifierOperations.registerAll();
-				ConditionTypes.registerAll();
-				ActionTypes.registerAll();
-				PowerType.registerAll();
-				craftCalio.startBuilder()
-					.withAccessor(new AccessorKey<>(List.of("apoli", "origins"), "power", PowerType.class, 0, ParsingStrategy.TYPED, Registries.CRAFT_POWER))
-					.withAccessor(new AccessorKey<>(List.of("origins"), "origin", Origin.class, 1, ParsingStrategy.DEFAULT, Registries.ORIGIN))
-					.withAccessor(new AccessorKey<>(List.of("origins"), "origin_layer", OriginLayer.class, 2, ParsingStrategy.DEFAULT, Registries.LAYER))
-					.build().parse();
-				BuiltinRegistry.bootstrap();
-				return true;
-			} catch (Throwable throwable) {
-				this.getLog4JLogger().error("An unhandled exception occurred when starting OriginsPaper!");
-				this.throwable(throwable, true);
-				return false;
-			}
-		};
-		if (startup.get()) {
-			this.debug(Component.text("  - Loaded @1 powers".replace("@1", String.valueOf(this.registry.retrieve(Registries.CRAFT_POWER).registrySize()))));
-			this.debug(Component.text("  - Loaded @2 layers".replace("@2", String.valueOf(this.registry.retrieve(Registries.LAYER).registrySize()))));
-			this.debug(Component.text("  - Loaded @3 origins".replace("@3", String.valueOf(this.registry.retrieve(Registries.ORIGIN).registrySize()))));
-			this.debug(Component.text("  - Loaded @4 actions".replace("@4", String.valueOf(((Getter<Integer>) () -> {
-				int bientity = this.registry.retrieve(Registries.BIENTITY_ACTION).registrySize();
-				int block = this.registry.retrieve(Registries.BLOCK_ACTION).registrySize();
-				int entity = this.registry.retrieve(Registries.ENTITY_ACTION).registrySize();
-				int item = this.registry.retrieve(Registries.ITEM_ACTION).registrySize();
-				return item + entity + block + bientity;
-			}).get()))));
-			this.debug(Component.text("  - Loaded @5 conditions".replace("@5", String.valueOf(((Getter<Integer>) () -> {
-				int bientity = this.registry.retrieve(Registries.BIENTITY_CONDITION).registrySize();
-				int biome = this.registry.retrieve(Registries.BIOME_CONDITION).registrySize();
-				int block = this.registry.retrieve(Registries.BLOCK_CONDITION).registrySize();
-				int damage = this.registry.retrieve(Registries.DAMAGE_CONDITION).registrySize();
-				int entity = this.registry.retrieve(Registries.ENTITY_CONDITION).registrySize();
-				int fluid = this.registry.retrieve(Registries.FLUID_CONDITION).registrySize();
-				int item = this.registry.retrieve(Registries.ITEM_CONDITION).registrySize();
-				return item + fluid + entity + damage + block + biome + bientity;
-			}).get()))));
-			scheduler = new OriginScheduler.MainTickerThread();
-			scheduler.runTaskTimer(this, 0L, 1L);
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					OriginsPaper.scheduler.tickAsyncScheduler();
-				}
-			}.runTaskTimerAsynchronously(getPlugin(), 0L, 1L);
-			this.start();
-			patchPowers();
-			this.debug(Component.text("  - Power thread starting with {originScheduler}".replace("originScheduler", scheduler.toString())));
-			CommandDispatcher<CommandSourceStack> commandDispatcher = server.getCommands().getDispatcher();
-			if (commandDispatcher.getRoot().getChildren().stream().map(CommandNode::getName).toList().contains("origin")) {
-				Commands.unload(commandDispatcher);
-			}
-
-			Commands.bootstrap(commandDispatcher);
-			Bukkit.updateRecipes();
-			CraftPehuki.onLoad();
-		}
-		Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-	}
-
-	public void throwable(@NotNull Throwable throwable, boolean kill) {
-		String[] stacktrace = new String[]{"\n"};
-		Arrays.stream(throwable.getStackTrace()).map(StackTraceElement::toString).forEach(string -> stacktrace[0] = stacktrace[0] + "\tat " + string + "\n");
-		this.getLog4JLogger().error("{}{}", throwable.getMessage(), stacktrace[0]);
-		if (kill) {
-			Bukkit.getPluginManager().disablePlugin(this);
 		}
 	}
 
-	public void printComponent(Component component) {
-		Bukkit.getServer().getConsoleSender().sendMessage(component);
-	}
-
-	public void debug(Component component) {
-		this.printComponent(component);
-	}
-
-	private void start() {
-		this.getServer().getPluginManager().registerEvents(this, this);
-		this.getServer().getPluginManager().registerEvents(new PlayerManager(), this);
-		this.getServer().getPluginManager().registerEvents(new ScreenNavigator(), this);
-		this.getServer().getPluginManager().registerEvents(new OriginCommand(), this);
-		this.getServer().getPluginManager().registerEvents(new LogoutBugWorkaround(), this);
-		this.getServer().getPluginManager().registerEvents(new BiEntityConditions(), this);
-		this.getServer().getPluginManager().registerEvents(new OriginScheduler.MainTickerThread(), this);
-		this.getServer().getPluginManager().registerEvents(new KeybindUtil(), this);
-		this.getServer().getPluginManager().registerEvents(new AsyncUpgradeTracker(), this);
-		this.getServer().getPluginManager().registerEvents(new PowerHolderComponent(), this);
-		this.getServer().getPluginManager().registerEvents(new CraftPehuki(), this);
-		this.getServer().getPluginManager().registerEvents(EntityLinkedItemStack.getInstance(), this);
-		this.getServer().getPluginManager().registerEvents(new ApoliScheduler(), this);
-		this.registry.retrieve(Registries.CRAFT_POWER).values().forEach(powerType -> {
-			if (powerType != null) {
-				this.getServer().getPluginManager().registerEvents(powerType, this);
-			}
-		});
-		BukkitRunnable[] independentTickers = new BukkitRunnable[]{new GuiTicker(), new OriginCommand()};
-
-		for (BukkitRunnable runnable : independentTickers) {
-			runnable.runTaskTimerAsynchronously(getPlugin(), 0L, 1L);
+	/**
+	 * A parser for the plugin data found in `paper-plugin.yml`
+	 * This is needed because that information is not directly stored
+	 * in the plugin source, and is provided on build.
+	 */
+	public record PluginData(YamlConfiguration configuration) {
+		public @NotNull List<String> getSupportedVersions() {
+			return configuration.getStringList("supported");
 		}
-	}
 
-	@Override
-	public void onDisable() {
-		try {
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				player.closeInventory();
-				player.getPersistentDataContainer()
-					.set(new NamespacedKey(this, "powers"), PersistentDataType.STRING, PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) player).getHandle()).serializePowers(new CompoundTag()).toString());
-				PowerHolderComponent.unloadPowers(player);
-			}
-
-			preShutdownTasks.forEach(Runnable::run);
-			glowingEntitiesUtils.disable();
-			RecipePower.recipeMapping.clear();
-			RecipePower.tags.clear();
-			this.registry.clearRegistries();
-			if (scheduler != null) {
-				scheduler.cancel();
-			}
-		} catch (Throwable var3) {
-			this.getLog4JLogger().error("An unhandled exception occurred when disabling OriginsPaper!");
-			this.throwable(var3, false);
+		public String getRecommendedVersion() {
+			return configuration.getString("minecraft");
 		}
-	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void lagBackPatch(@NotNull PlayerFailMoveEvent e) {
-		e.setAllowed(true);
-		e.setLogWarning(false);
-	}
+		public String getPluginVersion() {
+			return configuration.getString("plugin");
+		}
 
-	@EventHandler
-	public void loadEvent(ServerLoadEvent e) {
-		ChoosingPage.registerInstances();
-		ScreenNavigator.layerPages.values().forEach(pages -> pages.add(pages.size(), new RandomOriginPage()));
-		OrbOfOrigins.init();
-	}
+		public String getFullVersion() {
+			return configuration.getString("version");
+		}
 
-	private interface Getter<T> {
-		T get();
+		public String getApoliVersion() {
+			return configuration.getString("apoli");
+		}
 	}
 }

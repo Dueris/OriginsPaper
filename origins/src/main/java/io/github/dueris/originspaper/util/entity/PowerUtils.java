@@ -6,7 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.power.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.storage.PlayerPowerRepository;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -17,47 +18,65 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class PowerUtils {
 	public static Gson GSON = new Gson();
 
 	public static void removePower(CommandSender executor, PowerType powerType, Player p, OriginLayer layer, boolean suppress) {
-		ArrayList<PowerType> powersToEdit = new ArrayList<>();
+		LinkedList<PowerType> powersToEdit = new LinkedList<>();
 		powersToEdit.add(powerType);
 		powersToEdit.addAll(PowerHolderComponent.getNestedPowerTypes(powerType));
-		for (PowerType power : powersToEdit) {
-			if (PowerHolderComponent.hasPower(p, power.getTag())) {
-				PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) p).getHandle()).removePower(power, layer);
-				PowerHolderComponent.unloadPower(p, power, layer, suppress, true);
-				if (!suppress) {
-					executor.sendMessage("Entity %name% had the power %power% removed"
-						.replace("%power%", PlainTextComponentSerializer.plainText().serialize(power.name()))
-						.replace("%name%", p.getName())
-					);
+		List<OriginLayer> layers = new LinkedList<>();
+		if (layer != null) {
+			layers.add(layer);
+		} else {
+			layers.addAll(OriginsPaper.getRegistry().retrieve(Registries.LAYER).stream().toList());
+		}
+		for (OriginLayer originLayer : layers) {
+			for (PowerType power : powersToEdit) {
+				if (PowerHolderComponent.hasPower(p, power.getTag())) {
+					PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) p).getHandle()).removePower(power, originLayer);
+					PowerHolderComponent.unloadPower(p, power, originLayer, true);
+					if (!suppress) {
+						executor.sendMessage("Entity %name% had the power %power% removed"
+							.replace("%power%", PlainTextComponentSerializer.plainText().serialize(power.name()))
+							.replace("%name%", p.getName())
+						);
+					}
 				}
 			}
 		}
 	}
 
 	public static void grantPower(CommandSender executor, PowerType powerType, Player p, OriginLayer layer, boolean suppress) {
-		ArrayList<PowerType> powersToEdit = new ArrayList<>();
+		LinkedList<PowerType> powersToEdit = new LinkedList<>();
 		powersToEdit.add(powerType);
 		powersToEdit.addAll(PowerHolderComponent.getNestedPowerTypes(powerType));
-		for (PowerType power : powersToEdit) {
-			if (!PowerHolderComponent.hasPower(p, power.getTag())) {
-				PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) p).getHandle()).addPower(power, layer);
-				PowerHolderComponent.loadPower(p, power, layer, suppress, true);
-				if (!suppress) {
-					executor.sendMessage("Entity %name% was granted the power %power%"
-						.replace("%power%", PlainTextComponentSerializer.plainText().serialize(power.name()))
-						.replace("%name%", p.getName())
-					);
+		List<OriginLayer> layers = new LinkedList<>();
+		if (layer != null) {
+			layers.add(layer);
+		} else {
+			layers.addAll(OriginsPaper.getRegistry().retrieve(Registries.LAYER).stream().toList());
+		}
+		for (OriginLayer originLayer : layers) {
+			for (PowerType power : powersToEdit) {
+				if (!PowerHolderComponent.hasPower(p, power.getTag())) {
+					PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) p).getHandle()).addPower(power, originLayer);
+					PowerHolderComponent.loadPower(p, power, originLayer, true);
+					if (!suppress) {
+						executor.sendMessage("Entity %name% was granted the power %power%"
+							.replace("%power%", PlainTextComponentSerializer.plainText().serialize(power.name()))
+							.replace("%name%", p.getName())
+						);
+					}
 				}
 			}
 		}
+
 	}
 
 	public static void markGained(@NotNull PowerType power, @NotNull Player player) {

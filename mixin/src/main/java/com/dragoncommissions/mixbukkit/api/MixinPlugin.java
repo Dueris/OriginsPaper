@@ -1,6 +1,7 @@
 package com.dragoncommissions.mixbukkit.api;
 
 import com.dragoncommissions.mixbukkit.MixBukkit;
+import com.dragoncommissions.mixbukkit.MixinPluginInstance;
 import com.dragoncommissions.mixbukkit.agent.ClassesManager;
 import com.dragoncommissions.mixbukkit.api.action.MixinAction;
 import com.dragoncommissions.mixbukkit.utils.ASMUtils;
@@ -9,7 +10,6 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.Plugin;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -35,11 +35,11 @@ public class MixinPlugin {
 	@Getter
 	private final ObfMap obfMap;
 	@Getter
-	private final Plugin plugin;
+	private final MixinPluginInstance plugin;
 
 	private final List<String> registeredMixins = new ArrayList<>();
 
-	public MixinPlugin(Plugin plugin, ObfMap obfMap) {
+	public MixinPlugin(MixinPluginInstance plugin, ObfMap obfMap) {
 		this.plugin = plugin;
 		this.obfMap = obfMap;
 	}
@@ -102,7 +102,7 @@ public class MixinPlugin {
 
 		ClassNode classNode = ClassesManager.getClassNode(owner.getName());
 		if (classNode == null) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[!] Failed to load mixin: " + plugin.getName() + ":" + namespace + ", Reason: Could not find the target class: " + owner.getName());
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[!] Failed to load mixin: " + plugin.name() + ":" + namespace + ", Reason: Could not find the target class: " + owner.getName());
 			return false;
 		}
 		PrintWriter printWriter = new PrintWriter(MixBukkit.ERROR_OUTPUT_STREAM, true);
@@ -134,10 +134,10 @@ public class MixinPlugin {
 						CheckClassAdapter.verify(classReader, getClass().getClassLoader().getParent(), false, printWriter);
 					}
 					if (MixBukkit.SAFE_MODE) {
-						Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[!] Failed to load mixin: " + plugin.getName() + ":" + namespace + ", Reason: Invalid Bytecode, and safe-mode is on");
+						Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[!] Failed to load mixin: " + plugin.name() + ":" + namespace + ", Reason: Invalid Bytecode, and safe-mode is on");
 						return false;
 					} else {
-						Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[?] Mixin: " + plugin.getName() + ":" + namespace + " has failed the verification, and it might crash your server! Be careful.");
+						Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[?] Mixin: " + plugin.name() + ":" + namespace + " has failed the verification, and it might crash your server! Be careful.");
 					}
 				}
 
@@ -147,13 +147,13 @@ public class MixinPlugin {
 					ClassesManager.classes.put(owner.getName(), data);
 				} catch (Exception e) {
 					e.printStackTrace();
-					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[!] Failed to load mixin: " + plugin.getName() + ":" + namespace + ", Reason: Could not redefine class: " + owner.getSimpleName());
+					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[!] Failed to load mixin: " + plugin.name() + ":" + namespace + ", Reason: Could not redefine class: " + owner.getSimpleName());
 				}
 				registeredMixins.add(namespace);
 				return true;
 			}
 		}
-		Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[!] Failed to load mixin: " + plugin.getName() + ":" + namespace + ", Reason: Could not find the target method");
+		Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[!] Failed to load mixin: " + plugin.name() + ":" + namespace + ", Reason: Could not find the target method");
 		return false;
 	}
 

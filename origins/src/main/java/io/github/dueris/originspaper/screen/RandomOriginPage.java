@@ -5,7 +5,7 @@ import io.github.dueris.originspaper.content.OrbOfOrigins;
 import io.github.dueris.originspaper.event.OriginChangeEvent;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import io.github.dueris.originspaper.storage.OriginComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
@@ -27,16 +27,16 @@ public class RandomOriginPage implements ChoosingPage {
 
 	@Override
 	public ItemStack[] createDisplay(Player player, @NotNull OriginLayer layer) {
-		List<ItemStack> stacks = new ArrayList<>();
-		List<Origin> randomOrigins = new ArrayList<>(layer.getRandomOrigins());
+		List<ItemStack> stacks = new LinkedList<>();
+		List<Origin> randomOrigins = new LinkedList<>(layer.getRandomOrigins());
 		randomOrigins.sort(Comparator.comparingInt(Origin::impactValue).thenComparingInt(Origin::order));
-		List<List<Origin>> texts = new ArrayList<>();
+		List<List<Origin>> texts = new LinkedList<>();
 		int batchSize = 12;
 
 		for (int i = 0; i < randomOrigins.size(); i += batchSize) {
 			int endIndex = Math.min(i + batchSize, randomOrigins.size());
 			List<Origin> sublist = randomOrigins.subList(i, endIndex);
-			texts.add(new ArrayList<>(sublist));
+			texts.add(new LinkedList<>(sublist));
 		}
 
 		int iE = 1;
@@ -57,7 +57,7 @@ public class RandomOriginPage implements ChoosingPage {
 						Arrays.stream(ItemFlag.values()).toList().forEach(xva$0 -> blank.addItemFlags(xva$0));
 						stacks.add(blank);
 					} else {
-						List<TextComponent> cL = texts.get(0).stream().map(Origin::name).toList();
+						List<TextComponent> cL = texts.get(0).stream().map(Origin::getName).toList();
 						texts.remove(0);
 						ItemStack stack = new ItemStack(Material.FILLED_MAP);
 						stack.lore(cL);
@@ -100,7 +100,7 @@ public class RandomOriginPage implements ChoosingPage {
 	public void onChoose(@NotNull Player player, @NotNull OriginLayer layer) {
 		int r = this.random.nextInt(layer.getRandomOrigins().size());
 		Origin origin = layer.getRandomOrigins().get(Math.max(r, 1));
-		PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, origin);
+		OriginComponent.setOrigin(player.getBukkitEntity(), layer, origin);
 		OriginChangeEvent e = new OriginChangeEvent((org.bukkit.entity.Player) player.getBukkitEntity(), origin, layer, ScreenNavigator.orbChoosing.contains(player));
 		Bukkit.getPluginManager().callEvent(e);
 		player.getBukkitEntity().getOpenInventory().close();

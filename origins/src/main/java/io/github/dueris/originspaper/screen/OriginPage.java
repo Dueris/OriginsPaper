@@ -5,8 +5,9 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.data.types.Impact;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.power.ModifyPlayerSpawnPower;
-import io.github.dueris.originspaper.power.PowerType;
+import io.github.dueris.originspaper.power.type.ModifyPlayerSpawnPower;
+import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.storage.OriginComponent;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import io.github.dueris.originspaper.util.ComponentUtil;
 import io.github.dueris.originspaper.util.LangFile;
@@ -30,8 +31,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -69,7 +70,7 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 		}
 
 		if (lore != null) {
-			itemMeta.lore(cutStringIntoLines(lore).stream().map(OriginPage::noItalic).toList());
+			itemMeta.lore(cutStringIntoLines(net.minecraft.network.chat.Component.literal(lore)).stream().map(OriginPage::noItalic).toList());
 		}
 
 		item.setItemMeta(itemMeta);
@@ -82,8 +83,9 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 			.color(NamedTextColor.GRAY);
 	}
 
-	public static List<String> cutStringIntoLines(@NotNull String string) {
-		ArrayList<String> strings = new ArrayList<>();
+	public static List<String> cutStringIntoLines(@NotNull net.minecraft.network.chat.Component component) {
+		String string = component.getString();
+		LinkedList<String> strings = new LinkedList<>();
 		int startStringLength = string.length();
 
 		while (string.length() > 40) {
@@ -114,13 +116,13 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 
 	@Override
 	public @NotNull ResourceLocation key() {
-		return ResourceLocation.parse(this.origin.key() + "_page");
+		return ResourceLocation.parse(this.origin.getId() + "_page");
 	}
 
 	@Override
 	public ItemStack @NotNull [] createDisplay(net.minecraft.world.entity.player.Player player, OriginLayer layer) {
-		List<ItemStack> stacks = new ArrayList<>();
-		List<PowerType> powerContainers = new ArrayList<>(this.origin.powers().stream()
+		List<ItemStack> stacks = new LinkedList<>();
+		List<PowerType> powerContainers = new LinkedList<>(this.origin.powers().stream()
 			.filter(Objects::nonNull).map(OriginsPaper::getPower).filter(p -> p != null && !p.isHidden()).toList());
 
 		for (int i = 0; i < 54; i++) {
@@ -174,9 +176,9 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 				if (!powerContainers.isEmpty()) {
 					ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 					ItemMeta meta = originPower.getItemMeta();
-					meta.displayName(ComponentUtil.stringToComponent(LangFile.transform(PlainTextComponentSerializer.plainText().serialize(powerContainers.get(0).name()))).decoration(TextDecoration.ITALIC, false));
+					meta.displayName(ComponentUtil.nmsToKyori(LangFile.translatable(PlainTextComponentSerializer.plainText().serialize(powerContainers.get(0).name()))).decoration(TextDecoration.ITALIC, false));
 					Arrays.stream(ItemFlag.values()).toList().forEach(originPower::addItemFlags);
-					List<Component> lore = cutStringIntoLines(LangFile.transform(PlainTextComponentSerializer.plainText().serialize(powerContainers.get(0).description()))).stream().map(OriginPage::noItalic).toList();
+					List<Component> lore = cutStringIntoLines(LangFile.translatable(PlainTextComponentSerializer.plainText().serialize(powerContainers.get(0).description()))).stream().map(OriginPage::noItalic).toList();
 					meta.lore(lore);
 					originPower.setItemMeta(meta);
 					Arrays.stream(ItemFlag.values()).toList().forEach(originPower::addItemFlags);
@@ -212,14 +214,14 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 			originIcon.setItemMeta(skull_p);
 		}
 
-		return itemProperties(originIcon, this.origin.name()
+		return itemProperties(originIcon, this.origin.getName()
 			.decoration(TextDecoration.ITALIC, false)
-			.color(NamedTextColor.WHITE), ItemFlag.values(), null, PlainTextComponentSerializer.plainText().serialize(this.origin.description()));
+			.color(NamedTextColor.WHITE), ItemFlag.values(), null, PlainTextComponentSerializer.plainText().serialize(this.origin.getDescription()));
 	}
 
 	@Override
 	public void onChoose(net.minecraft.world.entity.player.@NotNull Player player, OriginLayer layer) {
-		PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, this.origin);
+		OriginComponent.setOrigin(player.getBukkitEntity(), layer, this.origin);
 		player.getBukkitEntity().getOpenInventory().close();
 		final Player bukkitEntity = (Player) player.getBukkitEntity();
 		if (PlayerManager.firstJoin.contains(bukkitEntity)) {

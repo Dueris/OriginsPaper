@@ -8,6 +8,8 @@ import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.eclipse.jgit.api.Git;
@@ -27,6 +29,7 @@ import java.util.regex.Pattern;
 
 public class AutoMapper {
 
+	private static final Logger log = LogManager.getLogger("AutoMapper");
 	private static boolean prepared = false;
 	private static File mappingFile;
 
@@ -39,9 +42,9 @@ public class AutoMapper {
 				if (MixBukkit.DEBUG) {
 					e.printStackTrace();
 				}
-				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[!] Error loading mapping! Have you connected to the internet?");
+				log.error("[!] Error loading mapping! Have you connected to the internet?");
 				if (MixBukkit.SAFE_MODE) {
-					Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[!] Server shutdown because safe mode is on, not loading mapping correctly may cause critical bugs/saves corruption.");
+					log.error("[!] Server shutdown because safe mode is on, not loading mapping correctly may cause critical bugs/saves corruption.");
 					Bukkit.getServer().shutdown();
 					throw e;
 				}
@@ -59,19 +62,19 @@ public class AutoMapper {
 	@SneakyThrows
 	private static void prepareMapping() {
 		if (!shouldLoadMapping()) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[!] You don't need any mapping for this build!");
+			log.info("[!] You don't need any mapping for this build!");
 			return;
 		}
 		mappingFile = new File("mappings.csrg");
 		if (mappingFile.exists()) {
 			if (!mappingFile.isDirectory()) {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Pre-downloaded mapping detected! Using it. If anything went wrong, please try deleting " + ChatColor.DARK_GRAY + mappingFile.getAbsolutePath() + ChatColor.YELLOW + " and try again");
+				log.info("[!] Pre-downloaded mapping detected! Using it. If anything went wrong, please try deleting {}{}{} and try again", ChatColor.DARK_GRAY, mappingFile.getAbsolutePath(), ChatColor.YELLOW);
 				return;
 			}
 			mappingFile.delete();
 		}
 		File buildDataDir = new File(Paths.get("cache/mixins/").toFile(), "BuildData");
-		Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Fetching BuildData version from Spigot API...");
+		log.info("[!] Fetching BuildData version from Spigot API...");
 		Gson gson = new Gson();
 		URLConnection connection = null;
 		try {
@@ -87,19 +90,19 @@ public class AutoMapper {
 		}
 		String buildDataVersion = object.get("refs").getAsJsonObject().get("BuildData").getAsString();
 		Git buildData = null;
-		Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Fetched BuildData Version: " + buildDataVersion + "!");
+		log.info("[!] Fetched BuildData Version: {}!", buildDataVersion);
 		if (buildDataDir.exists()) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Found Spigot's BuildData cache at " + buildDataDir.getAbsolutePath() + "! Doing some simple verification...");
+			log.info("[!] Found Spigot's BuildData cache at {}! Doing some simple verification...", buildDataDir.getAbsolutePath());
 			try {
 				buildData = Git.open(buildDataDir);
-				Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Verified! Updating BuildData...");
+				log.info("[!] Verified! Updating BuildData...");
 				buildData.pull().call();
 			} catch (Exception e) {
 				buildDataDir.delete();
 			}
 		}
 		if (!buildDataDir.exists()) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Cloning Spigot's BuildData repository to " + buildDataDir.getAbsolutePath() + " . It should take a while (Usually around 35 MB), but it's a one time process (across every server)");
+			log.info("[!] Cloning Spigot's BuildData repository to {} . It should take a while (Usually around 35 MB), but it's a one time process (across every server)", buildDataDir.getAbsolutePath());
 			try {
 				buildData = Git.cloneRepository().setURI("https://hub.spigotmc.org/stash/scm/spigot/builddata.git").setDirectory(buildDataDir).call();
 			} catch (GitAPIException e) {
@@ -107,30 +110,30 @@ public class AutoMapper {
 			}
 		}
 
-		Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Successfully fetched BuildData! Switching to " + buildDataVersion);
+		log.info("[!] Successfully fetched BuildData! Switching to {}", buildDataVersion);
 		try {
 			buildData.checkout().setName(buildDataVersion).call();
 		} catch (GitAPIException e) {
 			throw new RuntimeException(e);
 		}
-		Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Checking version info...");
+		log.info("[!] Checking version info...");
 		VersionInfo versionInfo = null;
 		try {
 			versionInfo = gson.fromJson(new FileReader(new File(buildDataDir, "info.json")), VersionInfo.class);
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
-		Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Scanning for members mapping...");
+		log.info("[!] Scanning for members mapping...");
 		File classMappings = new File(buildDataDir, "mappings/" + versionInfo.classMappings);
 		if (versionInfo.memberMappings == null) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Didn't find a members mapping! Building one...");
+			log.info("[!] Didn't find a members mapping! Building one...");
 			MapUtil mapUtil = new MapUtil();
 			try {
 				mapUtil.loadBuk(classMappings);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Downloading Minecraft's Mappings & Building Members Mappings...");
+			log.info("[!] Downloading Minecraft's Mappings & Building Members Mappings...");
 			InputStream inputStream = null;
 			try {
 				inputStream = new URL(versionInfo.mappingsUrl).openConnection().getInputStream();
@@ -154,7 +157,7 @@ public class AutoMapper {
 				throw new RuntimeException(e);
 			}
 		} else {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Found a pre-built members mapping! Extracting...");
+			log.info("[!] Found a pre-built members mapping! Extracting...");
 			try {
 				mappingFile.createNewFile();
 			} catch (IOException e) {
@@ -166,7 +169,7 @@ public class AutoMapper {
 				throw new RuntimeException(e);
 			}
 		}
-		Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[!] Finished loading mappings!");
+		log.info("[!] Finished loading mappings!");
 
 	}
 

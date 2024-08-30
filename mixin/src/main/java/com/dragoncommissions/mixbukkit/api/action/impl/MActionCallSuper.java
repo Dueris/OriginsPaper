@@ -5,22 +5,18 @@ import com.dragoncommissions.mixbukkit.api.action.MixinAction;
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.inner.IShellCodeMethodInvoke;
 import com.dragoncommissions.mixbukkit.utils.ASMUtils;
 import javassist.bytecode.Opcode;
+import org.jetbrains.annotations.NotNull;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-public class MActionCallSuper implements MixinAction {
+public record MActionCallSuper(MixinPlugin plugin) implements MixinAction {
 
-	private final MixinPlugin plugin;
-
-	public MActionCallSuper(MixinPlugin plugin) {
-		this.plugin = plugin;
-	}
 
 	@Override
-	public void action(Class<?> owner, MethodNode method) {
+	public void action(@NotNull Class<?> owner, MethodNode method) {
 		Method m = null;
 		Method superMethod = null;
 		for (Method declaredMethod : owner.getDeclaredMethods()) {

@@ -1,483 +1,314 @@
 package io.github.dueris.originspaper.command;
 
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.dueris.calio.registry.Registrar;
-import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.content.OrbOfOrigins;
-import io.github.dueris.originspaper.event.OriginChangeEvent;
+import io.github.dueris.originspaper.command.argument.LayerArgumentType;
+import io.github.dueris.originspaper.command.argument.OriginArgumentType;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.power.PowerType;
-import io.github.dueris.originspaper.power.RecipePower;
 import io.github.dueris.originspaper.registry.Registries;
-import io.github.dueris.originspaper.screen.OriginPage;
-import io.github.dueris.originspaper.screen.RandomOriginPage;
-import io.github.dueris.originspaper.storage.OriginConfiguration;
+import io.github.dueris.originspaper.storage.OriginComponent;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
+import io.github.dueris.originspaper.util.LangFile;
+import io.github.dueris.originspaper.util.Util;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.server.level.ServerPlayer;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
-public class OriginCommand extends BukkitRunnable implements Listener {
-	public static final HashMap<Player, Integer> playerPage = new HashMap<>();
-	public static HashMap<Player, ArrayList<Origin>> playerOrigins = new HashMap<>();
-	protected static Registrar<OriginLayer> LAYERS = CalioRegistry.INSTANCE.retrieve(Registries.LAYER);
-	protected static Registrar<Origin> ORIGINS = CalioRegistry.INSTANCE.retrieve(Registries.ORIGIN);
-	protected static Registrar<PowerType> POWERS = CalioRegistry.INSTANCE.retrieve(Registries.CRAFT_POWER);
+import static io.papermc.paper.command.brigadier.Commands.argument;
+import static io.papermc.paper.command.brigadier.Commands.literal;
 
-	public static void register(@NotNull CommandDispatcher<CommandSourceStack> dispatcher) {
+public class OriginCommand {
+	public static void register(@NotNull Commands dispatcher) {
 		dispatcher.register(
-			Commands.literal("origin")
-				.then(
-					(Commands.literal("set").requires(source -> source.hasPermission(2)))
-						.then(
-							Commands.argument("targets", EntityArgument.players())
-								.then(
-									Commands.argument("layer", ResourceLocationArgument.id())
-										.suggests(
-											(context, builder) -> {
-												LAYERS.forEach(
-													(location, layer) -> {
-														if (context.getInput().split(" ").length == 3
-															|| layer.getTag()
-															.startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
-															|| layer.getTag().split(":")[1]
-															.startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])) {
-															builder.suggest(layer.getTag());
-														}
-													}
-												);
-												return builder.buildFuture();
-											}
-										)
-										.then(
-											Commands.argument("origin", ResourceLocationArgument.id())
-												.suggests(
-													(context, builder) -> {
-														OriginLayer layer = OriginsPaper.getLayer(ResourceLocationArgument.getId(context, "layer"));
-														layer.getOriginIdentifiers().stream().map(ResourceLocation::toString).filter(tag -> {
-															String input = context.getInput().split(" ")[context.getInput().split(" ").length - 1];
-															return (tag.startsWith(input)) || context.getInput().split(" ").length == 4;
-														}).forEach(builder::suggest);
-														return builder.buildFuture();
-													}
-												)
-												.executes(
-													context -> {
-														Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-														OriginLayer layer = OriginsPaper.getLayer(ResourceLocationArgument.getId(context, "layer"));
-														Origin origin = OriginsPaper.getOrigin(ResourceLocationArgument.getId(context, "origin"));
-														if (!layer.getOriginIdentifiers().contains(ResourceLocation.parse(origin.getTag()))) {
-															context.getSource()
-																.sendFailure(
-																	Component.literal(
-																		"Origin \"%e%\" not found on layer: ".replace("%e%", origin.getTag())
-																			+ CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer"))
-																			.asString()
-																	)
-																);
-															return 0;
-														} else {
-															targets.forEach(
-																player -> {
-																	PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, origin);
-																	player.getBukkitEntity()
-																		.getPersistentDataContainer()
-																		.set(
-																			CraftNamespacedKey.fromMinecraft(
-																				ResourceLocation.fromNamespaceAndPath("originspaper", "in-phantomform")
-																			),
-																			PersistentDataType.BOOLEAN,
-																			false
-																		);
-																	OriginChangeEvent originChangeEvent = new OriginChangeEvent(
-																		player.getBukkitEntity(), origin, layer, false
-																	);
-																	Bukkit.getServer().getPluginManager().callEvent(originChangeEvent);
-																}
-															);
-															return 1;
-														}
-													}
-												)
-										)
-								)
-						)
+			literal("origin").requires(cs -> ((net.minecraft.commands.CommandSourceStack) cs).hasPermission(2))
+				.then(literal("set")
+					.then(argument("targets", EntityArgument.players())
+						.then(argument("layer", LayerArgumentType.layer())
+							.then(argument("origin", OriginArgumentType.origin())
+								.executes(OriginCommand::setOrigin))))
 				)
-				.then(
-					Commands.literal("recipe")
-						.executes(
-							context -> {
-								if (context.getSource().isPlayer()) {
-									if (!OriginConfiguration.getConfiguration().getBoolean("orb-of-origins")) {
-										return 0;
-									} else {
-										CraftInventoryCustom custommenu = (CraftInventoryCustom) Bukkit.createInventory(
-											context.getSource().getPlayer().getBukkitEntity(),
-											InventoryType.WORKBENCH,
-											"Orb of Origins"
-										);
-
-										try {
-											CraftPlayer p = context.getSource().getPlayer().getBukkitEntity();
-											custommenu.setItem(
-												1,
-												new ItemStack(
-													Material.valueOf(OriginConfiguration.getOrbConfiguration().get("crafting.top.left").toString())
-												)
-											);
-											custommenu.setItem(
-												2,
-												new ItemStack(
-													Material.valueOf(OriginConfiguration.getOrbConfiguration().get("crafting.top.middle").toString())
-												)
-											);
-											custommenu.setItem(
-												3,
-												new ItemStack(
-													Material.valueOf(OriginConfiguration.getOrbConfiguration().get("crafting.top.right").toString())
-												)
-											);
-											custommenu.setItem(
-												4,
-												new ItemStack(
-													Material.valueOf(OriginConfiguration.getOrbConfiguration().get("crafting.middle.left").toString())
-												)
-											);
-											custommenu.setItem(
-												5,
-												new ItemStack(
-													Material.valueOf(OriginConfiguration.getOrbConfiguration().get("crafting.middle.middle").toString())
-												)
-											);
-											custommenu.setItem(
-												6,
-												new ItemStack(
-													Material.valueOf(OriginConfiguration.getOrbConfiguration().get("crafting.middle.right").toString())
-												)
-											);
-											custommenu.setItem(
-												7,
-												new ItemStack(
-													Material.valueOf(OriginConfiguration.getOrbConfiguration().get("crafting.bottom.left").toString())
-												)
-											);
-											custommenu.setItem(
-												8,
-												new ItemStack(
-													Material.valueOf(OriginConfiguration.getOrbConfiguration().get("crafting.bottom.middle").toString())
-												)
-											);
-											custommenu.setItem(
-												9,
-												new ItemStack(
-													Material.valueOf(OriginConfiguration.getOrbConfiguration().get("crafting.bottom.right").toString())
-												)
-											);
-											custommenu.setItem(0, OrbOfOrigins.orb);
-											p.openInventory(custommenu);
-											p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 10.0F, 9.0F);
-										} catch (Exception var3) {
-											var3.printStackTrace();
-										}
-
-										return 1;
-									}
-								} else {
-									context.getSource().sendFailure(Component.literal("Only players can access this command"));
-									return 0;
-								}
-							}
-						)
+				.then(literal("has")
+					.then(argument("targets", EntityArgument.players())
+						.then(argument("layer", LayerArgumentType.layer())
+							.then(argument("origin", OriginArgumentType.origin())
+								.executes(OriginCommand::hasOrigin))))
 				)
-				.then(
-					(Commands.literal("get").requires(source -> source.hasPermission(2)))
-						.then(
-							Commands.argument("targets", EntityArgument.players())
-								.then(
-									Commands.argument("layer", ResourceLocationArgument.id())
-										.suggests(
-											(context, builder) -> {
-												LAYERS.forEach(
-													(location, layer) -> {
-														if (context.getInput().split(" ").length == 3
-															|| layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
-															|| layer.getTag().split(":")[1]
-															.startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])) {
-															builder.suggest(layer.getTag());
-														}
-													}
-												);
-												return builder.buildFuture();
-											}
-										)
-										.executes(
-											context -> {
-												Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-												OriginLayer layer = OriginsPaper.getLayer(ResourceLocationArgument.getId(context, "layer"));
-												targets.forEach(
-													player -> context.getSource()
-														.sendSystemMessage(
-															Component.literal(
-																"%player% has the following %layer% : %origin%"
-																	.replace("%player%", player.getBukkitEntity().getName())
-																	.replace("%layer%", layer.getTag())
-																	.replace("%origin%", PowerHolderComponent.getOrigin(player.getBukkitEntity(), layer).getTag())
-															)
-														)
-												);
-												return 1;
-											}
-										)
-								)
-						)
-				)
-				.then(
-					(Commands.literal("random")
-						.requires(source -> source.hasPermission(2)))
-						.executes(context -> {
-							if (!context.getSource().isPlayer()) {
-								return 0;
-							} else {
-								ServerPlayer player = context.getSource().getPlayer();
-								RandomOriginPage randomOriginPage = new RandomOriginPage();
-								OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values().forEach(layer -> randomOriginPage.onChoose(player, layer));
-								return 1;
-							}
-						})
-						.then(
-							(Commands.argument("targets", EntityArgument.players()).executes(context -> {
-								Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-								RandomOriginPage randomOriginPage = new RandomOriginPage();
-								targets.forEach(player -> OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values().forEach(layer -> randomOriginPage.onChoose(player, layer)));
-								return 1;
-							}))
-								.then(
-									Commands.argument("layer", ResourceLocationArgument.id())
-										.suggests(
-											(context, builder) -> {
-												LAYERS.forEach(
-													(location, layer) -> {
-														if (context.getInput().split(" ").length == 3
-															|| layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
-															|| layer.getTag().split(":")[1]
-															.startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])) {
-															builder.suggest(layer.getTag());
-														}
-													}
-												);
-												return builder.buildFuture();
-											}
-										)
-										.executes(context -> {
-											Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-											OriginLayer layer = OriginsPaper.getLayer(ResourceLocationArgument.getId(context, "layer"));
-											RandomOriginPage randomOriginPage = new RandomOriginPage();
-											targets.forEach(player -> randomOriginPage.onChoose(player, layer));
-											return 1;
-										})
-								)
-						)
-				)
-				.then(
-					((Commands.literal("gui")
-						.requires(source -> source.hasPermission(2)))
-						.executes(context -> {
-							if (!context.getSource().isPlayer()) {
-								return 0;
-							} else {
-								ServerPlayer player = context.getSource().getPlayer();
-								OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values().forEach(layer -> {
-									PowerHolderComponent.unloadPowers(player.getBukkitEntity(), layer);
-									PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, OriginsPaper.EMPTY_ORIGIN);
-								});
-								return 1;
-							}
-						})
-						.then(
-							(Commands.argument("targets", EntityArgument.players()).executes(context -> {
-								Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-								targets.forEach(player -> {
-									for (OriginLayer layer : OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).values()) {
-										PowerHolderComponent.unloadPowers(player.getBukkitEntity(), layer);
-										PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, OriginsPaper.EMPTY_ORIGIN);
-									}
-								});
-								return 1;
-							}))
-								.then(
-									Commands.argument("layer", ResourceLocationArgument.id())
-										.suggests(
-											(context, builder) -> {
-												LAYERS.forEach(
-													(location, layer) -> {
-														if (context.getInput().split(" ").length == 3
-															|| layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
-															|| layer.getTag().split(":")[1]
-															.startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])) {
-															builder.suggest(layer.getTag());
-														}
-													}
-												);
-												return builder.buildFuture();
-											}
-										)
-										.executes(context -> {
-											Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-											OriginLayer layer = OriginsPaper.getLayer(ResourceLocationArgument.getId(context, "layer"));
-											targets.forEach(player -> {
-												PowerHolderComponent.unloadPowers(player.getBukkitEntity(), layer);
-												PowerHolderComponent.setOrigin(player.getBukkitEntity(), layer, OriginsPaper.EMPTY_ORIGIN);
-											});
-											return 1;
-										})
-								)
+				.then(literal("get")
+					.then(argument("target", EntityArgument.player())
+						.then(argument("layer", LayerArgumentType.layer())
+							.executes(OriginCommand::getOrigin)
 						)
 					)
-				).then(
-					Commands.literal("info")
-						.executes(
-							context -> {
-								if (context.getSource().isPlayer()) {
-									ServerPlayer p = context.getSource().getPlayer();
-									Map<OriginLayer, Origin> origins = PowerHolderComponent.getOrigin(p.getBukkitEntity());
-									origins.entrySet().removeIf(entry -> entry.getKey().isHidden());
-									playerOrigins.put(p.getBukkitEntity(), new ArrayList<>(origins.values()));
-									if (!playerPage.containsKey(p.getBukkitEntity())) {
-										playerPage.put(p.getBukkitEntity(), 0);
-									}
-
-									Inventory help = Bukkit.createInventory(
-										p.getBukkitEntity(), 54, net.kyori.adventure.text.Component.text("Info - ").append(playerOrigins.get(p.getBukkitEntity()).get(playerPage.get(p.getBukkitEntity())).name())
-									);
-									help.setContents(
-										new OriginPage(playerOrigins.get(p.getBukkitEntity()).get(playerPage.get(p.getBukkitEntity()))).createDisplay(p, null)
-									);
-									p.getBukkitEntity().openInventory(help);
-									p.getBukkitEntity().playSound(p.getBukkitEntity().getLocation(), Sound.UI_BUTTON_CLICK, 2.0F, 1.0F);
-									return 1;
-								} else {
-									context.getSource().sendFailure(Component.literal("Only players can access this command"));
-									return 0;
-								}
-							}
-						)
 				)
-				.then(
-					(Commands.literal("give").requires(source -> source.hasPermission(2)))
-						.then(
-							Commands.argument("targets", EntityArgument.players())
-								.then(
-									(Commands.argument("namespace", ResourceLocationArgument.id())
-										.suggests((context, builder) -> {
-											RecipePower.tags.forEach(builder::suggest);
-											builder.suggest("origins:orb_of_origins");
-											return builder.buildFuture();
-										})
-										.executes(context -> {
-											give(context, 1);
-											return 1;
-										}))
-										.then(Commands.argument("amount", IntegerArgumentType.integer()).executes(context -> {
-											give(context, IntegerArgumentType.getInteger(context, "amount"));
-											return 1;
-										}))
-								)
+				.then(literal("gui")
+					.executes(commandContext -> OriginCommand.openMultipleLayerScreens(commandContext, TargetType.INVOKER))
+					.then(argument("targets", EntityArgument.players())
+						.executes(commandContext -> OriginCommand.openMultipleLayerScreens(commandContext, TargetType.SPECIFY))
+						.then(argument("layer", LayerArgumentType.layer())
+							.executes(OriginCommand::openSingleLayerScreen)
 						)
-				));
+					)
+				)
+				.then(literal("random")
+					.executes(commandContext -> OriginCommand.randomizeOrigins(commandContext, TargetType.INVOKER))
+					.then(argument("targets", EntityArgument.players())
+						.executes(commandContext -> OriginCommand.randomizeOrigins(commandContext, TargetType.SPECIFY))
+						.then(argument("layer", LayerArgumentType.layer())
+							.executes(OriginCommand::randomizeOrigin)
+						)
+					)
+				).build()
+		);
 	}
 
-	public static void give(CommandContext<CommandSourceStack> context, int amt) throws CommandSyntaxException {
-		String tag = CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "namespace")).asString();
-		if (RecipePower.taggedRegistry.containsKey(tag)) {
-			for (ServerPlayer player : EntityArgument.getPlayers(context, "targets")) {
-				Recipe recipe = RecipePower.taggedRegistry.get(tag);
-				ItemStack itemStack = recipe.getResult().clone();
-				itemStack.setAmount(amt);
-				player.addItem(CraftItemStack.asNMSCopy(itemStack));
+	/**
+	 * Set the origin of the specified entities in the specified origin layer.
+	 *
+	 * @param commandContext the command context
+	 * @return the number of players whose origin has been set
+	 * @throws CommandSyntaxException if the entity is not found or if the entity is <b>not</b> an instance of {@link ServerPlayer}
+	 */
+	private static int setOrigin(@NotNull CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
+
+		Collection<ServerPlayer> targets = commandContext.getArgument("targets", EntitySelector.class).findPlayers((net.minecraft.commands.CommandSourceStack) commandContext.getSource());
+		OriginLayer originLayer = LayerArgumentType.getLayer(commandContext, "layer");
+		Origin origin = OriginArgumentType.getOrigin(commandContext, "origin");
+		net.minecraft.commands.CommandSourceStack serverCommandSource = (net.minecraft.commands.CommandSourceStack) commandContext.getSource();
+
+		int processedTargets = 0;
+
+		if (origin.equals(Origin.EMPTY) || Util.collapseList(originLayer.getOrigins().stream().map(OriginLayer.ConditionedOrigin::origins).toList()).contains(origin.getId())) {
+
+			for (ServerPlayer target : targets) {
+
+				OriginComponent.setOrigin(target.getBukkitEntity(), originLayer, origin);
+				processedTargets++;
+
 			}
+
+			if (processedTargets == 1)
+				serverCommandSource.sendSuccess(() -> LangFile.translatable("commands.origin.set.success.single", targets.iterator().next().getDisplayName().getString(), originLayer.getName(), origin.getName()), true);
+			else {
+				int finalProcessedTargets = processedTargets;
+				serverCommandSource.sendSuccess(() -> LangFile.translatable("commands.origin.set.success.multiple", finalProcessedTargets, originLayer.getName(), origin.getName()), true);
+			}
+
+		} else
+			serverCommandSource.sendFailure(LangFile.translatable("commands.origin.unregistered_in_layer", origin.getId(), originLayer.getId()));
+
+		return processedTargets;
+
+	}
+
+	/**
+	 * Check if the specified entities has the specified origin in the specified origin layer.
+	 *
+	 * @param commandContext the command context
+	 * @return the number of players that has the specified origin in the specified origin layer
+	 * @throws CommandSyntaxException if the entity is not found or if the entity is <b>not</b> an instance of {@link ServerPlayer}
+	 */
+	private static int hasOrigin(@NotNull CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
+
+		Collection<ServerPlayer> targets = commandContext.getArgument("targets", EntitySelector.class).findPlayers((net.minecraft.commands.CommandSourceStack) commandContext.getSource());
+		OriginLayer originLayer = LayerArgumentType.getLayer(commandContext, "layer");
+		Origin origin = OriginArgumentType.getOrigin(commandContext, "origin");
+		net.minecraft.commands.CommandSourceStack serverCommandSource = (net.minecraft.commands.CommandSourceStack) commandContext.getSource();
+
+		int processedTargets = 0;
+
+		if (origin.equals(Origin.EMPTY) || originLayer.getOrigins().contains(origin.getId())) {
+
+			for (ServerPlayer target : targets) {
+				if ((origin.equals(Origin.EMPTY) || OriginComponent.hasOrigin(target.getBukkitEntity(), originLayer)) && OriginComponent.getOrigin(target.getBukkitEntity(), originLayer).equals(origin))
+					processedTargets++;
+			}
+
+			if (processedTargets == 0)
+				serverCommandSource.sendFailure(LangFile.translatable("commands.execute.conditional.fail"));
+			else if (processedTargets == 1)
+				serverCommandSource.sendSuccess(() -> LangFile.translatable("commands.execute.conditional.pass"), true);
+			else {
+				int finalProcessedTargets = processedTargets;
+				serverCommandSource.sendSuccess(() -> LangFile.translatable("commands.execute.conditional.pass_count", finalProcessedTargets), true);
+			}
+
+		} else
+			serverCommandSource.sendFailure(LangFile.translatable("commands.origin.unregistered_in_layer", origin.getId(), originLayer.getId()));
+
+		return processedTargets;
+
+	}
+
+	/**
+	 * Get the origin of the specified entity from the specified origin layer.
+	 *
+	 * @param commandContext the command context
+	 * @return 1
+	 * @throws CommandSyntaxException if the entity is not found or if the entity is <b>not</b> an instance of {@link ServerPlayer}
+	 */
+	private static int getOrigin(@NotNull CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
+
+		ServerPlayer target = commandContext.getArgument("target", EntitySelector.class).findSinglePlayer((net.minecraft.commands.CommandSourceStack) commandContext.getSource());
+		net.minecraft.commands.CommandSourceStack serverCommandSource = (net.minecraft.commands.CommandSourceStack) commandContext.getSource();
+
+		OriginLayer originLayer = LayerArgumentType.getLayer(commandContext, "layer");
+		Origin origin = OriginComponent.getOrigin(target.getBukkitEntity(), originLayer);
+
+		serverCommandSource.sendSuccess(() -> LangFile.translatable("commands.origin.get.result", target.getDisplayName().getString(), originLayer.getName(), origin.getName(), origin.getId()), true);
+
+		return 1;
+
+	}
+
+	/**
+	 * Open the 'Choose Origin' screen for the specified origin layer to the specified entities.
+	 *
+	 * @param commandContext the command context
+	 * @return the number of players that had the 'Choose Origin' screen opened for them
+	 * @throws CommandSyntaxException if the entity is not found or if the entity is not an instance of {@link ServerPlayer}
+	 */
+	private static int openSingleLayerScreen(@NotNull CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
+
+		net.minecraft.commands.CommandSourceStack serverCommandSource = (net.minecraft.commands.CommandSourceStack) commandContext.getSource();
+		Collection<ServerPlayer> targets = commandContext.getArgument("targets", EntitySelector.class).findPlayers((net.minecraft.commands.CommandSourceStack) commandContext.getSource());
+		OriginLayer originLayer = LayerArgumentType.getLayer(commandContext, "layer");
+
+		for (ServerPlayer target : targets) {
+			PowerHolderComponent.unloadPowers(target.getBukkitEntity(), originLayer, true);
+			OriginComponent.setOrigin(target.getBukkitEntity(), originLayer, Origin.EMPTY);
+		}
+
+		serverCommandSource.sendSuccess(() -> LangFile.translatable("commands.origin.gui.layer", targets.size(), originLayer.getName()), true);
+		return targets.size();
+
+	}
+
+	/**
+	 * Open the 'Choose Origin' screen for all the enabled origin layers to the specified entities.
+	 *
+	 * @param commandContext the command context
+	 * @return the number of players that had the 'Choose Origin' screen opened for them
+	 * @throws CommandSyntaxException if the entity is not found or if the entity is not an instance of {@link ServerPlayer}
+	 */
+	private static int openMultipleLayerScreens(@NotNull CommandContext<CommandSourceStack> commandContext, @NotNull TargetType targetType) throws CommandSyntaxException {
+
+		net.minecraft.commands.CommandSourceStack serverCommandSource = (net.minecraft.commands.CommandSourceStack) commandContext.getSource();
+		List<ServerPlayer> targets = new LinkedList<>();
+
+		switch (targetType) {
+			case INVOKER -> targets.add(serverCommandSource.getPlayerOrException());
+			case SPECIFY ->
+				targets.addAll(commandContext.getArgument("targets", EntitySelector.class).findPlayers((net.minecraft.commands.CommandSourceStack) commandContext.getSource()));
+		}
+
+		for (ServerPlayer target : targets) {
+			for (OriginLayer layer : OriginComponent.getLayers(target.getBukkitEntity())) {
+				PowerHolderComponent.unloadPowers(target.getBukkitEntity(), layer, true);
+				OriginComponent.setOrigin(target.getBukkitEntity(), layer, Origin.EMPTY);
+			}
+		}
+
+		serverCommandSource.sendSuccess(() -> LangFile.translatable("commands.origin.gui.all", targets.size()), false);
+		return targets.size();
+
+	}
+
+	/**
+	 * Randomize the origin of the specified entities in the specified origin layer.
+	 *
+	 * @param commandContext the command context
+	 * @return the number of players that had their origin randomized in the specified origin layer
+	 * @throws CommandSyntaxException if the entity is not found or if the entity is not an instance of {@link ServerPlayer}
+	 */
+	private static int randomizeOrigin(@NotNull CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
+
+		net.minecraft.commands.CommandSourceStack serverCommandSource = (net.minecraft.commands.CommandSourceStack) commandContext.getSource();
+		Collection<ServerPlayer> targets = commandContext.getArgument("targets", EntitySelector.class).findPlayers((net.minecraft.commands.CommandSourceStack) commandContext.getSource());
+		OriginLayer originLayer = LayerArgumentType.getLayer(commandContext, "layer");
+
+		if (originLayer.isRandomAllowed()) {
+
+			Origin origin = null;
+			for (ServerPlayer target : targets) {
+				origin = getRandomOrigin(target, originLayer);
+			}
+
+			if (targets.size() > 1)
+				serverCommandSource.sendSuccess(() -> LangFile.translatable("commands.origin.random.success.multiple", targets.size(), originLayer.getName()), true);
+			else if (targets.size() == 1) {
+				Origin finalOrigin = origin;
+				serverCommandSource.sendSuccess(() -> LangFile.translatable("commands.origin.random.success.single", targets.iterator().next().getDisplayName().getString(), finalOrigin.getName(), originLayer.getName()), false);
+			}
+
+			return targets.size();
+
 		} else {
-			context.getSource().sendFailure(Component.literal("Item not found in origins registry."));
+			serverCommandSource.sendFailure(LangFile.translatable("commands.origin.random.not_allowed", originLayer.getName()));
+			return 0;
 		}
+
 	}
 
-	@EventHandler
-	public void stopStealingInfo(InventoryClickEvent e) {
-		if (e.getView().getTitle().startsWith("Info")) {
-			e.setCancelled(true);
+	/**
+	 * Randomize the origins of the specified entities in all the origin layers that allows to be randomized.
+	 *
+	 * @param commandContext the command context
+	 * @return the number of players that had their origins randomized in all the origin layers that allows to be randomized
+	 * @throws CommandSyntaxException if the entity is not found or if the entity is not an instance of {@link ServerPlayer}
+	 */
+	private static int randomizeOrigins(@NotNull CommandContext<CommandSourceStack> commandContext, @NotNull TargetType targetType) throws CommandSyntaxException {
+
+		net.minecraft.commands.CommandSourceStack serverCommandSource = (net.minecraft.commands.CommandSourceStack) commandContext.getSource();
+		List<ServerPlayer> targets = new LinkedList<>();
+		List<OriginLayer> originLayers = OriginsPaper.getRegistry().retrieve(Registries.LAYER).stream().filter(OriginLayer::isRandomAllowed).toList();
+
+		switch (targetType) {
+			case INVOKER -> targets.add(serverCommandSource.getPlayerOrException());
+			case SPECIFY ->
+				targets.addAll(commandContext.getArgument("targets", EntitySelector.class).findPlayers((net.minecraft.commands.CommandSourceStack) commandContext.getSource()));
 		}
-	}
 
-	@EventHandler
-	public void onMenuScroll(InventoryClickEvent e) {
-		ItemStack item = e.getCurrentItem();
-		Player player = (Player) e.getWhoClicked();
-		if (item != null) {
-			if (e.getView().getTitle().startsWith("Info")) {
-				if (item.getType() == Material.ARROW
-					&& (item.getItemMeta().getDisplayName().equals("Back Origin") || item.getItemMeta().getDisplayName().equals("Next Origin"))) {
-					if (item.getItemMeta().getDisplayName().equals("Back Origin") && playerPage.get(player) > 0) {
-						playerPage.put(player, playerPage.get(player) - 1);
-					}
-
-					if (item.getItemMeta().getDisplayName().equals("Next Origin") && playerPage.get(player) < playerOrigins.get(player).size() - 1) {
-						playerPage.put(player, playerPage.get(player) + 1);
-					}
-
-					Inventory info = Bukkit.createInventory(player, 54, net.kyori.adventure.text.Component.text("Info - ").append(playerOrigins.get(player).get(playerPage.get(player)).name()));
-					info.setContents(new OriginPage(playerOrigins.get(player).get(playerPage.get(player))).createDisplay(((CraftPlayer) player).getHandle(), null));
-					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 2.0F, 1.0F);
-					player.closeInventory();
-					player.openInventory(info);
-				}
+		for (ServerPlayer target : targets) {
+			for (OriginLayer originLayer : originLayers) {
+				getRandomOrigin(target, originLayer);
 			}
 		}
+
+		serverCommandSource.sendSuccess(() -> LangFile.translatable("commands.origin.random.all", targets.size(), originLayers.size()), false);
+		return targets.size();
+
 	}
 
-	@EventHandler
-	public void stopStealingRecipe(InventoryClickEvent e) {
-		if (e.getView().getTitle().equalsIgnoreCase("Orb of Origins") && e.getView().getTopInventory().getType().equals(InventoryType.WORKBENCH)) {
-			e.setCancelled(true);
-		}
+	private static @NotNull Origin getRandomOrigin(@NotNull ServerPlayer target, @NotNull OriginLayer originLayer) {
+
+		List<Origin> origins = originLayer.getRandomOrigins();
+		Origin origin = origins.get(new Random().nextInt(origins.size()));
+
+		OriginComponent.setOrigin(target.getBukkitEntity(), originLayer, origin);
+
+		OriginsPaper.LOGGER.info(
+			"Player {} was randomly assigned the origin {} for layer {}",
+			target.getDisplayName().getString(),
+			origin.getId().toString(),
+			originLayer.getId().toString()
+		);
+
+		return origin;
+
 	}
 
-	public void run() {
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			if (!player.getOpenInventory().getTitle().startsWith("Info")) {
-				playerPage.remove(player);
-				playerOrigins.remove(player);
-			}
-		}
+	private enum TargetType {
+		INVOKER,
+		SPECIFY
 	}
 }

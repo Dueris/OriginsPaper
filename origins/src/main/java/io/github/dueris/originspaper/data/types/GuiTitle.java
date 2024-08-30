@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.data.types;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.parser.SerializableData;
+import io.github.dueris.calio.data.SerializableData;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

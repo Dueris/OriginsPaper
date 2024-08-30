@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.mixin;
 
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
-import io.github.dueris.originspaper.power.PreventGameEventPower;
+import io.github.dueris.originspaper.power.type.PreventGameEventPower;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;

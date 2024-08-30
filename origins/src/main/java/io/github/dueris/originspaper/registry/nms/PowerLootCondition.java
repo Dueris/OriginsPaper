@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.power.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -38,7 +38,7 @@ public class PowerLootCondition implements LootItemCondition {
 		Entity entity = context.getParam(LootContextParams.THIS_ENTITY);
 		CraftEntity var4 = entity.getBukkitEntity();
 		if (var4 instanceof Player player) {
-			PowerType power = OriginsPaper.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(this.powerId);
+			PowerType power = OriginsPaper.getRegistry().retrieve(Registries.POWER).get(this.powerId);
 			return PowerHolderComponent.hasPower(player, power.getTag());
 		} else {
 			return false;

@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.mixin;
 
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
-import io.github.dueris.originspaper.power.PreventBlockPlacePower;
+import io.github.dueris.originspaper.power.type.PreventBlockPlacePower;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import io.github.dueris.originspaper.util.Reflector;
 import net.minecraft.core.BlockPos;

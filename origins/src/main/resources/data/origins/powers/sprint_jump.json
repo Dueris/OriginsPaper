@@ -1,0 +1,10 @@
+{
+	"type": "origins:modify_jump",
+	"modifier": {
+		"amount": 0.5,
+		"operation": "multiply_base_multiplicative"
+	},
+	"condition": {
+		"type": "origins:sprinting"
+	}
+}

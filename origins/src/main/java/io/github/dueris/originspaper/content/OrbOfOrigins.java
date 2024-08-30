@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.content;
 
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.power.RecipePower;
+import io.github.dueris.originspaper.power.type.RecipePower;
 import io.github.dueris.originspaper.storage.OriginConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -60,7 +60,7 @@ public class OrbOfOrigins {
 			RecipePower.taggedRegistry.put(sr.key().asString(), sr);
 			return sr.getResult().clone();
 		} catch (Exception var5) {
-			OriginsPaper.getPlugin().getLog4JLogger().error("An unexpected error occured when trying to load the orb of origins! : {}", var5.getLocalizedMessage());
+			OriginsPaper.LOGGER.error("An unexpected error occured when trying to load the orb of origins! : {}", var5.getLocalizedMessage());
 			throw var5;
 		}
 	}

@@ -1,15 +1,16 @@
 package io.github.dueris.originspaper.mixin;
 
 import com.dragoncommissions.mixbukkit.MixBukkit;
+import com.dragoncommissions.mixbukkit.MixinPluginInstance;
 import com.dragoncommissions.mixbukkit.addons.AutoMapper;
 import com.dragoncommissions.mixbukkit.api.MixinPlugin;
 import com.dragoncommissions.mixbukkit.api.action.impl.MActionInsertShellCode;
+import com.dragoncommissions.mixbukkit.api.action.impl.MActionMethodReplacer;
 import com.dragoncommissions.mixbukkit.api.locator.HookLocator;
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.ShellCodeReflectionMixinPluginMethodCall;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import io.github.dueris.originspaper.OriginsPaper;
-import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
@@ -19,10 +20,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class OriginsMixins {
 
 	public static void init(@NotNull MixBukkit bukkit) {
-		MixinPlugin mixinPlugin = bukkit.registerMixinPlugin(OriginsPaper.getPlugin(), AutoMapper.getMappingAsStream());
+		MixinPlugin mixinPlugin = bukkit.registerMixinPlugin(new MixinPluginInstance("OriginsPaper"), AutoMapper.getMappingAsStream());
 		ScanResult result = new ClassGraph().whitelistPackages("io.github.dueris.originspaper.mixin").enableClassInfo().scan();
 
-		OriginsPaper.getPlugin().getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[!] Starting Mixin transformers...");
+		OriginsPaper.LOGGER.info("Starting Mixin transformers...");
 		AtomicInteger count = new AtomicInteger();
 
 		try {
@@ -69,6 +70,33 @@ public class OriginsMixins {
 									);
 
 									count.getAndIncrement();
+								} else if (method.isAnnotationPresent(Overwrite.class)) {
+									Overwrite replace = method.getAnnotation(Overwrite.class);
+
+									Method toMixin = null;
+									Class<?>[] params = new Class[0];
+									for (Method declared : mixin.getDeclaredMethods()) {
+										String methodName = declared.getName();
+										String injectMethodName = replace.method().trim();
+
+										if (methodName.equalsIgnoreCase(injectMethodName)) {
+											toMixin = declared;
+											params = declared.getParameterTypes();
+											break;
+										}
+									}
+									if (toMixin == null)
+										throw new IllegalArgumentException("Unable to locate method to mixin to!");
+
+									if (!Arrays.stream(replace.params()).toList().isEmpty()) {
+										params = replace.params();
+									}
+
+									MActionMethodReplacer replacer = new MActionMethodReplacer(toMixin);
+									String namespace = baseNamespace + "(" + method.getName() + ")";
+									mixinPlugin.registerMixin(
+										namespace, replacer, mixin, toMixin.getName(), toMixin.getReturnType(), params
+									);
 								}
 							}
 						}
@@ -87,6 +115,6 @@ public class OriginsMixins {
 		}
 
 		result.close();
-		OriginsPaper.getPlugin().getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[!] Injected {} mixins successfully!".replace("{}", count.toString()));
+		OriginsPaper.LOGGER.info("Injected {} mixins successfully!", count.toString());
 	}
 }

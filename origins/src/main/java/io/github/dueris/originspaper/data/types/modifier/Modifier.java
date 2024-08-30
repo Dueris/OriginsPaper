@@ -3,15 +3,14 @@ package io.github.dueris.originspaper.data.types.modifier;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
+import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataBuilder;
 import io.github.dueris.calio.data.exceptions.DataException;
-import io.github.dueris.calio.parser.SerializableData;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public class Modifier implements Comparable<Modifier> {
@@ -30,7 +29,7 @@ public class Modifier implements Comparable<Modifier> {
 			try {
 
 				IModifierOperation operation = IModifierOperation.DATA_TYPE.deserialize(jsonObject.get("operation"));
-				SerializableData.Instance data = SerializableData.Instance.decompileJsonObject(jsonObject, operation.getData(), "Modifier", "null", Optional.of(Modifier.class));
+				SerializableData.Instance data = SerializableDataBuilder.compound(operation.getData(), jsonObject, Modifier.class);
 
 				return new Modifier(operation, data);
 

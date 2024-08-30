@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-@AllArgsConstructor
 public class HLocatorFieldWrite implements HookLocator {
 
 	private final Field field;

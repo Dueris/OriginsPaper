@@ -20,11 +20,11 @@ public class BuiltinRegistry {
 
 	public static void bootstrap() {
 		for (OriginLayer layer : builtinLayers) {
-			OriginsPaper.getPlugin().registry.retrieve(Registries.LAYER).register(layer, ResourceLocation.parse("apoli:command"));
+			OriginsPaper.getRegistry().retrieve(Registries.LAYER).register(layer, ResourceLocation.parse("apoli:command"));
 		}
-		OriginsPaper.EMPTY_ORIGIN = new Origin(
+		Origin.EMPTY = new Origin(
 			ResourceLocation.parse("origins:empty"), List.of(), new ItemStack(Items.AIR), true, Integer.MAX_VALUE, Impact.NONE, 0, null, net.minecraft.network.chat.Component.empty(), net.minecraft.network.chat.Component.empty()
 		);
-		OriginsPaper.getPlugin().registry.retrieve(Registries.ORIGIN).register(OriginsPaper.EMPTY_ORIGIN, ResourceLocation.parse("origins:empty"));
+		OriginsPaper.getRegistry().retrieve(Registries.ORIGIN).register(Origin.EMPTY, ResourceLocation.parse("origins:empty"));
 	}
 }

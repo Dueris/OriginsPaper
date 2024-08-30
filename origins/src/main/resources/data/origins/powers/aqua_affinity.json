@@ -1,0 +1,47 @@
+{
+	"type": "origins:multiple",
+	"underwater": {
+		"type": "origins:modify_break_speed",
+		"modifier": {
+			"amount": 4,
+			"operation": "multiply_total_multiplicative"
+		},
+		"condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:submerged_in",
+					"fluid": "minecraft:water"
+				},
+				{
+					"type": "origins:enchantment",
+					"enchantment": "minecraft:aqua_affinity",
+					"comparison": "==",
+					"compare_to": 0
+				}
+			]
+		}
+	},
+	"ungrounded": {
+		"type": "origins:modify_break_speed",
+		"modifier": {
+			"amount": 4,
+			"operation": "multiply_total_multiplicative"
+		},
+		"condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:fluid_height",
+					"fluid": "minecraft:water",
+					"comparison": ">",
+					"compare_to": 0
+				},
+				{
+					"type": "origins:on_block",
+					"inverted": true
+				}
+			]
+		}
+	}
+}

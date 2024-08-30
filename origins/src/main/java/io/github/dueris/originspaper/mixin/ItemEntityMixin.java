@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.mixin;
 
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
-import io.github.dueris.originspaper.power.PreventItemPickupPower;
+import io.github.dueris.originspaper.power.type.PreventItemPickupPower;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 

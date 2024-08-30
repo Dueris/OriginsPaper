@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.mixin;
 
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
-import io.github.dueris.originspaper.power.ModifyEnchantmentLevelPower;
+import io.github.dueris.originspaper.power.type.ModifyEnchantmentLevelPower;
 import it.unimi.dsi.fastutil.objects.Object2IntAVLTreeMap;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.enchantment.Enchantment;

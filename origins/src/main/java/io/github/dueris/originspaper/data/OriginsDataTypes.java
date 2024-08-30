@@ -5,8 +5,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
+import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataBuilder;
-import io.github.dueris.calio.parser.SerializableData;
 import io.github.dueris.originspaper.data.types.GuiTitle;
 import io.github.dueris.originspaper.data.types.Impact;
 import io.github.dueris.originspaper.data.types.OriginUpgrade;
@@ -15,8 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.Optional;
 
 @SuppressWarnings("unused")
 public class OriginsDataTypes {
@@ -49,7 +47,7 @@ public class OriginsDataTypes {
 	public static final SerializableDataBuilder<OriginLayer.ConditionedOrigin> CONDITIONED_ORIGIN = SerializableDataBuilder.of(
 		(jsonElement) -> {
 			if (jsonElement instanceof JsonObject jsonObject && !jsonObject.isEmpty()) {
-				SerializableData.Instance factoryJson = SerializableData.Instance.decompileJsonObject(jsonObject, OriginLayer.ConditionedOrigin.DATA, "Origin/ConditionedOrigin", "null", Optional.of(OriginLayer.ConditionedOrigin.class));
+				SerializableData.Instance factoryJson = SerializableDataBuilder.compound(OriginLayer.ConditionedOrigin.DATA, jsonObject, OriginLayer.ConditionedOrigin.class);
 				return new OriginLayer.ConditionedOrigin(factoryJson.get("condition"), factoryJson.get("origins"));
 			} else throw new JsonSyntaxException("Expected JsonObject for ConditionedOrigin!");
 		}, OriginLayer.ConditionedOrigin.class

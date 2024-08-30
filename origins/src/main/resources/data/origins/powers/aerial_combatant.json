@@ -1,0 +1,11 @@
+{
+	"type": "origins:modify_damage_dealt",
+	"modifier": {
+		"id": "*:*",
+		"amount": 1,
+		"operation": "multiply_base_multiplicative"
+	},
+	"condition": {
+		"type": "origins:fall_flying"
+	}
+}

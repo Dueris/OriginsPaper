@@ -1,7 +1,8 @@
 package io.github.dueris.originspaper.data.types.modifier;
 
-import io.github.dueris.calio.parser.SerializableData;
+import io.github.dueris.calio.data.SerializableData;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -10,6 +11,18 @@ import java.util.List;
 import java.util.Map;
 
 public class ModifierUtil {
+
+	public static @NotNull Modifier fromAttributeModifier(@NotNull AttributeModifier attributeModifier) {
+
+		ModifierOperation operation = switch (attributeModifier.operation()) {
+			case ADD_VALUE -> ModifierOperation.ADD_BASE_EARLY;
+			case ADD_MULTIPLIED_BASE -> ModifierOperation.MULTIPLY_BASE_MULTIPLICATIVE;
+			case ADD_MULTIPLIED_TOTAL -> ModifierOperation.MULTIPLY_TOTAL_MULTIPLICATIVE;
+		};
+
+		return Modifier.of(operation, attributeModifier.amount());
+
+	}
 
 	public static @NotNull Map<IModifierOperation, List<SerializableData.Instance>> sortModifiers(@NotNull List<Modifier> modifiers) {
 		Map<IModifierOperation, List<SerializableData.Instance>> buckets = new HashMap<>();

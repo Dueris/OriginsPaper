@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.mixin;
 
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
-import io.github.dueris.originspaper.power.EffectImmunityPower;
+import io.github.dueris.originspaper.power.type.EffectImmunityPower;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffect;

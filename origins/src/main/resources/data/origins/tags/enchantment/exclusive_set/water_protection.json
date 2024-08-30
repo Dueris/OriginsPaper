@@ -1,0 +1,9 @@
+{
+	"values": [
+		"origins:water_protection",
+		"minecraft:blast_protection",
+		"minecraft:fire_protection",
+		"minecraft:projectile_protection",
+		"minecraft:protection"
+	]
+}

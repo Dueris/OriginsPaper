@@ -6,23 +6,18 @@ import com.dragoncommissions.mixbukkit.api.shellcode.impl.inner.IShellCodeReflec
 import com.dragoncommissions.mixbukkit.utils.ASMUtils;
 import javassist.bytecode.Opcode;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.lang.reflect.Method;
 
-public class MActionMethodReplacer implements MixinAction {
-
-	private final Method handler;
-
-	public MActionMethodReplacer(Method handler) {
-		this.handler = handler;
-	}
+public record MActionMethodReplacer(Method handler) implements MixinAction {
 
 	@Override
 	@SneakyThrows
-	public void action(Class<?> owner, MethodNode methodNode) {
+	public void action(Class<?> owner, @NotNull MethodNode methodNode) {
 		methodNode.tryCatchBlocks.clear();
 		methodNode.localVariables.clear();
 		methodNode.instructions.clear();

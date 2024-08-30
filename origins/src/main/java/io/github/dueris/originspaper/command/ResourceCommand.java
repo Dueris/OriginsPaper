@@ -1,243 +1,205 @@
 package io.github.dueris.originspaper.command;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.power.PowerType;
-import io.github.dueris.originspaper.power.ResourcePower;
-import io.github.dueris.originspaper.storage.PowerHolderComponent;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import io.github.dueris.originspaper.command.argument.PowerArgumentType;
+import io.github.dueris.originspaper.command.argument.PowerHolderArgumentType;
+import io.github.dueris.originspaper.command.argument.PowerOperationArgumentType;
+import io.github.dueris.originspaper.power.type.CooldownPower;
+import io.github.dueris.originspaper.power.type.ResourcePower;
+import io.github.dueris.originspaper.power.factory.PowerType;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.arguments.ObjectiveArgument;
+import net.minecraft.commands.arguments.ScoreHolderArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.ScoreAccess;
+import net.minecraft.world.scores.ScoreHolder;
+import net.minecraft.world.scores.Scoreboard;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.function.Supplier;
+
+import static io.papermc.paper.command.brigadier.Commands.argument;
+import static io.papermc.paper.command.brigadier.Commands.literal;
 
 public class ResourceCommand {
-	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-		LiteralArgumentBuilder<CommandSourceStack> main = net.minecraft.commands.Commands.literal("resource")
-			.requires(source -> source.hasPermission(2));
-		(main.then(
-			Commands.literal("has")
-				.then(
-					Commands.argument("targets", EntityArgument.player())
-						.then(
-							Commands.argument("power", ResourceLocationArgument.id())
-								.suggests(
-									(context, builder) -> {
-										OriginCommand.POWERS
-											.forEach(
-												(location, power) -> {
-													if (context.getInput().split(" ").length == 2
-														|| power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
-														|| power.getTag().split(":")[1]
-														.startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])) {
-														builder.suggest(power.getTag());
-													}
-												}
-											);
-										return builder.buildFuture();
-									}
-								)
-								.executes(context -> {
-									ResourceLocation power = ResourceLocationArgument.getId(context, "power");
-									ServerPlayer player = EntityArgument.getPlayer(context, "targets");
-									PowerType powerType = OriginsPaper.getPower(power);
-									if (powerType == null) {
-										throw new IllegalArgumentException("Provided power argument was not found!");
-									} else {
-										if (PowerHolderComponent.hasPower(player.getBukkitEntity(), powerType.getTag())
-											&& PowerHolderComponent.isOfType(powerType, ResourcePower.class)) {
-											context.getSource().sendSystemMessage(Component.literal("Test passed"));
-										} else {
-											context.getSource().sendFailure(Component.literal("Test failed"));
-										}
+	private static final DynamicCommandExceptionType ERROR_OBJECTIVE_NOT_FOUND = new DynamicCommandExceptionType(
+		name -> Component.translatableEscape("arguments.objective.notFound", name)
+	);
 
-										return 1;
-									}
-								})
-						)
+	public static void register(@NotNull Commands dispatcher) {
+		dispatcher.register(
+			literal("resource").requires(cs -> ((net.minecraft.commands.CommandSourceStack) cs).hasPermission(2))
+				.then(literal("has")
+					.then(argument("target", PowerHolderArgumentType.entity())
+						.then(argument("power", PowerArgumentType.power())
+							.executes((command) -> resource(command, SubCommand.HAS))))
 				)
-		))
-			.then(
-				Commands.literal("get")
-					.then(
-						Commands.argument("targets", EntityArgument.player())
-							.then(
-								Commands.argument("power", ResourceLocationArgument.id())
-									.suggests(
-										(context, builder) -> {
-											OriginCommand.POWERS
-												.forEach(
-													(location, power) -> {
-														if (context.getInput().split(" ").length == 3
-															|| power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
-															|| power.getTag().split(":")[1]
-															.startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])) {
-															builder.suggest(power.getTag());
-														}
-													}
-												);
-											return builder.buildFuture();
-										}
-									)
-									.executes(
-										context -> {
-											ResourceLocation power = ResourceLocationArgument.getId(context, "power");
-											ServerPlayer player = EntityArgument.getPlayer(context, "targets");
-											PowerType powerType = OriginsPaper.getPower(power);
-											if (powerType == null) {
-												throw new IllegalArgumentException("Provided power argument was not found!");
-											} else {
-												Component failure = Component.literal(
-													"Can't get value of {%} for {$}; none is set".replace("{$}", player.displayName).replace("{%}", power.toString())
-												);
-												if (PowerHolderComponent.hasPower(player.getBukkitEntity(), powerType.getTag())
-													&& PowerHolderComponent.isOfType(powerType, ResourcePower.class)) {
-													ResourcePower resourcePower = (ResourcePower) powerType;
-													ResourcePower.getDisplayedBar(player, resourcePower.getTag())
-														.ifPresentOrElse(
-															bar -> {
-																Integer mappedProgress = bar.getMappedProgress();
-																context.getSource()
-																	.sendSystemMessage(
-																		Component.literal(
-																			"Dueris has {%} {$}".replace("{%}", mappedProgress.toString()).replace("{$}", power.toString())
-																		)
-																	);
-															},
-															() -> context.getSource().sendFailure(failure)
-														);
-												} else {
-													context.getSource().sendFailure(failure);
-												}
+				.then(literal("get")
+					.then(argument("target", PowerHolderArgumentType.entity())
+						.then(argument("power", PowerArgumentType.power())
+							.executes((command) -> resource(command, SubCommand.GET))))
+				)
+				.then(literal("set")
+					.then(argument("target", PowerHolderArgumentType.entity())
+						.then(argument("power", PowerArgumentType.power())
+							.then(argument("value", IntegerArgumentType.integer())
+								.executes((command) -> resource(command, SubCommand.SET)))))
+				)
+				.then(literal("change")
+					.then(argument("target", PowerHolderArgumentType.entity())
+						.then(argument("power", PowerArgumentType.power())
+							.then(argument("value", IntegerArgumentType.integer())
+								.executes((command) -> resource(command, SubCommand.CHANGE)))))
+				)
+				.then(literal("operation")
+					.then(argument("target", PowerHolderArgumentType.entity())
+						.then(argument("power", PowerArgumentType.power())
+							.then(argument("operation", PowerOperationArgumentType.operation())
+								.then(argument("entity", ScoreHolderArgument.scoreHolder())
+									.then(argument("objective", ObjectiveArgument.objective())
+										.executes((command) -> resource(command, SubCommand.OPERATION)))))))
+				).build()
+		);
+	}
 
-												return 1;
-											}
-										}
-									)
-							)
-					)
-			)
-			.then(
-				Commands.literal("set")
-					.then(
-						Commands.argument("targets", EntityArgument.player())
-							.then(
-								Commands.argument("power", ResourceLocationArgument.id())
-									.suggests(
-										(context, builder) -> {
-											OriginCommand.POWERS
-												.forEach(
-													(location, power) -> {
-														if (context.getInput().split(" ").length == 3
-															|| power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
-															|| power.getTag().split(":")[1]
-															.startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])) {
-															builder.suggest(power.getTag());
-														}
-													}
-												);
-											return builder.buildFuture();
-										}
-									)
-									.then(
-										Commands.argument("value", IntegerArgumentType.integer())
-											.executes(
-												context -> {
-													ResourceLocation power = ResourceLocationArgument.getId(context, "power");
-													ServerPlayer player = EntityArgument.getPlayer(context, "targets");
-													PowerType powerType = OriginsPaper.getPower(power);
-													int setTo = IntegerArgumentType.getInteger(context, "value");
-													Component failure = Component.literal("No relevant score holders could be found");
-													if (PowerHolderComponent.hasPower(player.getBukkitEntity(), powerType.getTag())
-														&& PowerHolderComponent.isOfType(powerType, ResourcePower.class)) {
-														ResourcePower resourcePower = (ResourcePower) powerType;
-														ResourcePower.getDisplayedBar(player, resourcePower.getTag())
-															.ifPresentOrElse(
-																bar -> {
-																	bar.change(setTo, "set");
-																	context.getSource()
-																		.sendSystemMessage(
-																			Component.literal(
-																				"Set {%} for {&} to ".replace("{%}", power.toString()).replace("{&}", player.displayName)
-																					+ setTo
-																			)
-																		);
-																},
-																() -> context.getSource().sendFailure(failure)
-															);
-													} else {
-														context.getSource().sendFailure(failure);
-													}
+	private static int resource(@NotNull CommandContext<CommandSourceStack> context, @NotNull SubCommand subCommand) throws CommandSyntaxException {
 
-													return 1;
-												}
-											)
-									)
-							)
-					)
-			)
-			.then(
-				net.minecraft.commands.Commands.literal("change")
-					.then(
-						net.minecraft.commands.Commands.argument("targets", EntityArgument.player())
-							.then(
-								net.minecraft.commands.Commands.argument("power", ResourceLocationArgument.id())
-									.suggests(
-										(context, builder) -> {
-											OriginCommand.POWERS
-												.forEach(
-													(location, power) -> {
-														if (context.getInput().split(" ").length == 3
-															|| power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
-															|| power.getTag().split(":")[1]
-															.startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])) {
-															builder.suggest(power.getTag());
-														}
-													}
-												);
-											return builder.buildFuture();
-										}
-									)
-									.then(
-										net.minecraft.commands.Commands.argument("value", IntegerArgumentType.integer())
-											.executes(
-												context -> {
-													ResourceLocation power = ResourceLocationArgument.getId(context, "power");
-													ServerPlayer player = EntityArgument.getPlayer(context, "targets");
-													PowerType powerType = OriginsPaper.getPower(power);
-													int setTo = IntegerArgumentType.getInteger(context, "value");
-													Component failure = Component.literal("No relevant score holders could be found");
-													if (PowerHolderComponent.hasPower(player.getBukkitEntity(), powerType.getTag())
-														&& PowerHolderComponent.isOfType(powerType, ResourcePower.class)) {
-														ResourcePower resourcePower = (ResourcePower) powerType;
-														ResourcePower.getDisplayedBar(player, resourcePower.getTag())
-															.ifPresentOrElse(
-																bar -> {
-																	bar.change(setTo, "add");
-																	context.getSource()
-																		.sendSystemMessage(
-																			Component.literal(
-																				"Set {%} for {&} to ".replace("{%}", power.toString()).replace("{&}", player.displayName) + setTo
-																			)
-																		);
-																},
-																() -> context.getSource().sendFailure(failure)
-															);
-													} else {
-														context.getSource().sendFailure(failure);
-													}
+		net.minecraft.commands.CommandSourceStack source = (net.minecraft.commands.CommandSourceStack) context.getSource();
+		LivingEntity target = PowerHolderArgumentType.getHolder(context, "target");
 
-													return 1;
-												}
-											)
-									)
-							)
-					)
-			);
-		dispatcher.register(main);
+		PowerType power = PowerArgumentType.getPower(context, "power");
+
+		return switch (subCommand) {
+			case HAS -> {
+
+				if (isPowerInvalid(power)) {
+					source.sendFailure(Component.translatableEscape("commands.execute.conditional.fail"));
+					yield 0;
+				}
+
+				source.sendSuccess(() -> Component.translatableEscape("commands.execute.conditional.pass"), true);
+				yield 1;
+
+			}
+			case GET -> {
+
+				if (isPowerInvalid(power)) {
+					source.sendFailure(Component.translatableEscape("commands.scoreboard.players.get.null", power.getId(), target.getName().getString()));
+					yield 0;
+				}
+
+				int value = getValue(power, target);
+				source.sendSuccess(() -> Component.translatableEscape("commands.scoreboard.players.get.success", target.getName().getString(), value, power.getId()), true);
+
+				yield value;
+
+			}
+			case SET -> {
+
+				if (isPowerInvalid(power)) {
+					source.sendFailure(Component.translatableEscape("argument.scoreHolder.empty"));
+					yield 0;
+				}
+
+				int value = IntegerArgumentType.getInteger(context, "value");
+				setValue(power, value, target);
+
+				source.sendSuccess(() -> Component.translatableEscape("commands.scoreboard.players.set.success.single", power.getId(), target.getName().getString(), value), true);
+
+				yield value;
+
+			}
+			case CHANGE -> {
+
+				if (isPowerInvalid(power)) {
+					source.sendFailure(Component.translatableEscape("argument.scoreHolder.empty"));
+					yield 0;
+				}
+
+				int value = IntegerArgumentType.getInteger(context, "value");
+				int total = getValue(power, target) + value;
+
+				setValue(power, total, target);
+
+				source.sendSuccess(() -> Component.translatableEscape("commands.scoreboard.players.add.success.single", value, power.getId(), target.getName().getString(), total), true);
+				yield total;
+
+			}
+			case OPERATION -> {
+
+				if (isPowerInvalid(power)) {
+					source.sendFailure(Component.translatableEscape("argument.scoreHolder.empty"));
+					yield 0;
+				}
+
+				ScoreHolder scoreHolder = getNames(context, "entity", Collections::emptyList).iterator().next();
+				Objective scoreboardObjective = getObjective(context, "objective");
+
+				ScoreAccess scoreAccess = source.getServer().getScoreboard().getOrCreatePlayerScore(scoreHolder, scoreboardObjective);
+				context.getArgument("operation", PowerOperationArgumentType.Operation.class).apply(power, scoreAccess, target);
+
+				int value = getValue(power, target);
+				source.sendSuccess(() -> Component.translatableEscape("commands.scoreboard.players.operation.success.single", power.getId(), target.getName().getString(), value), true);
+
+				yield value;
+
+			}
+		};
+
+	}
+
+	private static int getValue(PowerType powerType, ScoreHolder entity) {
+		if (powerType instanceof ResourcePower vip) {
+			return vip.getValue(entity);
+		} else if (powerType instanceof CooldownPower cp) {
+			return cp.getRemainingTicks(entity);
+		} else {
+			return 0;
+		}
+	}
+
+	private static void setValue(PowerType powerType, int newValue, ScoreHolder entity) {
+		if (powerType instanceof ResourcePower vip) {
+			vip.setValue(entity, newValue);
+		} else if (powerType instanceof CooldownPower cp) {
+			cp.setCooldown(entity, newValue);
+		}
+	}
+
+	private static boolean isPowerInvalid(PowerType powerType) {
+		return !(powerType instanceof ResourcePower) && !(powerType instanceof CooldownPower);
+	}
+
+	public static @NotNull Collection<ScoreHolder> getNames(@NotNull CommandContext<CommandSourceStack> context, String name, Supplier<Collection<ScoreHolder>> players) throws CommandSyntaxException {
+		Collection<ScoreHolder> collection = context.getArgument(name, ScoreHolderArgument.Result.class).getNames((net.minecraft.commands.CommandSourceStack) context.getSource(), players);
+		if (collection.isEmpty()) {
+			throw EntityArgument.NO_ENTITIES_FOUND.create();
+		} else {
+			return collection;
+		}
+	}
+
+	public static @NotNull Objective getObjective(@NotNull CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+		String string = context.getArgument(name, String.class);
+		Scoreboard scoreboard = ((net.minecraft.commands.CommandSourceStack) context.getSource()).getServer().getScoreboard();
+		Objective objective = scoreboard.getObjective(string);
+		if (objective == null) {
+			throw ERROR_OBJECTIVE_NOT_FOUND.create(string);
+		} else {
+			return objective;
+		}
+	}
+
+	public enum SubCommand {
+		HAS, GET, SET, CHANGE, OPERATION
 	}
 }

@@ -5,6 +5,7 @@ import com.dragoncommissions.mixbukkit.api.shellcode.impl.inner.IShellCodeReflec
 import com.dragoncommissions.mixbukkit.utils.ASMUtils;
 import javassist.bytecode.Opcode;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 import org.objectweb.asm.tree.*;
 
 import java.lang.reflect.Method;
@@ -21,7 +22,7 @@ public class MActionMethodCallSpoofer implements MixinAction {
 	private final String key;
 	private Predicate<Integer> filter;
 
-	private MActionMethodCallSpoofer(Method method, ReturnValueGetter returnValueGetter, Predicate<Integer> filter) {
+	private MActionMethodCallSpoofer(@NotNull Method method, ReturnValueGetter returnValueGetter, Predicate<Integer> filter) {
 		this.method = method;
 		if (method.getReturnType() == void.class)
 			throw new IllegalArgumentException("Method: " + method.getName() + " is not returning anything. Nothing to spoof");

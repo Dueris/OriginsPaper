@@ -1,8 +1,8 @@
 package io.github.dueris.originspaper.mixin;
 
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
-import io.github.dueris.originspaper.power.ModifyBreakSpeedPower;
-import io.github.dueris.originspaper.power.ModifyHarvestPower;
+import io.github.dueris.originspaper.power.type.ModifyBreakSpeedPower;
+import io.github.dueris.originspaper.power.type.ModifyHarvestPower;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;

@@ -2,9 +2,7 @@ bootstrapper: "io.github.dueris.originspaper.Bootstrap"
 loader: "io.github.dueris.originspaper.DependencyLoader"
 load: POSTWORLD
 name: "OriginsPaper"
-version: "${fullVer}"
-main: "io.github.dueris.originspaper.OriginsPaper"
-api-version: "${apiVer}"
+main: "io.github.dueris.originspaper.plugin.OriginsPlugin"
 authors: [ Dueris ]
 folia-supported: false
 description: "A port of the Origins mod to PaperMC servers with Custom Origins support"
@@ -15,5 +13,10 @@ dependencies:
       load: BEFORE
       required: false
 
-supportedVersions: ${supportedVersions}
+supported: ${supported}
+minecraft: ${mcVer}
+plugin: ${pluginVer}
+api-version: ${apiVer}
+version: ${fullVer}
+apoli: ${apoli}
 default-language: "en_us"

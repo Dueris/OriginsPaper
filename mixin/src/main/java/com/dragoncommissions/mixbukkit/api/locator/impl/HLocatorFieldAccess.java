@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-@AllArgsConstructor
 public class HLocatorFieldAccess implements HookLocator {
 
 	private final Field field;

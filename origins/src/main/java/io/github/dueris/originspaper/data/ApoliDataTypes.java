@@ -12,9 +12,10 @@ import io.github.dueris.calio.registry.RegistryKey;
 import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.github.dueris.calio.util.ArgumentWrapper;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.action.ActionTypeFactory;
-import io.github.dueris.originspaper.condition.ConditionTypeFactory;
+import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
+import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.types.*;
+import io.github.dueris.originspaper.power.factory.PowerReference;
 import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -54,7 +55,7 @@ public class ApoliDataTypes {
 	public static final SerializableDataBuilder<ActionTypeFactory<Triple<Level, BlockPos, Direction>>> BLOCK_ACTION = action(Registries.BLOCK_ACTION);
 	public static final SerializableDataBuilder<ActionTypeFactory<Tuple<Level, SlotAccess>>> ITEM_ACTION = action(Registries.ITEM_ACTION);
 	public static final SerializableDataBuilder<ConditionTypeFactory<Tuple<Entity, Entity>>> BIENTITY_CONDITION = condition(Registries.BIENTITY_CONDITION);
-	public static final SerializableDataBuilder<ConditionTypeFactory<Holder<Biome>>> BIOME_CONDITION = condition(Registries.BIOME_CONDITION);
+	public static final SerializableDataBuilder<ConditionTypeFactory<Tuple<BlockPos, Holder<Biome>>>> BIOME_CONDITION = condition(Registries.BIOME_CONDITION);
 	public static final SerializableDataBuilder<ConditionTypeFactory<BlockInWorld>> BLOCK_CONDITION = condition(Registries.BLOCK_CONDITION);
 	public static final SerializableDataBuilder<ConditionTypeFactory<Tuple<DamageSource, Float>>> DAMAGE_CONDITION = condition(Registries.DAMAGE_CONDITION);
 	public static final SerializableDataBuilder<ConditionTypeFactory<Entity>> ENTITY_CONDITION = condition(Registries.ENTITY_CONDITION);
@@ -153,6 +154,7 @@ public class ApoliDataTypes {
 		}, Map.class
 	);
 	public static final SerializableDataBuilder<GameType> GAME_MODE = SerializableDataTypes.enumValue(GameType.class);
+	public static final SerializableDataBuilder<Explosion.BlockInteraction> DESTRUCTION_TYPE = SerializableDataTypes.enumValue(Explosion.BlockInteraction.class);
 	public static final SerializableDataBuilder<Component> DEFAULT_TRANSLATABLE_TEXT = SerializableDataBuilder.of(
 		(jsonElement) -> {
 			return jsonElement instanceof JsonPrimitive jsonPrimitive
@@ -161,16 +163,15 @@ public class ApoliDataTypes {
 		}, Component.class
 	);
 	public static final SerializableDataBuilder<Pose> ENTITY_POSE = SerializableDataTypes.enumValue(Pose.class);
-	public static final SerializableDataBuilder<HudRender> HUD_RENDER = SerializableDataBuilder.of(
-		(jsonElement) -> {
-			if (!(jsonElement instanceof JsonObject jo)) {
-				throw new JsonSyntaxException("HudRender should be instanceof a JsonObject!");
-			}
-			return new HudRender(
-				jo.has("should_render") ? SerializableDataTypes.BOOLEAN.deserialize(jo.get("should_render")) : true,
-				jo.has("condition") ? ENTITY_CONDITION.deserialize(jo.get("condition")) : null
-			);
-		}, HudRender.class
+	/**
+	 * <p>A HUD render data type that accepts either a single HUD render or multiple HUD renders. The first HUD render will be considered
+	 * the <b>"parent"</b> and the following HUD renders will be considered its <b>"children."</b></p>
+	 *
+	 * <p>If the children don't specify an order value, the order value of the parent will be inherited instead.</p>
+	 */
+	public static final SerializableDataBuilder<HudRender> HUD_RENDER = HudRender.DATA_TYPE;
+	public static final SerializableDataBuilder<?> POWER_REFERENCE = SerializableDataBuilder.of(
+		(jsonElement) -> new PowerReference(SerializableDataTypes.IDENTIFIER.deserialize(jsonElement)), PowerReference.class
 	);
 
 	public static <T> @NotNull SerializableDataBuilder<ActionTypeFactory<T>> action(RegistryKey<ActionTypeFactory<T>> registry) {
@@ -181,16 +182,12 @@ public class ApoliDataTypes {
 				}
 
 				ResourceLocation factoryID = SerializableDataTypes.IDENTIFIER.deserialize(jsonObject.get("type"));
-				try {
-					ActionTypeFactory<T> actionFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
-					if (actionFactory == null) {
-						throw new IllegalArgumentException("Unable to retrieve action of: " + jsonObject.get("type").getAsString());
-					}
-					return actionFactory.copy().decompile(jsonObject);
-				} catch (Throwable e) {
-					OriginsPaper.getPlugin().getLog4JLogger().error("Unable to retrieve action of `{}` for Power!", factoryID.toString());
-					throw e;
+				ActionTypeFactory<T> actionFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
+				if (actionFactory == null) {
+					OriginsPaper.LOGGER.error("Unable to retrieve action of: {}", jsonObject.get("type").getAsString());
+					return null;
 				}
+				return actionFactory.copy().decompile(jsonObject);
 			}, ActionTypeFactory.class
 		);
 	}
@@ -203,16 +200,12 @@ public class ApoliDataTypes {
 				}
 
 				ResourceLocation factoryID = SerializableDataTypes.IDENTIFIER.deserialize(jsonObject.get("type"));
-				try {
-					ConditionTypeFactory<T> conditionTypeFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
-					if (conditionTypeFactory == null) {
-						throw new IllegalArgumentException("Unable to retrieve condition of: " + jsonObject.get("type").getAsString());
-					}
-					return conditionTypeFactory.copy().decompile(jsonObject);
-				} catch (Throwable e) {
-					OriginsPaper.getPlugin().getLog4JLogger().error("Unable to retrieve condition of `{}` for Power!", factoryID.toString());
-					throw e;
+				ConditionTypeFactory<T> conditionTypeFactory = CalioRegistry.INSTANCE.retrieve(registry).get(factoryID);
+				if (conditionTypeFactory == null) {
+					OriginsPaper.LOGGER.error("Unable to retrieve condition of '{}'", jsonObject.get("type").getAsString());
+					return null;
 				}
+				return conditionTypeFactory.copy().decompile(jsonObject);
 			}, ConditionTypeFactory.class
 		);
 	}
