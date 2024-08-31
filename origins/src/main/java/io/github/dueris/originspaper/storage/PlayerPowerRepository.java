@@ -50,6 +50,13 @@ public final class PlayerPowerRepository extends RepositoryComponent {
 		return REPO.get(player);
 	}
 
+	public static void clearRepository() {
+		REPO.clear();
+	}
+
+	public void clearData() {
+		this.repo.clear();
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -69,7 +76,7 @@ public final class PlayerPowerRepository extends RepositoryComponent {
 		return new CopyOnWriteArrayList<>(layer == null ? getAppliedPowers() : repo.get(layer).getA());
 	}
 
-	public synchronized @NotNull CompoundTag serializePowers(@NotNull CompoundTag nbt, ServerPlayer player) {
+	public synchronized @NotNull CompoundTag serializePowers(@NotNull CompoundTag nbt) {
 		if (nbt.contains("PowerRepository")) {
 			nbt.put("PowerRepository", new ListTag());
 		}
@@ -99,12 +106,12 @@ public final class PlayerPowerRepository extends RepositoryComponent {
 		return nbt;
 	}
 
-	public void readPowers(@Nullable String nbt, ServerPlayer player) {
+	public void readPowers(@Nullable String nbt) {
 		if (nbt == null) throw new IllegalArgumentException("Provided NBT was null!");
-		readPowers(CompoundTag.CODEC.decode(JsonOps.INSTANCE, new Gson().fromJson(nbt, JsonElement.class)).getOrThrow().getFirst(), player);
+		readPowers(CompoundTag.CODEC.decode(JsonOps.INSTANCE, new Gson().fromJson(nbt, JsonElement.class)).getOrThrow().getFirst());
 	}
 
-	public synchronized void readPowers(@NotNull CompoundTag nbt, ServerPlayer player) {
+	public synchronized void readPowers(@NotNull CompoundTag nbt) {
 		if (!nbt.contains("PowerRepository")) return;
 		ListTag repository = nbt.getList("PowerRepository", 10);
 		repository.forEach(layerObject -> {

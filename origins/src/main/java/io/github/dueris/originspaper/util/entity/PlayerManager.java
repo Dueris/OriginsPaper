@@ -47,7 +47,7 @@ public class PlayerManager implements Listener {
 			p.getPersistentDataContainer().has(identifier("powers")) ? p.getPersistentDataContainer().get(identifier("powers"), PersistentDataType.STRING) : ((ObjectProvider<String>) () -> {
 				firstJoin.add(p);
 				return "{}";
-			}).get(), nms
+			}).get()
 		);
 		PersistentDataContainer data = p.getPersistentDataContainer();
 		if (data.has(identifier("shulker-box"), PersistentDataType.STRING)) {
@@ -106,7 +106,7 @@ public class PlayerManager implements Listener {
 		playersLeaving.add(e.getPlayer());
 		e.getPlayer().saveData();
 		ServerPlayer nms = ((CraftPlayer) e.getPlayer()).getHandle();
-		String saveData = PlayerPowerRepository.getOrCreateRepo(nms).serializePowers(new CompoundTag(), nms).toString();
+		String saveData = PlayerPowerRepository.getOrCreateRepo(nms).serializePowers(new CompoundTag()).toString();
 		e.getPlayer().getPersistentDataContainer()
 			.set(identifier("powers"), PersistentDataType.STRING, saveData);
 		PowerHolderComponent.unloadPowers(e.getPlayer());

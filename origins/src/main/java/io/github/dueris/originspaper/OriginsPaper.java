@@ -20,8 +20,8 @@ import io.github.dueris.originspaper.mixin.OriginsMixins;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.plugin.OriginsPlugin;
-import io.github.dueris.originspaper.power.type.FireProjectilePower;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.type.FireProjectilePower;
 import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.storage.OriginConfiguration;
 import io.github.dueris.originspaper.util.LangFile;
@@ -131,6 +131,11 @@ public class OriginsPaper {
 			(tuple) -> FireProjectilePower.IS_ENDERIAN_PEARL.add(tuple.getB())
 		));
 		CalioParser.REMAPPER.set(remapper);
+		reload();
+		ApiCall.call(ApiCall.PRE_PARSE, context);
+	}
+
+	public static void reload() throws Throwable {
 		context.createRegistries(
 			Registries.ORIGIN,
 			Registries.LAYER,
@@ -172,8 +177,6 @@ public class OriginsPaper {
 		ItemActions.register();
 		BlockActions.register();
 		BiEntityActions.register();
-
-		ApiCall.call(ApiCall.PRE_PARSE, context);
 	}
 
 	public enum ApiCall {

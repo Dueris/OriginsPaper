@@ -2,8 +2,8 @@ package io.github.dueris.originspaper.mixin;
 
 import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
-import io.github.dueris.originspaper.power.type.simple.WaterBreathingPower;
 import io.github.dueris.originspaper.power.type.*;
+import io.github.dueris.originspaper.power.type.simple.WaterBreathingPower;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.EntityTypeTags;

@@ -42,7 +42,7 @@ public class PlayerMixin {
 
 	@Inject(method = "stopSleepInBed", locator = At.Value.HEAD)
 	public static void apoli$actionOnWakeUp(Player instance, boolean bl, boolean updateSleepingPlayers, CallbackInfo info) {
-		if(!bl && !updateSleepingPlayers && instance.getSleepingPos().isPresent()) {
+		if (!bl && !updateSleepingPlayers && instance.getSleepingPos().isPresent()) {
 			BlockPos sleepingPos = instance.getSleepingPos().get();
 			PowerHolderComponent.getPowers(instance.getBukkitEntity(), ActionOnWakeUpPower.class).stream().filter(p -> p.doesApply(sleepingPos, instance)).forEach(p -> p.executeActions(sleepingPos, Direction.DOWN, instance));
 		}

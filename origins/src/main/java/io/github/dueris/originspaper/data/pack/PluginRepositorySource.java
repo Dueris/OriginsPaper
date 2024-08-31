@@ -82,7 +82,7 @@ public class PluginRepositorySource implements RepositorySource {
 
 	private @NotNull PackLocationInfo createDiscoveredFilePackInfo(Path path) {
 		String string = nameFromPath(path);
-		return new PackLocationInfo("assets/origins/" + string, Component.literal(string), this.packSource, Optional.empty());
+		return new PackLocationInfo("origins/" + string, Component.literal(string), this.packSource, Optional.empty());
 	}
 
 	static class FolderPackDetector extends PackDetector<Pack.ResourcesSupplier> {

@@ -60,7 +60,7 @@ public final class OriginsPlugin extends JavaPlugin implements Listener {
 				player.closeInventory();
 				player.getPersistentDataContainer()
 					.set(new NamespacedKey(this, "powers"), PersistentDataType.STRING,
-						PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) player).getHandle()).serializePowers(new CompoundTag(), ((CraftPlayer) player).getHandle()).toString());
+						PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) player).getHandle()).serializePowers(new CompoundTag()).toString());
 				PowerHolderComponent.unloadPowers(player);
 			}
 

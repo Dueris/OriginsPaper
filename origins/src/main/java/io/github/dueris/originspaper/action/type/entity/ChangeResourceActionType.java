@@ -6,9 +6,9 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.ResourceOperation;
+import io.github.dueris.originspaper.power.factory.PowerReference;
 import io.github.dueris.originspaper.power.type.CooldownPower;
 import io.github.dueris.originspaper.power.type.ResourcePower;
-import io.github.dueris.originspaper.power.factory.PowerReference;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 

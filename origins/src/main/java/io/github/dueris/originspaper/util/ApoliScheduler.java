@@ -1,8 +1,8 @@
 package io.github.dueris.originspaper.util;
 
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.power.type.CreativeFlightPower;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.type.CreativeFlightPower;
 import io.github.dueris.originspaper.registry.Registries;
 import io.github.dueris.originspaper.screen.GuiTicker;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
