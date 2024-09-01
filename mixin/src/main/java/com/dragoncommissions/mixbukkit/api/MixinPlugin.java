@@ -20,6 +20,8 @@ import org.objectweb.asm.tree.analysis.AnalyzerException;
 import org.objectweb.asm.tree.analysis.BasicValue;
 import org.objectweb.asm.tree.analysis.SimpleVerifier;
 import org.objectweb.asm.util.CheckClassAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,6 +34,7 @@ import java.util.List;
 
 public class MixinPlugin {
 
+	private static final Logger log = LoggerFactory.getLogger(MixinPlugin.class);
 	@Getter
 	private final ObfMap obfMap;
 	@Getter
@@ -134,10 +137,10 @@ public class MixinPlugin {
 						CheckClassAdapter.verify(classReader, getClass().getClassLoader().getParent(), false, printWriter);
 					}
 					if (MixBukkit.SAFE_MODE) {
-						Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[!] Failed to load mixin: " + plugin.name() + ":" + namespace + ", Reason: Invalid Bytecode, and safe-mode is on");
+						MixinPlugin.log.info("{}[!] Failed to load mixin: {}:{}, Reason: Invalid Bytecode, and safe-mode is on", ChatColor.RED, plugin.name(), namespace);
 						return false;
 					} else {
-						Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[?] Mixin: " + plugin.name() + ":" + namespace + " has failed the verification, and it might crash your server! Be careful.");
+						MixinPlugin.log.info("{}[?] Mixin: {}:{} has failed the verification, and it might crash your server! Be careful.", ChatColor.YELLOW, plugin.name(), namespace);
 					}
 				}
 

@@ -53,46 +53,46 @@ public class MinecraftServerMixin {
 		calio.shutdown();
 	}
 
-	@Inject(method = "reloadResources", locator = At.Value.HEAD)
-	public static void calio$reload(@NotNull MinecraftServer server, Collection<String> dataPacks, io.papermc.paper.event.server.ServerResourcesReloadedEvent.Cause cause, CallbackInfo info) {
-		CraftCalio calio = buildNewCalio();
-		CalioRegistry.INSTANCE.clearRegistries();
-		RecipePower.recipeMapping.clear();
-		RecipePower.tags.clear();
-		for (ServerPlayer player : server.getPlayerList().players) {
-			PlayerPowerRepository repository = PlayerPowerRepository.getOrCreateRepo(player);
-			String saveData = repository.serializePowers(new CompoundTag()).toString();
-			player.getBukkitEntity().getPersistentDataContainer()
-				.set(identifier(), PersistentDataType.STRING, saveData);
-			PowerHolderComponent.unloadPowers(player.getBukkitEntity());
-			repository.clearData();
-		}
-
-		try {
-			PlayerPowerRepository.clearRepository();
-			OriginsPaper.reload();
-			parse(server, calio);
-			BuiltinRegistry.bootstrap();
-
-			OriginsPaper.getRegistry().retrieve(Registries.POWER).values().forEach(powerType -> {
-				OriginsPaper.getPlugin().getServer().getPluginManager().registerEvents(powerType, OriginsPaper.getPlugin());
-			});
-		} catch (Throwable e) {
-			throw new RuntimeException("Unable to run calio reload!", e);
-		}
-
-		for (ServerPlayer player : server.getPlayerList().players) {
-			PlayerPowerRepository repository = PlayerPowerRepository.getOrCreateRepo(player);
-			repository.readPowers(
-				player.getBukkitEntity().getPersistentDataContainer()
-					.get(identifier(), PersistentDataType.STRING)
-			);
-
-			PowerHolderComponent.loadPowers(player.getBukkitEntity());
-		}
-
-		Bukkit.updateRecipes();
-	}
+//	@Inject(method = "reloadResources", locator = At.Value.HEAD)
+//	public static void calio$reload(@NotNull MinecraftServer server, Collection<String> dataPacks, io.papermc.paper.event.server.ServerResourcesReloadedEvent.Cause cause, CallbackInfo info) {
+//		CraftCalio calio = buildNewCalio();
+//		CalioRegistry.INSTANCE.clearRegistries();
+//		RecipePower.recipeMapping.clear();
+//		RecipePower.tags.clear();
+//		for (ServerPlayer player : server.getPlayerList().players) {
+//			PlayerPowerRepository repository = PlayerPowerRepository.getOrCreateRepo(player);
+//			String saveData = repository.serializePowers(new CompoundTag()).toString();
+//			player.getBukkitEntity().getPersistentDataContainer()
+//				.set(identifier(), PersistentDataType.STRING, saveData);
+//			PowerHolderComponent.unloadPowers(player.getBukkitEntity());
+//			repository.clearData();
+//		}
+//
+//		try {
+//			PlayerPowerRepository.clearRepository();
+//			OriginsPaper.reload();
+//			parse(server, calio);
+//			BuiltinRegistry.bootstrap();
+//
+//			OriginsPaper.getRegistry().retrieve(Registries.POWER).values().forEach(powerType -> {
+//				OriginsPaper.getPlugin().getServer().getPluginManager().registerEvents(powerType, OriginsPaper.getPlugin());
+//			});
+//		} catch (Throwable e) {
+//			throw new RuntimeException("Unable to run calio reload!", e);
+//		}
+//
+//		for (ServerPlayer player : server.getPlayerList().players) {
+//			PlayerPowerRepository repository = PlayerPowerRepository.getOrCreateRepo(player);
+//			repository.readPowers(
+//				player.getBukkitEntity().getPersistentDataContainer()
+//					.get(identifier(), PersistentDataType.STRING)
+//			);
+//
+//			PowerHolderComponent.loadPowers(player.getBukkitEntity());
+//		}
+//
+//		Bukkit.updateRecipes();
+//	}
 
 	private static void parse(@NotNull MinecraftServer server, CraftCalio calio) {
 		PackRepositoryMixin.getAvailable(server.getPackRepository()).forEach((id, pack) -> {
