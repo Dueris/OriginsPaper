@@ -17,12 +17,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 
 public class ApoliScheduler {
 	public static ApoliScheduler INSTANCE = new ApoliScheduler();
-	private final Int2ObjectMap<List<Consumer<MinecraftServer>>> taskQueue = new Int2ObjectOpenHashMap<>();
+	private final Int2ObjectMap<List<Task>> taskQueue = new Int2ObjectOpenHashMap<>();
 	private int currentTick = 0;
 
 	public static void tickAsyncScheduler() {
@@ -41,12 +42,12 @@ public class ApoliScheduler {
 
 	public void tick(@NotNull MinecraftServer m) {
 		this.currentTick = m.getTickCount();
-		List<Consumer<MinecraftServer>> runnables = this.taskQueue.remove(this.currentTick);
+		List<Task> runnables = this.taskQueue.remove(this.currentTick);
 		if (runnables != null) for (int i = 0; i < runnables.size(); i++) {
-			Consumer<MinecraftServer> runnable = runnables.get(i);
+			Task runnable = runnables.get(i);
 			runnable.accept(m);
 
-			if (runnable instanceof Repeating repeating) {// reschedule repeating tasks
+			if (runnable instanceof Repeating repeating) { // reschedule repeating tasks
 				if (repeating.shouldQueue(this.currentTick))
 					this.queue(runnable, ((Repeating) runnable).next);
 			}
@@ -61,7 +62,7 @@ public class ApoliScheduler {
 	 * @param tick how many ticks in the future this should be called, where 0 means at the end of the current tick
 	 * @param task the action to perform
 	 */
-	public void queue(Consumer<MinecraftServer> task, int tick) {
+	public void queue(Task task, int tick) {
 		this.taskQueue.computeIfAbsent(this.currentTick + tick + 1, t -> new LinkedList<>()).add(task);
 	}
 
@@ -72,7 +73,7 @@ public class ApoliScheduler {
 	 * @param tick     how many ticks in the future this event should first be called
 	 * @param interval the number of ticks in between each execution
 	 */
-	public void repeating(Consumer<MinecraftServer> task, int tick, int interval) {
+	public void repeating(Task task, int tick, int interval) {
 		this.repeatWhile(task, null, tick, interval);
 	}
 
@@ -84,7 +85,7 @@ public class ApoliScheduler {
 	 * @param tick     how many ticks in the future this event should first be called
 	 * @param interval the number of ticks in between each execution
 	 */
-	public void repeatWhile(Consumer<MinecraftServer> task, IntPredicate requeue, int tick, int interval) {
+	public void repeatWhile(Task task, IntPredicate requeue, int tick, int interval) {
 		this.queue(new Repeating(task, requeue, interval), tick);
 	}
 
@@ -96,7 +97,7 @@ public class ApoliScheduler {
 	 * @param tick  how many ticks in the future this event should first be called
 	 *              * @param interval the number of ticks in between each execution
 	 */
-	public void repeatN(Consumer<MinecraftServer> task, int times, int tick, int interval) {
+	public void repeatN(Task task, int times, int tick, int interval) {
 		this.repeatWhile(task, new IntPredicate() {
 			private int remaining = times;
 
@@ -144,12 +145,24 @@ public class ApoliScheduler {
 		}
 	}
 
-	private static final class Repeating implements Consumer<MinecraftServer> {
-		public final int next;
-		private final Consumer<MinecraftServer> task;
-		private final IntPredicate requeue;
+	public interface Task extends Consumer<MinecraftServer> {
+		AtomicBoolean canceled = new AtomicBoolean(false);
 
-		private Repeating(Consumer<MinecraftServer> task, IntPredicate requeue, int interval) {
+		default void cancel() {
+			canceled.set(true);
+		}
+
+		default boolean isCanceled() {
+			return canceled.get();
+		}
+	}
+
+	private static final class Repeating implements Task {
+		public final int next;
+		private final Task task;
+		private IntPredicate requeue;
+
+		private Repeating(Task task, IntPredicate requeue, int interval) {
 			this.task = task;
 			this.requeue = requeue;
 			this.next = interval;
@@ -164,7 +177,11 @@ public class ApoliScheduler {
 
 		@Override
 		public void accept(MinecraftServer server) {
-			this.task.accept(server);
+			if (isCanceled()) {
+				this.requeue = (m) -> false;
+			} else {
+				this.task.accept(server);
+			}
 		}
 	}
 }

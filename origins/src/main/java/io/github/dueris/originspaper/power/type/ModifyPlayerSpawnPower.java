@@ -6,6 +6,8 @@ import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.util.NamedTickThreadFactory;
+import io.github.dueris.originspaper.util.Util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
@@ -33,15 +35,20 @@ import org.apache.commons.lang3.function.TriFunction;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ModifyPlayerSpawnPower extends PowerType {
+	private static final ExecutorService service = Executors.newFixedThreadPool(1, new NamedTickThreadFactory("ModifyPlayerSpawnPower"));
 	private final ResourceKey<Level> dimensionKey;
 
 	private final ResourceKey<Structure> structureKey;
@@ -99,27 +106,36 @@ public class ModifyPlayerSpawnPower extends PowerType {
 			return;
 		}
 
-		Tuple<ServerLevel, BlockPos> spawnPoint = this.getSpawn(entity).orElse(null);
-		if (spawnPoint == null) {
-			OriginsPaper.LOGGER.warn("Power \"{}\" couldnt build spawn point for player!", getTag());
-			return;
-		}
+		AtomicReference<Location> bukkitLocation = new AtomicReference<>(null);
+		Util.setLimboUntil(serverPlayer, true, "Preparing modified player spawn..", CompletableFuture.runAsync(() -> {
+			Tuple<ServerLevel, BlockPos> spawnPoint = this.getSpawn(entity).orElse(null);
+			if (spawnPoint == null) {
+				OriginsPaper.LOGGER.warn("Power \"{}\" couldn't build spawn point for player!", getTag());
+				return;
+			}
 
-		ServerLevel spawnPointDimension = spawnPoint.getA();
-		BlockPos spawnPointPosition = spawnPoint.getB();
+			ServerLevel spawnPointDimension = spawnPoint.getA();
+			BlockPos spawnPointPosition = spawnPoint.getB();
 
-		float pitch = serverPlayer.getXRot();
-		float yaw = serverPlayer.getYRot();
+			float pitch = serverPlayer.getXRot();
+			float yaw = serverPlayer.getYRot();
 
-		Vec3 placement = DismountHelper.findSafeDismountLocation(serverPlayer.getType(), spawnPointDimension, spawnPointPosition, true);
-		if (placement == null) {
-			OriginsPaper.LOGGER.warn("Power \"{}\" could not find a suitable spawn point for player {}! Teleporting to the found location directly...", getTag(), entity.getName().getString());
-			Location bukkitLocation = new Location(spawnPointDimension.getWorld(), spawnPointPosition.getX(), spawnPointPosition.getY(), spawnPointPosition.getZ(), pitch, yaw);
-			serverPlayer.getBukkitEntity().teleport(bukkitLocation);
-		} else {
-			Location bukkitLocation = new Location(spawnPointDimension.getWorld(), placement.x, placement.y, placement.z, pitch, yaw);
-			serverPlayer.getBukkitEntity().teleport(bukkitLocation);
-		}
+			Vec3 placement = DismountHelper.findSafeDismountLocation(serverPlayer.getType(), spawnPointDimension, spawnPointPosition, true);
+			if (placement == null) {
+				OriginsPaper.LOGGER.warn("Power \"{}\" could not find a suitable spawn point for player {}! Teleporting to the found location directly...", getTag(), entity.getName().getString());
+				bukkitLocation.set(new Location(spawnPointDimension.getWorld(), spawnPointPosition.getX(), spawnPointPosition.getY(), spawnPointPosition.getZ(), pitch, yaw));
+			} else {
+				bukkitLocation.set(new Location(spawnPointDimension.getWorld(), placement.x, placement.y, placement.z, pitch, yaw));
+			}
+
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					serverPlayer.getBukkitEntity().teleport(bukkitLocation.get());
+				}
+			}.runTaskLater(OriginsPaper.getPlugin(), 5);
+		}, service), (e) -> {
+		});
 
 	}
 

@@ -55,7 +55,6 @@ allprojects {
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
         maven("https://repo.inventivetalent.org/repository/public/")
         maven("https://repo.codemc.org/repository/maven-releases/")
-        maven("https://jitpack.io")
         maven("https://maven.quiltmc.org/repository/release/")
     }
 

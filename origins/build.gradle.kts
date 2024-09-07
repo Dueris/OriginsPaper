@@ -13,13 +13,11 @@ dependencies {
     implementation(project(mapOf("path" to ":calio")))
     implementation(project(mapOf("path" to ":mixin")))
     // Required Dependencies
-    implementation("com.github.Dueris:ModelColorAPI:1.0.5-SNAPSHOT")
-    implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
-    compileOnly("io.github.classgraph:classgraph:4.8.165") // - in DependencyLoader - shaded in calio
-    compileOnly("org.reflections:reflections:0.9.12") // - in DependencyLoader - shaded in calio
-    compileOnly("org.mineskin:java-client:1.2.4-SNAPSHOT") // - in DependencyLoader
-    // Optional Hook
-    compileOnly("net.skinsrestorer:skinsrestorer-api:15.0.4")
+    compileOnly("io.github.classgraph:classgraph:4.8.165") // - in DependencyLoader
+    compileOnly("org.reflections:reflections:0.9.12") // - in DependencyLoader
+    compileOnly("org.mineskin:java-client:2.0.0-SNAPSHOT") // - in DependencyLoader
+    compileOnly("org.mineskin:java-client-jsoup:2.0.0-SNAPSHOT")
+    compileOnly("com.jeff-media:MorePersistentDataTypes:2.4.0") // - in DependencyLoader
 }
 
 tasks {

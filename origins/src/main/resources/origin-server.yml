@@ -25,7 +25,13 @@ max-loader-threads: 6
 # Shows the command output for actions and conditions that use it
 show-command-output: false
 
+# The language for the plugin to use. Must be included inside the plugin assets, or else it wont be valid.
 language: en_us
+
+# API key for model color power. Without this the power WILL NOT work!
+# You need to make an account on https://mineskin.org and generate an API key there and place it here for model color
+# to work correctly. Console will inform you of any information or errors that occur during validation and skin making.
+api-key: ""
 
 # Any origin namespacedkey added here will be disabled and will be unchoosable
 # Example:

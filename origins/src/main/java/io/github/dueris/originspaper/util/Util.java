@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
+import com.jeff_media.morepersistentdatatypes.DataType;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
@@ -31,7 +32,9 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
+import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -44,12 +47,13 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.SlotRange;
 import net.minecraft.world.inventory.SlotRanges;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
@@ -66,15 +70,18 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.CraftRegistry;
 import org.bukkit.craftbukkit.damage.CraftDamageSource;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
@@ -82,7 +89,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.Future;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -123,6 +132,7 @@ public class Util {
 		addSlotRange(list, "player.crafting.", 500, 4);
 	});
 	private static final List<String> EXEMPT_SLOTS = List.of("weapon", "weapon.mainhand");
+	private static final NamespacedKey LIMBO_LOCATION_KEY = new NamespacedKey("apoli", "in_limbo");
 	public static MinecraftServer server = OriginsPaper.server;
 	public static Logger LOGGER = LogManager.getLogger("OriginsPaper");
 
@@ -534,10 +544,6 @@ public class Util {
 		return integers.stream().mapToInt(Integer::intValue).toArray();
 	}
 
-	public static int getArmorValue(org.bukkit.inventory.ItemStack armorItem) {
-		return CraftItemStack.asNMSCopy(armorItem).getItem() instanceof ArmorItem item ? item.getDefense() : 0;
-	}
-
 	public static <T extends Enum<T>> @NotNull HashMap<String, T> buildEnumMap(@NotNull Class<T> enumClass, Function<T, String> enumToString) {
 		HashMap<String, T> map = new HashMap<>();
 		for (T enumConstant : enumClass.getEnumConstants()) {
@@ -577,6 +583,58 @@ public class Util {
 			return a;
 		}
 		return a.and(b);
+	}
+
+	public static void setLimboUntil(Entity entity, boolean blindness, @Nullable String notification, Future<?> future, Consumer<Entity> entityConsumer) {
+		ApoliScheduler.INSTANCE.repeating(new ApoliScheduler.Task() {
+			@Override
+			public void accept(MinecraftServer minecraftServer) {
+				if (future.isDone()) {
+					try {
+						clearLimbo(entity, blindness);
+						entityConsumer.accept(entity);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					} finally {
+						cancel();
+					}
+				} else {
+					tickLimbo(entity, blindness, notification);
+				}
+			}
+		}, 1, 1);
+	}
+
+	public static void tickLimbo(@NotNull Entity entity, boolean blindness, @Nullable String notification) {
+		CraftEntity craftEntity = entity.getBukkitEntity();
+		if (!craftEntity.getPersistentDataContainer().has(LIMBO_LOCATION_KEY)) {
+			craftEntity.getPersistentDataContainer().set(LIMBO_LOCATION_KEY, DataType.LOCATION, craftEntity.getLocation());
+		}
+
+		if (blindness && entity instanceof LivingEntity livingEntity && !livingEntity.hasEffect(MobEffects.BLINDNESS)) {
+			// Realistically it shouldn't need anything more than Integer.MAX_VALUE...
+			livingEntity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, Integer.MAX_VALUE, 0, false, false, false));
+		}
+
+		if (notification != null && entity instanceof ServerPlayer player) {
+			ClientboundSetActionBarTextPacket packet = new ClientboundSetActionBarTextPacket(Component.literal(notification));
+			player.connection.send(packet);
+		}
+
+		craftEntity.teleport(new Location(craftEntity.getWorld(), 0, 500000, 0));
+	}
+
+	public static void clearLimbo(@NotNull Entity entity, boolean blindness) {
+		CraftEntity craftEntity = entity.getBukkitEntity();
+		if (craftEntity.getPersistentDataContainer().has(LIMBO_LOCATION_KEY)) {
+			Location location = craftEntity.getPersistentDataContainer().get(LIMBO_LOCATION_KEY, DataType.LOCATION);
+			craftEntity.teleport(location); // dont do async, we need this NOW.
+			craftEntity.getPersistentDataContainer().remove(LIMBO_LOCATION_KEY);
+		}
+
+		if (blindness && entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(MobEffects.BLINDNESS)) {
+			livingEntity.removeEffect(MobEffects.BLINDNESS);
+		}
 	}
 
 	public static boolean attemptToTeleport(Entity entity, ServerLevel serverWorld, double destX, double destY, double destZ, double offsetX, double offsetY, double offsetZ, double areaHeight, boolean loadedChunksOnly, Heightmap.Types heightmap, Predicate<BlockInWorld> landingBlockCondition, Predicate<Entity> landingCondition) {
@@ -980,6 +1038,31 @@ public class Util {
 
 		}
 
+	}
+
+	@SuppressWarnings("javax.imageio.IIOException")
+	public static BufferedImage downloadImage(String imageUrl, String savePath, String fileName) throws IOException {
+		URL url = new URL(imageUrl);
+		BufferedImage image = ImageIO.read(url);
+		File outputDir = new File(savePath);
+		outputDir.mkdirs();
+
+		File outputFile = new File(savePath, fileName + ".png");
+		if (outputFile.exists()) {
+			Files.delete(outputFile.toPath());
+		}
+		ImageIO.write(image, "png", outputFile);
+
+		return image;
+	}
+
+
+	public static void saveImage(BufferedImage image, String savePath, String fileName) throws IOException {
+		File outputDir = new File(savePath);
+		outputDir.mkdirs();
+
+		File outputFile = new File(savePath, fileName);
+		ImageIO.write(image, "png", outputFile);
 	}
 
 	public enum Calculation {
