@@ -6,6 +6,7 @@ import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.event.PowerUpdateEvent;
 import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -138,6 +139,14 @@ public class ElytraFlightPower extends PowerType {
 					}
 				}
 			}
+		}
+	}
+
+	@EventHandler
+	public void fixBlockGlitch(PlayerFailMoveEvent e) {
+		if (glidingPlayers.contains(e.getPlayer().getUniqueId())) {
+			e.setAllowed(true);
+			e.setLogWarning(false);
 		}
 	}
 

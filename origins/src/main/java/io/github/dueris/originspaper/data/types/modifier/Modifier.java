@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.calio.data.exceptions.DataException;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 
 public class Modifier implements Comparable<Modifier> {
 
-	public static final SerializableDataBuilder<Modifier> DATA_TYPE = SerializableDataBuilder.of(
+	public static final SerializableDataType<Modifier> DATA_TYPE = SerializableDataType.of(
 		(jsonElement) -> {
 
 			if (!(jsonElement instanceof JsonObject jsonObject)) {
@@ -29,7 +29,7 @@ public class Modifier implements Comparable<Modifier> {
 			try {
 
 				IModifierOperation operation = IModifierOperation.DATA_TYPE.deserialize(jsonObject.get("operation"));
-				SerializableData.Instance data = SerializableDataBuilder.compound(operation.getData(), jsonObject, Modifier.class);
+				SerializableData.Instance data = SerializableDataType.compound(operation.getData(), jsonObject, Modifier.class);
 
 				return new Modifier(operation, data);
 
@@ -39,7 +39,7 @@ public class Modifier implements Comparable<Modifier> {
 
 		}, Modifier.class
 	);
-	public static final SerializableDataBuilder<List<Modifier>> LIST_TYPE = SerializableDataTypes.list(DATA_TYPE);
+	public static final SerializableDataType<List<Modifier>> LIST_TYPE = SerializableDataTypes.list(DATA_TYPE);
 	private final IModifierOperation operation;
 	private final SerializableData.Instance dataInstance;
 

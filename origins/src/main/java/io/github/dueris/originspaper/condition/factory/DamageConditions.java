@@ -3,10 +3,12 @@ package io.github.dueris.originspaper.condition.factory;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.type.damage.*;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.damagesource.DamageSource;
+import org.jetbrains.annotations.NotNull;
 
 public class DamageConditions {
 	public static final ConditionTypeFactory<Tuple<DamageSource, Float>> AMOUNT = register(AmountConditionType.getFactory());
@@ -26,7 +28,7 @@ public class DamageConditions {
 		register(TypeConditionType.getFactory());
 	}
 
-	public static ConditionTypeFactory<Tuple<DamageSource, Float>> register(ConditionTypeFactory<Tuple<DamageSource, Float>> conditionFactory) {
-		return OriginsPaper.getRegistry().retrieve(Registries.DAMAGE_CONDITION).register(conditionFactory, conditionFactory.getSerializerId());
+	public static @NotNull ConditionTypeFactory<Tuple<DamageSource, Float>> register(ConditionTypeFactory<Tuple<DamageSource, Float>> conditionFactory) {
+		return Registry.register(ApoliRegistries.DAMAGE_CONDITION, conditionFactory.getSerializerId(), conditionFactory);
 	}
 }

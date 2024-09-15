@@ -6,7 +6,7 @@ group = "me.dueris"
 version = "1.${rootProject.extra["mcMajorVer"]}-${rootProject.extra["pluginVer"]}"
 description = "Bringing the Origins Mod to PaperMC"
 
-println("Loaded subproject \"${project.name}\" with version {$version}")
+println("Loaded subproject \"${project.name}\" with version '$version'")
 
 dependencies {
     // Project
@@ -16,7 +16,7 @@ dependencies {
     compileOnly("io.github.classgraph:classgraph:4.8.165") // - in DependencyLoader
     compileOnly("org.reflections:reflections:0.9.12") // - in DependencyLoader
     compileOnly("org.mineskin:java-client:2.0.0-SNAPSHOT") // - in DependencyLoader
-    compileOnly("org.mineskin:java-client-jsoup:2.0.0-SNAPSHOT")
+    compileOnly("org.mineskin:java-client-jsoup:2.0.0-SNAPSHOT") // - in DependencyLoader
     compileOnly("com.jeff-media:MorePersistentDataTypes:2.4.0") // - in DependencyLoader
 }
 

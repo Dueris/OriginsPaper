@@ -3,7 +3,8 @@ package io.github.dueris.originspaper.screen;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,9 +16,7 @@ import java.util.stream.Collectors;
 
 public interface ChoosingPage {
 	static void registerInstances() {
-		OriginsPaper.getRegistry()
-			.retrieve(Registries.LAYER)
-			.values()
+		ApoliRegistries.ORIGIN_LAYER
 			.stream()
 			.filter(OriginLayer::isEnabled)
 			.forEach(
@@ -48,7 +47,7 @@ public interface ChoosingPage {
 			);
 		ScreenNavigator.layerPages.values().forEach(list -> {
 			for (ChoosingPage page : list) {
-				OriginsPaper.getRegistry().retrieve(Registries.CHOOSING_PAGE).register(page, page.key());
+				Registry.register(ApoliRegistries.CHOOSING_PAGE, page.key(), page);
 			}
 		});
 	}

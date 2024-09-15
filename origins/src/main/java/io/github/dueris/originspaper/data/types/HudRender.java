@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.data.types;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -22,7 +22,7 @@ public record HudRender(@Nullable ConditionTypeFactory<Entity> condition, Render
 	public static final ResourceLocation DEFAULT_SPRITE = OriginsPaper.apoliIdentifier("textures/gui/resource_bar.png");
 	public static final HudRender DONT_RENDER = new HudRender(null, new Renderer.RenderImpl(0, DEFAULT_SPRITE, null, BarColor.WHITE), false, false, 0);
 
-	public static final SerializableDataBuilder<HudRender> DATA_TYPE = SerializableDataBuilder.compound(
+	public static final SerializableDataType<HudRender> DATA_TYPE = SerializableDataType.compound(
 		new SerializableData()
 			.add("condition", ApoliDataTypes.ENTITY_CONDITION, null)
 			.add("sprite_location", SerializableDataTypes.IDENTIFIER, DEFAULT_SPRITE)
@@ -39,7 +39,7 @@ public record HudRender(@Nullable ConditionTypeFactory<Entity> condition, Render
 		), HudRender.class
 	);
 
-	public static final SerializableDataBuilder<List<HudRender>> LIST_DATA_TYPE = SerializableDataBuilder.of(DATA_TYPE.listOf(1, Integer.MAX_VALUE));
+	public static final SerializableDataType<List<HudRender>> LIST_DATA_TYPE = SerializableDataType.of(DATA_TYPE.listOf(1, Integer.MAX_VALUE));
 
 	@Override
 	public int compareTo(@NotNull HudRender other) {

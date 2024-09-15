@@ -1,10 +1,10 @@
 package io.github.dueris.calio.data;
 
 import io.github.dueris.calio.parser.RootResult;
-import io.github.dueris.calio.registry.RegistryKey;
+import net.minecraft.core.Registry;
 
 import java.util.List;
 
-public record DataBuildDirective<T>(List<String> modids, String folder, SerializableDataBuilder<RootResult<T>> builder,
-									int priority, RegistryKey<T> registryKey) {
+public record DataBuildDirective<T>(List<String> modids, String folder, SerializableDataType<RootResult<T>> builder,
+									int priority, Registry<T> registryKey) {
 }

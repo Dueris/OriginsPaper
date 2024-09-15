@@ -3,8 +3,6 @@ package io.github.dueris.originspaper;
 import com.dragoncommissions.mixbukkit.MixBukkit;
 import io.github.dueris.calio.parser.CalioParser;
 import io.github.dueris.calio.parser.JsonObjectRemapper;
-import io.github.dueris.calio.registry.IRegistry;
-import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.github.dueris.originspaper.action.factory.BiEntityActions;
 import io.github.dueris.originspaper.action.factory.BlockActions;
 import io.github.dueris.originspaper.action.factory.EntityActions;
@@ -16,18 +14,19 @@ import io.github.dueris.originspaper.condition.factory.*;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.OriginsDataTypes;
 import io.github.dueris.originspaper.data.types.modifier.ModifierOperations;
+import io.github.dueris.originspaper.loot.condition.ApoliLootConditionTypes;
+import io.github.dueris.originspaper.loot.function.ApoliLootFunctionTypes;
 import io.github.dueris.originspaper.mixin.OriginsMixins;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.plugin.OriginsPlugin;
 import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.power.type.FireProjectilePower;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.storage.OriginConfiguration;
 import io.github.dueris.originspaper.util.LangFile;
 import io.github.dueris.originspaper.util.Renderer;
 import io.github.dueris.originspaper.util.Util;
-import io.github.dueris.originspaper.util.WrappedBootstrapContext;
 import io.papermc.paper.ServerBuildInfo;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.entrypoint.classloader.PaperPluginClassLoader;
@@ -44,8 +43,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.StringReader;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
 
 public class OriginsPaper {
 	public static final Logger LOGGER = LogManager.getLogger("OriginsPaper");
@@ -54,7 +51,6 @@ public class OriginsPaper {
 	public static MinecraftServer server;
 	public static PluginData pluginData;
 	public static Path jarFile;
-	private static WrappedBootstrapContext context;
 
 	public static @NotNull ResourceLocation identifier(String path) {
 		return ResourceLocation.fromNamespaceAndPath("originspaper", path);
@@ -68,43 +64,36 @@ public class OriginsPaper {
 		return ResourceLocation.fromNamespaceAndPath("apoli", path);
 	}
 
-	public static OriginLayer getLayer(ResourceLocation location) {
-		return getRegistry().retrieve(Registries.LAYER).get(location);
+	public static PowerType getPower(ResourceLocation location) {
+		return ApoliRegistries.POWER.get(location);
 	}
 
-	public static PowerType getPower(ResourceLocation location) {
-		return getRegistry().retrieve(Registries.POWER).get(location);
+	public static OriginLayer getLayer(ResourceLocation location) {
+		return ApoliRegistries.ORIGIN_LAYER.get(location);
 	}
 
 	public static Origin getOrigin(ResourceLocation location) {
-		return getRegistry().retrieve(Registries.ORIGIN).get(location);
-	}
-
-	public static IRegistry getRegistry() {
-		return CalioRegistry.INSTANCE;
+		return ApoliRegistries.ORIGIN.get(location);
 	}
 
 	public static OriginsPlugin getPlugin() {
 		return OriginsPlugin.plugin;
 	}
 
-	public static void init(@NotNull WrappedBootstrapContext context) throws Throwable {
+	public static void init(BootstrapContext context) throws Throwable {
 		pluginData = new PluginData(YamlConfiguration.loadConfiguration(new StringReader(Util.readResource("/paper-plugin.yml"))));
-		jarFile = context.context().getPluginSource();
-		OriginsPaper.context = context;
+		jarFile = context.getPluginSource();
 
 		String runningVersion = ServerBuildInfo.buildInfo().minecraftVersionId();
 		if (!pluginData.getSupportedVersions().contains(runningVersion)) {
 			throw new IllegalStateException("This version of OriginsPaper does not support this version! Please use {}".replace("{}", pluginData.getSupportedVersions().toString()));
 		}
 		MixBukkit bukkit = new MixBukkit((PaperPluginClassLoader) OriginsPaper.class.getClassLoader());
-		bukkit.onEnable(context.LOGGER, context.context().getPluginSource().toFile());
+		bukkit.onEnable(LOGGER, jarFile.toFile());
 
 		OriginsMixins.init(bukkit);
 
-		ApiCall.call(ApiCall.INIT, context);
-
-		LifecycleEventManager<BootstrapContext> lifecycleManager = context.context().getLifecycleManager();
+		LifecycleEventManager<BootstrapContext> lifecycleManager = context.getLifecycleManager();
 		lifecycleManager.registerEventHandler((LifecycleEvents.COMMANDS.newHandler(event -> {
 			PowerCommand.register(event.registrar());
 			OriginCommand.register(event.registrar());
@@ -132,32 +121,14 @@ public class OriginsPaper {
 		));
 		CalioParser.REMAPPER.set(remapper);
 		reload();
-		ApiCall.call(ApiCall.PRE_PARSE, context);
 	}
 
 	public static void reload() throws Throwable {
-		context.createRegistries(
-			Registries.ORIGIN,
-			Registries.LAYER,
-			Registries.POWER,
-			Registries.FLUID_CONDITION,
-			Registries.ENTITY_CONDITION,
-			Registries.BIOME_CONDITION,
-			Registries.BIENTITY_CONDITION,
-			Registries.BLOCK_CONDITION,
-			Registries.ITEM_CONDITION,
-			Registries.DAMAGE_CONDITION,
-			Registries.ENTITY_ACTION,
-			Registries.ITEM_ACTION,
-			Registries.BLOCK_ACTION,
-			Registries.BIENTITY_ACTION,
-			Registries.LANG,
-			Registries.CHOOSING_PAGE
-		);
-
 		OriginConfiguration.load();
 		showCommandOutput = OriginConfiguration.getConfiguration().getBoolean("show-command-output", false);
 		LANGUAGE = OriginConfiguration.getConfiguration().getString("language", LANGUAGE);
+		ApoliLootConditionTypes.register();
+		ApoliLootFunctionTypes.register();
 		LangFile.init();
 		Renderer.init();
 
@@ -177,26 +148,6 @@ public class OriginsPaper {
 		ItemActions.register();
 		BlockActions.register();
 		BiEntityActions.register();
-	}
-
-	public enum ApiCall {
-		INIT, PRE_PARSE;
-		private static final List<Tuple<ApiCall, Consumer<WrappedBootstrapContext>>> REGISTERED = new CopyOnWriteArrayList<>();
-
-		public static void registerCall(ApiCall call, Consumer<WrappedBootstrapContext> consumer) {
-			REGISTERED.add(new Tuple<>(
-				call, consumer
-			));
-		}
-
-		private static void call(ApiCall call, WrappedBootstrapContext context) {
-			for (Tuple<ApiCall, Consumer<WrappedBootstrapContext>> apiCall : REGISTERED) {
-				if (apiCall.getA().equals(call)) {
-					apiCall.getB().accept(context);
-					REGISTERED.remove(apiCall);
-				}
-			}
-		}
 	}
 
 	/**

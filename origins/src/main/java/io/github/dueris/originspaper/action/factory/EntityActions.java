@@ -4,9 +4,11 @@ import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.type.entity.*;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -70,12 +72,12 @@ public class EntityActions {
 
 	}
 
-	public static ActionTypeFactory<Entity> createSimpleFactory(ResourceLocation id, Consumer<Entity> action) {
+	public static @NotNull ActionTypeFactory<Entity> createSimpleFactory(ResourceLocation id, Consumer<Entity> action) {
 		return new ActionTypeFactory<>(id, new SerializableData(), (data, entity) -> action.accept(entity));
 	}
 
-	public static ActionTypeFactory<Entity> register(ActionTypeFactory<Entity> actionFactory) {
-		return OriginsPaper.getRegistry().retrieve(Registries.ENTITY_ACTION).register(actionFactory, actionFactory.getSerializerId());
+	public static @NotNull ActionTypeFactory<Entity> register(ActionTypeFactory<Entity> actionFactory) {
+		return Registry.register(ApoliRegistries.ENTITY_ACTION, actionFactory.getSerializerId(), actionFactory);
 	}
 
 }

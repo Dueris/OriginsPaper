@@ -4,21 +4,21 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.calio.parser.RootResult;
-import io.github.dueris.calio.registry.Registrar;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.OriginsDataTypes;
 import io.github.dueris.originspaper.data.types.GuiTitle;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.screen.ScreenNavigator;
 import io.github.dueris.originspaper.storage.OriginComponent;
 import io.github.dueris.originspaper.util.ComponentUtil;
 import io.github.dueris.originspaper.util.LangFile;
 import io.github.dueris.originspaper.util.Util;
 import net.kyori.adventure.text.TextComponent;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -30,14 +30,14 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class OriginLayer {
-	public static SerializableDataBuilder<RootResult<OriginLayer>> DATA = SerializableDataBuilder.of(
+	public static SerializableDataType<RootResult<OriginLayer>> DATA = SerializableDataType.of(
 		(jsonElement) -> {
 			if (!(jsonElement instanceof JsonObject jo)) {
 				throw new JsonSyntaxException("Expected JsonObject for root 'OriginLayer'");
 			}
 
 			try {
-				SerializableData.Instance compound = SerializableDataBuilder.compound(getFactory(), jo, OriginLayer.class);
+				SerializableData.Instance compound = SerializableDataType.compound(getFactory(), jo, OriginLayer.class);
 				return new RootResult<>(
 					io.github.dueris.calio.util.Util.generateConstructor(OriginLayer.class, getFactory()), compound
 				);
@@ -141,7 +141,7 @@ public class OriginLayer {
 			return false;
 		} else {
 			if (!defaultOrigin.equals(Origin.EMPTY.getId())) {
-				Origin origin = OriginsPaper.getRegistry().retrieve(Registries.ORIGIN).get(defaultOrigin);
+				Origin origin = OriginsPaper.getOrigin(defaultOrigin);
 				if (origin != null) {
 					OriginComponent.setOrigin(entity.getBukkitEntityRaw(), this, origin);
 					return true;
@@ -153,7 +153,7 @@ public class OriginLayer {
 	}
 
 	public List<ResourceLocation> getOriginIdentifiers() {
-		return Util.collapseList(this.getOrigins().stream().map(ConditionedOrigin::origins).toList());
+		return Util.collapseCollection(this.getOrigins().stream().map(ConditionedOrigin::origins).toList());
 	}
 
 	public List<Origin> getRandomOrigins() {
@@ -221,10 +221,12 @@ public class OriginLayer {
 	}
 
 	public boolean canRegister() {
-		Registrar<OriginLayer> registrar = OriginsPaper.getRegistry().retrieve(Registries.LAYER);
-		boolean merge = registrar.keySet().contains(this.key);
+		boolean merge = ApoliRegistries.ORIGIN_LAYER.containsKey(this.key);
 		if (merge) {
-			OriginLayer otherLayer = registrar.get(this.key);
+			OriginLayer otherLayer = ApoliRegistries.ORIGIN_LAYER.get(this.key);
+			if (otherLayer == null)
+				throw new IllegalStateException("Um... how did u possibly get here? The layer should be in here... somewhere...");
+			OriginsPaper.LOGGER.info("Merging other layer, `{}` with {} origins to this layer, `{}` with {} origins", otherLayer.getId(), otherLayer.getOriginIdentifiers().size(), this.getId(), this.getOriginIdentifiers().size());
 			this.order = otherLayer.order;
 			this.enabled = otherLayer.enabled;
 
@@ -254,6 +256,7 @@ public class OriginLayer {
 			this.defaultOrigin = otherLayer.defaultOrigin;
 			this.autoChoose = otherLayer.autoChoose;
 			this.hidden = otherLayer.hidden;
+			Registry.register(ApoliRegistries.ORIGIN_LAYER, this.getId(), this);
 			return false;
 		}
 
@@ -287,7 +290,7 @@ public class OriginLayer {
 		}
 
 		@Override
-		public String toString() {
+		public @NotNull String toString() {
 			return "ConditionedOrigin{" +
 				"origins=" + origins +
 				'}';

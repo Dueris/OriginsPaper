@@ -18,6 +18,7 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntLists;
@@ -287,17 +288,22 @@ public class Util {
 	}
 
 	@Unmodifiable
-	public static <T> @NotNull List<T> collapseList(@NotNull Collection<List<T>> collection) {
+	public static <T> @NotNull List<T> collapseCollection(@NotNull Collection<List<T>> collection) {
 		List<T> lC = new LinkedList<>();
 		collection.forEach(lC::addAll);
 		return Collections.unmodifiableList(lC);
 	}
 
-	@Unmodifiable
-	public static <T> @NotNull Set<T> collapseSet(Collection<Set<T>> collection) {
-		Set<T> lC = new HashSet<>();
-		collection.forEach(lC::addAll);
-		return Collections.unmodifiableSet(lC);
+	public static void unfreezeUntil(Registry<?> @NotNull [] registries, Runnable runnable) {
+		for (Registry<?> registry : registries) {
+			ApoliRegistries.unfreeze(registry);
+		}
+
+		runnable.run();
+
+		for (Registry<?> registry : registries) {
+			registry.freeze();
+		}
 	}
 
 	@Contract(value = "_, !null -> !null", pure = true)
@@ -586,7 +592,7 @@ public class Util {
 	}
 
 	public static void setLimboUntil(Entity entity, boolean blindness, @Nullable String notification, Future<?> future, Consumer<Entity> entityConsumer) {
-		ApoliScheduler.INSTANCE.repeating(new ApoliScheduler.Task() {
+		Scheduler.INSTANCE.repeating(new Scheduler.Task() {
 			@Override
 			public void accept(MinecraftServer minecraftServer) {
 				if (future.isDone()) {

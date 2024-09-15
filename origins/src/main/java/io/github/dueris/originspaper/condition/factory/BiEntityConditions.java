@@ -4,7 +4,8 @@ import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.type.bientity.*;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
@@ -45,7 +46,7 @@ public class BiEntityConditions {
 		});
 	}
 
-	public static ConditionTypeFactory<Tuple<Entity, Entity>> register(ConditionTypeFactory<Tuple<Entity, Entity>> conditionFactory) {
-		return OriginsPaper.getRegistry().retrieve(Registries.BIENTITY_CONDITION).register(conditionFactory, conditionFactory.getSerializerId());
+	public static @NotNull ConditionTypeFactory<Tuple<Entity, Entity>> register(ConditionTypeFactory<Tuple<Entity, Entity>> conditionFactory) {
+		return Registry.register(ApoliRegistries.BIENTITY_CONDITION, conditionFactory.getSerializerId(), conditionFactory);
 	}
 }

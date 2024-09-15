@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.action.type.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import net.minecraft.core.Holder;
@@ -35,7 +35,7 @@ public class ClearEffectActionType {
 			OriginsPaper.apoliIdentifier("clear_effect"),
 			new SerializableData()
 				.add("effect", SerializableDataTypes.STATUS_EFFECT_ENTRY, null)
-				.add("effects", SerializableDataBuilder.of(SerializableDataTypes.STATUS_EFFECT_ENTRY.listOf()), null),
+				.add("effects", SerializableDataType.of(SerializableDataTypes.STATUS_EFFECT_ENTRY.listOf()), null),
 			(data, entity) -> {
 
 				Collection<Holder<MobEffect>> effects = new LinkedList<>();

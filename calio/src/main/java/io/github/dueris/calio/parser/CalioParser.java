@@ -3,10 +3,9 @@ package io.github.dueris.calio.parser;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.github.dueris.calio.data.DataBuildDirective;
-import io.github.dueris.calio.registry.RegistryKey;
-import io.github.dueris.calio.registry.impl.CalioRegistry;
 import io.github.dueris.calio.util.ReflectionUtils;
 import io.github.dueris.calio.util.annotations.SourceProvider;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import org.apache.logging.log4j.LogManager;
@@ -68,9 +67,9 @@ public class CalioParser {
 		if (ReflectionUtils.hasFieldWithAnnotation(instance.getClass(), JsonObject.class, SourceProvider.class)) {
 			ReflectionUtils.setFieldWithAnnotation(instance, SourceProvider.class, jsonSource);
 		}
-		RegistryKey<T> registryKey = (RegistryKey<T>) dataBuildDirective.registryKey();
+		Registry<T> registryKey = (Registry<T>) dataBuildDirective.registryKey();
 		if (ReflectionUtils.invokeBooleanMethod(instance, "canRegister")) {
-			CalioRegistry.INSTANCE.retrieve(registryKey).register(instance, location);
+			Registry.register(registryKey, location, instance);
 		}
 
 		return instance;

@@ -1,14 +1,15 @@
 package io.github.dueris.originspaper.action.factory;
 
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.type.block.*;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import org.apache.commons.lang3.tuple.Triple;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockActions {
 
@@ -27,8 +28,8 @@ public class BlockActions {
 		register(SpawnEntityActionType.getFactory());
 	}
 
-	public static ActionTypeFactory<Triple<Level, BlockPos, Direction>> register(ActionTypeFactory<Triple<Level, BlockPos, Direction>> actionFactory) {
-		return OriginsPaper.getRegistry().retrieve(Registries.BLOCK_ACTION).register(actionFactory, actionFactory.getSerializerId());
+	public static @NotNull ActionTypeFactory<Triple<Level, BlockPos, Direction>> register(ActionTypeFactory<Triple<Level, BlockPos, Direction>> actionFactory) {
+		return Registry.register(ApoliRegistries.BLOCK_ACTION, actionFactory.getSerializerId(), actionFactory);
 	}
 
 }

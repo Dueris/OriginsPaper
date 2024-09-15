@@ -21,6 +21,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.Map;
+
 public final class At {
 	private final HookLocator locator;
 
@@ -91,6 +93,13 @@ public final class At {
 		IN_WATER_OR_RAIN_CHECK(((ObjectProvider<HLocatorMethodInvoke>) () -> {
 			try {
 				return new HLocatorMethodInvoke(Entity.class.getDeclaredMethod("isInWaterOrRain"), PostPreState.PRE, (i) -> i == 0);
+			} catch (NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			}
+		}).get()),
+		MAP_PUT(((ObjectProvider<HLocatorMethodInvoke>) () -> {
+			try {
+				return new HLocatorMethodInvoke(Map.class.getDeclaredMethod("put", Object.class, Object.class), PostPreState.PRE, (i) -> i == 0);
 			} catch (NoSuchMethodException e) {
 				throw new RuntimeException(e);
 			}

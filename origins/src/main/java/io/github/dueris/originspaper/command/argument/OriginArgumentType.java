@@ -19,6 +19,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -43,8 +44,12 @@ public class OriginArgumentType implements CustomArgumentType<Origin, Namespaced
 
 	}
 
-	public static @NotNull ResourceLocation parseNamespacedKey(@NotNull StringReader reader) throws CommandSyntaxException {
-		return ResourceLocation.read(reader.getString().split(" ")[3].split(" ")[0]).getOrThrow();
+	public static @Nullable ResourceLocation parseNamespacedKey(@NotNull StringReader reader) throws CommandSyntaxException {
+		try {
+			return ResourceLocation.read(reader.getString().split(" ")[3].split(" ")[0]).getOrThrow();
+		} catch (Exception ignored) {
+			return null;
+		}
 	}
 
 	@Override
@@ -66,11 +71,10 @@ public class OriginArgumentType implements CustomArgumentType<Origin, Namespaced
 		try {
 			OriginLayer originLayer = OriginsPaper.getLayer(parseNamespacedKey(new StringReader(builder.getInput())));
 			if (originLayer != null) {
-				availableOrigins.addAll(Util.collapseList(originLayer.getOrigins().stream().map(OriginLayer.ConditionedOrigin::origins).toList()));
+				availableOrigins.addAll(Util.collapseCollection(originLayer.getOrigins().stream().map(OriginLayer.ConditionedOrigin::origins).toList()));
 			}
 
 		} catch (IllegalArgumentException ignored) {
-			ignored.printStackTrace();
 		} catch (CommandSyntaxException e) {
 			throw new RuntimeException(e);
 		}

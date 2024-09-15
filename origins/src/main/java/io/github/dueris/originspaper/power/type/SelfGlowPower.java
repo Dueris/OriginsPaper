@@ -8,7 +8,7 @@ import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Shape;
 import io.github.dueris.originspaper.plugin.OriginsPlugin;
 import io.github.dueris.originspaper.power.factory.PowerType;
-import io.github.dueris.originspaper.util.entity.GlowingEntitiesUtils;
+import io.github.dueris.originspaper.util.GlowingEntitiesUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;

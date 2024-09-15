@@ -6,7 +6,7 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.power.factory.PowerReference;
-import io.github.dueris.originspaper.util.entity.PowerUtils;
+import io.github.dueris.originspaper.util.PowerUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ public class GrantPowerActionType {
 
 	public static void action(@NotNull Entity entity, PowerReference power, ResourceLocation source) {
 		if (entity.getBukkitEntity() instanceof Player) {
-			PowerUtils.grantPower(entity.getBukkitEntity(), power.getType(), (Player) entity.getBukkitEntity(), OriginsPaper.getLayer(source), true);
+			PowerUtils.grantPower(entity.getBukkitEntity(), power.getType(), entity.getBukkitEntity(), source, true);
 		}
 	}
 

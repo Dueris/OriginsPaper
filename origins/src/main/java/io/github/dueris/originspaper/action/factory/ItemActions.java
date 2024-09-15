@@ -1,12 +1,13 @@
 package io.github.dueris.originspaper.action.factory;
 
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.type.item.*;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemActions {
 
@@ -22,8 +23,8 @@ public class ItemActions {
 
 	}
 
-	public static ActionTypeFactory<Tuple<Level, SlotAccess>> register(ActionTypeFactory<Tuple<Level, SlotAccess>> actionFactory) {
-		return OriginsPaper.getRegistry().retrieve(Registries.ITEM_ACTION).register(actionFactory, actionFactory.getSerializerId());
+	public static @NotNull ActionTypeFactory<Tuple<Level, SlotAccess>> register(ActionTypeFactory<Tuple<Level, SlotAccess>> actionFactory) {
+		return Registry.register(ApoliRegistries.ITEM_ACTION, actionFactory.getSerializerId(), actionFactory);
 	}
 
 }

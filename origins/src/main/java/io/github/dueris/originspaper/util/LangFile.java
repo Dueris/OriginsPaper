@@ -2,10 +2,10 @@ package io.github.dueris.originspaper.util;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.storage.OriginConfiguration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,7 @@ public class LangFile {
 		LANGUAGE = OriginConfiguration.getConfiguration().getString("language", "en_us");
 		String langInput = Util.readResource("/assets/origins/lang/%%.json".replace("%%", LANGUAGE));
 		ResourceLocation location = ResourceLocation.parse("origins:" + LANGUAGE);
-		OriginsPaper.getRegistry().retrieve(Registries.LANG).register(new LangFile(new Gson().fromJson(langInput, JsonObject.class)), location);
+		Registry.register(ApoliRegistries.LANG, location, new LangFile(new Gson().fromJson(langInput, JsonObject.class)));
 	}
 
 	public static @NotNull Component translatable(String original, Object... args) {

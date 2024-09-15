@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.action.type.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -28,7 +28,7 @@ public class ApplyEffectActionType {
 			OriginsPaper.apoliIdentifier("apply_effect"),
 			new SerializableData()
 				.add("effect", SerializableDataTypes.STATUS_EFFECT_INSTANCE, null)
-				.add("effects", SerializableDataBuilder.of(SerializableDataTypes.STATUS_EFFECT_INSTANCE.listOf()), null),
+				.add("effects", SerializableDataType.of(SerializableDataTypes.STATUS_EFFECT_INSTANCE.listOf()), null),
 			(data, entity) -> {
 
 				Collection<MobEffectInstance> effects = new LinkedList<>();

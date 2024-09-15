@@ -5,7 +5,6 @@ import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.power.factory.PowerReference;
 import io.github.dueris.originspaper.storage.PlayerPowerRepository;
 import net.minecraft.resources.ResourceLocation;
@@ -18,9 +17,8 @@ import org.jetbrains.annotations.Nullable;
 public class PowerConditionType {
 
 	public static boolean condition(Entity entity, PowerReference power, @Nullable ResourceLocation source) {
-		OriginLayer layer = source == null ? null : OriginsPaper.getLayer(source);
 		if (entity instanceof Player player) {
-			return PlayerPowerRepository.getOrCreateRepo((ServerPlayer) player).getAppliedPowers(layer).contains(power.getType());
+			return PlayerPowerRepository.getOrCreateRepo((ServerPlayer) player).getAppliedPowers(source).contains(power.getType());
 		}
 		return false;
 	}

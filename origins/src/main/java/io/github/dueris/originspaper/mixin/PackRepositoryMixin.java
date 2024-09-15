@@ -6,11 +6,13 @@ import io.github.dueris.originspaper.data.pack.PluginRepositorySource;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.*;
 import net.minecraft.world.level.validation.DirectoryValidator;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -42,9 +44,9 @@ public class PackRepositoryMixin {
 			}
 		}
 
-		Set<RepositorySource> sources = new HashSet<>(getSources(instance));
+		Set<RepositorySource> sources = new LinkedHashSet<>(getSources(instance));
 		if (!sources.stream().map(Object::getClass).toList().contains(PluginRepositorySource.class)) {
-			sources.add(toAdd);
+			sources = fixupSourcesOrder(toAdd, sources);
 			try {
 				Field sourceField = PackRepository.class.getDeclaredField("sources");
 				sourceField.setAccessible(true);
@@ -54,6 +56,24 @@ public class PackRepositoryMixin {
 				throw new RuntimeException(e);
 			}
 		}
+	}
+
+	private static @NotNull LinkedHashSet<RepositorySource> fixupSourcesOrder(RepositorySource pluginSource, @NotNull Set<RepositorySource> original) {
+		LinkedHashSet<RepositorySource> newSource = new LinkedHashSet<>();
+
+		original.stream()
+			.filter(source -> source instanceof ServerPacksSource)
+			.findFirst()
+			.ifPresent(newSource::add);
+
+		newSource.add(pluginSource);
+
+		original.stream()
+			.filter(source -> source instanceof FolderRepositorySource)
+			.findFirst()
+			.ifPresent(newSource::add);
+
+		return newSource;
 	}
 
 	public static Set<RepositorySource> getSources(PackRepository instance) {
@@ -66,11 +86,25 @@ public class PackRepositoryMixin {
 		}
 	}
 
-	public static Map<String, Pack> getAvailable(PackRepository instance) {
+	public static @NotNull LinkedHashMap<String, Pack> getAvailable(PackRepository instance) {
 		try {
 			Field available = PackRepository.class.getDeclaredField("available");
 			available.setAccessible(true);
-			return (Map<String, Pack>) available.get(instance);
+
+			Map<String, Pack> originalMap = (Map<String, Pack>) available.get(instance);
+
+			LinkedHashMap<String, Pack> orderedMap = new LinkedHashMap<>();
+
+			originalMap.entrySet().stream()
+				.filter(entry -> entry.getKey().startsWith("origins/"))
+				.findFirst()
+				.ifPresent(entry -> orderedMap.put(entry.getKey(), entry.getValue()));
+
+			originalMap.entrySet().stream()
+				.filter(entry -> !entry.getKey().startsWith("origins/"))
+				.forEach(entry -> orderedMap.put(entry.getKey(), entry.getValue()));
+
+			return orderedMap;
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}

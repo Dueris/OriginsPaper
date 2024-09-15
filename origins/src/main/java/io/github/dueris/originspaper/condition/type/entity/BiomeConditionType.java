@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.condition.type.entity;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -37,7 +37,7 @@ public class BiomeConditionType {
 			new SerializableData()
 				.add("condition", ApoliDataTypes.BIOME_CONDITION, null)
 				.add("biome", SerializableDataTypes.registryKey(Registries.BIOME), null)
-				.add("biomes", SerializableDataBuilder.of(SerializableDataTypes.registryKey(Registries.BIOME).listOf()), null),
+				.add("biomes", SerializableDataType.of(SerializableDataTypes.registryKey(Registries.BIOME).listOf()), null),
 			(data, entity) -> {
 
 				Set<ResourceKey<Biome>> specifiedBiomeKeys = new HashSet<>();

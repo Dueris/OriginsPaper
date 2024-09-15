@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.action.factory;
 
 import com.google.gson.JsonObject;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.Factory;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +44,7 @@ public class ActionTypeFactory<T> implements Factory, Consumer<T> {
 	}
 
 	public ActionTypeFactory<T> decompile(JsonObject object) {
-		this.deserializedFactory = SerializableDataBuilder.compound(data, object, this.getClass());
+		this.deserializedFactory = SerializableDataType.compound(data, object, this.getClass());
 		if (data.postProcessor != null) {
 			data.postProcessor.accept(deserializedFactory);
 		}

@@ -6,21 +6,33 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Comparison;
+import io.github.dueris.originspaper.storage.ItemPowersComponent;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-// TODO - PowerTypes in ItemStacks - Dueris
 public class PowerCountConditionType {
 
-	public static boolean condition(ItemStack stack, @Nullable EquipmentSlotGroup slot, Comparison comparison, int compareTo) {
-		return comparison.compare(0, compareTo);
+	public static boolean condition(@NotNull ItemStack stack, @Nullable EquipmentSlotGroup slot, Comparison comparison, int compareTo) {
+		ItemPowersComponent itemPowers = new ItemPowersComponent(stack);
+		int powers;
 
+		if (slot != null) {
+			powers = (int) itemPowers
+				.stream()
+				.filter(entry -> entry.slot().equals(slot))
+				.count();
+		} else {
+			powers = itemPowers.size();
+		}
+
+		return comparison.compare(powers, compareTo);
 	}
 
-	public static ConditionTypeFactory<Tuple<Level, ItemStack>> getFactory() {
+	public static @NotNull ConditionTypeFactory<Tuple<Level, ItemStack>> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("power_count"),
 			new SerializableData()

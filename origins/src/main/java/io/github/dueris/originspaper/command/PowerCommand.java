@@ -4,20 +4,17 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.command.argument.PowerArgumentType;
 import io.github.dueris.originspaper.command.argument.PowerHolderArgumentType;
-import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.power.type.MultiplePower;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import io.github.dueris.originspaper.util.JsonTextFormatter;
 import io.github.dueris.originspaper.util.LangFile;
+import io.github.dueris.originspaper.util.PowerUtils;
 import io.github.dueris.originspaper.util.Util;
-import io.github.dueris.originspaper.util.entity.PowerUtils;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import joptsimple.internal.Strings;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
@@ -108,7 +105,7 @@ public class PowerCommand {
 		for (LivingEntity target : targets) {
 
 			if (target instanceof ServerPlayer player) {
-				PowerUtils.grantPower(source.getSender(), power, player.getBukkitEntity(), OriginsPaper.getLayer(powerSource), true);
+				PowerUtils.grantPower(source.getSender(), power, player.getBukkitEntity(), powerSource, true);
 			}
 
 		}
@@ -162,7 +159,7 @@ public class PowerCommand {
 		for (LivingEntity target : targets) {
 
 			if (target instanceof ServerPlayer player) {
-				PowerUtils.removePower(source.getBukkitSender(), power, player.getBukkitEntity(), OriginsPaper.getLayer(powerSource), true);
+				PowerUtils.removePower(source.getBukkitSender(), power, player.getBukkitEntity(), powerSource, true);
 			}
 
 		}
@@ -211,9 +208,8 @@ public class PowerCommand {
 		for (LivingEntity target : targets) {
 
 			int revokedPowersFromSource = 0;
-			OriginLayer layer = OriginsPaper.getLayer(powerSource);
-			for (PowerType power : PowerHolderComponent.getPowersFromSource(layer, target.getBukkitEntity())) {
-				PowerUtils.removePower(source.getBukkitSender(), power, (org.bukkit.entity.Player) target.getBukkitEntity(), layer, true);
+			for (PowerType power : PowerHolderComponent.getPowersFromSource(powerSource, target.getBukkitEntity())) {
+				PowerUtils.removePower(source.getBukkitSender(), power, target.getBukkitEntity(), powerSource, true);
 				revokedPowersFromSource++;
 			}
 			revokedPowers += revokedPowersFromSource;
@@ -263,7 +259,7 @@ public class PowerCommand {
 		List<PowerType> powerTypes = new LinkedList<>(PowerHolderComponent.getPowers(target.getBukkitEntity()));
 		List<MultiplePower> multiples = PowerHolderComponent.getPowers(target.getBukkitEntity(), MultiplePower.class);
 		if (!includeSubpowers) {
-			powerTypes.removeAll(Util.collapseList(multiples.stream().map(MultiplePower::getSubPowers).toList()));
+			powerTypes.removeAll(Util.collapseCollection(multiples.stream().map(MultiplePower::getSubPowers).toList()));
 		}
 
 		for (PowerType power : powerTypes) {
@@ -375,8 +371,7 @@ public class PowerCommand {
 
 			AtomicInteger revokedPowers = new AtomicInteger();
 			PowerHolderComponent.getSources(power, target.getBukkitEntity()).forEach(location -> {
-				OriginLayer layer = OriginsPaper.getLayer(location);
-				PowerUtils.removePower(source.getBukkitSender(), power, player.getBukkitEntity(), layer, true);
+				PowerUtils.removePower(source.getBukkitSender(), power, player.getBukkitEntity(), location, true);
 
 				revokedPowers.getAndIncrement();
 			});
@@ -482,11 +477,9 @@ public class PowerCommand {
 		net.minecraft.commands.CommandSourceStack source = (net.minecraft.commands.CommandSourceStack) context.getSource();
 		PowerType power = PowerArgumentType.getPower(context, "power");
 
-		String indent = Strings.repeat(' ', indentSpecified ? IntegerArgumentType.getInteger(context, "indent") : 4);
-		source.sendSuccess(() -> {
-			String append = ((net.minecraft.commands.CommandSourceStack) context.getSource()).isPlayer() ? "" : "\n";
-			return Component.literal(append).append(new JsonTextFormatter(indent).apply(power.sourceObject));
-		}, false);
+		int size = indentSpecified ? IntegerArgumentType.getInteger(context, "indent") : 4;
+		source.sendSuccess(() -> new JsonTextFormatter(size).apply(power.sourceObject), false);
+
 		return 1;
 
 	}

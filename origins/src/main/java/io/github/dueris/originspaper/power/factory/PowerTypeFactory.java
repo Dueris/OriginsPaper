@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.calio.parser.RootResult;
 import io.github.dueris.calio.util.Util;
 import io.github.dueris.originspaper.Factory;
@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 public class PowerTypeFactory implements Factory {
 
 	@SuppressWarnings("unchecked")
-	public static SerializableDataBuilder<RootResult<PowerType>> DATA = SerializableDataBuilder.of(
+	public static SerializableDataType<RootResult<PowerType>> DATA = SerializableDataType.of(
 		(jsonElement) -> {
 			if (!(jsonElement instanceof JsonObject jo)) {
 				throw new JsonSyntaxException("Expected JsonObject for root 'PowerType'");
@@ -34,7 +34,7 @@ public class PowerTypeFactory implements Factory {
 				factoryField.setAccessible(true);
 
 				SerializableData data = (SerializableData) factoryField.invoke(null);
-				SerializableData.Instance compound = SerializableDataBuilder.compound(data, jo, powerClass);
+				SerializableData.Instance compound = SerializableDataType.compound(data, jo, powerClass);
 				if (compound != null) {
 					Constructor<PowerType> parsedConstructor = (Constructor<PowerType>) Util.generateConstructor(powerClass, data);
 					return new RootResult<>(parsedConstructor, compound);

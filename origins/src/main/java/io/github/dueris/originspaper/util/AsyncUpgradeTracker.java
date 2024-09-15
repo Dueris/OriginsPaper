@@ -4,7 +4,7 @@ import io.github.dueris.calio.util.holder.TriPair;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.storage.OriginComponent;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
@@ -33,7 +33,7 @@ public class AsyncUpgradeTracker implements Listener {
 				MinecraftServer server = OriginsPaper.server;
 				for (Map.Entry<Origin, TriPair<ResourceLocation, ResourceLocation, String>> entry : upgrades.entrySet()) {
 					for (CraftPlayer player : ((CraftServer) Bukkit.getServer()).getOnlinePlayers()) {
-						for (OriginLayer layer : OriginsPaper.getRegistry().retrieve(Registries.LAYER).values()) {
+						for (OriginLayer layer : ApoliRegistries.ORIGIN_LAYER) {
 							if (OriginComponent.getOrigin(player, layer).equals(entry.getKey())) {
 								ResourceLocation advancement = entry.getValue().a();
 								ResourceLocation originToSet = entry.getValue().b();
@@ -46,7 +46,7 @@ public class AsyncUpgradeTracker implements Listener {
 
 								AdvancementProgress progress = player.getHandle().getAdvancements().getOrStartProgress(advancementHolder);
 								if (progress.isDone()) {
-									OriginComponent.setOrigin(player, layer, OriginsPaper.getRegistry().retrieve(Registries.ORIGIN).get(originToSet));
+									OriginComponent.setOrigin(player, layer, ApoliRegistries.ORIGIN.get(originToSet));
 									if (!announcement.equals(NO_ANNOUNCEMENT)) {
 										player.sendMessage(announcement);
 									}

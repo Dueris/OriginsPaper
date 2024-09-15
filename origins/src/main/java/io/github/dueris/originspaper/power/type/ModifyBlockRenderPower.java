@@ -8,7 +8,6 @@ import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Shape;
 import io.github.dueris.originspaper.power.factory.PowerType;
-import io.github.dueris.originspaper.util.chunk.LevelChunkUtil;
 import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
 import io.papermc.paper.math.Position;
 import net.minecraft.network.chat.Component;
@@ -17,7 +16,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.CraftWorld;
@@ -53,12 +54,11 @@ public class ModifyBlockRenderPower extends PowerType {
 	public void chunkLoad(@NotNull PlayerChunkLoadEvent e) {
 		Player p = e.getPlayer();
 		if (!getPlayers().contains(((CraftPlayer) p).getHandle())) return;
-		final LevelChunkUtil worldChunkAccessor = new LevelChunkUtil(e.getWorld());
 		ServerLevel level = ((CraftWorld) e.getWorld()).getHandle();
 		que.add(() -> {
 			Map<Position, BlockData> updates = new ConcurrentHashMap<>();
 			BlockData toSend = state.createCraftBlockData();
-			for (Block block : worldChunkAccessor.getAllBlocksInChunk(e.getChunk())) {
+			for (Block block : getAllBlocksInChunk(e.getChunk())) {
 				if (block == null) continue;
 				Location location = block.getLocation();
 				if (!blockCondition.test(new BlockInWorld(level, CraftLocation.toBlockPosition(location), true)))
@@ -68,6 +68,28 @@ public class ModifyBlockRenderPower extends PowerType {
 			// We send in multi-block-changes to save on network spam
 			p.sendMultiBlockChange(updates);
 		});
+	}
+
+	public Block[] getAllBlocksInChunk(@NotNull Chunk chunk) {
+		World world = chunk.getWorld();
+		int chunkX = chunk.getX();
+		int chunkZ = chunk.getZ();
+
+		Block[] blocks = new Block[16 * 256 * 16];
+		int index = 0;
+
+		for (int x = 0; x < 16; x++) {
+			for (int y = 0; y < 256; y++) {
+				for (int z = 0; z < 16; z++) {
+					Location blockLocation = new Location(world, chunkX * 16 + x, y, chunkZ * 16 + z);
+					Block block = blockLocation.getBlock();
+					if (block.getType().isAir()) continue;
+					blocks[index++] = block;
+				}
+			}
+		}
+
+		return blocks;
 	}
 
 	@Override

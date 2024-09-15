@@ -2,7 +2,7 @@ package io.github.dueris.calio.util;
 
 import io.github.dueris.calio.data.DataBuildDirective;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.calio.util.holder.ObjectTiedEnumState;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -84,7 +84,7 @@ public class Util {
 		List<Class<?>> paramTypes = new LinkedList<>();
 		paramTypes.add(ResourceLocation.class);
 
-		for (Map.Entry<String, ObjectTiedEnumState<SerializableDataBuilder<?>>> entry : serializableData.dataMap().entrySet()) {
+		for (Map.Entry<String, ObjectTiedEnumState<SerializableDataType<?>>> entry : serializableData.dataMap().entrySet()) {
 			Class<?> paramType = entry.getValue().object().type();
 			paramTypes.add(getPrimitiveType(paramType));
 		}

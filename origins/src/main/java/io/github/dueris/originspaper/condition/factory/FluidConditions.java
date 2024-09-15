@@ -5,9 +5,11 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.type.fluid.FluidConditionType;
 import io.github.dueris.originspaper.condition.type.fluid.InTagConditionType;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.FluidState;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
@@ -21,13 +23,13 @@ public class FluidConditions {
 		register(FluidConditionType.getFactory());
 	}
 
-	public static ConditionTypeFactory<FluidState> createSimpleFactory(ResourceLocation id, Predicate<FluidState> condition) {
+	public static @NotNull ConditionTypeFactory<FluidState> createSimpleFactory(ResourceLocation id, Predicate<FluidState> condition) {
 		return new ConditionTypeFactory<>(id, new SerializableData(), (data, fluidState) -> {
 			return condition.test(fluidState);
 		});
 	}
 
-	public static ConditionTypeFactory<FluidState> register(ConditionTypeFactory<FluidState> conditionFactory) {
-		return OriginsPaper.getRegistry().retrieve(Registries.FLUID_CONDITION).register(conditionFactory, conditionFactory.getSerializerId());
+	public static @NotNull ConditionTypeFactory<FluidState> register(ConditionTypeFactory<FluidState> conditionFactory) {
+		return Registry.register(ApoliRegistries.FLUID_CONDITION, conditionFactory.getSerializerId(), conditionFactory);
 	}
 }

@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.condition.factory;
 import com.google.gson.JsonObject;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.Factory;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +49,7 @@ public class ConditionTypeFactory<T> implements Factory, Predicate<T> {
 	}
 
 	public ConditionTypeFactory<T> decompile(JsonObject object) {
-		this.deserializedFactory = SerializableDataBuilder.compound(data, object, this.getClass());
+		this.deserializedFactory = SerializableDataType.compound(data, object, this.getClass());
 		if (data.postProcessor != null) {
 			data.postProcessor.accept(deserializedFactory);
 		}

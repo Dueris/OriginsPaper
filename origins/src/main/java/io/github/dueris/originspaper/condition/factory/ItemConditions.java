@@ -4,12 +4,14 @@ import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.type.item.*;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
@@ -38,13 +40,13 @@ public class ItemConditions {
 		register(FuelConditionType.getFactory());
 	}
 
-	public static ConditionTypeFactory<Tuple<Level, ItemStack>> createSimpleFactory(ResourceLocation id, Predicate<ItemStack> predicate) {
+	public static @NotNull ConditionTypeFactory<Tuple<Level, ItemStack>> createSimpleFactory(ResourceLocation id, Predicate<ItemStack> predicate) {
 		return new ConditionTypeFactory<>(id, new SerializableData(), (data, worldAndStack) -> {
 			return predicate.test(worldAndStack.getB());
 		});
 	}
 
-	public static ConditionTypeFactory<Tuple<Level, ItemStack>> register(ConditionTypeFactory<Tuple<Level, ItemStack>> conditionFactory) {
-		return OriginsPaper.getRegistry().retrieve(Registries.ITEM_CONDITION).register(conditionFactory, conditionFactory.getSerializerId());
+	public static @NotNull ConditionTypeFactory<Tuple<Level, ItemStack>> register(ConditionTypeFactory<Tuple<Level, ItemStack>> conditionFactory) {
+		return Registry.register(ApoliRegistries.ITEM_CONDITION, conditionFactory.getSerializerId(), conditionFactory);
 	}
 }

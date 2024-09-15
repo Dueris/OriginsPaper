@@ -2,8 +2,8 @@ package io.github.dueris.originspaper.data.types.modifier;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.calio.data.SerializableDataType;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import net.minecraft.world.entity.Entity;
 
 import java.util.List;
@@ -11,10 +11,10 @@ import java.util.Locale;
 
 public interface IModifierOperation {
 
-	SerializableDataBuilder<IModifierOperation> STRICT_DATA_TYPE =
-		SerializableDataTypes.calioRegistry(IModifierOperation.class, Registries.MODIFIER_OPERATION, "apoli");
+	SerializableDataType<IModifierOperation> STRICT_DATA_TYPE =
+		SerializableDataTypes.registry(IModifierOperation.class, ApoliRegistries.MODIFIER_OPERATION, "apoli");
 
-	SerializableDataBuilder<IModifierOperation> DATA_TYPE = SerializableDataBuilder.of(
+	SerializableDataType<IModifierOperation> DATA_TYPE = SerializableDataType.of(
 		(jsonElement) -> {
 
 			if (!jsonElement.isJsonPrimitive()) {

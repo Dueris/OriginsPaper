@@ -7,8 +7,9 @@ import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Comparison;
 import io.github.dueris.originspaper.power.type.ClimbingPower;
 import io.github.dueris.originspaper.power.type.ElytraFlightPower;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -131,8 +132,8 @@ public class EntityConditions {
 		});
 	}
 
-	public static ConditionTypeFactory<Entity> register(ConditionTypeFactory<Entity> conditionFactory) {
-		return OriginsPaper.getRegistry().retrieve(Registries.ENTITY_CONDITION).register(conditionFactory, conditionFactory.getSerializerId());
+	public static @NotNull ConditionTypeFactory<Entity> register(ConditionTypeFactory<Entity> conditionFactory) {
+		return Registry.register(ApoliRegistries.ENTITY_CONDITION, conditionFactory.getSerializerId(), conditionFactory);
 	}
 
 	public static boolean isEntityMovingHorizontal(@NotNull Entity entity) {

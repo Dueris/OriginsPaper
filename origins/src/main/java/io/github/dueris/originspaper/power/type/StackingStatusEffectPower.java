@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.power.factory.PowerType;
@@ -49,7 +49,7 @@ public class StackingStatusEffectPower extends StatusEffectPower {
 			.add("duration_per_stack", SerializableDataTypes.INT)
 			.add("tick_rate", SerializableDataTypes.POSITIVE_INT, 10)
 			.add("effect", SerializableDataTypes.STATUS_EFFECT_INSTANCE, null)
-			.add("effects", SerializableDataBuilder.of(SerializableDataTypes.STATUS_EFFECT_INSTANCE.listOf()), null);
+			.add("effects", SerializableDataType.of(SerializableDataTypes.STATUS_EFFECT_INSTANCE.listOf()), null);
 	}
 
 	@Override

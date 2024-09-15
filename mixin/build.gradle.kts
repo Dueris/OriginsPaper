@@ -1,11 +1,10 @@
 version = "v1.0.0"
 
-println("Loaded subproject \"${project.name}\" with version {$version}")
+println("Loaded subproject \"${project.name}\" with version '$version'")
 
 dependencies {
     compileOnly("org.projectlombok:lombok:1.18.22")
 
-    // Compile scope in Maven is equivalent to 'implementation' in Gradle
     implementation("org.ow2.asm:asm:9.7")
     implementation("org.ow2.asm:asm-util:9.7")
     implementation("com.github.olivergondza:maven-jdk-tools-wrapper:0.1")

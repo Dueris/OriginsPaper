@@ -4,22 +4,29 @@ import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
 import io.github.dueris.originspaper.power.type.*;
 import io.github.dueris.originspaper.power.type.simple.WaterBreathingPower;
+import io.github.dueris.originspaper.storage.ItemPowersComponent;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
@@ -143,6 +150,62 @@ public class LivingEntityMixin {
 	@Inject(method = "baseTick", locator = At.Value.RETURN)
 	public static void origins$waterBreathingTick(LivingEntity instance, CallbackInfo info) {
 		WaterBreathingPower.tick(instance);
+	}
+
+	@Inject(method = "detectEquipmentUpdatesPublic", locator = At.Value.HEAD)
+	public static void apoli$itemStackPowers(@NotNull LivingEntity instance, CallbackInfo info) {
+		try {
+			Method collectEquipmentChanges = LivingEntity.class.getDeclaredMethod("collectEquipmentChanges");
+			collectEquipmentChanges.setAccessible(true);
+			Map<EquipmentSlot, ItemStack> map = (Map<EquipmentSlot, ItemStack>) collectEquipmentChanges.invoke(instance);
+
+			if (map != null) {
+				if (instance instanceof ServerPlayer) {
+					map.forEach((slot, newStack) -> {
+						try {
+							ItemStack itemstack = switch (slot.getType()) {
+								case HAND -> {
+									Method getLastHandItem = LivingEntity.class.getDeclaredMethod("getLastHandItem", EquipmentSlot.class);
+									getLastHandItem.setAccessible(true);
+									yield (ItemStack) getLastHandItem.invoke(instance, slot);
+								}
+								case HUMANOID_ARMOR -> {
+									Method getLastArmorItem = LivingEntity.class.getDeclaredMethod("getLastArmorItem", EquipmentSlot.class);
+									getLastArmorItem.setAccessible(true);
+									yield (ItemStack) getLastArmorItem.invoke(instance, slot);
+								}
+								case ANIMAL_ARMOR -> {
+									Field lastBodyItemStack = LivingEntity.class.getDeclaredField("lastBodyItemStack");
+									lastBodyItemStack.setAccessible(true);
+									yield (ItemStack) lastBodyItemStack.get(instance);
+								}
+								default -> throw new MatchException(null, null);
+							};
+
+							ItemPowersComponent.onChangeEquipment(instance, slot, itemstack, newStack);
+						} catch (Exception e) {
+							throw new RuntimeException("Unable to run power equipment change!", e);
+						}
+					});
+				}
+
+				Method handleHandSwap = LivingEntity.class.getDeclaredMethod("handleHandSwap", Map.class);
+				handleHandSwap.setAccessible(true);
+				handleHandSwap.invoke(instance, map);
+
+				if (!map.isEmpty()) {
+					Method handleEquipmentChanges = LivingEntity.class.getDeclaredMethod("handleEquipmentChanges", Map.class);
+					handleEquipmentChanges.setAccessible(true);
+					handleEquipmentChanges.invoke(instance, map);
+				}
+			}
+
+			info.setReturned(true);
+			info.setReturnValue(false);
+
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to handle equipment updates!", e);
+		}
 	}
 
 }

@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.calio.parser.RootResult;
 import io.github.dueris.calio.util.Util;
 import io.github.dueris.calio.util.holder.TriPair;
@@ -27,14 +27,14 @@ import java.util.List;
 
 public class Origin {
 	public static Origin EMPTY;
-	public static SerializableDataBuilder<RootResult<Origin>> DATA = SerializableDataBuilder.of(
+	public static SerializableDataType<RootResult<Origin>> DATA = SerializableDataType.of(
 		(jsonElement) -> {
 			if (!(jsonElement instanceof JsonObject jo)) {
 				throw new JsonSyntaxException("Expected JsonObject for root 'Origin'");
 			}
 
 			try {
-				SerializableData.Instance compound = SerializableDataBuilder.compound(getFactory(), jo, Origin.class);
+				SerializableData.Instance compound = SerializableDataType.compound(getFactory(), jo, Origin.class);
 				return new RootResult<>(
 					Util.generateConstructor(Origin.class, getFactory()), compound
 				);
@@ -95,7 +95,7 @@ public class Origin {
 	}
 
 	public ItemStack icon() {
-		return icon;
+		return icon == null ? new ItemStack(Items.PLAYER_HEAD) : icon;
 	}
 
 	public boolean unchoosable() {

@@ -4,7 +4,8 @@ import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.type.block.*;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
@@ -56,6 +57,6 @@ public class BlockConditions {
 	}
 
 	public static @NotNull ConditionTypeFactory<BlockInWorld> register(ConditionTypeFactory<BlockInWorld> conditionFactory) {
-		return OriginsPaper.getRegistry().retrieve(Registries.BLOCK_CONDITION).register(conditionFactory, conditionFactory.getSerializerId());
+		return Registry.register(ApoliRegistries.BLOCK_CONDITION, conditionFactory.getSerializerId(), conditionFactory);
 	}
 }

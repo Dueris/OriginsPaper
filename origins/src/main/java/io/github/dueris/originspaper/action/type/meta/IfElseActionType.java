@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.action.type.meta;
 
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
@@ -25,7 +25,7 @@ public class IfElseActionType {
 
 	}
 
-	public static <T, U> @NotNull ActionTypeFactory<T> getFactory(SerializableDataBuilder<ActionTypeFactory<T>> actionDataType, SerializableDataBuilder<ConditionTypeFactory<U>> conditionDataType, Function<T, U> actionToConditionTypeFunction) {
+	public static <T, U> @NotNull ActionTypeFactory<T> getFactory(SerializableDataType<ActionTypeFactory<T>> actionDataType, SerializableDataType<ConditionTypeFactory<U>> conditionDataType, Function<T, U> actionToConditionTypeFunction) {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("if_else"),
 			new SerializableData()
@@ -42,7 +42,7 @@ public class IfElseActionType {
 		);
 	}
 
-	public static <T> @NotNull ActionTypeFactory<T> getFactory(SerializableDataBuilder<ActionTypeFactory<T>> actionDataType, SerializableDataBuilder<ConditionTypeFactory<T>> conditionDataType) {
+	public static <T> @NotNull ActionTypeFactory<T> getFactory(SerializableDataType<ActionTypeFactory<T>> actionDataType, SerializableDataType<ConditionTypeFactory<T>> conditionDataType) {
 		return getFactory(actionDataType, conditionDataType, t -> t);
 	}
 

@@ -1,21 +1,26 @@
 package io.github.dueris.originspaper.storage;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.data.types.modifier.Modifier;
+import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
 import io.github.dueris.originspaper.event.PowerUpdateEvent;
 import io.github.dueris.originspaper.origin.Origin;
-import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.type.AttributeModifyTransferPower;
+import io.github.dueris.originspaper.power.type.ModifierPower;
 import io.github.dueris.originspaper.power.type.MultiplePower;
-import io.github.dueris.originspaper.util.entity.PowerUtils;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
+import io.github.dueris.originspaper.util.PowerUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -23,10 +28,18 @@ import org.jetbrains.annotations.Unmodifiable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class PowerHolderComponent implements Listener {
-	public static LinkedList<Player> currentSprintingPlayersFallback = new LinkedList<>();
+	public static final Codec<ResourceLocation> VALIDATING_CODEC = ResourceLocation.CODEC.comapFlatMap(
+		id -> ApoliRegistries.POWER.containsKey(id)
+			? DataResult.success(id)
+			: DataResult.error(() -> "Couldn't get power from ID \"" + id + "\", as it wasn't registered!"),
+		Function.identity()
+	);
 
 	private static ServerPlayer getNMS(Player player) {
 		return ((CraftPlayer) player).getHandle();
@@ -53,7 +66,7 @@ public class PowerHolderComponent implements Listener {
 	}
 
 	@Unmodifiable
-	public static @NotNull List<PowerType> getPowers(Entity p, OriginLayer layer) {
+	public static @NotNull List<PowerType> getPowers(Entity p, ResourceLocation layer) {
 		if (!(p instanceof Player player)) return new LinkedList<>();
 		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers(layer);
 	}
@@ -65,9 +78,18 @@ public class PowerHolderComponent implements Listener {
 		}).stream().findFirst().orElse(null);
 	}
 
-	public static @NotNull List<PowerType> getPowersFromSource(OriginLayer layer, Entity entity) {
+	public static @NotNull List<PowerType> getPowersFromSource(ResourceLocation source, Entity entity) {
 		if (!(entity instanceof Player player)) return new LinkedList<>();
-		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers(layer);
+		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAppliedPowers(source);
+	}
+
+	public static void forEachTickable(Entity entity, Consumer<PowerType> typeConsumer) {
+		if (!(entity instanceof Player player)) return;
+		for (PowerType powerType : getPowersApplied(player)) {
+			if (powerType.shouldTick()) {
+				typeConsumer.accept(powerType);
+			}
+		}
 	}
 
 	/**
@@ -133,11 +155,11 @@ public class PowerHolderComponent implements Listener {
 	public static void checkForDuplicates(Player p) {
 		PlayerPowerRepository repo = PlayerPowerRepository.getOrCreateRepo(getNMS(p));
 
-		for (OriginLayer layer : OriginComponent.getLayers(p)) {
+		for (ResourceLocation location : repo.getPowerSources()) {
 			List<ResourceLocation> keys = new LinkedList<>();
 			List<PowerType> duplicates = new LinkedList<>();
 
-			for (PowerType power : getPowersFromSource(layer, p)) {
+			for (PowerType power : getPowersFromSource(location, p)) {
 				if (keys.contains(power.getId())) {
 					duplicates.add(power);
 				} else {
@@ -146,7 +168,7 @@ public class PowerHolderComponent implements Listener {
 			}
 
 			duplicates.forEach(powerx -> {
-				repo.removePower(powerx, layer);
+				repo.removePower(powerx, location);
 			});
 		}
 	}
@@ -155,14 +177,22 @@ public class PowerHolderComponent implements Listener {
 		return type.getClass().equals(typeOf);
 	}
 
-	public static void loadPower(Player player, PowerType power, OriginLayer layer) {
+	public static void loadPower(Player player, PowerType power, ResourceLocation layer) {
 		loadPower(player, power, layer, false);
 	}
 
-	public static void loadPower(Player player, PowerType power, OriginLayer layer, boolean isNew) {
+	public static void loadPower(Player player, PowerType power, ResourceLocation layer, boolean isNew) {
 		if (power != null) {
 			power.forPlayer(((CraftPlayer) player).getHandle());
-			PlayerPowerRepository.getOrCreateRepo(getNMS(player)).addPower(power, layer);
+			PlayerPowerRepository repository = PlayerPowerRepository.getOrCreateRepo(getNMS(player));
+			repository.addPower(power, layer);
+			if (power instanceof MultiplePower multiplePower) {
+				for (PowerType subPower : multiplePower.getSubPowers()) {
+					if (subPower != null) {
+						repository.addPower(subPower, layer);
+					}
+				}
+			}
 
 			if (isNew) {
 				power.onAdded(((CraftPlayer) player).getHandle());
@@ -173,16 +203,24 @@ public class PowerHolderComponent implements Listener {
 		}
 	}
 
-	public static void unloadPower(Player player, PowerType power, OriginLayer layer) {
+	public static void unloadPower(Player player, PowerType power, ResourceLocation layer) {
 		unloadPower(player, power, layer, false);
 	}
 
-	public static void unloadPower(Player player, PowerType power, OriginLayer layer, boolean isNew) {
+	public static void unloadPower(Player player, PowerType power, ResourceLocation layer, boolean isNew) {
 		if (power != null) {
 			if (isNew) {
 				power.onRemoved(((CraftPlayer) player).getHandle());
 			}
-			PlayerPowerRepository.getOrCreateRepo(getNMS(player)).removePower(power, layer);
+			PlayerPowerRepository repository = PlayerPowerRepository.getOrCreateRepo(getNMS(player));
+			repository.removePower(power, layer);
+			if (power instanceof MultiplePower multiplePower) {
+				for (PowerType subPower : multiplePower.getSubPowers()) {
+					if (subPower != null) {
+						repository.removePower(subPower, layer);
+					}
+				}
+			}
 			power.removePlayer(((CraftPlayer) player).getHandle());
 
 			new PowerUpdateEvent(player, power, true, isNew).callEvent();
@@ -190,22 +228,22 @@ public class PowerHolderComponent implements Listener {
 	}
 
 	public static void unloadPowers(@NotNull Player player) {
-		for (OriginLayer layer : OriginComponent.getLayers(player)) {
-			unloadPowers(player, layer);
+		for (ResourceLocation location : PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getPowerSources()) {
+			unloadPowers(player, location);
 		}
 	}
 
 	public static void loadPowers(@NotNull Player player) {
-		for (OriginLayer layer : OriginComponent.getLayers(player)) {
-			loadPowers(player, layer);
+		for (ResourceLocation location : PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getPowerSources()) {
+			loadPowers(player, location);
 		}
 	}
 
-	public static void unloadPowers(@NotNull Player player, OriginLayer layer) {
+	public static void unloadPowers(@NotNull Player player, ResourceLocation layer) {
 		unloadPowers(player, layer, false);
 	}
 
-	public static void unloadPowers(@NotNull Player player, OriginLayer layer, boolean isNew) {
+	public static void unloadPowers(@NotNull Player player, ResourceLocation layer, boolean isNew) {
 		if (layer == null) {
 			OriginsPaper.LOGGER.error("Provided layer was null! Was it removed? Skipping power application...");
 			return;
@@ -216,11 +254,11 @@ public class PowerHolderComponent implements Listener {
 		}
 	}
 
-	public static void loadPowers(@NotNull Player player, OriginLayer layer) {
+	public static void loadPowers(@NotNull Player player, ResourceLocation layer) {
 		loadPowers(player, layer, false);
 	}
 
-	public static void loadPowers(@NotNull Player player, OriginLayer layer, boolean isNew) {
+	public static void loadPowers(@NotNull Player player, ResourceLocation layer, boolean isNew) {
 		if (layer == null) {
 			OriginsPaper.LOGGER.error("Provided layer was null! Was it removed? Skipping power application...");
 			return;
@@ -260,22 +298,47 @@ public class PowerHolderComponent implements Listener {
 		List<ResourceLocation> locations = new LinkedList<>();
 
 		PlayerPowerRepository repo = PlayerPowerRepository.getOrCreateRepo(getNMS(player));
-		for (OriginLayer layer : repo.getLayers()) {
+		for (ResourceLocation location : PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getPowerSources()) {
 
-			if (repo.getAppliedPowers(layer).contains(power)) {
-				locations.add(layer.getId());
+			if (repo.getAppliedPowers(location).contains(power)) {
+				locations.add(location);
 			}
 		}
 
 		return locations;
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void sprint(@NotNull PlayerToggleSprintEvent e) {
-		if (e.isSprinting()) {
-			currentSprintingPlayersFallback.add(e.getPlayer());
-		} else {
-			currentSprintingPlayersFallback.remove(e.getPlayer());
-		}
+	public static <T extends ModifierPower> float modify(Entity entity, Class<T> powerClass, float baseValue) {
+		return (float) modify(entity, powerClass, (double) baseValue, null, null);
 	}
+
+	public static <T extends ModifierPower> float modify(Entity entity, Class<T> powerClass, float baseValue, Predicate<T> powerFilter) {
+		return (float) modify(entity, powerClass, (double) baseValue, powerFilter, null);
+	}
+
+	public static <T extends ModifierPower> float modify(Entity entity, Class<T> powerClass, float baseValue, Predicate<T> powerFilter, Consumer<T> powerAction) {
+		return (float) modify(entity, powerClass, (double) baseValue, powerFilter, powerAction);
+	}
+
+	public static <T extends ModifierPower> double modify(Entity entity, Class<T> powerClass, double baseValue) {
+		return modify(entity, powerClass, baseValue, null, null);
+	}
+
+	public static <T extends ModifierPower> double modify(Entity entity, Class<T> powerClass, double baseValue, Predicate<T> powerFilter, Consumer<T> powerAction) {
+		if (((CraftEntity) entity).getHandle() instanceof LivingEntity living) {
+			List<T> powers = getPowers(entity, powerClass);
+			List<Modifier> mps = powers.stream()
+				.filter(p -> powerFilter == null || powerFilter.test(p))
+				.flatMap(p -> p.getModifiers().stream()).collect(Collectors.toList());
+			if (powerAction != null) {
+				powers.stream().filter(p -> powerFilter == null || powerFilter.test(p)).forEach(powerAction);
+			}
+
+			getPowers(entity, AttributeModifyTransferPower.class).stream()
+				.filter(p -> p.doesApply(powerClass)).forEach(p -> p.addModifiers(mps, living));
+			return ModifierUtil.applyModifiers(living, mps, baseValue);
+		}
+		return baseValue;
+	}
+
 }

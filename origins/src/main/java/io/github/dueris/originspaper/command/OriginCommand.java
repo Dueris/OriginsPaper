@@ -7,7 +7,7 @@ import io.github.dueris.originspaper.command.argument.LayerArgumentType;
 import io.github.dueris.originspaper.command.argument.OriginArgumentType;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.storage.OriginComponent;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import io.github.dueris.originspaper.util.LangFile;
@@ -87,7 +87,7 @@ public class OriginCommand {
 
 		int processedTargets = 0;
 
-		if (origin.equals(Origin.EMPTY) || Util.collapseList(originLayer.getOrigins().stream().map(OriginLayer.ConditionedOrigin::origins).toList()).contains(origin.getId())) {
+		if (origin.equals(Origin.EMPTY) || Util.collapseCollection(originLayer.getOrigins().stream().map(OriginLayer.ConditionedOrigin::origins).toList()).contains(origin.getId())) {
 
 			for (ServerPlayer target : targets) {
 
@@ -184,7 +184,7 @@ public class OriginCommand {
 		OriginLayer originLayer = LayerArgumentType.getLayer(commandContext, "layer");
 
 		for (ServerPlayer target : targets) {
-			PowerHolderComponent.unloadPowers(target.getBukkitEntity(), originLayer, true);
+			PowerHolderComponent.unloadPowers(target.getBukkitEntity(), originLayer.getId(), true);
 			OriginComponent.setOrigin(target.getBukkitEntity(), originLayer, Origin.EMPTY);
 		}
 
@@ -213,7 +213,7 @@ public class OriginCommand {
 
 		for (ServerPlayer target : targets) {
 			for (OriginLayer layer : OriginComponent.getLayers(target.getBukkitEntity())) {
-				PowerHolderComponent.unloadPowers(target.getBukkitEntity(), layer, true);
+				PowerHolderComponent.unloadPowers(target.getBukkitEntity(), layer.getId(), true);
 				OriginComponent.setOrigin(target.getBukkitEntity(), layer, Origin.EMPTY);
 			}
 		}
@@ -270,7 +270,7 @@ public class OriginCommand {
 
 		net.minecraft.commands.CommandSourceStack serverCommandSource = (net.minecraft.commands.CommandSourceStack) commandContext.getSource();
 		List<ServerPlayer> targets = new LinkedList<>();
-		List<OriginLayer> originLayers = OriginsPaper.getRegistry().retrieve(Registries.LAYER).stream().filter(OriginLayer::isRandomAllowed).toList();
+		List<OriginLayer> originLayers = ApoliRegistries.ORIGIN_LAYER.stream().filter(OriginLayer::isRandomAllowed).toList();
 
 		switch (targetType) {
 			case INVOKER -> targets.add(serverCommandSource.getPlayerOrException());

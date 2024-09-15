@@ -9,7 +9,7 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -38,7 +38,7 @@ public class MultiplePower extends PowerType {
 			if (!element.isJsonObject()) continue;
 
 			JsonObject jo = sourceObject.getAsJsonObject(key);
-			DataBuildDirective<PowerType> dataBuildDirective = new DataBuildDirective<>(List.of("apoli", "origins"), "power", PowerTypeFactory.DATA, 0, Registries.POWER);
+			DataBuildDirective<PowerType> dataBuildDirective = new DataBuildDirective<>(List.of("apoli", "origins"), "power", PowerTypeFactory.DATA, 0, ApoliRegistries.POWER);
 			PowerType type = CalioParser.parseFile(
 				new Tuple<>(ResourceLocation.fromNamespaceAndPath(this.getId().getNamespace(), getId().getPath() + "_" + key.toLowerCase(Locale.getDefault())), jo.toString()), dataBuildDirective
 			);

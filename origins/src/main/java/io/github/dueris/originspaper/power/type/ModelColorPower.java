@@ -9,7 +9,7 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.storage.OriginConfiguration;
-import io.github.dueris.originspaper.util.ApoliScheduler;
+import io.github.dueris.originspaper.util.Scheduler;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -219,7 +219,7 @@ public class ModelColorPower extends PowerType {
 	}
 
 	public void setSkin(@NotNull ServerPlayer player, String url) {
-		ApoliScheduler.INSTANCE.queue((m) -> {
+		Scheduler.INSTANCE.queue((m) -> {
 			CraftPlayer craftPlayer = player.getBukkitEntity();
 			CraftPlayerProfile profile = (CraftPlayerProfile) craftPlayer.getPlayerProfile();
 			PlayerTextures textures = profile.getTextures();

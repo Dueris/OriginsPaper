@@ -1,21 +1,18 @@
 package io.github.dueris.originspaper.plugin;
 
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.command.PehukiCommandImpl;
 import io.github.dueris.originspaper.content.OrbOfOrigins;
-import io.github.dueris.originspaper.integration.CraftPehuki;
+import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.power.type.RecipePower;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.screen.ChoosingPage;
 import io.github.dueris.originspaper.screen.RandomOriginPage;
 import io.github.dueris.originspaper.screen.ScreenNavigator;
 import io.github.dueris.originspaper.storage.PlayerPowerRepository;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
-import io.github.dueris.originspaper.util.ApoliScheduler;
-import io.github.dueris.originspaper.util.AsyncUpgradeTracker;
-import io.github.dueris.originspaper.util.BstatsMetrics;
-import io.github.dueris.originspaper.util.KeybindUtil;
-import io.github.dueris.originspaper.util.entity.GlowingEntitiesUtils;
-import io.github.dueris.originspaper.util.entity.PlayerManager;
+import io.github.dueris.originspaper.util.*;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
@@ -45,11 +42,11 @@ public final class OriginsPlugin extends JavaPlugin implements Listener {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				ApoliScheduler.tickAsyncScheduler();
+				Scheduler.tickAsyncScheduler();
 			}
 		}.runTaskTimerAsynchronously(this, 0L, 1L);
 
-		CraftPehuki.onLoad();
+		PehukiCommandImpl.onLoad();
 		Bukkit.updateRecipes();
 	}
 
@@ -59,7 +56,7 @@ public final class OriginsPlugin extends JavaPlugin implements Listener {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				player.closeInventory();
 				player.getPersistentDataContainer()
-					.set(new NamespacedKey(this, "powers"), PersistentDataType.STRING,
+					.set(new NamespacedKey(this, "apoli_repository"), PersistentDataType.STRING,
 						PlayerPowerRepository.getOrCreateRepo(((CraftPlayer) player).getHandle()).serializePowers(new CompoundTag()).toString());
 				PowerHolderComponent.unloadPowers(player);
 			}
@@ -67,7 +64,7 @@ public final class OriginsPlugin extends JavaPlugin implements Listener {
 			glowingEntitiesUtils.disable();
 			RecipePower.recipeMapping.clear();
 			RecipePower.tags.clear();
-			OriginsPaper.getRegistry().clearRegistries();
+			ApoliRegistries.clearRegistries();
 		} catch (Throwable var3) {
 			OriginsPaper.LOGGER.error("An unhandled exception occurred when disabling OriginsPaper!");
 		}
@@ -80,16 +77,18 @@ public final class OriginsPlugin extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new KeybindUtil(), this);
 		this.getServer().getPluginManager().registerEvents(new AsyncUpgradeTracker(), this);
 		this.getServer().getPluginManager().registerEvents(new PowerHolderComponent(), this);
-		this.getServer().getPluginManager().registerEvents(new CraftPehuki(), this);
-		OriginsPaper.getRegistry().retrieve(Registries.POWER).values().forEach(powerType -> {
+		this.getServer().getPluginManager().registerEvents(new PehukiCommandImpl(), this);
+		for (PowerType powerType : ApoliRegistries.POWER) {
 			this.getServer().getPluginManager().registerEvents(powerType, this);
-		});
+		}
 	}
 
 	@EventHandler
 	public void loadEvent(ServerLoadEvent e) {
-		ChoosingPage.registerInstances();
-		ScreenNavigator.layerPages.values().forEach(pages -> pages.add(pages.size(), new RandomOriginPage()));
+		Util.unfreezeUntil(new Registry[]{ApoliRegistries.CHOOSING_PAGE}, () -> {
+			ChoosingPage.registerInstances();
+			ScreenNavigator.layerPages.values().forEach(pages -> pages.add(pages.size(), new RandomOriginPage()));
+		});
 		OrbOfOrigins.init();
 	}
 

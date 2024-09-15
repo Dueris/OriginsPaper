@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+// TODO - mixin? - Dueris
 public class ModifyExperiencePower extends ModifierPower {
 	public ModifyExperiencePower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority, @Nullable Modifier modifier, @Nullable List<Modifier> modifiers) {
 		super(key, type, name, description, hidden, condition, loadingPriority, modifier, modifiers);

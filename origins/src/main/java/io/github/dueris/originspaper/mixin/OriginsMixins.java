@@ -21,7 +21,7 @@ public class OriginsMixins {
 
 	public static void init(@NotNull MixBukkit bukkit) {
 		MixinPlugin mixinPlugin = bukkit.registerMixinPlugin(new MixinPluginInstance("OriginsPaper"), AutoMapper.getMappingAsStream());
-		ScanResult result = new ClassGraph().whitelistPackages("io.github.dueris.originspaper.mixin").enableClassInfo().scan();
+		ScanResult result = new ClassGraph().acceptPackages("io.github.dueris.originspaper.mixin").enableClassInfo().scan();
 
 		OriginsPaper.LOGGER.info("Starting Mixin transformers...");
 		AtomicInteger count = new AtomicInteger();

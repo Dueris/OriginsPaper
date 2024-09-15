@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+// TODO - mixin? - Dueris
 public class ModifyDamageTakenPower extends ModifierPower {
 	private final ActionTypeFactory<Entity> selfAction;
 	private final ActionTypeFactory<Entity> attackerAction;

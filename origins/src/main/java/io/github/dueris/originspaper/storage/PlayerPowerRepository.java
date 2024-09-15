@@ -4,25 +4,23 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.JsonOps;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.power.factory.PowerType;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -38,7 +36,7 @@ public final class PlayerPowerRepository extends RepositoryComponent {
 	private static final Logger log = LogManager.getLogger(PlayerPowerRepository.class);
 	private final ServerPlayer player;
 
-	public PlayerPowerRepository(ServerPlayer player, RepositoryComponent component) {
+	public PlayerPowerRepository(ServerPlayer player) {
 		this.player = player;
 	}
 
@@ -46,7 +44,7 @@ public final class PlayerPowerRepository extends RepositoryComponent {
 		if (REPO.containsKey(player)) {
 			return REPO.get(player);
 		}
-		REPO.put(player, new PlayerPowerRepository(player, new RepositoryComponent()));
+		REPO.put(player, new PlayerPowerRepository(player));
 		return REPO.get(player);
 	}
 
@@ -55,7 +53,7 @@ public final class PlayerPowerRepository extends RepositoryComponent {
 	}
 
 	public void clearData() {
-		this.repo.clear();
+		this.clear();
 	}
 
 	@Override
@@ -68,12 +66,13 @@ public final class PlayerPowerRepository extends RepositoryComponent {
 
 	@Unmodifiable
 	public @NotNull List<PowerType> getAppliedPowers() {
-		return Util.collapseList(repo.values().stream().map(Tuple::getA).toList());
+		return Util.collapseCollection(powerRepo.values());
 	}
 
 	@Unmodifiable
-	public @NotNull List<PowerType> getAppliedPowers(OriginLayer layer) {
-		return new CopyOnWriteArrayList<>(layer == null ? getAppliedPowers() : repo.get(layer).getA());
+	public @NotNull List<PowerType> getAppliedPowers(ResourceLocation source) {
+		if (source == null) return getAppliedPowers();
+		return new CopyOnWriteArrayList<>(this.getPowers(source));
 	}
 
 	public synchronized @NotNull CompoundTag serializePowers(@NotNull CompoundTag nbt) {
@@ -81,13 +80,17 @@ public final class PlayerPowerRepository extends RepositoryComponent {
 			nbt.put("PowerRepository", new ListTag());
 		}
 
-		ListTag repository = nbt.getList("PowerRepository", 10);
-		for (OriginLayer layer : this.repo.keySet()) {
+		if (nbt.contains("OriginRepository")) {
+			nbt.put("OriginRepository", new ListTag());
+		}
+
+		ListTag powerRepo = nbt.getList("PowerRepository", 10);
+		for (ResourceLocation layer : this.powerRepo.keySet()) {
 			CompoundTag tag = new CompoundTag();
-			tag.putString("Layer", layer.getTag());
+			tag.putString("Source", layer.toString());
 
 			ListTag powers = new ListTag();
-			for (PowerType type : this.repo.get(layer).getA()) {
+			for (PowerType type : this.getPowers(layer)) {
 				if (type == null) continue;
 				CompoundTag powerTag = new CompoundTag();
 				powerTag.put("Power", StringTag.valueOf(type.getTag()));
@@ -98,11 +101,19 @@ public final class PlayerPowerRepository extends RepositoryComponent {
 				powers.add(powerTag);
 			}
 			tag.put("Powers", powers);
-			tag.putString("Origin", this.getOriginOrDefault(Origin.EMPTY, layer).getTag());
-			repository.add(tag);
+			powerRepo.add(tag);
 		}
 
-		nbt.put("PowerRepository", repository);
+		ListTag originRepo = nbt.getList("OriginRepository", 10);
+		for (OriginLayer layer : this.originRepo.keySet()) {
+			CompoundTag tag = new CompoundTag();
+			tag.putString("Layer", layer.getId().toString());
+			tag.putString("Origin", this.getOriginOrDefault(Origin.EMPTY, layer).getId().toString());
+			originRepo.add(tag);
+		}
+
+		nbt.put("OriginRepository", originRepo);
+		nbt.put("PowerRepository", powerRepo);
 		return nbt;
 	}
 
@@ -112,44 +123,55 @@ public final class PlayerPowerRepository extends RepositoryComponent {
 	}
 
 	public synchronized void readPowers(@NotNull CompoundTag nbt) {
-		if (!nbt.contains("PowerRepository")) return;
-		ListTag repository = nbt.getList("PowerRepository", 10);
-		repository.forEach(layerObject -> {
+		if (!nbt.contains("PowerRepository") && !nbt.contains("OriginRepository")) return;
+		ListTag powerRepo = nbt.getList("PowerRepository", 10);
+		ListTag originRepo = nbt.getList("OriginRepository", 10);
+		powerRepo.forEach(sourceObject -> {
+			if (!(sourceObject instanceof CompoundTag tag))
+				throw new JsonSyntaxException("Source Object within PowerRepository should be a CompoundTag!");
+			if (tag.contains("Source")) {
+				ResourceLocation sourceLocation = ResourceLocation.parse(tag.getString("Source"));
+				Set<PowerType> powerTypes = new CopyOnWriteArraySet<>();
+
+				for (Tag rawTag : tag.getList("Powers", 10)) {
+					CompoundTag powerTag = (CompoundTag) rawTag;
+					ResourceLocation powerLocation = ResourceLocation.parse(powerTag.getString("Power"));
+					PowerType powerType = ApoliRegistries.POWER.get(powerLocation);
+					if (powerType == null) {
+						log.error("Stored PowerType not found! ID: {}, skipping power..", powerLocation.toString());
+						continue;
+					}
+
+					powerType.loadFromData(powerTag, player);
+					powerTypes.add(powerType);
+				}
+
+				for (PowerType powerType : powerTypes) {
+					this.addPower(powerType, sourceLocation);
+				}
+			} else throw new JsonSyntaxException("Source value not found in CompoundTag!");
+		});
+
+		originRepo.forEach(layerObject -> {
 			if (!(layerObject instanceof CompoundTag tag))
-				throw new JsonSyntaxException("LayerObject within PowerRepository should be a CompoundTag!");
+				throw new JsonSyntaxException("Layer Object within OriginRepository should be a CompoundTag!");
 			if (tag.contains("Layer")) {
 				ResourceLocation layerLocation = ResourceLocation.parse(tag.getString("Layer"));
 				ResourceLocation originLocation = ResourceLocation.parse(tag.getString("Origin"));
-				Set<PowerType> powerTypes = new CopyOnWriteArraySet<>();
 
-				tag.getList("Powers", 10).forEach(powerTag -> {
-					CompoundTag power = (CompoundTag) powerTag;
-					ResourceLocation powerLocation = ResourceLocation.parse(power.getString("Power"));
-					PowerType powerType = OriginsPaper.getRegistry().retrieve(Registries.POWER).get(powerLocation);
-					if (powerType == null) {
-						log.error("Stored PowerType not found! ID: {}, skipping power..", powerLocation.toString());
-						return;
-					}
-					powerType.loadFromData(power, player);
-					powerTypes.add(powerType);
-				});
-
-				OriginLayer layer = OriginsPaper.getRegistry().retrieve(Registries.LAYER).get(layerLocation);
+				OriginLayer layer = ApoliRegistries.ORIGIN_LAYER.get(layerLocation);
 				if (layer == null) {
 					log.error("Stored Layer not found! ID: {}, skipping layer..", layerLocation.toString());
 				} else {
-					for (PowerType type : powerTypes) {
-						this.addPower(type, layer);
-					}
-					this.setOrigin(OriginsPaper.getRegistry().retrieve(Registries.ORIGIN).getOptional(originLocation).orElse(Origin.EMPTY), layer);
+					this.setOrigin(ApoliRegistries.ORIGIN.getOptional(originLocation).orElse(Origin.EMPTY), layer);
 				}
 			} else throw new JsonSyntaxException("Layer value not found in CompoundTag!");
 		});
 
 		// Final check to ensure all layers have a value
-		for (OriginLayer layer : OriginsPaper.getRegistry().retrieve(Registries.LAYER).values()) {
-			if (!this.repo.containsKey(layer)) {
-				this.repo.put(layer, new Tuple<>(new LinkedList<>(), new AtomicReference<>(Origin.EMPTY)));
+		for (OriginLayer layer : ApoliRegistries.ORIGIN_LAYER) {
+			if (!this.originRepo.containsKey(layer)) {
+				this.originRepo.put(layer, new AtomicReference<>(Origin.EMPTY));
 			}
 
 		}

@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.action.type.meta;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import net.minecraft.util.RandomSource;
@@ -22,7 +22,7 @@ public class ChanceActionType {
 
 	}
 
-	public static <T> @NotNull ActionTypeFactory<T> getFactory(SerializableDataBuilder<ActionTypeFactory<T>> dataType) {
+	public static <T> @NotNull ActionTypeFactory<T> getFactory(SerializableDataType<ActionTypeFactory<T>> dataType) {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("chance"),
 			new SerializableData()

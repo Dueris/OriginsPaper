@@ -4,188 +4,177 @@ import com.google.common.base.Strings;
 import com.google.gson.*;
 import com.google.gson.internal.LazilyParsedNumber;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
-import java.util.Map.Entry;
+import java.util.Map;
+import java.util.Optional;
 
-/**
- * Original code by Apace100 in the repository of apace100/apoli
- * <a href="https://github.com/apace100/apoli/blob/1.20/src/main/java/io/github/apace100/apoli/util/JsonTextFormatter.java">...</a>
- * <p>
- * This code has been modified from its original form to support the Paper-provided mappings for Mojang.
- */
 public class JsonTextFormatter {
-	private static final ChatFormatting NULL_COLOR;
-	private static final ChatFormatting NAME_COLOR;
-	private static final ChatFormatting STRING_COLOR;
-	private static final ChatFormatting NUMBER_COLOR;
-	private static final ChatFormatting BOOLEAN_COLOR;
-	private static final ChatFormatting TYPE_SUFFIX_COLOR;
 
-	static {
-		NULL_COLOR = ChatFormatting.LIGHT_PURPLE;
-		NAME_COLOR = ChatFormatting.AQUA;
-		STRING_COLOR = ChatFormatting.GREEN;
-		NUMBER_COLOR = ChatFormatting.GOLD;
-		BOOLEAN_COLOR = ChatFormatting.BLUE;
-		TYPE_SUFFIX_COLOR = ChatFormatting.RED;
-	}
+	private static final ChatFormatting NAME_COLOR = ChatFormatting.AQUA;
+	private static final ChatFormatting STRING_COLOR = ChatFormatting.GREEN;
+	private static final ChatFormatting NUMBER_COLOR = ChatFormatting.GOLD;
+	private static final ChatFormatting BOOLEAN_COLOR = ChatFormatting.BLUE;
+	private static final ChatFormatting TYPE_SUFFIX_COLOR = ChatFormatting.RED;
 
 	private final String indent;
-	private final int indentOffset;
-	private Component result;
-	private boolean root;
 
-	public JsonTextFormatter(String indent) {
-		this(indent, 1);
+	private final boolean root;
+	private final int offset;
+
+	protected JsonTextFormatter(String indent, int offset, boolean root) {
+		this.indent = indent;
+		this.offset = Math.max(0, offset);
+		this.root = root;
 	}
 
-	protected JsonTextFormatter(String indent, int indentOffset) {
-		this.indent = indent;
-		this.indentOffset = Math.max(0, indentOffset);
-		this.result = CommonComponents.EMPTY;
-		this.root = true;
+	public JsonTextFormatter(char indent, int size) {
+		this(Strings.repeat(String.valueOf(indent), size), 1, true);
+	}
+
+	public JsonTextFormatter(int size) {
+		this(' ', size);
 	}
 
 	public Component apply(JsonElement jsonElement) {
-		if (!this.handleJsonElement(jsonElement)) {
-			throw new JsonParseException("The format of the specified JSON element is not supported!");
-		} else {
-			return this.result;
-		}
+		return applyInternal(jsonElement).orElse(Component.empty());
 	}
 
-	protected Component apply(JsonElement jsonElement, boolean rootElement) {
-		this.root = rootElement;
-		return this.apply(jsonElement);
+	protected Optional<Component> applyInternal(JsonElement jsonElement) {
+
+		Component result = switch (jsonElement) {
+			case JsonArray jsonArray -> visitArray(jsonArray);
+			case JsonObject jsonObject -> visitObject(jsonObject);
+			case JsonPrimitive jsonPrimitive -> visitPrimitive(jsonPrimitive);
+			case JsonNull ignored -> null;
+			case null -> throw new JsonSyntaxException("JSON element cannot be null!");
+			default -> throw new JsonParseException("The format of JSON element " + jsonElement + " is not supported!");
+		};
+
+		return Optional.ofNullable(result);
+
 	}
 
-	protected final boolean handleJsonElement(JsonElement jsonElement) {
-		if (jsonElement instanceof JsonArray jsonArray) {
-			this.visitArray(jsonArray);
-			return true;
-		} else if (jsonElement instanceof JsonObject jsonObject) {
-			this.visitObject(jsonObject);
-			return true;
-		} else if (jsonElement instanceof JsonPrimitive jsonPrimitive) {
-			this.visitPrimitive(jsonPrimitive);
-			return true;
-		} else if (jsonElement instanceof JsonNull) {
-			this.result = Component.literal("null").withStyle(NULL_COLOR);
-			return true;
-		} else {
-			return false;
-		}
-	}
+	public Component visitArray(@NotNull JsonArray jsonArray) {
 
-	public void visitArray(JsonArray jsonArray) {
 		if (jsonArray.isEmpty()) {
-			this.result = Component.literal("[]");
-		} else {
-			MutableComponent result = Component.literal("[");
-			if (!this.indent.isEmpty()) {
-				result.append("\n");
-			}
-
-			Iterator<JsonElement> iterator = jsonArray.iterator();
-
-			while (iterator.hasNext()) {
-				JsonElement jsonElement = iterator.next();
-				result.append(Strings.repeat(this.indent, this.indentOffset)).append((new JsonTextFormatter(this.indent, this.indentOffset + 1)).apply(jsonElement, false));
-				if (iterator.hasNext()) {
-					result.append(!this.indent.isEmpty() ? ",\n" : ", ");
-				}
-			}
-
-			if (!this.indent.isEmpty()) {
-				result.append("\n");
-			}
-
-			if (!this.root) {
-				result.append(Strings.repeat(this.indent, this.indentOffset - 1));
-			}
-
-			result.append("]");
-			this.result = result;
+			return Component.literal("[]");
 		}
+
+		MutableComponent result = Component.literal("[");
+		if (!indent.isEmpty()) {
+			result.append("\n");
+		}
+
+		Iterator<JsonElement> iterator = jsonArray.iterator();
+		while (iterator.hasNext()) {
+
+			JsonElement jsonElement = iterator.next();
+			Optional<Component> jsonText = new JsonTextFormatter(indent, offset + 1, false).applyInternal(jsonElement);
+
+			jsonText.ifPresent(text -> result
+				.append(Strings.repeat(indent, offset))
+				.append(text));
+
+			if (iterator.hasNext() && jsonText.isPresent()) {
+				result.append(!indent.isEmpty() ? ",\n" : ", ");
+			}
+
+		}
+
+		if (!indent.isEmpty()) {
+			result.append("\n");
+		}
+
+		if (!root) {
+			result.append(Strings.repeat(indent, offset - 1));
+		}
+
+		return result.append("]");
+
 	}
 
-	public void visitObject(JsonObject jsonObject) {
+	public Component visitObject(@NotNull JsonObject jsonObject) {
+
 		if (jsonObject.isEmpty()) {
-			this.result = Component.literal("{}");
-		} else {
-			MutableComponent result = Component.literal("{");
-			if (!this.indent.isEmpty()) {
-				result.append("\n");
-			}
-
-			Iterator<Entry<String, JsonElement>> iterator = jsonObject.entrySet().iterator();
-
-			while (iterator.hasNext()) {
-				Entry<String, JsonElement> entry = iterator.next();
-				Component name = Component.literal(entry.getKey()).withStyle(NAME_COLOR);
-				result.append(Strings.repeat(this.indent, this.indentOffset)).append(name).append(": ").append((new JsonTextFormatter(this.indent, this.indentOffset + 1)).apply(entry.getValue(), false));
-				if (iterator.hasNext()) {
-					result.append(!this.indent.isEmpty() ? ",\n" : ", ");
-				}
-			}
-
-			if (!this.indent.isEmpty()) {
-				result.append("\n");
-			}
-
-			if (!this.root) {
-				result.append(Strings.repeat(this.indent, this.indentOffset - 1));
-			}
-
-			result.append("}");
-			this.result = result;
+			return Component.literal("{}");
 		}
+
+		MutableComponent result = Component.literal("{");
+		if (!indent.isEmpty()) {
+			result.append("\n");
+		}
+
+		Iterator<Map.Entry<String, JsonElement>> iterator = jsonObject.entrySet().iterator();
+		while (iterator.hasNext()) {
+
+			Map.Entry<String, JsonElement> entry = iterator.next();
+
+			Component name = Component.literal(entry.getKey()).withStyle(NAME_COLOR);
+			Optional<Component> jsonText = new JsonTextFormatter(indent, offset + 1, false).applyInternal(entry.getValue());
+
+			jsonText.ifPresent(text -> result
+				.append(Strings.repeat(indent, offset))
+				.append(name).append(": ")
+				.append(text));
+
+			if (iterator.hasNext() && jsonText.isPresent()) {
+				result.append(!indent.isEmpty() ? ",\n" : ", ");
+			}
+
+		}
+
+		if (!indent.isEmpty()) {
+			result.append("\n");
+		}
+
+		if (!root) {
+			result.append(Strings.repeat(indent, offset - 1));
+		}
+
+		return result.append("}");
+
 	}
 
-	public void visitPrimitive(JsonPrimitive jsonPrimitive) {
-		if (!this.handlePrimitive(jsonPrimitive)) {
-			throw new JsonParseException("Specified JSON primitive is not supported!");
-		}
-	}
+	public Component visitPrimitive(@NotNull JsonPrimitive jsonPrimitive) {
 
-	protected final boolean handlePrimitive(JsonPrimitive jsonPrimitive) {
 		if (jsonPrimitive.isBoolean()) {
-			this.result = Component.literal(String.valueOf(jsonPrimitive.getAsBoolean())).withStyle(BOOLEAN_COLOR);
-			return true;
+			return Component.literal(String.valueOf(jsonPrimitive.getAsBoolean())).withStyle(BOOLEAN_COLOR);
 		} else if (jsonPrimitive.isString()) {
-			this.result = Component.literal("\"" + jsonPrimitive.getAsString() + "\"").withStyle(STRING_COLOR);
-			return true;
+			return Component.literal("\"" + jsonPrimitive.getAsString() + "\"").withStyle(STRING_COLOR);
 		} else if (jsonPrimitive.isNumber()) {
+
 			Number number = jsonPrimitive.getAsNumber();
-			MutableComponent numberText;
-			if (number instanceof Integer i) {
-				numberText = Component.literal(String.valueOf(i)).withStyle(NUMBER_COLOR);
-			} else if (number instanceof Long l) {
-				numberText = Component.literal(String.valueOf(l)).withStyle(NUMBER_COLOR).append(Component.literal("L").withStyle(TYPE_SUFFIX_COLOR));
-			} else if (number instanceof Float f) {
-				numberText = Component.literal(String.valueOf(f)).withStyle(NUMBER_COLOR).append(Component.literal("F").withStyle(TYPE_SUFFIX_COLOR));
-			} else if (number instanceof Double d) {
-				numberText = Component.literal(String.valueOf(d)).withStyle(NUMBER_COLOR).append(Component.literal("D").withStyle(TYPE_SUFFIX_COLOR));
-			} else if (number instanceof Byte b) {
-				numberText = Component.literal(String.valueOf(b)).withStyle(NUMBER_COLOR).append(Component.literal("B")).withStyle(TYPE_SUFFIX_COLOR);
-			} else if (number instanceof Short s) {
-				numberText = Component.literal(String.valueOf(s)).withStyle(NUMBER_COLOR).append(Component.literal("S")).withStyle(TYPE_SUFFIX_COLOR);
-			} else {
-				if (!(number instanceof LazilyParsedNumber l)) {
-					return false;
+
+			return switch (number) {
+				case Integer i -> Component.literal(i.toString()).withStyle(NUMBER_COLOR);
+				case Long l -> Component.literal(l.toString()).withStyle(NUMBER_COLOR)
+					.append(Component.literal("L").withStyle(TYPE_SUFFIX_COLOR));
+				case Float f -> Component.literal(f.toString()).withStyle(NUMBER_COLOR)
+					.append(Component.literal("F").withStyle(TYPE_SUFFIX_COLOR));
+				case Double d -> Component.literal(d.toString()).withStyle(NUMBER_COLOR)
+					.append(Component.literal("D").withStyle(TYPE_SUFFIX_COLOR));
+				case Byte b -> Component.literal(b.toString()).withStyle(NUMBER_COLOR)
+					.append(Component.literal("B")).withStyle(TYPE_SUFFIX_COLOR);
+				case Short s -> Component.literal(s.toString()).withStyle(NUMBER_COLOR)
+					.append(Component.literal("S")).withStyle(TYPE_SUFFIX_COLOR);
+				case null -> throw new JsonSyntaxException("Number cannot be null!");
+				default -> {
+					if (!(number instanceof LazilyParsedNumber l)) {
+						throw new JsonParseException("The type of number " + number + " is not supported!");
+					}
+
+					yield Component.literal(String.valueOf(l.floatValue())).withStyle(NUMBER_COLOR);
 				}
+			};
 
-				numberText = Component.literal(String.valueOf(l.floatValue())).withStyle(NUMBER_COLOR);
-			}
-
-			this.result = numberText;
-			return true;
 		} else {
-			return false;
+			throw new JsonParseException("The format of JSON primitive " + jsonPrimitive + " is not supported!");
 		}
+
 	}
+
 }

@@ -1,5 +1,8 @@
 package io.github.dueris.originspaper.util;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -17,7 +20,7 @@ public class Reflector {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static Method accessMethod(String name, Class<?> sourceClass, Class<?>... paramTypes) {
+	public static @Nullable Method accessMethod(String name, @NotNull Class<?> sourceClass, Class<?>... paramTypes) {
 		try {
 			Method method = sourceClass.getDeclaredMethod(name, paramTypes);
 			if (!method.isAccessible()) {
@@ -31,7 +34,7 @@ public class Reflector {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static Method accessMethod(String name, Class<?> sourceClass) {
+	public static @Nullable Method accessMethod(String name, @NotNull Class<?> sourceClass) {
 		try {
 			Method method = sourceClass.getDeclaredMethod(name);
 			if (!method.isAccessible()) {
@@ -44,7 +47,7 @@ public class Reflector {
 		}
 	}
 
-	public static Object accessMethod$Invoke(String name, Class<?> sourceClass, Object invoker, Class<?>[] paramTypes, Object... args) {
+	public static @Nullable Object accessMethod$Invoke(String name, Class<?> sourceClass, Object invoker, Class<?>[] paramTypes, Object... args) {
 		try {
 			Method method = accessMethod(name, sourceClass, paramTypes);
 			if (method != null) {
@@ -56,7 +59,7 @@ public class Reflector {
 		return null;
 	}
 
-	public static Object accessMethod$Invoke(String name, Class<?> sourceClass, Object invoker, Object... args) {
+	public static @Nullable Object accessMethod$Invoke(String name, Class<?> sourceClass, Object invoker, Object... args) {
 		try {
 			Method method = accessMethod(name, sourceClass);
 			if (method != null) {
@@ -69,7 +72,7 @@ public class Reflector {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static <T> T accessField(String name, Class<?> sourceClass, Object invoker, Class<T> type) {
+	public static <T> @Nullable T accessField(String name, @NotNull Class<?> sourceClass, Object invoker, Class<T> type) {
 		try {
 			Field field = sourceClass.getDeclaredField(name);
 			if (!field.isAccessible()) {
@@ -83,7 +86,7 @@ public class Reflector {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static void setField(String name, Class<?> sourceClass, Object invoker, Object value) {
+	public static void setField(String name, @NotNull Class<?> sourceClass, Object invoker, Object value) {
 		try {
 			Field field = sourceClass.getDeclaredField(name);
 			if (!field.isAccessible()) {
@@ -96,7 +99,7 @@ public class Reflector {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static Constructor<?> accessConstructor(Class<?> sourceClass, Class<?>... paramTypes) {
+	public static @Nullable Constructor<?> accessConstructor(@NotNull Class<?> sourceClass, Class<?>... paramTypes) {
 		try {
 			Constructor<?> constructor = sourceClass.getDeclaredConstructor(paramTypes);
 			if (!constructor.isAccessible()) {
@@ -110,7 +113,7 @@ public class Reflector {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T createInstance(Class<T> sourceClass, Class<?>[] paramTypes, Object... args) {
+	public static <T> @Nullable T createInstance(Class<T> sourceClass, Class<?>[] paramTypes, Object... args) {
 		try {
 			Constructor<T> constructor = (Constructor<T>) accessConstructor(sourceClass, paramTypes);
 			if (constructor != null) {
@@ -122,7 +125,4 @@ public class Reflector {
 		return null;
 	}
 
-	public static <T> T unwrap(Optional<T> optional) {
-		return optional.orElse(null);
-	}
 }

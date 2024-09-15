@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
@@ -39,7 +39,7 @@ public class ModifyStatusEffectDurationPower extends ModifierPower {
 	public static SerializableData getFactory() {
 		return ModifierPower.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("modify_status_effect_duration"))
 			.add("status_effect", SerializableDataTypes.STATUS_EFFECT_ENTRY, null)
-			.add("status_effects", SerializableDataBuilder.of(SerializableDataTypes.STATUS_EFFECT_ENTRY.listOf()), null);
+			.add("status_effects", SerializableDataType.of(SerializableDataTypes.STATUS_EFFECT_ENTRY.listOf()), null);
 	}
 
 	public boolean doesApply(Holder<MobEffect> statusEffect) {

@@ -3,7 +3,7 @@ package io.github.dueris.originspaper.power.type;
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -67,7 +67,7 @@ public class StartingEquipmentPower extends PowerType {
 	public static SerializableData getFactory() {
 		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("starting_equipment"))
 			.add("stack", ApoliDataTypes.POSITIONED_ITEM_STACK, null)
-			.add("stacks", SerializableDataBuilder.of(ApoliDataTypes.POSITIONED_ITEM_STACK.listOf()), null)
+			.add("stacks", SerializableDataType.of(ApoliDataTypes.POSITIONED_ITEM_STACK.listOf()), null)
 			.add("recurrent", SerializableDataTypes.BOOLEAN, false);
 	}
 

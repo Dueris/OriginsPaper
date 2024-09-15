@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.type.meta;
 
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import org.jetbrains.annotations.NotNull;
@@ -17,11 +17,11 @@ public class OrConditionType {
 			.anyMatch(condition -> condition.test(type));
 	}
 
-	public static <T> @NotNull ConditionTypeFactory<T> getFactory(@NotNull SerializableDataBuilder<ConditionTypeFactory<T>> conditionDataType) {
+	public static <T> @NotNull ConditionTypeFactory<T> getFactory(@NotNull SerializableDataType<ConditionTypeFactory<T>> conditionDataType) {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("or"),
 			new SerializableData()
-				.add("conditions", SerializableDataBuilder.of(conditionDataType.listOf())),
+				.add("conditions", SerializableDataType.of(conditionDataType.listOf())),
 			(data, type) -> condition(type,
 				data.get("conditions")
 			)

@@ -6,7 +6,7 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.power.factory.PowerType;
-import io.github.dueris.originspaper.util.ApoliScheduler;
+import io.github.dueris.originspaper.util.Scheduler;
 import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -53,7 +53,7 @@ public class ModifyHarvestPower extends PowerType {
 				e.getBlock().getDrops().forEach((itemStack -> {
 					player.level().getWorld().dropItemNaturally(e.getBlock().getLocation(), itemStack);
 				}));
-				ApoliScheduler.INSTANCE.queue((m) -> {
+				Scheduler.INSTANCE.queue((m) -> {
 					ALREADY_TICKED.remove(getTag());
 				}, 1);
 			}

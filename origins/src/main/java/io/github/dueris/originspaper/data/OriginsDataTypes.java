@@ -6,7 +6,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.data.types.GuiTitle;
 import io.github.dueris.originspaper.data.types.Impact;
 import io.github.dueris.originspaper.data.types.OriginUpgrade;
@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 @SuppressWarnings("unused")
 public class OriginsDataTypes {
 
-	public static final SerializableDataBuilder<ItemStack> ITEM_OR_ITEM_STACK = SerializableDataBuilder.of(
+	public static final SerializableDataType<ItemStack> ITEM_OR_ITEM_STACK = SerializableDataType.of(
 		(jsonElement) -> {
 			if (!(jsonElement instanceof JsonPrimitive jsonPrimitive) || !jsonPrimitive.isString()) {
 				return SerializableDataTypes.ITEM_STACK.deserialize(jsonElement);
@@ -29,13 +29,13 @@ public class OriginsDataTypes {
 			return new ItemStack(item);
 		}, ItemStack.class
 	);
-	public static final SerializableDataBuilder<Impact> IMPACT = SerializableDataTypes.enumValue(Impact.class);
+	public static final SerializableDataType<Impact> IMPACT = SerializableDataTypes.enumValue(Impact.class);
 
-	public static final SerializableDataBuilder<GuiTitle> GUI_TITLE = SerializableDataBuilder.of(
+	public static final SerializableDataType<GuiTitle> GUI_TITLE = SerializableDataType.of(
 		(jsonElement) -> {
 			if (!(jsonElement instanceof JsonObject jo))
 				throw new JsonSyntaxException("Expected JsonObject for GuiTitle!");
-			SerializableData.Instance data = SerializableDataBuilder.compound(GuiTitle.DATA, jo, GuiTitle.class);
+			SerializableData.Instance data = SerializableDataType.compound(GuiTitle.DATA, jo, GuiTitle.class);
 
 			Component viewOriginTitle = SerializableDataTypes.TEXT.deserialize(jo.get("view_origin"));
 			Component chooseOriginTitle = SerializableDataTypes.TEXT.deserialize(jo.get("choose_origin"));
@@ -44,16 +44,16 @@ public class OriginsDataTypes {
 		}, GuiTitle.class
 	);
 
-	public static final SerializableDataBuilder<OriginLayer.ConditionedOrigin> CONDITIONED_ORIGIN = SerializableDataBuilder.of(
+	public static final SerializableDataType<OriginLayer.ConditionedOrigin> CONDITIONED_ORIGIN = SerializableDataType.of(
 		(jsonElement) -> {
 			if (jsonElement instanceof JsonObject jsonObject && !jsonObject.isEmpty()) {
-				SerializableData.Instance factoryJson = SerializableDataBuilder.compound(OriginLayer.ConditionedOrigin.DATA, jsonObject, OriginLayer.ConditionedOrigin.class);
+				SerializableData.Instance factoryJson = SerializableDataType.compound(OriginLayer.ConditionedOrigin.DATA, jsonObject, OriginLayer.ConditionedOrigin.class);
 				return new OriginLayer.ConditionedOrigin(factoryJson.get("condition"), factoryJson.get("origins"));
 			} else throw new JsonSyntaxException("Expected JsonObject for ConditionedOrigin!");
 		}, OriginLayer.ConditionedOrigin.class
 	);
 
-	public static final SerializableDataBuilder<OriginLayer.ConditionedOrigin> ORIGIN_OR_CONDITIONED_ORIGIN = SerializableDataBuilder.of(
+	public static final SerializableDataType<OriginLayer.ConditionedOrigin> ORIGIN_OR_CONDITIONED_ORIGIN = SerializableDataType.of(
 		(jsonElement) -> {
 			if (jsonElement instanceof JsonObject jsonObject) {
 				return CONDITIONED_ORIGIN.deserialize(jsonObject);
@@ -68,7 +68,7 @@ public class OriginsDataTypes {
 		}, OriginLayer.ConditionedOrigin.class
 	);
 
-	public static final SerializableDataBuilder<OriginUpgrade> ORIGIN_UPGRADE = SerializableDataBuilder.of(
+	public static final SerializableDataType<OriginUpgrade> ORIGIN_UPGRADE = SerializableDataType.of(
 		(jsonElement) -> {
 			if (!jsonElement.isJsonObject())
 				throw new JsonSyntaxException("Expected JsonObject for Origin Upgrade!");

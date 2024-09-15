@@ -5,11 +5,11 @@ import io.github.dueris.originspaper.content.OrbOfOrigins;
 import io.github.dueris.originspaper.event.OrbInteractEvent;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.storage.OriginComponent;
 import io.github.dueris.originspaper.storage.OriginConfiguration;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
-import io.github.dueris.originspaper.util.ApoliScheduler;
+import io.github.dueris.originspaper.util.Scheduler;
 import io.github.dueris.originspaper.util.Util;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -110,7 +110,7 @@ public class ScreenNavigator implements Listener {
 			)
 		);
 		gui.setContents(layerPages.get(layer).get(currentDisplayingPage.getInt(player)).createDisplay(player, layer));
-		ApoliScheduler.INSTANCE.queue((m) -> {
+		Scheduler.INSTANCE.queue((m) -> {
 			player.getBukkitEntity().openInventory(gui);
 		}, 1);
 	}
@@ -195,10 +195,10 @@ public class ScreenNavigator implements Listener {
 						if (!((CraftPlayer) p).getHandle().getAbilities().instabuild) {
 							Util.consumeItem(e.getItem());
 						}
-						OriginsPaper.getRegistry().retrieve(Registries.LAYER).values().forEach(layer -> {
-							PowerHolderComponent.unloadPowers(p, layer, true);
+						for (OriginLayer layer : ApoliRegistries.ORIGIN_LAYER) {
+							PowerHolderComponent.unloadPowers(p, layer.getId(), true);
 							OriginComponent.setOrigin(p, layer, Origin.EMPTY);
-						});
+						}
 						OrbInteractEvent event = new OrbInteractEvent(p);
 						getServer().getPluginManager().callEvent(event);
 					}

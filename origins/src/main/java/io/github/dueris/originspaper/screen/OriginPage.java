@@ -11,7 +11,7 @@ import io.github.dueris.originspaper.storage.OriginComponent;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import io.github.dueris.originspaper.util.ComponentUtil;
 import io.github.dueris.originspaper.util.LangFile;
-import io.github.dueris.originspaper.util.entity.PlayerManager;
+import io.github.dueris.originspaper.util.PlayerManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -28,7 +28,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -54,7 +53,6 @@ public record OriginPage(Origin origin) implements ChoosingPage {
 		p.getBukkitEntity().getAttribute(Attribute.GENERIC_GRAVITY).setBaseValue(0.08);
 	}
 
-	@Contract("_, _, _, _, _ -> param1")
 	public static @NotNull ItemStack itemProperties(@NotNull ItemStack item, Component displayName, ItemFlag[] itemFlag, Enchantment enchantment, String lore) {
 		ItemMeta itemMeta = item.getItemMeta();
 		if (displayName != null) {

@@ -6,9 +6,10 @@ import io.github.dueris.originspaper.condition.type.biome.InTagConditionType;
 import io.github.dueris.originspaper.condition.type.biome.PrecipitationConditionType;
 import io.github.dueris.originspaper.condition.type.biome.TemperatureConditionType;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.registry.Registries;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.biome.Biome;
@@ -34,7 +35,7 @@ public class BiomeConditions {
 		});
 	}
 
-	public static ConditionTypeFactory<Tuple<BlockPos, Holder<Biome>>> register(ConditionTypeFactory<Tuple<BlockPos, Holder<Biome>>> conditionFactory) {
-		return OriginsPaper.getRegistry().retrieve(Registries.BIOME_CONDITION).register(conditionFactory, conditionFactory.getSerializerId());
+	public static @NotNull ConditionTypeFactory<Tuple<BlockPos, Holder<Biome>>> register(ConditionTypeFactory<Tuple<BlockPos, Holder<Biome>>> conditionFactory) {
+		return Registry.register(ApoliRegistries.BIOME_CONDITION, conditionFactory.getSerializerId(), conditionFactory);
 	}
 }

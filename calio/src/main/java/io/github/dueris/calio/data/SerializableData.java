@@ -18,7 +18,7 @@ public class SerializableData {
 	public Consumer<Instance> postProcessor;
 	public ResourceLocation typedInstance;
 	Map<String, Object> defaultMap = new LinkedHashMap<>();
-	HashMap<String, ObjectTiedEnumState<SerializableDataBuilder<?>>> dataMap = new LinkedHashMap<>();
+	HashMap<String, ObjectTiedEnumState<SerializableDataType<?>>> dataMap = new LinkedHashMap<>();
 
 	public SerializableData(@NotNull SerializableData serializableData) {
 		this.defaultMap = serializableData.defaultMap;
@@ -35,29 +35,29 @@ public class SerializableData {
 	}
 
 	public synchronized <T> SerializableData add(String key, @NotNull Tuple<Codec<T>, Class<T>> data) {
-		return add(key, SerializableDataBuilder.of(data.getA(), data.getB()));
+		return add(key, SerializableDataType.of(data.getA(), data.getB()));
 	}
 
-	public synchronized SerializableData add(String key, SerializableDataBuilder<?> data) {
+	public synchronized SerializableData add(String key, SerializableDataType<?> data) {
 		dataMap.put(key, new ObjectTiedEnumState<>(data, SerializableType.REQUIRED));
 		return this;
 	}
 
 	public synchronized <T> SerializableData add(String key, @NotNull Tuple<Codec<T>, Class<T>> data, T defaultValue) {
-		return add(key, SerializableDataBuilder.of(data.getA(), data.getB()), defaultValue);
+		return add(key, SerializableDataType.of(data.getA(), data.getB()), defaultValue);
 	}
 
-	public synchronized <T> SerializableData add(String key, SerializableDataBuilder<T> data, T defaultValue) {
+	public synchronized <T> SerializableData add(String key, SerializableDataType<T> data, T defaultValue) {
 		dataMap.put(key, new ObjectTiedEnumState<>(data, SerializableType.DEFAULT));
 		defaultMap.put(key, defaultValue);
 		return this;
 	}
 
 	public synchronized <T> SerializableData add(String key, @NotNull Tuple<Codec<T>, Class<T>> data, Supplier<T> supplier) {
-		return addSupplied(key, SerializableDataBuilder.of(data.getA(), data.getB()), supplier);
+		return addSupplied(key, SerializableDataType.of(data.getA(), data.getB()), supplier);
 	}
 
-	public synchronized <T> SerializableData addSupplied(String key, SerializableDataBuilder<T> data, @NotNull Supplier<T> supplier) {
+	public synchronized <T> SerializableData addSupplied(String key, SerializableDataType<T> data, @NotNull Supplier<T> supplier) {
 		dataMap.put(key, new ObjectTiedEnumState<>(data, SerializableType.DEFAULT));
 		defaultMap.put(key, supplier.get());
 		return this;
@@ -73,7 +73,7 @@ public class SerializableData {
 		return this;
 	}
 
-	public HashMap<String, ObjectTiedEnumState<SerializableDataBuilder<?>>> dataMap() {
+	public HashMap<String, ObjectTiedEnumState<SerializableDataType<?>>> dataMap() {
 		return dataMap;
 	}
 

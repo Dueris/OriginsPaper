@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.action.type.item;
 
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataBuilder;
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.action.factory.ItemActionTypeFactory;
@@ -69,7 +69,7 @@ public class RemoveEnchantmentActionType {
 			OriginsPaper.apoliIdentifier("remove_enchantment"),
 			new SerializableData()
 				.add("enchantment", SerializableDataTypes.ENCHANTMENT, null)
-				.add("enchantments", SerializableDataBuilder.of(SerializableDataTypes.ENCHANTMENT.listOf()), null)
+				.add("enchantments", SerializableDataType.of(SerializableDataTypes.ENCHANTMENT.listOf()), null)
 				.add("levels", SerializableDataTypes.INT, null)
 				.add("reset_repair_cost", SerializableDataTypes.BOOLEAN, false),
 			(data, worldAndStack) -> {

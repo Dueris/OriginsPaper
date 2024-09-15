@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+// TODO - mixin? - Dueris
 public class ModifyExhaustionPower extends ModifierPower {
 	public ModifyExhaustionPower(@NotNull ResourceLocation key, @NotNull ResourceLocation type, Component name, Component description, boolean hidden, ConditionTypeFactory<Entity> condition, int loadingPriority,
 								 @Nullable Modifier modifier, @Nullable List<Modifier> modifiers) {
