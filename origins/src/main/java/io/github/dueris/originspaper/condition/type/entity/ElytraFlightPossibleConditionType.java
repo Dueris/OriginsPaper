@@ -28,7 +28,7 @@ public class ElytraFlightPossibleConditionType {
 		if (checkAbility) {
 			ItemStack equippedChestStack = living.getItemBySlot(EquipmentSlot.CHEST);
 			ability = (equippedChestStack.is(Items.ELYTRA) && ElytraItem.isFlyEnabled(equippedChestStack) ||
-				PowerHolderComponent.doesHaveConditionedPower(living.getBukkitEntity(), ElytraFlightPower.class, (p) -> p.getGlidingPlayers().contains(living.getBukkitEntity().getUniqueId())));
+				PowerHolderComponent.doesHaveConditionedPower(living.getBukkitEntity(), ElytraFlightPower.class, (p) -> p.getGlidingPlayers().contains(living.getBukkitEntity())));
 		}
 
 		if (checkState) {

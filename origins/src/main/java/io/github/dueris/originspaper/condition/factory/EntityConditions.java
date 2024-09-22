@@ -34,7 +34,7 @@ public class EntityConditions {
 		register(TimeOfDayConditionType.getFactory());
 		register(createSimpleFactory(OriginsPaper.apoliIdentifier("fall_flying"), (entity) -> {
 			if (entity instanceof LivingEntity living) {
-				return living.isFallFlying() || PowerHolderComponent.doesHaveConditionedPower(living.getBukkitEntity(), ElytraFlightPower.class, p -> p.getGlidingPlayers().contains(living.getBukkitEntity().getUniqueId()));
+				return living.isFallFlying() || PowerHolderComponent.doesHaveConditionedPower(living.getBukkitEntity(), ElytraFlightPower.class, p -> p.getGlidingPlayers().contains(living.getBukkitEntity()));
 			}
 			return false;
 		}));
