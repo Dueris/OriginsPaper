@@ -84,14 +84,12 @@ public class ElytraFlightPower extends PowerType {
 							if (!p.getInventory().getItem(EquipmentSlot.CHEST).getType().equals(Material.ELYTRA)) {
 								p.sendEquipmentChange(p, EquipmentSlot.CHEST, renderStack);
 								renderingChanged.add(p);
-								System.out.println("A");
 							}
 
 							if (p.isOnGround() || p.isFlying() || p.isInsideVehicle()) {
 								this.cancel();
 								if (renderingChanged.contains(p)) {
 									renderingChanged.remove(p);
-									System.out.println("B");
 									p.updateInventory();
 								}
 								glidingPlayers.remove(p);
