@@ -2,12 +2,12 @@ package io.github.dueris.originspaper.power.type;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -64,11 +64,11 @@ public class StartingEquipmentPower extends PowerType {
 		}
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("starting_equipment"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("starting_equipment"), PowerType.getFactory().getSerializableData()
 			.add("stack", ApoliDataTypes.POSITIONED_ITEM_STACK, null)
 			.add("stacks", SerializableDataType.of(ApoliDataTypes.POSITIONED_ITEM_STACK.listOf()), null)
-			.add("recurrent", SerializableDataTypes.BOOLEAN, false);
+			.add("recurrent", SerializableDataTypes.BOOLEAN, false));
 	}
 
 	@Override

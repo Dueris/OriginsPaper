@@ -1,7 +1,6 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
@@ -9,6 +8,7 @@ import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -77,8 +77,8 @@ public class EdibleItemPower extends PowerType {
 		this.foodComponent = resolveFoodComponent(foodComponent);
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("edible_item"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("edible_item"), PowerType.getFactory().getSerializableData()
 			.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
 			.add("item_action", ApoliDataTypes.ITEM_ACTION, null)
 			.add("result_item_action", ApoliDataTypes.ITEM_ACTION, null)
@@ -88,7 +88,7 @@ public class EdibleItemPower extends PowerType {
 			.add("consume_animation", SerializableDataTypes.enumValue(ConsumeAnimation.class), ConsumeAnimation.EAT)
 			.add("consume_sound", SerializableDataTypes.SOUND_EVENT, SoundEvents.GENERIC_EAT)
 			.add("consuming_time_modifier", Modifier.DATA_TYPE, null)
-			.add("consuming_time_modifiers", Modifier.LIST_TYPE, null);
+			.add("consuming_time_modifiers", Modifier.LIST_TYPE, null));
 	}
 
 	private FoodProperties resolveFoodComponent(@NotNull FoodProperties properties) {

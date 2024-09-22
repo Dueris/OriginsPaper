@@ -1,11 +1,12 @@
 package io.github.dueris.originspaper.power.type;
 
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
+import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -27,14 +28,32 @@ public class PreventDeathPower extends PowerType {
 		this.damageCondition = damageCondition;
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("prevent_death"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("prevent_death"), PowerType.getFactory().getSerializableData()
 			.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
-			.add("damage_condition", ApoliDataTypes.DAMAGE_CONDITION, null);
+			.add("damage_condition", ApoliDataTypes.DAMAGE_CONDITION, null));
 	}
 
-	public boolean doesApply(DamageSource source, float amount) {
-		return damageCondition == null || damageCondition.test(new Tuple<>(source, amount));
+	public static boolean doesPrevent(@NotNull Entity entity, DamageSource source, float amount) {
+
+		boolean prevented = false;
+		for (PreventDeathPower preventDeathPower : PowerHolderComponent.getPowers(entity.getBukkitEntity(), PreventDeathPower.class)) {
+
+			if (!preventDeathPower.doesApply(source, amount, entity)) {
+				continue;
+			}
+
+			preventDeathPower.executeAction(entity);
+			prevented = true;
+
+		}
+
+		return prevented;
+
+	}
+
+	public boolean doesApply(DamageSource source, float amount, Entity entity) {
+		return isActive(entity) && (damageCondition == null || damageCondition.test(new Tuple<>(source, amount)));
 	}
 
 	public void executeAction(Entity entity) {

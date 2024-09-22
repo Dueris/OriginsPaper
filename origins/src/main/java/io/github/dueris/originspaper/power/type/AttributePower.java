@@ -2,12 +2,12 @@ package io.github.dueris.originspaper.power.type;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.AttributedEntityAttributeModifier;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -41,11 +41,11 @@ public class AttributePower extends PowerType {
 		}
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("attribute"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("attribute"), PowerType.getFactory().getSerializableData()
 			.add("modifier", ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIER, null)
 			.add("modifiers", SerializableDataTypes.list(ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIER), null)
-			.add("update_health", SerializableDataTypes.BOOLEAN, true);
+			.add("update_health", SerializableDataTypes.BOOLEAN, true));
 	}
 
 	public AttributePower addModifier(Holder<Attribute> attribute, AttributeModifier modifier) {

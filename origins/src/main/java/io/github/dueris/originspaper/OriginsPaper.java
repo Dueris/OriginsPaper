@@ -1,6 +1,5 @@
 package io.github.dueris.originspaper;
 
-import com.dragoncommissions.mixbukkit.MixBukkit;
 import io.github.dueris.calio.parser.CalioParser;
 import io.github.dueris.calio.parser.JsonObjectRemapper;
 import io.github.dueris.originspaper.action.factory.BiEntityActions;
@@ -16,41 +15,40 @@ import io.github.dueris.originspaper.data.OriginsDataTypes;
 import io.github.dueris.originspaper.data.types.modifier.ModifierOperations;
 import io.github.dueris.originspaper.loot.condition.ApoliLootConditionTypes;
 import io.github.dueris.originspaper.loot.function.ApoliLootFunctionTypes;
-import io.github.dueris.originspaper.mixin.OriginsMixins;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.plugin.OriginsPlugin;
 import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.power.type.FireProjectilePower;
-import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.storage.OriginConfiguration;
 import io.github.dueris.originspaper.util.LangFile;
 import io.github.dueris.originspaper.util.Renderer;
-import io.github.dueris.originspaper.util.Util;
-import io.papermc.paper.ServerBuildInfo;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
-import io.papermc.paper.plugin.entrypoint.classloader.PaperPluginClassLoader;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.util.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.StringReader;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class OriginsPaper {
 	public static final Logger LOGGER = LogManager.getLogger("OriginsPaper");
+	public static final AtomicReference<Path> DATAPACK_PATH = new AtomicReference<>();
+	public static final AtomicReference<PackRepository> PACK_REPOSITORY = new AtomicReference<>();
+	public static final AtomicReference<RegistryAccess> REGISTRY_ACCESS = new AtomicReference<>();
 	public static String LANGUAGE = "en_us";
 	public static boolean showCommandOutput = false;
 	public static MinecraftServer server;
-	public static PluginData pluginData;
 	public static Path jarFile;
+	public static String version = "v1.2.3";
 
 	public static @NotNull ResourceLocation identifier(String path) {
 		return ResourceLocation.fromNamespaceAndPath("originspaper", path);
@@ -65,33 +63,23 @@ public class OriginsPaper {
 	}
 
 	public static PowerType getPower(ResourceLocation location) {
-		return ApoliRegistries.POWER.get(location);
+		return PowerType.REGISTRY.get(location);
 	}
 
 	public static OriginLayer getLayer(ResourceLocation location) {
-		return ApoliRegistries.ORIGIN_LAYER.get(location);
+		return OriginLayer.REGISTRY.get(location);
 	}
 
 	public static Origin getOrigin(ResourceLocation location) {
-		return ApoliRegistries.ORIGIN.get(location);
+		return Origin.REGISTRY.get(location);
 	}
 
 	public static OriginsPlugin getPlugin() {
 		return OriginsPlugin.plugin;
 	}
 
-	public static void init(BootstrapContext context) throws Throwable {
-		pluginData = new PluginData(YamlConfiguration.loadConfiguration(new StringReader(Util.readResource("/paper-plugin.yml"))));
+	public static void init(@NotNull BootstrapContext context) throws Throwable {
 		jarFile = context.getPluginSource();
-
-		String runningVersion = ServerBuildInfo.buildInfo().minecraftVersionId();
-		if (!pluginData.getSupportedVersions().contains(runningVersion)) {
-			throw new IllegalStateException("This version of OriginsPaper does not support this version! Please use {}".replace("{}", pluginData.getSupportedVersions().toString()));
-		}
-		MixBukkit bukkit = new MixBukkit((PaperPluginClassLoader) OriginsPaper.class.getClassLoader());
-		bukkit.onEnable(LOGGER, jarFile.toFile());
-
-		OriginsMixins.init(bukkit);
 
 		LifecycleEventManager<BootstrapContext> lifecycleManager = context.getLifecycleManager();
 		lifecycleManager.registerEventHandler((LifecycleEvents.COMMANDS.newHandler(event -> {
@@ -103,7 +91,6 @@ public class OriginsPaper {
 		io.github.dueris.calio.parser.JsonObjectRemapper remapper = new io.github.dueris.calio.parser.JsonObjectRemapper(
 			List.of(new Tuple<>("origins", "apoli")),
 			List.of(
-				new Tuple<>("apoli:restrict_armor", "apoli:conditioned_restrict_armor"),
 				new Tuple<>("apoli:has_tag", "apoli:has_command_tag"),
 				new Tuple<>("apoli:custom_data", "apoli:nbt"),
 				new Tuple<>("apoli:is_equippable", "apoli:equippable"),
@@ -135,8 +122,8 @@ public class OriginsPaper {
 		OriginsDataTypes.init();
 		ApoliDataTypes.init();
 
-		ModifierOperations.registerAll();
-		PowerType.registerAll();
+		ModifierOperations.register();
+		PowerType.register();
 		EntityConditions.register();
 		BiEntityConditions.register();
 		ItemConditions.register();
@@ -148,32 +135,5 @@ public class OriginsPaper {
 		ItemActions.register();
 		BlockActions.register();
 		BiEntityActions.register();
-	}
-
-	/**
-	 * A parser for the plugin data found in `paper-plugin.yml`
-	 * This is needed because that information is not directly stored
-	 * in the plugin source, and is provided on build.
-	 */
-	public record PluginData(YamlConfiguration configuration) {
-		public @NotNull List<String> getSupportedVersions() {
-			return configuration.getStringList("supported");
-		}
-
-		public String getRecommendedVersion() {
-			return configuration.getString("minecraft");
-		}
-
-		public String getPluginVersion() {
-			return configuration.getString("plugin");
-		}
-
-		public String getFullVersion() {
-			return configuration.getString("version");
-		}
-
-		public String getApoliVersion() {
-			return configuration.getString("apoli");
-		}
 	}
 }

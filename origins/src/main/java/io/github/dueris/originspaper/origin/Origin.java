@@ -24,9 +24,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Origin {
-	public static Origin EMPTY;
+	public static Origin EMPTY = new Origin(
+		ResourceLocation.parse("origins:empty"), List.of(), new ItemStack(Items.AIR), true, Integer.MAX_VALUE, Impact.NONE, 0, null, net.minecraft.network.chat.Component.empty(), net.minecraft.network.chat.Component.empty()
+	);
+	public static Map<ResourceLocation, Origin> REGISTRY;
 	public static SerializableDataType<RootResult<Origin>> DATA = SerializableDataType.of(
 		(jsonElement) -> {
 			if (!(jsonElement instanceof JsonObject jo)) {
@@ -36,13 +41,19 @@ public class Origin {
 			try {
 				SerializableData.Instance compound = SerializableDataType.compound(getFactory(), jo, Origin.class);
 				return new RootResult<>(
-					Util.generateConstructor(Origin.class, getFactory()), compound
+					Util.generateConstructor(Origin.class, getFactory()), compound, (o) -> {
+				}
 				);
 			} catch (NoSuchMethodException | IllegalAccessException e) {
 				throw new RuntimeException(e);
 			}
 		}, Origin.class
 	);
+
+	static {
+		Origin.REGISTRY.put(ResourceLocation.fromNamespaceAndPath("origins", "empty"), Origin.EMPTY);
+	}
+
 	private final List<ResourceLocation> powers;
 	private final net.minecraft.world.item.ItemStack icon;
 	private final boolean unchoosable;
@@ -75,6 +86,11 @@ public class Origin {
 			LangFile.translatable((description != null ? description.getString() : "origin.$namespace.$path.description")
 				.replace("$namespace", key.getNamespace()).replace("$path", key.getPath()))
 		);
+
+		if (REGISTRY == null) {
+			REGISTRY = new ConcurrentHashMap<>();
+		}
+		REGISTRY.put(this.key, this);
 	}
 
 	public static SerializableData getFactory() {

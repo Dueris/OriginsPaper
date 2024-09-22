@@ -277,7 +277,7 @@ public class GlowingEntitiesUtils implements Listener {
 				version = Integer.parseInt(versions[1]);
 				versionMinor = versions.length <= 2 ? 0 : Integer.parseInt(versions[2]);
 
-				boolean remapped = Bukkit.getServer().getClass().getPackage().getName().split("\\.").length == 3;
+				boolean remapped = true;
 
 				ProtocolMappings mappings = ProtocolMappings.getMappings(version, versionMinor, remapped);
 				if (mappings == null) {
@@ -288,7 +288,7 @@ public class GlowingEntitiesUtils implements Listener {
 				/* Global variables */
 
 				Class<?> entityClass = getNMSClass("world.entity", "Entity");
-				Class<?> entityTypesClass = getNMSClass("world.entity", "EntityTypes");
+				Class<?> entityTypesClass = getNMSClass("world.entity", "EntityType");
 				Object markerEntity = getNMSClass("world.entity", "Marker").getDeclaredConstructors()[0]
 					.newInstance(getField(entityTypesClass, mappings.getMarkerTypeId(), null), null);
 
@@ -297,93 +297,76 @@ public class GlowingEntitiesUtils implements Listener {
 
 				/* Synched datas */
 
-				Class<?> dataWatcherClass = getNMSClass("network.syncher", "DataWatcher");
+				Class<?> dataWatcherClass = Class.forName("net.minecraft.network.syncher.SynchedEntityData");
 
 				if (version > 20 || (version == 20 && versionMinor >= 5)) {
-					var watcherBuilder = getNMSClass("network.syncher", "DataWatcher$a")
+					var watcherBuilder = getNMSClass("network.syncher", "SynchedEntityData$Builder")
 						.getDeclaredConstructor(getNMSClass("network.syncher", "SyncedDataHolder"))
 						.newInstance(markerEntity);
-					Field watcherBuilderItems = watcherBuilder.getClass().getDeclaredField(remapped ? "itemsById" : "b");
-					watcherBuilderItems.setAccessible(true); // NOSONAR idc
+					Field watcherBuilderItems = watcherBuilder.getClass().getDeclaredField("itemsById");
+					watcherBuilderItems.setAccessible(true);
 					watcherBuilderItems.set(watcherBuilder,
 						Array.newInstance(watcherBuilderItems.getType().componentType(), 0));
 					watcherDummy =
-						watcherBuilder.getClass().getDeclaredMethod(remapped ? "build" : "a").invoke(watcherBuilder);
-				} else {
-					var watcherConstructorArgsType = new Class<?>[]{entityClass};
-					var watcherConstructorArgs = new Object[]{markerEntity};
-					watcherDummy = dataWatcherClass.getDeclaredConstructor(watcherConstructorArgsType)
-						.newInstance(watcherConstructorArgs);
+						watcherBuilder.getClass().getDeclaredMethod("build").invoke(watcherBuilder);
 				}
 
 				watcherObjectFlags = getField(entityClass, mappings.getWatcherFlags(), null);
 				watcherGet = dataWatcherClass.getDeclaredMethod(mappings.getWatcherGet(), watcherObjectFlags.getClass());
 
-				if (version < 19 || (version == 19 && versionMinor < 3)) {
-					Class<?> watcherItem = getNMSClass("network.syncher", "DataWatcher$Item");
-					watcherItemConstructor = watcherItem.getDeclaredConstructor(watcherObjectFlags.getClass(), Object.class);
-					watcherItemObject = watcherItem.getDeclaredMethod("a");
-					watcherItemDataGet = watcherItem.getDeclaredMethod("b");
-				} else {
-					String subclass = version > 20 || (version == 20 && versionMinor >= 5) ? "c" : "b";
-					Class<?> watcherB = getNMSClass("network.syncher", "DataWatcher$" + subclass);
-					watcherBCreator = watcherB.getDeclaredMethod("a", watcherObjectFlags.getClass(), Object.class);
-					watcherBId = watcherB.getDeclaredMethod("a");
-					watcherBSerializer = watcherB.getDeclaredMethod("b");
-					watcherItemDataGet = watcherB.getDeclaredMethod("c");
-					watcherSerializerObject =
-						getNMSClass("network.syncher", "DataWatcherSerializer").getDeclaredMethod("a", int.class);
-				}
+				String subclass = version > 20 || (version == 20 && versionMinor >= 5) ? "DataValue" : "b";
+				Class<?> watcherB = getNMSClass("network.syncher", "SynchedEntityData$" + subclass);
+				watcherBCreator = watcherB.getDeclaredMethod("create", watcherObjectFlags.getClass(), Object.class);
+				watcherBId = watcherB.getDeclaredMethod("id");
+				watcherBSerializer = watcherB.getDeclaredMethod("serializer");
+				watcherItemDataGet = watcherB.getDeclaredMethod("value");
+				watcherSerializerObject =
+					getNMSClass("network.syncher", "EntityDataSerializer").getDeclaredMethod("createAccessor", int.class);
 
 				/* Networking */
 
-				playerConnection = getField(getNMSClass("server.level", "EntityPlayer"), mappings.getPlayerConnection());
-				sendPacket = getNMSClass("server.network", "PlayerConnection").getMethod(mappings.getSendPacket(),
+				playerConnection = getField(getNMSClass("server.level", "ServerPlayer"), mappings.getPlayerConnection());
+				sendPacket = getNMSClass("server.network", "ServerGamePacketListenerImpl").getMethod(mappings.getSendPacket(),
 					getNMSClass("network.protocol", "Packet"));
 				networkManager =
-					getInheritedField(getNMSClass("server.network", "PlayerConnection"), mappings.getNetworkManager());
-				channelField = getField(getNMSClass("network", "NetworkManager"), mappings.getChannel());
+					getInheritedField(getNMSClass("server.network", "ServerGamePacketListenerImpl"), mappings.getNetworkManager());
+				channelField = getField(getNMSClass("network", "Connection"), mappings.getChannel());
 
 				if (version > 19 || (version == 19 && versionMinor >= 4)) {
-					packetBundle = getNMSClass("network.protocol.game", "ClientboundBundlePacket");
+					packetBundle = getNMSClass("network.protocol", "BundlePacket");
 					packetBundlePackets =
-						packetBundle.getMethod(version > 20 || (version == 20 && versionMinor >= 5) ? "b" : "a");
+						packetBundle.getMethod(version > 20 || (version == 20 && versionMinor >= 5) ? "subPackets" : "a");
 				}
 
 				/* Metadata */
 
-				packetMetadata = getNMSClass("network.protocol.game", "PacketPlayOutEntityMetadata");
+				packetMetadata = getNMSClass("network.protocol.game", "ClientboundSetEntityDataPacket");
 				packetMetadataEntity = getField(packetMetadata, mappings.getMetadataEntity());
 				packetMetadataItems = getField(packetMetadata, mappings.getMetadataItems());
-				if (version < 19 || (version == 19 && versionMinor < 3)) {
-					packetMetadataConstructor =
-						packetMetadata.getDeclaredConstructor(int.class, dataWatcherClass, boolean.class);
-				} else {
-					packetMetadataConstructor = packetMetadata.getDeclaredConstructor(int.class, List.class);
-				}
+				packetMetadataConstructor = packetMetadata.getDeclaredConstructor(int.class, List.class);
 
 				/* Teams */
 
 				Class<?> scoreboardClass = getNMSClass("world.scores", "Scoreboard");
-				Class<?> teamClass = getNMSClass("world.scores", "ScoreboardTeam");
-				Class<?> pushClass = getNMSClass("world.scores", "ScoreboardTeamBase$EnumTeamPush");
-				Class<?> chatFormatClass = getNMSClass("EnumChatFormat");
+				Class<?> teamClass = getNMSClass("world.scores", "PlayerTeam");
+				Class<?> pushClass = getNMSClass("world.scores", "Team$CollisionRule");
+				Class<?> chatFormatClass = getNMSClass("ChatFormatting");
 
-				createTeamPacket = getNMSClass("network.protocol.game", "PacketPlayOutScoreboardTeam")
+				createTeamPacket = getNMSClass("network.protocol.game", "ClientboundSetPlayerTeamPacket")
 					.getDeclaredConstructor(String.class, int.class, Optional.class, Collection.class);
 				createTeamPacket.setAccessible(true);
-				createTeamPacketData = getNMSClass("network.protocol.game", "PacketPlayOutScoreboardTeam$b")
+				createTeamPacketData = getNMSClass("network.protocol.game", "ClientboundSetPlayerTeamPacket$Parameters")
 					.getDeclaredConstructor(teamClass);
 				createTeam = teamClass.getDeclaredConstructor(scoreboardClass, String.class);
 				scoreboardDummy = scoreboardClass.getDeclaredConstructor().newInstance();
-				pushNever = pushClass.getDeclaredField("b").get(null);
+				pushNever = pushClass.getDeclaredField("NEVER").get(null);
 				setTeamPush = teamClass.getDeclaredMethod(mappings.getTeamSetCollision(), pushClass);
 				setTeamColor = teamClass.getDeclaredMethod(mappings.getTeamSetColor(), chatFormatClass);
-				getColorConstant = chatFormatClass.getDeclaredMethod("a", char.class);
+				getColorConstant = chatFormatClass.getDeclaredMethod("getByCode", char.class);
 
 				/* Entities */
 
-				Class<?> shulkerClass = getNMSClass("world.entity.monster", "EntityShulker");
+				Class<?> shulkerClass = getNMSClass("world.entity.monster", "Shulker");
 				for (Field field : entityTypesClass.getDeclaredFields()) {
 					if (field.getType() != entityTypesClass)
 						continue;
@@ -397,23 +380,18 @@ public class GlowingEntitiesUtils implements Listener {
 				if (shulkerEntityType == null)
 					throw new IllegalStateException();
 
-				Class<?> vec3dClass = getNMSClass("world.phys", "Vec3D");
+				Class<?> vec3dClass = getNMSClass("world.phys", "Vec3");
 				vec3dZero = vec3dClass.getConstructor(double.class, double.class, double.class).newInstance(0d, 0d, 0d);
 
 
 				// arg10 was added after version 1.18.2
 				if (version >= 19) {
-					packetAddEntity = getNMSClass("network.protocol.game", "PacketPlayOutSpawnEntity")
+					packetAddEntity = getNMSClass("network.protocol.game", "ClientboundAddEntityPacket")
 						.getDeclaredConstructor(int.class, UUID.class, double.class, double.class, double.class, float.class,
 							float.class, entityTypesClass, int.class, vec3dClass, double.class);
-				} else {
-					packetAddEntity = getNMSClass("network.protocol.game", "PacketPlayOutSpawnEntity")
-						.getDeclaredConstructor(int.class, UUID.class, double.class, double.class, double.class, float.class,
-							float.class, entityTypesClass, int.class, vec3dClass);
 				}
 
-
-				packetRemove = getNMSClass("network.protocol.game", "PacketPlayOutEntityDestroy")
+				packetRemove = getNMSClass("network.protocol.game", "ClientboundRemoveEntitiesPacket")
 					.getDeclaredConstructor(version == 17 && versionMinor == 0 ? int.class : int[].class);
 
 				enabled = true;
@@ -737,7 +715,7 @@ public class GlowingEntitiesUtils implements Listener {
 				"b"),
 			V1_20_5_REMAPPED(
 				21,
-				0,
+				1,
 				true,
 				"DATA_SHARED_FLAGS_ID",
 				"MARKER",

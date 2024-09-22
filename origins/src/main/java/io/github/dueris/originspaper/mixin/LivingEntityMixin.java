@@ -1,88 +1,199 @@
 package io.github.dueris.originspaper.mixin;
 
-import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
 import io.github.dueris.originspaper.power.type.*;
 import io.github.dueris.originspaper.power.type.simple.WaterBreathingPower;
 import io.github.dueris.originspaper.storage.ItemPowersComponent;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.event.entity.EntityPotionEffectEvent;
+import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 @Mixin(LivingEntity.class)
-public class LivingEntityMixin {
+public abstract class LivingEntityMixin extends Entity {
 
-	@Inject(method = "hurt", locator = At.Value.DEATH_CHECK)
-	public static void apoli$preventDeath(LivingEntity entity, DamageSource source, float amount, CallbackInfo info) {
-		boolean cancel = false;
+	@Shadow
+	private ItemStack lastBodyItemStack;
+	@Unique
+	private boolean originspaper$prevPowderSnowState = false;
 
-		if (entity instanceof Player player) {
-			for (PreventDeathPower power : PowerHolderComponent.getPowers(player.getBukkitEntity(), PreventDeathPower.class)) {
-				if (power.doesApply(source, amount)) {
-					power.executeAction(player);
-					entity.setHealth(1.0F);
-					cancel = true;
-				}
-			}
-		}
-
-		if (cancel) {
-			info.setReturnValue(false);
-			info.setReturned(true);
-		}
+	public LivingEntityMixin(EntityType<?> type, Level world) {
+		super(type, world);
 	}
 
-	@Inject(method = "hurt", locator = At.Value.ON_DIE)
-	public static void apoli$actionOnDeath(LivingEntity entity, DamageSource source, float amount, CallbackInfo info) {
-		if (entity instanceof Player player) {
-			for (ActionOnDeathPower power : PowerHolderComponent.getPowers(player.getBukkitEntity(), ActionOnDeathPower.class)) {
-				if (power.doesApply(source.getEntity(), source, amount, entity)) {
-					power.onDeath(source.getEntity(), entity);
-				}
-			}
-		}
-	}
+	@Shadow
+	public abstract CraftLivingEntity getBukkitLivingEntity();
 
-	@Inject(method = "canBeAffected", locator = At.Value.RETURN)
-	public static void apoli$canHaveStatusEffect(@NotNull LivingEntity entity, MobEffectInstance effect, CallbackInfo info) {
-		boolean original = entity.getType().is(EntityTypeTags.IMMUNE_TO_INFESTED) ?
-			!effect.is(MobEffects.INFESTED) : (entity.getType().is(EntityTypeTags.IMMUNE_TO_OOZING) ? !effect.is(MobEffects.OOZING) :
-			(!entity.getType().is(EntityTypeTags.IGNORES_POISON_AND_REGEN) || !effect.is(MobEffects.REGENERATION) && !effect.is(MobEffects.POISON)));
-		boolean applies = true;
-		for (EffectImmunityPower power : PowerHolderComponent.getPowers(entity.getBukkitEntity(), EffectImmunityPower.class)) {
-			if (power.doesApply(effect)) {
-				applies = false;
-				break;
-			}
-		}
-		info.setReturned(true);
-		info.setReturnValue(
-			original && applies
+	@Shadow
+	public abstract void setHealth(float health);
+
+	@Shadow
+	protected abstract ItemStack getLastHandItem(EquipmentSlot slot);
+
+	@Shadow
+	protected abstract ItemStack getLastArmorItem(EquipmentSlot slot);
+
+	@Shadow
+	public abstract void remove(RemovalReason reason);
+
+	@Shadow
+	public abstract boolean hasEffect(Holder<MobEffect> effect);
+
+	@Shadow
+	public abstract Vec3 handleRelativeFrictionAndCalculateMovement(Vec3 movementInput, float slipperiness);
+
+	@Shadow
+	@Nullable
+	public abstract MobEffectInstance getEffect(Holder<MobEffect> effect);
+
+	@Shadow
+	public abstract boolean shouldDiscardFriction();
+
+	@ModifyVariable(method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;Lorg/bukkit/event/entity/EntityPotionEffectEvent$Cause;Z)Z", at = @At("HEAD"), argsOnly = true)
+	private @NotNull MobEffectInstance apoli$modifyStatusEffect(@NotNull MobEffectInstance original) {
+		Holder<MobEffect> effectType = original.getEffect();
+
+		org.bukkit.entity.LivingEntity living = (org.bukkit.entity.LivingEntity) getBukkitEntity();
+		float amplifier = PowerHolderComponent.modify(living, ModifyStatusEffectAmplifierPower.class, original.getAmplifier(), p -> p.doesApply(effectType));
+		float duration = PowerHolderComponent.modify(living, ModifyStatusEffectDurationPower.class, original.getDuration(), p -> p.doesApply(effectType));
+
+		return new MobEffectInstance(
+			effectType,
+			Math.round(duration),
+			Math.round(amplifier),
+			original.isAmbient(),
+			original.isVisible(),
+			original.showIcon(),
+			original.hiddenEffect
 		);
 	}
 
-	@Inject(method = "travel", locator = At.Value.HEAD)
-	public static void apoli$modifyFalling(LivingEntity instance, Vec3 movementInput, CallbackInfo info) {
-		if (instance instanceof Player player) {
+	@ModifyVariable(method = "heal(FLorg/bukkit/event/entity/EntityRegainHealthEvent$RegainReason;Z)V", at = @At("HEAD"), argsOnly = true)
+	private float modifyHealingApplied(float originalValue) {
+		return PowerHolderComponent.modify(getBukkitEntity(), ModifyHealingPower.class, originalValue);
+	}
+
+	@ModifyVariable(method = "hurt", at = @At("HEAD"), argsOnly = true)
+	private float apoli$modifyDamageTaken(float original, @NotNull DamageSource source, float amount) {
+
+		LivingEntity thisAsLiving = (LivingEntity) (Object) this;
+		float newValue = original;
+
+		if (source.getEntity() != null && source.is(DamageTypeTags.IS_PROJECTILE)) {
+			newValue = PowerHolderComponent.modify(source.getEntity().getBukkitEntity(), ModifyProjectileDamagePower.class, original,
+				p -> p.doesApply(source, original, thisAsLiving, source.getEntity()),
+				p -> p.executeActions(thisAsLiving, source.getEntity()));
+		} else if (source.getEntity() != null) {
+			newValue = PowerHolderComponent.modify(source.getEntity().getBukkitEntity(), ModifyDamageDealtPower.class, original,
+				p -> p.doesApply(source, original, thisAsLiving, source.getEntity()),
+				p -> p.executeActions(thisAsLiving, source.getEntity()));
+		}
+
+		float intermediateValue = newValue;
+		newValue = PowerHolderComponent.modify(thisAsLiving.getBukkitEntity(), ModifyDamageTakenPower.class, intermediateValue,
+			p -> p.doesApply(source, thisAsLiving, intermediateValue),
+			p -> p.executeActions(source.getEntity(), thisAsLiving));
+
+		return newValue;
+
+	}
+
+	@Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;die(Lnet/minecraft/world/damagesource/DamageSource;)V"))
+	private void invokeDeathAction(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+		LivingEntity thisAsLiving = (LivingEntity) (Object) this;
+		for (ActionOnDeathPower power : PowerHolderComponent.getPowers(this.getBukkitLivingEntity(), ActionOnDeathPower.class)) {
+			if (power.doesApply(source.getEntity(), source, amount, thisAsLiving)) {
+				power.onDeath(source.getEntity(), thisAsLiving);
+			}
+		}
+	}
+
+	@Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;die(Lnet/minecraft/world/damagesource/DamageSource;)V"))
+	private void invokeKillAction(@NotNull DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+		LivingEntity thisAsLiving = (LivingEntity) (Object) this;
+		if (source.getEntity() == null) return;
+		for (SelfActionOnKillPower power : PowerHolderComponent.getPowers(source.getEntity().getBukkitEntity(), SelfActionOnKillPower.class)) {
+			if (power.doesApply(thisAsLiving, source.getEntity(), source, amount)) {
+				power.executeAction(source.getEntity());
+			}
+		}
+	}
+
+	@Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getTicksFrozen()I"))
+	private void freezeEntityFromPower(CallbackInfo ci) {
+		if (PowerHolderComponent.doesHaveConditionedPower(this.getBukkitLivingEntity(), FreezePower.class, p -> p.isActive(this))) {
+			this.originspaper$prevPowderSnowState = this.isInPowderSnow;
+			this.isInPowderSnow = true;
+		}
+	}
+
+	@Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;removeFrost()V"))
+	private void unfreezeEntityFromPower(CallbackInfo ci) {
+		if (PowerHolderComponent.doesHaveConditionedPower(this.getBukkitLivingEntity(), FreezePower.class, p -> p.isActive(this))) {
+			this.isInPowderSnow = this.originspaper$prevPowderSnowState;
+		}
+	}
+
+	@Inject(method = "canFreeze", at = @At("RETURN"), cancellable = true)
+	private void allowFreezingPower(CallbackInfoReturnable<Boolean> cir) {
+		if (PowerHolderComponent.doesHaveConditionedPower(this.getBukkitLivingEntity(), FreezePower.class, p -> p.isActive(this))) {
+			cir.setReturnValue(true);
+		}
+	}
+
+	@ModifyReturnValue(method = "canBeAffected", at = @At("RETURN"))
+	private boolean apoli$effectImmunity(boolean original, MobEffectInstance effectInstance) {
+		return original
+			&& !PowerHolderComponent.doesHaveConditionedPower(this.getBukkitLivingEntity(), EffectImmunityPower.class, p -> p.doesApply(effectInstance, this));
+	}
+
+	@ModifyExpressionValue(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isDeadOrDying()Z"))
+	public boolean apoli$preventDeath(boolean original, DamageSource source, float amount) {
+
+		if (original && PreventDeathPower.doesPrevent(this, source, amount)) {
+			this.setHealth(1.0F);
+			return false;
+		}
+
+		return original;
+
+	}
+
+	@Inject(method = "travel", at = @At("HEAD"))
+	public void apoli$modifyFalling(Vec3 movementInput, CallbackInfo ci) {
+		if (((LivingEntity) (Object) this) instanceof Player player) {
 
 			if (player.getDeltaMovement().y >= -0.06D || player.fallDistance <= 0) {
 				player.getBukkitEntity().getAttribute(Attribute.GENERIC_GRAVITY).setBaseValue(player.getBukkitEntity().getAttribute(Attribute.GENERIC_GRAVITY).getDefaultValue());
@@ -103,108 +214,66 @@ public class LivingEntityMixin {
 		}
 	}
 
-	@Inject(method = "addEffect", locator = At.Value.HEAD, params = {MobEffectInstance.class, Entity.class, EntityPotionEffectEvent.Cause.class})
-	public static void apoli$modifyEffect(LivingEntity instance, @NotNull MobEffectInstance mobeffect, @Nullable Entity entity, EntityPotionEffectEvent.Cause cause, CallbackInfo info) {
-		Holder<MobEffect> effectType = mobeffect.getEffect();
+	@ModifyReturnValue(method = "canBreatheUnderwater", at = @At("RETURN"))
+	private boolean origins$waterBreathing(boolean original) {
+		return original || PowerHolderComponent.hasPower(getBukkitEntity(), "origins:water_breathing");
+	}
 
-		float amplifier = mobeffect.getAmplifier();
-		float duration = mobeffect.getDuration();
+	@Inject(method = "baseTick", at = @At("RETURN"))
+	public void origins$tickWaterBreathe(CallbackInfo ci) {
+		WaterBreathingPower.tick((LivingEntity) (Object) this);
+	}
 
-		if (instance instanceof Player player) {
-			for (ModifyStatusEffectAmplifierPower power : PowerHolderComponent.getPowers(player.getBukkitEntity(), ModifyStatusEffectAmplifierPower.class)) {
-				if (power.doesApply(effectType)) {
-					amplifier = (float) ModifierUtil.applyModifiers(player, power.getModifiers(), amplifier);
-				}
+	@WrapOperation(method = "detectEquipmentUpdatesPublic", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;collectEquipmentChanges()Ljava/util/Map;"))
+	private Map<EquipmentSlot, ItemStack> apoli$updateItemStackPowers(LivingEntity instance, @NotNull Operation<Map<EquipmentSlot, ItemStack>> original) {
+		Map<EquipmentSlot, ItemStack> map = original.call(instance);
 
-			}
+		if ((Object) this != instance) {
+			throw new RuntimeException("Uhhhh... Why are we not the same bro?");
+		}
 
-			for (ModifyStatusEffectDurationPower power : PowerHolderComponent.getPowers(player.getBukkitEntity(), ModifyStatusEffectDurationPower.class)) {
-				if (power.doesApply(effectType)) {
-					duration = (float) ModifierUtil.applyModifiers(player, power.getModifiers(), duration);
-				}
+		if (map != null) {
+			if (instance instanceof ServerPlayer) {
+				map.forEach((slot, newStack) -> {
+					try {
+						ItemStack itemstack = switch (slot.getType()) {
+							case HAND -> getLastHandItem(slot);
+							case HUMANOID_ARMOR -> getLastArmorItem(slot);
+							case ANIMAL_ARMOR -> lastBodyItemStack;
+						};
 
+						ItemPowersComponent.onChangeEquipment(instance, slot, itemstack, newStack);
+					} catch (Exception e) {
+						throw new RuntimeException("Unable to run power equipment change!", e);
+					}
+				});
 			}
 		}
 
-		MobEffectInstance modifiedEffect = new MobEffectInstance(
-			effectType,
-			Math.round(duration),
-			Math.round(amplifier),
-			mobeffect.isAmbient(),
-			mobeffect.isVisible(),
-			mobeffect.showIcon(),
-			mobeffect.hiddenEffect
-		);
-
-		info.setReturnValue(instance.addEffect(modifiedEffect, entity, cause, true));
-		info.setReturned(true);
+		return map;
 	}
 
-	@Inject(method = "canBreatheUnderwater", locator = At.Value.RETURN)
-	public static void origins$waterBreathing(@NotNull LivingEntity instance, @NotNull CallbackInfo info) {
-		info.setReturned(true);
-		boolean original = instance.getType().is(EntityTypeTags.CAN_BREATHE_UNDER_WATER);
-		info.setReturnValue(original || PowerHolderComponent.hasPower(instance.getBukkitEntity(), "origins:water_breathing"));
+	@WrapOperation(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;shouldDiscardFriction()Z"))
+	private boolean useApoliFrictionCalc$modifySlipperiness(@NotNull LivingEntity instance, Operation<Boolean> original) {
+		return PowerHolderComponent.hasPowerType(instance.getBukkitEntity(), ModifySlipperinessPower.class) || original.call(instance);
 	}
 
-	@Inject(method = "baseTick", locator = At.Value.RETURN)
-	public static void origins$waterBreathingTick(LivingEntity instance, CallbackInfo info) {
-		WaterBreathingPower.tick(instance);
-	}
+	@WrapOperation(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;setDeltaMovement(DDD)V", ordinal = 2))
+	private void modifySlipperiness(@NotNull LivingEntity instance, double a, double b, double c, Operation<Void> original) {
+		BlockPos blockposition = this.getBlockPosBelowThatAffectsMyMovement();
+		float f4 = this.level().getBlockState(blockposition).getBlock().getFriction();
 
-	@Inject(method = "detectEquipmentUpdatesPublic", locator = At.Value.HEAD)
-	public static void apoli$itemStackPowers(@NotNull LivingEntity instance, CallbackInfo info) {
-		try {
-			Method collectEquipmentChanges = LivingEntity.class.getDeclaredMethod("collectEquipmentChanges");
-			collectEquipmentChanges.setAccessible(true);
-			Map<EquipmentSlot, ItemStack> map = (Map<EquipmentSlot, ItemStack>) collectEquipmentChanges.invoke(instance);
+		float f = this.onGround() ? f4 * 0.91F : 0.91F;
 
-			if (map != null) {
-				if (instance instanceof ServerPlayer) {
-					map.forEach((slot, newStack) -> {
-						try {
-							ItemStack itemstack = switch (slot.getType()) {
-								case HAND -> {
-									Method getLastHandItem = LivingEntity.class.getDeclaredMethod("getLastHandItem", EquipmentSlot.class);
-									getLastHandItem.setAccessible(true);
-									yield (ItemStack) getLastHandItem.invoke(instance, slot);
-								}
-								case HUMANOID_ARMOR -> {
-									Method getLastArmorItem = LivingEntity.class.getDeclaredMethod("getLastArmorItem", EquipmentSlot.class);
-									getLastArmorItem.setAccessible(true);
-									yield (ItemStack) getLastArmorItem.invoke(instance, slot);
-								}
-								case ANIMAL_ARMOR -> {
-									Field lastBodyItemStack = LivingEntity.class.getDeclaredField("lastBodyItemStack");
-									lastBodyItemStack.setAccessible(true);
-									yield (ItemStack) lastBodyItemStack.get(instance);
-								}
-								default -> throw new MatchException(null, null);
-							};
+		if (PowerHolderComponent.hasPowerType(getBukkitEntity(), ModifySlipperinessPower.class)) {
+			f = PowerHolderComponent.modify(getBukkitEntity(), ModifySlipperinessPower.class, f, p -> p.doesApply(level(), getBlockPosBelowThatAffectsMyMovement(), this));
 
-							ItemPowersComponent.onChangeEquipment(instance, slot, itemstack, newStack);
-						} catch (Exception e) {
-							throw new RuntimeException("Unable to run power equipment change!", e);
-						}
-					});
-				}
-
-				Method handleHandSwap = LivingEntity.class.getDeclaredMethod("handleHandSwap", Map.class);
-				handleHandSwap.setAccessible(true);
-				handleHandSwap.invoke(instance, map);
-
-				if (!map.isEmpty()) {
-					Method handleEquipmentChanges = LivingEntity.class.getDeclaredMethod("handleEquipmentChanges", Map.class);
-					handleEquipmentChanges.setAccessible(true);
-					handleEquipmentChanges.invoke(instance, map);
-				}
-			}
-
-			info.setReturned(true);
-			info.setReturnValue(false);
-
-		} catch (Exception e) {
-			throw new RuntimeException("Unable to handle equipment updates!", e);
+			float x = (float) (a * (double) f);
+			float y = (float) (instance instanceof FlyingAnimal ? b * (double) f : b * 0.9800000190734863D);
+			float z = (float) (c * (double) f);
+			getBukkitEntity().setVelocity(new Vector(x, y, z));
+		} else {
+			original.call(instance, a, b, c);
 		}
 	}
 

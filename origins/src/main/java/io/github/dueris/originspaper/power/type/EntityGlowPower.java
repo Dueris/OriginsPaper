@@ -1,7 +1,6 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.util.holder.ObjectProvider;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
@@ -9,6 +8,7 @@ import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Shape;
 import io.github.dueris.originspaper.plugin.OriginsPlugin;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import io.github.dueris.originspaper.util.GlowingEntitiesUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -45,14 +45,14 @@ public class EntityGlowPower extends PowerType {
 		this.blue = blue;
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("entity_glow"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("entity_glow"), PowerType.getFactory().getSerializableData()
 			.add("entity_condition", ApoliDataTypes.ENTITY_CONDITION, null)
 			.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
 			.add("use_teams", SerializableDataTypes.BOOLEAN, true)
 			.add("red", SerializableDataTypes.FLOAT, 1.0F)
 			.add("green", SerializableDataTypes.FLOAT, 1.0F)
-			.add("blue", SerializableDataTypes.FLOAT, 1.0F);
+			.add("blue", SerializableDataTypes.FLOAT, 1.0F));
 	}
 
 	public static ChatColor translateBarColor(@NotNull BarColor barColor) {

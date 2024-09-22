@@ -1,12 +1,12 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -60,8 +60,8 @@ public class PreventBlockUsePower extends PowerType {
 		this.hands = hands;
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("prevent_block_use"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("prevent_block_use"), PowerType.getFactory().getSerializableData()
 			.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
 			.add("block_action", ApoliDataTypes.BLOCK_ACTION, null)
 			.add("result_item_action", ApoliDataTypes.ITEM_ACTION, null)
@@ -70,7 +70,7 @@ public class PreventBlockUsePower extends PowerType {
 			.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
 			.add("result_stack", SerializableDataTypes.ITEM_STACK, null)
 			.add("directions", SerializableDataTypes.DIRECTION_SET, EnumSet.allOf(Direction.class))
-			.add("hands", SerializableDataTypes.enumSet(InteractionHand.class, SerializableDataTypes.HAND), EnumSet.allOf(InteractionHand.class));
+			.add("hands", SerializableDataTypes.enumSet(InteractionHand.class, SerializableDataTypes.HAND), EnumSet.allOf(InteractionHand.class)));
 	}
 
 	public boolean shouldExecute$apoli$super(InteractionHand hand, ItemStack heldStack, ServerLevel level) {

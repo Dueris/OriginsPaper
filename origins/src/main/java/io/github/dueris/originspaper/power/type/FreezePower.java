@@ -1,13 +1,12 @@
 package io.github.dueris.originspaper.power.type;
 
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class FreezePower extends PowerType {
@@ -15,18 +14,7 @@ public class FreezePower extends PowerType {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("freeze"));
-	}
-
-	@Override
-	public void tick(Player player) {
-		if (isActive(player)) {
-			if (player.getTicksFrozen() >= 138) {
-				player.setTicksFrozen(150);
-			} else {
-				player.setTicksFrozen(Math.min(player.getTicksRequiredToFreeze(), player.getTicksFrozen() + 3));
-			}
-		}
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("freeze"), PowerType.getFactory().getSerializableData());
 	}
 }

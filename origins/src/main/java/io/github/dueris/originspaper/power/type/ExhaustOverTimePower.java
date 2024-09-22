@@ -1,10 +1,10 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -22,10 +22,10 @@ public class ExhaustOverTimePower extends PowerType {
 		this.exhaustion = exhaustion;
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("exhaust"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("exhaust"), PowerType.getFactory().getSerializableData()
 			.add("interval", SerializableDataTypes.POSITIVE_INT, 20)
-			.add("exhaustion", SerializableDataTypes.FLOAT);
+			.add("exhaustion", SerializableDataTypes.FLOAT));
 	}
 
 	@Override

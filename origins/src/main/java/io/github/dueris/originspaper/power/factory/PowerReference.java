@@ -1,7 +1,6 @@
 package io.github.dueris.originspaper.power.factory;
 
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.registry.ApoliRegistries;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +17,9 @@ public record PowerReference(ResourceLocation location) {
 	}
 
 	public @NotNull Optional<PowerType> getOptionalReference() {
-		return ApoliRegistries.POWER.getOptional(getId());
+		if (PowerType.REGISTRY.containsKey(location)) {
+			return Optional.of(PowerType.REGISTRY.get(location));
+		}
+		return Optional.empty();
 	}
 }

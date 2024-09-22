@@ -1,7 +1,6 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -9,6 +8,7 @@ import io.github.dueris.originspaper.data.types.HudRender;
 import io.github.dueris.originspaper.data.types.Keybind;
 import io.github.dueris.originspaper.event.KeybindTriggerEvent;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import io.github.dueris.originspaper.util.KeybindUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -35,13 +35,13 @@ public class LaunchPower extends CooldownPower {
 		this.keybind = keybind;
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("launch"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("launch"), PowerType.getFactory().getSerializableData()
 			.add("cooldown", SerializableDataTypes.INT, 1)
 			.add("speed", SerializableDataTypes.FLOAT)
 			.add("sound", SerializableDataTypes.SOUND_EVENT, null)
 			.add("hud_render", ApoliDataTypes.HUD_RENDER, HudRender.DONT_RENDER)
-			.add("key", ApoliDataTypes.KEYBIND, Keybind.DEFAULT_KEYBIND);
+			.add("key", ApoliDataTypes.KEYBIND, Keybind.DEFAULT_KEYBIND));
 	}
 
 	@EventHandler

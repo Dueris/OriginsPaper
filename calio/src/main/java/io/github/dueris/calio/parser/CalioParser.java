@@ -59,16 +59,19 @@ public class CalioParser {
 
 		RootResult<T> instance = dataBuildDirective.builder().deserialize(jsonSource);
 		if (instance == null) return null;
-		return finalizeInstance(instance.apply(location), jsonSource, dataBuildDirective, location);
+		return finalizeInstance(instance, jsonSource, dataBuildDirective, location);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> @NotNull T finalizeInstance(@NotNull T instance, JsonObject jsonSource, DataBuildDirective<?> dataBuildDirective, ResourceLocation location) {
+	public static <T> @NotNull T finalizeInstance(@NotNull RootResult<T> instanceDefinition, JsonObject jsonSource, DataBuildDirective<?> dataBuildDirective, ResourceLocation location) {
+		T instance = instanceDefinition.apply(location);
 		if (ReflectionUtils.hasFieldWithAnnotation(instance.getClass(), JsonObject.class, SourceProvider.class)) {
 			ReflectionUtils.setFieldWithAnnotation(instance, SourceProvider.class, jsonSource);
 		}
+
+		instanceDefinition.finishWrap(instance);
 		Registry<T> registryKey = (Registry<T>) dataBuildDirective.registryKey();
-		if (ReflectionUtils.invokeBooleanMethod(instance, "canRegister")) {
+		if (ReflectionUtils.invokeBooleanMethod(instance, "canRegister") && registryKey != null) {
 			Registry.register(registryKey, location, instance);
 		}
 

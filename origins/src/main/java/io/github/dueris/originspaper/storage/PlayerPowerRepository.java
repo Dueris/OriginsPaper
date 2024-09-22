@@ -7,7 +7,6 @@ import com.mojang.serialization.JsonOps;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.power.factory.PowerType;
-import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -136,7 +135,7 @@ public final class PlayerPowerRepository extends RepositoryComponent {
 				for (Tag rawTag : tag.getList("Powers", 10)) {
 					CompoundTag powerTag = (CompoundTag) rawTag;
 					ResourceLocation powerLocation = ResourceLocation.parse(powerTag.getString("Power"));
-					PowerType powerType = ApoliRegistries.POWER.get(powerLocation);
+					PowerType powerType = PowerType.REGISTRY.get(powerLocation);
 					if (powerType == null) {
 						log.error("Stored PowerType not found! ID: {}, skipping power..", powerLocation.toString());
 						continue;
@@ -159,17 +158,17 @@ public final class PlayerPowerRepository extends RepositoryComponent {
 				ResourceLocation layerLocation = ResourceLocation.parse(tag.getString("Layer"));
 				ResourceLocation originLocation = ResourceLocation.parse(tag.getString("Origin"));
 
-				OriginLayer layer = ApoliRegistries.ORIGIN_LAYER.get(layerLocation);
+				OriginLayer layer = OriginLayer.REGISTRY.get(layerLocation);
 				if (layer == null) {
 					log.error("Stored Layer not found! ID: {}, skipping layer..", layerLocation.toString());
 				} else {
-					this.setOrigin(ApoliRegistries.ORIGIN.getOptional(originLocation).orElse(Origin.EMPTY), layer);
+					this.setOrigin(Origin.REGISTRY.getOrDefault(originLocation, Origin.EMPTY), layer);
 				}
 			} else throw new JsonSyntaxException("Layer value not found in CompoundTag!");
 		});
 
 		// Final check to ensure all layers have a value
-		for (OriginLayer layer : ApoliRegistries.ORIGIN_LAYER) {
+		for (OriginLayer layer : OriginLayer.REGISTRY.values()) {
 			if (!this.originRepo.containsKey(layer)) {
 				this.originRepo.put(layer, new AtomicReference<>(Origin.EMPTY));
 			}

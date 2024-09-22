@@ -11,14 +11,12 @@ import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.OriginsDataTypes;
 import io.github.dueris.originspaper.data.types.GuiTitle;
-import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.screen.ScreenNavigator;
 import io.github.dueris.originspaper.storage.OriginComponent;
 import io.github.dueris.originspaper.util.ComponentUtil;
 import io.github.dueris.originspaper.util.LangFile;
 import io.github.dueris.originspaper.util.Util;
 import net.kyori.adventure.text.TextComponent;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -27,9 +25,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 public class OriginLayer {
+	public static Map<ResourceLocation, OriginLayer> REGISTRY = new ConcurrentHashMap<>();
 	public static SerializableDataType<RootResult<OriginLayer>> DATA = SerializableDataType.of(
 		(jsonElement) -> {
 			if (!(jsonElement instanceof JsonObject jo)) {
@@ -39,7 +40,8 @@ public class OriginLayer {
 			try {
 				SerializableData.Instance compound = SerializableDataType.compound(getFactory(), jo, OriginLayer.class);
 				return new RootResult<>(
-					io.github.dueris.calio.util.Util.generateConstructor(OriginLayer.class, getFactory()), compound
+					io.github.dueris.calio.util.Util.generateConstructor(OriginLayer.class, getFactory()), compound, (oL) -> {
+				}
 				);
 			} catch (NoSuchMethodException | IllegalAccessException e) {
 				throw new RuntimeException(e);
@@ -221,9 +223,9 @@ public class OriginLayer {
 	}
 
 	public boolean canRegister() {
-		boolean merge = ApoliRegistries.ORIGIN_LAYER.containsKey(this.key);
+		boolean merge = REGISTRY.containsKey(this.key);
 		if (merge) {
-			OriginLayer otherLayer = ApoliRegistries.ORIGIN_LAYER.get(this.key);
+			OriginLayer otherLayer = REGISTRY.get(this.key);
 			if (otherLayer == null)
 				throw new IllegalStateException("Um... how did u possibly get here? The layer should be in here... somewhere...");
 			OriginsPaper.LOGGER.info("Merging other layer, `{}` with {} origins to this layer, `{}` with {} origins", otherLayer.getId(), otherLayer.getOriginIdentifiers().size(), this.getId(), this.getOriginIdentifiers().size());
@@ -256,11 +258,11 @@ public class OriginLayer {
 			this.defaultOrigin = otherLayer.defaultOrigin;
 			this.autoChoose = otherLayer.autoChoose;
 			this.hidden = otherLayer.hidden;
-			Registry.register(ApoliRegistries.ORIGIN_LAYER, this.getId(), this);
-			return false;
 		}
 
-		return true;
+		REGISTRY.put(this.key, this);
+
+		return false;
 	}
 
 	public ResourceLocation getId() {

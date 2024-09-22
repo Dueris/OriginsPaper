@@ -1,54 +1,42 @@
 package io.github.dueris.originspaper.mixin;
 
-import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import io.github.dueris.originspaper.access.EntityLinkedType;
 import io.github.dueris.originspaper.power.type.ModifyTypeTagPower;
 import net.minecraft.core.HolderSet;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(EntityType.class)
-public class EntityTypeMixin {
-	public static HashMap<EntityType<?>, List<Player>> PLAYER_TAG_TIE = new HashMap<>();
+public abstract class EntityTypeMixin implements EntityLinkedType {
 
-	@Inject(method = "is", locator = At.Value.HEAD, params = HolderSet.class)
-	public static void apoli$inTagEntryListProxy(@NotNull EntityType<?> instance, @NotNull HolderSet<EntityType<?>> entryList, CallbackInfo info) {
-		boolean original = entryList.contains(instance.builtInRegistryHolder());
-		boolean modifyTypeTag = false;
+	@Unique
+	private Entity apoli$currentEntity;
 
-		for (Player player : PLAYER_TAG_TIE.getOrDefault(instance, new LinkedList<>())) {
-			if (ModifyTypeTagPower.doesApply(player, entryList)) {
-				modifyTypeTag = true;
-				break;
-			}
-		}
-
-		info.setReturned(true);
-		info.setReturnValue(
-			original || modifyTypeTag
-		);
+	@Override
+	public Entity apoli$getEntity() {
+		return apoli$currentEntity;
 	}
 
-	@Inject(method = "is", locator = At.Value.RETURN, params = TagKey.class)
-	public static void apoli$inTagProxy(@NotNull EntityType<?> instance, TagKey<EntityType<?>> tag, CallbackInfo info) {
-		boolean original = instance.builtInRegistryHolder().is(tag);
-		boolean modifyTypeTag = false;
-
-		for (Player player : PLAYER_TAG_TIE.getOrDefault(instance, new LinkedList<>())) {
-			if (ModifyTypeTagPower.doesApply(player, tag)) {
-				modifyTypeTag = true;
-				break;
-			}
-		}
-
-		info.setReturned(true);
-		info.setReturnValue(
-			original || modifyTypeTag
-		);
+	@Override
+	public void apoli$setEntity(Entity entity) {
+		this.apoli$currentEntity = entity;
 	}
+
+	@ModifyReturnValue(method = "is(Lnet/minecraft/tags/TagKey;)Z", at = @At("RETURN"))
+	private boolean apoli$inTagProxy(boolean original, TagKey<EntityType<?>> tag) {
+		return original
+			|| ModifyTypeTagPower.doesApply(this.apoli$getEntity(), tag);
+	}
+
+	@ModifyReturnValue(method = "is(Lnet/minecraft/core/HolderSet;)Z", at = @At("RETURN"))
+	private boolean apoli$inTagEntryListProxy(boolean original, HolderSet<EntityType<?>> entryList) {
+		return original
+			|| ModifyTypeTagPower.doesApply(this.apoli$getEntity(), entryList);
+	}
+
 }

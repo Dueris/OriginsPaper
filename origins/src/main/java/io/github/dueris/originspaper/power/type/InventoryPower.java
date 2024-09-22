@@ -3,13 +3,13 @@ package io.github.dueris.originspaper.power.type;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.Keybind;
 import io.github.dueris.originspaper.event.KeybindTriggerEvent;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import io.github.dueris.originspaper.util.LangFile;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -36,7 +36,6 @@ import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -99,14 +98,14 @@ public class InventoryPower extends PowerType {
 		return power.container.get(playerEntity);
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("inventory"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("inventory"), PowerType.getFactory().getSerializableData()
 			.add("title", SerializableDataTypes.STRING, "container.inventory")
 			.add("container_type", SerializableDataTypes.enumValue(ContainerType.class), ContainerType.DROPPER)
 			.add("drop_on_death", SerializableDataTypes.BOOLEAN, false)
 			.add("drop_on_death_filter", ApoliDataTypes.ITEM_CONDITION, null)
 			.add("key", ApoliDataTypes.KEYBIND, Keybind.DEFAULT_KEYBIND)
-			.add("recoverable", SerializableDataTypes.BOOLEAN, true);
+			.add("recoverable", SerializableDataTypes.BOOLEAN, true));
 	}
 
 	@Override
@@ -152,13 +151,6 @@ public class InventoryPower extends PowerType {
 			container.get(player).dirty = false;
 		}
 
-	}
-
-	@EventHandler
-	public void onDeath(@NotNull PlayerDeathEvent e) {
-		if (getPlayers().contains(((CraftPlayer) e.getPlayer()).getHandle()) && shouldDropOnDeath() && isActive(((CraftPlayer) e.getPlayer()).getHandle())) {
-			dropItemsOnDeath(((CraftPlayer) e.getPlayer()).getHandle());
-		}
 	}
 
 	public MutableComponent getContainerTitle() {

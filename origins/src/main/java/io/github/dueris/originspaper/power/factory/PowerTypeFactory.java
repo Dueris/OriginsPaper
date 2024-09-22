@@ -22,7 +22,7 @@ public class PowerTypeFactory implements Factory {
 				throw new JsonSyntaxException("Expected JsonObject for root 'PowerType'");
 			}
 
-			ResourceLocation type = jo.has("type") ? SerializableDataTypes.IDENTIFIER.deserialize(jo.get("type")) : PowerType.getFactory().typedInstance;
+			ResourceLocation type = jo.has("type") ? SerializableDataTypes.IDENTIFIER.deserialize(jo.get("type")) : PowerType.getFactory().getSerializerId();
 			Class<? extends PowerType> powerClass = PowerType.type2Class.get(type);
 
 			if (powerClass == null) {
@@ -30,14 +30,14 @@ public class PowerTypeFactory implements Factory {
 			}
 
 			try {
-				Method factoryField = powerClass.getDeclaredMethod("getFactory");
-				factoryField.setAccessible(true);
+				Method factoryMethod = powerClass.getDeclaredMethod("getFactory");
+				factoryMethod.setAccessible(true);
 
-				SerializableData data = (SerializableData) factoryField.invoke(null);
-				SerializableData.Instance compound = SerializableDataType.compound(data, jo, powerClass);
+				PowerTypeFactory data = (PowerTypeFactory) factoryMethod.invoke(null);
+				SerializableData.Instance compound = SerializableDataType.compound(data.serializableData, jo, powerClass);
 				if (compound != null) {
-					Constructor<PowerType> parsedConstructor = (Constructor<PowerType>) Util.generateConstructor(powerClass, data);
-					return new RootResult<>(parsedConstructor, compound);
+					Constructor<PowerType> parsedConstructor = (Constructor<PowerType>) Util.generateConstructor(powerClass, data.serializableData);
+					return new RootResult<>(parsedConstructor, compound, PowerType::onBootstrap);
 				}
 			} catch (Throwable e) {
 				throw new RuntimeException(e);

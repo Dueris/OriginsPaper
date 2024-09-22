@@ -6,7 +6,6 @@ import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.power.type.MultiplePower;
-import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.screen.ScreenNavigator;
 import io.github.dueris.originspaper.util.BstatsMetrics;
 import net.minecraft.resources.ResourceLocation;
@@ -28,7 +27,7 @@ public class OriginComponent {
 	}
 
 	public static boolean hasOrigin(Player player, ResourceLocation location) {
-		Origin origin = ApoliRegistries.ORIGIN.get(location);
+		Origin origin = Origin.REGISTRY.get(location);
 		return PlayerPowerRepository.getOrCreateRepo(getNMS(player)).getAllOrigins().contains(origin);
 	}
 

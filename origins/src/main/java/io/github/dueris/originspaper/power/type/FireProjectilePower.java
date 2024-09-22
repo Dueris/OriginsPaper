@@ -1,7 +1,6 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
@@ -9,8 +8,8 @@ import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.HudRender;
 import io.github.dueris.originspaper.data.types.Keybind;
 import io.github.dueris.originspaper.event.KeybindTriggerEvent;
-import io.github.dueris.originspaper.mixin.ThrownEnderpearlMixin;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -33,10 +32,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Deprecated
 public class FireProjectilePower extends CooldownPower {
 	public static final List<ResourceLocation> IS_ENDERIAN_PEARL = new LinkedList<>();
+	public static List<ThrownEnderpearl> ENDERIAN_PEARLS = new CopyOnWriteArrayList<>();
 	private final int projectileCount;
 	private final int interval;
 	private final int startDelay;
@@ -70,8 +71,8 @@ public class FireProjectilePower extends CooldownPower {
 		this.shooterAction = shooterAction;
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("fire_projectile"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("fire_projectile"), PowerType.getFactory().getSerializableData()
 			.add("cooldown", SerializableDataTypes.INT, 1)
 			.add("count", SerializableDataTypes.INT, 1)
 			.add("interval", SerializableDataTypes.POSITIVE_INT, 0)
@@ -84,7 +85,7 @@ public class FireProjectilePower extends CooldownPower {
 			.add("tag", SerializableDataTypes.NBT_COMPOUND, new CompoundTag())
 			.add("key", ApoliDataTypes.KEYBIND, Keybind.DEFAULT_KEYBIND)
 			.add("projectile_action", ApoliDataTypes.ENTITY_ACTION, null)
-			.add("shooter_action", ApoliDataTypes.ENTITY_ACTION, null);
+			.add("shooter_action", ApoliDataTypes.ENTITY_ACTION, null));
 	}
 
 	@EventHandler
@@ -215,7 +216,7 @@ public class FireProjectilePower extends CooldownPower {
 			projectileToSpawn.setOwner(entity);
 
 			if (IS_ENDERIAN_PEARL.contains(getId()) && projectileToSpawn instanceof ThrownEnderpearl pearl) {
-				ThrownEnderpearlMixin.ENDERIAN_PEARLS.add(pearl);
+				ENDERIAN_PEARLS.add(pearl);
 			}
 
 		}

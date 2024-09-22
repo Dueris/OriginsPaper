@@ -6,6 +6,7 @@ import io.github.dueris.calio.parser.reader.system.FileSystemReader;
 import io.github.dueris.calio.util.Util;
 import io.github.dueris.calio.util.thread.ParserFactory;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import org.apache.logging.log4j.LogManager;
@@ -28,6 +29,7 @@ import java.util.function.BiConsumer;
  */
 public record CraftCalio(boolean threaded, int threadCount) {
 	private static final Logger log = LogManager.getLogger("CraftCalio");
+	private static RegistryAccess registryAccess;
 
 	/**
 	 * Creates the calio parser instance and allows for providing
@@ -38,6 +40,14 @@ public record CraftCalio(boolean threaded, int threadCount) {
 		CalioParser.threadedParser = Executors.newFixedThreadPool(threadCount, new ParserFactory(threadCount));
 		CalioParser.threaded = true;
 		return new CraftCalio(true, threadCount);
+	}
+
+	public static void setRegistryAccess(RegistryAccess access) {
+		registryAccess = access;
+	}
+
+	public static RegistryAccess registryAccess() {
+		return registryAccess;
 	}
 
 	/**

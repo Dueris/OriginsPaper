@@ -1,11 +1,11 @@
 package io.github.dueris.originspaper.power.type;
 
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -53,11 +53,11 @@ public class ModifyBreakSpeedPower extends ModifierPower {
 		}
 	}
 
-	public static SerializableData getFactory() {
-		return ModifierPower.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("modify_break_speed"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("modify_break_speed"), ModifierPower.getFactory().getSerializableData()
 			.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
 			.add("hardness_modifier", Modifier.DATA_TYPE, null)
-			.add("hardness_modifiers", Modifier.LIST_TYPE, null);
+			.add("hardness_modifiers", Modifier.LIST_TYPE, null));
 	}
 
 	public LinkedList<Modifier> getHardnessModifiers() {

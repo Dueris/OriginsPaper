@@ -5,14 +5,12 @@ import io.github.dueris.originspaper.command.PehukiCommandImpl;
 import io.github.dueris.originspaper.content.OrbOfOrigins;
 import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.power.type.RecipePower;
-import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.screen.ChoosingPage;
 import io.github.dueris.originspaper.screen.RandomOriginPage;
 import io.github.dueris.originspaper.screen.ScreenNavigator;
 import io.github.dueris.originspaper.storage.PlayerPowerRepository;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import io.github.dueris.originspaper.util.*;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
@@ -64,7 +62,6 @@ public final class OriginsPlugin extends JavaPlugin implements Listener {
 			glowingEntitiesUtils.disable();
 			RecipePower.recipeMapping.clear();
 			RecipePower.tags.clear();
-			ApoliRegistries.clearRegistries();
 		} catch (Throwable var3) {
 			OriginsPaper.LOGGER.error("An unhandled exception occurred when disabling OriginsPaper!");
 		}
@@ -78,17 +75,15 @@ public final class OriginsPlugin extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new AsyncUpgradeTracker(), this);
 		this.getServer().getPluginManager().registerEvents(new PowerHolderComponent(), this);
 		this.getServer().getPluginManager().registerEvents(new PehukiCommandImpl(), this);
-		for (PowerType powerType : ApoliRegistries.POWER) {
+		for (PowerType powerType : PowerType.REGISTRY.values()) {
 			this.getServer().getPluginManager().registerEvents(powerType, this);
 		}
 	}
 
 	@EventHandler
 	public void loadEvent(ServerLoadEvent e) {
-		Util.unfreezeUntil(new Registry[]{ApoliRegistries.CHOOSING_PAGE}, () -> {
-			ChoosingPage.registerInstances();
-			ScreenNavigator.layerPages.values().forEach(pages -> pages.add(pages.size(), new RandomOriginPage()));
-		});
+		ChoosingPage.registerInstances();
+		ScreenNavigator.layerPages.values().forEach(pages -> pages.add(pages.size(), new RandomOriginPage()));
 		OrbOfOrigins.init();
 	}
 

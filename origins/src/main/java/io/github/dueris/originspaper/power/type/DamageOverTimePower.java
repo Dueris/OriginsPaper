@@ -1,10 +1,10 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -55,15 +55,15 @@ public class DamageOverTimePower extends PowerType {
 		this.onsetDelay = onsetDelay.orElse(interval);
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("damage_over_time"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("damage_over_time"), PowerType.getFactory().getSerializableData()
 			.add("interval", SerializableDataTypes.POSITIVE_INT, 20)
 			.add("onset_delay", SerializableDataTypes.optional(SerializableDataTypes.INT), Optional.empty())
 			.add("damage", SerializableDataTypes.FLOAT)
 			.add("damage_easy", SerializableDataTypes.optional(SerializableDataTypes.FLOAT), Optional.empty())
 			.add("damage_type", SerializableDataTypes.DAMAGE_TYPE, GENERIC_DAMAGE)
 			.add("protection_enchantment", SerializableDataTypes.ENCHANTMENT, null)
-			.add("protection_effectiveness", SerializableDataTypes.FLOAT, 1.0F);
+			.add("protection_effectiveness", SerializableDataTypes.FLOAT, 1.0F));
 	}
 
 	public int getDamageBegin(LivingEntity entity) {

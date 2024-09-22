@@ -1,13 +1,13 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.HudRender;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import io.github.dueris.originspaper.util.LangFile;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecraft.network.chat.Component;
@@ -49,14 +49,14 @@ public class ResourcePower extends PowerType implements ResourceInterface {
 		this.hudRender = hudRender;
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("resource"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("resource"), PowerType.getFactory().getSerializableData()
 			.add("min", SerializableDataTypes.INT)
 			.add("max", SerializableDataTypes.INT)
 			.add("start_value", SerializableDataTypes.optional(SerializableDataTypes.INT), Optional.empty())
 			.add("min_action", ApoliDataTypes.ENTITY_ACTION, null)
 			.add("max_action", ApoliDataTypes.ENTITY_ACTION, null)
-			.add("hud_render", ApoliDataTypes.HUD_RENDER, HudRender.DONT_RENDER);
+			.add("hud_render", ApoliDataTypes.HUD_RENDER, HudRender.DONT_RENDER));
 	}
 
 	@Override

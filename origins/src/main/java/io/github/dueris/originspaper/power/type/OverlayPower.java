@@ -1,9 +1,9 @@
 package io.github.dueris.originspaper.power.type;
 
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -20,8 +20,8 @@ public class OverlayPower extends PowerType {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("overlay"));
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("overlay"), PowerType.getFactory().getSerializableData());
 	}
 
 	public static void init(@NotNull Player player) {

@@ -15,7 +15,7 @@ val paperweightVersion: String = "1.21-R0.1-SNAPSHOT"
 
 extra["mcMajorVer"] = "21"
 extra["mcMinorVer"] = "1"
-extra["pluginVer"] = "v1.2.2"
+extra["pluginVer"] = "v1.2.3"
 
 val mcMajorVer = extra["mcMajorVer"] as String
 val mcMinorVer = extra["mcMinorVer"] as String
@@ -56,6 +56,8 @@ allprojects {
         maven("https://repo.inventivetalent.org/repository/public/")
         maven("https://repo.codemc.org/repository/maven-releases/")
         maven("https://maven.quiltmc.org/repository/release/")
+        maven("https://maven.fabricmc.net/")
+        maven("https://jitpack.io")
     }
 
     tasks {
@@ -108,12 +110,6 @@ tasks {
     }
 }
 
-tasks.register<Jar>("makePublisher") {
-    dependsOn(tasks.shadowJar)
-    archiveFileName.set("originspaper-$pluginVer-SNAPSHOT.jar")
-    from(sourceSets.main.get().output)
-}
-
 fun findOriginsFile(path: String): File? {
     val directory = File(path)
 
@@ -131,25 +127,5 @@ fun findOriginsFile(path: String): File? {
         originsFiles.first()
     } else {
         error("No matching file found in the specified directory.")
-    }
-}
-
-publishing {
-    publications.create<MavenPublication>("originspaper") {
-        artifact(tasks.getByName("makePublisher")) {
-            groupId = "io.github.dueris"
-            artifactId = "originspaper"
-            version = "$pluginVer-SNAPSHOT"
-        }
-    }
-    repositories {
-        maven {
-            name = "sonatype"
-            url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-            credentials {
-                username = System.getenv("OSSRH_USERNAME")
-                password = System.getenv("OSSRH_PASSWORD")
-            }
-        }
     }
 }

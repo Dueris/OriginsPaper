@@ -1,0 +1,11 @@
+{
+  "version": "1.2.3",
+  "id": "origins",
+  "mixins": [
+    "origins.mixins.json",
+    "eclipse.mixins.json"
+  ],
+  "wideners": [
+    "eclipse.accesswidener"
+  ]
+}

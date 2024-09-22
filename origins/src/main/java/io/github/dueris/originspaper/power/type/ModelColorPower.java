@@ -4,10 +4,10 @@ import com.destroystokyo.paper.profile.CraftPlayerProfile;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import io.github.dueris.originspaper.storage.OriginConfiguration;
 import io.github.dueris.originspaper.util.Scheduler;
 import io.github.dueris.originspaper.util.Util;
@@ -68,11 +68,11 @@ public class ModelColorPower extends PowerType {
 		this.blue = blue;
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("model_color"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("model_color"), PowerType.getFactory().getSerializableData()
 			.add("red", SerializableDataTypes.FLOAT, 1.0F)
 			.add("green", SerializableDataTypes.FLOAT, 1.0F)
-			.add("blue", SerializableDataTypes.FLOAT, 1.0F);
+			.add("blue", SerializableDataTypes.FLOAT, 1.0F));
 	}
 
 	public static void serializeSkinData(String fileName, SkinData skinData) throws IOException {

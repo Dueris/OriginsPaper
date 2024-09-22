@@ -1,12 +1,11 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
-import io.github.dueris.originspaper.mixin.ItemEnchantmentsMixin;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -16,6 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -24,8 +24,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ModifyEnchantmentLevelPower extends ModifierPower {
+	public static Map<ItemEnchantments, ModifyEnchantmentLevelPower> TO_MODIFY = new ConcurrentHashMap<>();
 	private final ResourceKey<Enchantment> enchantment;
 	private final ConditionTypeFactory<Tuple<Level, ItemStack>> itemCondition;
 
@@ -36,23 +39,31 @@ public class ModifyEnchantmentLevelPower extends ModifierPower {
 		this.itemCondition = itemCondition;
 	}
 
-	public static SerializableData getFactory() {
-		return ModifierPower.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("modify_enchantment_level"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("modify_enchantment_level"), ModifierPower.getFactory().getSerializableData()
 			.add("enchantment", SerializableDataTypes.ENCHANTMENT)
-			.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null);
+			.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null));
+	}
+
+	public static void mark(ItemEnchantments itemEnchantments, ModifyEnchantmentLevelPower power) {
+		TO_MODIFY.put(itemEnchantments, power);
+	}
+
+	public static void unmark(ItemEnchantments itemEnchantments) {
+		TO_MODIFY.remove(itemEnchantments);
 	}
 
 	@EventHandler
 	public void onStackSwitch(@NotNull PlayerInventorySlotChangeEvent e) {
 		ItemStack oldSlot = CraftItemStack.unwrap(e.getOldItemStack());
 		ItemStack newStack = CraftItemStack.unwrap(e.getNewItemStack());
-		if (ItemEnchantmentsMixin.TO_MODIFY.containsKey(oldSlot.getEnchantments())) {
-			ItemEnchantmentsMixin.unmark(oldSlot.getEnchantments());
+		if (TO_MODIFY.containsKey(oldSlot.getEnchantments())) {
+			unmark(oldSlot.getEnchantments());
 		}
 
 		Player player = ((CraftPlayer) e.getPlayer()).getHandle();
 		if (getPlayers().contains(player) && (itemCondition == null || itemCondition.test(new Tuple<>(player.level(), newStack)))) {
-			ItemEnchantmentsMixin.mark(newStack.getEnchantments(), this);
+			mark(newStack.getEnchantments(), this);
 		}
 	}
 

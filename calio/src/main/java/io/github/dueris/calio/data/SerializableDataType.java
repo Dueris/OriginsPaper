@@ -62,7 +62,6 @@ public interface SerializableDataType<T> extends Codec<T> {
 					if (printJson) {
 						log.error("JsonElement : {}", object.toString());
 					}
-					throwable.printStackTrace();
 					return null;
 				}
 			}

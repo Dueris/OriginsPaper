@@ -1,7 +1,7 @@
 import java.util.*
 
 "originspaper".also { rootProject.name = it }
-for (name in listOf("origins", "calio", "mixin")) {
+for (name in listOf("origins", "calio")) {
     val projName = name.lowercase(Locale.ENGLISH)
     include(projName)
     findProject(":$projName")!!.projectDir = file(name)

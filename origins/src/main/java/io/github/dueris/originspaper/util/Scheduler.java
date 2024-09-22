@@ -5,7 +5,6 @@ import io.github.dueris.originspaper.event.OriginChoosePromptEvent;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.power.type.CreativeFlightPower;
-import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.screen.ScreenNavigator;
 import io.github.dueris.originspaper.storage.OriginComponent;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
@@ -47,7 +46,7 @@ public class Scheduler {
 		if (ScreenNavigator.layerPages.isEmpty()) return; // No pages to display.
 		for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
 			if (delayedPlayers.contains(p)) continue;
-			for (OriginLayer layer : ApoliRegistries.ORIGIN_LAYER.stream().filter(OriginLayer::isEnabled).toList()) {
+			for (OriginLayer layer : OriginLayer.REGISTRY.values().stream().filter(OriginLayer::isEnabled).toList()) {
 				if (layer.testChoosable(((CraftPlayer) p).getHandle()).isEmpty()) continue;
 				try {
 					if (OriginComponent.getOrigin(p, layer).getTag().equalsIgnoreCase("origins:empty")) {
@@ -87,7 +86,7 @@ public class Scheduler {
 			}
 		}
 
-		for (PowerType power : ApoliRegistries.POWER) {
+		for (PowerType power : PowerType.REGISTRY.values()) {
 			power.tick();
 			for (Player p : power.getPlayers()) {
 				try {

@@ -13,11 +13,16 @@ public class DependencyLoader implements PluginLoader {
 	@Override
 	public void classloader(@NotNull PluginClasspathBuilder classpathBuilder) {
 		MavenLibraryResolver resolver = new MavenLibraryResolver();
-		resolver.addRepository(new Builder("inventivetalentDev", "default", "https://repo.inventivetalent.org/repository/public/").build());
-		resolver.addRepository(new Builder("paper", "default", "https://repo.papermc.io/repository/maven-public/").build());
-		resolver.addRepository(new Builder("sonatype", "default", "https://oss.sonatype.org/content/groups/public/").build());
-		resolver.addRepository(new Builder("jitpack", "default", "https://jitpack.io").build());
-		resolver.addRepository(new Builder("quilt", "default", "https://maven.quiltmc.org/repository/release/").build());
+
+		maven(resolver, "https://repo.papermc.io/repository/maven-public/");
+		maven(resolver, "https://oss.sonatype.org/content/groups/public/");
+		maven(resolver, "https://repo.opencollab.dev/main/");
+		maven(resolver, "https://repo.extendedclip.com/content/repositories/placeholderapi/");
+		maven(resolver, "https://repo.inventivetalent.org/repository/public/");
+		maven(resolver, "https://repo.codemc.org/repository/maven-releases/");
+		maven(resolver, "https://maven.quiltmc.org/repository/release/");
+		maven(resolver, "https://maven.fabricmc.net/");
+
 		resolver.addDependency(new Dependency(new DefaultArtifact("io.github.classgraph:classgraph:4.8.165"), null));
 		resolver.addDependency(new Dependency(new DefaultArtifact("org.reflections:reflections:0.9.12"), null));
 		resolver.addDependency(new Dependency(new DefaultArtifact("com.jeff-media:MorePersistentDataTypes:2.4.0"), null));
@@ -26,5 +31,9 @@ public class DependencyLoader implements PluginLoader {
 		resolver.addDependency(new Dependency(new DefaultArtifact("org.quiltmc.parsers:json:0.2.1"), null));
 		resolver.addDependency(new Dependency(new DefaultArtifact("org.quiltmc.parsers:gson:0.2.1"), null));
 		classpathBuilder.addLibrary(resolver);
+	}
+
+	private void maven(@NotNull MavenLibraryResolver resolver, String url) {
+		resolver.addRepository(new Builder(url.replace("https://", "").split("/")[0], "default", url).build());
 	}
 }

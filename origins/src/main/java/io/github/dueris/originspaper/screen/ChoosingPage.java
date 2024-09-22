@@ -3,8 +3,6 @@ package io.github.dueris.originspaper.screen;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.registry.ApoliRegistries;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.inventory.ItemStack;
@@ -16,7 +14,7 @@ import java.util.stream.Collectors;
 
 public interface ChoosingPage {
 	static void registerInstances() {
-		ApoliRegistries.ORIGIN_LAYER
+		OriginLayer.REGISTRY.values()
 			.stream()
 			.filter(OriginLayer::isEnabled)
 			.forEach(
@@ -45,11 +43,6 @@ public interface ChoosingPage {
 					ScreenNavigator.layerPages.get(layer).addAll(choosable.stream().map(OriginPage::new).toList());
 				}
 			);
-		ScreenNavigator.layerPages.values().forEach(list -> {
-			for (ChoosingPage page : list) {
-				Registry.register(ApoliRegistries.CHOOSING_PAGE, page.key(), page);
-			}
-		});
 	}
 
 	ItemStack[] createDisplay(Player var1, OriginLayer var2);

@@ -1,9 +1,9 @@
 package io.github.dueris.originspaper.power.type;
 
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -22,8 +22,8 @@ public class CreativeFlightPower extends PowerType {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("creative_flight"));
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("creative_flight"), PowerType.getFactory().getSerializableData());
 	}
 
 	public static void tickPlayer(@NotNull Player p, @Nullable CreativeFlightPower power) {

@@ -2,10 +2,10 @@ package io.github.dueris.originspaper.power.type;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import io.github.dueris.originspaper.util.NamedTickThreadFactory;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.ChatFormatting;
@@ -76,8 +76,8 @@ public class ModifyPlayerSpawnPower extends PowerType {
 		this.dimensionDistanceMultiplier = dimensionDistanceMultiplier;
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("modify_player_spawn"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("modify_player_spawn"), PowerType.getFactory().getSerializableData()
 			.add("dimension", SerializableDataTypes.DIMENSION)
 			.add("structure", SerializableDataTypes.registryKey(Registries.STRUCTURE), null)
 			.add("structure_tag", SerializableDataTypes.tag(Registries.STRUCTURE), null)
@@ -85,19 +85,35 @@ public class ModifyPlayerSpawnPower extends PowerType {
 			.add("biome_tag", SerializableDataTypes.BIOME_TAG, null)
 			.add("spawn_strategy", SerializableDataTypes.enumValue(SpawnStrategy.class), SpawnStrategy.DEFAULT)
 			.add("respawn_sound", SerializableDataTypes.SOUND_EVENT, null)
-			.add("dimension_distance_multiplier", SerializableDataTypes.FLOAT, 0F);
+			.add("dimension_distance_multiplier", SerializableDataTypes.FLOAT, 0F));
+	}
+
+	public int getPriority() {
+		return 0;
 	}
 
 	@EventHandler
 	public void onRespawn(@NotNull PlayerPostRespawnEvent e) {
 		Player player = ((CraftPlayer) e.getPlayer()).getHandle();
 
-		if (getPlayers().contains(player) && isActive(player) && player.getBukkitEntity().getPotentialBedLocation() == null) {
-			teleportToModifiedSpawn(player);
-			if (respawnSound != null) {
-				player.level().playSound(null, player.getX(), player.getY(), player.getZ(), respawnSound, player.getSoundSource(), 1.0F, 1.0F);
-			}
+		if (respawnSound != null) {
+			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), respawnSound, player.getSoundSource(), 1.0F, 1.0F);
 		}
+	}
+
+	@Override
+	public void onRemoved(Player player) {
+		if (!(player instanceof ServerPlayer serverPlayer)) {
+			return;
+		}
+
+		if (!serverPlayer.hasDisconnected() && serverPlayer.getRespawnPosition() != null && !serverPlayer.isRespawnForced()) {
+			serverPlayer.setRespawnPosition(Level.OVERWORLD, null, 0F, false, false);
+		}
+	}
+
+	public ResourceKey<Level> getDimensionKey() {
+		return dimensionKey;
 	}
 
 	public void teleportToModifiedSpawn(Entity entity) {

@@ -18,7 +18,6 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.power.factory.PowerType;
-import io.github.dueris.originspaper.registry.ApoliRegistries;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntLists;
@@ -292,18 +291,6 @@ public class Util {
 		List<T> lC = new LinkedList<>();
 		collection.forEach(lC::addAll);
 		return Collections.unmodifiableList(lC);
-	}
-
-	public static void unfreezeUntil(Registry<?> @NotNull [] registries, Runnable runnable) {
-		for (Registry<?> registry : registries) {
-			ApoliRegistries.unfreeze(registry);
-		}
-
-		runnable.run();
-
-		for (Registry<?> registry : registries) {
-			registry.freeze();
-		}
 	}
 
 	@Contract(value = "_, !null -> !null", pure = true)

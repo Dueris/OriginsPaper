@@ -5,14 +5,15 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.util.ReflectionUtils;
 import io.github.dueris.calio.util.annotations.SourceProvider;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.util.ComponentUtil;
 import io.github.dueris.originspaper.util.LangFile;
 import net.kyori.adventure.text.TextComponent;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -23,12 +24,16 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PowerType implements Listener {
+	public static Map<ResourceLocation, PowerType> REGISTRY;
 	static Map<ResourceLocation, Class<? extends PowerType>> type2Class = new HashMap<>();
 	private final ResourceLocation key;
 	private final @NotNull TextComponent name;
@@ -57,57 +62,58 @@ public class PowerType implements Listener {
 		this.hidden = hidden;
 		this.condition = condition;
 		this.loadingPriority = loadingPriority;
+
+		if (REGISTRY == null) {
+			REGISTRY = new ConcurrentHashMap<>();
+		}
+		REGISTRY.put(this.key, this);
 	}
 
-	public static SerializableData getFactory() {
-		return SerializableData.serializableData().typedRegistry(OriginsPaper.apoliIdentifier("simple"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("simple"), SerializableData.serializableData()
 			.add("type", SerializableDataTypes.IDENTIFIER)
 			.add("name", SerializableDataTypes.TEXT, null)
 			.add("description", SerializableDataTypes.TEXT, null)
 			.add("hidden", SerializableDataTypes.BOOLEAN, false)
 			.add("condition", ApoliDataTypes.ENTITY_CONDITION, null)
-			.add("loading_priority", SerializableDataTypes.INT, 0);
+			.add("loading_priority", SerializableDataTypes.INT, 0));
 	}
 
-	public static void registerAll() {
-		try {
-			ScanResult result = new ClassGraph().acceptPackages("io.github.dueris.originspaper.power.type").enableClassInfo().scan();
+	@SuppressWarnings("unchecked")
+	public static void register() {
+		List<Class<? extends PowerType>> powerTypeSubclasses = new ArrayList<>();
+		powerTypeSubclasses.add(PowerType.class);
 
-			try {
-				for (Class<PowerType> powerTypeClass : result.getSubclasses(PowerType.class)
-					.loadClasses(PowerType.class)
-					.stream()
-					.filter(clz -> !clz.isAnnotation() && !clz.isInterface() && !clz.isEnum())
-					.toList()) {
-					if (ReflectionUtils.hasMethod(powerTypeClass, "getFactory", true)) {
-						Method factory = powerTypeClass.getMethod("getFactory");
-						factory.setAccessible(true);
+		try (ScanResult scanResult = new ClassGraph()
+			.acceptPackages("io.github.dueris.originspaper.power.type")
+			.enableClassInfo()
+			.scan()) {
 
-						SerializableData data = (SerializableData) factory.invoke(null);
-						type2Class.put(data.typedInstance, powerTypeClass);
-					}
-				}
-			} catch (Throwable var5) {
-				if (result != null) {
+			scanResult.getSubclasses(PowerType.class.getName())
+				.forEach(classInfo -> {
 					try {
-						result.close();
-					} catch (Throwable var4) {
-						var5.addSuppressed(var4);
+						Class<?> clazz = Class.forName(classInfo.getName());
+						powerTypeSubclasses.add((Class<? extends PowerType>) clazz);
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
 					}
-				}
-
-				throw var5;
-			}
-
-			result.close();
-		} catch (Exception var6) {
-			OriginsPaper.LOGGER.warn("This would've been a zip error :P. Please tell us on discord if you see this ^-^");
+				});
 		}
 
+		for (Class<? extends PowerType> powerType : powerTypeSubclasses) {
+			try {
+				PowerTypeFactory factory = (PowerTypeFactory) powerType.getDeclaredMethod("getFactory").invoke(null);
+				register(factory, powerType);
+			} catch (NoSuchMethodException ignored) {
+			} catch (IllegalAccessException | InvocationTargetException e) {
+				throw new RuntimeException("Unable to invoke PowerTypeFactory for '{}'!".replace("{}", powerType.getName()), e);
+			}
+		}
 	}
 
-	public static void register(ResourceLocation type, Class<? extends PowerType> classType) {
-		PowerType.type2Class.put(type, classType);
+	private static void register(@NotNull PowerTypeFactory factory, Class<? extends PowerType> type) {
+		type2Class.put(factory.id, type);
+		Registry.register(ApoliRegistries.POWER_TYPE_FACTORY, factory.id, factory);
 	}
 
 	public ResourceLocation getId() {

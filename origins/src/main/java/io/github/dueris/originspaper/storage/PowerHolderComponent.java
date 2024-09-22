@@ -1,7 +1,5 @@
 package io.github.dueris.originspaper.storage;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import io.github.dueris.originspaper.data.types.modifier.ModifierUtil;
@@ -11,7 +9,6 @@ import io.github.dueris.originspaper.power.factory.PowerType;
 import io.github.dueris.originspaper.power.type.AttributeModifyTransferPower;
 import io.github.dueris.originspaper.power.type.ModifierPower;
 import io.github.dueris.originspaper.power.type.MultiplePower;
-import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.util.PowerUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,17 +26,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class PowerHolderComponent implements Listener {
-	public static final Codec<ResourceLocation> VALIDATING_CODEC = ResourceLocation.CODEC.comapFlatMap(
-		id -> ApoliRegistries.POWER.containsKey(id)
-			? DataResult.success(id)
-			: DataResult.error(() -> "Couldn't get power from ID \"" + id + "\", as it wasn't registered!"),
-		Function.identity()
-	);
 
 	private static ServerPlayer getNMS(Player player) {
 		return ((CraftPlayer) player).getHandle();

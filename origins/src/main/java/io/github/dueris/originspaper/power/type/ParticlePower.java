@@ -1,11 +1,11 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -48,8 +48,8 @@ public class ParticlePower extends PowerType {
 		this.visibleWhileInvisible = visibleWhileInvisible;
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("particle"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("particle"), PowerType.getFactory().getSerializableData()
 			.add("particle", SerializableDataTypes.PARTICLE_EFFECT_OR_TYPE)
 			.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
 			.add("count", SerializableDataTypes.INT, 1)
@@ -60,7 +60,7 @@ public class ParticlePower extends PowerType {
 			.add("offset_y", SerializableDataTypes.DOUBLE, 0.5D)
 			.add("offset_z", SerializableDataTypes.DOUBLE, 0.0D)
 			.add("frequency", SerializableDataTypes.POSITIVE_INT)
-			.add("visible_while_invisible", SerializableDataTypes.BOOLEAN, false);
+			.add("visible_while_invisible", SerializableDataTypes.BOOLEAN, false));
 	}
 
 	@Override

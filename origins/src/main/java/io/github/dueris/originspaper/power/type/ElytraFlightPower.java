@@ -1,10 +1,10 @@
 package io.github.dueris.originspaper.power.type;
 
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.event.PowerUpdateEvent;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import net.minecraft.core.BlockPos;
@@ -43,8 +43,8 @@ public class ElytraFlightPower extends PowerType {
 		super(key, type, name, description, hidden, condition, loadingPriority);
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("elytra_flight"));
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("elytra_flight"), PowerType.getFactory().getSerializableData());
 	}
 
 	public LinkedList<UUID> getGlidingPlayers() {

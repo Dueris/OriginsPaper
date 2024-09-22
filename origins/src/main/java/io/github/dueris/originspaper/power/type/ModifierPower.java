@@ -1,9 +1,9 @@
 package io.github.dueris.originspaper.power.type;
 
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.types.modifier.Modifier;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -27,10 +27,10 @@ public class ModifierPower extends PowerType {
 		}
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory()
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(null, PowerType.getFactory().getSerializableData()
 			.add("modifier", Modifier.DATA_TYPE, null)
-			.add("modifiers", Modifier.LIST_TYPE, null);
+			.add("modifiers", Modifier.LIST_TYPE, null));
 	}
 
 	public void addModifier(Modifier modifier) {

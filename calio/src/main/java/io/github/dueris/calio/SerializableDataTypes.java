@@ -41,7 +41,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.StatType;
@@ -80,7 +79,6 @@ import net.minecraft.world.level.material.FogType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
@@ -246,7 +244,7 @@ public class SerializableDataTypes {
 				if (object.has("item")) {
 					entries.add(
 						new Ingredient.ItemValue(
-							MinecraftServer.getServer().registryAccess().registry(Registries.ITEM).get()
+							CraftCalio.registryAccess().registry(Registries.ITEM).get()
 								.get(ResourceLocation.parse(object.get("item").getAsString()))
 								.getDefaultInstance()
 						)

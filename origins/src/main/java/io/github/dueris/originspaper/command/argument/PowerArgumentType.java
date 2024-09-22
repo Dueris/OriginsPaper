@@ -7,8 +7,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import io.github.dueris.calio.util.holder.ObjectProvider;
 import io.github.dueris.originspaper.power.factory.PowerType;
-import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.CustomArgumentType;
@@ -35,9 +35,12 @@ public class PowerArgumentType implements CustomArgumentType<PowerType, Namespac
 
 	public PowerType parse(StringReader reader) throws CommandSyntaxException {
 		ResourceLocation id = ResourceLocation.readNonEmpty(reader);
-		return ApoliRegistries.POWER.getOptional(id).orElseThrow(() -> {
-			return POWER_NOT_FOUND.create(id);
-		});
+		return !PowerType.REGISTRY.containsKey(id) ? new ObjectProvider<>() {
+			@Override
+			public PowerType get() {
+				throw new RuntimeException(POWER_NOT_FOUND.create(id));
+			}
+		}.get() : PowerType.REGISTRY.get(id);
 	}
 
 	@Override
@@ -47,6 +50,6 @@ public class PowerArgumentType implements CustomArgumentType<PowerType, Namespac
 
 	@Override
 	public @NotNull CompletableFuture<Suggestions> listSuggestions(@NotNull CommandContext context, @NotNull SuggestionsBuilder builder) {
-		return SharedSuggestionProvider.suggestResource(ApoliRegistries.POWER.keySet().stream(), builder);
+		return SharedSuggestionProvider.suggestResource(PowerType.REGISTRY.keySet().stream(), builder);
 	}
 }

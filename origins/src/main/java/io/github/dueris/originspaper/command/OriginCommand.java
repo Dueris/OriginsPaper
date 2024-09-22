@@ -7,7 +7,6 @@ import io.github.dueris.originspaper.command.argument.LayerArgumentType;
 import io.github.dueris.originspaper.command.argument.OriginArgumentType;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.storage.OriginComponent;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import io.github.dueris.originspaper.util.LangFile;
@@ -270,7 +269,7 @@ public class OriginCommand {
 
 		net.minecraft.commands.CommandSourceStack serverCommandSource = (net.minecraft.commands.CommandSourceStack) commandContext.getSource();
 		List<ServerPlayer> targets = new LinkedList<>();
-		List<OriginLayer> originLayers = ApoliRegistries.ORIGIN_LAYER.stream().filter(OriginLayer::isRandomAllowed).toList();
+		List<OriginLayer> originLayers = OriginLayer.REGISTRY.values().stream().filter(OriginLayer::isRandomAllowed).toList();
 
 		switch (targetType) {
 			case INVOKER -> targets.add(serverCommandSource.getPlayerOrException());

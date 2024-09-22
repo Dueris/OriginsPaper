@@ -5,7 +5,6 @@ import io.github.dueris.originspaper.content.OrbOfOrigins;
 import io.github.dueris.originspaper.event.OrbInteractEvent;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.storage.OriginComponent;
 import io.github.dueris.originspaper.storage.OriginConfiguration;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
@@ -195,7 +194,7 @@ public class ScreenNavigator implements Listener {
 						if (!((CraftPlayer) p).getHandle().getAbilities().instabuild) {
 							Util.consumeItem(e.getItem());
 						}
-						for (OriginLayer layer : ApoliRegistries.ORIGIN_LAYER) {
+						for (OriginLayer layer : OriginLayer.REGISTRY.values()) {
 							PowerHolderComponent.unloadPowers(p, layer.getId(), true);
 							OriginComponent.setOrigin(p, layer, Origin.EMPTY);
 						}

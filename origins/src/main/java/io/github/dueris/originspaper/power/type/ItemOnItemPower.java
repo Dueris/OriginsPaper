@@ -1,12 +1,12 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -51,8 +51,8 @@ public class ItemOnItemPower extends PowerType {
 		this.resultFromOnStack = resultFromOnStack;
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("item_on_item"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("item_on_item"), PowerType.getFactory().getSerializableData()
 			.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
 			.add("using_item_action", ApoliDataTypes.ITEM_ACTION, null)
 			.add("on_item_action", ApoliDataTypes.ITEM_ACTION, null)
@@ -60,7 +60,7 @@ public class ItemOnItemPower extends PowerType {
 			.add("using_item_condition", ApoliDataTypes.ITEM_CONDITION, null)
 			.add("on_item_condition", ApoliDataTypes.ITEM_CONDITION, null)
 			.add("result", SerializableDataTypes.ITEM_STACK, null)
-			.add("result_from_on_stack", SerializableDataTypes.INT, 0);
+			.add("result_from_on_stack", SerializableDataTypes.INT, 0));
 	}
 
 	public boolean doesApply(ItemStack usingStack, ItemStack onStack, Entity entity) {

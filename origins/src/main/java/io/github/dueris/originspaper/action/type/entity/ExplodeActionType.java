@@ -39,7 +39,7 @@ public class ExplodeActionType {
 			pos.z(),
 			power,
 			createFire,
-			destructionType,
+			destructionType == null ? Explosion.BlockInteraction.DESTROY : destructionType,
 			Util.getExplosionBehavior(world, indestructibleResistance, indestructibleCondition)
 		);
 

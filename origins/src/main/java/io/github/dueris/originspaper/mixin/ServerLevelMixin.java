@@ -1,30 +1,31 @@
 package io.github.dueris.originspaper.mixin;
 
-import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import io.github.dueris.originspaper.power.type.PreventGameEventPower;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gameevent.GameEventDispatcher;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ServerLevel.class)
 public class ServerLevelMixin {
 
-	@Inject(method = "gameEvent", locator = At.Value.HEAD)
-	public static void apoli$preventGameEvent(ServerLevel level, Holder<GameEvent> event, Vec3 emitterPos, GameEvent.@NotNull Context emitter, CallbackInfo info) {
-		if (emitter.sourceEntity() != null &&
-			PowerHolderComponent.doesHaveConditionedPower(emitter.sourceEntity().getBukkitEntity(), PreventGameEventPower.class, p -> {
-				boolean cancel = false;
-				if (p.doesPrevent(event)) {
-					p.executeAction(emitter.sourceEntity());
-					cancel = true;
-				}
-				return cancel;
-			})) {
-			info.setReturned(true);
-			info.setReturnValue(false);
+	@WrapWithCondition(method = "gameEvent", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/gameevent/GameEventDispatcher;post(Lnet/minecraft/core/Holder;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/level/gameevent/GameEvent$Context;)V"))
+	private boolean apoli$prevenGameEvent(GameEventDispatcher instance, Holder<GameEvent> event, Vec3 i2, GameEvent.@NotNull Context emitter) {
+		if (emitter.sourceEntity() == null) return true;
+
+		boolean a = false;
+		for (PreventGameEventPower power : PowerHolderComponent.gatherConditionedPowers(emitter.sourceEntity().getBukkitEntity(), PreventGameEventPower.class, p -> p.doesPrevent(event))) {
+			a = true;
+
+			power.executeAction(emitter.sourceEntity());
 		}
+
+		return emitter.sourceEntity() == null || !a;
 	}
 }

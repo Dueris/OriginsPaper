@@ -9,7 +9,6 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.util.LangFile;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
@@ -31,7 +30,7 @@ public class LayerArgumentType implements CustomArgumentType<OriginLayer, Namesp
 		return new LayerArgumentType();
 	}
 
-	public static OriginLayer getLayer(CommandContext<CommandSourceStack> context, String argumentName) throws CommandSyntaxException {
+	public static OriginLayer getLayer(@NotNull CommandContext<CommandSourceStack> context, String argumentName) throws CommandSyntaxException {
 
 		try {
 			return context.getArgument(argumentName, OriginLayer.class);
@@ -53,7 +52,7 @@ public class LayerArgumentType implements CustomArgumentType<OriginLayer, Namesp
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		return SharedSuggestionProvider.suggestResource(ApoliRegistries.ORIGIN_LAYER.stream().filter(OriginLayer::isEnabled).map(OriginLayer::getId), builder);
+		return SharedSuggestionProvider.suggestResource(OriginLayer.REGISTRY.values().stream().filter(OriginLayer::isEnabled).map(OriginLayer::getId), builder);
 	}
 
 }

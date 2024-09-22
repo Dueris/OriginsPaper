@@ -8,7 +8,7 @@ import java.util.Locale;
 
 public final class ModifierOperations {
 
-	public static void registerAll() {
+	public static void register() {
 		for (ModifierOperation operation : ModifierOperation.values()) {
 			Registry.register(ApoliRegistries.MODIFIER_OPERATION, OriginsPaper.apoliIdentifier(operation.toString().toLowerCase(Locale.ROOT)), operation);
 		}

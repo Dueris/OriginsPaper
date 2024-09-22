@@ -1,10 +1,10 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -21,10 +21,10 @@ public class BurnPower extends PowerType {
 		this.burnDuration = burnDuration;
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("burn"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("burn"), PowerType.getFactory().getSerializableData()
 			.add("interval", SerializableDataTypes.POSITIVE_INT)
-			.add("burn_duration", SerializableDataTypes.POSITIVE_INT);
+			.add("burn_duration", SerializableDataTypes.POSITIVE_INT));
 	}
 
 	@Override

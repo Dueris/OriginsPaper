@@ -1,10 +1,10 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -34,15 +34,15 @@ public class EffectImmunityPower extends PowerType {
 		}
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("effect_immunity"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("effect_immunity"), PowerType.getFactory().getSerializableData()
 			.add("effect", SerializableDataTypes.STATUS_EFFECT_ENTRY, null)
 			.add("effects", SerializableDataTypes.list(SerializableDataTypes.STATUS_EFFECT_ENTRY), null)
-			.add("inverted", SerializableDataTypes.BOOLEAN, false);
+			.add("inverted", SerializableDataTypes.BOOLEAN, false));
 	}
 
-	public boolean doesApply(MobEffectInstance instance) {
-		return doesApply(instance.getEffect());
+	public boolean doesApply(MobEffectInstance instance, Entity entity) {
+		return doesApply(instance.getEffect()) && isActive(entity);
 	}
 
 	public boolean doesApply(Holder<MobEffect> effect) {

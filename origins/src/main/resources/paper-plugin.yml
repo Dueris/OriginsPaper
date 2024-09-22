@@ -4,15 +4,13 @@ load: POSTWORLD
 name: "OriginsPaper"
 main: "io.github.dueris.originspaper.plugin.OriginsPlugin"
 authors: [ Dueris ]
+
+provides: [ Eclipse ]
+
 folia-supported: false
+has-open-classloader: false
 description: "A port of the Origins mod to PaperMC servers with Custom Origins support"
 website: "https://ko-fi.com/dueris"
-dependencies:
-  server:
-    SkinsRestorer:
-      load: BEFORE
-      required: false
-
 supported: ${supported}
 minecraft: ${mcVer}
 plugin: ${pluginVer}

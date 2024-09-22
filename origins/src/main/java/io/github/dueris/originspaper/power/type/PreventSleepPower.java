@@ -1,11 +1,11 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.power.factory.PowerType;
+import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -27,16 +27,16 @@ public class PreventSleepPower extends PowerType {
 		this.setSpawnPoint = setSpawnPoint;
 	}
 
-	public static SerializableData getFactory() {
-		return PowerType.getFactory().typedRegistry(OriginsPaper.apoliIdentifier("prevent_sleep"))
+	public static @NotNull PowerTypeFactory getFactory() {
+		return new PowerTypeFactory(OriginsPaper.apoliIdentifier("prevent_sleep"), PowerType.getFactory().getSerializableData()
 			.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
 			.add("message", ApoliDataTypes.DEFAULT_TRANSLATABLE_TEXT, Component.literal("You cannot sleep"))
-			.add("set_spawn_point", SerializableDataTypes.BOOLEAN, false);
+			.add("set_spawn_point", SerializableDataTypes.BOOLEAN, false));
 	}
 
-	public boolean doesPrevent(LevelReader world, BlockPos pos) {
-		return blockCondition == null
-			|| blockCondition.test(new BlockInWorld(world, pos, true));
+	public boolean doesPrevent(LevelReader world, BlockPos pos, Entity entity) {
+		return isActive(entity) && (blockCondition == null
+			|| blockCondition.test(new BlockInWorld(world, pos, true)));
 	}
 
 	public Component getMessage() {

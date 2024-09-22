@@ -1,6 +1,7 @@
 package io.github.dueris.originspaper.mixin;
 
-import com.dragoncommissions.mixbukkit.api.shellcode.impl.api.CallbackInfo;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.dueris.originspaper.power.type.ModifyBreakSpeedPower;
 import io.github.dueris.originspaper.power.type.ModifyHarvestPower;
 import io.github.dueris.originspaper.storage.PowerHolderComponent;
@@ -10,36 +11,41 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.concurrent.atomic.AtomicBoolean;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(BlockBehaviour.class)
 public class BlockBehaviorMixin {
 
-	@Inject(method = "getDestroyProgress", locator = At.Value.HEAD)
-	public static void apoli$modifyBlockSpeed(BlockBehaviour behaviour, @NotNull BlockState state, Player player, BlockGetter world, BlockPos pos, CallbackInfo info) {
-		float f = modifyBreakSpeed(player, pos, state.getDestroySpeed(world, pos), true);
-
-		if (f == -1.0F) {
-			info.setReturnValue(modifyBreakSpeed(player, pos, 0.0F, false));
-			info.setReturned(true);
-		} else {
-			AtomicBoolean modifyHarvest = new AtomicBoolean(false);
-			PowerHolderComponent.getPowers(player.getBukkitEntity(), ModifyHarvestPower.class).stream()
-				.filter(modifyHarvestPower -> modifyHarvestPower.doesApply(pos, player))
-				.map(ModifyHarvestPower::isHarvestAllowed).forEach(modifyHarvest::set);
-			int i = (modifyHarvest.get() || player.hasCorrectToolForDrops(state)) ? 30 : 100;
-
-			info.setReturnValue(modifyBreakSpeed(player, pos, player.getDestroySpeed(state) / f / (float) i, false));
-			info.setReturned(true);
-		}
+	@ModifyExpressionValue(method = "getDestroyProgress", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;hasCorrectToolForDrops(Lnet/minecraft/world/level/block/state/BlockState;)Z"))
+	private boolean apoli$modifyEffectiveTool(boolean original, BlockState state, @NotNull Player player, BlockGetter world, BlockPos pos) {
+		return PowerHolderComponent.getPowers(player.getBukkitEntity(), ModifyHarvestPower.class).stream()
+			.filter(mhp -> mhp.doesApply(pos, player))
+			.max(ModifyHarvestPower::compareTo)
+			.map(ModifyHarvestPower::isHarvestAllowed)
+			.orElse(original);
 	}
 
-	private static float modifyBreakSpeed(@NotNull Player player, BlockPos pos, float original, boolean hardness) {
+	@ModifyExpressionValue(method = "getDestroyProgress", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getDestroySpeed(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)F"))
+	private float apoli$modifyBlockHardness(float original, BlockState state, @NotNull Player player, BlockGetter world, BlockPos pos) {
+
 		for (ModifyBreakSpeedPower power : PowerHolderComponent.getPowers(player.getBukkitEntity(), ModifyBreakSpeedPower.class)) {
-			power.applyPower(pos, player, hardness);
+			power.applyPower(pos, player, true);
 		}
 
 		return original;
+
 	}
+
+	@ModifyReturnValue(method = "getDestroyProgress", at = @At("RETURN"))
+	private float apoli$modifyBlockSpeed(float original, BlockState state, @NotNull Player player, BlockGetter world, BlockPos pos) {
+
+		for (ModifyBreakSpeedPower power : PowerHolderComponent.getPowers(player.getBukkitEntity(), ModifyBreakSpeedPower.class)) {
+			power.applyPower(pos, player, false);
+		}
+
+		return original;
+
+	}
+
 }
