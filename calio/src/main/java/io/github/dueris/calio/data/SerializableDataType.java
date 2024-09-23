@@ -23,6 +23,7 @@ import static io.github.dueris.calio.parser.CalioParser.LOGGER;
  * The builder for parsing JsonElements -> Java objects
  * Upon deserializing, if a null value is provided, it will not parse. It WILL return null.
  */
+// TODO - SHARE RESOURCELOCATION OF THE DATA BEING PARSED ? - Dueris
 public interface SerializableDataType<T> extends Codec<T> {
 	DynamicOps<JsonElement> JSON_OPS = JsonOps.INSTANCE;
 	Logger log = LogManager.getLogger("SerializableDataBuilder");
@@ -56,13 +57,13 @@ public interface SerializableDataType<T> extends Codec<T> {
 			public T deserialize(@Nullable JsonElement object) {
 				if (object == null) return null;
 				try {
-					return deserialize.apply(object);
-				} catch (Throwable throwable) {
-					log.error("Unable to build datatype '{}' because: [ {} ]", type.getSimpleName(), throwable.getClass().getSimpleName() + " :: " + throwable.getMessage());
-					if (printJson) {
-						log.error("JsonElement : {}", object.toString());
+					T dataResult = deserialize.apply(object);
+					if (dataResult == null) {
+						return SerializableDataType.returnNullThr(type, new Throwable(), printJson, object);
 					}
-					return null;
+					return dataResult;
+				} catch (Throwable throwable) {
+					return SerializableDataType.returnNullThr(type, throwable, printJson, object);
 				}
 			}
 
@@ -73,6 +74,14 @@ public interface SerializableDataType<T> extends Codec<T> {
 				return DataResult.success(Pair.of(output, input));
 			}
 		};
+	}
+
+	private static @Nullable <E> E returnNullThr(@NotNull Class<?> type, @NotNull Throwable throwable, boolean printJson, JsonElement jsonElement) {
+		log.error("Unable to build datatype '{}' because: [ {} ]", type.getSimpleName(), throwable.getClass().getSimpleName() + " :: " + throwable.getMessage());
+		if (printJson) {
+			log.error("JsonElement : {}", jsonElement.toString());
+		}
+		return null;
 	}
 
 	static <A> @NotNull Codec<A> of(final Encoder<A> encoder, final Decoder<A> decoder, final String name, Class<?> type) {
@@ -100,7 +109,7 @@ public interface SerializableDataType<T> extends Codec<T> {
 		};
 	}
 
-	static @Nullable SerializableData.Instance compound(@NotNull SerializableData definer, JsonObject object, @NotNull Class<?> classType) {
+	static @Nullable SerializableData.Instance strictCompound(@NotNull SerializableData definer, JsonObject object, @NotNull Class<?> classType) {
 		HashMap<String, Object> backend = new LinkedHashMap<>();
 		AtomicBoolean failed = new AtomicBoolean(false);
 
@@ -142,11 +151,11 @@ public interface SerializableDataType<T> extends Codec<T> {
 		return instance;
 	}
 
-	static @NotNull <T> SerializableDataType<T> compound(SerializableData definer, Function<SerializableData.Instance, T> fromData, Class<?> classType) {
+	static @NotNull <T> SerializableDataType<T> strictCompound(SerializableData definer, Function<SerializableData.Instance, T> fromData, Class<?> classType) {
 		return SerializableDataType.of(
 			(jsonElement) -> {
 				if (!(jsonElement instanceof JsonObject jo)) throw new JsonSyntaxException("Expected JsonObject");
-				SerializableData.Instance compound = compound(definer, jo, classType);
+				SerializableData.Instance compound = strictCompound(definer, jo, classType);
 				return fromData.apply(compound);
 			}, classType
 		);

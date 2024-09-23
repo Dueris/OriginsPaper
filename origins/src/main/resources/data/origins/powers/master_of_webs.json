@@ -36,7 +36,7 @@
 	"climbing": {
 		"type": "origins:climbing",
 		"condition": {
-			"type": "origins:and",
+			"type": "origins:all_of",
 			"conditions": [
 				{
 					"type": "origins:in_block_anywhere",
@@ -52,7 +52,7 @@
 			]
 		},
 		"hold_condition": {
-			"type": "origins:and",
+			"type": "origins:all_of",
 			"conditions": [
 				{
 					"type": "origins:power_active",
@@ -79,7 +79,7 @@
 	"sense": {
 		"type": "origins:entity_glow",
 		"entity_condition": {
-			"type": "origins:and",
+			"type": "origins:all_of",
 			"conditions": [
 				{
 					"type": "origins:in_block_anywhere",

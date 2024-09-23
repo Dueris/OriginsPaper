@@ -12,7 +12,7 @@
 		"type": "origins:night_vision",
 		"strength": 1.0,
 		"condition": {
-			"type": "origins:and",
+			"type": "origins:all_of",
 			"conditions": [
 				{
 					"type": "origins:power_active",

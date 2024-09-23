@@ -7,7 +7,7 @@ import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
-public class ChanceConditionType {
+public class RandomChanceConditionType {
 
 	public static boolean condition(float chance) {
 		return RandomSource.create().nextFloat() < chance;
@@ -15,7 +15,7 @@ public class ChanceConditionType {
 
 	public static <T> @NotNull ConditionTypeFactory<T> getFactory() {
 		return new ConditionTypeFactory<>(
-			OriginsPaper.apoliIdentifier("chance"),
+			OriginsPaper.apoliIdentifier("random_chance"),
 			new SerializableData()
 				.add("chance", SerializableDataTypes.FLOAT),
 			(data, type) -> condition(

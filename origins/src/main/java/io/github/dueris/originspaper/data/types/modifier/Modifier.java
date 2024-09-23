@@ -29,7 +29,7 @@ public class Modifier implements Comparable<Modifier> {
 			try {
 
 				IModifierOperation operation = IModifierOperation.DATA_TYPE.deserialize(jsonObject.get("operation"));
-				SerializableData.Instance data = SerializableDataType.compound(operation.getData(), jsonObject, Modifier.class);
+				SerializableData.Instance data = SerializableDataType.strictCompound(operation.getData(), jsonObject, Modifier.class);
 
 				return new Modifier(operation, data);
 

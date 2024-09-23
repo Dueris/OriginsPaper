@@ -23,7 +23,7 @@ public class SpawnParticlesActionType {
 			return;
 		}
 
-		Vec3 delta = spread.multiply(entity.getBbWidth(), entity.getBoundingBox().maxY, entity.getBbWidth());
+		Vec3 delta = spread.multiply(entity.getBbWidth(), entity.getBbHeight(), entity.getBbWidth());
 		Vec3 pos = entity.position().add(offset);
 
 		for (ServerPlayer player : serverWorld.players()) {

@@ -3,10 +3,10 @@
 	"velocity": 0.01,
 	"take_fall_damage": false,
 	"condition": {
-		"type": "origins:or",
+		"type": "origins:any_of",
 		"conditions": [
 			{
-				"type": "origins:and",
+				"type": "origins:all_of",
 				"conditions": [
 					{
 						"type": "origins:sneaking"
@@ -17,7 +17,7 @@
 				]
 			},
 			{
-				"type": "origins:and",
+				"type": "origins:all_of",
 				"conditions": [
 					{
 						"type": "origins:sneaking",

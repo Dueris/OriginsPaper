@@ -34,7 +34,7 @@ public class PowerTypeFactory implements Factory {
 				factoryMethod.setAccessible(true);
 
 				PowerTypeFactory data = (PowerTypeFactory) factoryMethod.invoke(null);
-				SerializableData.Instance compound = SerializableDataType.compound(data.serializableData, jo, powerClass);
+				SerializableData.Instance compound = SerializableDataType.strictCompound(data.serializableData, jo, powerClass);
 				if (compound != null) {
 					Constructor<PowerType> parsedConstructor = (Constructor<PowerType>) Util.generateConstructor(powerClass, data.serializableData);
 					return new RootResult<>(parsedConstructor, compound, PowerType::onBootstrap);

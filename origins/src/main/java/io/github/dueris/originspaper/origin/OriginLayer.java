@@ -38,7 +38,7 @@ public class OriginLayer {
 			}
 
 			try {
-				SerializableData.Instance compound = SerializableDataType.compound(getFactory(), jo, OriginLayer.class);
+				SerializableData.Instance compound = SerializableDataType.strictCompound(getFactory(), jo, OriginLayer.class);
 				return new RootResult<>(
 					io.github.dueris.calio.util.Util.generateConstructor(OriginLayer.class, getFactory()), compound, (oL) -> {
 				}

@@ -35,7 +35,7 @@ public class OriginsDataTypes {
 		(jsonElement) -> {
 			if (!(jsonElement instanceof JsonObject jo))
 				throw new JsonSyntaxException("Expected JsonObject for GuiTitle!");
-			SerializableData.Instance data = SerializableDataType.compound(GuiTitle.DATA, jo, GuiTitle.class);
+			SerializableData.Instance data = SerializableDataType.strictCompound(GuiTitle.DATA, jo, GuiTitle.class);
 
 			Component viewOriginTitle = SerializableDataTypes.TEXT.deserialize(jo.get("view_origin"));
 			Component chooseOriginTitle = SerializableDataTypes.TEXT.deserialize(jo.get("choose_origin"));
@@ -47,7 +47,7 @@ public class OriginsDataTypes {
 	public static final SerializableDataType<OriginLayer.ConditionedOrigin> CONDITIONED_ORIGIN = SerializableDataType.of(
 		(jsonElement) -> {
 			if (jsonElement instanceof JsonObject jsonObject && !jsonObject.isEmpty()) {
-				SerializableData.Instance factoryJson = SerializableDataType.compound(OriginLayer.ConditionedOrigin.DATA, jsonObject, OriginLayer.ConditionedOrigin.class);
+				SerializableData.Instance factoryJson = SerializableDataType.strictCompound(OriginLayer.ConditionedOrigin.DATA, jsonObject, OriginLayer.ConditionedOrigin.class);
 				return new OriginLayer.ConditionedOrigin(factoryJson.get("condition"), factoryJson.get("origins"));
 			} else throw new JsonSyntaxException("Expected JsonObject for ConditionedOrigin!");
 		}, OriginLayer.ConditionedOrigin.class

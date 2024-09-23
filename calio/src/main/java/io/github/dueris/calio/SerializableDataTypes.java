@@ -207,7 +207,7 @@ public class SerializableDataTypes {
 		(jsonElement) -> {
 			if (!(jsonElement instanceof JsonObject jo))
 				throw new JsonSyntaxException("StatusEffectInstance should be a JsonObject!");
-			SerializableData.Instance data = SerializableDataType.compound(
+			SerializableData.Instance data = SerializableDataType.strictCompound(
 				SerializableData.serializableData()
 					.add("id", STATUS_EFFECT_ENTRY)
 					.add("duration", INT, 100)
@@ -360,12 +360,12 @@ public class SerializableDataTypes {
 		(jsonElement) -> {
 			if (!(jsonElement instanceof JsonObject jo))
 				throw new JsonSyntaxException("Food Properties should be a JsonObject!");
-			SerializableData.Instance data = SerializableDataType.compound(
+			SerializableData.Instance data = SerializableDataType.strictCompound(
 				SerializableData.serializableData()
 					.add("nutrition", NON_NEGATIVE_INT)
 					.add("saturation", FLOAT)
 					.add("can_always_eat", BOOLEAN, false)
-					.add("eat_seconds", POSITIVE_FLOAT, 1.6F)
+					.add("eat_seconds", NON_NEGATIVE_FLOAT, 1.6F)
 					.addSupplied("using_converts_to", optional(UNCOUNTED_ITEM_STACK), Optional::empty)
 					.add("effect", FOOD_STATUS_EFFECT_ENTRY, null)
 					.add("effects", FOOD_STATUS_EFFECT_ENTRIES, null),

@@ -39,7 +39,7 @@ public class Origin {
 			}
 
 			try {
-				SerializableData.Instance compound = SerializableDataType.compound(getFactory(), jo, Origin.class);
+				SerializableData.Instance compound = SerializableDataType.strictCompound(getFactory(), jo, Origin.class);
 				return new RootResult<>(
 					Util.generateConstructor(Origin.class, getFactory()), compound, (o) -> {
 				}

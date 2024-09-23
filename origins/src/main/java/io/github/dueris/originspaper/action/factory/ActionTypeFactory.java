@@ -44,7 +44,7 @@ public class ActionTypeFactory<T> implements Factory, Consumer<T> {
 	}
 
 	public ActionTypeFactory<T> decompile(JsonObject object) {
-		this.deserializedFactory = SerializableDataType.compound(data, object, this.getClass());
+		this.deserializedFactory = SerializableDataType.strictCompound(data, object, this.getClass());
 		if (data.postProcessor != null) {
 			data.postProcessor.accept(deserializedFactory);
 		}

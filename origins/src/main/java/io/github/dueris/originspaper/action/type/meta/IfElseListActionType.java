@@ -31,7 +31,7 @@ public class IfElseListActionType {
 	}
 
 	public static <T, U> @NotNull ActionTypeFactory<T> getFactory(SerializableDataType<ActionTypeFactory<T>> actionDataType, SerializableDataType<ConditionTypeFactory<U>> conditionDataType, Function<T, U> actionToConditionTypeFunction) {
-		SerializableDataType<Tuple<ActionTypeFactory<T>, ConditionTypeFactory<T>>> dataType = SerializableDataType.compound(
+		SerializableDataType<Tuple<ActionTypeFactory<T>, ConditionTypeFactory<T>>> dataType = SerializableDataType.strictCompound(
 			new SerializableData()
 				.add("action", actionDataType)
 				.add("condition", conditionDataType),

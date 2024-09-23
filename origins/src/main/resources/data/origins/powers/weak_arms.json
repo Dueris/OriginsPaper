@@ -5,7 +5,7 @@
 		"operation": "multiply_total_multiplicative"
 	},
 	"block_condition": {
-		"type": "origins:and",
+		"type": "origins:all_of",
 		"conditions": [
 			{
 				"type": "origins:in_tag",

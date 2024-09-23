@@ -49,7 +49,7 @@ public class ConditionTypeFactory<T> implements Factory, Predicate<T> {
 	}
 
 	public ConditionTypeFactory<T> decompile(JsonObject object) {
-		this.deserializedFactory = SerializableDataType.compound(data, object, this.getClass());
+		this.deserializedFactory = SerializableDataType.strictCompound(data, object, this.getClass());
 		if (data.postProcessor != null) {
 			data.postProcessor.accept(deserializedFactory);
 		}

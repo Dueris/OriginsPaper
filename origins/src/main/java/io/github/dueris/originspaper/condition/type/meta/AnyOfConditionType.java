@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.function.Predicate;
 
-public class OrConditionType {
+public class AnyOfConditionType {
 
 	public static <T> boolean condition(T type, @NotNull Collection<Predicate<T>> conditions) {
 		return conditions
@@ -19,7 +19,7 @@ public class OrConditionType {
 
 	public static <T> @NotNull ConditionTypeFactory<T> getFactory(@NotNull SerializableDataType<ConditionTypeFactory<T>> conditionDataType) {
 		return new ConditionTypeFactory<>(
-			OriginsPaper.apoliIdentifier("or"),
+			OriginsPaper.apoliIdentifier("any_of"),
 			new SerializableData()
 				.add("conditions", SerializableDataType.of(conditionDataType.listOf())),
 			(data, type) -> condition(type,
