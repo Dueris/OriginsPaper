@@ -35,5 +35,5 @@
     "ReloadableServerRegistriesHolderMixin",
     "LootParamsMixin"
   ],
-  "compatibilityLevel": "JAVA_21"
+  "compatibilityLevel": "JAVA_17"
 }
