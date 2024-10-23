@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.type.fluid;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import net.minecraft.tags.TagKey;

@@ -6,17 +6,16 @@ import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
 public class TargetConditionType {
 
-	public static boolean condition(Entity target, @NotNull Predicate<Entity> condition) {
+	public static boolean condition(Entity target, Predicate<Entity> condition) {
 		return condition.test(target);
 	}
 
-	public static @NotNull ConditionTypeFactory<Tuple<Entity, Entity>> getFactory() {
+	public static ConditionTypeFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("target_condition"),
 			new SerializableData()

@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import net.minecraft.core.registries.Registries;
@@ -13,13 +13,12 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
 public class PredicateConditionType {
 
-	public static boolean condition(@NotNull Entity entity, ResourceKey<LootItemCondition> predicateKey) {
+	public static boolean condition(Entity entity, ResourceKey<LootItemCondition> predicateKey) {
 
 		if (!(entity.level() instanceof ServerLevel serverWorld)) {
 			return false;
@@ -38,7 +37,7 @@ public class PredicateConditionType {
 
 	}
 
-	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+	public static ConditionTypeFactory<Entity> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("predicate"),
 			new SerializableData()

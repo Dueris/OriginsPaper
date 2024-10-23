@@ -1,14 +1,13 @@
 package io.github.dueris.originspaper.condition.type.bientity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.data.types.Comparison;
+import io.github.dueris.originspaper.util.Comparison;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.NotNull;
 
 public class DistanceConditionType {
 
@@ -18,7 +17,7 @@ public class DistanceConditionType {
 			&& comparison.compare(actor.position().distanceToSqr(target.position()), compareTo * compareTo);
 	}
 
-	public static @NotNull ConditionTypeFactory<Tuple<Entity, Entity>> getFactory() {
+	public static ConditionTypeFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("distance"),
 			new SerializableData()

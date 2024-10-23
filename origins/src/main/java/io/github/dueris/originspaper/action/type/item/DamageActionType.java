@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.action.type.item;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.action.factory.ItemActionTypeFactory;
@@ -10,7 +10,6 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 
 public class DamageActionType {
 
@@ -35,7 +34,7 @@ public class DamageActionType {
 
 	}
 
-	public static @NotNull ActionTypeFactory<Tuple<Level, SlotAccess>> getFactory() {
+	public static ActionTypeFactory<Tuple<Level, SlotAccess>> getFactory() {
 		return ItemActionTypeFactory.createItemStackBased(
 			OriginsPaper.apoliIdentifier("damage"),
 			new SerializableData()

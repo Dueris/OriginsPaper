@@ -8,6 +8,7 @@ import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.repository.RemoteRepository.Builder;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("UnstableApiUsage")
 public class DependencyLoader implements PluginLoader {
 
 	@Override
@@ -23,13 +24,8 @@ public class DependencyLoader implements PluginLoader {
 		maven(resolver, "https://maven.quiltmc.org/repository/release/");
 		maven(resolver, "https://maven.fabricmc.net/");
 
-		resolver.addDependency(new Dependency(new DefaultArtifact("io.github.classgraph:classgraph:4.8.165"), null));
-		resolver.addDependency(new Dependency(new DefaultArtifact("org.reflections:reflections:0.9.12"), null));
 		resolver.addDependency(new Dependency(new DefaultArtifact("com.jeff-media:MorePersistentDataTypes:2.4.0"), null));
 		resolver.addDependency(new Dependency(new DefaultArtifact("org.mineskin:java-client:2.0.0-SNAPSHOT"), null));
-		resolver.addDependency(new Dependency(new DefaultArtifact("org.mineskin:java-client-jsoup:2.0.0-SNAPSHOT"), null));
-		resolver.addDependency(new Dependency(new DefaultArtifact("org.quiltmc.parsers:json:0.2.1"), null));
-		resolver.addDependency(new Dependency(new DefaultArtifact("org.quiltmc.parsers:gson:0.2.1"), null));
 		classpathBuilder.addLibrary(resolver);
 	}
 

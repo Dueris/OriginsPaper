@@ -1,12 +1,13 @@
 package io.github.dueris.originspaper.action.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataType;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.data.types.Space;
+import io.github.dueris.originspaper.util.Space;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
@@ -23,14 +24,13 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 import org.apache.commons.lang3.tuple.Triple;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 import java.util.function.Consumer;
 
 public class RaycastActionType {
 
-	public static void action(SerializableData.@NotNull Instance data, @NotNull Entity entity) {
+	public static void action(SerializableData.Instance data, Entity entity) {
 
 		Vec3 origin = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
 		Vec3 direction = entity.getViewVector(1);
@@ -96,12 +96,12 @@ public class RaycastActionType {
 				executeStepCommands(entity, origin, hitResult.getLocation(), data.getString("command_along_ray"), data.getDouble("command_step"));
 			}
 			if (data.isPresent("block_action") && hitResult instanceof BlockHitResult bhr) {
-				ActionTypeFactory<Triple<Level, BlockPos, Direction>> blockAction = data.get("block_action");
+				ActionTypeFactory<Triple<Level, BlockPos, Direction>>.Instance blockAction = data.get("block_action");
 				Triple<Level, BlockPos, Direction> blockActionContext = Triple.of(entity.level(), bhr.getBlockPos(), bhr.getDirection());
 				blockAction.accept(blockActionContext);
 			}
 			if (data.isPresent("bientity_action") && hitResult instanceof EntityHitResult ehr) {
-				ActionTypeFactory<Tuple<Entity, Entity>> bientityAction = data.get("bientity_action");
+				ActionTypeFactory<Tuple<Entity, Entity>>.Instance bientityAction = data.get("bientity_action");
 				Tuple<Entity, Entity> bientityActionContext = new Tuple<>(entity, ehr.getEntity());
 				bientityAction.accept(bientityActionContext);
 			}
@@ -187,7 +187,7 @@ public class RaycastActionType {
 		return source.level().clip(context);
 	}
 
-	private static EntityHitResult performEntityRaycast(Entity source, Vec3 origin, Vec3 target, ConditionTypeFactory<Tuple<Entity, Entity>> biEntityCondition) {
+	private static EntityHitResult performEntityRaycast(Entity source, Vec3 origin, Vec3 target, ConditionTypeFactory<Tuple<Entity, Entity>>.Instance biEntityCondition) {
 		Vec3 ray = target.subtract(origin);
 		AABB box = source.getBoundingBox().expandTowards(ray).inflate(1.0D, 1.0D, 1.0D);
 		EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(source, origin, target, box, (entityx) -> {
@@ -206,8 +206,8 @@ public class RaycastActionType {
 				.add("space", ApoliDataTypes.SPACE, Space.WORLD)
 				.add("block", SerializableDataTypes.BOOLEAN, true)
 				.add("entity", SerializableDataTypes.BOOLEAN, true)
-				.add("shape_type", SerializableDataTypes.enumValue(ClipContext.Block.class), ClipContext.Block.OUTLINE)
-				.add("fluid_handling", SerializableDataTypes.enumValue(ClipContext.Fluid.class), ClipContext.Fluid.ANY)
+				.add("shape_type", SerializableDataType.enumValue(ClipContext.Block.class), ClipContext.Block.OUTLINE)
+				.add("fluid_handling", SerializableDataType.enumValue(ClipContext.Fluid.class), ClipContext.Fluid.ANY)
 				.add("block_action", ApoliDataTypes.BLOCK_ACTION, null)
 				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
 				.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION, null)

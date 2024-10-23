@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.Dueris:OriginsPaper:mc1.21~0-v1.2.3")
+    implementation("io.github.Dueris:OriginsPaper:mc1.21~0-v1.3.0")
 }
 ```
 
@@ -49,7 +49,8 @@ dependencies:
 The Power system in OriginsPaper works closely to the Apoli PowerType system, where each PowerType instance is a
 representation of a Power json inside the datapack. For example:
 
-I have a power in ``data/dueris/apoli/power/test.json`` with the `"type"` field as `"apoli:test"`, and a PowerType of the
+I have a power in ``data/dueris/apoli/power/test.json`` with the `"type"` field as `"apoli:test"`, and a PowerType of
+the
 type `"apoli:test"`. Calio will create a new instance of the PowerType and register it using defined AccessorKeys(more
 details bellow in the `Calio` section).
 
@@ -61,12 +62,17 @@ public class ApoliExamplePower extends PowerType {
 }
 ```
 
-In Calio/Apoli, a PowerType is an object that defines the main logic and handling of powers for the players it has assigned to it.
+In Calio/Apoli, a PowerType is an object that defines the main logic and handling of powers for the players it has
+assigned to it.
 To create an instance of any class inside Calio during parsing, it reads the SerializableData, which is defined by the
-method ``static SerializableData buildFactory()``. SerializableDatas are definition of a Constructor for the FactoryHolder. The first instance
-added is the first arg, the second being the second arg, etc. It also provides the key for the `"type"` field. However, in Calio, there
-is a required argument of a ResourceLocation at the beginning of the constructor your SerializableData is creating, which is the `"key"` argument.
-The key argument is the argument assigned to the instance upon instance creation, named after the Namesace and Key of the json.
+method ``static SerializableData buildFactory()``. SerializableDatas are definition of a Constructor for the
+FactoryHolder. The first instance
+added is the first arg, the second being the second arg, etc. It also provides the key for the `"type"` field. However,
+in Calio, there
+is a required argument of a ResourceLocation at the beginning of the constructor your SerializableData is creating,
+which is the `"key"` argument.
+The key argument is the argument assigned to the instance upon instance creation, named after the Namesace and Key of
+the json.
 With adding the constructor, it becomes:
 
 ```java
@@ -97,11 +103,12 @@ public class ApoliExamplePower extends PowerType {
 
 To Add your own fields to the power json, its as simple as defining what field name, SerializableDataType,
 which is an instance of a deserializer for json elements to translate a JsonElement to a Java object. There
-are multiple classes to get SerializableDataTypes from(SerializableDataTypes, ApoliDataTypes, OriginsDataTypes), or you can
+are multiple classes to get SerializableDataTypes from(SerializableDataTypes, ApoliDataTypes, OriginsDataTypes), or you
+can
 create your own!
 
-| Method Name                                                          | Description                                                                                             |
-|----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| Method Name                                                          | Description                                                                                              |
+|----------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | required(String key, SerializableDataBuilder<T> dataType)            | Adds a required field to the SerializableData                                                            |
 | add(String key, SerializableDataBuilder<T> dataType)                 | Adds a nullable field to the SerializableData, when the field is not present, it returns null            |
 | add(String key, SerializableDataBuilder<T> dataType, T defaultValue) | Adds a field to the SerializableData with a default value that is provided when the field is not present |
@@ -218,10 +225,13 @@ To create a new Condition, is a little bit weirder. The current Condition system
 plugins in mind, but its possible to hook into the Condition system with ease.
 In this tutorial, we are going to add a new entity condition that checks if the entity is currently in spectator mode.
 
-To register a Condition, you must first go through the main Condition type class(like `EntityConditions`) to access the conditions `register` method.
+To register a Condition, you must first go through the main Condition type class(like `EntityConditions`) to access the
+conditions `register` method.
 Each Condition class uses the ConditionFactory class. A ConditionFactory<T> is a builder for creating,
-registering, and calling Conditions. Conditions in OriginsPaper are defined by a ResourceLocation as the associated type,
-and a Predicate to define if the condition is true or not. Each Condition type category has a different <T> value for the ConditionFactory<T> (like entity conditions would use ConditionFactory<Entity>).
+registering, and calling Conditions. Conditions in OriginsPaper are defined by a ResourceLocation as the associated
+type,
+and a Predicate to define if the condition is true or not. Each Condition type category has a different <T> value for
+the ConditionFactory<T> (like entity conditions would use ConditionFactory<Entity>).
 
 In this example, we will register a new Entity Condition.
 
@@ -235,8 +245,10 @@ Now, we are going to add our `"type"` param, which defines the type associated i
 register(new ConditionFactory<>(ResourceLocation.fromNamespaceAndPath("test", "example")));
 ```
 
-The 2nd arg is an SerializableData, which functions exactly how the PowerType instance definer works for building! The 3rd
-and final arg is a `BiPredicate<SerializableData.Instance, T>`. A SerializableData.Instance acts as an accessor for getting values defined in the SerializableData.
+The 2nd arg is an SerializableData, which functions exactly how the PowerType instance definer works for building! The
+3rd
+and final arg is a `BiPredicate<SerializableData.Instance, T>`. A SerializableData.Instance acts as an accessor for
+getting values defined in the SerializableData.
 
 ```java
 register(new ConditionFactory<>(
@@ -253,7 +265,8 @@ registration to allow any origin to test the condition.
 
 ## Actions
 
-Creating an Action is literally the EXACT same thing as creating a Condition, but its with an ActionFactory, which is the same
+Creating an Action is literally the EXACT same thing as creating a Condition, but its with an ActionFactory, which is
+the same
 as a ConditionFactory but with BiConsumers instead of BiPredicates.
 
 And thats it! Almost the exact same thing as Condition registration, and the same process in the end aswell.

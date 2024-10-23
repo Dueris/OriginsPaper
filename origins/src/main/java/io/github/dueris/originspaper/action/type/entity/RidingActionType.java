@@ -1,20 +1,19 @@
 package io.github.dueris.originspaper.action.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class RidingActionType {
 
-	public static void action(@NotNull Entity entity, Consumer<Entity> entityAction, Consumer<Tuple<Entity, Entity>> biEntityAction, Predicate<Tuple<Entity, Entity>> biEntityCondition, boolean recursive) {
+	public static void action(Entity entity, Consumer<Entity> entityAction, Consumer<Tuple<Entity, Entity>> biEntityAction, Predicate<Tuple<Entity, Entity>> biEntityCondition, boolean recursive) {
 
 		if (!entity.isPassenger()) {
 			return;
@@ -34,7 +33,7 @@ public class RidingActionType {
 
 	}
 
-	private static void executeActions(Entity actor, Entity target, Consumer<Entity> entityAction, Consumer<Tuple<Entity, Entity>> biEntityAction, @NotNull Predicate<Tuple<Entity, Entity>> biEntityCondition) {
+	private static void executeActions(Entity actor, Entity target, Consumer<Entity> entityAction, Consumer<Tuple<Entity, Entity>> biEntityAction, Predicate<Tuple<Entity, Entity>> biEntityCondition) {
 
 		Tuple<Entity, Entity> actorAndTarget = new Tuple<>(actor, target);
 
@@ -45,7 +44,7 @@ public class RidingActionType {
 
 	}
 
-	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+	public static ActionTypeFactory<Entity> getFactory() {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("riding_action"),
 			new SerializableData()

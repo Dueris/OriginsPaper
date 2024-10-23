@@ -4,24 +4,21 @@ import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.power.factory.PowerReference;
-import io.github.dueris.originspaper.power.type.CooldownPower;
+import io.github.dueris.originspaper.power.PowerReference;
+import io.github.dueris.originspaper.power.type.CooldownPowerType;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 public class TriggerCooldownActionType {
 
-	public static void action(Entity entity, @NotNull PowerReference power) {
+	public static void action(Entity entity, PowerReference power) {
 
-		if (power.getType() instanceof CooldownPower cooldown) {
-			cooldown.use(entity);
+		if (power.getType(entity) instanceof CooldownPowerType cooldown) {
+			cooldown.use();
 		}
 
 	}
 
-	@Contract(" -> new")
-	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+	public static ActionTypeFactory<Entity> getFactory() {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("trigger_cooldown"),
 			new SerializableData()

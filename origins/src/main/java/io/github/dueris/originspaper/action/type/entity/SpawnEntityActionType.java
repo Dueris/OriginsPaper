@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.action.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -11,7 +11,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -43,7 +42,7 @@ public class SpawnEntityActionType {
 
 	}
 
-	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+	public static ActionTypeFactory<Entity> getFactory() {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("spawn_entity"),
 			new SerializableData()

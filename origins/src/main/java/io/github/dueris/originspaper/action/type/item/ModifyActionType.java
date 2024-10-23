@@ -1,10 +1,11 @@
 package io.github.dueris.originspaper.action.type.item;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.access.EntityLinkedItemStack;
 import io.github.dueris.originspaper.action.factory.ItemActionTypeFactory;
-import io.github.dueris.originspaper.util.ApoliLootContextTypes;
+import io.github.dueris.originspaper.loot.context.ApoliLootContextTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -35,6 +36,7 @@ public class ModifyActionType {
 		LootParams lootContextParameterSet = new LootParams.Builder(serverWorld)
 			.withParameter(LootContextParams.ORIGIN, serverWorld.getSharedSpawnPos().getCenter())
 			.withParameter(LootContextParams.TOOL, oldStack)
+			.withOptionalParameter(LootContextParams.THIS_ENTITY, ((EntityLinkedItemStack) oldStack).apoli$getEntity())
 			.create(ApoliLootContextTypes.ANY);
 
 		ItemStack newStack = itemModifier.apply(oldStack, new LootContext.Builder(lootContextParameterSet).create(Optional.empty()));

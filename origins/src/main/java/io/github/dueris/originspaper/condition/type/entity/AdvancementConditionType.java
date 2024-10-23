@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import net.minecraft.advancements.AdvancementHolder;
@@ -10,7 +10,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
 
 public class AdvancementConditionType {
 
@@ -39,7 +38,7 @@ public class AdvancementConditionType {
 
 	}
 
-	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+	public static ConditionTypeFactory<Entity> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("advancement"),
 			new SerializableData()

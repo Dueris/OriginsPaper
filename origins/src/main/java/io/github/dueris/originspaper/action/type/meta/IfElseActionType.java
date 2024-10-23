@@ -5,7 +5,6 @@ import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -13,7 +12,7 @@ import java.util.function.Predicate;
 
 public class IfElseActionType {
 
-	public static <T, U> void action(T type, @NotNull Predicate<U> condition, Consumer<T> ifAction, Consumer<T> elseAction, @NotNull Function<T, U> actionToConditionTypeFunction) {
+	public static <T, U> void action(T type, Predicate<U> condition, Consumer<T> ifAction, Consumer<T> elseAction, Function<T, U> actionToConditionTypeFunction) {
 
 		U convertedType = actionToConditionTypeFunction.apply(type);
 
@@ -25,7 +24,7 @@ public class IfElseActionType {
 
 	}
 
-	public static <T, U> @NotNull ActionTypeFactory<T> getFactory(SerializableDataType<ActionTypeFactory<T>> actionDataType, SerializableDataType<ConditionTypeFactory<U>> conditionDataType, Function<T, U> actionToConditionTypeFunction) {
+	public static <T, U> ActionTypeFactory<T> getFactory(SerializableDataType<ActionTypeFactory<T>.Instance> actionDataType, SerializableDataType<ConditionTypeFactory<U>.Instance> conditionDataType, Function<T, U> actionToConditionTypeFunction) {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("if_else"),
 			new SerializableData()
@@ -42,7 +41,7 @@ public class IfElseActionType {
 		);
 	}
 
-	public static <T> @NotNull ActionTypeFactory<T> getFactory(SerializableDataType<ActionTypeFactory<T>> actionDataType, SerializableDataType<ConditionTypeFactory<T>> conditionDataType) {
+	public static <T> ActionTypeFactory<T> getFactory(SerializableDataType<ActionTypeFactory<T>.Instance> actionDataType, SerializableDataType<ConditionTypeFactory<T>.Instance> conditionDataType) {
 		return getFactory(actionDataType, conditionDataType, t -> t);
 	}
 

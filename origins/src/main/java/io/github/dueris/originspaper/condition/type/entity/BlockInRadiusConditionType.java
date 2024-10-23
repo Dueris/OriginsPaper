@@ -1,22 +1,22 @@
 package io.github.dueris.originspaper.condition.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataType;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.data.types.Comparison;
-import io.github.dueris.originspaper.data.types.Shape;
+import io.github.dueris.originspaper.util.Comparison;
+import io.github.dueris.originspaper.util.Shape;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
 public class BlockInRadiusConditionType {
 
-	public static boolean condition(Entity entity, Predicate<BlockInWorld> blockCondition, int radius, Shape shape, @NotNull Comparison comparison, int compareTo) {
+	public static boolean condition(Entity entity, Predicate<BlockInWorld> blockCondition, int radius, Shape shape, Comparison comparison, int compareTo) {
 
 		int countThreshold = switch (comparison) {
 			case EQUAL, LESS_THAN_OR_EQUAL, GREATER_THAN -> compareTo + 1;
@@ -41,13 +41,13 @@ public class BlockInRadiusConditionType {
 
 	}
 
-	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+	public static ConditionTypeFactory<Entity> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("block_in_radius"),
 			new SerializableData()
 				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION)
 				.add("radius", SerializableDataTypes.INT)
-				.add("shape", SerializableDataTypes.enumValue(Shape.class), Shape.CUBE)
+				.add("shape", SerializableDataType.enumValue(Shape.class), Shape.CUBE)
 				.add("comparison", ApoliDataTypes.COMPARISON, Comparison.GREATER_THAN_OR_EQUAL)
 				.add("compare_to", SerializableDataTypes.INT, 1),
 			(data, entity) -> condition(entity,

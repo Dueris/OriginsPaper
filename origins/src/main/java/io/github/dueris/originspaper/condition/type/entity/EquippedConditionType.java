@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -11,7 +11,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
@@ -22,7 +21,7 @@ public class EquippedConditionType {
 			&& itemCondition.test(new Tuple<>(livingEntity.level(), livingEntity.getItemBySlot(equipmentSlot)));
 	}
 
-	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+	public static ConditionTypeFactory<Entity> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("equipped_item"),
 			new SerializableData()

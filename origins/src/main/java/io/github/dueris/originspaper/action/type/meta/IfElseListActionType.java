@@ -6,7 +6,6 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import net.minecraft.util.Tuple;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -15,7 +14,7 @@ import java.util.function.Predicate;
 
 public class IfElseListActionType {
 
-	public static <T, U> void action(T type, @NotNull Collection<Tuple<Consumer<T>, Predicate<U>>> actions, @NotNull Function<T, U> actionToConditionTypeFunction) {
+	public static <T, U> void action(T type, Collection<Tuple<Consumer<T>, Predicate<U>>> actions, Function<T, U> actionToConditionTypeFunction) {
 
 		U convertedType = actionToConditionTypeFunction.apply(type);
 
@@ -30,8 +29,9 @@ public class IfElseListActionType {
 
 	}
 
-	public static <T, U> @NotNull ActionTypeFactory<T> getFactory(SerializableDataType<ActionTypeFactory<T>> actionDataType, SerializableDataType<ConditionTypeFactory<U>> conditionDataType, Function<T, U> actionToConditionTypeFunction) {
-		SerializableDataType<Tuple<ActionTypeFactory<T>, ConditionTypeFactory<T>>> dataType = SerializableDataType.strictCompound(
+	public static <T, U> ActionTypeFactory<T> getFactory(SerializableDataType<ActionTypeFactory<T>.Instance> actionDataType, SerializableDataType<ConditionTypeFactory<U>.Instance> conditionDataType, Function<T, U> actionToConditionTypeFunction) {
+
+		SerializableDataType<Tuple<ActionTypeFactory<T>.Instance, ConditionTypeFactory<T>.Instance>> dataType = SerializableDataType.compound(
 			new SerializableData()
 				.add("action", actionDataType)
 				.add("condition", conditionDataType),
@@ -39,13 +39,15 @@ public class IfElseListActionType {
 				data.get("action"),
 				data.get("condition")
 			),
-			Tuple.class
+			(pair, serializableData) -> serializableData.instance()
+				.set("action", pair.getA())
+				.set("condition", pair.getB())
 		);
 
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("if_else_list"),
 			new SerializableData()
-				.add("actions", SerializableDataType.of(dataType.listOf())),
+				.add("actions", dataType.list()),
 			(data, t) -> action(t,
 				data.get("actions"),
 				actionToConditionTypeFunction
@@ -54,7 +56,7 @@ public class IfElseListActionType {
 
 	}
 
-	public static <T> @NotNull ActionTypeFactory<T> getFactory(SerializableDataType<ActionTypeFactory<T>> actionDataType, SerializableDataType<ConditionTypeFactory<T>> conditionDataType) {
+	public static <T> ActionTypeFactory<T> getFactory(SerializableDataType<ActionTypeFactory<T>.Instance> actionDataType, SerializableDataType<ConditionTypeFactory<T>.Instance> conditionDataType) {
 		return getFactory(actionDataType, conditionDataType, t -> t);
 	}
 

@@ -2,10 +2,10 @@ package io.github.dueris.originspaper.registry;
 
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
-import io.github.dueris.originspaper.data.types.modifier.IModifierOperation;
-import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.type.PowerType;
 import io.github.dueris.originspaper.registry.fabric.FabricRegistryBuilder;
-import io.github.dueris.originspaper.util.LangFile;
+import io.github.dueris.originspaper.util.modifier.IModifierOperation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -38,8 +38,7 @@ public class ApoliRegistries {
 	public static final Registry<ActionTypeFactory<Tuple<Entity, Entity>>> BIENTITY_ACTION = create(ApoliRegistryKeys.BIENTITY_ACTION);
 
 	public static final Registry<IModifierOperation> MODIFIER_OPERATION = create(ApoliRegistryKeys.MODIFIER_OPERATION);
-	public static final Registry<LangFile> LANG = create(ApoliRegistryKeys.LANG);
-	public static final Registry<PowerTypeFactory> POWER_TYPE_FACTORY = create(ApoliRegistryKeys.POWER_TYPE_FACTORY);
+	public static final Registry<PowerTypeFactory<? extends PowerType>> POWER_FACTORY = create(ApoliRegistryKeys.POWER_FACTORY);
 
 	private static <T> Registry<T> create(ResourceKey<Registry<T>> registryKey) {
 		return FabricRegistryBuilder.createSimple(registryKey).buildAndRegister();

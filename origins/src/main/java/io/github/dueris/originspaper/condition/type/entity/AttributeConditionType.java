@@ -1,17 +1,16 @@
 package io.github.dueris.originspaper.condition.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.data.types.Comparison;
+import io.github.dueris.originspaper.util.Comparison;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import org.jetbrains.annotations.NotNull;
 
 public class AttributeConditionType {
 
@@ -33,7 +32,7 @@ public class AttributeConditionType {
 
 	}
 
-	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+	public static ConditionTypeFactory<Entity> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("attribute"),
 			new SerializableData()

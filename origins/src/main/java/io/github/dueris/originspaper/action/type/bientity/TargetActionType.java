@@ -6,7 +6,6 @@ import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -20,7 +19,7 @@ public class TargetActionType {
 
 	}
 
-	public static @NotNull ActionTypeFactory<Tuple<Entity, Entity>> getFactory() {
+	public static ActionTypeFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("target_action"),
 			new SerializableData()

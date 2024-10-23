@@ -1,0 +1,34 @@
+accessWidener v1 named
+
+mutable	field	net/minecraft/world/item/ItemStack	item	Lnet/minecraft/world/item/Item;
+accessible	method	net/minecraft/world/item/ItemStack	<init>	(Ljava/lang/Void;)V
+extendable	class	net/minecraft/world/item/ItemStack
+accessible	class	net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentVisitor
+accessible	class	net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentInSlotVisitor
+accessible	class	net/minecraft/client/renderer/FogRenderer$FogData
+accessible	class	net/minecraft/server/commands/AdvancementCommands$Action
+accessible	class	net/minecraft/server/commands/AdvancementCommands$Mode
+accessible	method	net/minecraft/server/commands/AdvancementCommands$Action	perform	(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/advancements/AdvancementHolder;)Z
+accessible	method	net/minecraft/server/commands/AdvancementCommands$Action	performCriterion	(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/advancements/AdvancementHolder;Ljava/lang/String;)Z
+extendable	class	net/minecraft/world/level/gameevent/vibrations/VibrationSystem$Data
+accessible	field	net/minecraft/server/commands/AdvancementCommands$Mode	parents	Z
+accessible	field	net/minecraft/server/commands/AdvancementCommands$Mode	children	Z
+accessible	class	net/minecraft/client/gui/Gui$HeartType
+accessible	class	net/minecraft/world/item/ItemCooldowns$CooldownInstance
+accessible	field	net/minecraft/world/item/ItemCooldowns	cooldowns	Ljava/util/Map;
+accessible	field	net/minecraft/world/item/ItemCooldowns$CooldownInstance	startTime	I
+accessible	field	net/minecraft/world/item/ItemCooldowns$CooldownInstance	endTime	I
+accessible	class	net/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance
+accessible	class	net/minecraft/server/level/ServerPlayer$RespawnPosAngle
+accessible	class	net/minecraft/world/inventory/ArmorSlot
+accessible	class	net/minecraft/client/Minecraft$GameLoadCookie
+accessible	method	net/minecraft/core/HolderSet$ListBacked	contents	()Ljava/util/List;
+accessible	class	net/minecraft/tags/TagLoader$SortingEntry
+extendable	method	net/minecraft/network/chat/contents/TranslatableContents	decompose	()V
+accessible	field	net/minecraft/network/chat/contents/TranslatableContents	decomposedWith	Lnet/minecraft/locale/Language;
+accessible	field	net/minecraft/network/chat/contents/TranslatableContents	decomposedParts	Ljava/util/List;
+accessible	field	net/minecraft/world/level/biome/Biome	climateSettings	Lnet/minecraft/world/level/biome/Biome$ClimateSettings;
+accessible	class	net/minecraft/world/level/biome/Biome$ClimateSettings
+accessible  method  net/minecraft/world/entity/EntityType                     register (Ljava/lang/String;Lnet/minecraft/world/entity/EntityType$Builder;)Lnet/minecraft/world/entity/EntityType;
+accessible class net/minecraft/util/DependencySorter
+accessible method net/minecraft/util/DependencySorter visitDependenciesAndElement (Lcom/google/common/collect/Multimap;Ljava/util/Set;Ljava/lang/Object;Ljava/util/function/BiConsumer;)V

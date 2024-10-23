@@ -22,7 +22,7 @@ public class KeybindTriggerEvent extends PlayerEvent {
 		return key_type;
 	}
 
-	public HandlerList getHandlers() {
+	public @NotNull HandlerList getHandlers() {
 		return handlers;
 	}
 }

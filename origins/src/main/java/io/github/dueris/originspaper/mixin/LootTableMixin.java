@@ -5,8 +5,8 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import io.github.dueris.originspaper.access.FunctionPoolRetriever;
 import io.github.dueris.originspaper.access.IdentifiedLootTable;
 import io.github.dueris.originspaper.access.ReplacingLootContext;
-import io.github.dueris.originspaper.power.type.ReplaceLootTablePower;
-import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import io.github.dueris.originspaper.component.PowerHolderComponent;
+import io.github.dueris.originspaper.power.type.ReplaceLootTablePowerType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerRegistries;
@@ -134,11 +134,10 @@ public class LootTableMixin implements IdentifiedLootTable, FunctionPoolRetrieve
 			}
 		}
 
-		Entity finalPowerHolder = powerHolder;
-		List<ReplaceLootTablePower> replaceLootTablePowers = PowerHolderComponent.getPowers(powerHolder.getBukkitEntity(), ReplaceLootTablePower.class)
+		List<ReplaceLootTablePowerType> replaceLootTablePowers = PowerHolderComponent.getPowerTypes(powerHolder, ReplaceLootTablePowerType.class)
 			.stream()
-			.filter(p -> p.shouldReplace(apoli$lootTableKey) & p.doesApply(context, finalPowerHolder))
-			.sorted(Comparator.comparing(ReplaceLootTablePower::getPriority))
+			.filter(p -> p.hasReplacement(apoli$lootTableKey) & p.doesApply(context))
+			.sorted(Comparator.comparing(ReplaceLootTablePowerType::getPriority))
 			.toList();
 
 		if (replaceLootTablePowers.isEmpty()) {
@@ -147,9 +146,8 @@ public class LootTableMixin implements IdentifiedLootTable, FunctionPoolRetrieve
 		}
 
 		ResourceKey<LootTable> replacement = null;
-		ReplaceLootTablePower finalPower = null;
 
-		for (ReplaceLootTablePower power : replaceLootTablePowers) {
+		for (ReplaceLootTablePowerType power : replaceLootTablePowers) {
 
 			@NotNull ResourceKey<LootTable> replacementLootTableKey;
 			try {
@@ -159,7 +157,6 @@ public class LootTableMixin implements IdentifiedLootTable, FunctionPoolRetrieve
 			}
 
 			replacement = replacementLootTableKey;
-			finalPower = power;
 
 			if (replacement instanceof IdentifiedLootTable identifiedLootTable) {
 				identifiedLootTable.apoli$setKey(replacementLootTableKey, apoli$registryLookup);

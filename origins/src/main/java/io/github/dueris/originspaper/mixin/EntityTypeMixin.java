@@ -2,7 +2,7 @@ package io.github.dueris.originspaper.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.dueris.originspaper.access.EntityLinkedType;
-import io.github.dueris.originspaper.power.type.ModifyTypeTagPower;
+import io.github.dueris.originspaper.power.type.ModifyTypeTagPowerType;
 import net.minecraft.core.HolderSet;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
@@ -30,13 +30,13 @@ public abstract class EntityTypeMixin implements EntityLinkedType {
 	@ModifyReturnValue(method = "is(Lnet/minecraft/tags/TagKey;)Z", at = @At("RETURN"))
 	private boolean apoli$inTagProxy(boolean original, TagKey<EntityType<?>> tag) {
 		return original
-			|| ModifyTypeTagPower.doesApply(this.apoli$getEntity(), tag);
+			|| ModifyTypeTagPowerType.doesApply(this.apoli$getEntity(), tag);
 	}
 
 	@ModifyReturnValue(method = "is(Lnet/minecraft/core/HolderSet;)Z", at = @At("RETURN"))
 	private boolean apoli$inTagEntryListProxy(boolean original, HolderSet<EntityType<?>> entryList) {
 		return original
-			|| ModifyTypeTagPower.doesApply(this.apoli$getEntity(), entryList);
+			|| ModifyTypeTagPowerType.doesApply(this.apoli$getEntity(), entryList);
 	}
 
 }

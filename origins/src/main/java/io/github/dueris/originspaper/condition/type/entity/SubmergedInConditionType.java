@@ -1,14 +1,13 @@
 package io.github.dueris.originspaper.condition.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.material.Fluid;
-import org.jetbrains.annotations.NotNull;
 
 public class SubmergedInConditionType {
 
@@ -16,7 +15,7 @@ public class SubmergedInConditionType {
 		return Util.apoli$isSubmergedInLoosely(entity, fluidTag);
 	}
 
-	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+	public static ConditionTypeFactory<Entity> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("submerged_in"),
 			new SerializableData()

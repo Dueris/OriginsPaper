@@ -5,8 +5,6 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import io.github.dueris.originspaper.event.OriginChangeEvent;
-import io.github.dueris.originspaper.screen.OriginPage;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -14,7 +12,6 @@ import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,7 +54,6 @@ public class PehukiCommandImpl implements Listener {
 					if (!context.getSource().isPlayer()) {
 						return 0;
 					} else {
-						OriginPage.setAttributesToDefault(context.getSource().getPlayer());
 						context.getSource().getPlayer().getBukkitEntity().getAttribute(Attribute.GENERIC_SCALE).setBaseValue(1.0);
 						return 1;
 					}
@@ -107,8 +103,4 @@ public class PehukiCommandImpl implements Listener {
 		return 1;
 	}
 
-	@EventHandler
-	public void resetScale(@NotNull OriginChangeEvent e) {
-		e.getPlayer().getAttribute(Attribute.GENERIC_SCALE).setBaseValue(1.0);
-	}
 }

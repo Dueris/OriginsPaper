@@ -1,15 +1,20 @@
 bootstrapper: "io.github.dueris.originspaper.Bootstrap"
 loader: "io.github.dueris.originspaper.DependencyLoader"
 load: POSTWORLD
-name: "OriginsPaper"
+name: Origins
 main: "io.github.dueris.originspaper.plugin.OriginsPlugin"
 authors: [ Dueris ]
 
-provides: [ Eclipse ]
+dependencies:
+  bootstrap:
+    Eclipse:
+      load: BEFORE
+      required: true
+      join-classpath: true
 
 folia-supported: false
 has-open-classloader: false
-description: "A port of the Origins mod to PaperMC servers with Custom Origins support"
+description: "A full, but unofficial, port of Calio/Apoli/Origins to PaperMC servers"
 website: "https://ko-fi.com/dueris"
 supported: ${supported}
 minecraft: ${mcVer}
@@ -17,4 +22,21 @@ plugin: ${pluginVer}
 api-version: ${apiVer}
 version: ${fullVer}
 apoli: ${apoli}
+calio: ${calio}
 default-language: "en_us"
+
+bootstrap:
+  Eclipse:
+    load: BEFORE
+    required: true
+
+wideners: [
+  "origins.accesswidener",
+  "calio.accesswidener",
+  "fabricapi.accesswidener"
+]
+
+mixins: [
+  "origins.mixins.json",
+  "calio.mixins.json"
+]

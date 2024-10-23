@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.action.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -11,14 +11,13 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
 public class ExplodeActionType {
 
-	public static void action(@NotNull Entity entity, float power, Explosion.BlockInteraction destructionType, @Nullable Predicate<BlockInWorld> indestructibleCondition, float indestructibleResistance, @Nullable Predicate<BlockInWorld> destructibleCondition, boolean damageSelf, boolean createFire) {
+	public static void action(Entity entity, float power, Explosion.BlockInteraction destructionType, @Nullable Predicate<BlockInWorld> indestructibleCondition, float indestructibleResistance, @Nullable Predicate<BlockInWorld> destructibleCondition, boolean damageSelf, boolean createFire) {
 
 		Level world = entity.level();
 		if (world.isClientSide) {
@@ -39,13 +38,13 @@ public class ExplodeActionType {
 			pos.z(),
 			power,
 			createFire,
-			destructionType == null ? Explosion.BlockInteraction.DESTROY : destructionType,
+			destructionType,
 			Util.getExplosionBehavior(world, indestructibleResistance, indestructibleCondition)
 		);
 
 	}
 
-	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+	public static ActionTypeFactory<Entity> getFactory() {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("explode"),
 			new SerializableData()

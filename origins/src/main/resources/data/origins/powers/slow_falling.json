@@ -1,34 +1,34 @@
 {
-	"type": "apoli:modify_falling",
-	"velocity": 0.01,
-	"take_fall_damage": false,
-	"condition": {
-		"type": "origins:any_of",
-		"conditions": [
-			{
-				"type": "origins:all_of",
-				"conditions": [
-					{
-						"type": "origins:sneaking"
-					},
-					{
-						"type": "origins:fall_flying"
-					}
-				]
-			},
-			{
-				"type": "origins:all_of",
-				"conditions": [
-					{
-						"type": "origins:sneaking",
-						"inverted": true
-					},
-					{
-						"type": "origins:fall_flying",
-						"inverted": true
-					}
-				]
-			}
-		]
-	}
+  "type": "apoli:modify_falling",
+  "velocity": 0.01,
+  "take_fall_damage": false,
+  "condition": {
+    "type": "origins:any_of",
+    "conditions": [
+      {
+        "type": "origins:all_of",
+        "conditions": [
+          {
+            "type": "origins:sneaking"
+          },
+          {
+            "type": "origins:fall_flying"
+          }
+        ]
+      },
+      {
+        "type": "origins:all_of",
+        "conditions": [
+          {
+            "type": "origins:sneaking",
+            "inverted": true
+          },
+          {
+            "type": "origins:fall_flying",
+            "inverted": true
+          }
+        ]
+      }
+    ]
+  }
 }

@@ -1,21 +1,22 @@
 package io.github.dueris.originspaper.condition.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
-import io.github.dueris.originspaper.condition.factory.EntityConditions;
 import net.minecraft.world.entity.Entity;
+import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
 public class MovingConditionType {
+	private static Location[] prevLoca;
 
 	public static boolean condition(Entity entity, boolean horizontally, boolean vertically) {
-		return (horizontally && EntityConditions.isEntityMovingHorizontal(entity))
-			|| (vertically && EntityConditions.isEntityMovingVertical(entity));
+		return (horizontally && isEntityMovingHorizontal(entity))
+			|| (vertically && isEntityMovingVertical(entity));
 	}
 
-	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+	public static ConditionTypeFactory<Entity> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("moving"),
 			new SerializableData()
@@ -26,6 +27,26 @@ public class MovingConditionType {
 				data.get("vertically")
 			)
 		);
+	}
+
+	public static boolean isEntityMovingHorizontal(@NotNull Entity entity) {
+		int entID = entity.getBukkitEntity().getEntityId();
+		Location prevLocat = prevLoca[entID];
+		Location cuLo = entity.getBukkitEntity().getLocation().clone();
+		prevLoca[entID] = cuLo;
+		if (prevLocat == null) return true;
+
+		return cuLo.getX() != prevLocat.getX() || prevLocat.getZ() != cuLo.getZ();
+	}
+
+	public static boolean isEntityMovingVertical(@NotNull Entity entity) {
+		int entID = entity.getBukkitEntity().getEntityId();
+		Location prevLocat = prevLoca[entID];
+		Location cuLo = entity.getBukkitEntity().getLocation().clone();
+		prevLoca[entID] = cuLo;
+		if (prevLocat == null) return true;
+
+		return cuLo.getY() != prevLocat.getY();
 	}
 
 }

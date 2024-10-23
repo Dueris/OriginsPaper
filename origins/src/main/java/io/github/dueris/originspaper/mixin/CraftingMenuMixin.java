@@ -1,30 +1,36 @@
 package io.github.dueris.originspaper.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.llamalad7.mixinextras.sugar.Local;
-import io.github.dueris.originspaper.access.PowerCraftingInventory;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import io.github.dueris.originspaper.access.ScreenHandlerUsabilityOverride;
-import io.github.dueris.originspaper.power.type.ModifyCraftingPower;
-import io.github.dueris.originspaper.util.Util;
+import io.github.dueris.originspaper.component.PowerHolderComponent;
+import io.github.dueris.originspaper.power.PowerManager;
+import io.github.dueris.originspaper.power.type.ModifyCraftingPowerType;
+import io.github.dueris.originspaper.power.type.RecipePowerType;
+import io.github.dueris.originspaper.util.InventoryUtil;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
+import org.bukkit.inventory.InventoryView;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Mixin(CraftingMenu.class)
 public abstract class CraftingMenuMixin extends RecipeBookMenu<CraftingInput, CraftingRecipe> implements ScreenHandlerUsabilityOverride {
@@ -39,13 +45,64 @@ public abstract class CraftingMenuMixin extends RecipeBookMenu<CraftingInput, Cr
 		super(type, syncId);
 	}
 
-	@Inject(method = "slotChangedCraftingGrid", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/crafting/RecipeManager;getRecipeFor(Lnet/minecraft/world/item/crafting/RecipeType;Lnet/minecraft/world/item/crafting/RecipeInput;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/crafting/RecipeHolder;)Ljava/util/Optional;"))
-	private static void apoli$clearPowerCraftingInventory(AbstractContainerMenu handler, Level world, Player player, CraftingContainer craftingInventory, ResultContainer resultInventory, @Nullable RecipeHolder<CraftingRecipe> recipe, CallbackInfo ci) {
+	@Inject(method = "slotChangedCraftingGrid", at = @At("HEAD"))
+	private static void originspaper$storeSharedVars(AbstractContainerMenu handler, Level world, Player player, CraftingContainer craftingInventory, ResultContainer resultInventory, RecipeHolder<CraftingRecipe> recipe, CallbackInfo ci,
+													 @Share("resulContainerRef") @NotNull LocalRef<ResultContainer> resultContainerLocalRef, @Share("playerRef") @NotNull LocalRef<Player> playerLocalRef) {
+		resultContainerLocalRef.set(resultInventory);
+		playerLocalRef.set(player);
+	}
 
-		if (craftingInventory instanceof PowerCraftingInventory pci) {
-			pci.apoli$setPowerType(null);
+	@SuppressWarnings("unchecked")
+	@WrapOperation(method = "slotChangedCraftingGrid", at = @At(value = "INVOKE", target = "Ljava/util/Optional;isPresent()Z"))
+	private static boolean originspaper$storeRecipe(Optional instance, @NotNull Operation<Boolean> original, @Share("recipeHolderRef") @NotNull LocalRef<Optional<RecipeHolder<CraftingRecipe>>> recipeHolderRef) {
+		recipeHolderRef.set(instance);
+		return original.call(instance);
+	}
+
+	@WrapOperation(method = "slotChangedCraftingGrid", at = @At(value = "INVOKE", target = "Lorg/bukkit/craftbukkit/event/CraftEventFactory;callPreCraftEvent(Lnet/minecraft/world/inventory/CraftingContainer;Lnet/minecraft/world/Container;Lnet/minecraft/world/item/ItemStack;Lorg/bukkit/inventory/InventoryView;Z)Lnet/minecraft/world/item/ItemStack;"))
+	private static ItemStack apoli$modifyCrafting(CraftingContainer matrix, Container resultInventory, ItemStack result, InventoryView lastCraftView, boolean isRepair, Operation<ItemStack> original,
+												  @Share("resulContainerRef") @NotNull LocalRef<ResultContainer> resultContainerLocalRef, @Share("playerRef") @NotNull LocalRef<Player> playerLocalRef, @Share("recipeHolderRef") @NotNull LocalRef<Optional<RecipeHolder<CraftingRecipe>>> recipeHolderRef, @Share("notValidRecipeViaPower") LocalRef<Boolean> validRecipeRef) {
+		Player player = playerLocalRef.get();
+		PowerHolderComponent component = PowerHolderComponent.KEY.getNullable(player);
+		RecipeHolder<CraftingRecipe> recipeHolder = recipeHolderRef.get().orElse(null);
+		AtomicReference<ItemStack> newResult = new AtomicReference<>(result);
+		if (component == null) {
+			return original.call(matrix, resultInventory, newResult.get(), lastCraftView, isRepair);
 		}
 
+		component.getPowerTypes(ModifyCraftingPowerType.class).stream().filter(p -> p.doesApply(recipeHolder == null ? null : recipeHolder.id(), result)).forEach(p -> {
+			if (p.getNewStack() != null) {
+				SlotAccess access = InventoryUtil.createStackReference(p.getNewStack().copy());
+				if (p.getItemAction() != null) {
+					p.getItemAction().accept(new Tuple<>(player.level(), access));
+				}
+				newResult.set(access.get());
+			}
+		});
+		if (!validRecipeRef.get()) {
+			newResult.set(ItemStack.EMPTY);
+		}
+		return original.call(matrix, resultInventory, newResult.get(), lastCraftView, isRepair);
+	}
+
+	@Inject(method = "slotChangedCraftingGrid", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/CraftingContainer;setCurrentRecipe(Lnet/minecraft/world/item/crafting/RecipeHolder;)V", shift = At.Shift.AFTER))
+	private static void apoli$recipe(AbstractContainerMenu handler, Level world, Player player, @NotNull CraftingContainer craftingInventory, ResultContainer resultInventory, RecipeHolder<CraftingRecipe> recipe, CallbackInfo ci,
+									 @Share("notValidRecipeViaPower") @NotNull LocalRef<Boolean> validRecipeRef) {
+		validRecipeRef.set(true);
+		if (craftingInventory.getCurrentRecipe() != null) {
+			RecipeHolder<CraftingRecipe> holder = craftingInventory.getCurrentRecipe();
+			if (RecipePowerType.registeredRecipes.contains(holder.id())) {
+				PowerHolderComponent component = PowerHolderComponent.KEY.getNullable(player);
+				if (component == null) {
+					return;
+				}
+
+				// Completely discard the recipe, it does nothing, result is nothing too.
+				if (!component.hasPower(PowerManager.get(holder.id()))) {
+					validRecipeRef.set(false);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -58,47 +115,9 @@ public abstract class CraftingMenuMixin extends RecipeBookMenu<CraftingInput, Cr
 		this.apoli$canUse = canUse;
 	}
 
-	@ModifyExpressionValue(method = "<init>(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/inventory/ContainerLevelAccess;)V", at = @At(value = "NEW", target = "(Lnet/minecraft/world/inventory/AbstractContainerMenu;IILnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/inventory/TransientCraftingContainer;"))
-	private TransientCraftingContainer apoli$cachePlayerToCraftingInventory(TransientCraftingContainer original, int syncId, Inventory playerInventory) {
-
-		if (original instanceof PowerCraftingInventory pci) {
-			pci.apoli$setPlayer(playerInventory.player);
-		}
-
-		return original;
-
-	}
-
 	@ModifyReturnValue(method = "stillValid", at = @At("RETURN"))
 	private boolean apoli$allowUsingViaPower(boolean original, Player playerEntity) {
 		return original || this.apoli$canUse();
 	}
 
-	@ModifyVariable(method = "quickMoveStack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;copy()Lnet/minecraft/world/item/ItemStack;", shift = At.Shift.AFTER), ordinal = 1)
-	private ItemStack apoli$modifyResultStackOnQuickMove(ItemStack itemStack2, Player player, int slotIndex, @Local Slot slot) {
-
-		if (!(craftSlots instanceof PowerCraftingInventory pci && pci.apoli$getPowerType() instanceof ModifyCraftingPower mcp)) {
-			return itemStack2;
-		}
-
-		int availableSlotIndex = player.getInventory().getSlotWithRemainingSpace(itemStack2);
-
-		if (availableSlotIndex == -1) {
-			availableSlotIndex = player.getInventory().getFreeSlot();
-		}
-
-		SlotAccess reference = Util.createStackReference(itemStack2);
-
-		if (availableSlotIndex != -1 && slot instanceof ResultSlot) {
-
-			// TODO - MODIFY CRAFTING POWER TYPE
-
-//			((SlotState) slot).apoli$setState(ModifyCraftingPowerType.MODIFIED_RESULT_STACK);
-//			mcp.applyAfterCraftingItemAction(reference);
-
-		}
-
-		return reference.get();
-
-	}
 }

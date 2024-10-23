@@ -1,58 +1,81 @@
 package io.github.dueris.originspaper.condition.factory;
 
-import com.google.gson.JsonObject;
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataType;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.Factory;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.function.BiPredicate;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class ConditionTypeFactory<T> implements Factory, Predicate<T> {
-	protected final BiPredicate<SerializableData.Instance, T> effect;
-	protected final SerializableData data;
-	private final ResourceLocation location;
-	public SerializableData.Instance deserializedFactory = null;
+public class ConditionTypeFactory<T> implements Factory {
 
-	public ConditionTypeFactory(ResourceLocation location, @NotNull SerializableData data, @NotNull BiPredicate<SerializableData.Instance, T> effect) {
-		this.location = location;
-		this.data = data.add("inverted", SerializableDataTypes.BOOLEAN, false);
-		this.effect = effect;
+	protected final ResourceLocation id;
+
+	protected final SerializableData serializableData;
+	protected final Function<SerializableData.Instance, Predicate<T>> conditionFactory;
+
+	public ConditionTypeFactory(ResourceLocation id, SerializableData serializableData, BiFunction<SerializableData.Instance, T, Boolean> condition) {
+		this.id = id;
+		this.serializableData = serializableData.copy().add("inverted", SerializableDataTypes.BOOLEAN, false);
+		this.conditionFactory = data -> t -> condition.apply(data, t);
 	}
 
 	@Override
 	public ResourceLocation getSerializerId() {
-		return location;
+		return id;
 	}
 
 	@Override
 	public SerializableData getSerializableData() {
-		return data;
+		return serializableData;
 	}
 
 	@Override
-	public final boolean test(T t) {
-		if (deserializedFactory == null)
-			throw new IllegalStateException("Unable to execute ActionFactory because there was no DeserializedFactoryJson compiled!");
-		return deserializedFactory.getBoolean("inverted") != isFulfilled(t);
+	public ConditionTypeFactory.Instance fromData(SerializableData.Instance data) {
+		return new ConditionTypeFactory.Instance(data);
 	}
 
-	public boolean isFulfilled(T t) {
-		return effect.test(deserializedFactory, t);
-	}
+	public class Instance implements Factory.Instance, Predicate<T> {
 
-	public ConditionTypeFactory<T> copy() {
-		return new ConditionTypeFactory<T>(location, data, effect);
-	}
+		protected final SerializableData.Instance data;
+		protected final Predicate<T> condition;
 
-	public ConditionTypeFactory<T> decompile(JsonObject object) {
-		this.deserializedFactory = SerializableDataType.strictCompound(data, object, this.getClass());
-		if (data.postProcessor != null) {
-			data.postProcessor.accept(deserializedFactory);
+		protected Instance(SerializableData.Instance data) {
+			this.condition = conditionFactory.apply(data);
+			this.data = data;
 		}
-		return this;
+
+		@Override
+		public SerializableData.Instance getData() {
+			return data;
+		}
+
+		@Override
+		public ConditionTypeFactory<T> getFactory() {
+			return ConditionTypeFactory.this;
+		}
+
+		@Override
+		public boolean test(T t) {
+			return data.getBoolean("inverted") != condition.test(t);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+
+			if (this == obj) {
+				return true;
+			} else if (obj instanceof ConditionTypeFactory<?>.Instance other) {
+				return this.getData().equals(other.getData())
+					&& this.getFactory().equals(other.getFactory());
+			} else {
+				return false;
+			}
+
+		}
+
 	}
+
 }

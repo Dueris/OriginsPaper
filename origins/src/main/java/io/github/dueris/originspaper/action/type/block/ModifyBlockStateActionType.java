@@ -1,11 +1,11 @@
 package io.github.dueris.originspaper.action.type.block;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.data.types.ResourceOperation;
+import io.github.dueris.originspaper.util.ResourceOperation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -65,14 +65,14 @@ public class ModifyBlockStateActionType {
 
 	}
 
-	private static <T extends Enum<T> & StringRepresentable> void setEnumProperty(@NotNull EnumProperty<T> property, String name, Level world, BlockPos pos, BlockState originalState) {
+	private static <T extends Enum<T> & StringRepresentable> void setEnumProperty(EnumProperty<T> property, String name, Level world, BlockPos pos, BlockState originalState) {
 		property.getValue(name).ifPresentOrElse(
 			propValue -> world.setBlockAndUpdate(pos, originalState.setValue(property, propValue)),
 			() -> OriginsPaper.LOGGER.warn("Couldn't set enum property \"{}\" of block at {} to \"{}\"! Expected value to be any of {}", property.getName(), pos.toShortString(), name, String.join(", ", property.getPossibleValues().stream().map(StringRepresentable::getSerializedName).toList()))
 		);
 	}
 
-	public static @NotNull ActionTypeFactory<Triple<Level, BlockPos, Direction>> getFactory() {
+	public static ActionTypeFactory<Triple<Level, BlockPos, Direction>> getFactory() {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("modify_block_state"),
 			new SerializableData()

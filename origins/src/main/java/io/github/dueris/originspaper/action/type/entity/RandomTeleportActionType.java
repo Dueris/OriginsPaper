@@ -1,7 +1,8 @@
 package io.github.dueris.originspaper.action.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataType;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -17,13 +18,12 @@ import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class RandomTeleportActionType {
 
-	public static void action(Entity entity, Consumer<Entity> successAction, Consumer<Entity> failAction, Predicate<Entity> landingCondition, Predicate<BlockInWorld> landingBlockCondition, Vec3 landingOffset, Heightmap.Types heightmap, boolean loadedChunksOnly, double areaWidth, double areaHeight, Optional<Integer> attemptOptional) {
+	public static void action(Entity entity, Consumer<Entity> successAction, Consumer<Entity> failAction, Predicate<Entity> landingCondition, Predicate<BlockInWorld> landingBlockCondition, Vec3 landingOffset, Heightmap.Types heightmap, boolean loadedChunksOnly, double areaWidth, double areaHeight, int attempts) {
 
 		if (!(entity.level() instanceof ServerLevel serverWorld)) {
 			return;
@@ -33,7 +33,6 @@ public class RandomTeleportActionType {
 		boolean succeeded = false;
 
 		double x, y, z;
-		int attempts = attemptOptional.orElse((int) ((areaWidth * 2) + (areaHeight * 2)));
 
 		for (int i = 0; i < attempts; i++) {
 
@@ -142,11 +141,11 @@ public class RandomTeleportActionType {
 				.add("landing_condition", ApoliDataTypes.ENTITY_CONDITION, null)
 				.add("landing_block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
 				.add("landing_offset", SerializableDataTypes.VECTOR, Vec3.ZERO)
-				.add("heightmap", SerializableDataTypes.enumValue(Heightmap.Types.class), null)
+				.add("heightmap", SerializableDataType.enumValue(Heightmap.Types.class), null)
 				.add("loaded_chunks_only", SerializableDataTypes.BOOLEAN, true)
 				.add("area_width", SerializableDataTypes.DOUBLE, 8.0)
 				.add("area_height", SerializableDataTypes.DOUBLE, 8.0)
-				.add("attempts", SerializableDataTypes.optional(SerializableDataTypes.INT), Optional.empty()),
+				.addFunctionedDefault("attempts", SerializableDataTypes.INT, data -> (int) ((data.getDouble("area_width") * 2) + (data.getDouble("area_height") * 2))),
 			(data, entity) -> {
 
 				if (!(entity.level() instanceof ServerLevel serverWorld)) {

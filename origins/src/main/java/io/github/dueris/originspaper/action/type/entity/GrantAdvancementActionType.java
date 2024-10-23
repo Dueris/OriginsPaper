@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.action.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import net.minecraft.advancements.AdvancementHolder;
@@ -13,7 +13,6 @@ import net.minecraft.world.entity.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.advancement.CraftAdvancement;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -21,7 +20,7 @@ import java.util.HashSet;
 
 public class GrantAdvancementActionType {
 
-	public static void action(@NotNull Entity entity, @Nullable ResourceLocation advancementId, Collection<String> criteria) {
+	public static void action(Entity entity, @Nullable ResourceLocation advancementId, Collection<String> criteria) {
 
 		MinecraftServer server = entity.getServer();
 		if (server == null || !(entity instanceof ServerPlayer serverPlayerEntity)) {
@@ -37,7 +36,7 @@ public class GrantAdvancementActionType {
 
 	}
 
-	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+	public static ActionTypeFactory<Entity> getFactory() {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("grant_advancement"),
 			new SerializableData()

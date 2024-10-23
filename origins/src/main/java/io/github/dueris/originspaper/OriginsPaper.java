@@ -1,58 +1,50 @@
 package io.github.dueris.originspaper;
 
-import io.github.dueris.calio.parser.CalioParser;
-import io.github.dueris.calio.parser.JsonObjectRemapper;
-import io.github.dueris.originspaper.action.factory.BiEntityActions;
-import io.github.dueris.originspaper.action.factory.BlockActions;
-import io.github.dueris.originspaper.action.factory.EntityActions;
-import io.github.dueris.originspaper.action.factory.ItemActions;
-import io.github.dueris.originspaper.command.OriginCommand;
+import io.github.dueris.calio.util.IdentifierAlias;
+import io.github.dueris.originspaper.action.type.BiEntityActionTypes;
+import io.github.dueris.originspaper.action.type.BlockActionTypes;
+import io.github.dueris.originspaper.action.type.EntityActionTypes;
+import io.github.dueris.originspaper.action.type.ItemActionTypes;
 import io.github.dueris.originspaper.command.PowerCommand;
 import io.github.dueris.originspaper.command.ResourceCommand;
-import io.github.dueris.originspaper.condition.factory.*;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.data.OriginsDataTypes;
-import io.github.dueris.originspaper.data.types.modifier.ModifierOperations;
+import io.github.dueris.originspaper.condition.type.*;
+import io.github.dueris.originspaper.entity.EnderianPearlEntity;
 import io.github.dueris.originspaper.loot.condition.ApoliLootConditionTypes;
 import io.github.dueris.originspaper.loot.function.ApoliLootFunctionTypes;
-import io.github.dueris.originspaper.origin.Origin;
-import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.plugin.OriginsPlugin;
-import io.github.dueris.originspaper.power.factory.PowerType;
-import io.github.dueris.originspaper.power.type.FireProjectilePower;
-import io.github.dueris.originspaper.storage.OriginConfiguration;
-import io.github.dueris.originspaper.util.LangFile;
-import io.github.dueris.originspaper.util.Renderer;
+import io.github.dueris.originspaper.plugin.PluginInstances;
+import io.github.dueris.originspaper.power.PowerManager;
+import io.github.dueris.originspaper.power.type.PowerTypes;
+import io.github.dueris.originspaper.registry.ApoliClassData;
+import io.github.dueris.originspaper.util.fabric.resource.FabricResourceManagerImpl;
+import io.github.dueris.originspaper.util.modifier.ModifierOperations;
+import io.papermc.paper.command.brigadier.PaperCommands;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
-import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.packs.repository.PackRepository;
-import net.minecraft.util.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class OriginsPaper {
 	public static final Logger LOGGER = LogManager.getLogger("OriginsPaper");
-	public static final AtomicReference<Path> DATAPACK_PATH = new AtomicReference<>();
-	public static final AtomicReference<PackRepository> PACK_REPOSITORY = new AtomicReference<>();
-	public static final AtomicReference<RegistryAccess> REGISTRY_ACCESS = new AtomicReference<>();
 	public static String LANGUAGE = "en_us";
 	public static boolean showCommandOutput = false;
 	public static MinecraftServer server;
 	public static Path jarFile;
-	public static String version = "v1.2.3";
-
-	public static @NotNull ResourceLocation identifier(String path) {
-		return ResourceLocation.fromNamespaceAndPath("originspaper", path);
-	}
+	public static BootstrapContext bootContext;
+	public static String version = "v1.3.0";
 
 	public static @NotNull ResourceLocation originIdentifier(String path) {
 		return ResourceLocation.fromNamespaceAndPath("origins", path);
@@ -62,51 +54,25 @@ public class OriginsPaper {
 		return ResourceLocation.fromNamespaceAndPath("apoli", path);
 	}
 
-	public static PowerType getPower(ResourceLocation location) {
-		return PowerType.REGISTRY.get(location);
-	}
-
-	public static OriginLayer getLayer(ResourceLocation location) {
-		return OriginLayer.REGISTRY.get(location);
-	}
-
-	public static Origin getOrigin(ResourceLocation location) {
-		return Origin.REGISTRY.get(location);
-	}
-
 	public static OriginsPlugin getPlugin() {
 		return OriginsPlugin.plugin;
 	}
 
 	public static void init(@NotNull BootstrapContext context) throws Throwable {
 		jarFile = context.getPluginSource();
+		OriginsPaper.bootContext = context;
+		PluginInstances.init();
 
-		LifecycleEventManager<BootstrapContext> lifecycleManager = context.getLifecycleManager();
-		lifecycleManager.registerEventHandler((LifecycleEvents.COMMANDS.newHandler(event -> {
-			PowerCommand.register(event.registrar());
-			OriginCommand.register(event.registrar());
-			ResourceCommand.register(event.registrar());
-		})).priority(4));
+		// Ideally I would like to change this to use a mixin into the '<init>' of the 'Commands' class, but
+		//  Paper messes with this in terms of registering custom arguments via brigadier, so would need a way to translate
+		//  Papers API Command context -> Vanilla context - Dueris
+		context.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS.newHandler(event -> {
+			PaperCommands contextCommands = (PaperCommands) event.registrar();
+			contextCommands.register(PluginInstances.APOLI_META, PowerCommand.node(), null, new ArrayList<>());
+			contextCommands.register(PluginInstances.APOLI_META, ResourceCommand.node(), null, new ArrayList<>());
+		}).priority(1));
+		EnderianPearlEntity.bootstrap();
 
-		io.github.dueris.calio.parser.JsonObjectRemapper remapper = new io.github.dueris.calio.parser.JsonObjectRemapper(
-			List.of(new Tuple<>("origins", "apoli")),
-			List.of(
-				new Tuple<>("apoli:has_tag", "apoli:has_command_tag"),
-				new Tuple<>("apoli:custom_data", "apoli:nbt"),
-				new Tuple<>("apoli:is_equippable", "apoli:equippable"),
-				new Tuple<>("apoli:fireproof", "apoli:fire_resistant"),
-				new Tuple<>("apoli:merge_nbt", "apoli:merge_custom_data"),
-				new Tuple<>("apoli:revoke_power", "apoli:remove_power"),
-				new Tuple<>("apoli:water_protection", "origins:water_protection"),
-				new Tuple<>("apoli:enderian_pearl", "minecraft:ender_pearl")
-			),
-			List.of("power_type", "type", "entity_type")
-		);
-		JsonObjectRemapper.PRE_REMAP_HOOK.add(new Tuple<>(
-			"apoli:enderian_pearl",
-			(tuple) -> FireProjectilePower.IS_ENDERIAN_PEARL.add(tuple.getB())
-		));
-		CalioParser.REMAPPER.set(remapper);
 		reload();
 	}
 
@@ -116,24 +82,78 @@ public class OriginsPaper {
 		LANGUAGE = OriginConfiguration.getConfiguration().getString("language", LANGUAGE);
 		ApoliLootConditionTypes.register();
 		ApoliLootFunctionTypes.register();
-		LangFile.init();
-		Renderer.init();
-
-		OriginsDataTypes.init();
-		ApoliDataTypes.init();
+		ApoliClassData.registerAll();
 
 		ModifierOperations.register();
-		PowerType.register();
-		EntityConditions.register();
-		BiEntityConditions.register();
-		ItemConditions.register();
-		BlockConditions.register();
-		DamageConditions.register();
-		FluidConditions.register();
-		BiomeConditions.register();
-		EntityActions.register();
-		ItemActions.register();
-		BlockActions.register();
-		BiEntityActions.register();
+		PowerTypes.register();
+		EntityConditionTypes.register();
+		BiEntityConditionTypes.register();
+		ItemConditionTypes.register();
+		BlockConditionTypes.register();
+		DamageConditionTypes.register();
+		FluidConditionTypes.register();
+		BiomeConditionTypes.register();
+		EntityActionTypes.register();
+		ItemActionTypes.register();
+		BlockActionTypes.register();
+		BiEntityActionTypes.register();
+
+		FabricResourceManagerImpl.registerResourceReload(new PowerManager());
+		IdentifierAlias.GLOBAL.addNamespaceAlias("apoli", "calio");
+		IdentifierAlias.GLOBAL.addNamespaceAlias("origins", "apoli");
+		LOGGER.info("OriginsPaper, version {}, is initialized and ready to power up your game!", version);
+	}
+
+	public static class OriginConfiguration {
+		private static File server;
+		private static File orb;
+
+		public static void load() throws IOException {
+			File dataFolder = new File("plugins/OriginsPaper/");
+			if (!dataFolder.exists()) {
+				dataFolder.mkdirs();
+			}
+
+			File orbFile = fillFile("orb-of-origin.yml", new File(dataFolder, "orb-of-origin.yml"));
+			File originServer = fillFile("origin-server.yml", new File(dataFolder, "origin-server.yml"));
+			server = originServer;
+			orb = orbFile;
+			if (getConfiguration() == null) {
+				throw new RuntimeException("Unable to load origin-server configuration file!");
+			} else if (getOrbConfiguration() == null) {
+				throw new RuntimeException("Unable to load orb configuration file!");
+			} else {
+				getConfiguration().addDefaults(Map.of("choosing_delay", 0));
+				getOrbConfiguration().addDefaults(Map.of());
+			}
+		}
+
+		private static @NotNull File fillFile(String a, @NotNull File o) throws IOException {
+			if (!o.exists()) {
+				o.createNewFile();
+				ClassLoader cL = OriginConfiguration.class.getClassLoader();
+
+				try (InputStream stream = cL.getResourceAsStream(a)) {
+					if (stream == null) {
+						throw new RuntimeException("Unable to find resource: " + a);
+					}
+
+					byte[] buffer = stream.readAllBytes();
+					Files.write(o.toPath(), buffer);
+				} catch (IOException var8) {
+					var8.printStackTrace();
+				}
+
+			}
+			return o;
+		}
+
+		public static @NotNull YamlConfiguration getConfiguration() {
+			return YamlConfiguration.loadConfiguration(server);
+		}
+
+		public static @NotNull FileConfiguration getOrbConfiguration() {
+			return YamlConfiguration.loadConfiguration(orb);
+		}
 	}
 }

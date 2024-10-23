@@ -5,11 +5,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import org.jetbrains.annotations.NotNull;
 
 public class AttachableConditionType {
 
-	public static boolean condition(@NotNull BlockInWorld cachedBlock) {
+	public static boolean condition(BlockInWorld cachedBlock) {
 
 		LevelReader worldView = cachedBlock.getLevel();
 		BlockPos originPos = cachedBlock.getPos();

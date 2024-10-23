@@ -2,16 +2,20 @@ package io.github.dueris.originspaper.util;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.event.KeybindTriggerEvent;
-import io.github.dueris.originspaper.event.OriginChangeEvent;
+import io.github.dueris.originspaper.power.Power;
+import io.github.dueris.originspaper.power.type.Active;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -156,6 +160,19 @@ public class KeybindUtil implements Listener {
 		return new NamespacedKey(OriginsPaper.getPlugin(), id);
 	}
 
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onTrigger(KeybindTriggerEvent e) {
+		net.minecraft.world.entity.player.Player nms = ((CraftPlayer) e.getPlayer()).getHandle();
+		if (!PowerHolderComponent.KEY.isProvidedBy(nms)) return;
+		for (Power power : PowerHolderComponent.KEY.get(nms).getPowers(true)) {
+			if (power.getType(nms) instanceof Active active) {
+				if (active.getKey().key.equalsIgnoreCase(e.getKey())) {
+					active.onUse();
+				}
+			}
+		}
+	}
+
 	@EventHandler
 	public void jump(PlayerJumpEvent e) {
 		triggerExecution("key.jump", e.getPlayer());
@@ -244,11 +261,6 @@ public class KeybindUtil implements Listener {
 		if (e.getCurrentItem().isSimilar(getSecondaryTrigger((Player) e.getWhoClicked()))) {
 			e.setCancelled(true);
 		}
-	}
-
-	@EventHandler
-	public void resetKeybinding(OriginChangeEvent e) {
-		resetKeybinds(e.getPlayer());
 	}
 
 	@EventHandler

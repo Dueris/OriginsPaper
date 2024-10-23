@@ -1,6 +1,6 @@
 {
-	"replace": false,
-	"values": [
-		"minecraft:cobweb"
-	]
+  "replace": false,
+  "values": [
+    "minecraft:cobweb"
+  ]
 }

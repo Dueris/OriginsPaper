@@ -3,17 +3,16 @@ package io.github.dueris.originspaper.loot.function;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.dueris.calio.SerializableDataTypes;
+import io.github.dueris.calio.data.SerializableDataTypes;
+import io.github.dueris.originspaper.component.item.ItemPowersComponent;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.power.factory.PowerReference;
-import io.github.dueris.originspaper.storage.ItemPowersComponent;
+import io.github.dueris.originspaper.power.PowerReference;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -21,8 +20,8 @@ import java.util.List;
 public class AddPowerLootFunction extends LootItemConditionalFunction {
 
 	public static final MapCodec<AddPowerLootFunction> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance).and(instance.group(
-		SerializableDataTypes.ATTRIBUTE_MODIFIER_SLOT_SET.optionalFieldOf("slot", EnumSet.of(EquipmentSlotGroup.ANY)).forGetter(AddPowerLootFunction::slots),
-		ApoliDataTypes.POWER_REFERENCE.fieldOf("power").forGetter(AddPowerLootFunction::power),
+		SerializableDataTypes.ATTRIBUTE_MODIFIER_SLOT_SET.codec().optionalFieldOf("slot", EnumSet.of(EquipmentSlotGroup.ANY)).forGetter(AddPowerLootFunction::slots),
+		ApoliDataTypes.POWER_REFERENCE.codec().fieldOf("power").forGetter(AddPowerLootFunction::power),
 		Codec.BOOL.optionalFieldOf("hidden", false).forGetter(AddPowerLootFunction::hidden),
 		Codec.BOOL.optionalFieldOf("negative", false).forGetter(AddPowerLootFunction::negative)
 	)).apply(instance, AddPowerLootFunction::new));
@@ -42,12 +41,12 @@ public class AddPowerLootFunction extends LootItemConditionalFunction {
 	}
 
 	@Override
-	public @NotNull LootItemFunctionType<? extends LootItemConditionalFunction> getType() {
+	public LootItemFunctionType<? extends LootItemConditionalFunction> getType() {
 		return ApoliLootFunctionTypes.ADD_POWER;
 	}
 
 	@Override
-	public @NotNull ItemStack run(@NotNull ItemStack stack, @NotNull LootContext context) {
+	public ItemStack run(ItemStack stack, LootContext context) {
 
 		power().getOptionalReference().ifPresent(power -> {
 

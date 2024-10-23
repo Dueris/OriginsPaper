@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.condition.type.damage;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
@@ -10,13 +10,12 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
 public class ProjectileConditionType {
 
-	public static boolean condition(@NotNull DamageSource damageSource, EntityType<?> projectileType, Predicate<Entity> projectileCondition) {
+	public static boolean condition(DamageSource damageSource, EntityType<?> projectileType, Predicate<Entity> projectileCondition) {
 
 		Entity source = damageSource.getDirectEntity();
 
@@ -27,7 +26,7 @@ public class ProjectileConditionType {
 
 	}
 
-	public static @NotNull ConditionTypeFactory<Tuple<DamageSource, Float>> getFactory() {
+	public static ConditionTypeFactory<Tuple<DamageSource, Float>> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("projectile"),
 			new SerializableData()

@@ -1,23 +1,23 @@
 package io.github.dueris.originspaper.action.type.bientity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataType;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
-import io.github.dueris.originspaper.data.types.Space;
+import io.github.dueris.originspaper.util.Space;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.util.TriConsumer;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 import java.util.function.BiFunction;
 
 public class AddVelocityActionType {
 
-	public static void action(Entity actor, Entity target, @NotNull Reference reference, Vector3f velocity, boolean set) {
+	public static void action(Entity actor, Entity target, Reference reference, Vector3f velocity, boolean set) {
 
 		TriConsumer<Float, Float, Float> method = set
 			? target::setDeltaMovement
@@ -31,11 +31,11 @@ public class AddVelocityActionType {
 
 	}
 
-	public static @NotNull ActionTypeFactory<Tuple<Entity, Entity>> getFactory() {
+	public static ActionTypeFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("add_velocity"),
 			new SerializableData()
-				.add("reference", SerializableDataTypes.enumValue(Reference.class), Reference.POSITION)
+				.add("reference", SerializableDataType.enumValue(Reference.class), Reference.POSITION)
 				.add("x", SerializableDataTypes.FLOAT, 0F)
 				.add("y", SerializableDataTypes.FLOAT, 0F)
 				.add("z", SerializableDataTypes.FLOAT, 0F)

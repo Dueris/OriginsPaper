@@ -12,14 +12,13 @@ import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class SelectorActionType {
 
-	public static void action(@NotNull Entity entity, EntitySelector selector, Consumer<Tuple<Entity, Entity>> biEntityAction, Predicate<Tuple<Entity, Entity>> biEntityCondition) {
+	public static void action(Entity entity, EntitySelector selector, Consumer<Tuple<Entity, Entity>> biEntityAction, Predicate<Tuple<Entity, Entity>> biEntityCondition) {
 
 		MinecraftServer server = entity.level().getServer();
 		if (server == null) {
@@ -42,7 +41,7 @@ public class SelectorActionType {
 
 	}
 
-	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+	public static ActionTypeFactory<Entity> getFactory() {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("selector_action"),
 			new SerializableData()
@@ -50,7 +49,7 @@ public class SelectorActionType {
 				.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION)
 				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null),
 			(data, entity) -> action(entity,
-				data.<ArgumentWrapper<EntitySelector>>get("selector").get(),
+				data.<ArgumentWrapper<EntitySelector>>get("selector").argument(),
 				data.get("bientity_action"),
 				data.getOrElse("bientity_condition", actorAndTarget -> true)
 			)

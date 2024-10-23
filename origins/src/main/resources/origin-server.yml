@@ -8,19 +8,11 @@
 # Determines if the Orb Of Origins can be crafted.
 orb-of-origins: true
 
-# Tells the server if it should add OriginsPaper data reparse to the tick scheduler
-# If enabled, the value "tickRate" will be used and after that selected amount of ticks,
-# the origindata will reload.
-shouldTickReload: false
-
-# Tickrate default is 12000, or 10 minutes
-tickRate: 12000
-
-# Allows to set the max number of threads the power/origin loader will use. Default is 6
-max-loader-threads: 6
-
 # Shows the command output for actions and conditions that use it
 show-command-output: false
+
+# DEV debugging
+debug-logs: false
 
 # The language for the plugin to use. Must be included inside the plugin assets, or else it wont be valid.
 language: en_us

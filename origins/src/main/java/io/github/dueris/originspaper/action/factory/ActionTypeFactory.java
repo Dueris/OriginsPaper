@@ -1,53 +1,81 @@
 package io.github.dueris.originspaper.action.factory;
 
-import com.google.gson.JsonObject;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.Factory;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-public class ActionTypeFactory<T> implements Factory, Consumer<T> {
-	protected final BiConsumer<SerializableData.Instance, T> effect;
-	protected final SerializableData data;
-	private final ResourceLocation location;
-	public SerializableData.Instance deserializedFactory = null;
+public class ActionTypeFactory<T> implements Factory {
 
-	public ActionTypeFactory(ResourceLocation location, SerializableData data, @NotNull BiConsumer<SerializableData.Instance, T> effect) {
-		this.location = location;
-		this.data = data;
-		this.effect = effect;
+	protected final ResourceLocation id;
+
+	protected final SerializableData serializableData;
+	protected final Function<SerializableData.Instance, Consumer<T>> effectFactory;
+
+	public ActionTypeFactory(ResourceLocation id, SerializableData serializableData, @NotNull BiConsumer<SerializableData.Instance, T> effect) {
+		this.id = id;
+		this.serializableData = serializableData.copy();
+		this.effectFactory = data -> t -> effect.accept(data, t);
 	}
 
 	@Override
 	public ResourceLocation getSerializerId() {
-		return location;
+		return id;
 	}
 
 	@Override
 	public SerializableData getSerializableData() {
-		return data;
+		return serializableData;
 	}
 
 	@Override
-	public void accept(T t) {
-		if (deserializedFactory == null)
-			throw new IllegalStateException("Unable to execute ActionFactory because there was no DeserializedFactoryJson compiled!");
-		effect.accept(deserializedFactory, t);
+	public ActionTypeFactory.Instance fromData(SerializableData.Instance data) {
+		return new ActionTypeFactory.Instance(data);
 	}
 
-	public ActionTypeFactory<T> copy() {
-		return new ActionTypeFactory<T>(location, data, effect);
-	}
+	public class Instance implements Factory.Instance, Consumer<T> {
 
-	public ActionTypeFactory<T> decompile(JsonObject object) {
-		this.deserializedFactory = SerializableDataType.strictCompound(data, object, this.getClass());
-		if (data.postProcessor != null) {
-			data.postProcessor.accept(deserializedFactory);
+		protected final SerializableData.Instance data;
+		protected final Consumer<T> effect;
+
+		protected Instance(SerializableData.Instance data) {
+			this.effect = effectFactory.apply(data);
+			this.data = data;
 		}
-		return this;
+
+		@Override
+		public void accept(T t) {
+			effect.accept(t);
+		}
+
+		@Override
+		public SerializableData.Instance getData() {
+			return data;
+		}
+
+		@Override
+		public ActionTypeFactory<T> getFactory() {
+			return ActionTypeFactory.this;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+
+			if (this == obj) {
+				return true;
+			} else if (obj instanceof ActionTypeFactory<?>.Instance other) {
+				return this.getData().equals(other.getData())
+					&& this.getFactory().equals(other.getFactory());
+			} else {
+				return false;
+			}
+
+		}
+
 	}
+
 }

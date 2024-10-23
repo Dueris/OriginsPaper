@@ -1,0 +1,17 @@
+accessWidener v1 named
+
+accessible	class	net/minecraft/world/item/crafting/Ingredient$Value
+accessible	method	net/minecraft/world/item/crafting/Ingredient$ItemValue	<init>	(Lnet/minecraft/world/item/ItemStack;)V
+accessible	method	net/minecraft/world/item/crafting/Ingredient$TagValue	<init>	(Lnet/minecraft/tags/TagKey;)V
+accessible	method	net/minecraft/world/item/crafting/Ingredient	fromValues	(Ljava/util/stream/Stream;)Lnet/minecraft/world/item/crafting/Ingredient;
+extendable	class	net/minecraft/world/item/crafting/Ingredient
+accessible	method	net/minecraft/world/item/crafting/Ingredient	<init>	([Lnet/minecraft/world/item/crafting/Ingredient$Value;)V
+extendable	method	net/minecraft/server/packs/resources/SimplePreparableReloadListener	reload	(Lnet/minecraft/server/packs/resources/PreparableReloadListener$PreparationBarrier;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;Lnet/minecraft/util/profiling/ProfilerFiller;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;
+accessible	field	net/minecraft/world/food/FoodProperties$Builder	usingConvertsTo	Ljava/util/Optional;
+extendable	class	net/minecraft/resources/ResourceLocation
+accessible	method	net/minecraft/resources/ResourceLocation	<init>	(Ljava/lang/String;Ljava/lang/String;)V
+extendable	class	net/minecraft/server/ReloadableServerRegistries$EmptyTagLookupWrapper
+accessible	method	net/minecraft/tags/TagEntry	<init>	(Lnet/minecraft/util/ExtraCodecs$TagOrElementLocation;Z)V
+accessible	method	net/minecraft/world/entity/ai/behavior/ShufflingList	<init>	(Ljava/util/List;)V
+accessible	method	net/minecraft/world/entity/ai/behavior/ShufflingList$WeightedEntry	<init>	(Ljava/lang/Object;I)V
+accessible	class	net/minecraft/resources/RegistryOps$HolderLookupAdapter

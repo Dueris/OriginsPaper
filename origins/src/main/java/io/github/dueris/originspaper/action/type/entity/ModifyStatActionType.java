@@ -1,15 +1,14 @@
 package io.github.dueris.originspaper.action.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
-import io.github.dueris.originspaper.data.types.modifier.Modifier;
+import io.github.dueris.originspaper.util.modifier.Modifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.ServerStatsCounter;
 import net.minecraft.stats.Stat;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.NotNull;
 
 public class ModifyStatActionType {
 
@@ -27,7 +26,7 @@ public class ModifyStatActionType {
 
 	}
 
-	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+	public static ActionTypeFactory<Entity> getFactory() {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("modify_stat"),
 			new SerializableData()

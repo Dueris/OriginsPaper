@@ -4,483 +4,503 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import com.mojang.serialization.JsonOps;
+import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.command.argument.PowerArgumentType;
 import io.github.dueris.originspaper.command.argument.PowerHolderArgumentType;
-import io.github.dueris.originspaper.power.factory.PowerType;
-import io.github.dueris.originspaper.power.type.MultiplePower;
-import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import io.github.dueris.originspaper.command.argument.suggestion.PowerSuggestionProvider;
+import io.github.dueris.originspaper.component.PowerHolderComponent;
+import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.util.JsonTextFormatter;
-import io.github.dueris.originspaper.util.LangFile;
-import io.github.dueris.originspaper.util.PowerUtils;
 import io.github.dueris.originspaper.util.Util;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import io.papermc.paper.command.brigadier.Commands;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 
+@SuppressWarnings("UnstableApiUsage")
 public class PowerCommand {
 
-	public static ResourceLocation POWER_SOURCE = ResourceLocation.fromNamespaceAndPath("apoli", "command");
+	public static ResourceLocation POWER_SOURCE = OriginsPaper.apoliIdentifier("command");
 
-	public static void register(Commands dispatcher) {
-		dispatcher.register(
-			literal("power").requires(scs -> ((net.minecraft.commands.CommandSourceStack) scs).hasPermission(2))
-				.then(literal("grant")
-					.then(argument("targets", PowerHolderArgumentType.entities())
-						.then(argument("power", PowerArgumentType.power())
-							.executes(context -> grantPower(context, false))
-							.then(argument("source", ResourceLocationArgument.id())
-								.executes(context -> grantPower(context, true)))))
-				)
-				.then(Commands.literal("revoke")
-					.then(Commands.argument("targets", PowerHolderArgumentType.entities())
-						.then(Commands.argument("power", PowerArgumentType.power())
-							.executes(context -> revokePower(context, false))
-							.then(Commands.argument("source", ResourceLocationArgument.id())
-								.executes(context -> revokePower(context, true))))
-						.then(Commands.literal("all")
-							.then(Commands.argument("source", ResourceLocationArgument.id())
-								.executes(PowerCommand::revokeAllPowers))))
-				)
-				.then(literal("list")
-					.then(argument("target", PowerHolderArgumentType.entity())
-						.executes(context -> listPowers(context, false))
-						.then(argument("subpowers", BoolArgumentType.bool())
-							.executes(context -> listPowers(context, BoolArgumentType.getBool(context, "subpowers")))))
-				)
-				.then(literal("has")
-					.then(argument("targets", PowerHolderArgumentType.entities())
-						.then(argument("power", PowerArgumentType.power())
-							.executes(PowerCommand::hasPower)))
-				)
-				.then(literal("sources")
-					.then(argument("target", PowerHolderArgumentType.entity())
-						.then(argument("power", PowerArgumentType.power())
-							.executes(PowerCommand::getSourcesFromPower)))
-				)
-				.then(literal("remove")
-					.then(argument("targets", PowerHolderArgumentType.entities())
-						.then(argument("power", PowerArgumentType.power())
-							.executes(PowerCommand::removePower)))
-				)
-				.then(literal("clear")
-					.executes(context -> clearAllPowers(context, true))
-					.then(argument("targets", PowerHolderArgumentType.entities())
-						.executes(context -> clearAllPowers(context, false)))
-				)
-				.then(literal("dump")
+	public static @NotNull LiteralCommandNode<CommandSourceStack> node() {
+
+		//	The main node of the command
+		var powerNode = literal("power")
+			.requires(source -> ((net.minecraft.commands.CommandSourceStack) source).hasPermission(2))
+			.build();
+
+		//	Add the sub-nodes as children of the main node
+		powerNode.addChild(GrantNode.get());
+		powerNode.addChild(RevokeNode.get());
+		powerNode.addChild(ListNode.get());
+		powerNode.addChild(HasNode.get());
+		powerNode.addChild(SourcesNode.get());
+		powerNode.addChild(RemoveNode.get());
+		powerNode.addChild(ClearNode.get());
+		powerNode.addChild(DumpNode.get());
+
+		return powerNode;
+
+	}
+
+	public static class GrantNode {
+
+		public static LiteralCommandNode<CommandSourceStack> get() {
+			return literal("grant")
+				.then(argument("targets", PowerHolderArgumentType.entities())
 					.then(argument("power", PowerArgumentType.power())
-						.executes(context -> dumpPowerJson(context, false))
-						.then(argument("indent", IntegerArgumentType.integer(0))
-							.executes(context -> dumpPowerJson(context, true))))
-				).build()
-		);
-	}
-
-	private static int grantPower(@NotNull CommandContext<CommandSourceStack> context, boolean isSourceSpecified) throws CommandSyntaxException {
-
-		net.minecraft.commands.CommandSourceStack source = (net.minecraft.commands.CommandSourceStack) context.getSource();
-
-		List<LivingEntity> targets = PowerHolderArgumentType.getHolders(context, "targets");
-
-		PowerType power = PowerArgumentType.getPower(context, "power");
-		ResourceLocation powerSource = isSourceSpecified ? context.getArgument("source", ResourceLocation.class) : POWER_SOURCE;
-
-		for (LivingEntity target : targets) {
-
-			if (target instanceof ServerPlayer player) {
-				PowerUtils.grantPower(source.getSender(), power, player.getBukkitEntity(), powerSource, true);
-			}
-
+						.executes(context -> execute(context, false))
+						.then(argument("source", ResourceLocationArgument.id())
+							.executes(context -> execute(context, true))))).build();
 		}
 
-		String powerTypeName = PlainTextComponentSerializer.plainText().serialize(power.name());
-		String targetName = targets.getFirst().getName().getString();
+		public static int execute(CommandContext<CommandSourceStack> context, boolean specifiedSource) throws CommandSyntaxException {
 
-		int targetsSize = targets.size();
-		int processedTargetsSize = targets.size();
+			List<LivingEntity> targets = PowerHolderArgumentType.getHolders(context, "targets");
+			Power power = PowerArgumentType.getPower(context, "power");
 
-		if (processedTargetsSize == 0) {
+			ResourceLocation source = specifiedSource
+				? Util.getId(context, "source")
+				: POWER_SOURCE;
 
-			if (targetsSize == 1) {
-				source.sendFailure(LangFile.translatable("commands.apoli.grant.fail.single", targetName, powerTypeName, powerSource.toString()));
+			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
+			List<LivingEntity> processedTargets = targets.stream()
+				.filter(e -> PowerHolderComponent.grantPower(e, power, source, true))
+				.toList();
+
+			if (processedTargets.isEmpty()) {
+
+				if (targets.size() == 1) {
+					commandSource.sendFailure(Component.translatable("commands.apoli.grant.fail.single", targets.getFirst().getName(), power.getName(), source.toString()));
+				} else {
+					commandSource.sendFailure(Component.translatable("commands.apoli.grant.fail.multiple", targets.size(), power.getName(), source.toString()));
+				}
+
+			} else if (specifiedSource) {
+
+				if (processedTargets.size() == 1) {
+					commandSource.sendSuccess(() -> Component.translatable("commands.apoli.grant_from_source.success.single", processedTargets.getFirst().getName(), power.getName(), source.toString()), true);
+				} else {
+					commandSource.sendSuccess(() -> Component.translatable("commands.apoli.grant_from_source.success.multiple", processedTargets.size(), power.getName(), source.toString()), true);
+				}
+
 			} else {
-				source.sendFailure(LangFile.translatable("commands.apoli.grant.fail.multiple", targetsSize, powerTypeName, powerSource.toString()));
+
+				if (processedTargets.size() == 1) {
+					commandSource.sendSuccess(() -> Component.translatable("commands.apoli.grant.success.single", processedTargets.getFirst().getName(), power.getName()), true);
+				} else {
+					commandSource.sendSuccess(() -> Component.translatable("commands.apoli.grant.success.multiple", processedTargets.size(), power.getName()), true);
+				}
+
 			}
 
-			return processedTargetsSize;
+			return processedTargets.size();
 
 		}
-
-		String processedTargetName = targets.getFirst().getName().getString();
-		if (isSourceSpecified) {
-			if (processedTargetsSize == 1) {
-				source.sendSuccess(() -> LangFile.translatable("commands.apoli.grant_from_source.success.single", processedTargetName, powerTypeName, powerSource.toString()), true);
-			} else {
-				source.sendSuccess(() -> LangFile.translatable("commands.apoli.grant_from_source.success.multiple", processedTargetsSize, powerTypeName, powerSource.toString()), true);
-			}
-		} else {
-			if (processedTargetsSize == 1) {
-				source.sendSuccess(() -> LangFile.translatable("commands.apoli.grant.success.single", processedTargetName, powerTypeName), true);
-			} else {
-				source.sendSuccess(() -> LangFile.translatable("commands.apoli.grant.success.multiple", processedTargetsSize, powerTypeName), true);
-			}
-		}
-
-		return processedTargetsSize;
 
 	}
 
-	private static int revokePower(@NotNull CommandContext<CommandSourceStack> context, boolean isSourceSpecified) throws CommandSyntaxException {
+	public static class RevokeNode {
 
-		net.minecraft.commands.CommandSourceStack source = (net.minecraft.commands.CommandSourceStack) context.getSource();
-
-		List<LivingEntity> targets = PowerHolderArgumentType.getHolders(context, "targets");
-
-		PowerType power = PowerArgumentType.getPower(context, "power");
-		ResourceLocation powerSource = isSourceSpecified ? context.getArgument("source", ResourceLocation.class) : POWER_SOURCE;
-
-		for (LivingEntity target : targets) {
-
-			if (target instanceof ServerPlayer player) {
-				PowerUtils.removePower(source.getBukkitSender(), power, player.getBukkitEntity(), powerSource, true);
-			}
-
+		public static LiteralCommandNode<CommandSourceStack> get() {
+			return literal("revoke")
+				.then(argument("targets", PowerHolderArgumentType.entities())
+					.then(argument("power", PowerArgumentType.power())
+						.suggests(PowerSuggestionProvider.powersFromEntities("targets"))
+						.executes(context -> executeSingle(context, false))
+						.then(argument("source", ResourceLocationArgument.id())
+							.executes(context -> executeSingle(context, true))))
+					.then(literal("all")
+						.then(argument("source", ResourceLocationArgument.id())
+							.executes(RevokeNode::executeAll)))).build();
 		}
 
-		String powerTypeName = PlainTextComponentSerializer.plainText().serialize(power.name());
+		public static int executeSingle(CommandContext<CommandSourceStack> context, boolean specifiedSource) throws CommandSyntaxException {
 
-		int processedTargetsSize = targets.size();
+			List<LivingEntity> targets = PowerHolderArgumentType.getHolders(context, "targets");
+			Power power = PowerArgumentType.getPower(context, "power");
 
-		if (processedTargetsSize == 0) {
+			ResourceLocation source = specifiedSource
+				? Util.getId(context, "source")
+				: POWER_SOURCE;
 
-			source.sendFailure(LangFile.translatable("commands.apoli.revoke.fail.multiple", powerTypeName, powerSource.toString()));
+			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
+			List<LivingEntity> processedTargets = targets.stream()
+				.filter(target -> PowerHolderComponent.revokePower(target, power, source, true))
+				.toList();
 
-			return processedTargetsSize;
+			if (processedTargets.isEmpty()) {
 
-		}
+				if (targets.size() == 1) {
+					commandSource.sendFailure(Component.translatable("commands.apoli.revoke.fail.single", targets.getFirst().getName(), power.getName(), source.toString()));
+				} else {
+					commandSource.sendFailure(Component.translatable("commands.apoli.revoke.fail.multiple", power.getName(), source.toString()));
+				}
 
-		String processedTargetName = targets.getFirst().getName().getString();
-		if (isSourceSpecified) {
-			if (processedTargetsSize == 1) {
-				source.sendSuccess(() -> LangFile.translatable("commands.apoli.revoke_from_source.success.single", processedTargetName, powerTypeName, powerSource.toString()), true);
+			} else if (specifiedSource) {
+
+				if (processedTargets.size() == 1) {
+					commandSource.sendSuccess(() -> Component.translatable("commands.apoli.revoke_from_source.success.single", processedTargets.getFirst().getName(), power.getName(), source.toString()), true);
+				} else {
+					commandSource.sendSuccess(() -> Component.translatable("commands.apoli.revoke_from_source.success.multiple", processedTargets.size(), power.getName(), source.toString()), true);
+				}
+
 			} else {
-				source.sendSuccess(() -> LangFile.translatable("commands.apoli.revoke_from_source.success.multiple", processedTargetsSize, powerTypeName, powerSource.toString()), true);
-			}
-		} else {
-			if (processedTargetsSize == 1) {
-				source.sendSuccess(() -> LangFile.translatable("commands.apoli.revoke.success.single", processedTargetName, powerTypeName), true);
-			} else {
-				source.sendSuccess(() -> LangFile.translatable("commands.apoli.revoke.success.multiple", processedTargetsSize, powerTypeName), true);
-			}
-		}
 
-		return processedTargetsSize;
+				if (processedTargets.size() == 1) {
+					commandSource.sendSuccess(() -> Component.translatable("commands.apoli.revoke.success.single", processedTargets.getFirst().getName(), power.getName()), true);
+				} else {
+					commandSource.sendSuccess(() -> Component.translatable("commands.apoli.revoke.success.multiple", processedTargets.size(), power.getName()), true);
+				}
 
-	}
-
-	private static int revokeAllPowers(@NotNull CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-
-		net.minecraft.commands.CommandSourceStack source = (net.minecraft.commands.CommandSourceStack) context.getSource();
-
-		List<LivingEntity> targets = PowerHolderArgumentType.getHolders(context, "targets");
-		List<LivingEntity> processedTargets = new LinkedList<>();
-
-		ResourceLocation powerSource = context.getArgument("source", ResourceLocation.class);
-		int revokedPowers = 0;
-
-		for (LivingEntity target : targets) {
-
-			int revokedPowersFromSource = 0;
-			for (PowerType power : PowerHolderComponent.getPowersFromSource(powerSource, target.getBukkitEntity())) {
-				PowerUtils.removePower(source.getBukkitSender(), power, target.getBukkitEntity(), powerSource, true);
-				revokedPowersFromSource++;
-			}
-			revokedPowers += revokedPowersFromSource;
-
-			if (revokedPowersFromSource > 0) {
-				processedTargets.add(target);
 			}
 
-		}
-
-		String targetName = targets.getFirst().getName().getString();
-
-		int targetsSize = targets.size();
-		int processedTargetsSize = processedTargets.size();
-
-		if (processedTargetsSize == 0) {
-			if (targetsSize == 1) {
-				source.sendFailure(LangFile.translatable("commands.apoli.revoke_all.fail.single", targetName, powerSource.toString()));
-			} else {
-				source.sendFailure(LangFile.translatable("commands.apoli.revoke_all.fail.multiple", powerSource));
-			}
-		} else {
-
-			String processedTargetName = processedTargets.getFirst().getName().getString();
-			int finalRevokedPowers = revokedPowers;
-
-			if (processedTargetsSize == 1) {
-				source.sendSuccess(() -> LangFile.translatable("commands.apoli.revoke_all.success.single", processedTargetName, finalRevokedPowers, powerSource.toString()), true);
-			} else {
-				source.sendSuccess(() -> LangFile.translatable("commands.apoli.revoke_all.success.multiple", processedTargetsSize, finalRevokedPowers, powerSource.toString()), true);
-			}
+			return processedTargets.size();
 
 		}
 
-		return processedTargetsSize;
+		public static int executeAll(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 
-	}
+			List<LivingEntity> targets = PowerHolderArgumentType.getHolders(context, "targets");
+			ResourceLocation source = Util.getId(context, "source");
 
-	private static int listPowers(@NotNull CommandContext<CommandSourceStack> context, boolean includeSubpowers) throws CommandSyntaxException {
-
-		net.minecraft.commands.CommandSourceStack source = (net.minecraft.commands.CommandSourceStack) context.getSource();
-		LivingEntity target = PowerHolderArgumentType.getHolder(context, "target");
-
-		List<Component> powersTooltip = new LinkedList<>();
-		int powers = 0;
-
-		List<PowerType> powerTypes = new LinkedList<>(PowerHolderComponent.getPowers(target.getBukkitEntity()));
-		List<MultiplePower> multiples = PowerHolderComponent.getPowers(target.getBukkitEntity(), MultiplePower.class);
-		if (!includeSubpowers) {
-			powerTypes.removeAll(Util.collapseCollection(multiples.stream().map(MultiplePower::getSubPowers).toList()));
-		}
-
-		for (PowerType power : powerTypes) {
-
-			List<Component> sourcesTooltip = new LinkedList<>();
-			PowerHolderComponent.getSources(power, target.getBukkitEntity()).forEach(id -> sourcesTooltip.add(Component.nullToEmpty(id.toString())));
-
-			HoverEvent sourceHoverEvent = new HoverEvent(
-				HoverEvent.Action.SHOW_TEXT,
-				LangFile.translatable("commands.apoli.list.sources", ComponentUtils.formatList(sourcesTooltip, Component.nullToEmpty(",")))
-			);
-
-			Component powerTooltip = Component.literal(power.getId().toString())
-				.setStyle(Style.EMPTY.withHoverEvent(sourceHoverEvent));
-
-			powersTooltip.add(powerTooltip);
-			powers++;
-
-		}
-
-		if (powers == 0) {
-			source.sendFailure(LangFile.translatable("commands.apoli.list.fail", target.getName()));
-		} else {
-			int finalPowers = powers;
-			source.sendSuccess(() -> LangFile.translatable("commands.apoli.list.pass", target.getName(), finalPowers, ComponentUtils.formatList(powersTooltip, Component.nullToEmpty(", "))), true);
-		}
-
-		return powers;
-
-	}
-
-	private static int hasPower(@NotNull CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-
-		net.minecraft.commands.CommandSourceStack source = (net.minecraft.commands.CommandSourceStack) context.getSource();
-
-		List<LivingEntity> targets = PowerHolderArgumentType.getHolders(context, "targets");
-		List<LivingEntity> processedTargets = new LinkedList<>();
-
-		PowerType power = PowerArgumentType.getPower(context, "power");
-
-		for (LivingEntity target : targets) {
-			if (PowerHolderComponent.hasPower(target.getBukkitEntity(), power)) {
-				processedTargets.add(target);
-			}
-		}
-
-		int targetsSize = targets.size();
-		int processedTargetsSize = processedTargets.size();
-
-		if (processedTargetsSize == 0) {
-			if (targetsSize == 1) {
-				source.sendFailure(LangFile.translatable("commands.execute.conditional.fail"));
-			} else {
-				source.sendFailure(LangFile.translatable("commands.execute.conditional.fail_count", targetsSize));
-			}
-		} else {
-			if (processedTargetsSize == 1) {
-				source.sendSuccess(() -> LangFile.translatable("commands.execute.conditional.pass"), true);
-			} else {
-				source.sendSuccess(() -> LangFile.translatable("commands.execute.conditional.pass_count", processedTargetsSize), true);
-			}
-		}
-
-		return processedTargets.size();
-
-	}
-
-	private static int getSourcesFromPower(@NotNull CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-
-		net.minecraft.commands.CommandSourceStack source = (net.minecraft.commands.CommandSourceStack) context.getSource();
-
-		LivingEntity target = PowerHolderArgumentType.getHolder(context, "target");
-		PowerType power = PowerArgumentType.getPower(context, "power");
-
-		StringBuilder powerSources = new StringBuilder();
-		int powers = 0;
-
-		String separator = "";
-		for (ResourceLocation powerSource : PowerHolderComponent.getSources(power, target.getBukkitEntity())) {
-
-			powerSources.append(separator).append(powerSource.toString());
-			powers++;
-
-			separator = ", ";
-
-		}
-
-		if (powers == 0) {
-			source.sendFailure(LangFile.translatable("commands.apoli.sources.fail", target.getName(), power.name()));
-		} else {
-			int finalPowers = powers;
-			source.sendSuccess(() -> LangFile.translatable("commands.apoli.sources.pass", target.getName(), finalPowers, power.name(), powerSources.toString()), true);
-		}
-
-		return powers;
-
-	}
-
-	private static int removePower(@NotNull CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-
-		net.minecraft.commands.CommandSourceStack source = (net.minecraft.commands.CommandSourceStack) context.getSource();
-
-		List<LivingEntity> targets = PowerHolderArgumentType.getHolders(context, "targets");
-		List<LivingEntity> processedTargets = new LinkedList<>();
-
-		PowerType power = PowerArgumentType.getPower(context, "power");
-		for (LivingEntity target : targets) {
-			if (!(target instanceof ServerPlayer player)) continue;
+			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
+			List<LivingEntity> processedTargets = new ObjectArrayList<>();
 
 			AtomicInteger revokedPowers = new AtomicInteger();
-			PowerHolderComponent.getSources(power, target.getBukkitEntity()).forEach(location -> {
-				PowerUtils.removePower(source.getBukkitSender(), power, player.getBukkitEntity(), location, true);
+			for (LivingEntity target : targets) {
 
-				revokedPowers.getAndIncrement();
-			});
+				int revokedPowersFromSource = PowerHolderComponent.revokeAllPowersFromSource(target, source, true);
+				revokedPowers.accumulateAndGet(revokedPowersFromSource, Integer::sum);
 
-			if (revokedPowers.get() > 0) {
+				if (revokedPowersFromSource > 0) {
+					processedTargets.add(target);
+				}
+
+			}
+
+			if (processedTargets.isEmpty()) {
+
+				if (targets.size() == 1) {
+					commandSource.sendFailure(Component.translatable("commands.apoli.revoke_all.fail.single", targets.getFirst().getName(), source.toString()));
+				} else {
+					commandSource.sendFailure(Component.translatableEscape("commands.apoli.revoke_all.fail.multiple", source));
+				}
+
+			} else {
+
+				if (processedTargets.size() == 1) {
+					commandSource.sendSuccess(() -> Component.translatable("commands.apoli.revoke_all.success.single", processedTargets.getFirst().getName(), revokedPowers.get(), source.toString()), true);
+				} else {
+					commandSource.sendSuccess(() -> Component.translatable("commands.apoli.revoke_all.success.multiple", processedTargets.size(), revokedPowers.get(), source.toString()), true);
+				}
+
+			}
+
+			return revokedPowers.get();
+
+		}
+
+	}
+
+	public static class ListNode {
+
+		public static LiteralCommandNode<CommandSourceStack> get() {
+			return literal("list")
+				.executes(context -> execute(context, true, false))
+				.then(argument("target", PowerHolderArgumentType.entities())
+					.executes(context -> execute(context, false, false))
+					.then(argument("subPowers", BoolArgumentType.bool())
+						.executes(context -> execute(context, false, BoolArgumentType.getBool(context, "subPowers"))))).build();
+		}
+
+		public static int execute(CommandContext<CommandSourceStack> context, boolean self, boolean includeSubPowers) throws CommandSyntaxException {
+
+			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
+			Entity target = self
+				? commandSource.getEntityOrException()
+				: PowerHolderArgumentType.getHolder(context, "target");
+
+			PowerHolderComponent powerComponent = PowerHolderComponent.KEY
+				.maybeGet(target)
+				.orElseThrow(() -> PowerHolderArgumentType.HOLDER_NOT_FOUND.create(target.getName()));
+
+			List<Component> powersTooltip = new ObjectArrayList<>();
+			for (Power power : powerComponent.getPowers(includeSubPowers)) {
+
+				List<Component> sourcesTooltip = powerComponent.getSources(power)
+					.stream()
+					.map(Component::translationArg)
+					.toList();
+
+				Component joinedSourcesTooltip = Component.translatable("commands.apoli.list.sources", ComponentUtils.formatList(sourcesTooltip, Component.nullToEmpty(", ")));
+				HoverEvent sourceHoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, joinedSourcesTooltip);
+
+				powersTooltip.add(Component
+					.literal(power.getId().toString())
+					.setStyle(Style.EMPTY.withHoverEvent(sourceHoverEvent)));
+
+			}
+
+			if (powersTooltip.isEmpty()) {
+				commandSource.sendFailure(Component.translatable("commands.apoli.list.fail", target.getName()));
+			} else {
+				commandSource.sendSuccess(() -> Component.translatable("commands.apoli.list.pass", target.getName(), powersTooltip.size(), ComponentUtils.formatList(powersTooltip, Component.nullToEmpty(", "))), false);
+			}
+
+			return powersTooltip.size();
+
+		}
+
+	}
+
+	public static class HasNode {
+
+		public static LiteralCommandNode<CommandSourceStack> get() {
+			return literal("has")
+				.then(argument("targets", PowerHolderArgumentType.entities())
+					.then(argument("power", PowerArgumentType.power())
+						.executes(HasNode::execute))).build();
+		}
+
+		public static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+
+			List<LivingEntity> targets = PowerHolderArgumentType.getHolders(context, "targets");
+			Power power = PowerArgumentType.getPower(context, "power");
+
+			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
+			List<LivingEntity> processedTargets = targets.stream()
+				.filter(target -> PowerHolderComponent.KEY.get(target).hasPower(power))
+				.toList();
+
+			if (processedTargets.isEmpty()) {
+
+				if (targets.size() == 1) {
+					commandSource.sendFailure(Component.translatable("commands.execute.conditional.fail"));
+				} else {
+					commandSource.sendFailure(Component.translatable("commands.execute.conditional.fail_count", targets.size()));
+				}
+
+			} else {
+
+				if (processedTargets.size() == 1) {
+					commandSource.sendSuccess(() -> Component.translatable("commands.execute.conditional.pass"), false);
+				} else {
+					commandSource.sendSuccess(() -> Component.translatable("commands.execute.conditional.pass_count", processedTargets.size()), false);
+				}
+
+			}
+
+			return processedTargets.size();
+
+		}
+
+	}
+
+	public static class SourcesNode {
+
+		public static LiteralCommandNode<CommandSourceStack> get() {
+			return literal("sources")
+				.then(argument("target", PowerHolderArgumentType.entity())
+					.then(argument("power", PowerArgumentType.power())
+						.suggests(PowerSuggestionProvider.powersFromEntity("target"))
+						.executes(SourcesNode::execute)
+						.then(literal("")))).build();
+		}
+
+		public static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+
+			Entity target = PowerHolderArgumentType.getHolder(context, "target");
+			Power power = PowerArgumentType.getPower(context, "power");
+
+			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
+			PowerHolderComponent powerComponent = PowerHolderComponent.KEY.get(target);
+
+			List<ResourceLocation> sources = powerComponent.getSources(power);
+			String joinedSources = sources
+				.stream()
+				.map(ResourceLocation::toString)
+				.collect(Collectors.joining(", "));
+
+			if (sources.isEmpty()) {
+				commandSource.sendFailure(Component.translatable("commands.apoli.sources.fail", target.getName(), power.getName()));
+			} else {
+				commandSource.sendSuccess(() -> Component.translatable("commands.apoli.sources.pass", target.getName(), sources.size(), power.getName(), joinedSources), false);
+			}
+
+			return sources.size();
+
+		}
+
+	}
+
+	public static class RemoveNode {
+
+		public static LiteralCommandNode<CommandSourceStack> get() {
+			return literal("remove")
+				.then(argument("targets", PowerHolderArgumentType.entities())
+					.then(argument("power", PowerArgumentType.power())
+						.suggests(PowerSuggestionProvider.powersFromEntities("targets"))
+						.executes(RemoveNode::execute)
+						.then(literal("")))).build();
+		}
+
+		public static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+
+			List<LivingEntity> targets = PowerHolderArgumentType.getHolders(context, "targets");
+			Power power = PowerArgumentType.getPower(context, "power");
+
+			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
+			List<LivingEntity> processedTargets = new ObjectArrayList<>();
+
+			for (LivingEntity target : targets) {
+
+				Map<ResourceLocation, Collection<Power>> powers = PowerHolderComponent.KEY.get(target).getSources(power)
+					.stream()
+					.collect(Collectors.toMap(Function.identity(), id -> ObjectOpenHashSet.of(power), Util.mergeCollections()));
+
+				if (PowerHolderComponent.revokePowers(target, powers, true)) {
+					processedTargets.add(target);
+				}
+
+			}
+
+			if (processedTargets.isEmpty()) {
+
+				if (targets.size() == 1) {
+					commandSource.sendFailure(Component.translatable("commands.apoli.remove.fail.single", targets.getFirst().getName(), power.getName()));
+				} else {
+					commandSource.sendFailure(Component.translatable("commands.apoli.remove.fail.multiple", power.getName()));
+				}
+
+			} else {
+
+				if (processedTargets.size() == 1) {
+					commandSource.sendSuccess(() -> Component.translatable("commands.apoli.remove.success.single", processedTargets.getFirst().getName(), power.getName()), true);
+				} else {
+					commandSource.sendSuccess(() -> Component.translatable("commands.apoli.remove.success.multiple", processedTargets.size(), power.getName()), false);
+				}
+
+			}
+
+			return processedTargets.size();
+
+		}
+
+	}
+
+	public static class ClearNode {
+
+		public static LiteralCommandNode<CommandSourceStack> get() {
+			return literal("clear")
+				.executes(context -> execute(context, true))
+				.then(argument("targets", PowerHolderArgumentType.entities())
+					.executes(context -> execute(context, false))).build();
+		}
+
+		public static int execute(CommandContext<CommandSourceStack> context, boolean self) throws CommandSyntaxException {
+
+			List<Entity> targets = new ObjectArrayList<>();
+			List<Entity> processedTargets = new ObjectArrayList<>();
+
+			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
+			AtomicInteger clearedPowers = new AtomicInteger();
+
+			if (self) {
+
+				Entity selfEntity = commandSource.getEntityOrException();
+
+				PowerHolderComponent.KEY.maybeGet(selfEntity)
+					.map(powerComponent -> targets.add(selfEntity))
+					.orElseThrow(() -> PowerHolderArgumentType.HOLDER_NOT_FOUND.create(selfEntity.getName()));
+
+			} else {
+				targets.addAll(PowerHolderArgumentType.getHolders(context, "targets"));
+			}
+
+			for (Entity target : targets) {
+
+				PowerHolderComponent component = PowerHolderComponent.KEY.get(target);
+				List<ResourceLocation> sources = component.getPowers(false)
+					.stream()
+					.map(component::getSources)
+					.flatMap(Collection::stream)
+					.toList();
+
+				if (sources.isEmpty()) {
+					continue;
+				}
+
+				clearedPowers.accumulateAndGet(PowerHolderComponent.revokeAllPowersFromAllSources(target, sources, true), Integer::sum);
 				processedTargets.add(target);
+
 			}
+
+			if (processedTargets.isEmpty()) {
+
+				if (targets.size() == 1) {
+					commandSource.sendFailure(Component.translatable("commands.apoli.clear.fail.single", targets.getFirst().getName()));
+				} else {
+					commandSource.sendFailure(Component.translatable("commands.apoli.clear.fail.multiple"));
+				}
+
+			} else {
+
+				if (processedTargets.size() == 1) {
+					commandSource.sendSuccess(() -> Component.translatable("commands.apoli.clear.success.single", processedTargets.getFirst().getName(), clearedPowers.get()), true);
+				} else {
+					commandSource.sendSuccess(() -> Component.translatable("commands.apoli.clear.success.multiple", processedTargets.size(), clearedPowers.get()), true);
+				}
+
+			}
+
+			return clearedPowers.get();
 
 		}
-
-		String targetName = targets.getFirst().getName().getString();
-		String powerTypeName = PlainTextComponentSerializer.plainText().serialize(power.name());
-
-		int targetsSize = targets.size();
-		int processedTargetsSize = processedTargets.size();
-
-		if (processedTargetsSize == 0) {
-			if (targetsSize == 1) {
-				source.sendFailure(LangFile.translatable("commands.apoli.remove.fail.single", targetName, powerTypeName));
-			} else {
-				source.sendFailure(LangFile.translatable("commands.apoli.remove.fail.multiple", powerTypeName));
-			}
-		} else {
-			String processedTargetName = processedTargets.getFirst().getName().getString();
-			if (processedTargetsSize == 1) {
-				source.sendSuccess(() -> LangFile.translatable("commands.apoli.remove.success.single", processedTargetName, powerTypeName), true);
-			} else {
-				source.sendSuccess(() -> LangFile.translatable("commands.apoli.remove.success.multiple", processedTargetsSize, powerTypeName), true);
-			}
-		}
-
-		return processedTargetsSize;
 
 	}
 
-	private static int clearAllPowers(@NotNull CommandContext<CommandSourceStack> context, boolean onlyTargetSelf) throws CommandSyntaxException {
+	public static class DumpNode {
 
-		net.minecraft.commands.CommandSourceStack source = (net.minecraft.commands.CommandSourceStack) context.getSource();
-
-		List<LivingEntity> targets = new LinkedList<>();
-		List<LivingEntity> processedTargets = new LinkedList<>();
-
-		if (!onlyTargetSelf) {
-			targets.addAll(PowerHolderArgumentType.getHolders(context, "targets"));
-		} else {
-
-			Entity self = source.getEntityOrException();
-			if (!(self instanceof LivingEntity livingSelf)) {
-				throw PowerHolderArgumentType.HOLDER_NOT_FOUND.create(self.getName());
-			}
-
-			targets.add(livingSelf);
-
+		public static LiteralCommandNode<CommandSourceStack> get() {
+			return literal("dump")
+				.then(argument("power", PowerArgumentType.power())
+					.executes(context -> execute(context, 4))
+					.then(argument("indent", IntegerArgumentType.integer(0))
+						.executes(context -> execute(context, IntegerArgumentType.getInteger(context, "indent"))))).build();
 		}
 
-		int clearedPowers = 0;
-		for (LivingEntity target : targets) {
-			if (!(target instanceof ServerPlayer player)) continue;
+		public static int execute(CommandContext<CommandSourceStack> context, int indent) {
 
-			List<PowerType> powers = PowerHolderComponent.getPowers(target.getBukkitEntity());
+			Power power = PowerArgumentType.getPower(context, "power");
+			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
 
-			if (powers.isEmpty()) continue;
-
-			for (PowerType power : powers) {
-				PowerUtils.removePower(source.getBukkitSender(), power, player.getBukkitEntity(), null, true);
-			}
-
-			clearedPowers += powers.size();
-			processedTargets.add(target);
-
+			commandSource.sendSuccess(() -> new JsonTextFormatter(indent).apply(
+				Power.CODEC.encodeStart(commandSource.registryAccess().createSerializationContext(JsonOps.INSTANCE), power).getOrThrow()
+			), false);
+			return 1;
 		}
-
-		String targetName = targets.getFirst().getName().getString();
-
-		int targetsSize = targets.size();
-		int processedTargetsSize = processedTargets.size();
-
-		if (processedTargetsSize == 0) {
-			if (targetsSize == 1) {
-				source.sendFailure(LangFile.translatable("commands.apoli.clear.fail.single", targetName));
-			} else {
-				source.sendFailure(LangFile.translatable("commands.apoli.clear.fail.multiple"));
-			}
-		} else {
-
-			String processedTargetName = processedTargets.getFirst().getName().getString();
-			int finalClearedPowers = clearedPowers;
-
-			if (processedTargetsSize == 1) {
-				source.sendSuccess(() -> LangFile.translatable("commands.apoli.clear.success.single", processedTargetName, finalClearedPowers), true);
-			} else {
-				source.sendSuccess(() -> LangFile.translatable("commands.apoli.clear.success.multiple", processedTargetsSize, finalClearedPowers), true);
-			}
-
-		}
-
-		return clearedPowers;
 
 	}
 
-	private static int dumpPowerJson(@NotNull CommandContext<CommandSourceStack> context, boolean indentSpecified) {
-
-		net.minecraft.commands.CommandSourceStack source = (net.minecraft.commands.CommandSourceStack) context.getSource();
-		PowerType power = PowerArgumentType.getPower(context, "power");
-
-		int size = indentSpecified ? IntegerArgumentType.getInteger(context, "indent") : 4;
-		source.sendSuccess(() -> new JsonTextFormatter(size).apply(power.sourceObject), false);
-
-		return 1;
-
-	}
 }

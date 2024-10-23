@@ -2,8 +2,8 @@ package io.github.dueris.originspaper.loot.function;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.dueris.calio.SerializableDataTypes;
-import io.github.dueris.originspaper.storage.ItemPowersComponent;
+import io.github.dueris.calio.data.SerializableDataTypes;
+import io.github.dueris.originspaper.component.item.ItemPowersComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +19,7 @@ import java.util.List;
 public class RemovePowerLootFunction extends LootItemConditionalFunction {
 
 	public static final MapCodec<RemovePowerLootFunction> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance).and(instance.group(
-		SerializableDataTypes.ATTRIBUTE_MODIFIER_SLOT_SET.optionalFieldOf("slot", EnumSet.allOf(EquipmentSlotGroup.class)).forGetter(RemovePowerLootFunction::slots),
+		SerializableDataTypes.ATTRIBUTE_MODIFIER_SLOT_SET.codec().optionalFieldOf("slot", EnumSet.allOf(EquipmentSlotGroup.class)).forGetter(RemovePowerLootFunction::slots),
 		ResourceLocation.CODEC.fieldOf("power").forGetter(RemovePowerLootFunction::powerId)
 	)).apply(instance, RemovePowerLootFunction::new));
 

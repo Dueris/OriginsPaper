@@ -1,30 +1,18 @@
 package io.github.dueris.originspaper.util;
 
-import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.event.OriginChoosePromptEvent;
-import io.github.dueris.originspaper.origin.OriginLayer;
-import io.github.dueris.originspaper.power.factory.PowerType;
-import io.github.dueris.originspaper.power.type.CreativeFlightPower;
-import io.github.dueris.originspaper.screen.ScreenNavigator;
-import io.github.dueris.originspaper.storage.OriginComponent;
-import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import io.github.dueris.originspaper.client.MinecraftClient;
+import io.github.dueris.originspaper.component.PowerHolderComponent;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.player.Player;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.IntPredicate;
-
-import static io.github.dueris.originspaper.screen.ScreenNavigator.inChoosingLayer;
 
 public class Scheduler {
 	public static Scheduler INSTANCE = new Scheduler();
@@ -33,39 +21,6 @@ public class Scheduler {
 	private int currentTick = 0;
 
 	public static void tickAsyncScheduler() {
-		for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
-			for (PowerType c : PowerHolderComponent.getPowersApplied(p)) {
-				c.tickAsync(((CraftPlayer) p).getHandle());
-			}
-		}
-
-		for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
-			CreativeFlightPower.tickPlayer(((CraftPlayer) p).getHandle(), null);
-		}
-
-		if (ScreenNavigator.layerPages.isEmpty()) return; // No pages to display.
-		for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
-			if (delayedPlayers.contains(p)) continue;
-			for (OriginLayer layer : OriginLayer.REGISTRY.values().stream().filter(OriginLayer::isEnabled).toList()) {
-				if (layer.testChoosable(((CraftPlayer) p).getHandle()).isEmpty()) continue;
-				try {
-					if (OriginComponent.getOrigin(p, layer).getTag().equalsIgnoreCase("origins:empty")) {
-						if (layer.testDefaultOrigin(((CraftPlayer) p).getHandle())) continue;
-						if (!inChoosingLayer.containsKey(((CraftPlayer) p).getHandle())) {
-							OriginChoosePromptEvent event = new OriginChoosePromptEvent(p);
-							Bukkit.getPluginManager().callEvent(event);
-							if (!event.isCanceled()) {
-								ScreenNavigator.open(p, layer, false);
-							}
-						}
-					}
-					p.setInvulnerable(inChoosingLayer.containsKey(((CraftPlayer) p).getHandle()));
-				} catch (Exception e) {
-					p.getPersistentDataContainer().remove(new NamespacedKey(OriginsPaper.getPlugin(), "originLayer"));
-					e.printStackTrace();
-				}
-			}
-		}
 	}
 
 	public void tick(@NotNull MinecraftServer m) {
@@ -80,33 +35,17 @@ public class Scheduler {
 			}
 		}
 
-		for (org.bukkit.entity.Player player : Bukkit.getOnlinePlayers()) {
-			if (Bukkit.getServer().getCurrentTick() % 20 == 0) {
-				PowerHolderComponent.checkForDuplicates(player);
+		for (ServerPlayer player : m.getPlayerList().getPlayers()) {
+			PowerHolderComponent component = PowerHolderComponent.KEY.getNullable(player);
+
+			if (component == null) {
+				continue;
 			}
+
+			component.serverTick();
+			MinecraftClient.of(player).tick();
 		}
 
-		for (PowerType power : PowerType.REGISTRY.values()) {
-			power.tick();
-			for (Player p : power.getPlayers()) {
-				try {
-					if (power.shouldTick()) {
-						power.tick(p);
-					}
-				} catch (Throwable throwable) {
-					String[] stacktrace = new String[]{"\n"};
-					Arrays.stream(throwable.getStackTrace())
-						.map(StackTraceElement::toString)
-						.forEach(string -> stacktrace[0] = stacktrace[0] + "\tat " + string + "\n");
-					OriginsPaper.LOGGER
-						.error("An unhandled exception occurred when ticking a Power! [{}]", throwable.getClass().getSimpleName());
-					String type = power.getType();
-
-					OriginsPaper.LOGGER
-						.error("Player: {} | Power: {} | CraftPower: {} | Throwable: {} {}", p.getName(), power.getTag(), type, throwable.getMessage() == null ? throwable.getClass().getSimpleName() : throwable.getMessage(), stacktrace[0]);
-				}
-			}
-		}
 	}
 
 	/**

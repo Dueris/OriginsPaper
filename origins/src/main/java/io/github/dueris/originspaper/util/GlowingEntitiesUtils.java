@@ -3,6 +3,7 @@ package io.github.dueris.originspaper.util;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.netty.channel.*;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -140,7 +141,14 @@ public class GlowingEntitiesUtils implements Listener {
 		}
 	}
 
-	public void unsetGlowing(Entity entity, Player receiver) throws ReflectiveOperationException {
+	public List<net.minecraft.world.entity.Entity> getGlowing(@NotNull ServerPlayer receiver) {
+		PlayerData playerData = glowing.get(receiver.getBukkitEntity());
+		if (playerData == null)
+			return new ArrayList<>();
+		return playerData.glowingDatas.keySet().stream().map(receiver.level()::getEntity).toList();
+	}
+
+	public void unsetGlowing(@NotNull Entity entity, Player receiver) throws ReflectiveOperationException {
 		unsetGlowing(entity.getEntityId(), receiver);
 	}
 

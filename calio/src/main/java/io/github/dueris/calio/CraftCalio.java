@@ -1,25 +1,22 @@
 package io.github.dueris.calio;
 
-import io.github.dueris.calio.data.DataBuildDirective;
-import io.github.dueris.calio.parser.CalioParser;
-import io.github.dueris.calio.parser.reader.system.FileSystemReader;
-import io.github.dueris.calio.util.Util;
-import io.github.dueris.calio.util.thread.ParserFactory;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.DataResult;
+import io.github.dueris.calio.data.exceptions.DataException;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Tuple;
+import net.minecraft.server.ReloadableServerResources;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.Unit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.function.BiConsumer;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The main class for the Calio Parser, used to start the parser with specified args
@@ -28,19 +25,14 @@ import java.util.function.BiConsumer;
  * @param threadCount
  */
 public record CraftCalio(boolean threaded, int threadCount) {
-	private static final Logger log = LogManager.getLogger("CraftCalio");
+	public static final Logger LOGGER = LogManager.getLogger("CraftCalio");
+	@ApiStatus.Internal
+	public static final Map<TagKey<?>, Collection<Holder<?>>> REGISTRY_TAGS = new ConcurrentHashMap<>();
+	@ApiStatus.Internal
+	public static final Map<Unit, RegistryAccess> DYNAMIC_REGISTRIES = new ConcurrentHashMap<>();
+	@ApiStatus.Internal
+	public static final Map<Unit, ReloadableServerResources> DATA_PACK_CONTENTS = new ConcurrentHashMap<>();
 	private static RegistryAccess registryAccess;
-
-	/**
-	 * Creates the calio parser instance and allows for providing
-	 * arguments like {@code async} to make it run threaded parsing.
-	 */
-	public static @NotNull CraftCalio buildInstance() {
-		int threadCount = 4;
-		CalioParser.threadedParser = Executors.newFixedThreadPool(threadCount, new ParserFactory(threadCount));
-		CalioParser.threaded = true;
-		return new CraftCalio(true, threadCount);
-	}
 
 	public static void setRegistryAccess(RegistryAccess access) {
 		registryAccess = access;
@@ -50,56 +42,24 @@ public record CraftCalio(boolean threaded, int threadCount) {
 		return registryAccess;
 	}
 
-	/**
-	 * Creates a new builder for calio parsing to add {@link DataBuildDirective}s
-	 */
-	@Contract(value = " -> new", pure = true)
-	public @NotNull CalioParserBuilder startBuilder() {
-		return new CalioParserBuilder(this);
+	public static @NotNull DataException createMissingRequiredFieldException(String name) {
+		return new DataException(DataException.Phase.READING, name, "Field is required, but is missing!");
 	}
 
-	/**
-	 * Parses the datapack path provided to build registries
-	 * Example: {@code /world/datapacks/example/}
-	 *
-	 * @param pathToParse The datapack path to parse
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> boolean parse(@NotNull Path pathToParse) {
-		Object2ObjectLinkedOpenHashMap<DataBuildDirective<T>, List<Tuple<ResourceLocation, String>>> priorityParsingQueue = new Object2ObjectLinkedOpenHashMap<>();
-		CalioParserBuilder.DATA_BUILD_DIRECTIVES.forEach((key) -> {
-			priorityParsingQueue.put((DataBuildDirective<T>) key, new CopyOnWriteArrayList<>());
-		});
-		BiConsumer<String, String> jsonVerificationFilter = (path, jsonContents) -> {
-
-			for (DataBuildDirective<?> key : CalioParserBuilder.DATA_BUILD_DIRECTIVES) {
-				if (jsonContents != null && path != null && Util.pathMatchesAccessor(path, key)) {
-					priorityParsingQueue.get(key).add(new Tuple<>(Objects.requireNonNull(Util.buildResourceLocationFromPath(path, key)), jsonContents));
-				}
-			}
-
-		};
-		try {
-			FileSystemReader.processDatapacks(pathToParse, jsonVerificationFilter);
-		} catch (IOException e) {
-			throw new RuntimeException("Unable to process datapacks to parse", e);
-		}
-
-		for (Map.Entry<DataBuildDirective<T>, List<Tuple<ResourceLocation, String>>> entry : new LinkedList<>(priorityParsingQueue.object2ObjectEntrySet()).stream().sorted(Comparator.comparingInt((ent) -> ent.getKey().priority())).toList()) {
-			try {
-				CalioParser.parseFiles(entry);
-			} catch (Throwable throwable) {
-				log.info("An unexpected exception occurred when building instances of {}, {}", entry.getKey().builder().type().getSimpleName(), throwable);
-				throwable.printStackTrace();
-			}
-		}
-		return true;
+	public static <R> @NotNull DataResult<R> createMissingRequiredFieldError(String name) {
+		return DataResult.error(() -> "Required field \"" + name + "\" is missing!");
 	}
 
-	public void shutdown() {
-		if (CalioParser.threadedParser != null) {
-			CalioParser.threadedParser.shutdown();
-		}
+	public static @NotNull ImmutableMap<TagKey<?>, Collection<Holder<?>>> getRegistryTags() {
+		return ImmutableMap.copyOf(REGISTRY_TAGS);
+	}
+
+	public static Optional<RegistryAccess> getDynamicRegistries() {
+		return Optional.ofNullable(DYNAMIC_REGISTRIES.get(Unit.INSTANCE));
+	}
+
+	public static Optional<ReloadableServerResources> getDataPackContents() {
+		return Optional.ofNullable(DATA_PACK_CONTENTS.get(Unit.INSTANCE));
 	}
 
 	@Override

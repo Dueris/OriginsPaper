@@ -1,0 +1,13 @@
+{
+  "package": "io.github.dueris.calio.mixin",
+  "mixins": [
+    "HolderLookupAdapterAccessor",
+    "HolderSetListBackedAccessor",
+    "IngredientAccessor",
+    "ItemStackAccessor",
+    "RegistryOpsAccessor",
+    "ReloadableServerResourcesMixin",
+    "ShufflingListAccessor",
+    "TagEntryAccessor"
+  ]
+}

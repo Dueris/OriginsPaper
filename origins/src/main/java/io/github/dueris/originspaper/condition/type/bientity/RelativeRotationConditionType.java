@@ -1,18 +1,18 @@
 package io.github.dueris.originspaper.condition.type.bientity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataType;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.data.types.Comparison;
+import io.github.dueris.originspaper.util.Comparison;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 import java.util.function.Function;
@@ -35,12 +35,12 @@ public class RelativeRotationConditionType {
 
 	}
 
-	private static double getAngleBetween(@NotNull Vec3 a, Vec3 b) {
+	private static double getAngleBetween(Vec3 a, Vec3 b) {
 		double dot = a.dot(b);
 		return dot / (a.length() * b.length());
 	}
 
-	private static @NotNull Vec3 reduceAxes(Vec3 vector, @NotNull EnumSet<Direction.Axis> axesToKeep) {
+	private static Vec3 reduceAxes(Vec3 vector, EnumSet<Direction.Axis> axesToKeep) {
 		return new Vec3(
 			axesToKeep.contains(Direction.Axis.X) ? vector.x : 0,
 			axesToKeep.contains(Direction.Axis.Y) ? vector.y : 0,
@@ -48,13 +48,13 @@ public class RelativeRotationConditionType {
 		);
 	}
 
-	public static @NotNull ConditionTypeFactory<Tuple<Entity, Entity>> getFactory() {
+	public static ConditionTypeFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("relative_rotation"),
 			new SerializableData()
-				.add("actor_rotation", SerializableDataTypes.enumValue(RotationType.class), RotationType.HEAD)
-				.add("target_rotation", SerializableDataTypes.enumValue(RotationType.class), RotationType.BODY)
-				.add("axes", SerializableDataTypes.enumSet(Direction.Axis.class, SerializableDataTypes.AXIS), EnumSet.allOf(Direction.Axis.class))
+				.add("actor_rotation", SerializableDataType.enumValue(RotationType.class), RotationType.HEAD)
+				.add("target_rotation", SerializableDataType.enumValue(RotationType.class), RotationType.BODY)
+				.add("axes", SerializableDataTypes.AXIS_SET, EnumSet.allOf(Direction.Axis.class))
 				.add("comparison", ApoliDataTypes.COMPARISON)
 				.add("compare_to", SerializableDataTypes.DOUBLE),
 			(data, actorAndTarget) -> condition(actorAndTarget.getA(), actorAndTarget.getB(),
@@ -67,7 +67,7 @@ public class RelativeRotationConditionType {
 		);
 	}
 
-	private static @NotNull Vec3 getBodyRotationVector(Entity entity) {
+	private static Vec3 getBodyRotationVector(Entity entity) {
 
 		if (!(entity instanceof LivingEntity livingEntity)) {
 			return entity.getViewVector(1.0f);

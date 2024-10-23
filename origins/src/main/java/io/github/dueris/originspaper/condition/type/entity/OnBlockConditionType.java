@@ -7,19 +7,18 @@ import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
 public class OnBlockConditionType {
 
-	public static boolean condition(@NotNull Entity entity, Predicate<BlockInWorld> blockCondition) {
+	public static boolean condition(Entity entity, Predicate<BlockInWorld> blockCondition) {
 		BlockPos pos = BlockPos.containing(entity.getX(), entity.getBoundingBox().minY - 0.5000001D, entity.getZ());
 		return entity.onGround()
 			&& blockCondition.test(new BlockInWorld(entity.level(), pos, true));
 	}
 
-	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+	public static ConditionTypeFactory<Entity> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("on_block"),
 			new SerializableData()

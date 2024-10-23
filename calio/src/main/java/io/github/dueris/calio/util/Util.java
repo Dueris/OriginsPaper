@@ -1,19 +1,23 @@
 package io.github.dueris.calio.util;
 
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapLike;
+import io.github.dueris.calio.CraftCalio;
 import io.github.dueris.calio.data.DataBuildDirective;
-import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataType;
-import io.github.dueris.calio.util.holder.ObjectTiedEnumState;
+import io.github.dueris.calio.mixin.HolderLookupAdapterAccessor;
+import io.github.dueris.calio.mixin.RegistryOpsAccessor;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.function.Function;
 
 public class Util {
 	public static boolean pathMatchesAccessor(@NotNull String path, DataBuildDirective<?> dataBuildDirective) {
@@ -80,67 +84,52 @@ public class Util {
 		return (Class<T>) aClass;
 	}
 
-	public static <T> @NotNull Constructor<T> generateConstructor(Class<T> targetClass, @NotNull SerializableData serializableData) throws NoSuchMethodException, IllegalAccessException {
-		List<Class<?>> paramTypes = new LinkedList<>();
-		paramTypes.add(ResourceLocation.class);
+	public static <I> I getOrDefault(@NotNull MapLike<I> mapLike, String key, I defaultValue) {
+		I value = mapLike.get(key);
+		return value != null ? value : defaultValue;
+	}
 
-		for (Map.Entry<String, ObjectTiedEnumState<SerializableDataType<?>>> entry : serializableData.dataMap().entrySet()) {
-			Class<?> paramType = entry.getValue().object().type();
-			paramTypes.add(getPrimitiveType(paramType));
+	public static <I> Optional<RegistryOps<I>> getOrCreate(DynamicOps<I> ops) {
+
+		if (ops instanceof RegistryOps<I> regOps) {
+			return Optional.of(regOps);
+		} else {
+			return CraftCalio.getDynamicRegistries().map(drm -> drm.createSerializationContext(ops));
 		}
 
-		Class<?>[] paramArray = paramTypes.toArray(new Class<?>[0]);
-		Constructor<T> constructor = targetClass.getConstructor(paramArray);
+	}
 
-		if (Modifier.isPrivate(constructor.getModifiers())) {
-			throw new IllegalAccessException("Cannot access private constructor");
+	public static <I> Optional<HolderLookup.Provider> getWrapperLookup(DynamicOps<I> ops) {
+		return CraftCalio.getDynamicRegistries()
+			.map(HolderLookup.Provider.class::cast)
+			.or(() -> {
+
+				RegistryOps.RegistryInfoLookup infoGetter = getOrCreate(ops)
+					.map(RegistryOpsAccessor.class::cast)
+					.map(RegistryOpsAccessor::getLookupProvider)
+					.orElse(null);
+
+				return infoGetter instanceof HolderLookupAdapterAccessor cachedInfoGetter
+					? Optional.of(cachedInfoGetter.getLookupProvider())
+					: Optional.empty();
+
+			});
+	}
+
+	public static <T, I> Optional<HolderGetter<T>> getEntryLookup(DynamicOps<I> ops, ResourceKey<? extends Registry<T>> registryRef) {
+		return CraftCalio.getDynamicRegistries()
+			.flatMap(registries -> registries.lookup(registryRef))
+			.map(impl -> (HolderGetter<T>) impl)
+			.or(() -> getOrCreate(ops)
+				.flatMap(registryOps -> registryOps.getter(registryRef)));
+	}
+
+	public static <T extends Enum<T>> @NotNull HashMap<String, T> buildEnumMap(@NotNull Class<T> enumClass, Function<T, String> enumToString) {
+		HashMap<String, T> map = new HashMap<>();
+		for (T enumConstant : enumClass.getEnumConstants()) {
+			map.put(enumToString.apply(enumConstant), enumConstant);
 		}
-
-		return constructor;
+		return map;
 	}
 
-	public static <T> @NotNull T instantiate(@NotNull Constructor<T> constructor, ResourceLocation resourceLocation, SerializableData.@NotNull Instance instance) throws InstantiationException, IllegalAccessException, InvocationTargetException {
-		Object[] params = new Object[constructor.getParameterCount()];
-		params[0] = resourceLocation;
-
-		int i = 1;
-		for (String key : instance.data().keySet()) {
-			Object value = instance.get(key);
-			Class<?> paramType = constructor.getParameterTypes()[i];
-
-			if (value == null) {
-				if (paramType.isPrimitive()) {
-					value = getDefaultValue(paramType);
-				}
-			}
-
-			params[i++] = value;
-		}
-
-		return constructor.newInstance(params);
-	}
-
-	private static Object getDefaultValue(Class<?> type) {
-		if (type == boolean.class) return false;
-		if (type == char.class) return '\u0000';
-		if (type == byte.class) return (byte) 0;
-		if (type == short.class) return (short) 0;
-		if (type == int.class) return 0;
-		if (type == long.class) return 0L;
-		if (type == float.class) return 0f;
-		if (type == double.class) return 0d;
-		throw new IllegalArgumentException("Type " + type + " is not a supported primitive type.");
-	}
-
-	private static Class<?> getPrimitiveType(Class<?> clazz) {
-		if (clazz == Integer.class) return int.class;
-		if (clazz == Boolean.class) return boolean.class;
-		if (clazz == Float.class) return float.class;
-		if (clazz == Double.class) return double.class;
-		if (clazz == Long.class) return long.class;
-		if (clazz == Byte.class) return byte.class;
-		if (clazz == Short.class) return short.class;
-		if (clazz == Character.class) return char.class;
-		return clazz;
-	}
 }

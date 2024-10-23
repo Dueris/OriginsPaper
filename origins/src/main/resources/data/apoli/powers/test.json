@@ -1,14 +1,16 @@
 {
-  "type": "origins:keep_inventory",
-  "slots": [
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8
-  ]
+  "type": "origins:replace_loot_table",
+  "replace": {
+    "minecraft:entities/creeper": "minecraft:entities/chicken"
+  },
+  "condition": {
+    "type": "origins:equipped_item",
+    "equipment_slot": "mainhand",
+    "item_condition": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:wooden_sword"
+      }
+    }
+  }
 }

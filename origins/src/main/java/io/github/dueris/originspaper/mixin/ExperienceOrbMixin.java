@@ -1,10 +1,9 @@
 package io.github.dueris.originspaper.mixin;
 
-import io.github.dueris.originspaper.power.type.ModifyExperiencePower;
-import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import io.github.dueris.originspaper.component.PowerHolderComponent;
+import io.github.dueris.originspaper.power.type.ModifyExperiencePowerType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,8 +16,8 @@ public class ExperienceOrbMixin {
 	@Shadow
 	public int count;
 
-	@Inject(method = "playerTouch", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/player/Player;takeXpDelay:I", ordinal = 1))
-	private void modifyXpAmount(@NotNull Player player, CallbackInfo ci) {
-		this.count = (int) PowerHolderComponent.modify(player.getBukkitEntity(), ModifyExperiencePower.class, this.count);
+	@Inject(method = "playerTouch", at = @At(value = "INVOKE", target = "Lorg/bukkit/craftbukkit/event/CraftEventFactory;callPlayerExpChangeEvent(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/ExperienceOrb;)Lorg/bukkit/event/player/PlayerExpChangeEvent;", shift = At.Shift.BEFORE))
+	public void apoli$modifyExperienceGain(Player player, CallbackInfo ci) {
+		this.count = Math.round(PowerHolderComponent.modify(player, ModifyExperiencePowerType.class, count));
 	}
 }

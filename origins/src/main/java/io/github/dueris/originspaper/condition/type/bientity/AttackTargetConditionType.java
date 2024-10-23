@@ -1,20 +1,16 @@
 package io.github.dueris.originspaper.condition.type.bientity;
 
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.Targeting;
+
+import java.util.Objects;
 
 public class AttackTargetConditionType {
 
 	public static boolean condition(Entity actor, Entity target) {
-
-		if (actor == null || target == null) {
-			return false;
-		}
-
-		return (actor instanceof Mob mobActor && target.equals(mobActor.getTarget()))
-			|| (actor instanceof NeutralMob angerableActor && target.equals(angerableActor.getTarget()));
-
+		return (actor instanceof Targeting targeter && Objects.equals(target, targeter.getTarget()))
+			|| (actor instanceof NeutralMob angerable && Objects.equals(target, angerable.getTarget()));
 	}
 
 }

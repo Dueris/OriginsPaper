@@ -1,11 +1,11 @@
 package io.github.dueris.originspaper.condition.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
-import io.github.dueris.originspaper.power.type.ElytraFlightPower;
-import io.github.dueris.originspaper.storage.PowerHolderComponent;
+import io.github.dueris.originspaper.power.type.ElytraFlightPowerType;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -28,7 +28,7 @@ public class ElytraFlightPossibleConditionType {
 		if (checkAbility) {
 			ItemStack equippedChestStack = living.getItemBySlot(EquipmentSlot.CHEST);
 			ability = (equippedChestStack.is(Items.ELYTRA) && ElytraItem.isFlyEnabled(equippedChestStack) ||
-				PowerHolderComponent.doesHaveConditionedPower(living.getBukkitEntity(), ElytraFlightPower.class, (p) -> p.getGlidingPlayers().contains(living.getBukkitEntity())));
+				(PowerHolderComponent.KEY.isProvidedBy(entity) && !PowerHolderComponent.KEY.get(entity).getPowerTypes(ElytraFlightPowerType.class).isEmpty()));
 		}
 
 		if (checkState) {

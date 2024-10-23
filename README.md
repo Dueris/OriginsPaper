@@ -34,6 +34,7 @@ origin
 can be played.
 
 ## PowerTypes that don't work with OriginsPaper
+
 - ModifyFovPower -- requires render modifications
 - OverlayPower -- specifically with custom colors
 - PreventFeatureRenderPower -- requires render modifications

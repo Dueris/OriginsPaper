@@ -14,6 +14,7 @@ public class CraftingTableActionType {
 
 		player.getBukkitEntity().openWorkbench(null, true);
 		player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
+
 	}
 
 }

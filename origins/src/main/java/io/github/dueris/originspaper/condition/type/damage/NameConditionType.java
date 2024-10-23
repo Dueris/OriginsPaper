@@ -1,20 +1,19 @@
 package io.github.dueris.originspaper.condition.type.damage;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.damagesource.DamageSource;
-import org.jetbrains.annotations.NotNull;
 
 public class NameConditionType {
 
-	public static boolean condition(@NotNull DamageSource damageSource, String name) {
+	public static boolean condition(DamageSource damageSource, String name) {
 		return damageSource.getMsgId().equals(name);
 	}
 
-	public static @NotNull ConditionTypeFactory<Tuple<DamageSource, Float>> getFactory() {
+	public static ConditionTypeFactory<Tuple<DamageSource, Float>> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("name"),
 			new SerializableData()

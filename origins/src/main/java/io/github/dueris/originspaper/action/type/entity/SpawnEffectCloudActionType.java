@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.action.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import net.minecraft.server.level.ServerLevel;
@@ -9,11 +9,10 @@ import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.alchemy.PotionContents;
-import org.jetbrains.annotations.NotNull;
 
 public class SpawnEffectCloudActionType {
 
-	public static void action(@NotNull Entity entity, PotionContents potionContents, float radius, float radiusOnUse, int duration, int durationOnUse, int waitTime) {
+	public static void action(Entity entity, PotionContents potionContents, float radius, float radiusOnUse, int duration, int durationOnUse, int waitTime) {
 
 		if (!(entity.level() instanceof ServerLevel serverWorld)) {
 			return;
@@ -35,7 +34,7 @@ public class SpawnEffectCloudActionType {
 
 	}
 
-	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+	public static ActionTypeFactory<Entity> getFactory() {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("spawn_effect_cloud"),
 			new SerializableData()

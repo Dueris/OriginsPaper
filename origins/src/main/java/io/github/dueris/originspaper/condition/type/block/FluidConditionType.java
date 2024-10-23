@@ -6,17 +6,16 @@ import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.material.FluidState;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
 public class FluidConditionType {
 
-	public static boolean condition(@NotNull BlockInWorld cachedBlock, @NotNull Predicate<FluidState> fluidCondition) {
+	public static boolean condition(BlockInWorld cachedBlock, Predicate<FluidState> fluidCondition) {
 		return fluidCondition.test(cachedBlock.getLevel().getFluidState(cachedBlock.getPos()));
 	}
 
-	public static @NotNull ConditionTypeFactory<BlockInWorld> getFactory() {
+	public static ConditionTypeFactory<BlockInWorld> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("fluid"),
 			new SerializableData()

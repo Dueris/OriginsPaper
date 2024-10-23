@@ -9,17 +9,16 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.tuple.Triple;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
 public class BlockActionAtActionType {
 
-	public static void action(@NotNull Entity entity, @NotNull Consumer<Triple<Level, BlockPos, Direction>> blockAction) {
+	public static void action(Entity entity, Consumer<Triple<Level, BlockPos, Direction>> blockAction) {
 		blockAction.accept(Triple.of(entity.level(), entity.blockPosition(), Direction.UP));
 	}
 
-	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+	public static ActionTypeFactory<Entity> getFactory() {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("block_action_at"),
 			new SerializableData()

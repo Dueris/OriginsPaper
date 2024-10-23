@@ -1,11 +1,12 @@
 package io.github.dueris.originspaper.condition.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataType;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.originspaper.data.types.Space;
+import io.github.dueris.originspaper.util.Space;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -101,7 +102,7 @@ public class RaycastConditionType {
 		return source.level().clip(context);
 	}
 
-	private static EntityHitResult performEntityRaycast(Entity source, Vec3 origin, Vec3 target, ConditionTypeFactory<Tuple<Entity, Entity>> biEntityCondition) {
+	private static EntityHitResult performEntityRaycast(Entity source, Vec3 origin, Vec3 target, ConditionTypeFactory<Tuple<Entity, Entity>>.Instance biEntityCondition) {
 		Vec3 ray = target.subtract(origin);
 		AABB box = source.getBoundingBox().expandTowards(ray).inflate(1.0D, 1.0D, 1.0D);
 		EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(source, origin, target, box, (entityx) -> {
@@ -120,8 +121,8 @@ public class RaycastConditionType {
 				.add("space", ApoliDataTypes.SPACE, Space.WORLD)
 				.add("block", SerializableDataTypes.BOOLEAN, true)
 				.add("entity", SerializableDataTypes.BOOLEAN, true)
-				.add("shape_type", SerializableDataTypes.enumValue(ClipContext.Block.class), ClipContext.Block.OUTLINE)
-				.add("fluid_handling", SerializableDataTypes.enumValue(ClipContext.Fluid.class), ClipContext.Fluid.ANY)
+				.add("shape_type", SerializableDataType.enumValue(ClipContext.Block.class), ClipContext.Block.OUTLINE)
+				.add("fluid_handling", SerializableDataType.enumValue(ClipContext.Fluid.class), ClipContext.Fluid.ANY)
 				.add("match_bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
 				.add("hit_bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
 				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null),

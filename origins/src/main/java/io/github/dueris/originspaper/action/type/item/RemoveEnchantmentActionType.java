@@ -1,8 +1,7 @@
 package io.github.dueris.originspaper.action.type.item;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataType;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.action.factory.ItemActionTypeFactory;
@@ -17,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -25,7 +23,7 @@ import java.util.HashSet;
 
 public class RemoveEnchantmentActionType {
 
-	public static void action(RegistryAccess registryManager, @NotNull ItemStack stack, Collection<ResourceKey<Enchantment>> enchantmentKeys, @Nullable Integer levels, boolean resetRepairCost) {
+	public static void action(RegistryAccess registryManager, ItemStack stack, Collection<ResourceKey<Enchantment>> enchantmentKeys, @Nullable Integer levels, boolean resetRepairCost) {
 
 		if (!stack.isEnchanted()) {
 			return;
@@ -64,12 +62,12 @@ public class RemoveEnchantmentActionType {
 
 	}
 
-	public static @NotNull ActionTypeFactory<Tuple<Level, SlotAccess>> getFactory() {
+	public static ActionTypeFactory<Tuple<Level, SlotAccess>> getFactory() {
 		return ItemActionTypeFactory.createItemStackBased(
 			OriginsPaper.apoliIdentifier("remove_enchantment"),
 			new SerializableData()
 				.add("enchantment", SerializableDataTypes.ENCHANTMENT, null)
-				.add("enchantments", SerializableDataType.of(SerializableDataTypes.ENCHANTMENT.listOf()), null)
+				.add("enchantments", SerializableDataTypes.ENCHANTMENT.list(), null)
 				.add("levels", SerializableDataTypes.INT, null)
 				.add("reset_repair_cost", SerializableDataTypes.BOOLEAN, false),
 			(data, worldAndStack) -> {

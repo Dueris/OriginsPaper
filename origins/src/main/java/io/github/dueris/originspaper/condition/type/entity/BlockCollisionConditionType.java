@@ -1,8 +1,9 @@
 package io.github.dueris.originspaper.condition.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.access.BlockCollisionSpliteratorAccess;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.core.BlockPos;
@@ -12,18 +13,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
 public class BlockCollisionConditionType {
 
-	public static boolean condition(@NotNull Entity entity, Predicate<BlockInWorld> blockCondition, Vec3 offset) {
+	public static boolean condition(Entity entity, Predicate<BlockInWorld> blockCondition, Vec3 offset) {
 
 		AABB boundingBox = entity.getBoundingBox().move(offset);
 		Level world = entity.level();
 
 		BlockCollisions<BlockPos> spliterator = new BlockCollisions<>(world, entity, boundingBox, false, (pos, shape) -> pos);
+		((BlockCollisionSpliteratorAccess) spliterator).apoli$setGetOriginalShapes(true);
 
 		while (spliterator.hasNext()) {
 
@@ -39,7 +40,7 @@ public class BlockCollisionConditionType {
 
 	}
 
-	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+	public static ConditionTypeFactory<Entity> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("block_collision"),
 			new SerializableData()

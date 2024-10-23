@@ -3,10 +3,9 @@ package io.github.dueris.originspaper.action.type.entity;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
-import io.github.dueris.originspaper.data.types.modifier.Modifier;
+import io.github.dueris.originspaper.util.modifier.Modifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import org.jetbrains.annotations.NotNull;
 
 public class ModifyDeathTicksActionType {
 
@@ -18,7 +17,7 @@ public class ModifyDeathTicksActionType {
 
 	}
 
-	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+	public static ActionTypeFactory<Entity> getFactory() {
 		return new ActionTypeFactory<>(OriginsPaper.apoliIdentifier("modify_death_ticks"),
 			new SerializableData()
 				.add("modifier", Modifier.DATA_TYPE),

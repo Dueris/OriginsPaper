@@ -6,17 +6,16 @@ import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
 public class InvertActionType {
 
-	public static void action(Entity actor, Entity target, @NotNull Consumer<Tuple<Entity, Entity>> biEntityAction) {
+	public static void action(Entity actor, Entity target, Consumer<Tuple<Entity, Entity>> biEntityAction) {
 		biEntityAction.accept(new Tuple<>(target, actor));
 	}
 
-	public static @NotNull ActionTypeFactory<Tuple<Entity, Entity>> getFactory() {
+	public static ActionTypeFactory<Tuple<Entity, Entity>> getFactory() {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("invert"),
 			new SerializableData()

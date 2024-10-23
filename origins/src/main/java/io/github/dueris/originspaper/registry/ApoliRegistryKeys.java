@@ -3,9 +3,9 @@ package io.github.dueris.originspaper.registry;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
-import io.github.dueris.originspaper.data.types.modifier.IModifierOperation;
-import io.github.dueris.originspaper.power.factory.PowerTypeFactory;
-import io.github.dueris.originspaper.util.LangFile;
+import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.type.PowerType;
+import io.github.dueris.originspaper.util.modifier.IModifierOperation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -39,8 +39,7 @@ public class ApoliRegistryKeys {
 	public static final ResourceKey<Registry<ActionTypeFactory<Tuple<Entity, Entity>>>> BIENTITY_ACTION = create("bientity_action");
 
 	public static final ResourceKey<Registry<IModifierOperation>> MODIFIER_OPERATION = create("modifier_operation");
-	public static final ResourceKey<Registry<LangFile>> LANG = create("lang");
-	public static final ResourceKey<Registry<PowerTypeFactory>> POWER_TYPE_FACTORY = create("power_type_factory");
+	public static final ResourceKey<Registry<PowerTypeFactory<? extends PowerType>>> POWER_FACTORY = create("power_type_factory");
 
 	private static <T> @NotNull ResourceKey<Registry<T>> create(String path) {
 		return ResourceKey.createRegistryKey(OriginsPaper.apoliIdentifier(path));

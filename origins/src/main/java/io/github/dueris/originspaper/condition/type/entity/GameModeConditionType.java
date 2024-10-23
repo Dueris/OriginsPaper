@@ -9,7 +9,6 @@ import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
-import org.jetbrains.annotations.NotNull;
 
 public class GameModeConditionType {
 
@@ -26,7 +25,7 @@ public class GameModeConditionType {
 
 	}
 
-	public static @NotNull ConditionTypeFactory<Entity> getFactory() {
+	public static ConditionTypeFactory<Entity> getFactory() {
 		return new ConditionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("gamemode"),
 			new SerializableData()

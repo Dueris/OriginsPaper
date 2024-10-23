@@ -1,7 +1,7 @@
 package io.github.dueris.originspaper.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import io.github.dueris.originspaper.power.type.ModifyTypeTagPower;
+import io.github.dueris.originspaper.power.type.ModifyTypeTagPowerType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagLoader;
@@ -25,8 +25,8 @@ public abstract class TagLoaderMixin<T> {
 	private String directory;
 
 	@Inject(method = "build(Ljava/util/Map;)Ljava/util/Map;", at = @At("RETURN"))
-	private void apoli$rebuildTagsInTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> tags, CallbackInfoReturnable<Map<ResourceLocation, Collection<T>>> cir, @Local TagEntry.Lookup<T> valueGetter, @Local DependencySorter<ResourceLocation, DependencySorter.Entry<ResourceLocation>> dependencyTracker) {
-		ModifyTypeTagPower.setTagCache(directory, valueGetter, dependencyTracker);
+	private void apoli$rebuildTagsInTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> tags, CallbackInfoReturnable<Map<ResourceLocation, Collection<T>>> cir, @Local TagEntry.Lookup<T> valueGetter, @Local DependencySorter<ResourceLocation, TagLoader.SortingEntry> dependencyTracker) {
+		ModifyTypeTagPowerType.setTagCache(directory, valueGetter, dependencyTracker);
 	}
 
 }

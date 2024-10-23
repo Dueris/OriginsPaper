@@ -1,19 +1,18 @@
 package io.github.dueris.originspaper.action.type.entity;
 
-import io.github.dueris.calio.SerializableDataTypes;
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.NotNull;
 
 public class SetFallDistanceActionType {
 
-	public static void action(@NotNull Entity entity, float fallDistance) {
+	public static void action(Entity entity, float fallDistance) {
 		entity.fallDistance = fallDistance;
 	}
 
-	public static @NotNull ActionTypeFactory<Entity> getFactory() {
+	public static ActionTypeFactory<Entity> getFactory() {
 		return new ActionTypeFactory<>(
 			OriginsPaper.apoliIdentifier("set_fall_distance"),
 			new SerializableData()
