@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class ServerLevelMixin {
 
 	@WrapWithCondition(method = "gameEvent", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/gameevent/GameEventDispatcher;post(Lnet/minecraft/core/Holder;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/level/gameevent/GameEvent$Context;)V"))
-	private boolean apoli$prevenGameEvent(GameEventDispatcher manager, Holder<GameEvent> event, Vec3 emitterPos, GameEvent.@NotNull Context emitter) {
+	private boolean apoli$preventGameEvent(GameEventDispatcher manager, Holder<GameEvent> event, Vec3 emitterPos, GameEvent.@NotNull Context emitter) {
 		return emitter.sourceEntity() == null
 			|| !PowerHolderComponent.withPowerTypes(emitter.sourceEntity(), PreventGameEventPowerType.class, p -> p.doesPrevent(event), PreventGameEventPowerType::executeAction);
 	}
