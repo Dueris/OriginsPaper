@@ -45,32 +45,6 @@ public class PreventBlockPlacePowerType extends ActiveInteractionPowerType {
 		this.directions = directions;
 	}
 
-	public boolean doesPrevent(ItemStack heldStack, InteractionHand hand, BlockPos toPos, BlockPos onPos, Direction direction) {
-		return (super.shouldExecute(hand, heldStack) && directions.contains(direction))
-			&& ((placeOnCondition == null || placeOnCondition.test(new BlockInWorld(entity.level(), onPos, true)))
-			&& (placeToCondition == null || placeToCondition.test(new BlockInWorld(entity.level(), toPos, true))));
-	}
-
-	public void executeActions(InteractionHand hand, BlockPos toPos, BlockPos onPos, Direction direction) {
-
-		if (placeOnAction != null) {
-			placeOnAction.accept(Triple.of(entity.level(), onPos, direction));
-		}
-
-		if (placeToAction != null) {
-			placeToAction.accept(Triple.of(entity.level(), toPos, direction));
-		}
-
-		if (entityAction != null) {
-			entityAction.accept(entity);
-		}
-
-		if (entity instanceof Player playerEntity) {
-			performActorItemStuff(this, playerEntity, hand);
-		}
-
-	}
-
 	public static PowerTypeFactory<?> getFactory() {
 		return new PowerTypeFactory<>(
 			OriginsPaper.apoliIdentifier("prevent_block_place"),
@@ -102,6 +76,32 @@ public class PreventBlockPlacePowerType extends ActiveInteractionPowerType {
 				data.get("priority")
 			)
 		).allowCondition();
+	}
+
+	public boolean doesPrevent(ItemStack heldStack, InteractionHand hand, BlockPos toPos, BlockPos onPos, Direction direction) {
+		return (super.shouldExecute(hand, heldStack) && directions.contains(direction))
+			&& ((placeOnCondition == null || placeOnCondition.test(new BlockInWorld(entity.level(), onPos, true)))
+			&& (placeToCondition == null || placeToCondition.test(new BlockInWorld(entity.level(), toPos, true))));
+	}
+
+	public void executeActions(InteractionHand hand, BlockPos toPos, BlockPos onPos, Direction direction) {
+
+		if (placeOnAction != null) {
+			placeOnAction.accept(Triple.of(entity.level(), onPos, direction));
+		}
+
+		if (placeToAction != null) {
+			placeToAction.accept(Triple.of(entity.level(), toPos, direction));
+		}
+
+		if (entityAction != null) {
+			entityAction.accept(entity);
+		}
+
+		if (entity instanceof Player playerEntity) {
+			performActorItemStuff(this, playerEntity, hand);
+		}
+
 	}
 
 }

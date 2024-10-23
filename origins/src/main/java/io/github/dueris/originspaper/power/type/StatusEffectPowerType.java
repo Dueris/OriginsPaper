@@ -16,6 +16,7 @@ public class StatusEffectPowerType extends PowerType {
 	public StatusEffectPowerType(Power power, LivingEntity entity) {
 		super(power, entity);
 	}
+
 	public StatusEffectPowerType(Power power, LivingEntity entity, MobEffectInstance effectInstance) {
 		super(power, entity);
 		addEffect(effectInstance);

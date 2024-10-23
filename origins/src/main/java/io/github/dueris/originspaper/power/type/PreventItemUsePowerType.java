@@ -21,10 +21,6 @@ public class PreventItemUsePowerType extends PowerType {
 		this.itemCondition = itemCondition;
 	}
 
-	public boolean doesPrevent(ItemStack stack) {
-		return itemCondition == null || itemCondition.test(new Tuple<>(entity.level(), stack));
-	}
-
 	public static PowerTypeFactory<?> getFactory() {
 		return new PowerTypeFactory<>(
 			OriginsPaper.apoliIdentifier("prevent_item_use"),
@@ -34,6 +30,10 @@ public class PreventItemUsePowerType extends PowerType {
 				data.get("item_condition")
 			)
 		).allowCondition();
+	}
+
+	public boolean doesPrevent(ItemStack stack) {
+		return itemCondition == null || itemCondition.test(new Tuple<>(entity.level(), stack));
 	}
 
 }

@@ -25,16 +25,6 @@ public class PreventDeathPowerType extends PowerType {
 		this.condition = condition;
 	}
 
-	public boolean doesApply(DamageSource source, float amount) {
-		return condition == null || condition.test(new Tuple<>(source, amount));
-	}
-
-	public void executeAction() {
-		if(entityAction != null) {
-			entityAction.accept(entity);
-		}
-	}
-
 	public static boolean doesPrevent(Entity entity, DamageSource source, float amount) {
 
 		boolean prevented = false;
@@ -64,6 +54,16 @@ public class PreventDeathPowerType extends PowerType {
 				data.get("damage_condition")
 			)
 		).allowCondition();
+	}
+
+	public boolean doesApply(DamageSource source, float amount) {
+		return condition == null || condition.test(new Tuple<>(source, amount));
+	}
+
+	public void executeAction() {
+		if (entityAction != null) {
+			entityAction.accept(entity);
+		}
 	}
 
 }

@@ -21,7 +21,6 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Stack;
@@ -31,11 +30,9 @@ import java.util.regex.Pattern;
 public class ReplaceLootTablePowerType extends PowerType {
 
 	public static final ResourceKey<LootTable> REPLACED_TABLE_KEY = ResourceKey.create(Registries.LOOT_TABLE, OriginsPaper.apoliIdentifier("replaced_loot_table"));
-	public static ResourceLocation LAST_REPLACED_TABLE_ID;
-
 	private static final Stack<LootTable> REPLACEMENT_STACK = new Stack<>();
 	private static final Stack<LootTable> BACKTRACK_STACK = new Stack<>();
-
+	public static ResourceLocation LAST_REPLACED_TABLE_ID;
 	private final Map<Pattern, ResourceLocation> replacements;
 
 	private final int priority;
@@ -51,6 +48,103 @@ public class ReplaceLootTablePowerType extends PowerType {
 		this.itemCondition = itemCondition;
 		this.biEntityCondition = biEntityCondition;
 		this.blockCondition = blockCondition;
+	}
+
+	public static void clearStack() {
+		REPLACEMENT_STACK.clear();
+		BACKTRACK_STACK.clear();
+	}
+
+	public static void addToStack(LootTable lootTable) {
+		REPLACEMENT_STACK.add(lootTable);
+	}
+
+	public static LootTable pop() {
+
+		if (REPLACEMENT_STACK.isEmpty()) {
+			return LootTable.EMPTY;
+		}
+
+		LootTable table = REPLACEMENT_STACK.pop();
+		BACKTRACK_STACK.push(table);
+
+		return table;
+
+	}
+
+	public static LootTable restore() {
+
+		if (BACKTRACK_STACK.isEmpty()) {
+			return LootTable.EMPTY;
+		}
+
+		LootTable table = BACKTRACK_STACK.pop();
+		REPLACEMENT_STACK.push(table);
+
+		return table;
+
+	}
+
+	public static LootTable peek() {
+
+		if (REPLACEMENT_STACK.isEmpty()) {
+			return LootTable.EMPTY;
+		}
+
+		return REPLACEMENT_STACK.peek();
+
+	}
+
+	private static void printStacks() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("[");
+		int count = 0;
+		while (!REPLACEMENT_STACK.isEmpty()) {
+			LootTable t = pop();
+			stringBuilder.append(t == null ? "null" : ((IdentifiedLootTable) t).apoli$getLootTableKey());
+			if (!REPLACEMENT_STACK.isEmpty()) {
+				stringBuilder.append(", ");
+			}
+			count++;
+		}
+		stringBuilder.append("], [");
+		while (count > 0) {
+			restore();
+			count--;
+		}
+		while (!BACKTRACK_STACK.isEmpty()) {
+			LootTable t = restore();
+			stringBuilder.append(t == null ? "null" : ((IdentifiedLootTable) t).apoli$getLootTableKey());
+			if (!BACKTRACK_STACK.isEmpty()) {
+				stringBuilder.append(", ");
+			}
+			count++;
+		}
+		while (count > 0) {
+			pop();
+			count--;
+		}
+		stringBuilder.append("]");
+		OriginsPaper.LOGGER.info(stringBuilder.toString());
+	}
+
+	public static PowerTypeFactory<?> getFactory() {
+		return new PowerTypeFactory<>(
+			OriginsPaper.apoliIdentifier("replace_loot_table"),
+			new SerializableData()
+				.add("replace", ApoliDataTypes.REGEX_MAP)
+				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
+				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
+				.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
+				.add("priority", SerializableDataTypes.INT, 0),
+			data -> (power, entity) -> new ReplaceLootTablePowerType(power, entity,
+				data.get("replace"),
+				data.get("priority"),
+				data.get("item_condition"),
+				data.get("bientity_condition"),
+				data.get("block_condition")
+			)
+		).allowCondition();
 	}
 
 	public boolean hasReplacement(ResourceKey<LootTable> lootTableKey) {
@@ -91,103 +185,6 @@ public class ReplaceLootTablePowerType extends PowerType {
 
 	public int getPriority() {
 		return priority;
-	}
-
-	public static void clearStack() {
-		REPLACEMENT_STACK.clear();
-		BACKTRACK_STACK.clear();
-	}
-
-	public static void addToStack(LootTable lootTable) {
-		REPLACEMENT_STACK.add(lootTable);
-	}
-
-	public static LootTable pop() {
-
-		if(REPLACEMENT_STACK.isEmpty()) {
-			return LootTable.EMPTY;
-		}
-
-		LootTable table = REPLACEMENT_STACK.pop();
-		BACKTRACK_STACK.push(table);
-
-		return table;
-
-	}
-
-	public static LootTable restore() {
-
-		if(BACKTRACK_STACK.isEmpty()) {
-			return LootTable.EMPTY;
-		}
-
-		LootTable table = BACKTRACK_STACK.pop();
-		REPLACEMENT_STACK.push(table);
-
-		return table;
-
-	}
-
-	public static LootTable peek() {
-
-		if(REPLACEMENT_STACK.isEmpty()) {
-			return LootTable.EMPTY;
-		}
-
-		return REPLACEMENT_STACK.peek();
-
-	}
-
-	private static void printStacks() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("[");
-		int count = 0;
-		while(!REPLACEMENT_STACK.isEmpty()) {
-			LootTable t = pop();
-			stringBuilder.append(t == null ? "null" : ((IdentifiedLootTable)t).apoli$getLootTableKey());
-			if(!REPLACEMENT_STACK.isEmpty()) {
-				stringBuilder.append(", ");
-			}
-			count++;
-		}
-		stringBuilder.append("], [");
-		while(count > 0) {
-			restore();
-			count--;
-		}
-		while(!BACKTRACK_STACK.isEmpty()) {
-			LootTable t = restore();
-			stringBuilder.append(t == null ? "null" : ((IdentifiedLootTable)t).apoli$getLootTableKey());
-			if(!BACKTRACK_STACK.isEmpty()) {
-				stringBuilder.append(", ");
-			}
-			count++;
-		}
-		while(count > 0) {
-			pop();
-			count--;
-		}
-		stringBuilder.append("]");
-		OriginsPaper.LOGGER.info(stringBuilder.toString());
-	}
-
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("replace_loot_table"),
-			new SerializableData()
-				.add("replace", ApoliDataTypes.REGEX_MAP)
-				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
-				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
-				.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
-				.add("priority", SerializableDataTypes.INT, 0),
-			data -> (power, entity) -> new ReplaceLootTablePowerType(power, entity,
-				data.get("replace"),
-				data.get("priority"),
-				data.get("item_condition"),
-				data.get("bientity_condition"),
-				data.get("block_condition")
-			)
-		).allowCondition();
 	}
 
 }

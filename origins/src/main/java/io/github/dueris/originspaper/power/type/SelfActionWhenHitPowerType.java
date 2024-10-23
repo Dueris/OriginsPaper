@@ -26,16 +26,6 @@ public class SelfActionWhenHitPowerType extends CooldownPowerType {
 		this.entityAction = entityAction;
 	}
 
-	public boolean doesApply(DamageSource source, float amount) {
-		return this.canUse()
-			&& (damageCondition == null || damageCondition.test(new Tuple<>(source, amount)));
-	}
-
-	public void whenHit() {
-		this.use();
-		this.entityAction.accept(entity);
-	}
-
 	public static PowerTypeFactory<?> createFactory(ResourceLocation id) {
 		return new PowerTypeFactory<>(id,
 			new SerializableData()
@@ -50,6 +40,16 @@ public class SelfActionWhenHitPowerType extends CooldownPowerType {
 				data.get("cooldown")
 			)
 		).allowCondition();
+	}
+
+	public boolean doesApply(DamageSource source, float amount) {
+		return this.canUse()
+			&& (damageCondition == null || damageCondition.test(new Tuple<>(source, amount)));
+	}
+
+	public void whenHit() {
+		this.use();
+		this.entityAction.accept(entity);
 	}
 
 }

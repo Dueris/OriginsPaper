@@ -21,10 +21,6 @@ public class PreventEntityCollisionPowerType extends PowerType {
 		this.biEntityCondition = biEntityCondition;
 	}
 
-	public boolean doesApply(Entity target) {
-		return biEntityCondition == null || biEntityCondition.test(new Tuple<>(entity, target));
-	}
-
 	public static boolean doesApply(Entity fromEntity, Entity collidingEntity) {
 		return PowerHolderComponent.hasPowerType(fromEntity, PreventEntityCollisionPowerType.class, p -> p.doesApply(collidingEntity))
 			|| PowerHolderComponent.hasPowerType(collidingEntity, PreventEntityCollisionPowerType.class, p -> p.doesApply(fromEntity));
@@ -39,6 +35,10 @@ public class PreventEntityCollisionPowerType extends PowerType {
 				data.get("bientity_condition")
 			)
 		).allowCondition();
+	}
+
+	public boolean doesApply(Entity target) {
+		return biEntityCondition == null || biEntityCondition.test(new Tuple<>(entity, target));
 	}
 
 }

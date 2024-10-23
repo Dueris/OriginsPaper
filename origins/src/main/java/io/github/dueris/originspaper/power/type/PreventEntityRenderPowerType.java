@@ -22,11 +22,6 @@ public class PreventEntityRenderPowerType extends PowerType {
 		this.bientityCondition = bientityCondition;
 	}
 
-	public boolean doesApply(Entity e) {
-		return (entityCondition == null || entityCondition.test(e))
-			&& (bientityCondition == null || bientityCondition.test(new Tuple<>(entity, e)));
-	}
-
 	public static PowerTypeFactory<?> getFactory() {
 		return new PowerTypeFactory<>(
 			OriginsPaper.apoliIdentifier("prevent_entity_render"),
@@ -38,6 +33,11 @@ public class PreventEntityRenderPowerType extends PowerType {
 				data.get("bientity_condition")
 			)
 		).allowCondition();
+	}
+
+	public boolean doesApply(Entity e) {
+		return (entityCondition == null || entityCondition.test(e))
+			&& (bientityCondition == null || bientityCondition.test(new Tuple<>(entity, e)));
 	}
 
 }

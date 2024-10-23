@@ -30,46 +30,6 @@ public class StackingStatusEffectPowerType extends StatusEffectPowerType {
 		this.setTicking(true);
 	}
 
-	public void tick() {
-		if(entity.tickCount % tickRate == 0) {
-			if(isActive()) {
-				currentStack += 1;
-				if(currentStack > maxStack) {
-					currentStack = maxStack;
-				}
-				if(currentStack > 0) {
-					applyEffects();
-				}
-			} else {
-				currentStack -= 1;
-				if(currentStack < minStack) {
-					currentStack = minStack;
-				}
-			}
-		}
-	}
-
-	@Override
-	public void applyEffects() {
-		effects.forEach(sei -> {
-			int duration = durationPerStack * currentStack;
-			if(duration > 0) {
-				MobEffectInstance applySei = new MobEffectInstance(sei.getEffect(), duration, sei.getAmplifier(), sei.isAmbient(), sei.isVisible(), sei.showIcon());
-				entity.addEffect(applySei);
-			}
-		});
-	}
-
-	@Override
-	public Tag toTag() {
-		return IntTag.valueOf(currentStack);
-	}
-
-	@Override
-	public void fromTag(Tag tag) {
-		currentStack = ((IntTag)tag).getAsInt();
-	}
-
 	public static PowerTypeFactory<?> getFactory() {
 		return new PowerTypeFactory<>(
 			OriginsPaper.apoliIdentifier("stacking_status_effect"),
@@ -98,6 +58,46 @@ public class StackingStatusEffectPowerType extends StatusEffectPowerType {
 
 			}
 		).allowCondition();
+	}
+
+	public void tick() {
+		if (entity.tickCount % tickRate == 0) {
+			if (isActive()) {
+				currentStack += 1;
+				if (currentStack > maxStack) {
+					currentStack = maxStack;
+				}
+				if (currentStack > 0) {
+					applyEffects();
+				}
+			} else {
+				currentStack -= 1;
+				if (currentStack < minStack) {
+					currentStack = minStack;
+				}
+			}
+		}
+	}
+
+	@Override
+	public void applyEffects() {
+		effects.forEach(sei -> {
+			int duration = durationPerStack * currentStack;
+			if (duration > 0) {
+				MobEffectInstance applySei = new MobEffectInstance(sei.getEffect(), duration, sei.getAmplifier(), sei.isAmbient(), sei.isVisible(), sei.showIcon());
+				entity.addEffect(applySei);
+			}
+		});
+	}
+
+	@Override
+	public Tag toTag() {
+		return IntTag.valueOf(currentStack);
+	}
+
+	@Override
+	public void fromTag(Tag tag) {
+		currentStack = ((IntTag) tag).getAsInt();
 	}
 
 }

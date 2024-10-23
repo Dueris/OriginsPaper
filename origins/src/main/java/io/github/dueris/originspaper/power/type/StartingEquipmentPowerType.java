@@ -26,6 +26,57 @@ public class StartingEquipmentPowerType extends PowerType {
 		super(power, entity);
 	}
 
+	public static PowerTypeFactory<?> getFactory() {
+		return new PowerTypeFactory<>(
+			OriginsPaper.apoliIdentifier("starting_equipment"),
+			new SerializableData()
+				.add("stack", ApoliDataTypes.POSITIONED_ITEM_STACK, null)
+				.add("stacks", ApoliDataTypes.POSITIONED_ITEM_STACKS, null)
+				.add("recurrent", SerializableDataTypes.BOOLEAN, false),
+			data -> (power, entity) -> {
+
+				StartingEquipmentPowerType powerType = new StartingEquipmentPowerType(power, entity);
+
+				if (data.isPresent("stack")) {
+
+					Tuple<Integer, ItemStack> slotAndStack = data.get("stack");
+
+					ItemStack stack = slotAndStack.getB();
+					int slot = slotAndStack.getA();
+
+					if (slot > Integer.MIN_VALUE) {
+						powerType.addStack(slot, stack);
+					} else {
+						powerType.addStack(stack);
+					}
+
+				}
+
+				if (data.isPresent("stacks")) {
+
+					List<Tuple<Integer, ItemStack>> stacks = data.get("stacks");
+					stacks.forEach(slotAndStack -> {
+
+						ItemStack stack = slotAndStack.getB();
+						int slot = slotAndStack.getA();
+
+						if (slot > Integer.MIN_VALUE) {
+							powerType.addStack(slot, stack);
+						} else {
+							powerType.addStack(stack);
+						}
+
+					});
+
+				}
+
+				powerType.setRecurrent(data.getBoolean("recurrent"));
+				return powerType;
+
+			}
+		);
+	}
+
 	public void setRecurrent(boolean recurrent) {
 		this.recurrent = recurrent;
 	}
@@ -45,16 +96,16 @@ public class StartingEquipmentPowerType extends PowerType {
 
 	@Override
 	public void onRespawn() {
-		if(recurrent) {
+		if (recurrent) {
 			giveStacks();
 		}
 	}
 
 	private void giveStacks() {
 		slottedStacks.forEach((slot, stack) -> {
-			if(entity instanceof Player player) {
+			if (entity instanceof Player player) {
 				Inventory inventory = player.getInventory();
-				if(inventory.getItem(slot).isEmpty()) {
+				if (inventory.getItem(slot).isEmpty()) {
 					inventory.setItem(slot, stack);
 				} else {
 					player.addItem(stack);
@@ -65,67 +116,12 @@ public class StartingEquipmentPowerType extends PowerType {
 		});
 		itemStacks.forEach(is -> {
 			ItemStack copy = is.copy();
-			if(entity instanceof Player player) {
+			if (entity instanceof Player player) {
 				player.addItem(copy);
 			} else {
 				entity.spawnAtLocation(copy);
 			}
 		});
-	}
-
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("starting_equipment"),
-			new SerializableData()
-				.add("stack", ApoliDataTypes.POSITIONED_ITEM_STACK, null)
-				.add("stacks", ApoliDataTypes.POSITIONED_ITEM_STACKS, null)
-				.add("recurrent", SerializableDataTypes.BOOLEAN, false),
-			data -> (power, entity) -> {
-
-				StartingEquipmentPowerType powerType = new StartingEquipmentPowerType(power, entity);
-
-				if (data.isPresent("stack")) {
-
-					Tuple<Integer, ItemStack> slotAndStack = data.get("stack");
-
-					ItemStack stack = slotAndStack.getB();
-					int slot = slotAndStack.getA();
-
-					if(slot > Integer.MIN_VALUE) {
-						powerType.addStack(slot, stack);
-					}
-
-					else {
-						powerType.addStack(stack);
-					}
-
-				}
-
-				if (data.isPresent("stacks")) {
-
-					List<Tuple<Integer, ItemStack>> stacks = data.get("stacks");
-					stacks.forEach(slotAndStack -> {
-
-						ItemStack stack = slotAndStack.getB();
-						int slot = slotAndStack.getA();
-
-						if (slot > Integer.MIN_VALUE) {
-							powerType.addStack(slot, stack);
-						}
-
-						else {
-							powerType.addStack(stack);
-						}
-
-					});
-
-				}
-
-				powerType.setRecurrent(data.getBoolean("recurrent"));
-				return powerType;
-
-			}
-		);
 	}
 
 }

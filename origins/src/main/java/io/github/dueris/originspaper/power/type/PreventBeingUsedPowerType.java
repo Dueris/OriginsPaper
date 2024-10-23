@@ -31,24 +31,6 @@ public class PreventBeingUsedPowerType extends InteractionPowerType {
 		this.bientityCondition = bientityCondition;
 	}
 
-	public boolean doesApply(Player other, InteractionHand hand, ItemStack heldStack) {
-		if(!shouldExecute(hand, heldStack)) {
-			return false;
-		}
-		return bientityCondition == null || bientityCondition.test(new Tuple<>(other, entity));
-	}
-
-	public InteractionResult executeAction(Player other, InteractionHand hand) {
-
-		if (biEntityAction != null) {
-			biEntityAction.accept(new Tuple<>(other, entity));
-		}
-
-		this.performActorItemStuff(this, other, hand);
-		return this.getActionResult();
-
-	}
-
 	public static PowerTypeFactory<?> getFactory() {
 		return new PowerTypeFactory<>(
 			OriginsPaper.apoliIdentifier("prevent_being_used"),
@@ -70,5 +52,23 @@ public class PreventBeingUsedPowerType extends InteractionPowerType {
 				data.get("bientity_condition")
 			)
 		).allowCondition();
+	}
+
+	public boolean doesApply(Player other, InteractionHand hand, ItemStack heldStack) {
+		if (!shouldExecute(hand, heldStack)) {
+			return false;
+		}
+		return bientityCondition == null || bientityCondition.test(new Tuple<>(other, entity));
+	}
+
+	public InteractionResult executeAction(Player other, InteractionHand hand) {
+
+		if (biEntityAction != null) {
+			biEntityAction.accept(new Tuple<>(other, entity));
+		}
+
+		this.performActorItemStuff(this, other, hand);
+		return this.getActionResult();
+
 	}
 }

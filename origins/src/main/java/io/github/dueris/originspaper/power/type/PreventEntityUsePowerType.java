@@ -31,27 +31,6 @@ public class PreventEntityUsePowerType extends InteractionPowerType {
 		this.bientityCondition = bientityCondition;
 	}
 
-	public boolean doesApply(Entity other, InteractionHand hand, ItemStack heldStack) {
-		if(!shouldExecute(hand, heldStack)) {
-			return false;
-		}
-		return bientityCondition == null || bientityCondition.test(new Tuple<>(entity, other));
-	}
-
-	public InteractionResult executeAction(Entity other, InteractionHand hand) {
-
-		if (biEntityAction != null) {
-			biEntityAction.accept(new Tuple<>(entity, other));
-		}
-
-		if (entity instanceof Player player) {
-			this.performActorItemStuff(this, player, hand);
-		}
-
-		return this.getActionResult();
-
-	}
-
 	public static PowerTypeFactory<?> getFactory() {
 		return new PowerTypeFactory<>(
 			OriginsPaper.apoliIdentifier("prevent_entity_use"),
@@ -73,6 +52,27 @@ public class PreventEntityUsePowerType extends InteractionPowerType {
 				data.get("bientity_condition")
 			)
 		).allowCondition();
+	}
+
+	public boolean doesApply(Entity other, InteractionHand hand, ItemStack heldStack) {
+		if (!shouldExecute(hand, heldStack)) {
+			return false;
+		}
+		return bientityCondition == null || bientityCondition.test(new Tuple<>(entity, other));
+	}
+
+	public InteractionResult executeAction(Entity other, InteractionHand hand) {
+
+		if (biEntityAction != null) {
+			biEntityAction.accept(new Tuple<>(entity, other));
+		}
+
+		if (entity instanceof Player player) {
+			this.performActorItemStuff(this, player, hand);
+		}
+
+		return this.getActionResult();
+
 	}
 
 }

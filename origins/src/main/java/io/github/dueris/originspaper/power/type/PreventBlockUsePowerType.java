@@ -45,29 +45,6 @@ public class PreventBlockUsePowerType extends ActiveInteractionPowerType {
 		this.usePhases = usePhases;
 	}
 
-	public void executeActions(BlockHitResult hitResult, InteractionHand hand) {
-
-		if (blockAction != null) {
-			this.blockAction.accept(Triple.of(entity.level(), hitResult.getBlockPos(), hitResult.getDirection()));
-		}
-
-		if (entityAction != null) {
-			this.entityAction.accept(entity);
-		}
-
-		if (entity instanceof Player player) {
-			this.performActorItemStuff(this, player, hand);
-		}
-
-	}
-
-	public boolean doesPrevent(BlockUsagePhase usePhase, BlockHitResult hitResult, ItemStack heldStack, InteractionHand hand) {
-		return usePhases.contains(usePhase)
-			&& directions.contains(hitResult.getDirection())
-			&& super.shouldExecute(hand, heldStack)
-			&& (blockCondition == null || blockCondition.test(new BlockInWorld(entity.level(), hitResult.getBlockPos(), true)));
-	}
-
 	public static boolean doesPrevent(Entity holder, BlockUsagePhase usePhase, BlockHitResult hitResult, ItemStack heldStack, InteractionHand hand) {
 
 		CallInstance<ActiveInteractionPowerType> aipci = new CallInstance<>();
@@ -110,6 +87,29 @@ public class PreventBlockUsePowerType extends ActiveInteractionPowerType {
 				data.get("priority")
 			)
 		).allowCondition();
+	}
+
+	public void executeActions(BlockHitResult hitResult, InteractionHand hand) {
+
+		if (blockAction != null) {
+			this.blockAction.accept(Triple.of(entity.level(), hitResult.getBlockPos(), hitResult.getDirection()));
+		}
+
+		if (entityAction != null) {
+			this.entityAction.accept(entity);
+		}
+
+		if (entity instanceof Player player) {
+			this.performActorItemStuff(this, player, hand);
+		}
+
+	}
+
+	public boolean doesPrevent(BlockUsagePhase usePhase, BlockHitResult hitResult, ItemStack heldStack, InteractionHand hand) {
+		return usePhases.contains(usePhase)
+			&& directions.contains(hitResult.getDirection())
+			&& super.shouldExecute(hand, heldStack)
+			&& (blockCondition == null || blockCondition.test(new BlockInWorld(entity.level(), hitResult.getBlockPos(), true)));
 	}
 
 }

@@ -28,17 +28,6 @@ public class SelfActionOnHitPowerType extends CooldownPowerType {
 		this.targetCondition = targetCondition;
 	}
 
-	public boolean doesApply(Entity target, DamageSource source, float amount) {
-		return this.canUse()
-			&& (targetCondition == null || targetCondition.test(target))
-			&& (damageCondition == null || damageCondition.test(new Tuple<>(source, amount)));
-	}
-
-	public void onHit() {
-		this.use();
-		this.entityAction.accept(entity);
-	}
-
 	public static PowerTypeFactory<?> getFactory() {
 		return new PowerTypeFactory<>(OriginsPaper.apoliIdentifier("self_action_on_hit"),
 			new SerializableData()
@@ -55,6 +44,17 @@ public class SelfActionOnHitPowerType extends CooldownPowerType {
 				data.get("cooldown")
 			)
 		).allowCondition();
+	}
+
+	public boolean doesApply(Entity target, DamageSource source, float amount) {
+		return this.canUse()
+			&& (targetCondition == null || targetCondition.test(target))
+			&& (damageCondition == null || damageCondition.test(new Tuple<>(source, amount)));
+	}
+
+	public void onHit() {
+		this.use();
+		this.entityAction.accept(entity);
 	}
 
 }

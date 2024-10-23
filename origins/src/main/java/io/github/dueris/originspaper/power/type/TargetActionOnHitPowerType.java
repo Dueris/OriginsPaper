@@ -28,17 +28,6 @@ public class TargetActionOnHitPowerType extends CooldownPowerType {
 		this.targetCondition = targetCondition;
 	}
 
-	public boolean doesApply(Entity target, DamageSource source, float amount) {
-		return this.canUse()
-			&& (targetCondition == null || targetCondition.test(target))
-			&& (damageCondition == null || damageCondition.test(new Tuple<>(source, amount)));
-	}
-
-	public void onHit(Entity target) {
-		this.entityAction.accept(target);
-		this.use();
-	}
-
 	public static PowerTypeFactory<?> getFactory() {
 		return new PowerTypeFactory<>(
 			OriginsPaper.apoliIdentifier("target_action_on_hit"),
@@ -56,6 +45,17 @@ public class TargetActionOnHitPowerType extends CooldownPowerType {
 				data.get("target_condition")
 			)
 		).allowCondition();
+	}
+
+	public boolean doesApply(Entity target, DamageSource source, float amount) {
+		return this.canUse()
+			&& (targetCondition == null || targetCondition.test(target))
+			&& (damageCondition == null || damageCondition.test(new Tuple<>(source, amount)));
+	}
+
+	public void onHit(Entity target) {
+		this.entityAction.accept(target);
+		this.use();
 	}
 
 }

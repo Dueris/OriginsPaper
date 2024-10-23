@@ -22,6 +22,21 @@ public class ToggleNightVisionPowerType extends NightVisionPowerType implements 
 		this.key = key;
 	}
 
+	public static PowerTypeFactory<?> getFactory() {
+		return new PowerTypeFactory<>(
+			OriginsPaper.apoliIdentifier("toggle_night_vision"),
+			new SerializableData()
+				.add("active_by_default", SerializableDataTypes.BOOLEAN, false)
+				.add("strength", SerializableDataTypes.FLOAT, 1.0F)
+				.add("key", ApoliDataTypes.BACKWARDS_COMPATIBLE_KEY, new Active.Key()),
+			data -> (power, entity) -> new ToggleNightVisionPowerType(power, entity,
+				data.get("active_by_default"),
+				data.get("strength"),
+				data.get("key")
+			)
+		).allowCondition();
+	}
+
 	@Override
 	public void onUse() {
 		this.toggled = !this.toggled;
@@ -49,20 +64,5 @@ public class ToggleNightVisionPowerType extends NightVisionPowerType implements 
 	@Override
 	public Key getKey() {
 		return key;
-	}
-
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("toggle_night_vision"),
-			new SerializableData()
-				.add("active_by_default", SerializableDataTypes.BOOLEAN, false)
-				.add("strength", SerializableDataTypes.FLOAT, 1.0F)
-				.add("key", ApoliDataTypes.BACKWARDS_COMPATIBLE_KEY, new Active.Key()),
-			data -> (power, entity) -> new ToggleNightVisionPowerType(power, entity,
-				data.get("active_by_default"),
-				data.get("strength"),
-				data.get("key")
-			)
-		).allowCondition();
 	}
 }

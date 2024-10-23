@@ -40,17 +40,6 @@ public class PreventGameEventPowerType extends PowerType {
 
 	}
 
-	public void executeAction() {
-		if (entityAction != null) {
-			entityAction.accept(entity);
-		}
-	}
-
-	public boolean doesPrevent(Holder<GameEvent> event) {
-		return (eventTag != null && event.is(eventTag))
-			|| (events != null && events.contains(event));
-	}
-
 	public static PowerTypeFactory<?> getFactory() {
 		return new PowerTypeFactory<>(
 			OriginsPaper.apoliIdentifier("prevent_game_event"),
@@ -66,5 +55,16 @@ public class PreventGameEventPowerType extends PowerType {
 				data.get("entity_action")
 			)
 		).allowCondition();
+	}
+
+	public void executeAction() {
+		if (entityAction != null) {
+			entityAction.accept(entity);
+		}
+	}
+
+	public boolean doesPrevent(Holder<GameEvent> event) {
+		return (eventTag != null && event.is(eventTag))
+			|| (events != null && events.contains(event));
 	}
 }

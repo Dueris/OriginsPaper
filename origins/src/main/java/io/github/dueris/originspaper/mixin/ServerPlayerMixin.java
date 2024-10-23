@@ -107,9 +107,11 @@ public abstract class ServerPlayerMixin extends Player implements EndRespawningE
 	@Shadow
 	public abstract ServerLevel serverLevel();
 
-	@Shadow public abstract void sendSystemMessage(Component message, boolean overlay);
+	@Shadow
+	public abstract void sendSystemMessage(Component message, boolean overlay);
 
-	@Shadow public abstract void sendChatMessage(OutgoingChatMessage message, boolean filterMaskEnabled, ChatType.Bound params);
+	@Shadow
+	public abstract void sendChatMessage(OutgoingChatMessage message, boolean filterMaskEnabled, ChatType.Bound params);
 
 	@Override
 	public void apoli$setEndRespawning(boolean endSpawn) {
@@ -309,9 +311,7 @@ public abstract class ServerPlayerMixin extends Player implements EndRespawningE
 
 		if (preventSleepPowers.isEmpty()) {
 			original.call(serverPlayer, levelResourceKey, position, pos, angle, forced, sendMessage);
-		}
-
-		else {
+		} else {
 
 			if (preventSleepPowers.stream().allMatch(PreventSleepPowerType::doesAllowSpawnPoint)) {
 				original.call(serverPlayer, levelResourceKey, position, pos, angle, forced, sendMessage);

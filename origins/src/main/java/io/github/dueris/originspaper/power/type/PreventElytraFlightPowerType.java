@@ -20,6 +20,18 @@ public class PreventElytraFlightPowerType extends PowerType {
 		setTicking();
 	}
 
+	public static PowerTypeFactory<?> getFactory() {
+		return new PowerTypeFactory<>(
+			OriginsPaper.apoliIdentifier("prevent_elytra_flight"),
+			new SerializableData()
+				.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null),
+			data -> (power, entity) -> new PreventElytraFlightPowerType(power, entity,
+				data.get("entity_action")
+			)
+		).allowCondition();
+
+	}
+
 	@Override
 	public void tick() {
 		this.entity.setSharedFlag(7, false);
@@ -30,18 +42,6 @@ public class PreventElytraFlightPowerType extends PowerType {
 		if (entityAction != null) {
 			entityAction.accept(entity);
 		}
-
-	}
-
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("prevent_elytra_flight"),
-			new SerializableData()
-				.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null),
-			data -> (power, entity) -> new PreventElytraFlightPowerType(power, entity,
-				data.get("entity_action")
-			)
-		).allowCondition();
 
 	}
 

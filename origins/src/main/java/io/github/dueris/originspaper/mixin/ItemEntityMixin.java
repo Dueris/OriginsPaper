@@ -1,6 +1,5 @@
 package io.github.dueris.originspaper.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.dueris.originspaper.power.type.ActionOnItemPickupPowerType;
@@ -33,9 +32,7 @@ public abstract class ItemEntityMixin extends Entity {
 		if (original.call(instance, stack)) {
 			ActionOnItemPickupPowerType.executeActions(thisAsItemEntity, player);
 			return true;
-		}
-
-		else {
+		} else {
 			return false;
 		}
 

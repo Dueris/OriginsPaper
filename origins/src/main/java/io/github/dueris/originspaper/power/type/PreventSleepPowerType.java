@@ -31,6 +31,23 @@ public class PreventSleepPowerType extends PowerType implements Prioritized<Prev
 		this.priority = priority;
 	}
 
+	public static PowerTypeFactory<?> getFactory() {
+		return new PowerTypeFactory<>(
+			OriginsPaper.apoliIdentifier("prevent_sleep"),
+			new SerializableData()
+				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
+				.add("message", ApoliDataTypes.DEFAULT_TRANSLATABLE_TEXT, Component.translatable("text.apoli.cannot_sleep"))
+				.add("set_spawn_point", SerializableDataTypes.BOOLEAN, false)
+				.add("priority", SerializableDataTypes.INT, 0),
+			data -> (power, entity) -> new PreventSleepPowerType(power, entity,
+				data.get("block_condition"),
+				data.get("message"),
+				data.get("set_spawn_point"),
+				data.get("priority")
+			)
+		).allowCondition();
+	}
+
 	@Override
 	public int compareTo(@NotNull PreventSleepPowerType other) {
 		int cmp = Boolean.compare(this.doesAllowSpawnPoint(), other.doesAllowSpawnPoint());
@@ -53,23 +70,6 @@ public class PreventSleepPowerType extends PowerType implements Prioritized<Prev
 
 	public boolean doesAllowSpawnPoint() {
 		return allowSpawnPoint;
-	}
-
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("prevent_sleep"),
-			new SerializableData()
-				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
-				.add("message", ApoliDataTypes.DEFAULT_TRANSLATABLE_TEXT, Component.translatable("text.apoli.cannot_sleep"))
-				.add("set_spawn_point", SerializableDataTypes.BOOLEAN, false)
-				.add("priority", SerializableDataTypes.INT, 0),
-			data -> (power, entity) -> new PreventSleepPowerType(power, entity,
-				data.get("block_condition"),
-				data.get("message"),
-				data.get("set_spawn_point"),
-				data.get("priority")
-			)
-		).allowCondition();
 	}
 
 }

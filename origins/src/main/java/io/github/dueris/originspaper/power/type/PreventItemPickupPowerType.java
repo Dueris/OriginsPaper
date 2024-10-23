@@ -42,30 +42,6 @@ public class PreventItemPickupPowerType extends PowerType implements Prioritized
 		this.priority = priority;
 	}
 
-	@Override
-	public int getPriority() {
-		return priority;
-	}
-
-	public boolean doesPrevent(ItemStack stack, Entity thrower) {
-		return (itemCondition == null || itemCondition.test(new Tuple<>(entity.level(), stack)))
-			&& (biEntityCondition == null || biEntityCondition.test(new Tuple<>(thrower, entity)));
-	}
-
-	public void executeActions(ItemEntity itemEntity, Entity thrower) {
-		if (itemAction != null) {
-			SlotAccess reference = InventoryUtil.createStackReference(itemEntity.getItem());
-			itemAction.accept(new Tuple<>(entity.level(), reference));
-			itemEntity.setItem(reference.get());
-		}
-		if (biEntityActionThrower != null) {
-			biEntityActionThrower.accept(new Tuple<>(thrower, entity));
-		}
-		if (biEntityActionItem != null) {
-			biEntityActionItem.accept(new Tuple<>(entity, itemEntity));
-		}
-	}
-
 	public static boolean doesPrevent(ItemEntity itemEntity, Entity entity) {
 
 		if (!PowerHolderComponent.KEY.isProvidedBy(entity)) {
@@ -113,6 +89,30 @@ public class PreventItemPickupPowerType extends PowerType implements Prioritized
 				data.get("priority")
 			)
 		).allowCondition();
+	}
+
+	@Override
+	public int getPriority() {
+		return priority;
+	}
+
+	public boolean doesPrevent(ItemStack stack, Entity thrower) {
+		return (itemCondition == null || itemCondition.test(new Tuple<>(entity.level(), stack)))
+			&& (biEntityCondition == null || biEntityCondition.test(new Tuple<>(thrower, entity)));
+	}
+
+	public void executeActions(ItemEntity itemEntity, Entity thrower) {
+		if (itemAction != null) {
+			SlotAccess reference = InventoryUtil.createStackReference(itemEntity.getItem());
+			itemAction.accept(new Tuple<>(entity.level(), reference));
+			itemEntity.setItem(reference.get());
+		}
+		if (biEntityActionThrower != null) {
+			biEntityActionThrower.accept(new Tuple<>(thrower, entity));
+		}
+		if (biEntityActionItem != null) {
+			biEntityActionItem.accept(new Tuple<>(entity, itemEntity));
+		}
 	}
 
 }

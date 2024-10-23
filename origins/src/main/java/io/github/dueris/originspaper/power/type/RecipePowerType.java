@@ -26,10 +26,6 @@ public class RecipePowerType extends PowerType {
 		this.recipe = recipe;
 	}
 
-	public CraftingRecipe getRecipe() {
-		return recipe;
-	}
-
 	public static void registerAll() {
 		for (Power power : PowerManager.values()) {
 
@@ -57,6 +53,10 @@ public class RecipePowerType extends PowerType {
 				data.get("recipe")
 			)
 		).allowCondition();
+	}
+
+	public CraftingRecipe getRecipe() {
+		return recipe;
 	}
 
 }

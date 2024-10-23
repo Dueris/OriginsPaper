@@ -28,17 +28,6 @@ public class SelfActionOnKillPowerType extends CooldownPowerType {
 		this.targetCondition = targetCondition;
 	}
 
-	public boolean doesApply(Entity target, DamageSource source, float amount) {
-		return this.canUse()
-			&& (targetCondition == null || targetCondition.test(target))
-			&& (damageCondition == null || damageCondition.test(new Tuple<>(source, amount)));
-	}
-
-	public void executeAction() {
-		this.use();
-		entityAction.accept(entity);
-	}
-
 	public static PowerTypeFactory<?> getFactory() {
 		return new PowerTypeFactory<>(
 			OriginsPaper.apoliIdentifier("self_action_on_kill"),
@@ -56,5 +45,16 @@ public class SelfActionOnKillPowerType extends CooldownPowerType {
 				data.get("cooldown")
 			)
 		).allowCondition();
+	}
+
+	public boolean doesApply(Entity target, DamageSource source, float amount) {
+		return this.canUse()
+			&& (targetCondition == null || targetCondition.test(target))
+			&& (damageCondition == null || damageCondition.test(new Tuple<>(source, amount)));
+	}
+
+	public void executeAction() {
+		this.use();
+		entityAction.accept(entity);
 	}
 }
