@@ -2,6 +2,7 @@ package io.github.dueris.originspaper.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
+import io.github.dueris.originspaper.global.GlobalPowerSetUtil;
 import io.github.dueris.originspaper.power.PowerManager;
 import io.github.dueris.originspaper.power.type.PowerType;
 import net.kyori.adventure.text.Component;
@@ -26,9 +27,10 @@ public abstract class PlayerListMixin {
 	public abstract List<ServerPlayer> getPlayers();
 
 	@Inject(method = "reloadResources", at = @At("HEAD"))
-	public void updatePowerManager(CallbackInfo ci) {
+	public void syncDatapackContents(CallbackInfo ci) {
 		for (ServerPlayer player : getPlayers()) {
 			PowerManager.updateData(player, false);
+			GlobalPowerSetUtil.applyGlobalPowers(player);
 		}
 	}
 

@@ -3,6 +3,7 @@ package io.github.dueris.originspaper.power;
 import io.github.dueris.originspaper.client.resource.ResourceManager;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.component.PowerHolderComponentImpl;
+import io.github.dueris.originspaper.global.GlobalPowerSetUtil;
 import io.github.dueris.originspaper.power.type.EntitySetPowerType;
 import io.github.dueris.originspaper.power.type.ModifyEnchantmentLevelPowerType;
 import io.github.dueris.originspaper.power.type.PowerType;
@@ -17,6 +18,7 @@ public class PowerIntegration {
 		if (!PowerHolderComponent.KEY.isProvidedBy(entity) && entity instanceof LivingEntity livingEntity) {
 			PowerHolderComponent.KEY.put(entity, new PowerHolderComponentImpl(livingEntity));
 		}
+		GlobalPowerSetUtil.applyGlobalPowers(entity);
 		PowerHolderComponent.getPowerTypes(entity, PowerType.class, true).forEach(PowerType::onAdded);
 		EntitySetPowerType.integrateLoadCallback(entity, (ServerLevel) entity.level());
 		if (entity instanceof ServerPlayer) {
