@@ -6,6 +6,8 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.dueris.originspaper.access.EntityLinkedType;
+import io.github.dueris.originspaper.component.OriginComponent;
+import io.github.dueris.originspaper.component.PlayerOriginComponent;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.component.PowerHolderComponentImpl;
 import io.github.dueris.originspaper.power.type.*;
@@ -63,6 +65,13 @@ public abstract class EntityMixin {
 			}
 
 			PowerHolderComponent.KEY.get(thisAsEntity).readFromNbt(nbt, registryAccess());
+			if (thisAsEntity instanceof Player player) {
+				if (!OriginComponent.ORIGIN.isProvidedBy(thisAsEntity)) {
+					OriginComponent.ORIGIN.put(thisAsEntity, new PlayerOriginComponent(player));
+				}
+
+				OriginComponent.ORIGIN.get(player).readFromNbt(nbt, registryAccess());
+			}
 		}
 	}
 
@@ -75,6 +84,13 @@ public abstract class EntityMixin {
 			}
 
 			PowerHolderComponent.KEY.get(thisAsEntity).writeToNbt(original, registryAccess());
+			if (thisAsEntity instanceof Player player) {
+				if (!OriginComponent.ORIGIN.isProvidedBy(thisAsEntity)) {
+					OriginComponent.ORIGIN.put(thisAsEntity, new PlayerOriginComponent(player));
+				}
+
+				OriginComponent.ORIGIN.get(player).writeToNbt(original, registryAccess());
+			}
 		}
 
 		return original;

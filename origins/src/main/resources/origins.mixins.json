@@ -49,7 +49,8 @@
     "PluginCommandNodeMixin",
     "ItemMixin",
     "BlockStateBaseMixin",
-    "MobMixin"
+    "MobMixin",
+    "PlayerAdvancementsMixin"
   ],
   "compatibilityLevel": "JAVA_17"
 }

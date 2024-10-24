@@ -1,8 +1,12 @@
 package io.github.dueris.originspaper.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import io.github.dueris.originspaper.component.OriginComponent;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.global.GlobalPowerSetUtil;
+import io.github.dueris.originspaper.origin.Origin;
+import io.github.dueris.originspaper.origin.OriginLayer;
+import io.github.dueris.originspaper.origin.OriginLayerManager;
 import io.github.dueris.originspaper.power.PowerManager;
 import io.github.dueris.originspaper.power.type.PowerType;
 import net.kyori.adventure.text.Component;
@@ -19,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 @Mixin(PlayerList.class)
 public abstract class PlayerListMixin {
@@ -31,6 +36,11 @@ public abstract class PlayerListMixin {
 		for (ServerPlayer player : getPlayers()) {
 			PowerManager.updateData(player, false);
 			GlobalPowerSetUtil.applyGlobalPowers(player);
+			OriginComponent component = OriginComponent.ORIGIN.get(player);
+			OriginLayerManager.values().stream()
+				.filter(OriginLayer::isEnabled)
+				.filter(Predicate.not(component::hasOrigin))
+				.forEach(layer -> component.setOrigin(layer, Origin.EMPTY));
 		}
 	}
 

@@ -1,6 +1,7 @@
 package io.github.dueris.originspaper.util;
 
 import io.github.dueris.originspaper.client.MinecraftClient;
+import io.github.dueris.originspaper.component.OriginComponent;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -35,14 +36,14 @@ public class Scheduler {
 			}
 		}
 
-		for (ServerPlayer player : m.getPlayerList().getPlayers()) {
-			PowerHolderComponent component = PowerHolderComponent.KEY.getNullable(player);
-
-			if (component == null) {
-				continue;
-			}
-
+		PowerHolderComponent.KEY.forEach((entity, component) -> {
 			component.serverTick();
+		});
+		OriginComponent.ORIGIN.forEach((entity, component) -> {
+			component.serverTick();
+		});
+
+		for (ServerPlayer player : m.getPlayerList().getPlayers()) {
 			MinecraftClient.of(player).tick();
 		}
 

@@ -12,6 +12,8 @@ import io.github.dueris.originspaper.entity.EnderianPearlEntity;
 import io.github.dueris.originspaper.global.GlobalPowerSetManager;
 import io.github.dueris.originspaper.loot.condition.ApoliLootConditionTypes;
 import io.github.dueris.originspaper.loot.function.ApoliLootFunctionTypes;
+import io.github.dueris.originspaper.origin.OriginLayerManager;
+import io.github.dueris.originspaper.origin.OriginManager;
 import io.github.dueris.originspaper.plugin.OriginsPlugin;
 import io.github.dueris.originspaper.plugin.PluginInstances;
 import io.github.dueris.originspaper.power.PowerManager;
@@ -101,6 +103,8 @@ public class OriginsPaper {
 
 		FabricResourceManagerImpl.registerResourceReload(new PowerManager());
 		FabricResourceManagerImpl.registerResourceReload(new GlobalPowerSetManager());
+		FabricResourceManagerImpl.registerResourceReload(new OriginManager());
+		FabricResourceManagerImpl.registerResourceReload(new OriginLayerManager());
 		IdentifierAlias.GLOBAL.addNamespaceAlias("apoli", "calio");
 		IdentifierAlias.GLOBAL.addNamespaceAlias("origins", "apoli");
 		LOGGER.info("OriginsPaper, version {}, is initialized and ready to power up your game!", version);
