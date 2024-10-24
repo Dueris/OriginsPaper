@@ -118,7 +118,7 @@ public class OriginLayer implements Comparable<OriginLayer> {
 		this.replace = replace;
 		this.enabled = enabled;
 
-		this.name = name;
+		this.name = name == null ? Component.translatable("layer." + id.getNamespace() + "." + id.getPath() + ".name") : name;
 
 		if (guiTitle == null) {
 

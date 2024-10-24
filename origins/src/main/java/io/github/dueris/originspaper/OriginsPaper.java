@@ -5,6 +5,7 @@ import io.github.dueris.originspaper.action.type.BiEntityActionTypes;
 import io.github.dueris.originspaper.action.type.BlockActionTypes;
 import io.github.dueris.originspaper.action.type.EntityActionTypes;
 import io.github.dueris.originspaper.action.type.ItemActionTypes;
+import io.github.dueris.originspaper.command.OriginCommand;
 import io.github.dueris.originspaper.command.PowerCommand;
 import io.github.dueris.originspaper.command.ResourceCommand;
 import io.github.dueris.originspaper.condition.type.*;
@@ -73,6 +74,7 @@ public class OriginsPaper {
 			PaperCommands contextCommands = (PaperCommands) event.registrar();
 			contextCommands.register(PluginInstances.APOLI_META, PowerCommand.node(), null, new ArrayList<>());
 			contextCommands.register(PluginInstances.APOLI_META, ResourceCommand.node(), null, new ArrayList<>());
+			contextCommands.register(context.getPluginMeta(), OriginCommand.node(), null, new ArrayList<>());
 		}).priority(1));
 		EnderianPearlEntity.bootstrap();
 

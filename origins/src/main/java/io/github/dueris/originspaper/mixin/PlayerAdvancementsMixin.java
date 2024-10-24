@@ -27,7 +27,7 @@ public abstract class PlayerAdvancementsMixin {
 	private void checkOriginUpgrade(AdvancementHolder advancement, String criterionName, CallbackInfoReturnable<Boolean> cir) {
 
 		AdvancementProgress progress = this.getOrStartProgress(advancement);
-		if (!progress.isDone()) {
+		if (!progress.isDone() || !OriginComponent.ORIGIN.isProvidedBy(player)) {
 			return;
 		}
 

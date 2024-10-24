@@ -21,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -80,7 +81,7 @@ public class Origin implements Validatable {
 
 	private final int order;
 
-	protected Origin(ResourceLocation id, ItemStack icon, List<PowerReference> powerReferences, List<OriginUpgrade> upgrades, Impact impact, @Nullable Component name, @Nullable Component description, boolean unchoosable, boolean special, int order) {
+	protected Origin(ResourceLocation id, @NotNull ItemStack icon, List<PowerReference> powerReferences, List<OriginUpgrade> upgrades, Impact impact, @Nullable Component name, @Nullable Component description, boolean unchoosable, boolean special, int order) {
 
 		this.id = id;
 		this.displayItem = icon.copy();
@@ -88,8 +89,8 @@ public class Origin implements Validatable {
 		this.powers = new ObjectLinkedOpenHashSet<>();
 		this.upgrades = upgrades;
 		this.impact = impact;
-		this.name = name;
-		this.description = description;
+		this.name = name == null ? Component.translatable("origin." + id.getNamespace() + "." + id.getPath() + ".name") : name;
+		this.description = description == null ? Component.translatable("origin." + id.getNamespace() + "." + id.getPath() + ".description") : description;
 		this.choosable = !unchoosable;
 		this.special = special;
 		this.order = order;

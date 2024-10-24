@@ -538,4 +538,18 @@ public class Util {
 	public static ResourceLocation getId(@NotNull CommandContext<io.papermc.paper.command.brigadier.CommandSourceStack> context, String name) {
 		return context.getArgument(name, ResourceLocation.class);
 	}
+
+	public static @NotNull Collection<ServerPlayer> getPlayers(@NotNull CommandContext<io.papermc.paper.command.brigadier.CommandSourceStack> context, String name) throws CommandSyntaxException {
+		List<ServerPlayer> list = context.getArgument(name, EntitySelector.class).findPlayers((CommandSourceStack) context.getSource());
+
+		if (list.isEmpty()) {
+			throw EntityArgument.NO_PLAYERS_FOUND.create();
+		} else {
+			return list;
+		}
+	}
+
+	public static @NotNull ServerPlayer getPlayer(@NotNull CommandContext<io.papermc.paper.command.brigadier.CommandSourceStack> context, String name) throws CommandSyntaxException {
+		return context.getArgument(name, EntitySelector.class).findSinglePlayer((CommandSourceStack) context.getSource());
+	}
 }
