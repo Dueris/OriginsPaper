@@ -12,6 +12,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -45,7 +46,7 @@ public interface OriginComponent {
 
 	}
 
-	static void partialOnChosen(Player player, boolean hadOriginBefore, Origin origin) {
+	static void partialOnChosen(Player player, boolean hadOriginBefore, @NotNull Origin origin) {
 
 		PowerHolderComponent powerHolder = PowerHolderComponent.KEY.get(player);
 

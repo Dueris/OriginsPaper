@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+// TODO - fix fall damage not applying - Dueris
 public class ElytraFlightPowerType extends PowerType implements Listener {
 
 	private final boolean renderElytra;

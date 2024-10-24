@@ -141,11 +141,11 @@ public class PlayerOriginComponent implements OriginComponent {
 
 	}
 
-	private void grantPowersFromOrigin(Origin origin) {
+	private void grantPowersFromOrigin(@NotNull Origin origin) {
 		PowerHolderComponent.grantPowers(this.player, Map.of(origin.getId(), origin.getPowers()), true);
 	}
 
-	private void revokeRemovedPowers(Origin origin, PowerHolderComponent powerComponent) {
+	private void revokeRemovedPowers(@NotNull Origin origin, @NotNull PowerHolderComponent powerComponent) {
 
 		ResourceLocation sourceId = origin.getId();
 		List<Power> powers = powerComponent.getPowersFromSource(sourceId)
