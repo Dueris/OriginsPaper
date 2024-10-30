@@ -29,7 +29,6 @@
     "LootTableMixin",
     "MinecraftServerMixin",
     "MobEffectMixin",
-    "PackRepositoryMixin",
     "PhantomSpawnerMixin",
     "PlayerListMixin",
     "PlayerMixin",

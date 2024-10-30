@@ -40,3 +40,5 @@ mixins: [
   "origins.mixins.json",
   "calio.mixins.json"
 ]
+
+datapack-entry: true
