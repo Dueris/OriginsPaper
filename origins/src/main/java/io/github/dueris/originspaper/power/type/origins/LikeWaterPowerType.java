@@ -29,7 +29,7 @@ public class LikeWaterPowerType extends PowerType {
 			}
 			return;
 		}
-		if (p.isInWaterOrBubbleColumn() && !p.isSneaking()) {
+		if (p.isInWaterOrBubbleColumn() && !p.isSneaking() && !p.isSwimming()) {
 			if (!p.getAttribute(Attribute.GENERIC_GRAVITY).getModifiers().contains(modifier)) {
 				p.getAttribute(Attribute.GENERIC_GRAVITY).addTransientModifier(modifier);
 			}
