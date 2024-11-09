@@ -11,7 +11,7 @@ public class OriginsPowerTypes {
 		register(OriginsCallbackPowerType.getFactory());
 		register(LikeWaterPowerType.createSimpleFactory(OriginsPaper.originIdentifier("like_water"), LikeWaterPowerType::new));
 //		register(WaterBreathingPowerType.createSimpleFactory(OriginsPaper.originIdentifier("water_breathing"), WaterBreathingPowerType::new));
-//		register(ScareCreepersPowerType.createSimpleFactory(OriginsPaper.originIdentifier("scare_creepers"), ScareCreepersPowerType::new));
+		register(ScareCreepersPowerType.createSimpleFactory(OriginsPaper.originIdentifier("scare_creepers"), ScareCreepersPowerType::new));
 //		register(WaterVisionPowerType.createSimpleFactory(OriginsPaper.originIdentifier("water_vision"), WaterVisionPowerType::new));
 		register(ConduitPowerOnLandPowerType.createSimpleFactory(OriginsPaper.originIdentifier("conduit_power_on_land"), ConduitPowerOnLandPowerType::new));
 	}

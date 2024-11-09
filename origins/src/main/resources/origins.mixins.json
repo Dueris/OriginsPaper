@@ -52,7 +52,11 @@
     "TagLoaderMixin",
     "ThrownEnderpearlMixin",
     "VibrationSystemMixin",
-    "ConduitBlockEntityMixin"
+    "ConduitBlockEntityMixin",
+    "MobEntityAccessor",
+    "TargetGoalAccessor",
+    "NearestAttackableTargetGoalAccessor",
+    "TargetingConditionsAccessor"
   ],
   "compatibilityLevel": "JAVA_17"
 }
