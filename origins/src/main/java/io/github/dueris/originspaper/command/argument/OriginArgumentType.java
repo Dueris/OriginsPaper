@@ -3,12 +3,14 @@ package io.github.dueris.originspaper.command.argument;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.context.ParsedArgument;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
+import io.github.dueris.originspaper.origin.OriginLayerManager;
 import io.github.dueris.originspaper.origin.OriginManager;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
@@ -19,6 +21,8 @@ import net.minecraft.resources.ResourceLocation;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
@@ -52,21 +56,21 @@ public class OriginArgumentType implements CustomArgumentType<Origin, Namespaced
 
 	@Override
 	public <S> @NotNull CompletableFuture<Suggestions> listSuggestions(@NotNull CommandContext<S> context, @NotNull SuggestionsBuilder builder) {
+		String input = context.getInput();
 
-		try {
+		String[] args = input.split(" ");
 
-			OriginLayer layer = context.getArgument("layer", OriginLayer.class);
-			Stream.Builder<ResourceLocation> origins = Stream.builder();
+		if (args.length > 3) {
+			String layerId = args[3];
 
-			origins.add(Origin.EMPTY.getId());
-			layer.getOrigins().forEach(origins);
+			OriginLayer layer = OriginLayerManager.get(ResourceLocation.read(layerId).getOrThrow());
 
-			return SharedSuggestionProvider.suggestResource(origins.build(), builder);
-
-		} catch (Exception e) {
-			return SharedSuggestionProvider.suggestResource(Stream.of(), builder);
+			if (layer != null) {
+				return SharedSuggestionProvider.suggestResource(layer.getOrigins(), builder);
+			}
 		}
 
+		return Suggestions.empty();
 	}
 
 }
