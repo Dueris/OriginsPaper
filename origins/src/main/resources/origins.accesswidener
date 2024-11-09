@@ -1,6 +1,6 @@
-accessWidener v1 named
+accessWidener v2 named
 
-mutable	field	net/minecraft/world/item/ItemStack	item	Lnet/minecraft/world/item/Item;
+mutable   	field	net/minecraft/world/item/ItemStack	item	Lnet/minecraft/world/item/Item;
 accessible	method	net/minecraft/world/item/ItemStack	<init>	(Ljava/lang/Void;)V
 extendable	class	net/minecraft/world/item/ItemStack
 accessible	class	net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentVisitor
@@ -30,5 +30,9 @@ accessible	field	net/minecraft/network/chat/contents/TranslatableContents	decomp
 accessible	field	net/minecraft/world/level/biome/Biome	climateSettings	Lnet/minecraft/world/level/biome/Biome$ClimateSettings;
 accessible	class	net/minecraft/world/level/biome/Biome$ClimateSettings
 accessible  method  net/minecraft/world/entity/EntityType                     register (Ljava/lang/String;Lnet/minecraft/world/entity/EntityType$Builder;)Lnet/minecraft/world/entity/EntityType;
-accessible class net/minecraft/util/DependencySorter
-accessible method net/minecraft/util/DependencySorter visitDependenciesAndElement (Lcom/google/common/collect/Multimap;Ljava/util/Set;Ljava/lang/Object;Ljava/util/function/BiConsumer;)V
+accessible  class   net/minecraft/util/DependencySorter
+accessible  method  net/minecraft/util/DependencySorter visitDependenciesAndElement (Lcom/google/common/collect/Multimap;Ljava/util/Set;Ljava/lang/Object;Ljava/util/function/BiConsumer;)V
+mutable     field   net/minecraft/world/level/storage/loot/LootTable$Builder pools Lcom/google/common/collect/ImmutableList$Builder;
+accessible  field   net/minecraft/world/level/storage/loot/LootTable$Builder pools Lcom/google/common/collect/ImmutableList$Builder;
+mutable     field   net/minecraft/world/level/storage/loot/LootTable$Builder functions Lcom/google/common/collect/ImmutableList$Builder;
+accessible  field   net/minecraft/world/level/storage/loot/LootTable$Builder functions Lcom/google/common/collect/ImmutableList$Builder;

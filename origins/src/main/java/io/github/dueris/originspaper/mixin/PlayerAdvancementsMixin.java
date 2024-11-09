@@ -19,9 +19,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerAdvancements.class)
 public abstract class PlayerAdvancementsMixin {
 
-	@Shadow private ServerPlayer player;
+	@Shadow
+	private ServerPlayer player;
 
-	@Shadow public abstract AdvancementProgress getOrStartProgress(AdvancementHolder advancement);
+	@Shadow
+	public abstract AdvancementProgress getOrStartProgress(AdvancementHolder advancement);
 
 	@Inject(method = "award", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerAdvancements;unregisterListeners(Lnet/minecraft/advancements/AdvancementHolder;)V"))
 	private void checkOriginUpgrade(AdvancementHolder advancement, String criterionName, CallbackInfoReturnable<Boolean> cir) {

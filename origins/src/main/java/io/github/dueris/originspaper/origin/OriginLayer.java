@@ -9,7 +9,6 @@ import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.OriginsDataTypes;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -127,9 +126,7 @@ public class OriginLayer implements Comparable<OriginLayer> {
 
 			this.guiTitle = new GuiTitle(viewOriginText, chooseOriginText);
 
-		}
-
-		else {
+		} else {
 
 			Component viewOriginText = guiTitle.viewOrigin();
 			Component chooseOriginText = guiTitle.chooseOrigin();
@@ -350,7 +347,8 @@ public class OriginLayer implements Comparable<OriginLayer> {
 
 	}
 
-	public record ConditionedOrigin(@Nullable ConditionTypeFactory<Entity>.Instance condition, List<ResourceLocation> origins) {
+	public record ConditionedOrigin(@Nullable ConditionTypeFactory<Entity>.Instance condition,
+									List<ResourceLocation> origins) {
 
 		public static final CompoundSerializableDataType<ConditionedOrigin> DATA_TYPE = SerializableDataType.compound(
 			new SerializableData()

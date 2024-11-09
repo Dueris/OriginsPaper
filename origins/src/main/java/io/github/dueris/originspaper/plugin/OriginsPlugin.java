@@ -4,7 +4,10 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.client.MinecraftClient;
 import io.github.dueris.originspaper.client.resource.ResourceManager;
 import io.github.dueris.originspaper.command.PehukiCommandImpl;
+import io.github.dueris.originspaper.content.item.OrbOfOriginsItemTracker;
 import io.github.dueris.originspaper.power.type.RecipePowerType;
+import io.github.dueris.originspaper.registry.ModItems;
+import io.github.dueris.originspaper.screen.ScreenListener;
 import io.github.dueris.originspaper.util.BstatsMetrics;
 import io.github.dueris.originspaper.util.GlowingEntitiesUtils;
 import io.github.dueris.originspaper.util.KeybindUtil;
@@ -37,6 +40,7 @@ public final class OriginsPlugin extends JavaPlugin implements Listener {
 		PehukiCommandImpl.onLoad();
 		MinecraftClient.init(OriginsPaper.bootContext);
 		RecipePowerType.registerAll();
+		ModItems.registerServer();
 	}
 
 	@Override
@@ -53,6 +57,8 @@ public final class OriginsPlugin extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new KeybindUtil(), this);
 		this.getServer().getPluginManager().registerEvents(new PehukiCommandImpl(), this);
 		this.getServer().getPluginManager().registerEvents(new ResourceManager(), this);
+		this.getServer().getPluginManager().registerEvents(new ScreenListener(), this);
+		this.getServer().getPluginManager().registerEvents(new OrbOfOriginsItemTracker(), this);
 	}
 
 }

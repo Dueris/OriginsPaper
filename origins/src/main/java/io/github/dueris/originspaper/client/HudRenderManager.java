@@ -112,7 +112,7 @@ public class HudRenderManager {
 		for (int x = 0; x < 8; ++x) {
 			for (int y = 0; y < 8; ++y) {
 				int col = iconImage.getRGB(x, y);
-				if (col == 0) {
+				if ((new Color(col, true)).getAlpha() < 255) {
 					icon = icon.append(Component.text("\uf002"));
 				} else {
 					icon = icon.append(Component.text(pixels.charAt(y)).color(TextColor.color(col)));

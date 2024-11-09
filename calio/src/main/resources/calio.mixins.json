@@ -9,5 +9,6 @@
     "ReloadableServerResourcesMixin",
     "ShufflingListAccessor",
     "TagEntryAccessor"
-  ]
+  ],
+  "compatibilityLevel": "JAVA_21"
 }

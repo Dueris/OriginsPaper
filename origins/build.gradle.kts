@@ -16,7 +16,7 @@ dependencies {
     implementation("org.mineskin:java-client-jsoup:2.0.0-SNAPSHOT")
     compileOnly("com.jeff-media:MorePersistentDataTypes:2.4.0") // - in DependencyLoader
 
-    compileOnly(files("../depends/eclipse.jar")) // Dependency
+    compileOnly(files("../depends/eclipse-1.3.2-all.jar")) // Dependency
 
 }
 

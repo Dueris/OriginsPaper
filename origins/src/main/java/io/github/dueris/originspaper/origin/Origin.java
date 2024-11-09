@@ -105,6 +105,21 @@ public class Origin implements Validatable {
 		return new Origin(id, icon, new LinkedList<>(), new LinkedList<>(), impact, null, null, true, true, order);
 	}
 
+	public static void init() {
+
+	}
+
+	public static Map<OriginLayer, Origin> get(Entity entity) {
+		if (entity instanceof Player) {
+			return get((Player) entity);
+		}
+		return new HashMap<>();
+	}
+
+	public static Map<OriginLayer, Origin> get(Player player) {
+		return OriginComponent.ORIGIN.get(player).getOrigins();
+	}
+
 	public ResourceLocation getId() {
 		return id;
 	}
@@ -165,9 +180,7 @@ public class Origin implements Validatable {
 
 			try {
 				powers.add(powerReference.getStrictReference());
-			}
-
-			catch (Exception e) {
+			} catch (Exception e) {
 				OriginsPaper.LOGGER.error("Origin \"{}\" contained unregistered power \"{}\"!", id, powerReference.getId());
 			}
 
@@ -209,21 +222,6 @@ public class Origin implements Validatable {
 	@Override
 	public boolean equals(Object obj) {
 		return this == obj || (obj instanceof Origin other && this.id.equals(other.id));
-	}
-
-	public static void init() {
-
-	}
-
-	public static Map<OriginLayer, Origin> get(Entity entity) {
-		if(entity instanceof Player) {
-			return get((Player)entity);
-		}
-		return new HashMap<>();
-	}
-
-	public static Map<OriginLayer, Origin> get(Player player) {
-		return OriginComponent.ORIGIN.get(player).getOrigins();
 	}
 
 }

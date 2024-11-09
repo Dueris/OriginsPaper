@@ -37,9 +37,7 @@ public final class OriginsDataTypes {
 					return SerializableDataTypes.IDENTIFIER.codec().decode(ops, input)
 						.map(idAndInput -> idAndInput
 							.mapFirst(id -> new OriginLayer.ConditionedOrigin(null, Lists.newArrayList(id))));
-				}
-
-				else {
+				} else {
 					return CONDITIONED_ORIGIN.codec().decode(ops, input);
 				}
 
@@ -50,9 +48,7 @@ public final class OriginsDataTypes {
 
 				if (input.condition() == null && input.origins().size() == 1) {
 					return SerializableDataTypes.IDENTIFIER.write(ops, input.origins().getFirst());
-				}
-
-				else {
+				} else {
 					return CONDITIONED_ORIGIN.write(ops, input);
 				}
 

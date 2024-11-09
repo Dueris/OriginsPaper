@@ -9,7 +9,7 @@ import io.github.dueris.originspaper.command.OriginCommand;
 import io.github.dueris.originspaper.command.PowerCommand;
 import io.github.dueris.originspaper.command.ResourceCommand;
 import io.github.dueris.originspaper.condition.type.*;
-import io.github.dueris.originspaper.entity.EnderianPearlEntity;
+import io.github.dueris.originspaper.content.entity.EnderianPearlEntity;
 import io.github.dueris.originspaper.global.GlobalPowerSetManager;
 import io.github.dueris.originspaper.loot.condition.ApoliLootConditionTypes;
 import io.github.dueris.originspaper.loot.function.ApoliLootFunctionTypes;
@@ -20,6 +20,9 @@ import io.github.dueris.originspaper.plugin.PluginInstances;
 import io.github.dueris.originspaper.power.PowerManager;
 import io.github.dueris.originspaper.power.type.PowerTypes;
 import io.github.dueris.originspaper.registry.ApoliClassData;
+import io.github.dueris.originspaper.registry.ModBlocks;
+import io.github.dueris.originspaper.registry.ModItems;
+import io.github.dueris.originspaper.registry.ModTags;
 import io.github.dueris.originspaper.util.fabric.resource.FabricResourceManagerImpl;
 import io.github.dueris.originspaper.util.modifier.ModifierOperations;
 import io.papermc.paper.command.brigadier.PaperCommands;
@@ -62,7 +65,7 @@ public class OriginsPaper {
 		return OriginsPlugin.plugin;
 	}
 
-	public static void init(@NotNull BootstrapContext context) throws Throwable {
+	public static void bootstrap(@NotNull BootstrapContext context) throws Throwable {
 		jarFile = context.getPluginSource();
 		OriginsPaper.bootContext = context;
 		PluginInstances.init();
@@ -76,40 +79,48 @@ public class OriginsPaper {
 			contextCommands.register(PluginInstances.APOLI_META, ResourceCommand.node(), null, new ArrayList<>());
 			contextCommands.register(context.getPluginMeta(), OriginCommand.node(), null, new ArrayList<>());
 		}).priority(1));
-		EnderianPearlEntity.bootstrap();
 
-		reload();
+		init();
 	}
 
-	public static void reload() throws Throwable {
-		OriginConfiguration.load();
-		showCommandOutput = OriginConfiguration.getConfiguration().getBoolean("show-command-output", false);
-		LANGUAGE = OriginConfiguration.getConfiguration().getString("language", LANGUAGE);
-		ApoliLootConditionTypes.register();
-		ApoliLootFunctionTypes.register();
-		ApoliClassData.registerAll();
+	private static void init() {
+		try {
+			OriginConfiguration.load();
+			showCommandOutput = OriginConfiguration.getConfiguration().getBoolean("show-command-output", false);
+			LANGUAGE = OriginConfiguration.getConfiguration().getString("language", LANGUAGE);
+			ApoliLootConditionTypes.register();
+			ApoliLootFunctionTypes.register();
+			ApoliClassData.registerAll();
 
-		ModifierOperations.register();
-		PowerTypes.register();
-		EntityConditionTypes.register();
-		BiEntityConditionTypes.register();
-		ItemConditionTypes.register();
-		BlockConditionTypes.register();
-		DamageConditionTypes.register();
-		FluidConditionTypes.register();
-		BiomeConditionTypes.register();
-		EntityActionTypes.register();
-		ItemActionTypes.register();
-		BlockActionTypes.register();
-		BiEntityActionTypes.register();
+			ModifierOperations.register();
+			PowerTypes.register();
+			EntityConditionTypes.register();
+			BiEntityConditionTypes.register();
+			ItemConditionTypes.register();
+			BlockConditionTypes.register();
+			DamageConditionTypes.register();
+			FluidConditionTypes.register();
+			BiomeConditionTypes.register();
+			EntityActionTypes.register();
+			ItemActionTypes.register();
+			BlockActionTypes.register();
+			BiEntityActionTypes.register();
 
-		FabricResourceManagerImpl.registerResourceReload(new PowerManager());
-		FabricResourceManagerImpl.registerResourceReload(new GlobalPowerSetManager());
-		FabricResourceManagerImpl.registerResourceReload(new OriginManager());
-		FabricResourceManagerImpl.registerResourceReload(new OriginLayerManager());
-		IdentifierAlias.GLOBAL.addNamespaceAlias("apoli", "calio");
-		IdentifierAlias.GLOBAL.addNamespaceAlias("origins", "apoli");
-		LOGGER.info("OriginsPaper, version {}, is initialized and ready to power up your game!", version);
+			FabricResourceManagerImpl.registerResourceReload(new PowerManager());
+			FabricResourceManagerImpl.registerResourceReload(new GlobalPowerSetManager());
+			FabricResourceManagerImpl.registerResourceReload(new OriginManager());
+			FabricResourceManagerImpl.registerResourceReload(new OriginLayerManager());
+			IdentifierAlias.GLOBAL.addNamespaceAlias("apoli", "calio");
+			IdentifierAlias.GLOBAL.addNamespaceAlias("origins", "apoli");
+
+			ModBlocks.register();
+			ModTags.register();
+			ModItems.register();
+			EnderianPearlEntity.bootstrap();
+			LOGGER.info("OriginsPaper, version {}, is initialized and ready to power up your game!", version);
+		} catch (Throwable throwable) {
+			LOGGER.error("Unable to start OriginsPaper!", throwable);
+		}
 	}
 
 	public static class OriginConfiguration {

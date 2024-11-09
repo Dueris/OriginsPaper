@@ -1,7 +1,5 @@
 package io.github.dueris.originspaper.command;
 
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -13,6 +11,7 @@ import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.origin.OriginLayerManager;
 import io.github.dueris.originspaper.origin.OriginManager;
+import io.github.dueris.originspaper.screen.ChooseOriginScreen;
 import io.github.dueris.originspaper.util.Util;
 import io.papermc.paper.adventure.PaperAdventure;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -28,11 +27,6 @@ import static io.papermc.paper.command.brigadier.Commands.literal;
 
 @SuppressWarnings("UnstableApiUsage")
 public class OriginCommand {
-
-	private enum TargetType {
-		INVOKER,
-		SPECIFY
-	}
 
 	public static LiteralCommandNode<CommandSourceStack> node() {
 		return literal("origin").requires(cs -> ((net.minecraft.commands.CommandSourceStack) cs).hasPermission(2))
@@ -76,10 +70,11 @@ public class OriginCommand {
 	}
 
 	/**
-	 * 	Set the origin of the specified entities in the specified origin layer.
-	 * 	@param commandContext the command context
-	 * 	@return the number of players whose origin has been set
-	 * 	@throws CommandSyntaxException if the entity is not found or if the entity is <b>not</b> an instance of {@link ServerPlayer}
+	 * Set the origin of the specified entities in the specified origin layer.
+	 *
+	 * @param commandContext the command context
+	 * @return the number of players whose origin has been set
+	 * @throws CommandSyntaxException if the entity is not found or if the entity is <b>not</b> an instance of {@link ServerPlayer}
 	 */
 	private static int setOrigin(CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
 
@@ -104,25 +99,26 @@ public class OriginCommand {
 
 			}
 
-			if (processedTargets == 1) serverCommandSource.sendSuccess(() -> Component.translatable("commands.origin.set.success.single", targets.iterator().next().getName().getString(), originLayer.getName(), origin.getName()), true);
+			if (processedTargets == 1)
+				serverCommandSource.sendSuccess(() -> Component.translatable("commands.origin.set.success.single", targets.iterator().next().getName().getString(), originLayer.getName(), origin.getName()), true);
 			else {
 				int finalProcessedTargets = processedTargets;
 				serverCommandSource.sendSuccess(() -> Component.translatable("commands.origin.set.success.multiple", finalProcessedTargets, originLayer.getName(), origin.getName()), true);
 			}
 
-		}
-
-		else serverCommandSource.sendFailure(Component.translatable("commands.origin.unregistered_in_layer", origin.getId(), originLayer.getId()));
+		} else
+			serverCommandSource.sendFailure(Component.translatable("commands.origin.unregistered_in_layer", origin.getId(), originLayer.getId()));
 
 		return processedTargets;
 
 	}
 
 	/**
-	 * 	Check if the specified entities has the specified origin in the specified origin layer.
-	 * 	@param commandContext the command context
-	 * 	@return the number of players that has the specified origin in the specified origin layer
-	 * 	@throws CommandSyntaxException if the entity is not found or if the entity is <b>not</b> an instance of {@link ServerPlayer}
+	 * Check if the specified entities has the specified origin in the specified origin layer.
+	 *
+	 * @param commandContext the command context
+	 * @return the number of players that has the specified origin in the specified origin layer
+	 * @throws CommandSyntaxException if the entity is not found or if the entity is <b>not</b> an instance of {@link ServerPlayer}
 	 */
 	private static int hasOrigin(CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
 
@@ -137,29 +133,32 @@ public class OriginCommand {
 
 			for (ServerPlayer target : targets) {
 				OriginComponent originComponent = OriginComponent.ORIGIN.get(target);
-				if ((origin.equals(Origin.EMPTY) || originComponent.hasOrigin(originLayer)) && originComponent.getOrigin(originLayer).equals(origin)) processedTargets++;
+				if ((origin.equals(Origin.EMPTY) || originComponent.hasOrigin(originLayer)) && originComponent.getOrigin(originLayer).equals(origin))
+					processedTargets++;
 			}
 
-			if (processedTargets == 0) serverCommandSource.sendFailure(Component.translatable("commands.execute.conditional.fail"));
-			else if (processedTargets == 1) serverCommandSource.sendSuccess(() -> Component.translatable("commands.execute.conditional.pass"), true);
+			if (processedTargets == 0)
+				serverCommandSource.sendFailure(Component.translatable("commands.execute.conditional.fail"));
+			else if (processedTargets == 1)
+				serverCommandSource.sendSuccess(() -> Component.translatable("commands.execute.conditional.pass"), true);
 			else {
 				int finalProcessedTargets = processedTargets;
 				serverCommandSource.sendSuccess(() -> Component.translatable("commands.execute.conditional.pass_count", finalProcessedTargets), true);
 			}
 
-		}
-
-		else serverCommandSource.sendFailure(Component.translatable("commands.origin.unregistered_in_layer", origin.getId(), originLayer.getId()));
+		} else
+			serverCommandSource.sendFailure(Component.translatable("commands.origin.unregistered_in_layer", origin.getId(), originLayer.getId()));
 
 		return processedTargets;
 
 	}
 
 	/**
-	 * 	Get the origin of the specified entity from the specified origin layer.
-	 * 	@param commandContext the command context
-	 * 	@return 1
-	 * 	@throws CommandSyntaxException if the entity is not found or if the entity is <b>not</b> an instance of {@link ServerPlayer}
+	 * Get the origin of the specified entity from the specified origin layer.
+	 *
+	 * @param commandContext the command context
+	 * @return 1
+	 * @throws CommandSyntaxException if the entity is not found or if the entity is <b>not</b> an instance of {@link ServerPlayer}
 	 */
 	private static int getOrigin(CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
 
@@ -179,10 +178,11 @@ public class OriginCommand {
 	}
 
 	/**
-	 * 	Open the 'Choose Origin' screen for the specified origin layer to the specified entities.
-	 * 	@param commandContext the command context
-	 * 	@return the number of players that had the 'Choose Origin' screen opened for them
-	 * 	@throws CommandSyntaxException if the entity is not found or if the entity is not an instance of {@link ServerPlayer}
+	 * Open the 'Choose Origin' screen for the specified origin layer to the specified entities.
+	 *
+	 * @param commandContext the command context
+	 * @return the number of players that had the 'Choose Origin' screen opened for them
+	 * @throws CommandSyntaxException if the entity is not found or if the entity is not an instance of {@link ServerPlayer}
 	 */
 	private static int openSingleLayerScreen(CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
 
@@ -200,10 +200,11 @@ public class OriginCommand {
 	}
 
 	/**
-	 * 	Open the 'Choose Origin' screen for all the enabled origin layers to the specified entities.
-	 * 	@param commandContext the command context
-	 * 	@return the number of players that had the 'Choose Origin' screen opened for them
-	 * 	@throws CommandSyntaxException if the entity is not found or if the entity is not an instance of {@link ServerPlayer}
+	 * Open the 'Choose Origin' screen for all the enabled origin layers to the specified entities.
+	 *
+	 * @param commandContext the command context
+	 * @return the number of players that had the 'Choose Origin' screen opened for them
+	 * @throws CommandSyntaxException if the entity is not found or if the entity is not an instance of {@link ServerPlayer}
 	 */
 	private static int openMultipleLayerScreens(CommandContext<CommandSourceStack> commandContext, TargetType targetType) throws CommandSyntaxException {
 
@@ -225,10 +226,11 @@ public class OriginCommand {
 	}
 
 	/**
-	 * 	Randomize the origin of the specified entities in the specified origin layer.
-	 * 	@param commandContext the command context
-	 * 	@return the number of players that had their origin randomized in the specified origin layer
-	 * 	@throws CommandSyntaxException if the entity is not found or if the entity is not an instance of {@link ServerPlayer}
+	 * Randomize the origin of the specified entities in the specified origin layer.
+	 *
+	 * @param commandContext the command context
+	 * @return the number of players that had their origin randomized in the specified origin layer
+	 * @throws CommandSyntaxException if the entity is not found or if the entity is not an instance of {@link ServerPlayer}
 	 */
 	private static int randomizeOrigin(CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
 
@@ -243,7 +245,8 @@ public class OriginCommand {
 				origin = getRandomOrigin(target, originLayer);
 			}
 
-			if (targets.size() > 1) serverCommandSource.sendSuccess(() -> Component.translatable("commands.origin.random.success.multiple", targets.size(), originLayer.getName()), true);
+			if (targets.size() > 1)
+				serverCommandSource.sendSuccess(() -> Component.translatable("commands.origin.random.success.multiple", targets.size(), originLayer.getName()), true);
 			else if (targets.size() == 1) {
 				Origin finalOrigin = origin;
 				serverCommandSource.sendSuccess(() -> Component.translatable("commands.origin.random.success.single", targets.iterator().next().getName().getString(), finalOrigin.getName(), originLayer.getName()), false);
@@ -251,9 +254,7 @@ public class OriginCommand {
 
 			return targets.size();
 
-		}
-
-		else {
+		} else {
 			serverCommandSource.sendFailure(Component.translatable("commands.origin.random.not_allowed", originLayer.getName()));
 			return 0;
 		}
@@ -261,10 +262,11 @@ public class OriginCommand {
 	}
 
 	/**
-	 * 	Randomize the origins of the specified entities in all the origin layers that allows to be randomized.
-	 * 	@param commandContext the command context
-	 * 	@return the number of players that had their origins randomized in all the origin layers that allows to be randomized
-	 * 	@throws CommandSyntaxException if the entity is not found or if the entity is not an instance of {@link ServerPlayer}
+	 * Randomize the origins of the specified entities in all the origin layers that allows to be randomized.
+	 *
+	 * @param commandContext the command context
+	 * @return the number of players that had their origins randomized in all the origin layers that allows to be randomized
+	 * @throws CommandSyntaxException if the entity is not found or if the entity is not an instance of {@link ServerPlayer}
 	 */
 	private static int randomizeOrigins(CommandContext<CommandSourceStack> commandContext, TargetType targetType) throws CommandSyntaxException {
 
@@ -318,7 +320,7 @@ public class OriginCommand {
 		component.sync();
 
 		if (component.isSelectingOrigin()) {
-			// ServerPlayNetworking.send(target, new OpenChooseOriginScreenS2CPacket(false)); // TODO - Dueris
+			new ChooseOriginScreen(target);
 		}
 
 	}
@@ -347,6 +349,11 @@ public class OriginCommand {
 
 		return origin;
 
+	}
+
+	private enum TargetType {
+		INVOKER,
+		SPECIFY
 	}
 
 }

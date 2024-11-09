@@ -66,8 +66,8 @@ public abstract class EntityMixin {
 
 			PowerHolderComponent.KEY.get(thisAsEntity).readFromNbt(nbt, registryAccess());
 			if (thisAsEntity instanceof Player player) {
-				if (!OriginComponent.ORIGIN.isProvidedBy(thisAsEntity)) {
-					OriginComponent.ORIGIN.put(thisAsEntity, new PlayerOriginComponent(player));
+				if (!OriginComponent.ORIGIN.isProvidedBy(player)) {
+					OriginComponent.ORIGIN.put(player, new PlayerOriginComponent(player));
 				}
 
 				OriginComponent.ORIGIN.get(player).readFromNbt(nbt, registryAccess());
@@ -85,8 +85,8 @@ public abstract class EntityMixin {
 
 			PowerHolderComponent.KEY.get(thisAsEntity).writeToNbt(original, registryAccess());
 			if (thisAsEntity instanceof Player player) {
-				if (!OriginComponent.ORIGIN.isProvidedBy(thisAsEntity)) {
-					OriginComponent.ORIGIN.put(thisAsEntity, new PlayerOriginComponent(player));
+				if (!OriginComponent.ORIGIN.isProvidedBy(player)) {
+					OriginComponent.ORIGIN.put(player, new PlayerOriginComponent(player));
 				}
 
 				OriginComponent.ORIGIN.get(player).writeToNbt(original, registryAccess());

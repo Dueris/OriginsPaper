@@ -1,4 +1,4 @@
-package io.github.dueris.originspaper.entity;
+package io.github.dueris.originspaper.content.entity;
 
 import io.github.dueris.originspaper.OriginsPaper;
 import net.minecraft.core.Registry;
@@ -33,43 +33,5 @@ public class EnderianPearlEntity extends ThrowableItemProjectile {
 	@Override
 	protected @NotNull Item getDefaultItem() {
 		return Items.ENDER_PEARL;
-	}
-
-	@Override
-	protected void onHit(@NotNull HitResult hitResult) {
-		Entity entity = this.getOwner();
-
-		for (int i = 0; i < 32; ++i) {
-			this.level().addParticle(ParticleTypes.PORTAL, this.getX(), this.getY() + this.random.nextDouble() * 2.0D, this.getZ(), this.random.nextGaussian(), 0.0D, this.random.nextGaussian());
-		}
-
-		if (!this.level().isClientSide && !this.isRemoved()) {
-			if (entity instanceof ServerPlayer serverPlayer) {
-				if (serverPlayer.connection.isAcceptingMessages() && serverPlayer.level() == this.level() && !serverPlayer.isSleeping()) {
-
-					if (entity.getBukkitEntity().getVehicle() != null) {
-						entity.stopRiding();
-					}
-
-					entity.teleportTo(this.getX(), this.getY(), this.getZ());
-					entity.fallDistance = 0.0F;
-				}
-			} else if (entity != null) {
-				entity.teleportTo(this.getX(), this.getY(), this.getZ());
-				entity.fallDistance = 0.0F;
-			}
-
-			this.discard();
-		}
-	}
-
-	@Override
-	public void tick() {
-		Entity entity = this.getOwner();
-		if (entity instanceof Player && !entity.isAlive()) {
-			this.discard();
-		} else {
-			super.tick();
-		}
 	}
 }

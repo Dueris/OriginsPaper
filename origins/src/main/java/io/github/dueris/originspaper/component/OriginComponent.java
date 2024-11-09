@@ -17,21 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public interface OriginComponent {
-	ProvidableComponentKey<OriginComponent> ORIGIN = new ProvidableComponentKey<>();
-
-	Map<OriginLayer, Origin> getOrigins();
-	Origin getOrigin(OriginLayer layer);
-
-	boolean hasSelectionInvulnerability();
-	boolean isSelectingOrigin();
-	boolean hasOrigin(OriginLayer layer);
-	boolean hasAllOrigins();
-	boolean hadOriginBefore();
-
-	void selectingOrigin(boolean selectingOrigin);
-	void removeLayer(OriginLayer layer);
-	void setOrigin(OriginLayer layer, Origin origin);
-	void sync();
+	ProvidableComponentKey<OriginComponent, Player> ORIGIN = new ProvidableComponentKey<>(PlayerOriginComponent::new);
 
 	static void onChosen(Player player, boolean hadOriginBefore) {
 
@@ -52,7 +38,7 @@ public interface OriginComponent {
 
 		for (Power power : powerHolder.getPowersFromSource(origin.getId())) {
 
-			PowerType powerType  = powerHolder.getPowerType(power);
+			PowerType powerType = powerHolder.getPowerType(power);
 
 			if (powerType instanceof ModifyPlayerSpawnPowerType mps && !hadOriginBefore) {
 				mps.teleportToModifiedSpawn();
@@ -66,6 +52,28 @@ public interface OriginComponent {
 		}
 
 	}
+
+	Map<OriginLayer, Origin> getOrigins();
+
+	Origin getOrigin(OriginLayer layer);
+
+	boolean hasSelectionInvulnerability();
+
+	boolean isSelectingOrigin();
+
+	boolean hasOrigin(OriginLayer layer);
+
+	boolean hasAllOrigins();
+
+	boolean hadOriginBefore();
+
+	void selectingOrigin(boolean selectingOrigin);
+
+	void removeLayer(OriginLayer layer);
+
+	void setOrigin(OriginLayer layer, Origin origin);
+
+	void sync();
 
 	default boolean checkAutoChoosingLayers(Player player, boolean includeDefaults) {
 

@@ -1,43 +1,52 @@
 package io.github.dueris.originspaper.screen;
 
+import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.component.OriginComponent;
 import io.github.dueris.originspaper.origin.*;
+import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.util.LoopingLinkedObjectList;
 import io.papermc.paper.adventure.PaperAdventure;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftInventory;
+import org.bukkit.inventory.InventoryView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 public class ChooseOriginScreen {
 	public static final List<ServerPlayer> CURRENTLY_RENDERING = new LinkedList<>();
+	protected static final Map<ServerPlayer, ChooseOriginScreen> RENDER_MAP = new ConcurrentHashMap<>();
 	protected static final ItemStack NEXT_STACK;
 	protected static final ItemStack BACK_STACK;
 
 	static {
 		NEXT_STACK = new ItemStack(Items.ARROW);
-		NEXT_STACK.set(DataComponents.CUSTOM_NAME, Component.literal("Next Origin"));
+		NEXT_STACK.set(DataComponents.CUSTOM_NAME, noItalic(Component.literal("Next Origin")));
 
 		BACK_STACK = new ItemStack(Items.ARROW);
-		BACK_STACK.set(DataComponents.CUSTOM_NAME, Component.literal("Previous Origin"));
+		BACK_STACK.set(DataComponents.CUSTOM_NAME, noItalic(Component.literal("Previous Origin")));
 	}
 
 	private final List<OriginLayer> layerList;
 	private final ServerPlayer holder;
 	private final LoopingLinkedObjectList<Origin> originSelection;
+	protected InventoryView inventoryView;
 
 	public ChooseOriginScreen(ServerPlayer holder) {
 		this.holder = holder;
@@ -54,6 +63,17 @@ public class ChooseOriginScreen {
 		this.layerList = layers;
 		this.originSelection = new LoopingLinkedObjectList<>();
 
+		buildOrigins(holder);
+		openSelection();
+	}
+
+	private static Component noItalic(Component component) {
+		net.kyori.adventure.text.Component kyori = PaperAdventure.asAdventure(component);
+		return PaperAdventure.asVanilla(kyori.decoration(TextDecoration.ITALIC, false).color(NamedTextColor.GRAY));
+	}
+
+	private void buildOrigins(ServerPlayer holder) {
+		originSelection.clear();
 		OriginLayer currentLayer = getCurrentLayer();
 		for (ResourceLocation originId : Objects.requireNonNull(currentLayer, "Current layers are null!").getOrigins(this.holder)) {
 
@@ -71,28 +91,38 @@ public class ChooseOriginScreen {
 		}
 
 		originSelection.sort(Comparator.comparingInt((Origin o) -> o.getImpact().getImpactValue()).thenComparingInt(Origin::getOrder));
-		openSelection();
 	}
 
 	private void openSelection() {
-		// Build and open base
-		CraftInventory menu = buildBaseMenu();
-		CraftPlayer player = holder.getBukkitEntity();
-		player.openInventory(menu);
-
+		update();
 		CURRENTLY_RENDERING.add(holder);
+		RENDER_MAP.put(holder, this);
+	}
 
+	protected void next() {
+		this.originSelection.next();
+	}
+
+	protected void back() {
+		this.originSelection.previous();
+	}
+
+	protected void update() {
+		CraftInventory menu = buildBaseMenu();
 		ItemStack[] builtContents = updateContents();
-		menu.setContents(Arrays.stream(builtContents)
-			.map(ItemStack::asBukkitCopy)
-			.distinct()
-			.toArray(org.bukkit.inventory.ItemStack[]::new)
-		);
+		for (int i = 0; i < builtContents.length; i++) {
+			menu.getInventory().setItem(i, builtContents[i]);
+		}
+		holder.getBukkitEntity().openInventory(menu);
+		inventoryView = holder.getBukkitEntity().getOpenInventory();
+		RENDER_MAP.put(holder, this);
 	}
 
 	private ItemStack @NotNull [] updateContents() {
-		ItemStack[] built = new ItemStack[53];
+		ItemStack[] built = new ItemStack[54];
 
+		Origin origin = this.getCurrentOrigin();
+		List<Power> toDisplay = new ArrayList<>(origin.getPowers());
 		for (int i = 0; i <= 53; i++) {
 			if ((i == 0 || i == 1 || i == 2) ||
 				(i == 6 || i == 7 || i == 8)) {
@@ -101,7 +131,43 @@ public class ChooseOriginScreen {
 			}
 
 			if (i == 45) {
+				built[i] = BACK_STACK;
+				continue;
+			} else if (i == 53) {
+				built[i] = NEXT_STACK;
+				continue;
+			}
 
+			if (i == 13) {
+				ItemStack stack = this.getCurrentOrigin().getDisplayItem();
+
+				stack.set(DataComponents.CUSTOM_NAME, noItalic(origin.getName()).copy().withColor(0xffffff));
+				stack.set(DataComponents.LORE, new ItemLore(List.of(noItalic(origin.getDescription()))));
+
+				built[i] = stack;
+				continue;
+			}
+
+			if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33)
+				|| i == 39 || i == 40 || i == 41) {
+				ItemStack stack = new ItemStack(Items.MAP);
+				if (toDisplay.isEmpty()) {
+					stack.set(DataComponents.HIDE_TOOLTIP, Unit.INSTANCE);
+					built[i] = stack;
+				} else {
+					Power power = toDisplay.removeFirst();
+
+					if (power.isHidden()) {
+						built[i] = stack;
+						continue;
+					}
+
+					stack.set(DataComponents.CUSTOM_NAME, noItalic(power.getName()).copy().withColor(0xffffff));
+					stack.set(DataComponents.LORE, new ItemLore(List.of(noItalic(power.getDescription()))));
+
+					built[i] = stack;
+				}
+				continue;
 			}
 
 			built[i] = ItemStack.EMPTY;
@@ -118,7 +184,7 @@ public class ChooseOriginScreen {
 			case HIGH -> new ItemStack(Items.RED_STAINED_GLASS_PANE);
 			case NONE -> new ItemStack(Items.GRAY_STAINED_GLASS_PANE);
 		};
-		impactItem.set(DataComponents.CUSTOM_NAME, impact.getTextComponent());
+		impactItem.set(DataComponents.CUSTOM_NAME, noItalic(impact.getTextComponent()).copy().withStyle(impact.getTextStyle()));
 		return impactItem;
 	}
 
@@ -139,5 +205,52 @@ public class ChooseOriginScreen {
 	@NotNull
 	public Origin getCurrentOrigin() {
 		return originSelection.getCurrent();
+	}
+
+	public void choose() {
+		ServerPlayer player = this.holder;
+
+		OriginComponent component = OriginComponent.ORIGIN.get(player);
+		OriginLayer layer = OriginLayerManager.get(Objects.requireNonNull(this.getCurrentLayer(), "Current layer is null! How are you even choosing right now...?").getId());
+
+		if (component.hasAllOrigins() && component.hasOrigin(layer)) {
+			OriginsPaper.LOGGER.warn("Player {} tried to choose origin for layer \"{}\" while having one already.", player.getName().getString(), this.getCurrentOrigin().getId());
+			return;
+		}
+
+		Origin origin = OriginManager.get(this.getCurrentOrigin().getId());
+		if (!(origin.isChoosable() || layer.contains(origin, player))) {
+			OriginsPaper.LOGGER.warn("Player {} tried to choose unchoosable origin \"{}\" from layer \"{}\"!", player.getName().getString(), this.getCurrentOrigin().getId(), this.getCurrentOrigin().getId());
+			component.setOrigin(layer, Origin.EMPTY);
+		} else {
+
+			boolean hadOriginBefore = component.hadOriginBefore();
+			boolean hadAllOrigins = component.hasAllOrigins();
+
+			component.setOrigin(layer, origin);
+			component.checkAutoChoosingLayers(player, false);
+
+			if (component.hasAllOrigins() && !hadAllOrigins) {
+				OriginComponent.onChosen(player, hadOriginBefore);
+			}
+
+			OriginsPaper.LOGGER.info("Player {} chose origin \"{}\" for layer \"{}\"", player.getName().getString(), this.getCurrentOrigin().getId(), this.getCurrentOrigin().getId());
+
+		}
+
+		component.selectingOrigin(false);
+		component.sync();
+
+		layerList.removeFirst();
+
+		if (!layerList.isEmpty()) {
+			buildOrigins(holder);
+			openSelection();
+		} else {
+			inventoryView = null;
+			CURRENTLY_RENDERING.remove(holder);
+			RENDER_MAP.remove(holder);
+			holder.getBukkitEntity().closeInventory();
+		}
 	}
 }

@@ -8,7 +8,8 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 @Deprecated
-public record OriginUpgrade(ResourceLocation advancementCondition, ResourceLocation upgradeToOrigin, @Nullable String announcement) {
+public record OriginUpgrade(ResourceLocation advancementCondition, ResourceLocation upgradeToOrigin,
+							@Nullable String announcement) {
 
 	public static final CompoundSerializableDataType<OriginUpgrade> DATA_TYPE = SerializableDataType.compound(
 		new SerializableData()

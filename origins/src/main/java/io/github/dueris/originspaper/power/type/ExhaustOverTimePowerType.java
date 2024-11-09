@@ -37,7 +37,6 @@ public class ExhaustOverTimePowerType extends PowerType {
 
 		if (entity instanceof Player playerEntity && entity.tickCount % exhaustInterval == 0) {
 			playerEntity.causeFoodExhaustion(exhaustion);
-			System.out.println("SA");
 		}
 
 	}

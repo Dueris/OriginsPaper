@@ -188,7 +188,7 @@ public class FireProjectilePowerType extends ActiveCooldownPowerType {
 		float yaw = entity.getYRot();
 
 		Entity entityToSpawn = Util
-			.getEntityWithPassengers(serverWorld, entityType, tag, verticalOffset, yaw, pitch)
+			.getEntityWithPassengersSafe(serverWorld, entityType, tag, verticalOffset, yaw, pitch)
 			.orElse(null);
 
 		if (entityToSpawn == null) {

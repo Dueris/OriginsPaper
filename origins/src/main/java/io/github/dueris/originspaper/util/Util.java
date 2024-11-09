@@ -6,6 +6,7 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.serialization.DataResult;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.access.ThrownEnderianPearlEntity;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -30,6 +31,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrownEnderpearl;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -280,11 +282,11 @@ public class Util {
 		};
 	}
 
-	public static Optional<Entity> getEntityWithPassengers(Level world, EntityType<?> entityType, @Nullable CompoundTag entityNbt, Vec3 pos, float yaw, float pitch) {
-		return getEntityWithPassengers(world, entityType, entityNbt, pos, Optional.of(yaw), Optional.of(pitch));
+	public static Optional<Entity> getEntityWithPassengersSafe(Level world, EntityType<?> entityType, @Nullable CompoundTag entityNbt, Vec3 pos, float yaw, float pitch) {
+		return getEntityWithPassengersSafe(world, entityType, entityNbt, pos, Optional.of(yaw), Optional.of(pitch));
 	}
 
-	public static Optional<Entity> getEntityWithPassengers(Level world, EntityType<?> entityType, @Nullable CompoundTag entityNbt, Vec3 pos, Optional<Float> yaw, Optional<Float> pitch) {
+	public static Optional<Entity> getEntityWithPassengersSafe(Level world, EntityType<?> entityType, @Nullable CompoundTag entityNbt, Vec3 pos, Optional<Float> yaw, Optional<Float> pitch) {
 		if (!(world instanceof ServerLevel serverWorld)) {
 			return Optional.empty();
 		}
@@ -311,6 +313,10 @@ public class Util {
 
 		if ((entityNbt == null || entityNbt.isEmpty()) && entityToSpawn instanceof Mob mobToSpawn) {
 			mobToSpawn.finalizeSpawn(serverWorld, serverWorld.getCurrentDifficultyAt(BlockPos.containing(pos)), MobSpawnType.COMMAND, null);
+		}
+
+		if (entityToSpawn instanceof ThrownEnderpearl thrownEnderpearl && type.equalsIgnoreCase("origins:enderian_pearl")) {
+			((ThrownEnderianPearlEntity) thrownEnderpearl).originspaper$setEnderianPearl();
 		}
 
 		return Optional.of(entityToSpawn);

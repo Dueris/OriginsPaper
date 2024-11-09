@@ -37,7 +37,7 @@ public class FireProjectileActionType {
 		for (int i = 0; i < count; i++) {
 
 			Entity entityToSpawn = Util
-				.getEntityWithPassengers(serverWorld, entityType, entityNbt, verticalOffset, yaw, pitch)
+				.getEntityWithPassengersSafe(serverWorld, entityType, entityNbt, verticalOffset, yaw, pitch)
 				.orElse(null);
 
 			if (entityToSpawn == null) {

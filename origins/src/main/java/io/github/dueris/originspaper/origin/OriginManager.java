@@ -18,7 +18,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.Util;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
@@ -44,103 +43,6 @@ public class OriginManager extends IdentifiableMultiJsonDataLoader implements Id
 
 	public OriginManager() {
 		super(GSON, "origins", PackType.SERVER_DATA);
-	}
-
-	@Override
-	protected void apply(MultiJsonDataContainer prepared, ResourceManager manager, ProfilerFiller profiler) {
-
-		OriginsPaper.LOGGER.info("Reading origins from data packs...");
-
-		RegistryAccess dynamicRegistries = CraftCalio.getDynamicRegistries().orElse(null);
-		startBuilding();
-
-		if (dynamicRegistries == null) {
-
-			OriginsPaper.LOGGER.error("Can't read origins from data packs without access to dynamic registries!");
-			endBuilding();
-
-			return;
-
-		}
-
-		AtomicBoolean hasConfigChanged = new AtomicBoolean(false);
-		prepared.forEach((packName, id, jsonElement) -> {
-
-			try {
-
-				SerializableData.CURRENT_NAMESPACE = id.getNamespace();
-				SerializableData.CURRENT_PATH = id.getPath();
-
-				if (!(jsonElement instanceof JsonObject jsonObject)) {
-					throw new JsonSyntaxException("Not a JSON object: " + jsonElement);
-				}
-
-				jsonObject.addProperty("id", id.toString());
-				Origin origin = Origin.DATA_TYPE.read(dynamicRegistries.createSerializationContext(JsonOps.INSTANCE), jsonObject).getOrThrow();
-
-				int prevLoadingPriority = LOADING_PRIORITIES.getOrDefault(id, 0);
-				int currLoadingPriority = GsonHelper.getAsInt(jsonObject, "loading_priority", 0);
-
-				if (!contains(id)) {
-
-					origin.validate();
-
-					register(id, origin);
-					LOADING_PRIORITIES.put(id, currLoadingPriority);
-
-				}
-
-				else if (prevLoadingPriority < currLoadingPriority) {
-
-					OriginsPaper.LOGGER.warn("Overriding origin \"{}\" (with prev. loading priority of {}) with a higher loading priority of {} from data pack [{}]!", id, prevLoadingPriority, currLoadingPriority, packName);
-					origin.validate();
-
-					update(id, origin);
-					LOADING_PRIORITIES.put(id, currLoadingPriority);
-
-				}
-
-				origin = get(id);
-				// TODO - Dueris
-				// hasConfigChanged.set(hasConfigChanged.get() | Origins.config.addToConfig(origin));
-
-				/* if (Origins.config.isOriginDisabled(id)) {
-					disable(id);
-				} */
-
-			}
-
-			catch (Exception e) {
-				OriginsPaper.LOGGER.error("There was a problem reading origin \"{}\": {}", id, e.getMessage());
-			}
-
-		});
-
-		SerializableData.CURRENT_NAMESPACE = null;
-		SerializableData.CURRENT_PATH = null;
-
-		OriginsPaper.LOGGER.info("Finished reading origins from data packs. Registry contains {} origins.", size());
-		endBuilding();
-
-	}
-
-	@Override
-	public void onReject(String packName, ResourceLocation resourceId) {
-
-		if (!contains(resourceId)) {
-			disable(resourceId);
-		}
-
-	}
-
-	@Override
-	public ResourceLocation getFabricId() {
-		return ID;
-	}
-
-	@Override
-	public Collection<ResourceLocation> getFabricDependencies() {
-		return DEPENDENCIES;
 	}
 
 	public static Set<Map.Entry<ResourceLocation, Origin>> entrySet() {
@@ -209,9 +111,7 @@ public class OriginManager extends IdentifiableMultiJsonDataLoader implements Id
 
 		if (contains(id)) {
 			throw new IllegalArgumentException("Tried to register duplicate origin with ID \"" + id + "\"!");
-		}
-
-		else {
+		} else {
 
 			DISABLED_ORIGINS.remove(id);
 			ORIGINS_BY_ID.put(id, origin);
@@ -238,6 +138,99 @@ public class OriginManager extends IdentifiableMultiJsonDataLoader implements Id
 	public static void disable(ResourceLocation id) {
 		remove(id);
 		DISABLED_ORIGINS.add(id);
+	}
+
+	@Override
+	protected void apply(MultiJsonDataContainer prepared, ResourceManager manager, ProfilerFiller profiler) {
+
+		OriginsPaper.LOGGER.info("Reading origins from data packs...");
+
+		RegistryAccess dynamicRegistries = CraftCalio.getDynamicRegistries().orElse(null);
+		startBuilding();
+
+		if (dynamicRegistries == null) {
+
+			OriginsPaper.LOGGER.error("Can't read origins from data packs without access to dynamic registries!");
+			endBuilding();
+
+			return;
+
+		}
+
+		AtomicBoolean hasConfigChanged = new AtomicBoolean(false);
+		prepared.forEach((packName, id, jsonElement) -> {
+
+			try {
+
+				SerializableData.CURRENT_NAMESPACE = id.getNamespace();
+				SerializableData.CURRENT_PATH = id.getPath();
+
+				if (!(jsonElement instanceof JsonObject jsonObject)) {
+					throw new JsonSyntaxException("Not a JSON object: " + jsonElement);
+				}
+
+				jsonObject.addProperty("id", id.toString());
+				Origin origin = Origin.DATA_TYPE.read(dynamicRegistries.createSerializationContext(JsonOps.INSTANCE), jsonObject).getOrThrow();
+
+				int prevLoadingPriority = LOADING_PRIORITIES.getOrDefault(id, 0);
+				int currLoadingPriority = GsonHelper.getAsInt(jsonObject, "loading_priority", 0);
+
+				if (!contains(id)) {
+
+					origin.validate();
+
+					register(id, origin);
+					LOADING_PRIORITIES.put(id, currLoadingPriority);
+
+				} else if (prevLoadingPriority < currLoadingPriority) {
+
+					OriginsPaper.LOGGER.warn("Overriding origin \"{}\" (with prev. loading priority of {}) with a higher loading priority of {} from data pack [{}]!", id, prevLoadingPriority, currLoadingPriority, packName);
+					origin.validate();
+
+					update(id, origin);
+					LOADING_PRIORITIES.put(id, currLoadingPriority);
+
+				}
+
+				origin = get(id);
+				// TODO - Dueris
+				// hasConfigChanged.set(hasConfigChanged.get() | Origins.config.addToConfig(origin));
+
+				/* if (Origins.config.isOriginDisabled(id)) {
+					disable(id);
+				} */
+
+			} catch (Exception e) {
+				OriginsPaper.LOGGER.error("There was a problem reading origin \"{}\": {}", id, e.getMessage());
+			}
+
+		});
+
+		SerializableData.CURRENT_NAMESPACE = null;
+		SerializableData.CURRENT_PATH = null;
+
+		OriginsPaper.LOGGER.info("Finished reading origins from data packs. Registry contains {} origins.", size());
+		endBuilding();
+
+	}
+
+	@Override
+	public void onReject(String packName, ResourceLocation resourceId) {
+
+		if (!contains(resourceId)) {
+			disable(resourceId);
+		}
+
+	}
+
+	@Override
+	public ResourceLocation getFabricId() {
+		return ID;
+	}
+
+	@Override
+	public Collection<ResourceLocation> getFabricDependencies() {
+		return DEPENDENCIES;
 	}
 
 }

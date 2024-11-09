@@ -26,7 +26,7 @@ public class SpawnEntityActionType {
 			return;
 		}
 
-		Entity entityToSpawn = Util.getEntityWithPassengers(
+		Entity entityToSpawn = Util.getEntityWithPassengersSafe(
 			serverWorld,
 			entityType,
 			entityNbt,

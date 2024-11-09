@@ -120,9 +120,7 @@ public class PlayerOriginComponent implements OriginComponent {
 
 			if (!oldOrigin.getId().equals(origin.getId())) {
 				PowerHolderComponent.revokeAllPowersFromSource(player, oldOrigin.getId(), true);
-			}
-
-			else if (!oldOriginJson.equals(originJson)) {
+			} else if (!oldOriginJson.equals(originJson)) {
 				revokeRemovedPowers(origin, powerComponent);
 			}
 

@@ -10,7 +10,7 @@ plugins {
     id("io.papermc.paperweight.userdev") version "1.7.3" apply true
     id("xyz.jpenilla.run-paper") version "2.2.3"
     id("com.gradleup.shadow") version "8.3.3" apply true
-    id("io.github.dueris.eclipse.gradle") version "1.1.0-beta75" apply true
+    id("io.github.dueris.eclipse.gradle") version "1.1.0-beta82" apply true
 }
 
 val paperweightVersion: String = "1.21-R0.1-SNAPSHOT"

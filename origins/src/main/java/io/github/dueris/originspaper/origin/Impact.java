@@ -18,11 +18,15 @@ public enum Impact {
 	private final ChatFormatting textStyle;
 	private final ResourceLocation spriteId;
 
-	private Impact(int impactValue, String translationKey, ChatFormatting textStyle, ResourceLocation spriteId) {
+	Impact(int impactValue, String translationKey, ChatFormatting textStyle, ResourceLocation spriteId) {
 		this.translationKey = "origins.gui.impact." + translationKey;
 		this.impactValue = impactValue;
 		this.textStyle = textStyle;
 		this.spriteId = spriteId;
+	}
+
+	public static Impact getByValue(int impactValue) {
+		return Impact.values()[impactValue];
 	}
 
 	public ResourceLocation getSpriteId() {
@@ -43,9 +47,5 @@ public enum Impact {
 
 	public MutableComponent getTextComponent() {
 		return Component.translatable(getTranslationKey()).withStyle(getTextStyle());
-	}
-
-	public static Impact getByValue(int impactValue) {
-		return Impact.values()[impactValue];
 	}
 }

@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 public interface PowerHolderComponent {
 
-	ProvidableComponentKey<PowerHolderComponent> KEY = new ProvidableComponentKey<>();
+	ProvidableComponentKey<PowerHolderComponent, Entity> KEY = new ProvidableComponentKey<>(e -> e instanceof LivingEntity living ? new PowerHolderComponentImpl(living) : null);
 
 	static boolean grantPower(@NotNull Entity entity, Power power, ResourceLocation source, boolean sync) {
 		return grantPowers(entity, Map.of(source, List.of(power)), sync);
