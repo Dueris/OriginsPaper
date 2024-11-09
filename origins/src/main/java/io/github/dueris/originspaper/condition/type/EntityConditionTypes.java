@@ -95,6 +95,8 @@ public class EntityConditionTypes {
 		register(createSimpleFactory(OriginsPaper.apoliIdentifier("glowing"), entity -> entity.isCurrentlyGlowing()));
 		register(EntityInRadiusConditionType.getFactory());
 		register(HasCommandTagConditionType.getFactory());
+		// Origins-Fabric
+		register(OriginConditionType.getFactory());
 	}
 
 	public static ConditionTypeFactory<Entity> createSimpleFactory(ResourceLocation id, Predicate<Entity> condition) {
