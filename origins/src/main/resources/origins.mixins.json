@@ -56,7 +56,8 @@
     "MobEntityAccessor",
     "TargetGoalAccessor",
     "NearestAttackableTargetGoalAccessor",
-    "TargetingConditionsAccessor"
+    "TargetingConditionsAccessor",
+    "LivingEntityAccessor"
   ],
   "compatibilityLevel": "JAVA_17"
 }
