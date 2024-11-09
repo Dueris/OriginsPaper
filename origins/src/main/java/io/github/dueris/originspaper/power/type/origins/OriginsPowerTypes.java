@@ -8,7 +8,7 @@ import net.minecraft.core.Registry;
 public class OriginsPowerTypes {
 
 	public static void register() {
-//		register(OriginsCallbackPowerType.getFactory());
+		register(OriginsCallbackPowerType.getFactory());
 		register(LikeWaterPowerType.createSimpleFactory(OriginsPaper.originIdentifier("like_water"), LikeWaterPowerType::new));
 //		register(WaterBreathingPowerType.createSimpleFactory(OriginsPaper.originIdentifier("water_breathing"), WaterBreathingPowerType::new));
 //		register(ScareCreepersPowerType.createSimpleFactory(OriginsPaper.originIdentifier("scare_creepers"), ScareCreepersPowerType::new));
