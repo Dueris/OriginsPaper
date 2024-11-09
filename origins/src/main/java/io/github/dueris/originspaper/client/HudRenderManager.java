@@ -40,7 +40,9 @@ public class HudRenderManager {
 
 	public HudRenderManager() {
 		File icon = new File(OriginsPaper.getPlugin().getDataFolder(), "resources/empty_bar.png");
-		OriginsPaper.getPlugin().saveResource("resources/empty_bar.png", false);
+		if (!icon.exists()) {
+			OriginsPaper.getPlugin().saveResource("resources/empty_bar.png", false);
+		}
 
 		try {
 			nullBarComponents.set(makeRenderPixels(ImageIO.read(icon)));
@@ -154,13 +156,11 @@ public class HudRenderManager {
 
 	public void register(ResourceLocation textureKey, @NotNull ResourceLocation powerId, int barIndex, @NotNull RenderInf info) {
 		List<Tuple<Integer, TexturesImpl.TextureLocation>> textureLocation = TexturesImpl.REGISTRY.get(textureKey);
-		Logger.info("Searching for texture, '{}' at index {} for power, '{}'", textureKey.toString(), barIndex, powerId.toString());
 		Tuple<Integer, TexturesImpl.TextureLocation> tuple = textureLocation.get(barIndex);
 		if (!assemblyComponentMap.containsKey(powerId.toString())) {
 			AssemblyComponent component = makeAssemblyComponent(tuple.getB().image());
 			assemblyComponentMap.put(powerId.toString(), component);
 		}
-		Logger.info("Found and caching registered resource bar for power '{}'...", powerId.toString());
 		renderInf.put(CraftNamespacedKey.fromMinecraft(powerId), info);
 	}
 
