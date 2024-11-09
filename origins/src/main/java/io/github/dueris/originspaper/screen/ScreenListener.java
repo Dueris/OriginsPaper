@@ -3,6 +3,7 @@ package io.github.dueris.originspaper.screen;
 import io.github.dueris.originspaper.component.OriginComponent;
 import io.github.dueris.originspaper.origin.OriginLayer;
 import io.github.dueris.originspaper.origin.OriginLayerManager;
+import io.github.dueris.originspaper.registry.ModItems;
 import io.github.dueris.originspaper.util.Scheduler;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -49,7 +50,7 @@ public class ScreenListener implements Listener {
 			} else if (e.getCurrentItem().isSimilar(ChooseOriginScreen.BACK_STACK.asBukkitMirror())) {
 				screen.back();
 				screen.update();
-			} else if (e.getCurrentItem().isSimilar(screen.getCurrentOrigin().getDisplayItem().asBukkitMirror())) {
+			} else if (e.getCurrentItem().isSimilar(screen.getCurrentOrigin() == null ? ModItems.ORB_OF_ORIGINS.asBukkitMirror() : screen.getCurrentOrigin().getDisplayItem().asBukkitMirror())) {
 				screen.choose();
 			}
 		}

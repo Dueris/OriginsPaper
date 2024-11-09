@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.screen;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.component.OriginComponent;
 import io.github.dueris.originspaper.origin.*;
-import io.github.dueris.originspaper.power.MultiplePower;
 import io.github.dueris.originspaper.power.Power;
+import io.github.dueris.originspaper.registry.ModItems;
 import io.github.dueris.originspaper.util.LoopingLinkedObjectList;
 import io.papermc.paper.adventure.PaperAdventure;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -46,7 +46,7 @@ public class ChooseOriginScreen {
 
 	private final List<OriginLayer> layerList;
 	private final ServerPlayer holder;
-	private final LoopingLinkedObjectList<Origin> originSelection;
+	private final LoopingLinkedObjectList<OriginReference> originSelection;
 	protected InventoryView inventoryView;
 
 	public ChooseOriginScreen(ServerPlayer holder) {
@@ -88,10 +88,12 @@ public class ChooseOriginScreen {
 				iconStack.set(DataComponents.PROFILE, new ResolvableProfile(holder.getGameProfile()));
 			}
 
-			originSelection.add(origin);
+			originSelection.add(new OriginReference(origin, false));
 		}
 
-		originSelection.sort(Comparator.comparingInt((Origin o) -> o.getImpact().getImpactValue()).thenComparingInt(Origin::getOrder));
+		originSelection.sort(Comparator.comparingInt((OriginReference o) ->
+			Objects.requireNonNull(o.origin, "Origin was null when it shouldn't!").getImpact().getImpactValue()).thenComparingInt(OriginReference::getOrder));
+		originSelection.addLast(new OriginReference(null, true));
 	}
 
 	private void openSelection() {
@@ -123,7 +125,7 @@ public class ChooseOriginScreen {
 		ItemStack[] built = new ItemStack[54];
 
 		Origin origin = this.getCurrentOrigin();
-		List<Power> toDisplay = new ArrayList<>(origin.getPowers());
+		List<Power> toDisplay = new ArrayList<>(origin == null ? List.of() : origin.getPowers());
 		for (int i = 0; i <= 53; i++) {
 			if ((i == 0 || i == 1 || i == 2) ||
 				(i == 6 || i == 7 || i == 8)) {
@@ -140,10 +142,10 @@ public class ChooseOriginScreen {
 			}
 
 			if (i == 13) {
-				ItemStack stack = this.getCurrentOrigin().getDisplayItem();
+				ItemStack stack = origin == null ? ModItems.ORB_OF_ORIGINS : origin.getDisplayItem();
 
-				stack.set(DataComponents.CUSTOM_NAME, noItalic(origin.getName()).copy().withColor(0xffffff));
-				stack.set(DataComponents.LORE, new ItemLore(List.of(noItalic(origin.getDescription()))));
+				stack.set(DataComponents.CUSTOM_NAME, noItalic(origin == null ? Component.translatable("origin.origins.random.name") : origin.getName()).copy().withColor(0xffffff));
+				stack.set(DataComponents.LORE, new ItemLore(List.of(noItalic(origin == null ? Component.translatable("origin.origins.random.description") : origin.getDescription()))));
 
 				built[i] = stack;
 				continue;
@@ -179,7 +181,7 @@ public class ChooseOriginScreen {
 	}
 
 	private @NotNull ItemStack impact(int index) {
-		Impact impact = getCurrentOrigin().getImpact();
+		Impact impact = getCurrentOrigin() == null ? Impact.NONE : getCurrentOrigin().getImpact();
 		ItemStack impactItem = switch (impact) {
 			case LOW -> onlyIndexOf(new ItemStack(Items.GREEN_STAINED_GLASS_PANE), index, 0, 8);
 			case MEDIUM -> onlyIndexOf(new ItemStack(Items.YELLOW_STAINED_GLASS_PANE), index, 0, 1, 7, 8);
@@ -196,7 +198,8 @@ public class ChooseOriginScreen {
 
 	private @NotNull CraftInventory buildBaseMenu() {
 		return (CraftInventory) MinecraftServer.getServer().server.createInventory(this.holder.getBukkitEntity(), 54,
-			PaperAdventure.asAdventure(this.originSelection.getCurrent().getName()));
+			PaperAdventure.asAdventure(this.originSelection.getCurrent().origin == null && this.originSelection.getCurrent().random ?
+				Component.translatable("origin.origins.random.name") : this.originSelection.getCurrent().origin.getName()));
 	}
 
 	@Nullable
@@ -204,9 +207,9 @@ public class ChooseOriginScreen {
 		return layerList.getFirst();
 	}
 
-	@NotNull
+	@Nullable
 	public Origin getCurrentOrigin() {
-		return originSelection.getCurrent();
+		return originSelection.getCurrent().origin;
 	}
 
 	public void choose() {
@@ -216,13 +219,17 @@ public class ChooseOriginScreen {
 		OriginLayer layer = OriginLayerManager.get(Objects.requireNonNull(this.getCurrentLayer(), "Current layer is null! How are you even choosing right now...?").getId());
 
 		if (component.hasAllOrigins() && component.hasOrigin(layer)) {
-			OriginsPaper.LOGGER.warn("Player {} tried to choose origin for layer \"{}\" while having one already.", player.getName().getString(), this.getCurrentOrigin().getId());
+			OriginsPaper.LOGGER.warn("Player {} tried to choose origin for layer \"{}\" while having one already.", player.getName().getString(), layer.getId());
 			return;
 		}
 
-		Origin origin = OriginManager.get(this.getCurrentOrigin().getId());
+		OriginReference reference = originSelection.getCurrent();
+		List<ResourceLocation> randomOrigins = layer.getRandomOrigins(player);
+		Origin origin = reference.random ?
+			OriginManager.get(randomOrigins.get(new Random().nextInt(randomOrigins.size()))) :
+			OriginManager.get(Objects.requireNonNull(this.getCurrentOrigin(), "Current origin is null!").getId());
 		if (!(origin.isChoosable() || layer.contains(origin, player))) {
-			OriginsPaper.LOGGER.warn("Player {} tried to choose unchoosable origin \"{}\" from layer \"{}\"!", player.getName().getString(), this.getCurrentOrigin().getId(), this.getCurrentOrigin().getId());
+			OriginsPaper.LOGGER.warn("Player {} tried to choose unchoosable origin \"{}\" from layer \"{}\"!", player.getName().getString(), origin.getId(), layer.getId());
 			component.setOrigin(layer, Origin.EMPTY);
 		} else {
 
@@ -236,7 +243,7 @@ public class ChooseOriginScreen {
 				OriginComponent.onChosen(player, hadOriginBefore);
 			}
 
-			OriginsPaper.LOGGER.info("Player {} chose origin \"{}\" for layer \"{}\"", player.getName().getString(), this.getCurrentOrigin().getId(), this.getCurrentOrigin().getId());
+			OriginsPaper.LOGGER.info("Player {} chose origin \"{}\" for layer \"{}\"", player.getName().getString(), origin.getId(), layer.getId());
 
 		}
 
@@ -253,6 +260,13 @@ public class ChooseOriginScreen {
 			CURRENTLY_RENDERING.remove(holder);
 			RENDER_MAP.remove(holder);
 			holder.getBukkitEntity().closeInventory();
+		}
+	}
+
+	protected record OriginReference(@Nullable Origin origin, boolean random) {
+
+		public int getOrder() {
+			return origin == null ? -1 : origin.getOrder();
 		}
 	}
 }
