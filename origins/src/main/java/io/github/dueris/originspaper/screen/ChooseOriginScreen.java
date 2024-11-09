@@ -3,6 +3,7 @@ package io.github.dueris.originspaper.screen;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.component.OriginComponent;
 import io.github.dueris.originspaper.origin.*;
+import io.github.dueris.originspaper.power.MultiplePower;
 import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.util.LoopingLinkedObjectList;
 import io.papermc.paper.adventure.PaperAdventure;
@@ -158,6 +159,7 @@ public class ChooseOriginScreen {
 					Power power = toDisplay.removeFirst();
 
 					if (power.isHidden()) {
+						stack.set(DataComponents.HIDE_TOOLTIP, Unit.INSTANCE);
 						built[i] = stack;
 						continue;
 					}
