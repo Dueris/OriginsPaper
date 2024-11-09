@@ -15,8 +15,21 @@
           "type": "origins:replaceable"
         },
         "if_action": {
-          "type": "origins:set_block",
-          "block": "origins:temporary_cobweb"
+          "type": "origins:and",
+          "actions": [
+            {
+              "type": "origins:set_block",
+              "block": "minecraft:cobweb"
+            },
+            {
+              "type": "origins:delay",
+              "ticks": 100,
+              "action": {
+                "type": "origins:set_block",
+                "block": "minecraft:air"
+              }
+            }
+          ]
         }
       }
     },
