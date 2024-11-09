@@ -19,6 +19,7 @@ import io.github.dueris.originspaper.plugin.OriginsPlugin;
 import io.github.dueris.originspaper.plugin.PluginInstances;
 import io.github.dueris.originspaper.power.PowerManager;
 import io.github.dueris.originspaper.power.type.PowerTypes;
+import io.github.dueris.originspaper.power.type.origins.OriginsPowerTypes;
 import io.github.dueris.originspaper.registry.ApoliClassData;
 import io.github.dueris.originspaper.registry.ModBlocks;
 import io.github.dueris.originspaper.registry.ModItems;
@@ -94,6 +95,7 @@ public class OriginsPaper {
 
 			ModifierOperations.register();
 			PowerTypes.register();
+			OriginsPowerTypes.register();
 			EntityConditionTypes.register();
 			BiEntityConditionTypes.register();
 			ItemConditionTypes.register();

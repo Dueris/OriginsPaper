@@ -51,7 +51,8 @@
     "TagEntryAccessor",
     "TagLoaderMixin",
     "ThrownEnderpearlMixin",
-    "VibrationSystemMixin"
+    "VibrationSystemMixin",
+    "ConduitBlockEntityMixin"
   ],
   "compatibilityLevel": "JAVA_17"
 }
