@@ -6,6 +6,7 @@ import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.factory.ActionTypeFactory;
 import io.github.dueris.originspaper.util.Scheduler;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.function.Consumer;
 
@@ -14,7 +15,12 @@ public class DelayActionType {
 	private static final Scheduler SCHEDULER = new Scheduler();
 
 	public static <T> void action(T type, Consumer<T> action, int ticks) {
-		SCHEDULER.queue(server -> action.accept(type), ticks);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				action.accept(type);
+			}
+		}.runTaskLater(OriginsPaper.getPlugin(), ticks);
 	}
 
 	public static <T> ActionTypeFactory<T> getFactory(SerializableDataType<ActionTypeFactory<T>.Instance> dataType) {
