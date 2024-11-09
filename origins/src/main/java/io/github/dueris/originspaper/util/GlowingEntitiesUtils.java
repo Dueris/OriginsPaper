@@ -142,6 +142,8 @@ public class GlowingEntitiesUtils implements Listener {
 	}
 
 	public List<net.minecraft.world.entity.Entity> getGlowing(@NotNull ServerPlayer receiver) {
+		if (this.glowing == null) return List.of();
+
 		PlayerData playerData = glowing.get(receiver.getBukkitEntity());
 		if (playerData == null)
 			return new ArrayList<>();

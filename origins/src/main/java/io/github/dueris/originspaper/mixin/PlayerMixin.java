@@ -13,6 +13,7 @@ import io.github.dueris.originspaper.access.PhasingEntity;
 import io.github.dueris.originspaper.access.PlayerTiedAbilities;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.power.type.*;
+import io.github.dueris.originspaper.power.type.origins.LikeWaterPowerType;
 import io.github.dueris.originspaper.util.InventoryUtil;
 import io.github.dueris.originspaper.util.PriorityPhase;
 import io.github.dueris.originspaper.util.Util;
@@ -377,4 +378,9 @@ public abstract class PlayerMixin extends LivingEntity implements JumpingEntity 
 		return original.call(instance) || (PowerHolderComponent.hasPowerType(this, PhasingPowerType.class) && ((PhasingEntity) this).apoli$isPhasing());
 	}
 
+	@Inject(method = "tick", at = @At("TAIL"))
+	public void origins$likeWater(CallbackInfo ci) {
+		Player thisAsPlayer = (Player) (Object) this;
+		LikeWaterPowerType.tick(thisAsPlayer);
+	}
 }
