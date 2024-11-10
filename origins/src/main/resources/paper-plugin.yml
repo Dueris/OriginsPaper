@@ -14,11 +14,10 @@ dependencies:
 folia-supported: false
 has-open-classloader: false
 
-supported: ${supported}
-minecraft: ${mcVer}
-plugin: ${pluginVer}
-api-version: ${apiVer}
-version: ${fullVer}
+minecraft: ${minecraft}
+plugin: ${version}
+api-version: ${api}
+version: ${full_version}
 apoli: ${apoli}
 calio: ${calio}
 default-language: "en_us"

@@ -12,16 +12,6 @@ public class Bootstrap implements PluginBootstrap {
 
 	private static final Logger log = LogManager.getLogger(Bootstrap.class);
 
-	@Override
-	public void bootstrap(@NotNull BootstrapContext bootContext) {
-		try {
-			if (!igniteBooted()) return;
-			OriginsPaper.bootstrap(bootContext);
-		} catch (Throwable e) {
-			throw new RuntimeException("An error occurred when loading OriginsPaper!", e);
-		}
-	}
-
 	private static boolean igniteBooted() {
 		try {
 			Class.forName("me.dueris.eclipse.ignite.IgniteBootstrap");
@@ -29,6 +19,16 @@ public class Bootstrap implements PluginBootstrap {
 		} catch (ClassNotFoundException e) {
 			log.error("Eclipse was not found in classpath! Please install from modrinth : {}", "https://modrinth.com/plugin/eclipse-mixin");
 			return false;
+		}
+	}
+
+	@Override
+	public void bootstrap(@NotNull BootstrapContext bootContext) {
+		try {
+			if (!igniteBooted()) return;
+			OriginsPaper.bootstrap(bootContext);
+		} catch (Throwable e) {
+			throw new RuntimeException("An error occurred when loading OriginsPaper!", e);
 		}
 	}
 

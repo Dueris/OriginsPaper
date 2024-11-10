@@ -1,15 +1,12 @@
 package io.github.dueris.originspaper.registry;
 
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.content.block.TemporaryCobwebBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;

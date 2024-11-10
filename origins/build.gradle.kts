@@ -1,34 +1,12 @@
-plugins {
-    id("xyz.jpenilla.run-paper") version "2.2.3"
-}
-
-group = "me.dueris"
-version = "1.${rootProject.extra["mcMajorVer"]}-${rootProject.extra["pluginVer"]}"
-description = "Bringing the Origins Mod to PaperMC"
-
-println("Loaded subproject \"${project.name}\" with version '$version'")
+group = "io.github.dueris"
+description = "A full, but unofficial, port of Calio/Apoli/Origins to PaperMC servers"
 
 dependencies {
-    // Project
-    implementation(project(mapOf("path" to ":calio")))
-    // Required Dependencies
-    compileOnly("org.mineskin:java-client:2.0.0-SNAPSHOT") // - in DependencyLoader
-    implementation("org.mineskin:java-client-jsoup:2.0.0-SNAPSHOT")
-    compileOnly("com.jeff-media:MorePersistentDataTypes:2.4.0") // - in DependencyLoader
-
-    compileOnly(files("../depends/eclipse-1.3.2-all.jar")) // Dependency
-
+    compileOnly("org.mineskin:java-client-jsoup:2.0.0-SNAPSHOT")
+    compileOnly(files("../depends/eclipse-1.3.2-all.jar"))
+    compileOnly("org.mineskin:java-client:2.0.0-SNAPSHOT")
+    project("calio")
 }
 
-tasks {
-    compileJava {
-        options.encoding = Charsets.UTF_8.name()
-
-        options.release.set(21)
-        options.isWarnings = false
-    }
-    javadoc {
-        options.encoding = Charsets.UTF_8.name()
-    }
-
-}
+fun DependencyHandler.project(project: Any): Dependency? =
+    add("implementation", project(mapOf("path" to ":$project")))

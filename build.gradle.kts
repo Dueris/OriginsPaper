@@ -1,42 +1,36 @@
 import io.github.dueris.kotlin.eclipse.gradle.MinecraftVersion
+import io.papermc.paperweight.userdev.ReobfArtifactConfiguration
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.isDirectory
 
 plugins {
-    `java-library`
+    java
     `maven-publish`
-    id("io.papermc.paperweight.userdev") version "1.7.3" apply true
-    id("xyz.jpenilla.run-paper") version "2.2.3"
-    id("com.gradleup.shadow") version "8.3.3" apply true
+    id("io.papermc.paperweight.userdev") version "1.7.4" apply true
+    id("com.gradleup.shadow") version "8.3.5" apply true
     id("io.github.dueris.eclipse.gradle") version "1.1.0-beta82" apply true
 }
 
-val paperweightVersion: String = "1.21-R0.1-SNAPSHOT"
+version = "v1.3.0"
+val apoli = "2.12.0-alpha.12+mc.1.21.x"
+val calio = "1.14.0-alpha.7+mc.1.21.x"
+val mcMajor = "21"
+val mcMinor = "1"
+val paper: String = "1.$mcMajor-R0.1-SNAPSHOT"
 
-extra["mcMajorVer"] = "21"
-extra["mcMinorVer"] = "1"
-extra["pluginVer"] = "v1.3.0"
+val minecraft = "1.$mcMajor" + if (mcMinor == "0") "" else ".$mcMinor"
 
-val mcMajorVer = extra["mcMajorVer"] as String
-val mcMinorVer = extra["mcMinorVer"] as String
-val pluginVer = extra["pluginVer"] as String
+println("Loading plugin version: $version")
+println("Loading minecraft version: $minecraft")
 
-val mcVer = "1.$mcMajorVer" + if (mcMinorVer == "0") "" else ".$mcMinorVer"
-extra["mcVer"] = mcVer
-extra["fullVer"] = "mc$mcVer-$pluginVer"
-
-println("Loading plugin version: $pluginVer")
-println("Loading minecraft version: $mcVer")
-
-allprojects {
+subprojects {
     apply(plugin = "java")
     apply(plugin = "maven-publish")
     apply(plugin = "io.papermc.paperweight.userdev")
     apply(plugin = "com.gradleup.shadow")
     apply(plugin = "io.github.dueris.eclipse.gradle")
-    paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
     java {
         toolchain {
@@ -44,15 +38,6 @@ allprojects {
         }
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    dependencies {
-        paperweight.paperDevBundle(paperweightVersion)
-    }
-
-    eclipse {
-        minecraft = MinecraftVersion.MC1_21_1
-        wideners = files("origins.accesswidener", "calio.accesswidener", "fabricapi.accesswidener")
     }
 
     repositories {
@@ -69,24 +54,26 @@ allprojects {
     }
 
     tasks {
+        compileJava {
+            options.encoding = Charsets.UTF_8.name()
+
+            options.release.set(21)
+            options.isWarnings = false
+        }
+        javadoc {
+            options.encoding = Charsets.UTF_8.name()
+        }
         processResources {
             val props = mapOf(
-                "mcVer" to mcVer,
-                "pluginVer" to pluginVer,
-                "fullVer" to "mc$mcVer-$pluginVer",
-                "apiVer" to "1.$mcMajorVer",
-                "supported" to listOf("1.21", "1.21.1"),
-                "apoli" to "2.12.0-alpha.12+mc.1.21.x",
-                "calio" to "1.14.0-alpha.7+mc.1.21.x"
+                "minecraft" to minecraft,
+                "version" to project.rootProject.version,
+                "full_version" to "mc$minecraft-${project.rootProject.version}",
+                "api" to "1.$mcMajor",
+                "apoli" to apoli,
+                "calio" to calio
             )
             inputs.properties(props)
-            filesMatching("paper-plugin.yml") {
-                expand(props)
-            }
-            filesMatching("apoli/paper-plugin.yml") {
-                expand(props)
-            }
-            filesMatching("calio/paper-plugin.yml") {
+            filesMatching(listOf("paper-plugin.yml", "apoli/paper-plugin.yml", "calio/paper-plugin.yml")) {
                 expand(props)
             }
 
@@ -94,32 +81,28 @@ allprojects {
         }
     }
 
-    tasks.getByName<Jar>("jar") {
-        manifest {
-            attributes(
-                "Premain-Class" to "space.vectrix.ignite.agent.IgniteAgent",
-                "Agent-Class" to "space.vectrix.ignite.agent.IgniteAgent",
-                "Launcher-Agent-Class" to "space.vectrix.ignite.agent.IgniteAgent",
-                "Main-Class" to "space.vectrix.ignite.IgniteBootstrap",
-                "Multi-Release" to true,
-                "Automatic-Module-Name" to "net.minecrell.terminalconsole",
+}
 
-                "Specification-Title" to "ignite",
-                "Specification-Version" to "v1.3.0",
-                "Specification-Vendor" to "vectrix.space",
-
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to "v1.3.0",
-                "Implementation-Vendor" to "vectrix.space"
-            )
-
-            attributes(
-                "org/objectweb/asm/",
-                "Implementation-Version" to "9.7.1"
-            )
-        }
+allprojects {
+    dependencies {
+        paperweight.paperDevBundle(paper)
     }
 
+    paperweight {
+        injectPaperRepository = true
+        reobfArtifactConfiguration = ReobfArtifactConfiguration.MOJANG_PRODUCTION
+    }
+
+    eclipse {
+        minecraft = MinecraftVersion.MC1_21_1
+        wideners = files("origins.accesswidener", "calio.accesswidener", "fabricapi.accesswidener")
+    }
+
+    tasks.shadowJar {
+        exclude("com/google/gson/**")
+        exclude("org/intellij/**")
+        exclude("org/jetbrains/**")
+    }
 }
 
 tasks {
@@ -127,8 +110,7 @@ tasks {
         dependsOn(":origins:shadowJar")
         doLast {
             val targetJarDirectory: Path = projectDir.toPath().toAbsolutePath().resolve("build/libs")
-            val subProject: Project = project("origins")
-            println("Loading OriginsPaper version-build: $pluginVer")
+            println("Loading OriginsPaper version-build: $version")
             if (!targetJarDirectory.isDirectory()) error("Target path is not a directory?!")
 
             Files.createDirectories(targetJarDirectory)
@@ -140,14 +122,11 @@ tasks {
                 }
             }
             Files.copy(
-                file("origins/build/libs/origins-${subProject.version}-all.jar").toPath().toAbsolutePath(),
-                targetJarDirectory.resolve("originspaper-mc${subProject.version}.jar"),
+                file("origins/build/libs/origins-all.jar").toPath().toAbsolutePath(),
+                targetJarDirectory.resolve("originspaper-mc${minecraft}-${version}.jar"),
                 StandardCopyOption.REPLACE_EXISTING
             )
         }
-    }
-    runServer {
-        minecraftVersion(mcVer)
     }
 }
 

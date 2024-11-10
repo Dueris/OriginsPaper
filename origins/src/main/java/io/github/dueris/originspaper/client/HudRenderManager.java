@@ -18,7 +18,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
-import org.tinylog.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

@@ -23,14 +23,6 @@ public class OriginsCallbackPowerType extends ActionOnCallbackPowerType {
 		this.executeChosenWhenOrb = executeChosenWhenOrb;
 	}
 
-	public void onChosen(boolean isOrbOfOrigins) {
-
-		if (this.isActive() && entityActionChosen != null && (!isOrbOfOrigins || executeChosenWhenOrb)) {
-			entityActionChosen.accept(entity);
-		}
-
-	}
-
 	public static PowerTypeFactory<?> getFactory() {
 		return new PowerTypeFactory<>(
 			OriginsPaper.originIdentifier("action_on_callback"),
@@ -52,6 +44,14 @@ public class OriginsCallbackPowerType extends ActionOnCallbackPowerType {
 				data.get("execute_chosen_when_orb")
 			)
 		).allowCondition();
+	}
+
+	public void onChosen(boolean isOrbOfOrigins) {
+
+		if (this.isActive() && entityActionChosen != null && (!isOrbOfOrigins || executeChosenWhenOrb)) {
+			entityActionChosen.accept(entity);
+		}
+
 	}
 
 }

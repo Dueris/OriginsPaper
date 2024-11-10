@@ -43,9 +43,7 @@ public interface OriginComponent {
 
 			if (powerType instanceof ModifyPlayerSpawnPowerType mps && !hadOriginBefore) {
 				mps.teleportToModifiedSpawn();
-			}
-
-			else if (powerType instanceof OriginsCallbackPowerType ocp) {
+			} else if (powerType instanceof OriginsCallbackPowerType ocp) {
 				ocp.onChosen(hadOriginBefore);
 			}
 

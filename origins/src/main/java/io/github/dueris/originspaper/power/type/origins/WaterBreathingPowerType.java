@@ -55,15 +55,11 @@ public class WaterBreathingPowerType extends PowerType {
 
 				}
 
-			}
-
-			else {
+			} else {
 				entity.setAirSupply(entity.getAirSupply() - landGain);
 			}
 
-		}
-
-		else if (entity.getAirSupply() < entity.getMaxAirSupply()) {
+		} else if (entity.getAirSupply() < entity.getMaxAirSupply()) {
 			entity.setAirSupply(entityAccess.callIncreaseAirSupply(entity.getAirSupply()));
 		}
 

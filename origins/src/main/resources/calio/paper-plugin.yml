@@ -1,4 +1,4 @@
 name: Calio
 version: ${calio}
 main: "io.github.dueris.originspaper.plugin.OriginsPlugin"
-api-version: ${apiVer}
+api-version: ${api}

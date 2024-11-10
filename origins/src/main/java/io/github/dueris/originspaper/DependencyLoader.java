@@ -24,7 +24,7 @@ public class DependencyLoader implements PluginLoader {
 		maven(resolver, "https://maven.quiltmc.org/repository/release/");
 		maven(resolver, "https://maven.fabricmc.net/");
 
-		resolver.addDependency(new Dependency(new DefaultArtifact("com.jeff-media:MorePersistentDataTypes:2.4.0"), null));
+		resolver.addDependency(new Dependency(new DefaultArtifact("org.mineskin:java-client-jsoup:2.0.0-SNAPSHOT"), null));
 		resolver.addDependency(new Dependency(new DefaultArtifact("org.mineskin:java-client:2.0.0-SNAPSHOT"), null));
 		classpathBuilder.addLibrary(resolver);
 	}
