@@ -1,6 +1,7 @@
 package io.github.dueris.originspaper.power.type.origins;
 
 import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.action.EntityAction;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
@@ -19,7 +20,9 @@ public class OriginsCallbackPowerType extends ActionOnCallbackPowerType {
 			.add("entity_action_removed", EntityAction.DATA_TYPE.optional(), Optional.empty())
 			.add("entity_action_gained", EntityAction.DATA_TYPE.optional(), Optional.empty())
 			.add("entity_action_lost", EntityAction.DATA_TYPE.optional(), Optional.empty())
-			.add("entity_action_added", EntityAction.DATA_TYPE.optional(), Optional.empty()),
+			.add("entity_action_added", EntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("entity_action_chosen", EntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("execute_chosen_when_orb", SerializableDataTypes.BOOLEAN, true),
 		(data, condition) -> new OriginsCallbackPowerType(
 			data.get("entity_action_respawned"),
 			data.get("entity_action_removed"),

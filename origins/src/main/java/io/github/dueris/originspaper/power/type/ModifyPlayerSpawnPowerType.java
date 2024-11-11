@@ -48,7 +48,7 @@ public class ModifyPlayerSpawnPowerType extends PowerType implements Prioritized
 			.add("biome_tag", SerializableDataType.tagKey(Registries.BIOME).optional(), Optional.empty())
 			.add("spawn_strategy", SerializableDataType.enumValue(SpawnStrategy.class), SpawnStrategy.DEFAULT)
 			.add("respawn_sound", SerializableDataTypes.SOUND_EVENT.optional(), Optional.empty())
-			.add("dimension_distance_multiplier", SerializableDataTypes.POSITIVE_FLOAT, 1.0F)
+			.add("dimension_distance_multiplier", SerializableDataTypes.NON_NEGATIVE_FLOAT, 1.0F)
 			.add("priority", SerializableDataTypes.INT, 0),
 		(data, condition) -> new ModifyPlayerSpawnPowerType(
 			data.get("dimension"),

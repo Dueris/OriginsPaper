@@ -27,7 +27,7 @@ public class BlockCollisionEntityConditionType extends EntityConditionType {
             .add("offset_y", SerializableDataTypes.DOUBLE, 0.0)
             .add("offset_z", SerializableDataTypes.DOUBLE, 0.0),
         data -> new BlockCollisionEntityConditionType(
-            data.get("block_collision"),
+            data.get("block_condition"),
             new Vec3(
                 data.get("offset_x"),
                 data.get("offset_y"),
