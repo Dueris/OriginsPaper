@@ -26,7 +26,7 @@ public class ModBlocks {
 
 	private static <B extends Block> @NotNull B register(String name, boolean withBlockItem, @NotNull Supplier<B> blockSupplier) {
 
-		ResourceLocation blockId = OriginsPaper.originIdentifier(name);
+		ResourceLocation blockId = OriginsPaper.identifier(name);
 		B block = Registry.register(BuiltInRegistries.BLOCK, blockId, blockSupplier.get());
 
 		if (withBlockItem) {

@@ -47,7 +47,7 @@ public class OriginConditionType {
 
 	public static ConditionTypeFactory<Entity> getFactory() {
 		return new ConditionTypeFactory<>(
-			OriginsPaper.originIdentifier("origin"),
+			OriginsPaper.identifier("origin"),
 			new SerializableData()
 				.add("origin", SerializableDataTypes.IDENTIFIER)
 				.add("layer", SerializableDataTypes.IDENTIFIER, null),

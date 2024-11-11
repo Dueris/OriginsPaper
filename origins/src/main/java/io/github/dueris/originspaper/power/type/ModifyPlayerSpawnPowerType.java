@@ -191,9 +191,9 @@ public class ModifyPlayerSpawnPowerType extends PowerType implements Prioritized
 			return Optional.empty();
 		}
 
-		int radius = 6400;
-		int horizontalBlockCheckInterval = 64;
-		int verticalBlockCheckInterval = 64;
+		int radius = OriginsPaper.config.modifyPlayerSpawnPower.radius;
+		int horizontalBlockCheckInterval = OriginsPaper.config.modifyPlayerSpawnPower.horizontalBlockCheckInterval;
+		int verticalBlockCheckInterval = OriginsPaper.config.modifyPlayerSpawnPower.verticalBlockCheckInterval;
 
 		var targetBiomePos = targetDimension.findClosestBiome3d(
 			biome -> (biomeKey == null || biome.is(this.biomeKey)) || (biomeTag == null || biome.is(biomeTag)),
@@ -246,7 +246,7 @@ public class ModifyPlayerSpawnPowerType extends PowerType implements Prioritized
 		}
 
 		BlockPos center = new BlockPos(0, 70, 0);
-		int radius = 6400;
+		int radius = OriginsPaper.config.modifyPlayerSpawnPower.radius;
 
 		var result = Optional.ofNullable(dimension.getChunkSource().getGenerator().findNearestMapStructure(dimension, HolderSet.direct(structureEntries), center, radius, false))
 			.map(pair -> pair.mapSecond(Holder::value))

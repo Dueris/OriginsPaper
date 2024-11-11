@@ -22,9 +22,9 @@ public class ExecuteCommandActionType {
 		}
 
 		CommandSourceStack source = server.createCommandSourceStack()
-			.withSource(OriginsPaper.showCommandOutput ? server : CommandSource.NULL)
+			.withSource(OriginsPaper.config.executeCommand.showOutput ? server : CommandSource.NULL)
 			.withPosition(pos.getCenter())
-			.withPermission(4);
+			.withPermission(OriginsPaper.config.executeCommand.permissionLevel);
 
 		server.getCommands().performPrefixedCommand(source, command);
 

@@ -25,9 +25,9 @@ public class CommandConditionType {
 
 		AtomicInteger result = new AtomicInteger();
 		CommandSourceStack source = server.createCommandSourceStack()
-			.withSource(OriginsPaper.showCommandOutput ? server : CommandSource.NULL)
+			.withSource(OriginsPaper.config.executeCommand.showOutput ? server : CommandSource.NULL)
 			.withPosition(cachedBlock.getPos().getCenter())
-			.withPermission(4)
+			.withPermission(OriginsPaper.config.executeCommand.permissionLevel)
 			.withCallback((successful, returnValue) -> result.set(returnValue));
 
 		server.getCommands().performPrefixedCommand(source, command);

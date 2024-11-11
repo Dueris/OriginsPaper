@@ -46,10 +46,10 @@ import java.util.concurrent.*;
 
 public class ModelColorPowerType extends PowerType {
 	private static final IOOperator API = IOOperator.create("cache/skins/");
-	private static final MineSkinClient CLIENT = !OriginsPaper.OriginConfiguration.getConfiguration().getString("api-key", "").isEmpty() ? MineSkinClient.builder()
+	private static final MineSkinClient CLIENT = !OriginsPaper.config.apiKey.isEmpty() ? MineSkinClient.builder()
 		.requestHandler(JsoupRequestHandler::new)
 		.userAgent("OriginsPaper")
-		.apiKey(OriginsPaper.OriginConfiguration.getConfiguration().getString("api-key"))
+		.apiKey(OriginsPaper.config.apiKey)
 		.build() : null;
 	private static final ExecutorService ASYNC_SERVICE = Executors.newFixedThreadPool(1, new NamedThreadFactory("ModelColorBuilder"));
 	private static boolean sentWarning = false;

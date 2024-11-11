@@ -26,7 +26,7 @@ public class Bootstrap implements PluginBootstrap {
 	public void bootstrap(@NotNull BootstrapContext bootContext) {
 		try {
 			if (!igniteBooted()) return;
-			OriginsPaper.bootstrap(bootContext);
+			OriginsPaper.initialize(bootContext);
 		} catch (Throwable e) {
 			throw new RuntimeException("An error occurred when loading OriginsPaper!", e);
 		}

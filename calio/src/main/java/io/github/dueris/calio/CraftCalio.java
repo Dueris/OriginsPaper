@@ -3,6 +3,7 @@ package io.github.dueris.calio;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.DataResult;
 import io.github.dueris.calio.data.exceptions.DataException;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.ReloadableServerResources;
@@ -62,11 +63,14 @@ public record CraftCalio(boolean threaded, int threadCount) {
 		return Optional.ofNullable(DATA_PACK_CONTENTS.get(Unit.INSTANCE));
 	}
 
+	public static void initialize() {
+		CriteriaTriggers.register(CodeTriggerCriterion.ID.toString(), CodeTriggerCriterion.INSTANCE);
+	}
+
 	@Override
 	public @NotNull String toString() {
 		return "CraftCalio[" +
 			"async=" + threaded + ", " +
 			"threadCount=" + threadCount + ']';
 	}
-
 }

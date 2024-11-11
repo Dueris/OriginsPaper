@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class LikeWaterPowerType extends PowerType {
 
-	private static final AttributeModifier modifier = new AttributeModifier(CraftNamespacedKey.fromMinecraft(OriginsPaper.originIdentifier("likewater")), -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+	private static final AttributeModifier modifier = new AttributeModifier(CraftNamespacedKey.fromMinecraft(OriginsPaper.identifier("likewater")), -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
 	public LikeWaterPowerType(Power power, LivingEntity entity) {
 		super(power, entity);

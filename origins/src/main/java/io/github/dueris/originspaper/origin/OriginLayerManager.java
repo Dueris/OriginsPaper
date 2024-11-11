@@ -36,7 +36,7 @@ import java.util.stream.IntStream;
 public class OriginLayerManager extends IdentifiableMultiJsonDataLoader implements IdentifiableResourceReloadListener {
 
 	public static final Set<ResourceLocation> DEPENDENCIES = Util.make(new ObjectOpenHashSet<>(), set -> set.add(OriginManager.ID));
-	public static final ResourceLocation ID = OriginsPaper.originIdentifier("origin_layers");
+	public static final ResourceLocation ID = OriginsPaper.identifier("origin_layers");
 
 	private static final Object2ObjectOpenHashMap<ResourceLocation, OriginLayer> LAYERS_BY_ID = new Object2ObjectOpenHashMap<>();
 

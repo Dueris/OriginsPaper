@@ -150,11 +150,11 @@ public class RaycastActionType {
 			for (double current = 0; current < length; current += step) {
 				boolean validOutput = !(entity instanceof ServerPlayer) || ((ServerPlayer) entity).connection != null;
 				CommandSourceStack source = new CommandSourceStack(
-					OriginsPaper.showCommandOutput && validOutput ? entity : CommandSource.NULL,
+					OriginsPaper.config.executeCommand.showOutput && validOutput ? entity : CommandSource.NULL,
 					origin.add(direction.scale(current)),
 					entity.getRotationVector(),
 					entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
-					4,
+					OriginsPaper.config.executeCommand.permissionLevel,
 					entity.getName().getString(),
 					entity.getDisplayName(),
 					entity.level().getServer(),
@@ -169,7 +169,7 @@ public class RaycastActionType {
 		if (server != null) {
 			boolean validOutput = !(entity instanceof ServerPlayer) || ((ServerPlayer) entity).connection != null;
 			CommandSourceStack source = new CommandSourceStack(
-				OriginsPaper.showCommandOutput && validOutput ? entity : CommandSource.NULL,
+				OriginsPaper.config.executeCommand.showOutput && validOutput ? entity : CommandSource.NULL,
 				hitPosition,
 				entity.getRotationVector(),
 				entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,

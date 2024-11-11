@@ -25,7 +25,7 @@ public class OriginsCallbackPowerType extends ActionOnCallbackPowerType {
 
 	public static PowerTypeFactory<?> getFactory() {
 		return new PowerTypeFactory<>(
-			OriginsPaper.originIdentifier("action_on_callback"),
+			OriginsPaper.identifier("action_on_callback"),
 			new SerializableData()
 				.add("entity_action_respawned", ApoliDataTypes.ENTITY_ACTION, null)
 				.add("entity_action_removed", ApoliDataTypes.ENTITY_ACTION, null)

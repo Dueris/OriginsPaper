@@ -10,6 +10,7 @@ import io.github.dueris.originspaper.origin.OriginLayerManager;
 import io.github.dueris.originspaper.origin.OriginManager;
 import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerManager;
+import io.github.dueris.originspaper.util.ChoseOriginCriterion;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -134,7 +135,7 @@ public class PlayerOriginComponent implements OriginComponent {
 		}
 
 		if (player instanceof ServerPlayer spe) {
-			// ChoseOriginCriterion.INSTANCE.trigger(spe, origin); // TODO - Dueris
+			ChoseOriginCriterion.INSTANCE.trigger(spe, origin);
 		}
 
 	}
@@ -155,10 +156,6 @@ public class PlayerOriginComponent implements OriginComponent {
 			.stream()
 			.map(pt -> powerComponent.removePower(pt, sourceId))
 			.reduce(false, Boolean::logicalOr);
-
-		if (revoked) {
-			// PowerHolderComponent.PacketHandlers.REVOKE_POWERS.sync(player, Map.of(sourceId, powers)); // Nothing, we are server-sided only.
-		}
 
 	}
 
@@ -184,7 +181,7 @@ public class PlayerOriginComponent implements OriginComponent {
 		if (compoundTag.contains("Origin")) {
 			try {
 
-				OriginLayer defaultOriginLayer = OriginLayerManager.get(OriginsPaper.originIdentifier("origin"));
+				OriginLayer defaultOriginLayer = OriginLayerManager.get(OriginsPaper.identifier("origin"));
 				origins.put(defaultOriginLayer, OriginManager.get(ResourceLocation.parse(compoundTag.getString("Origin"))));
 
 			} catch (Exception ignored) {

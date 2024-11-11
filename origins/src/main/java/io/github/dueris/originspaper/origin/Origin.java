@@ -28,7 +28,7 @@ import java.util.*;
 
 public class Origin implements Validatable {
 
-	public static final Origin EMPTY = Origin.special(OriginsPaper.originIdentifier("empty"), ItemStack.EMPTY, Impact.NONE, Integer.MAX_VALUE);
+	public static final Origin EMPTY = Origin.special(OriginsPaper.identifier("empty"), ItemStack.EMPTY, Impact.NONE, Integer.MAX_VALUE);
 	public static final SerializableDataType<Origin> DATA_TYPE = SerializableDataType.compound(
 		new SerializableData()
 			.add("id", SerializableDataTypes.IDENTIFIER)

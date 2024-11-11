@@ -26,8 +26,8 @@ public class SelectorActionType {
 		}
 
 		CommandSourceStack source = entity.createCommandSourceStack()
-			.withSource(OriginsPaper.showCommandOutput ? entity : CommandSource.NULL)
-			.withPermission(4);
+			.withSource(OriginsPaper.config.executeCommand.showOutput ? entity : CommandSource.NULL)
+			.withPermission(OriginsPaper.config.executeCommand.permissionLevel);
 
 		try {
 			selector.findEntities(source)

@@ -1,5 +1,9 @@
 package io.github.dueris.originspaper;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import io.github.dueris.calio.CraftCalio;
 import io.github.dueris.calio.util.IdentifierAlias;
 import io.github.dueris.originspaper.action.type.BiEntityActionTypes;
 import io.github.dueris.originspaper.action.type.BlockActionTypes;
@@ -10,13 +14,16 @@ import io.github.dueris.originspaper.command.PowerCommand;
 import io.github.dueris.originspaper.command.ResourceCommand;
 import io.github.dueris.originspaper.condition.type.*;
 import io.github.dueris.originspaper.content.entity.EnderianPearlEntity;
+import io.github.dueris.originspaper.data.ApoliDataHandlers;
 import io.github.dueris.originspaper.global.GlobalPowerSetManager;
 import io.github.dueris.originspaper.loot.condition.ApoliLootConditionTypes;
 import io.github.dueris.originspaper.loot.function.ApoliLootFunctionTypes;
+import io.github.dueris.originspaper.origin.Origin;
 import io.github.dueris.originspaper.origin.OriginLayerManager;
 import io.github.dueris.originspaper.origin.OriginManager;
 import io.github.dueris.originspaper.plugin.OriginsPlugin;
 import io.github.dueris.originspaper.plugin.PluginInstances;
+import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerManager;
 import io.github.dueris.originspaper.power.type.PowerTypes;
 import io.github.dueris.originspaper.power.type.origins.OriginsPowerTypes;
@@ -24,37 +31,39 @@ import io.github.dueris.originspaper.registry.ApoliClassData;
 import io.github.dueris.originspaper.registry.ModBlocks;
 import io.github.dueris.originspaper.registry.ModItems;
 import io.github.dueris.originspaper.registry.ModTags;
+import io.github.dueris.originspaper.util.ChoseOriginCriterion;
+import io.github.dueris.originspaper.util.GainedPowerCriterion;
+import io.github.dueris.originspaper.util.OriginLootCondition;
 import io.github.dueris.originspaper.util.fabric.resource.FabricResourceManagerImpl;
 import io.github.dueris.originspaper.util.modifier.ModifierOperations;
-import io.papermc.paper.command.brigadier.PaperCommands;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.GsonHelper;
+import net.skillcode.jsonconfig.JsonConfig;
+import net.skillcode.jsonconfig.JsonConfigAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Map;
 
+@SuppressWarnings("UnstableApiUsage")
 public class OriginsPaper {
 	public static final Logger LOGGER = LogManager.getLogger("OriginsPaper");
-	public static String LANGUAGE = "en_us";
-	public static boolean showCommandOutput = false;
 	public static MinecraftServer server;
 	public static Path jarFile;
-	public static BootstrapContext bootContext;
+	public static BootstrapContext context;
 	public static String version = "v1.3.0";
+	public static OriginsPaper.ServerConfig config;
 
-	public static @NotNull ResourceLocation originIdentifier(String path) {
+	public static @NotNull ResourceLocation identifier(String path) {
 		return ResourceLocation.fromNamespaceAndPath("origins", path);
 	}
 
@@ -66,115 +75,141 @@ public class OriginsPaper {
 		return OriginsPlugin.plugin;
 	}
 
-	public static void bootstrap(@NotNull BootstrapContext context) throws Throwable {
+	public static void initialize(@NotNull BootstrapContext context) {
 		jarFile = context.getPluginSource();
-		OriginsPaper.bootContext = context;
+		OriginsPaper.context = context;
 		PluginInstances.init();
 
-		// Ideally I would like to change this to use a mixin into the '<init>' of the 'Commands' class, but
-		//  Paper messes with this in terms of registering custom arguments via brigadier, so would need a way to translate
-		//  Papers API Command context -> Vanilla context - Dueris
+		CraftCalio.initialize();
+
+		final JsonConfigAPI jsonConfigAPI = new JsonConfigAPI(true);
+		File serverJson = new File(context.getDataDirectory().toFile(), "origins_server.json");
+		String parentPath = context.getDataDirectory().toFile().getAbsolutePath() + File.separator;
+
+		jsonConfigAPI.registerConfig(
+			new OriginsPaper.ServerConfig(),
+			parentPath,
+			serverJson.getName()
+		);
+		config = jsonConfigAPI.getConfig(ServerConfig.class);
+
+		ApoliLootConditionTypes.register();
+		ApoliLootFunctionTypes.register();
+
+		ApoliClassData.registerAll();
+
+		ModifierOperations.register();
+		EntityConditionTypes.register();
+		BiEntityConditionTypes.register();
+		ItemConditionTypes.register();
+		BlockConditionTypes.register();
+		DamageConditionTypes.register();
+		FluidConditionTypes.register();
+		BiomeConditionTypes.register();
+		EntityActionTypes.register();
+		ItemActionTypes.register();
+		BlockActionTypes.register();
+		BiEntityActionTypes.register();
+
+		PowerTypes.register();
+		OriginsPowerTypes.register();
+		Origin.init();
+
+		ApoliDataHandlers.register();
+
+		FabricResourceManagerImpl.registerResourceReload(new PowerManager());
+		FabricResourceManagerImpl.registerResourceReload(new GlobalPowerSetManager());
+		FabricResourceManagerImpl.registerResourceReload(new OriginManager());
+		FabricResourceManagerImpl.registerResourceReload(new OriginLayerManager());
+
+		IdentifierAlias.GLOBAL.addNamespaceAlias("apoli", "calio");
+		IdentifierAlias.GLOBAL.addNamespaceAlias("origins", "apoli");
+
+		ModBlocks.register();
+		ModTags.register();
+		ModItems.register();
+		EnderianPearlEntity.bootstrap();
+
 		context.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS.newHandler(event -> {
-			PaperCommands contextCommands = (PaperCommands) event.registrar();
-			contextCommands.register(PluginInstances.APOLI_META, PowerCommand.node(), null, new ArrayList<>());
-			contextCommands.register(PluginInstances.APOLI_META, ResourceCommand.node(), null, new ArrayList<>());
-			contextCommands.register(context.getPluginMeta(), OriginCommand.node(), null, new ArrayList<>());
-		}).priority(1));
+			event.registrar().register(PluginInstances.APOLI_META, PowerCommand.node(), null, new ArrayList<>());
+			event.registrar().register(PluginInstances.APOLI_META, ResourceCommand.node(), null, new ArrayList<>());
+		}));
+		context.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS.newHandler(event -> event.registrar().register(context.getPluginMeta(), OriginCommand.node(), null, new ArrayList<>())));
 
-		init();
+		CriteriaTriggers.register(GainedPowerCriterion.ID.toString(), GainedPowerCriterion.INSTANCE);
+		CriteriaTriggers.register(ChoseOriginCriterion.ID.toString(), ChoseOriginCriterion.INSTANCE);
+		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, identifier("origin"), OriginLootCondition.TYPE);
+		LOGGER.info("OriginsPaper, version {}, is initialized and ready to power up your game!", version);
 	}
 
-	private static void init() {
-		try {
-			OriginConfiguration.load();
-			showCommandOutput = OriginConfiguration.getConfiguration().getBoolean("show-command-output", false);
-			LANGUAGE = OriginConfiguration.getConfiguration().getString("language", LANGUAGE);
-			ApoliLootConditionTypes.register();
-			ApoliLootFunctionTypes.register();
-			ApoliClassData.registerAll();
+	public static class ServerConfig implements JsonConfig {
 
-			ModifierOperations.register();
-			PowerTypes.register();
-			OriginsPowerTypes.register();
-			EntityConditionTypes.register();
-			BiEntityConditionTypes.register();
-			ItemConditionTypes.register();
-			BlockConditionTypes.register();
-			DamageConditionTypes.register();
-			FluidConditionTypes.register();
-			BiomeConditionTypes.register();
-			EntityActionTypes.register();
-			ItemActionTypes.register();
-			BlockActionTypes.register();
-			BiEntityActionTypes.register();
+		public String apiKey = "";
 
-			FabricResourceManagerImpl.registerResourceReload(new PowerManager());
-			FabricResourceManagerImpl.registerResourceReload(new GlobalPowerSetManager());
-			FabricResourceManagerImpl.registerResourceReload(new OriginManager());
-			FabricResourceManagerImpl.registerResourceReload(new OriginLayerManager());
-			IdentifierAlias.GLOBAL.addNamespaceAlias("apoli", "calio");
-			IdentifierAlias.GLOBAL.addNamespaceAlias("origins", "apoli");
+		public ExecuteCommand executeCommand = new ExecuteCommand();
 
-			ModBlocks.register();
-			ModTags.register();
-			ModItems.register();
-			EnderianPearlEntity.bootstrap();
-			LOGGER.info("OriginsPaper, version {}, is initialized and ready to power up your game!", version);
-		} catch (Throwable throwable) {
-			LOGGER.error("Unable to start OriginsPaper!", throwable);
-		}
-	}
+		public ModifyPlayerSpawnPower modifyPlayerSpawnPower = new ModifyPlayerSpawnPower();
+		public JsonObject origins = new JsonObject();
 
-	public static class OriginConfiguration {
-		private static File server;
-		private static File orb;
-
-		public static void load() throws IOException {
-			File dataFolder = new File("plugins/OriginsPaper/");
-			if (!dataFolder.exists()) {
-				dataFolder.mkdirs();
+		public boolean isOriginDisabled(@NotNull ResourceLocation originId) {
+			String idString = originId.toString();
+			if (!origins.has(idString)) {
+				return false;
 			}
+			JsonElement element = origins.get(idString);
+			if (element instanceof JsonObject jsonObject) {
+				return !GsonHelper.getAsBoolean(jsonObject, "enabled", true);
+			}
+			return false;
+		}
 
-			File orbFile = fillFile("orb-of-origin.yml", new File(dataFolder, "orb-of-origin.yml"));
-			File originServer = fillFile("origin-server.yml", new File(dataFolder, "origin-server.yml"));
-			server = originServer;
-			orb = orbFile;
-			if (getConfiguration() == null) {
-				throw new RuntimeException("Unable to load origin-server configuration file!");
-			} else if (getOrbConfiguration() == null) {
-				throw new RuntimeException("Unable to load orb configuration file!");
+		public boolean isPowerDisabled(@NotNull ResourceLocation originId, ResourceLocation powerId) {
+			String originIdString = originId.toString();
+			if (!origins.has(originIdString)) {
+				return false;
+			}
+			String powerIdString = powerId.toString();
+			JsonElement element = origins.get(originIdString);
+			if (element instanceof JsonObject jsonObject) {
+				return !GsonHelper.getAsBoolean(jsonObject, powerIdString, true);
+			}
+			return false;
+		}
+
+		public boolean addToConfig(@NotNull Origin origin) {
+			boolean changed = false;
+			String originIdString = origin.getId().toString();
+			JsonObject originObj;
+			if (!origins.has(originIdString) || !(origins.get(originIdString) instanceof JsonObject)) {
+				originObj = new JsonObject();
+				origins.add(originIdString, originObj);
+				changed = true;
 			} else {
-				getConfiguration().addDefaults(Map.of("choosing_delay", 0));
-				getOrbConfiguration().addDefaults(Map.of());
+				originObj = (JsonObject) origins.get(originIdString);
 			}
-		}
-
-		private static @NotNull File fillFile(String a, @NotNull File o) throws IOException {
-			if (!o.exists()) {
-				o.createNewFile();
-				ClassLoader cL = OriginConfiguration.class.getClassLoader();
-
-				try (InputStream stream = cL.getResourceAsStream(a)) {
-					if (stream == null) {
-						throw new RuntimeException("Unable to find resource: " + a);
-					}
-
-					byte[] buffer = stream.readAllBytes();
-					Files.write(o.toPath(), buffer);
-				} catch (IOException var8) {
-					var8.printStackTrace();
+			if (!originObj.has("enabled") || !(originObj.get("enabled") instanceof JsonPrimitive)) {
+				originObj.addProperty("enabled", Boolean.TRUE);
+				changed = true;
+			}
+			for (Power power : origin.getPowers()) {
+				String powerIdString = power.getId().toString();
+				if (!originObj.has(powerIdString) || !(originObj.get(powerIdString) instanceof JsonPrimitive)) {
+					originObj.addProperty(powerIdString, Boolean.TRUE);
+					changed = true;
 				}
-
 			}
-			return o;
+			return changed;
 		}
 
-		public static @NotNull YamlConfiguration getConfiguration() {
-			return YamlConfiguration.loadConfiguration(server);
+		public static class ExecuteCommand {
+			public int permissionLevel = 2;
+			public boolean showOutput = false;
 		}
 
-		public static @NotNull FileConfiguration getOrbConfiguration() {
-			return YamlConfiguration.loadConfiguration(orb);
+		public static class ModifyPlayerSpawnPower {
+			public int radius = 6400;
+			public int horizontalBlockCheckInterval = 64;
+			public int verticalBlockCheckInterval = 64;
 		}
 	}
 }

@@ -25,8 +25,8 @@ public class CommandConditionType {
 		}
 
 		CommandSourceStack source = entity.createCommandSourceStack()
-			.withSource(OriginsPaper.showCommandOutput ? entity : CommandSource.NULL)
-			.withPermission(4)
+			.withSource(OriginsPaper.config.executeCommand.showOutput ? entity : CommandSource.NULL)
+			.withPermission(OriginsPaper.config.executeCommand.permissionLevel)
 			.withCallback((successful, returnValue) -> result.set(returnValue));
 
 		server.getCommands().performPrefixedCommand(source, command);

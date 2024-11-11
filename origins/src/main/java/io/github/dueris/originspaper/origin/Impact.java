@@ -8,10 +8,10 @@ import net.minecraft.resources.ResourceLocation;
 
 public enum Impact {
 
-	NONE(0, "none", ChatFormatting.GRAY, OriginsPaper.originIdentifier("choose_origin/impact/none")),
-	LOW(1, "low", ChatFormatting.GREEN, OriginsPaper.originIdentifier("choose_origin/impact/low")),
-	MEDIUM(2, "medium", ChatFormatting.YELLOW, OriginsPaper.originIdentifier("choose_origin/impact/medium")),
-	HIGH(3, "high", ChatFormatting.RED, OriginsPaper.originIdentifier("choose_origin/impact/high"));
+	NONE(0, "none", ChatFormatting.GRAY, OriginsPaper.identifier("choose_origin/impact/none")),
+	LOW(1, "low", ChatFormatting.GREEN, OriginsPaper.identifier("choose_origin/impact/low")),
+	MEDIUM(2, "medium", ChatFormatting.YELLOW, OriginsPaper.identifier("choose_origin/impact/medium")),
+	HIGH(3, "high", ChatFormatting.RED, OriginsPaper.identifier("choose_origin/impact/high"));
 
 	private final int impactValue;
 	private final String translationKey;

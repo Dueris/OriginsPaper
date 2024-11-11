@@ -57,7 +57,7 @@ public class TexturesImpl {
 					}
 
 					int i = 0;
-					ResourceLocation toPut = OriginsPaper.originIdentifier(value.location);
+					ResourceLocation toPut = OriginsPaper.identifier(value.location);
 					if (!REGISTRY.containsKey(toPut)) {
 						REGISTRY.put(toPut, new LinkedList<>());
 					}

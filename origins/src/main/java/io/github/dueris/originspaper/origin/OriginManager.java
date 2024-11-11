@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class OriginManager extends IdentifiableMultiJsonDataLoader implements IdentifiableResourceReloadListener {
 
 	public static final Set<ResourceLocation> DEPENDENCIES = Util.make(new HashSet<>(), set -> set.add(PowerManager.ID));
-	public static final ResourceLocation ID = OriginsPaper.originIdentifier("origins");
+	public static final ResourceLocation ID = OriginsPaper.identifier("origins");
 
 	private static final Object2ObjectOpenHashMap<ResourceLocation, Origin> ORIGINS_BY_ID = new Object2ObjectOpenHashMap<>();
 	private static final ObjectOpenHashSet<ResourceLocation> DISABLED_ORIGINS = new ObjectOpenHashSet<>();
@@ -193,12 +193,11 @@ public class OriginManager extends IdentifiableMultiJsonDataLoader implements Id
 				}
 
 				origin = get(id);
-				// TODO - Dueris
-				// hasConfigChanged.set(hasConfigChanged.get() | Origins.config.addToConfig(origin));
+				hasConfigChanged.set(hasConfigChanged.get() | OriginsPaper.config.addToConfig(origin));
 
-				/* if (Origins.config.isOriginDisabled(id)) {
+				if (OriginsPaper.config.isOriginDisabled(id)) {
 					disable(id);
-				} */
+				}
 
 			} catch (Exception e) {
 				OriginsPaper.LOGGER.error("There was a problem reading origin \"{}\": {}", id, e.getMessage());

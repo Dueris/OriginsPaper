@@ -7,6 +7,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 
 public class ModEnchantments {
 
-	public static final ResourceKey<Enchantment> WATER_PROTECTION = ResourceKey.create(Registries.ENCHANTMENT, OriginsPaper.originIdentifier("water_protection"));
+	public static final ResourceKey<Enchantment> WATER_PROTECTION = ResourceKey.create(Registries.ENCHANTMENT, OriginsPaper.identifier("water_protection"));
 
 }

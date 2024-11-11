@@ -6,6 +6,7 @@ import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerReference;
 import io.github.dueris.originspaper.power.PowerTypeFactory;
 import io.github.dueris.originspaper.power.type.PowerType;
+import io.github.dueris.originspaper.util.GainedPowerCriterion;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -167,7 +168,7 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 			powerTypeToAdd.onGained();
 
 			if (owner instanceof ServerPlayer serverPlayer) {
-				// GainedPowerCriterion.INSTANCE.trigger(serverPlayer, powerToAdd); // TODO - Dueris
+				GainedPowerCriterion.INSTANCE.trigger(serverPlayer, powerToAdd);
 			}
 
 		});

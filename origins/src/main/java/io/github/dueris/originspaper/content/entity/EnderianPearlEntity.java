@@ -23,7 +23,7 @@ public class EnderianPearlEntity extends ThrowableItemProjectile {
 	}
 
 	private static <T extends Entity> @NotNull EntityType<T> register(String id, EntityType.@NotNull Builder type) {
-		return Registry.register(BuiltInRegistries.ENTITY_TYPE, OriginsPaper.originIdentifier(id), (EntityType<T>) type.build(id));
+		return Registry.register(BuiltInRegistries.ENTITY_TYPE, OriginsPaper.identifier(id), (EntityType<T>) type.build(id));
 	}
 
 	@Override
