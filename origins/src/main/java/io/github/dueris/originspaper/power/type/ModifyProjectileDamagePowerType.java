@@ -2,9 +2,13 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.action.EntityAction;
+import io.github.dueris.originspaper.condition.DamageCondition;
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.modifier.Modifier;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.damagesource.DamageSource;
@@ -19,56 +23,54 @@ import java.util.function.Predicate;
 
 public class ModifyProjectileDamagePowerType extends ValueModifyingPowerType {
 
-	private final Consumer<Entity> selfAction;
-	private final Consumer<Entity> targetAction;
+	public static final TypedDataObjectFactory<ModifyProjectileDamagePowerType> DATA_FACTORY = createConditionedModifyingDataFactory(
+		new SerializableData()
+			.add("self_action", EntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("target_action", EntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("target_condition", EntityCondition.DATA_TYPE.optional(), Optional.empty())
+			.add("damage_condition", DamageCondition.DATA_TYPE.optional(), Optional.empty()),
+		(data, modifiers, condition) -> new ModifyProjectileDamagePowerType(
+			data.get("self_action"),
+			data.get("target_action"),
+			data.get("target_condition"),
+			data.get("damage_condition"),
+			modifiers,
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("self_action", powerType.selfAction)
+			.set("target_action", powerType.targetAction)
+			.set("target_condition", powerType.targetCondition)
+			.set("damage_condition", powerType.damageCondition)
+	);
 
-	private final Predicate<Entity> targetCondition;
-	private final Predicate<Tuple<DamageSource, Float>> damageCondition;
+	private final Optional<EntityAction> selfAction;
+	private final Optional<EntityAction> targetAction;
 
-	public ModifyProjectileDamagePowerType(Power power, LivingEntity entity, Consumer<Entity> selfAction, Consumer<Entity> targetAction, Predicate<Entity> targetCondition, Predicate<Tuple<DamageSource, Float>> damageCondition, @NotNull Optional<Modifier> modifier, @NotNull Optional<List<Modifier>> modifiers) {
-		super(power, entity);
+	private final Optional<EntityCondition> targetCondition;
+	private final Optional<DamageCondition> damageCondition;
 
+	public ModifyProjectileDamagePowerType(Optional<EntityAction> selfAction, Optional<EntityAction> targetAction, Optional<EntityCondition> targetCondition, Optional<DamageCondition> damageCondition, List<Modifier> modifiers, Optional<EntityCondition> condition) {
+		super(modifiers, condition);
 		this.selfAction = selfAction;
 		this.targetAction = targetAction;
 		this.targetCondition = targetCondition;
 		this.damageCondition = damageCondition;
-
-		modifier.ifPresent(this::addModifier);
-		modifiers.ifPresent(mods -> mods.forEach(this::addModifier));
-
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("modify_projectile_damage"),
-			new SerializableData()
-				.add("self_action", ApoliDataTypes.ENTITY_ACTION, null)
-				.add("target_action", ApoliDataTypes.ENTITY_ACTION, null)
-				.add("target_condition", ApoliDataTypes.ENTITY_CONDITION, null)
-				.add("damage_condition", ApoliDataTypes.DAMAGE_CONDITION, null)
-				.add("modifier", Modifier.DATA_TYPE.optional(), Optional.empty())
-				.add("modifiers", Modifier.LIST_TYPE.optional(), Optional.empty()),
-			data -> (power, entity) -> new ModifyProjectileDamagePowerType(power, entity,
-				data.getOrElse("self_action", e -> {
-				}),
-				data.getOrElse("target_action", e -> {
-				}),
-				data.getOrElse("target_condition", e -> true),
-				data.getOrElse("damage_condition", dmg -> true),
-				data.get("modifier"),
-				data.get("modifiers")
-			)
-		).allowCondition();
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.MODIFY_PROJECTILE_DAMAGE;
 	}
 
 	public boolean doesApply(DamageSource source, float damageAmount, LivingEntity target) {
-		return damageCondition.test(new Tuple<>(source, damageAmount))
-			&& (target == null || targetCondition.test(target));
+		return damageCondition.map(condition -> condition.test(source, damageAmount)).orElse(true)
+			&& targetCondition.map(condition -> condition.test(target)).orElse(true);
 	}
 
 	public void executeActions(Entity target) {
-		selfAction.accept(entity);
-		targetAction.accept(target);
+		selfAction.ifPresent(action -> action.execute(getHolder()));
+		targetAction.ifPresent(action -> action.execute(target));
 	}
 
 }

@@ -87,7 +87,7 @@ public enum ModifierOperation implements IModifierOperation {
 	}
 
 	@Override
-	public double apply(Entity entity, @NotNull Collection<SerializableData.Instance> dataList, double base, double current) {
+	public double apply(Entity entity, Collection<SerializableData.Instance> dataList, double base, double current) {
 
 		Stream<Double> values = dataList.stream().map(data -> {
 
@@ -95,8 +95,8 @@ public enum ModifierOperation implements IModifierOperation {
 			Optional<PowerReference> resource = Optional.ofNullable(data.get("resource"));
 
 			double amount = resource
-				.map(powerReference -> PowerUtil.getResourceValue(powerReference.getType(entity)))
-				.map(Number::doubleValue)
+				.map(powerReference -> PowerUtil.getResourceValueInt(powerReference.getPowerTypeFrom(entity)))
+				.map(Integer::doubleValue)
 				.orElseGet(() -> data.getDouble("amount"));
 
 			return ModifierUtil.applyModifiers(entity, modifiers, amount);

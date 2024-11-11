@@ -7,9 +7,13 @@ import com.mojang.serialization.DataResult;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.condition.EntityCondition;
+import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.Scheduler;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.thread.NamedThreadFactory;
@@ -42,9 +46,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.concurrent.*;
 
 public class ModelColorPowerType extends PowerType {
+
 	private static final IOOperator API = IOOperator.create("cache/skins/");
 	private static final MineSkinClient CLIENT = !OriginsPaper.config.apiKey.isEmpty() ? MineSkinClient.builder()
 		.requestHandler(JsoupRequestHandler::new)
@@ -53,18 +59,72 @@ public class ModelColorPowerType extends PowerType {
 		.build() : null;
 	private static final ExecutorService ASYNC_SERVICE = Executors.newFixedThreadPool(1, new NamedThreadFactory("ModelColorBuilder"));
 	private static boolean sentWarning = false;
+
+	public static final TypedDataObjectFactory<ModelColorPowerType> DATA_FACTORY = PowerType.createConditionedDataFactory(
+		new SerializableData()
+			.add("red", ApoliDataTypes.NORMALIZED_FLOAT, 1.0F)
+			.add("green", ApoliDataTypes.NORMALIZED_FLOAT, 1.0F)
+			.add("blue", ApoliDataTypes.NORMALIZED_FLOAT, 1.0F)
+			.add("alpha", ApoliDataTypes.NORMALIZED_FLOAT, 1.0F)
+			.validate((instance -> {
+				if (CLIENT == null && !sentWarning) {
+					OriginsPaper.LOGGER.warn("ModelColor power is disabled due to the 'api-key' defined in the origins configuration not being present. Please set that value via mineskin to use this power.");
+					sentWarning = true;
+				}
+				return DataResult.success(instance);
+			})),
+		(data, condition) -> new ModelColorPowerType(
+			data.get("red"),
+			data.get("green"),
+			data.get("blue"),
+			data.get("alpha"),
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("red", powerType.red)
+			.set("green", powerType.green)
+			.set("blue", powerType.blue)
+			.set("alpha", powerType.alpha)
+	);
+
 	private final ConcurrentHashMap<Player, Tuple<String, String>> RUNTIME_CACHE = new ConcurrentHashMap<>();
+
 	private final float red;
 	private final float green;
 	private final float blue;
 	private final float alpha;
 
-	public ModelColorPowerType(Power power, LivingEntity entity, float red, float green, float blue, float alpha) {
-		super(power, entity);
+	public ModelColorPowerType(float red, float green, float blue, float alpha, Optional<EntityCondition> condition) {
+		super(condition);
 		this.red = red;
 		this.green = green;
 		this.blue = blue;
 		this.alpha = alpha;
+	}
+
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.MODEL_COLOR;
+	}
+
+	public float getRed() {
+		return red;
+	}
+
+	public float getGreen() {
+		return green;
+	}
+
+	public float getBlue() {
+		return blue;
+	}
+
+	public float getAlpha() {
+		return alpha;
+	}
+
+	public boolean isTranslucent() {
+		return alpha < 1.0F;
 	}
 
 	public static void serializeSkinData(String fileName, SkinData skinData) throws IOException {
@@ -87,63 +147,16 @@ public class ModelColorPowerType extends PowerType {
 		}
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("model_color"),
-			new SerializableData()
-				.add("red", SerializableDataTypes.FLOAT, 1.0F)
-				.add("green", SerializableDataTypes.FLOAT, 1.0F)
-				.add("blue", SerializableDataTypes.FLOAT, 1.0F)
-				.add("alpha", SerializableDataTypes.FLOAT, 1.0F)
-				// OriginsPaper - region start - add validation for client to inform server if the api is unavailable
-				.validate((instance -> {
-					if (CLIENT == null && !sentWarning) {
-						OriginsPaper.LOGGER.warn("ModelColor power is disabled due to the 'api-key' defined in the origins configuration not being present. Please set that value via mineskin to use this power.");
-						sentWarning = true;
-					}
-					return DataResult.success(instance);
-				})),
-			// OriginsPaper - region end
-			data -> (power, entity) -> new ModelColorPowerType(power, entity,
-				data.getFloat("red"),
-				data.getFloat("green"),
-				data.getFloat("blue"),
-				data.getFloat("alpha")
-			)
-		).allowCondition();
-	}
-
-	public float getRed() {
-		return red;
-	}
-
-	public float getGreen() {
-		return green;
-	}
-
-	public float getBlue() {
-		return blue;
-	}
-
-	public float getAlpha() {
-		return alpha;
-	}
-
-	@Deprecated(forRemoval = true) // Translucency is technically not possible with our implementation - Dueris
-	public boolean isTranslucent() {
-		return alpha < 1.0F;
-	}
-
 	@Override
 	public void onRemoved() {
-		if (!(entity instanceof ServerPlayer) || CLIENT == null) return;
-		clearPower((ServerPlayer) entity);
+		if (!(getHolder() instanceof ServerPlayer) || CLIENT == null) return;
+		clearPower((ServerPlayer) getHolder());
 	}
 
 	@Override
 	public void onAdded() {
-		if (!(entity instanceof ServerPlayer) || CLIENT == null) return;
-		applyPower((ServerPlayer) entity);
+		if (!(getHolder() instanceof ServerPlayer) || CLIENT == null) return;
+		applyPower((ServerPlayer) getHolder());
 	}
 
 	private void applyPower(@NotNull ServerPlayer player) {
@@ -290,6 +303,10 @@ public class ModelColorPowerType extends PowerType {
 		}
 	}
 
+	private ResourceLocation getPowerId() {
+		return getPower().getId();
+	}
+
 	public Tuple<String, String> load(@NotNull ServerPlayer player) {
 		try {
 			SkinData data = deserializeSkinData(player.getStringUUID() + "--" + getPowerId().toString().replace(":", "+"));
@@ -423,4 +440,3 @@ public class ModelColorPowerType extends PowerType {
 	}
 
 }
-

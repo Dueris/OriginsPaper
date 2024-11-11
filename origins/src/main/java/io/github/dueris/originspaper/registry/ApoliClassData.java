@@ -5,8 +5,10 @@ import io.github.dueris.originspaper.power.type.PowerType;
 
 public class ApoliClassData {
 
+	public static final ClassDataRegistry<PowerType> POWER_TYPE = ClassDataRegistry.getOrCreate(PowerType.class, "PowerType");
+
 	public static void registerAll() {
-		ClassDataRegistry<PowerType> power = ClassDataRegistry.getOrCreate(PowerType.class, "PowerType");
-		power.addPackage("io.github.dueris.originspaper.power.type");
+		POWER_TYPE.addPackage("io.github.apace100.apoli.power.type");
 	}
+
 }

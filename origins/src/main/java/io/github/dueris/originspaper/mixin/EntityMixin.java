@@ -5,33 +5,43 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import io.github.dueris.calio.CraftCalio;
 import io.github.dueris.originspaper.access.EntityLinkedType;
+import io.github.dueris.originspaper.access.MovingEntity;
+import io.github.dueris.originspaper.access.SubmergableEntity;
 import io.github.dueris.originspaper.component.OriginComponent;
 import io.github.dueris.originspaper.component.PlayerOriginComponent;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.component.PowerHolderComponentImpl;
 import io.github.dueris.originspaper.power.type.*;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
+import java.util.Set;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin {
+public abstract class EntityMixin implements MovingEntity, SubmergableEntity {
 
 	@Shadow
 	public boolean onGround;
@@ -44,6 +54,18 @@ public abstract class EntityMixin {
 
 	@Shadow
 	public abstract void remove(Entity.RemovalReason reason);
+
+	@Shadow @Final private Set<TagKey<Fluid>> fluidOnEyes;
+
+	@Shadow protected Object2DoubleMap<TagKey<Fluid>> fluidHeight;
+
+	@Shadow public abstract Vec3 position();
+
+	@Shadow public abstract double getX();
+
+	@Shadow public abstract double getY();
+
+	@Shadow public abstract double getZ();
 
 	@ModifyReturnValue(method = "getType", at = @At("RETURN"))
 	private EntityType<?> apoli$modifyTypeTag(EntityType<?> original) {
@@ -137,7 +159,7 @@ public abstract class EntityMixin {
 	@ModifyReturnValue(method = "isInvulnerableTo", at = @At("RETURN"))
 	private boolean apoli$makeEntitiesInvulnerable(boolean original, DamageSource source) {
 		return original
-			|| PowerHolderComponent.hasPowerType((Entity) (Object) this, InvulnerablePowerType.class, p -> p.doesApply(source));
+			|| PowerHolderComponent.hasPowerType((Entity) (Object) this, InvulnerabilityPowerType.class, p -> p.doesApply(source));
 	}
 
 	@Inject(method = "moveTowardsClosestSpace", at = @At(value = "NEW", target = "()Lnet/minecraft/core/BlockPos$MutableBlockPos;"), cancellable = true)
@@ -157,5 +179,105 @@ public abstract class EntityMixin {
 	@ModifyReturnValue(method = "canCollideWith", at = @At("RETURN"))
 	private boolean apoli$preventEntityCollision(boolean original, Entity other) {
 		return !PreventEntityCollisionPowerType.doesApply((Entity) (Object) this, other) && original;
+	}
+
+	@Override
+	public boolean apoli$isSubmergedInLoosely(TagKey<Fluid> tag) {
+
+		if (tag == null || fluidOnEyes == null) {
+			return false;
+		}
+
+		return fluidOnEyes.contains(tag);
+		//return Calio.areTagsEqual(Registry.FLUID_KEY, tag, submergedFluidTag);
+	}
+
+	@Override
+	public double apoli$getFluidHeightLoosely(TagKey<Fluid> tag) {
+		if(tag == null) {
+			return 0;
+		}
+		if(fluidHeight.containsKey(tag)) {
+			return fluidHeight.getDouble(tag);
+		}
+		for(TagKey<Fluid> ft : fluidHeight.keySet()) {
+			if(CraftCalio.areTagsEqual(Registries.FLUID, ft, tag)) {
+				return fluidHeight.getDouble(ft);
+			}
+		}
+		return 0;
+	}
+
+	@Unique
+	private boolean apoli$movingHorizontally;
+
+	@Unique
+	private boolean apoli$movingVertically;
+
+	@Unique
+	private double apoli$horizontalMovementValue;
+
+	@Unique
+	private double apoli$verticalMovementValue;
+
+	@Unique
+	private Vec3 apoli$prevPos;
+
+	@Override
+	public boolean apoli$isMovingHorizontally() {
+		return apoli$movingHorizontally;
+	}
+
+	@Override
+	public boolean apoli$isMovingVertically() {
+		return apoli$movingVertically;
+	}
+
+	@Override
+	public double apoli$getHorizontalMovementValue() {
+		return apoli$horizontalMovementValue;
+	}
+
+	@Override
+	public double apoli$getVerticalMovementValue() {
+		return apoli$verticalMovementValue;
+	}
+
+	@Override
+	public boolean apoli$isMoving() {
+		return apoli$movingHorizontally || apoli$movingVertically;
+	}
+
+	@Inject(method = "tick", at = @At("HEAD"))
+	private void apoli$resetMovingFlags(CallbackInfo ci) {
+		this.apoli$movingHorizontally = false;
+		this.apoli$movingVertically = false;
+	}
+
+	@Inject(method = "baseTick", at = @At("TAIL"))
+	private void apoli$setMovingFlags(CallbackInfo ci) {
+
+		if (apoli$prevPos == null) {
+			this.apoli$prevPos = this.position();
+			return;
+		}
+
+		double dx = apoli$prevPos.x - this.getX();
+		double dy = apoli$prevPos.y - this.getY();
+		double dz = apoli$prevPos.z - this.getZ();
+
+		this.apoli$horizontalMovementValue = Math.sqrt(dx * dx + dz * dz);
+		this.apoli$verticalMovementValue = Math.sqrt(dy * dy);
+
+		this.apoli$prevPos = this.position();
+
+		if (this.apoli$horizontalMovementValue >= 0.01) {
+			this.apoli$movingHorizontally = true;
+		}
+
+		if (this.apoli$verticalMovementValue >= 0.01) {
+			this.apoli$movingVertically = true;
+		}
+
 	}
 }

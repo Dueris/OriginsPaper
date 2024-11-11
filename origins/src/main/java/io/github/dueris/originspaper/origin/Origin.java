@@ -181,7 +181,7 @@ public class Origin implements Validatable {
 			try {
 				powers.add(powerReference.getStrictReference());
 			} catch (Exception e) {
-				OriginsPaper.LOGGER.error("Origin \"{}\" contained unregistered power \"{}\"!", id, powerReference.getId());
+				OriginsPaper.LOGGER.error("Origin \"{}\" contained unregistered power \"{}\"!", id, powerReference.id());
 			}
 
 		}

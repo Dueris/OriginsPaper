@@ -118,7 +118,7 @@ public record PowerSuggestionProvider(Function<CommandContext<CommandSourceStack
 
 	private boolean isAllowed(Power power) {
 		return targetType() != PowerArgumentType.PowerTarget.RESOURCE
-			|| PowerUtil.validateResource(power.create(null)).isSuccess();
+			|| PowerUtil.validateResource(power.getPowerType()).isSuccess();
 	}
 
 }

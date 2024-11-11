@@ -11,11 +11,12 @@ import com.mojang.serialization.codecs.UnboundedMapCodec;
 import io.github.dueris.calio.codec.JsonCodec;
 import io.github.dueris.calio.mixin.ShufflingListAccessor;
 import io.github.dueris.calio.util.*;
-import io.github.dueris.calio.util.registry.DataObjectFactory;
+import io.github.dueris.calio.registry.DataObjectFactory;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -126,57 +127,81 @@ public class SerializableDataType<T> {
 
 	}
 
+	/**
+	 *  Use {@link #registry(Registry)} instead.
+	 */
 	@Deprecated
-	public static <T> @NotNull SerializableDataType<T> registry(Class<T> dataClass, Registry<T> registry) {
+	public static <T> SerializableDataType<T> registry(Class<T> dataClass, Registry<T> registry) {
 		return registry(dataClass, registry, false);
 	}
 
 	/**
-	 * @deprecated
+	 *  Use {@link #registry(Registry, String)} instead.
 	 */
 	@Deprecated
-	public static <T> @NotNull SerializableDataType<T> registry(Class<T> dataClass, Registry<T> registry, String defaultNamespace) {
+	public static <T> SerializableDataType<T> registry(Class<T> dataClass, Registry<T> registry, String defaultNamespace) {
 		return registry(dataClass, registry, defaultNamespace, false);
 	}
 
 	/**
-	 * @deprecated
+	 *  Use {@link #registry(Registry, boolean)} instead.
 	 */
 	@Deprecated
-	public static <T> @NotNull SerializableDataType<T> registry(Class<T> dataClass, Registry<T> registry, boolean showPossibleValues) {
-		return registry(dataClass, registry, "minecraft", showPossibleValues);
+	public static <T> SerializableDataType<T> registry(Class<T> dataClass, Registry<T> registry, boolean showPossibleValues) {
+		return registry(dataClass, registry, ResourceLocation.DEFAULT_NAMESPACE, showPossibleValues);
 	}
 
 	/**
-	 * @deprecated
+	 *  Use {@link #registry(Registry, String, boolean)} instead.
 	 */
 	@Deprecated
-	public static <T> @NotNull SerializableDataType<T> registry(Class<T> dataClass, Registry<T> registry, String defaultNamespace, boolean showPossibleValues) {
-		return registry(dataClass, registry, defaultNamespace, (reg, id) -> {
+	public static <T> SerializableDataType<T> registry(Class<T> dataClass, Registry<T> registry, String defaultNamespace, boolean showPossibleValues) {
+		return registry(dataClass, registry, defaultNamespace, null, (reg, id) -> {
 			String possibleValues = showPossibleValues ? ". Expected value to be any of " + String.join(", ", reg.keySet().stream().map(ResourceLocation::toString).toList()) : "";
 			return new RuntimeException("Type \"%s\" is not registered in registry \"%s\"%s".formatted(id, registry.key().location(), possibleValues));
 		});
 	}
 
 	/**
-	 * @deprecated
+	 *  Use {@link #registry(Registry, BiFunction)} instead.
 	 */
 	@Deprecated
-	public static <T> @NotNull SerializableDataType<T> registry(Class<T> dataClass, Registry<T> registry, BiFunction<Registry<T>, ResourceLocation, RuntimeException> exception) {
-		return registry(dataClass, registry, "minecraft", exception);
+	public static <T> SerializableDataType<T> registry(Class<T> dataClass, Registry<T> registry, BiFunction<Registry<T>, ResourceLocation, RuntimeException> exception) {
+		return registry(dataClass, registry, ResourceLocation.DEFAULT_NAMESPACE, null, exception);
 	}
 
 	/**
-	 * @deprecated
+	 *  Use {@link #registry(Registry, String, IdentifierAlias, BiFunction)} instead.
 	 */
 	@Deprecated
-	public static <T> @NotNull SerializableDataType<T> registry(Class<T> dataClass, Registry<T> registry, String defaultNamespace, BiFunction<Registry<T>, ResourceLocation, RuntimeException> exception) {
-		return registry(registry, defaultNamespace, (_registry, id) -> {
-			return ((RuntimeException) exception.apply(_registry, id)).getMessage();
+	public static <T> SerializableDataType<T> registry(Class<T> dataClass, Registry<T> registry, String defaultNamespace, @Nullable IdentifierAlias aliases, BiFunction<Registry<T>, ResourceLocation, RuntimeException> exception) {
+		return registry(registry, defaultNamespace, aliases, (_registry, id) -> exception.apply(_registry, id).getMessage());
+	}
+
+	public static <T> SerializableDataType<T> registry(Registry<T> registry) {
+		return registry(registry, false);
+	}
+
+	public static <T> SerializableDataType<T> registry(Registry<T> registry, String defaultNamespace) {
+		return registry(registry, defaultNamespace, false);
+	}
+
+	public static <T> SerializableDataType<T> registry(Registry<T> registry, boolean showPossibleValues) {
+		return registry(registry, ResourceLocation.DEFAULT_NAMESPACE, showPossibleValues);
+	}
+
+	public static <T> SerializableDataType<T> registry(Registry<T> registry, String defaultNamespace, boolean showPossibleValues) {
+		return registry(registry, defaultNamespace, null, (reg, id) -> {
+			String possibleValues = showPossibleValues ? " Expected value to be any of " + String.join(", ", reg.keySet().stream().map(ResourceLocation::toString).toList()) : "";
+			return "Type \"%s\" is not registered in registry \"%s\"!%s".formatted(id, registry.key().location(), possibleValues);
 		});
 	}
 
-	public static <T> @NotNull SerializableDataType<T> registry(Registry<T> registry, String defaultNamespace, @Nullable IdentifierAlias aliases, BiFunction<Registry<T>, ResourceLocation, String> exception) {
+	public static <T> SerializableDataType<T> registry(Registry<T> registry, BiFunction<Registry<T>, ResourceLocation, String> exception) {
+		return registry(registry, ResourceLocation.DEFAULT_NAMESPACE, null, exception);
+	}
+
+	public static <T> SerializableDataType<T> registry(Registry<T> registry, String defaultNamespace, @Nullable IdentifierAlias aliases, BiFunction<Registry<T>, ResourceLocation, String> exception) {
 		return of(
 			new Codec<>() {
 
@@ -186,53 +211,6 @@ public class SerializableDataType<T> {
 						.flatMap(str -> DynamicIdentifier.ofResult(str, defaultNamespace))
 						.flatMap(id -> registry
 							.getOptional(aliases == null ? id : aliases.resolveAlias(id, registry::containsKey))
-							.map(t -> Pair.of(t, input))
-							.map(DataResult::success)
-							.orElse(DataResult.error(() -> exception.apply(registry, id))));
-				}
-
-				@Override
-				public <I> DataResult<I> encode(T input, DynamicOps<I> ops, I prefix) {
-					return registry.byNameCodec().encode(input, ops, prefix);
-				}
-
-			}
-		);
-	}
-
-	public static <T> @NotNull SerializableDataType<T> registry(Registry<T> registry) {
-		return registry(registry, false);
-	}
-
-	public static <T> @NotNull SerializableDataType<T> registry(Registry<T> registry, String defaultNamespace) {
-		return registry(registry, defaultNamespace, false);
-	}
-
-	public static <T> @NotNull SerializableDataType<T> registry(Registry<T> registry, boolean showPossibleValues) {
-		return registry(registry, "minecraft", showPossibleValues);
-	}
-
-	public static <T> @NotNull SerializableDataType<T> registry(Registry<T> registry, String defaultNamespace, boolean showPossibleValues) {
-		return registry(registry, defaultNamespace, (reg, id) -> {
-			String possibleValues = showPossibleValues ? " Expected value to be any of " + String.join(", ", reg.keySet().stream().map(ResourceLocation::toString).toList()) : "";
-			return "Type \"%s\" is not registered in registry \"%s\"!%s".formatted(id, registry.key().location(), possibleValues);
-		});
-	}
-
-	public static <T> @NotNull SerializableDataType<T> registry(Registry<T> registry, BiFunction<Registry<T>, ResourceLocation, String> exception) {
-		return registry(registry, "minecraft", exception);
-	}
-
-	public static <T> @NotNull SerializableDataType<T> registry(final Registry<T> registry, final String defaultNamespace, final BiFunction<Registry<T>, ResourceLocation, String> exception) {
-		return of(
-			new Codec<>() {
-
-				@Override
-				public <I> DataResult<Pair<T, I>> decode(DynamicOps<I> ops, I input) {
-					return ops.getStringValue(input)
-						.flatMap(str -> DynamicIdentifier.ofResult(str, defaultNamespace))
-						.flatMap(id -> registry
-							.getOptional(id)
 							.map(t -> Pair.of(t, input))
 							.map(DataResult::success)
 							.orElse(DataResult.error(() -> exception.apply(registry, id))));

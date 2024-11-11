@@ -1,17 +1,26 @@
 package io.github.dueris.originspaper.power.type;
 
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.power.Power;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class PreventSprintingPowerType extends PowerType {
 
-	public PreventSprintingPowerType(Power power, LivingEntity entity) {
-		super(power, entity);
-		setTicking();
+	public PreventSprintingPowerType(Optional<EntityCondition> condition) {
+		super(condition);
 	}
 
 	@Override
-	public void tick() {
-		this.entity.setSprinting(false);
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.PREVENT_SPRINTING;
+	}
+
+	@Override
+	public void serverTick() {
+		this.getHolder().setSprinting(false);
 	}
 }

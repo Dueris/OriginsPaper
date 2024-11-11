@@ -4,9 +4,14 @@ import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.action.EntityAction;
+import io.github.dueris.originspaper.action.ItemAction;
+import io.github.dueris.originspaper.condition.EntityCondition;
+import io.github.dueris.originspaper.condition.ItemCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.PriorityPhase;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
@@ -14,20 +19,47 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class ActionOnItemUsePowerType extends PowerType implements Prioritized<ActionOnItemUsePowerType> {
 
-	private final Predicate<Tuple<Level, ItemStack>> itemCondition;
-	private final Consumer<Entity> entityAction;
-	private final Consumer<Tuple<Level, SlotAccess>> itemAction;
+	public static final TypedDataObjectFactory<ActionOnItemUsePowerType> DATA_FACTORY = PowerType.createConditionedDataFactory(
+		new SerializableData()
+			.add("entity_action", EntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("item_action", ItemAction.DATA_TYPE.optional(), Optional.empty())
+			.add("item_condition", ItemCondition.DATA_TYPE.optional(), Optional.empty())
+			.add("trigger", SerializableDataType.enumValue(TriggerType.class), TriggerType.FINISH)
+			.add("priority", SerializableDataTypes.INT, 0),
+		(data, condition) -> new ActionOnItemUsePowerType(
+			data.get("entity_action"),
+			data.get("item_action"),
+			data.get("item_condition"),
+			data.get("trigger"),
+			data.get("priority"),
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("entity_action", powerType.entityAction)
+			.set("item_action", powerType.itemAction)
+			.set("item_condition", powerType.itemCondition)
+			.set("trigger", powerType.triggerType)
+			.set("priority", powerType.getPriority())
+	);
+
+	private final Optional<EntityAction> entityAction;
+	private final Optional<ItemAction> itemAction;
+
+	private final Optional<ItemCondition> itemCondition;
 	private final TriggerType triggerType;
+
 	private final int priority;
 
-	public ActionOnItemUsePowerType(Power power, LivingEntity entity, Consumer<Entity> entityAction, Consumer<Tuple<Level, SlotAccess>> itemAction, Predicate<Tuple<Level, ItemStack>> itemCondition, TriggerType triggerType, int priority) {
-		super(power, entity);
+	public ActionOnItemUsePowerType(Optional<EntityAction> entityAction, Optional<ItemAction> itemAction, Optional<ItemCondition> itemCondition, TriggerType triggerType, int priority, Optional<EntityCondition> condition) {
+		super(condition);
 		this.itemCondition = itemCondition;
 		this.entityAction = entityAction;
 		this.itemAction = itemAction;
@@ -35,9 +67,34 @@ public class ActionOnItemUsePowerType extends PowerType implements Prioritized<A
 		this.priority = priority;
 	}
 
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.ACTION_ON_ITEM_USE;
+	}
+
+	@Override
+	public int getPriority() {
+		return this.priority;
+	}
+
+	public boolean doesApply(ItemStack stack, TriggerType triggerType, PriorityPhase priorityPhase) {
+		return this.triggerType == triggerType
+			&& priorityPhase.test(this.getPriority())
+			&& itemCondition.map(condition -> condition.test(getHolder().level(), stack)).orElse(true);
+	}
+
+	public void executeActions(SlotAccess stackReference) {
+		itemAction.ifPresent(action -> action.execute(getHolder().level(), stackReference));
+		entityAction.ifPresent(action -> action.execute(getHolder()));
+	}
+
+	public enum TriggerType {
+		INSTANT, START, STOP, FINISH, DURING
+	}
+
 	public static void executeActions(Entity user, SlotAccess useStack, ItemStack checkStack, TriggerType triggerType, PriorityPhase phase) {
 
-		if (user.level().isClientSide) {
+		if (user.level().isClientSide()) {
 			return;
 		}
 
@@ -50,50 +107,4 @@ public class ActionOnItemUsePowerType extends PowerType implements Prioritized<A
 
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("action_on_item_use"),
-			new SerializableData()
-				.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
-				.add("item_action", ApoliDataTypes.ITEM_ACTION, null)
-				.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
-				.add("trigger", SerializableDataType.enumValue(TriggerType.class), TriggerType.FINISH)
-				.add("priority", SerializableDataTypes.INT, 0),
-			data -> (power, entity) -> new ActionOnItemUsePowerType(power, entity,
-				data.get("entity_action"),
-				data.get("item_action"),
-				data.get("item_condition"),
-				data.get("trigger"),
-				data.get("priority")
-			)
-		).allowCondition();
-	}
-
-	public boolean doesApply(ItemStack stack, TriggerType triggerType, PriorityPhase priorityPhase) {
-		return this.triggerType == triggerType
-			&& priorityPhase.test(this.getPriority())
-			&& (itemCondition == null || itemCondition.test(new Tuple<>(entity.level(), stack)));
-	}
-
-	public void executeActions(SlotAccess stack) {
-
-		if (itemAction != null) {
-			itemAction.accept(new Tuple<>(entity.level(), stack));
-		}
-
-		if (entityAction != null) {
-			entityAction.accept(entity);
-		}
-
-	}
-
-	@Override
-	public int getPriority() {
-		return this.priority;
-	}
-
-	public enum TriggerType {
-		INSTANT, START, STOP, FINISH, DURING
-	}
 }
-

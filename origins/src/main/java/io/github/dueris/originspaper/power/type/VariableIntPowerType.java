@@ -1,21 +1,30 @@
 package io.github.dueris.originspaper.power.type;
 
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.power.Power;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 
-public class VariableIntPowerType extends PowerType {
+import java.util.Optional;
 
-	protected final int min, max;
-	protected int currentValue;
+public abstract class VariableIntPowerType extends PowerType {
 
-	public VariableIntPowerType(Power power, LivingEntity entity, int startValue, int min, int max) {
-		super(power, entity);
+	private final int min, max, startValue;
+
+	private int currentValue;
+
+	public VariableIntPowerType(int startValue, int min, int max, Optional<EntityCondition> condition) {
+		super(condition);
 		this.currentValue = startValue;
 		this.min = min;
 		this.max = max;
+		this.startValue = startValue;
+	}
+
+	public VariableIntPowerType(int startValue, int min, int max) {
+		this(startValue, min, max, Optional.empty());
 	}
 
 	public int getMin() {
@@ -28,6 +37,10 @@ public class VariableIntPowerType extends PowerType {
 
 	public int getValue() {
 		return currentValue;
+	}
+
+	public int getStartValue() {
+		return startValue;
 	}
 
 	public int setValue(int newValue) {

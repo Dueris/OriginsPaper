@@ -55,7 +55,7 @@ public class ItemPowersComponent {
 		ItemPowersComponent prevStackPowers = new ItemPowersComponent(previousStack);
 
 		for (Entry prevEntry : prevStackPowers.references) {
-			new PowerReference(prevEntry.powerId).getOptionalReference()
+			PowerReference.of(prevEntry.powerId()).getOptionalReference()
 				.filter(power -> prevEntry.slot().test(equipmentSlot))
 				.ifPresent(revokedPowers::add);
 		}

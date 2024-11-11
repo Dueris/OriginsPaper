@@ -5,8 +5,10 @@ import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
+import io.github.dueris.originspaper.condition.EntityCondition;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,41 +29,67 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 // TODO - fix fall damage not applying - Dueris
 public class ElytraFlightPowerType extends PowerType implements Listener {
 
+	public static final TypedDataObjectFactory<ElytraFlightPowerType> DATA_FACTORY = PowerType.createConditionedDataFactory(
+		new SerializableData()
+			.add("texture_location", SerializableDataTypes.IDENTIFIER.optional(), Optional.empty())
+			.add("render_elytra", SerializableDataTypes.BOOLEAN),
+		(data, condition) -> new ElytraFlightPowerType(
+			data.get("texture_location"),
+			data.get("render_elytra"),
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("texture_location", powerType.textureLocation)
+			.set("render_elytra", powerType.renderElytra)
+	);
+
+	private final Optional<ResourceLocation> textureLocation;
 	private final boolean renderElytra;
-	private final ResourceLocation textureLocation;
 	private boolean renderChanged = false;
 	private boolean overwritingFlight = false;
 
-	public ElytraFlightPowerType(Power power, LivingEntity entity, boolean renderElytra, ResourceLocation textureLocation) {
-		super(power, entity);
-		this.renderElytra = renderElytra;
+	public ElytraFlightPowerType(Optional<ResourceLocation> textureLocation, boolean renderElytra,Optional<EntityCondition> condition) {
+		super(condition);
 		this.textureLocation = textureLocation;
+		this.renderElytra = renderElytra;
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(OriginsPaper.apoliIdentifier("elytra_flight"),
-			new SerializableData()
-				.add("render_elytra", SerializableDataTypes.BOOLEAN)
-				.add("texture_location", SerializableDataTypes.IDENTIFIER, null),
-			data -> (power, entity) -> new ElytraFlightPowerType(power, entity,
-				data.getBoolean("render_elytra"),
-				data.getId("texture_location")
-			)
-		).allowCondition();
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.ELYTRA_FLIGHT;
+	}
 
+	@Override
+	public boolean isActive() {
+		return getTextureLocation().isPresent() && super.isActive();
+	}
+
+	public Optional<ResourceLocation> getTextureLocation() {
+		return textureLocation;
+	}
+
+	public boolean shouldRenderElytra() {
+		return renderElytra;
+	}
+
+	//  TODO: Manually do vanilla elytra flight stuff using the API -eggohito
+	public static boolean integrateCustomCallback(LivingEntity entity, boolean tickElytra) {
+		return PowerHolderComponent.hasPowerType(entity, ElytraFlightPowerType.class);
 	}
 
 	@EventHandler
 	public void executeFlight(@NotNull PlayerToggleFlightEvent e) {
 		CraftPlayer p = (CraftPlayer) e.getPlayer();
 		if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
-		if (entity == p.getHandle()) {
+		if (getHolder() == p.getHandle()) {
 			e.setCancelled(true);
 			p.setFlying(false);
-			if (isActive() && !PowerHolderComponent.hasPowerType(this.entity, PreventElytraFlightPowerType.class)) {
+			if (isActive() && !PowerHolderComponent.hasPowerType(getHolder(), PreventElytraFlightPowerType.class)) {
 				if (!p.isGliding() && !p.getLocation().add(0, 1, 0).getBlock().isCollidable()) {
 					if (p.getGameMode() == GameMode.SPECTATOR) return;
 					new BukkitRunnable() {
@@ -91,23 +119,15 @@ public class ElytraFlightPowerType extends PowerType implements Listener {
 		}
 	}
 
-	public boolean shouldRenderElytra() {
-		return renderElytra;
-	}
-
-	public ResourceLocation getTextureLocation() {
-		return textureLocation;
-	}
-
 	@EventHandler
 	public void fireworkRocketImpl(@NotNull PlayerInteractEvent event) {
 		if (event.getAction() == Action.RIGHT_CLICK_AIR) {
 			if (event.getItem().getType().equals(Material.FIREWORK_ROCKET)) {
-				if (entity == ((CraftPlayer) event.getPlayer()).getHandle() && overwritingFlight) {
-					FireworkRocketEntity rocketEntity = new FireworkRocketEntity(entity.level(), CraftItemStack.asNMSCopy(event.getItem()), entity);
+				if (getHolder() == ((CraftPlayer) event.getPlayer()).getHandle() && overwritingFlight) {
+					FireworkRocketEntity rocketEntity = new FireworkRocketEntity(getHolder().level(), CraftItemStack.asNMSCopy(event.getItem()), getHolder());
 					PlayerLaunchProjectileEvent projectileEvent = new PlayerLaunchProjectileEvent(event.getPlayer(), event.getItem(), (Projectile) rocketEntity.getBukkitEntity());
 					if (projectileEvent.callEvent()) {
-						entity.level().addFreshEntity(rocketEntity, CreatureSpawnEvent.SpawnReason.CUSTOM);
+						getHolder().level().addFreshEntity(rocketEntity, CreatureSpawnEvent.SpawnReason.CUSTOM);
 						if (!event.getPlayer().getGameMode().equals(GameMode.CREATIVE))
 							event.getItem().setAmount(event.getItem().getAmount() - 1);
 					}
@@ -118,10 +138,9 @@ public class ElytraFlightPowerType extends PowerType implements Listener {
 
 	@EventHandler
 	public void fixBlockGlitch(@NotNull PlayerFailMoveEvent e) {
-		if (overwritingFlight && ((CraftPlayer) e.getPlayer()).getHandle() == entity) {
+		if (overwritingFlight && ((CraftPlayer) e.getPlayer()).getHandle() == getHolder()) {
 			e.setAllowed(true);
 			e.setLogWarning(false);
 		}
 	}
-
 }

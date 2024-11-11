@@ -1,24 +1,30 @@
 package io.github.dueris.originspaper.power;
 
 import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class MultiplePower extends Power {
 
-	private ImmutableSet<ResourceLocation> subPowerIds = ImmutableSet.of();
+	private ImmutableSet<ResourceLocation> subPowerIds;
 
 	MultiplePower(Power basePower, Set<ResourceLocation> subPowerIds) {
-		this(basePower);
+		super(basePower);
 		this.subPowerIds = ImmutableSet.copyOf(subPowerIds);
 	}
 
-	MultiplePower(@NotNull Power basePower) {
-		super(basePower.getFactoryInstance(), basePower.data);
+	MultiplePower(Power basePower) {
+		super(basePower);
+		this.subPowerIds = ImmutableSet.of();
 	}
 
 	public ImmutableSet<ResourceLocation> getSubPowerIds() {
@@ -40,4 +46,3 @@ public class MultiplePower extends Power {
 	}
 
 }
-

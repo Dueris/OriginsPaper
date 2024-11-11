@@ -41,6 +41,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Optional;
+
 @Mixin(ServerGamePacketListenerImpl.class)
 public abstract class ServerGamePacketListenerImplMixin {
 
@@ -98,18 +100,18 @@ public abstract class ServerGamePacketListenerImplMixin {
 			}
 
 			component.getPowerTypes(ModifyCraftingPowerType.class).stream().filter(p -> p.doesApply(location, null)).forEach(p -> {
-				if (p.getEntityAction() != null) {
-					p.getEntityAction().accept(this.player);
+				if (p.getEntityAction().isPresent()) {
+					p.getEntityAction().get().execute(this.player);
 				}
-				if (p.getBlockAction() != null) {
-					p.getBlockAction().accept(
-						Triple.of(this.player.level(), craftItemEvent.getInventory().getLocation() != null ? CraftLocation.toBlockPosition(craftItemEvent.getInventory().getLocation()) : this.player.blockPosition(), Direction.UP)
+				if (p.getBlockAction().isPresent()) {
+					p.getBlockAction().get().execute(
+						this.player.level(), craftItemEvent.getInventory().getLocation() != null ? CraftLocation.toBlockPosition(craftItemEvent.getInventory().getLocation()) : this.player.blockPosition(), Optional.of(Direction.UP)
 					);
 				}
-				if (p.getItemActionAfterCrafting() != null) {
+				if (p.getItemActionAfterCrafting().isPresent()) {
 					ItemStack nmsResult = CraftItemStack.unwrap(craftItemEvent.getInventory().getResult());
 					SlotAccess slotAccess = InventoryUtil.createStackReference(nmsResult);
-					p.getItemActionAfterCrafting().accept(new Tuple<>(this.player.level(), slotAccess));
+					p.getItemActionAfterCrafting().get().execute(this.player.level(), slotAccess);
 					craftItemEvent.getInventory().setResult(slotAccess.get().getBukkitStack());
 				}
 			});

@@ -4,9 +4,11 @@ import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.condition.BlockCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.Shape;
 import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
 import io.papermc.paper.math.Position;
@@ -14,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
@@ -32,47 +35,43 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 public class ModifyBlockRenderPowerType extends PowerType implements Listener {
 	public static LinkedList<Runnable> que = new LinkedList<>();
 
-	private final Predicate<BlockInWorld> predicate;
+	public static final TypedDataObjectFactory<ModifyBlockRenderPowerType> DATA_FACTORY = TypedDataObjectFactory.simple(
+		new SerializableData()
+			.add("block_condition", BlockCondition.DATA_TYPE.optional(), Optional.empty())
+			.add("block", SerializableDataTypes.BLOCK_STATE),
+		data -> new ModifyBlockRenderPowerType(
+			data.get("block_condition"),
+			data.get("block")
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("block_condition", powerType.blockCondition)
+			.set("block", powerType.blockState)
+	);
+
+	private final Optional<BlockCondition> blockCondition;
 	private final BlockState blockState;
 
-	public ModifyBlockRenderPowerType(Power power, LivingEntity entity, Predicate<BlockInWorld> predicate, BlockState state) {
-		super(power, entity);
-		this.predicate = predicate;
+	public ModifyBlockRenderPowerType(Optional<BlockCondition> blockCondition, BlockState state) {
+		this.blockCondition = blockCondition;
 		this.blockState = state;
 	}
 
-	public static @NotNull PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("modify_block_render"),
-			new SerializableData()
-				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
-				.add("block", SerializableDataTypes.BLOCK_STATE),
-			data -> (power, entity) -> new ModifyBlockRenderPowerType(power, entity,
-				data.get("block_condition"),
-				data.get("block")
-			)
-		);
-	}
-
-	public boolean doesApply(LevelReader world, BlockPos pos) {
-		BlockInWorld cbp = new BlockInWorld(world, pos, true);
-		return predicate == null || predicate.test(cbp);
-	}
-
-	public BlockState getBlockState() {
-		return blockState;
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.MODIFY_BLOCK_RENDER;
 	}
 
 	@EventHandler
 	public void chunkLoad(@NotNull PlayerChunkLoadEvent e) {
 		Player p = e.getPlayer();
-		if (this.entity != ((CraftPlayer) p).getHandle()) return;
+		if (this.getHolder() != ((CraftPlayer) p).getHandle()) return;
 		ServerLevel level = ((CraftWorld) e.getWorld()).getHandle();
 		que.add(() -> {
 			Map<Position, BlockData> updates = new ConcurrentHashMap<>();
@@ -80,7 +79,7 @@ public class ModifyBlockRenderPowerType extends PowerType implements Listener {
 			for (Block block : getAllBlocksInChunk(e.getChunk())) {
 				if (block == null) continue;
 				Location location = block.getLocation();
-				if (!doesApply(level, CraftLocation.toBlockPosition(location)))
+				if (!doesPrevent(level, CraftLocation.toBlockPosition(location)))
 					continue;
 				updates.put(location, toSend);
 			}
@@ -111,9 +110,9 @@ public class ModifyBlockRenderPowerType extends PowerType implements Listener {
 	}
 
 	@Override
-	public void tick() {
-		if (entity instanceof ServerPlayer) {
-			Player p = (CraftPlayer) entity.getBukkitLivingEntity();
+	public void serverTick() {
+		if (getHolder() instanceof ServerPlayer) {
+			Player p = (CraftPlayer) getHolder().getBukkitLivingEntity();
 			Map<Position, BlockData> updates = new ConcurrentHashMap<>();
 			BlockData toSend = getBlockState().createCraftBlockData();
 			ServerLevel level = ((CraftWorld) p.getWorld()).getHandle();
@@ -121,7 +120,7 @@ public class ModifyBlockRenderPowerType extends PowerType implements Listener {
 				Block block = p.getWorld().getBlockAt(CraftLocation.toBukkit(pos));
 				if (block == null || block.getType().isAir()) return;
 				Location location = block.getLocation();
-				if (!doesApply(level, CraftLocation.toBlockPosition(location))) return;
+				if (!doesPrevent(level, CraftLocation.toBlockPosition(location))) return;
 				updates.put(location, toSend);
 			});
 			p.sendMultiBlockChange(updates);
@@ -135,5 +134,15 @@ public class ModifyBlockRenderPowerType extends PowerType implements Listener {
 			que.removeFirst();
 		}
 	}
-}
 
+	public boolean doesPrevent(Level world, BlockPos pos) {
+		return blockCondition
+			.map(condition -> condition.test(world, pos))
+			.orElse(true);
+	}
+
+	public BlockState getBlockState() {
+		return blockState;
+	}
+
+}

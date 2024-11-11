@@ -159,7 +159,7 @@ public abstract class ItemStackMixin implements EntityLinkedItemStack {
 	@ModifyReturnValue(method = "getUseAnimation", at = @At("RETURN"))
 	private UseAnim apoli$replaceUseAction(UseAnim original) {
 		return EdibleItemPowerType.get((ItemStack) (Object) this)
-			.map(p -> p.getConsumeAnimation().getAction())
+			.map(EdibleItemPowerType::getConsumeAnimation)
 			.orElse(original);
 	}
 

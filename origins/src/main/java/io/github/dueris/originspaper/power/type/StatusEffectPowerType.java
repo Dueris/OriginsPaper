@@ -1,5 +1,6 @@
 package io.github.dueris.originspaper.power.type;
 
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.power.Power;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
@@ -8,38 +9,48 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
-public class StatusEffectPowerType extends PowerType {
+public abstract class StatusEffectPowerType extends PowerType {
 
 	protected final List<MobEffectInstance> effects = new LinkedList<>();
 
-	public StatusEffectPowerType(Power power, LivingEntity entity) {
-		super(power, entity);
+	public StatusEffectPowerType(List<MobEffectInstance> effectInstances, Optional<EntityCondition> condition) {
+		super(condition);
+		this.effects.addAll(effectInstances);
 	}
 
-	public StatusEffectPowerType(Power power, LivingEntity entity, MobEffectInstance effectInstance) {
-		super(power, entity);
-		addEffect(effectInstance);
+	public StatusEffectPowerType(Optional<EntityCondition> condition) {
+		super(condition);
 	}
 
-	public StatusEffectPowerType addEffect(Holder<MobEffect> effect) {
-		return addEffect(effect, 80);
+	public StatusEffectPowerType() {
+
 	}
 
-	public StatusEffectPowerType addEffect(Holder<MobEffect> effect, int lingerDuration) {
-		return addEffect(effect, lingerDuration, 0);
+	public StatusEffectPowerType(MobEffectInstance effectInstance, Optional<EntityCondition> condition) {
+		this(condition);
+		this.addEffect(effectInstance);
 	}
 
-	public StatusEffectPowerType addEffect(Holder<MobEffect> effect, int lingerDuration, int amplifier) {
-		return addEffect(new MobEffectInstance(effect, lingerDuration, amplifier));
+	public StatusEffectPowerType(MobEffectInstance effectInstance) {
+		this(effectInstance, Optional.empty());
 	}
 
-	public StatusEffectPowerType addEffect(MobEffectInstance instance) {
+	public void addEffect(Holder<MobEffect> effect, int duration) {
+		addEffect(effect, duration, 0);
+	}
+
+	public void addEffect(Holder<MobEffect> effect, int duration, int amplifier) {
+		addEffect(new MobEffectInstance(effect, duration, amplifier));
+	}
+
+	public void addEffect(MobEffectInstance instance) {
 		effects.add(instance);
-		return this;
 	}
 
 	public void applyEffects() {
-		effects.stream().map(MobEffectInstance::new).forEach(entity::addEffect);
+		effects.stream().map(MobEffectInstance::new).forEach(getHolder()::addEffect);
 	}
+
 }

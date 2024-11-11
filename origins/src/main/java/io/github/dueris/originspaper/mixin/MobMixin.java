@@ -3,7 +3,6 @@ package io.github.dueris.originspaper.mixin;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import io.github.dueris.originspaper.power.type.ActionOnItemPickupPowerType;
 import io.github.dueris.originspaper.power.type.PreventItemPickupPowerType;
-import io.github.dueris.originspaper.power.type.origins.ScareCreepersPowerType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -39,7 +38,7 @@ public abstract class MobMixin extends LivingEntity implements Targeting {
 	private void origins$modifyGoals(EntityType<?> entityType, Level world, CallbackInfo ci) {
 
 		if ((Mob) (Object) this instanceof Creeper thisAsCreeper) {
-			ScareCreepersPowerType.modifyGoals(thisAsCreeper);
+//			ScareCreepersPowerType.modifyGoals(thisAsCreeper); // TODO
 		}
 
 	}

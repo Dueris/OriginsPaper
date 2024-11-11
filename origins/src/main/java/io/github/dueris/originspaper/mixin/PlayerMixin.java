@@ -13,8 +13,6 @@ import io.github.dueris.originspaper.access.PhasingEntity;
 import io.github.dueris.originspaper.access.PlayerTiedAbilities;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.power.type.*;
-import io.github.dueris.originspaper.power.type.origins.LikeWaterPowerType;
-import io.github.dueris.originspaper.power.type.origins.WaterBreathingPowerType;
 import io.github.dueris.originspaper.util.InventoryUtil;
 import io.github.dueris.originspaper.util.PriorityPhase;
 import io.github.dueris.originspaper.util.Util;
@@ -261,11 +259,7 @@ public abstract class PlayerMixin extends LivingEntity implements JumpingEntity 
 
 	@Inject(method = "dropEquipment", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Inventory;dropAll()V"))
 	private void dropAdditionalInventory(CallbackInfo ci) {
-		PowerHolderComponent.getPowerTypes(this, InventoryPowerType.class).forEach(inventoryPower -> {
-			if (inventoryPower.shouldDropOnDeath()) {
-				inventoryPower.dropItemsOnDeath();
-			}
-		});
+		PowerHolderComponent.withPowerTypes(this, InventoryPowerType.class, InventoryPowerType::shouldDropOnDeath, InventoryPowerType::dropItemsOnDeath);
 	}
 
 	@Inject(method = "hurt", at = @At(value = "RETURN", ordinal = 4), cancellable = true)
@@ -379,7 +373,7 @@ public abstract class PlayerMixin extends LivingEntity implements JumpingEntity 
 		return original.call(instance) || (PowerHolderComponent.hasPowerType(this, PhasingPowerType.class) && ((PhasingEntity) this).apoli$isPhasing());
 	}
 
-	@Inject(method = "tick", at = @At("TAIL"))
+	/* @Inject(method = "tick", at = @At("TAIL"))
 	public void origins$likeWater(CallbackInfo ci) {
 		Player thisAsPlayer = (Player) (Object) this;
 		LikeWaterPowerType.tick(thisAsPlayer);
@@ -388,5 +382,5 @@ public abstract class PlayerMixin extends LivingEntity implements JumpingEntity 
 	@ModifyExpressionValue(method = "turtleHelmetTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isEyeInFluid(Lnet/minecraft/tags/TagKey;)Z"))
 	private boolean origins$submergedProxy(boolean original) {
 		return PowerHolderComponent.hasPowerType(this, WaterBreathingPowerType.class) != original;
-	}
+	} */ // TODO
 }

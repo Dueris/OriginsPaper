@@ -3,8 +3,8 @@ package io.github.dueris.originspaper.component;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.power.MultiplePower;
 import io.github.dueris.originspaper.power.Power;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.power.PowerReference;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
 import io.github.dueris.originspaper.power.type.PowerType;
 import io.github.dueris.originspaper.util.GainedPowerCriterion;
 import net.minecraft.core.HolderLookup;
@@ -59,7 +59,7 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 	public Set<Power> getPowers(boolean includeSubPowers) {
 		return powers.keySet()
 			.stream()
-			.filter(pt -> includeSubPowers || !pt.isSubPower())
+			.filter(p -> includeSubPowers || !p.isSubPower())
 			.collect(Collectors.toCollection(HashSet::new));
 	}
 
@@ -69,7 +69,7 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 	}
 
 	@Override
-	public <T extends PowerType> List<T> getPowerTypes(@NotNull Class<T> typeClass, boolean includeInactive) {
+	public <T extends PowerType> List<T> getPowerTypes(Class<T> typeClass, boolean includeInactive) {
 		return powers.values()
 			.stream()
 			.filter(typeClass::isInstance)
@@ -83,7 +83,9 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 
 		if (powerSources.containsKey(power)) {
 			return List.copyOf(powerSources.get(power));
-		} else {
+		}
+
+		else {
 			return List.of();
 		}
 
@@ -102,19 +104,10 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 
 	}
 
-	protected boolean removePower(@NotNull Power power, ResourceLocation source, Consumer<Power> adder) {
-
-		ResourceLocation powerId = power.getId();
-		if (power instanceof PowerReference powerReference) {
-			power = powerReference.getReference();
-		}
-
-		if (power == null) {
-			OriginsPaper.LOGGER.error("Cannot remove a non-existing power with ID \"{}\" from entity {}! (UUID: {})", powerId, owner.getName().getString(), owner.getStringUUID());
-			return false;
-		}
+	protected boolean removePower(Power power, ResourceLocation source, Consumer<Power> adder) {
 
 		List<ResourceLocation> sources = powerSources.getOrDefault(power, new ArrayList<>());
+
 		if (!sources.remove(source)) {
 			return false;
 		}
@@ -179,22 +172,15 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 
 	protected boolean addPower(Power power, ResourceLocation source, BiConsumer<Power, PowerType> adder) {
 
-		ResourceLocation powerId = power.getId();
-		if (power instanceof PowerReference powerReference) {
-			power = powerReference.getReference();
-		}
-
-		if (power == null) {
-			OriginsPaper.LOGGER.error("Cannot add a non-existing power with ID \"{}\" to entity {} (UUID: {})!", powerId, owner.getName().getString(), owner.getStringUUID());
-			return false;
-		}
-
 		List<ResourceLocation> sources = powerSources.computeIfAbsent(power, pt -> new LinkedList<>());
+
 		if (sources.contains(source)) {
 			return false;
 		}
 
-		PowerType powerType = power.create(owner);
+		PowerType powerType = power.getPowerType();
+		powerType.init(owner, power);
+
 		sources.add(source);
 
 		powerSources.put(power, sources);
@@ -212,11 +198,12 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 
 	@Override
 	public void serverTick() {
-		this.getPowerTypes(PowerType.class, true)
+		powers.values()
 			.stream()
 			.filter(PowerType::shouldTick)
-			.filter(type -> type.shouldTickWhenInactive() || type.isActive())
-			.forEach(PowerType::tick);
+			.filter(powerType -> powerType.shouldTickWhenInactive() || powerType.isActive())
+			.peek(PowerType::commonTick)
+			.forEach(PowerType::serverTick);
 	}
 
 	@Override
@@ -237,35 +224,37 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 			try {
 
 				Power.Entry powerEntry = Power.Entry.CODEC.read(lookup.createSerializationContext(NbtOps.INSTANCE), powerTag).getOrThrow();
-				ResourceLocation powerId = powerEntry.power().getId();
+				PowerReference powerReference = powerEntry.powerReference();
 
 				try {
 
-					Power power = powerEntry.power().getStrictReference();
-					PowerType powerType = power.create(owner);
+					Power power = powerReference.getStrictReference();
+					PowerType powerType = power.getPowerType();
+
+					powerType.init(owner, power);
 
 					try {
+						powerType.fromTag(powerEntry.nbtData());
+					}
 
-						Tag powerData = powerEntry.nbtData();
-
-						if (powerData != null) {
-							powerType.fromTag(powerData);
-						}
-
-					} catch (ClassCastException cce) {
+					catch (ClassCastException cce) {
 						//  Occurs when the power was overridden by a data pack since last resource reload,
 						//  where the overridden power may encode/decode different NBT types
-						OriginsPaper.LOGGER.warn("Data type of power \"{}\" has changed, skipping data for that power on entity {} (UUID: {})", powerId, owner.getName().getString(), owner.getStringUUID());
+						OriginsPaper.LOGGER.warn("Data type of power \"{}\" has changed, skipping data for that power on entity {} (UUID: {})", powerReference.id(), owner.getName().getString(), owner.getStringUUID());
 					}
 
 					powerSources.put(power, powerEntry.sources());
 					powers.put(power, powerType);
 
-				} catch (Throwable t) {
-					OriginsPaper.LOGGER.warn("Unregistered power \"{}\" found on entity {} (UUID: {}), skipping...", powerId, owner.getName().getString(), owner.getStringUUID());
 				}
 
-			} catch (Throwable t) {
+				catch (Throwable t) {
+					OriginsPaper.LOGGER.warn("Unregistered power \"{}\" found on entity {} (UUID: {}), skipping...", powerReference.id(), owner.getName().getString(), owner.getStringUUID());
+				}
+
+			}
+
+			catch (Throwable t) {
 				OriginsPaper.LOGGER.warn("Error trying to decode NBT element ({}) at index {} into a power from NBT of entity {} (UUID: {}) (skipping): {}", powerTag, i, owner.getName().getString(), owner.getStringUUID(), t.getMessage());
 			}
 
@@ -279,10 +268,10 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 		ListTag powersTag = new ListTag();
 		powers.forEach((power, powerType) -> {
 
-			PowerTypeFactory<?> typeFactory = power.getFactoryInstance().getFactory();
+			PowerConfiguration<?> typeConfig = power.getPowerType().getConfig();
 			PowerReference powerReference = PowerReference.of(power.getId());
 
-			Power.Entry.CODEC.codec().encodeStart(lookup.createSerializationContext(NbtOps.INSTANCE), new Power.Entry(typeFactory, powerReference, powerType.toTag(), powerSources.get(power)))
+			Power.Entry.CODEC.codec().encodeStart(lookup.createSerializationContext(NbtOps.INSTANCE), new Power.Entry(typeConfig, powerReference, powerType.toTag(), powerSources.get(power)))
 				.mapError(err -> "Error encoding power \"" + power.getId() + "\" to NBT of entity " + owner.getName().getString() + " (UUID: " + owner.getStringUUID() + ") (skipping): " + err)
 				.resultOrPartial(OriginsPaper.LOGGER::warn)
 				.ifPresent(powersTag::add);
@@ -291,6 +280,11 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 
 		compoundTag.put("powers", powersTag);
 
+	}
+
+	@Override
+	public void sync() {
+		// nope
 	}
 
 	@Override
@@ -304,4 +298,3 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 	}
 
 }
-

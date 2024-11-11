@@ -84,4 +84,3 @@ public interface Prioritized<T extends PowerType & Prioritized<T>> {
 	}
 
 }
-

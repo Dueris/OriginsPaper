@@ -9,11 +9,10 @@ import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.calio.util.Validatable;
-import io.github.dueris.calio.util.registry.DataObjectFactory;
-import io.github.dueris.calio.util.registry.SimpleDataObjectFactory;
+import io.github.dueris.calio.registry.DataObjectFactory;
+import io.github.dueris.calio.registry.SimpleDataObjectFactory;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.util.hud_render.ParentHudRender;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +30,7 @@ public class HudRender implements Comparable<HudRender>, Validatable {
 
 	public static final DataObjectFactory<HudRender> FACTORY = new SimpleDataObjectFactory<>(
 		new SerializableData()
-			.add("condition", ApoliDataTypes.ENTITY_CONDITION, null)
+			.add("condition", EntityCondition.DATA_TYPE.optional(), Optional.empty())
 			.add("sprite_location", SerializableDataTypes.IDENTIFIER, DEFAULT_SPRITE)
 			.add("should_render", SerializableDataTypes.BOOLEAN, true)
 			.add("inverted", SerializableDataTypes.BOOLEAN, false)
@@ -91,8 +90,7 @@ public class HudRender implements Comparable<HudRender>, Validatable {
 
 	});
 
-	@Nullable
-	private final ConditionTypeFactory<Entity>.Instance condition;
+	private final Optional<EntityCondition> condition;
 	private final ResourceLocation spriteLocation;
 
 	private final boolean shouldRender;
@@ -102,7 +100,7 @@ public class HudRender implements Comparable<HudRender>, Validatable {
 	private final int iconIndex;
 	private final int order;
 
-	public HudRender(@Nullable ConditionTypeFactory<Entity>.Instance condition, ResourceLocation spriteLocation, boolean shouldRender, boolean inverted, int barIndex, int iconIndex, int order) {
+	public HudRender(Optional<EntityCondition> condition, ResourceLocation spriteLocation, boolean shouldRender, boolean inverted, int barIndex, int iconIndex, int order) {
 		this.condition = condition;
 		this.spriteLocation = spriteLocation;
 		this.shouldRender = shouldRender;
@@ -126,7 +124,7 @@ public class HudRender implements Comparable<HudRender>, Validatable {
 	}
 
 	@Nullable
-	public ConditionTypeFactory<Entity>.Instance getCondition() {
+	public Optional<EntityCondition> getCondition() {
 		return this.condition;
 	}
 
@@ -139,7 +137,8 @@ public class HudRender implements Comparable<HudRender>, Validatable {
 	}
 
 	public boolean shouldRender(Entity viewer) {
-		return this.shouldRender() && (this.getCondition() == null || this.getCondition().test(viewer));
+		return this.shouldRender()
+			&& getCondition().map(condition -> condition.test(viewer)).orElse(true);
 	}
 
 	public boolean isInverted() {

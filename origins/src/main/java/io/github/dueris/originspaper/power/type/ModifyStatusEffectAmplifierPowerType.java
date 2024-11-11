@@ -3,58 +3,52 @@ package io.github.dueris.originspaper.power.type;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.condition.EntityCondition;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
+import io.github.dueris.originspaper.util.Util;
 import io.github.dueris.originspaper.util.modifier.Modifier;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ModifyStatusEffectAmplifierPowerType extends ValueModifyingPowerType {
 
-	private final Set<Holder<MobEffect>> statusEffects;
+	public static final TypedDataObjectFactory<ModifyStatusEffectAmplifierPowerType> DATA_FACTORY = createConditionedModifyingDataFactory(
+		new SerializableData()
+			.add("status_effect", SerializableDataTypes.STATUS_EFFECT_ENTRY, null)
+			.addFunctionedDefault("status_effects", SerializableDataTypes.STATUS_EFFECT_ENTRIES, data -> Util.singletonListOrEmpty(data.get("status_effect"))),
+		(data, modifiers, condition) -> new ModifyStatusEffectAmplifierPowerType(
+			data.get("status_effects"),
+			modifiers,
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("status_effects", powerType.statusEffects)
+	);
 
-	public ModifyStatusEffectAmplifierPowerType(Power power, LivingEntity entity, Holder<MobEffect> statusEffect, List<Holder<MobEffect>> statusEffects, Modifier modifier, List<Modifier> modifiers) {
-		super(power, entity);
-		this.statusEffects = new HashSet<>();
+	private final List<Holder<MobEffect>> statusEffects;
 
-		if (statusEffect != null) {
-			this.statusEffects.add(statusEffect);
-		}
-
-		if (statusEffects != null) {
-			this.statusEffects.addAll(statusEffects);
-		}
-
-		if (modifier != null) {
-			this.addModifier(modifier);
-		}
-
-		if (modifiers != null) {
-			modifiers.forEach(this::addModifier);
-		}
-
+	public ModifyStatusEffectAmplifierPowerType(List<Holder<MobEffect>> statusEffects, List<Modifier> modifiers, Optional<EntityCondition> condition) {
+		super(modifiers, condition);
+		this.statusEffects = statusEffects
+			.stream()
+			.distinct()
+			.collect(Collectors.toCollection(ObjectArrayList::new));
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("modify_status_effect_amplifier"),
-			new SerializableData()
-				.add("status_effect", SerializableDataTypes.STATUS_EFFECT_ENTRY, null)
-				.add("status_effects", SerializableDataTypes.STATUS_EFFECT_ENTRIES, null)
-				.add("modifier", Modifier.DATA_TYPE, null)
-				.add("modifiers", Modifier.LIST_TYPE, null),
-			data -> (power, entity) -> new ModifyStatusEffectAmplifierPowerType(power, entity,
-				data.get("status_effect"),
-				data.get("status_effects"),
-				data.get("modifier"),
-				data.get("modifiers")
-			)
-		).allowCondition();
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.MODIFY_STATUS_EFFECT_AMPLIFIER;
 	}
 
 	public boolean doesApply(Holder<MobEffect> statusEffect) {

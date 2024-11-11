@@ -5,7 +5,9 @@ import com.mojang.serialization.DataResult;
 import io.github.dueris.calio.data.exceptions.DataException;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Unit;
@@ -16,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -65,6 +68,23 @@ public record CraftCalio(boolean threaded, int threadCount) {
 
 	public static void initialize() {
 		CriteriaTriggers.register(CodeTriggerCriterion.ID.toString(), CodeTriggerCriterion.INSTANCE);
+	}
+
+	@Deprecated(forRemoval = true)
+	public static <T> boolean areTagsEqual(ResourceKey<? extends Registry<T>> registryKey, TagKey<T> tag1, TagKey<T> tag2) {
+		return areTagsEqual(tag1, tag2);
+	}
+
+	/**
+	 * 	<b>Use {@link TagKey#equals(Object)} (or {@link Objects#equals(Object, Object)} if nullability is of concern) instead.</b>
+	 */
+	@Deprecated(forRemoval = true)
+	public static <T> boolean areTagsEqual(TagKey<T> tag1, TagKey<T> tag2) {
+		return tag1 == tag2
+			|| tag1 != null
+			&& tag2 != null
+			&& tag1.registry().equals(tag2.registry())
+			&& tag1.location().equals(tag2.location());
 	}
 
 	@Override

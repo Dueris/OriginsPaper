@@ -3,8 +3,11 @@ package io.github.dueris.originspaper.power.type;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.condition.EntityCondition;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
+import io.github.dueris.originspaper.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -13,47 +16,46 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class EffectImmunityPowerType extends PowerType {
 
-	protected final Set<Holder<MobEffect>> effects = new HashSet<>();
-	private final boolean inverted;
+	public static final TypedDataObjectFactory<EffectImmunityPowerType> DATA_FACTORY = PowerType.createConditionedDataFactory(
+		new SerializableData()
+			.add("effect", SerializableDataTypes.STATUS_EFFECT_ENTRY, null)
+			.addFunctionedDefault("effects", SerializableDataTypes.STATUS_EFFECT_ENTRIES, data -> Util.singletonListOrEmpty(data.get("effect")))
+			.add("inverted", SerializableDataTypes.BOOLEAN, false),
+		(data, condition) -> new EffectImmunityPowerType(
+			data.get("effects"),
+			data.get("inverted"),
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("effects", powerType.effects)
+			.set("inverted", powerType.inverted)
+	);
 
-	public EffectImmunityPowerType(Power power, LivingEntity entity, boolean inverted) {
-		super(power, entity);
+	protected final List<Holder<MobEffect>> effects;
+	protected final boolean inverted;
+
+	public EffectImmunityPowerType(List<Holder<MobEffect>> effects, boolean inverted, Optional<EntityCondition> condition) {
+		super(condition);
+		this.effects = effects;
 		this.inverted = inverted;
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(OriginsPaper.apoliIdentifier("effect_immunity"),
-			new SerializableData()
-				.add("effect", SerializableDataTypes.STATUS_EFFECT_ENTRY, null)
-				.add("effects", SerializableDataTypes.STATUS_EFFECT_ENTRIES, null)
-				.add("inverted", SerializableDataTypes.BOOLEAN, false),
-			data -> (power, entity) -> {
-
-				EffectImmunityPowerType powerType = new EffectImmunityPowerType(power, entity, data.get("inverted"));
-
-				data.ifPresent("effect", powerType::addEffect);
-				data.<List<Holder<MobEffect>>>ifPresent("effects", effects -> effects.forEach(powerType::addEffect));
-
-				return powerType;
-
-			}
-		).allowCondition();
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.EFFECT_IMMUNITY;
 	}
 
-	public EffectImmunityPowerType addEffect(Holder<MobEffect> effect) {
-		effects.add(effect);
-		return this;
-	}
-
-	public boolean doesApply(@NotNull MobEffectInstance instance) {
+	public boolean doesApply(MobEffectInstance instance) {
 		return doesApply(instance.getEffect());
 	}
 
 	public boolean doesApply(Holder<MobEffect> effect) {
 		return inverted ^ effects.contains(effect);
 	}
+
 }

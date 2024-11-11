@@ -6,9 +6,12 @@ import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.access.EntityLinkedItemStack;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
+import io.github.dueris.originspaper.condition.EntityCondition;
+import io.github.dueris.originspaper.condition.ItemCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.InventoryUtil;
 import io.github.dueris.originspaper.util.modifier.Modifier;
 import io.github.dueris.originspaper.util.modifier.ModifierUtil;
@@ -40,29 +43,82 @@ public class ModifyEnchantmentLevelPowerType extends ValueModifyingPowerType {
 	private static final ConcurrentHashMap<UUID, ItemStack> MODIFIED_EMPTY_STACKS = new ConcurrentHashMap<>();
 	private static final WeakHashMap<Pair<UUID, ItemStack>, ConcurrentHashMap<ModifyEnchantmentLevelPowerType, Pair<Integer, Boolean>>> POWER_MODIFIER_CACHE = new WeakHashMap<>(256);
 
+	public static final TypedDataObjectFactory<ModifyEnchantmentLevelPowerType> DATA_FACTORY = createConditionedModifyingDataFactory(
+		new SerializableData()
+			.add("enchantment", SerializableDataTypes.ENCHANTMENT)
+			.add("item_condition", ItemCondition.DATA_TYPE.optional(), Optional.empty()),
+		(data, modifiers, condition) -> new ModifyEnchantmentLevelPowerType(
+			data.get("enchantment"),
+			data.get("item_condition"),
+			modifiers,
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("enchantment", powerType.enchantmentKey)
+			.set("item_condition", powerType.itemCondition)
+	);
+
 	private final ResourceKey<Enchantment> enchantmentKey;
-	private final Predicate<Tuple<Level, ItemStack>> itemCondition;
+	private final Optional<ItemCondition> itemCondition;
 
-	public ModifyEnchantmentLevelPowerType(Power power, LivingEntity entity, ResourceKey<Enchantment> enchantmentKey, Predicate<net.minecraft.util.Tuple<Level, ItemStack>> itemCondition, Modifier modifier, List<Modifier> modifiers) {
-		super(power, entity);
-
+	public ModifyEnchantmentLevelPowerType(ResourceKey<Enchantment> enchantmentKey, Optional<ItemCondition> itemCondition, List<Modifier> modifiers, Optional<EntityCondition> condition) {
+		super(modifiers, condition);
 		this.enchantmentKey = enchantmentKey;
 		this.itemCondition = itemCondition;
-
-		if (modifier != null) {
-			this.addModifier(modifier);
-		}
-
-		if (modifiers != null) {
-			modifiers.forEach(this::addModifier);
-		}
-
 		this.setTicking();
+	}
+
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.MODIFY_ENCHANTMENT_LEVEL;
+	}
+
+	@Override
+	public void onRemoved() {
+
+		LivingEntity holder = getHolder();
+
+		for (int slot : InventoryUtil.getAllSlots()) {
+
+			SlotAccess stackReference = holder.getSlot(slot);
+
+			if (stackReference != SlotAccess.NULL && isWorkableEmptyStack(holder, stackReference)) {
+				stackReference.set(ItemStack.EMPTY);
+			}
+
+		}
+
+		COPY_TO_ORIGINAL_STACK.remove(holder.getUUID());
+		ITEM_ENCHANTMENTS.remove(holder.getUUID());
+
+		MODIFIED_EMPTY_STACKS.remove(holder.getUUID());
+
+	}
+
+	@Override
+	public void serverTick() {
+
+		LivingEntity holder = getHolder();
+
+		for (int slot : InventoryUtil.getAllSlots()) {
+
+			SlotAccess stackReference = holder.getSlot(slot);
+			ItemStack stack = stackReference.get();
+
+			if (stackReference == SlotAccess.NULL) {
+				continue;
+			}
+
+			if (stack.isEmpty() && !isWorkableEmptyStack(holder, stackReference)) {
+				stackReference.set(getOrCreateWorkableEmptyStack(holder));
+			}
+
+		}
 
 	}
 
 	@ApiStatus.Internal // OriginsPaper
-	private static ItemEnchantments getEnchantments(ItemStack stack, ItemEnchantments original, boolean modified) { // OriginsPaper - public -> private
+	public static ItemEnchantments getEnchantments(ItemStack stack, ItemEnchantments original, boolean modified) { // OriginsPaper - public -> private
 
 		Entity entity = ((EntityLinkedItemStack) stack).apoli$getEntity();
 		if (entity == null || !modified) {
@@ -186,6 +242,12 @@ public class ModifyEnchantmentLevelPowerType extends ValueModifyingPowerType {
 			&& stackReference.get() == MODIFIED_EMPTY_STACKS.get(entity.getUUID());
 	}
 
+	public boolean doesApply(ResourceKey<Enchantment> enchantmentKey, ItemStack stack) {
+		return this.isActive()
+			&& this.enchantmentKey.equals(enchantmentKey)
+			&& this.checkItemCondition(stack);
+	}
+
 	private static boolean updateIfDifferent(ConcurrentHashMap<ModifyEnchantmentLevelPowerType, Pair<Integer, Boolean>> map, ModifyEnchantmentLevelPowerType power, ItemStack stack, int modifierValue, boolean conditionValue) {
 
 		map.computeIfAbsent(power, (p) -> new Pair<>(0, false));
@@ -205,71 +267,6 @@ public class ModifyEnchantmentLevelPowerType extends ValueModifyingPowerType {
 
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("modify_enchantment_level"),
-			new SerializableData()
-				.add("enchantment", SerializableDataTypes.ENCHANTMENT)
-				.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
-				.add("modifier", Modifier.DATA_TYPE, null)
-				.add("modifiers", Modifier.LIST_TYPE, null),
-			data -> (power, entity) -> new ModifyEnchantmentLevelPowerType(power, entity,
-				data.get("enchantment"),
-				data.get("item_condition"),
-				data.get("modifier"),
-				data.get("modifiers")
-			)
-		).allowCondition();
-	}
-
-	@Override
-	public void onRemoved() {
-
-		for (int slot : InventoryUtil.getAllSlots()) {
-
-			SlotAccess stackReference = entity.getSlot(slot);
-
-			if (stackReference != SlotAccess.NULL && isWorkableEmptyStack(entity, stackReference)) {
-				stackReference.set(ItemStack.EMPTY);
-			}
-
-		}
-
-		COPY_TO_ORIGINAL_STACK.remove(entity.getUUID());
-		ITEM_ENCHANTMENTS.remove(entity.getUUID());
-
-		MODIFIED_EMPTY_STACKS.remove(entity.getUUID());
-
-	}
-
-	@Override
-	public void tick() {
-
-		for (int slot : InventoryUtil.getAllSlots()) {
-
-			SlotAccess stackReference = entity.getSlot(slot);
-			if (stackReference == SlotAccess.NULL) {
-				continue;
-			}
-
-			ItemStack stack = stackReference.get();
-			if (stack instanceof EntityLinkedItemStack linked) {
-				linked.apoli$setEntity(entity);
-			}
-			if (stack.isEmpty() && !isWorkableEmptyStack(entity, stackReference) && checkItemCondition(stack)) {
-				stackReference.set(getOrCreateWorkableEmptyStack(entity));
-			}
-
-		}
-
-	}
-
-	public boolean doesApply(ResourceKey<Enchantment> enchantmentKey, ItemStack stack) {
-		return this.isActive()
-			&& this.enchantmentKey.equals(enchantmentKey)
-			&& this.checkItemCondition(stack);
-	}
-
 	public void recalculateCache(LivingEntity entity, ItemStack stack) {
 
 		for (ModifyEnchantmentLevelPowerType power : PowerHolderComponent.getPowerTypes(entity, ModifyEnchantmentLevelPowerType.class)) {
@@ -283,8 +280,10 @@ public class ModifyEnchantmentLevelPowerType extends ValueModifyingPowerType {
 
 	}
 
-	public boolean checkItemCondition(ItemStack self) {
-		return itemCondition == null || itemCondition.test(new net.minecraft.util.Tuple<>(entity.level(), self));
+	public boolean checkItemCondition(ItemStack stack) {
+		return itemCondition
+			.map(condition -> condition.test(getHolder().level(), stack))
+			.orElse(true);
 	}
 
 }

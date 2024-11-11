@@ -53,7 +53,7 @@ public class HudRenderManager {
 	public static void init() {
 		for (ResourceLocation powerId : PowerManager.keySet()) {
 			Power power = PowerManager.get(powerId);
-			if (power.create(null) instanceof HudRendered hudRendered) {
+			if (power.getPowerType() instanceof HudRendered hudRendered) {
 				MinecraftClient.HUD_RENDER.register(hudRendered.getRenderSettings().getSpriteLocation(), powerId, hudRendered.getRenderSettings().getBarIndex(),
 					new RenderInf(hudRendered.getRuntimeMax(), powerId.toString(), hudRendered.getRenderSettings().isInverted(), (hudRendered instanceof CooldownPowerType)));
 			}

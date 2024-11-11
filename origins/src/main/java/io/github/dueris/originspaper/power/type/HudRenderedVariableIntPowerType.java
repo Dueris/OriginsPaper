@@ -7,12 +7,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 
-public class HudRenderedVariableIntPowerType extends VariableIntPowerType implements HudRendered {
+public abstract class HudRenderedVariableIntPowerType extends VariableIntPowerType implements HudRendered {
 
 	private final HudRender hudRender;
 
-	public HudRenderedVariableIntPowerType(Power power, LivingEntity entity, HudRender hudRender, int startValue, int min, int max) {
-		super(power, entity, startValue, min, max);
+	public HudRenderedVariableIntPowerType(HudRender hudRender, int min, int max, int startValue) {
+		super(startValue, min, max);
 		this.hudRender = hudRender;
 	}
 
@@ -23,7 +23,7 @@ public class HudRenderedVariableIntPowerType extends VariableIntPowerType implem
 
 	@Override
 	public float getFill() {
-		return (this.getValue() - this.getMin()) / (float) (this.getMax() - this.getMin());
+		return (this.getValue() - this.getMin()) / (float)(this.getMax() - this.getMin());
 	}
 
 	@Override
@@ -33,16 +33,15 @@ public class HudRenderedVariableIntPowerType extends VariableIntPowerType implem
 
 	@Override
 	public int getRuntimeMax() {
-		return max;
+		return super.getMax();
 	}
 
 	@Override
 	public int setValue(int newValue) {
 		int newVal = super.setValue(newValue);
-		if (entity instanceof ServerPlayer player) {
-			MinecraftClient.HUD_RENDER.setRender(player.getBukkitEntity(), CraftNamespacedKey.fromMinecraft(getPowerId()), newVal);
+		if (getHolder() instanceof ServerPlayer player) {
+			MinecraftClient.HUD_RENDER.setRender(player.getBukkitEntity(), CraftNamespacedKey.fromMinecraft(getPower().getId()), newVal);
 		}
 		return newVal;
 	}
 }
-

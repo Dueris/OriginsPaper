@@ -165,7 +165,7 @@ public class KeybindUtil implements Listener {
 		net.minecraft.world.entity.player.Player nms = ((CraftPlayer) e.getPlayer()).getHandle();
 		if (!PowerHolderComponent.KEY.isProvidedBy(nms)) return;
 		for (Power power : PowerHolderComponent.KEY.get(nms).getPowers(true)) {
-			if (power.getType(nms) instanceof Active active) {
+			if (power.getPowerTypeFrom(nms) instanceof Active active) {
 				if (active.getKey().key.equalsIgnoreCase(e.getKey())) {
 					active.onUse();
 				}

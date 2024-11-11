@@ -1,5 +1,7 @@
 package io.github.dueris.originspaper.power;
 
+import com.mojang.serialization.DataResult;
+import io.github.dueris.calio.util.Validatable;
 import io.github.dueris.originspaper.power.type.PowerType;
 import io.github.dueris.originspaper.power.type.PowerTypes;
 import io.github.dueris.originspaper.util.PowerUtil;
@@ -9,69 +11,54 @@ import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.function.Function;
 
-public class PowerReference extends Power {
+public record PowerReference(ResourceLocation id, Function<PowerType, DataResult<PowerType>> condition) implements Validatable {
 
-	public PowerReference(ResourceLocation id) {
-		super(null, DATA.instance()
-			.set("id", id)
-			.set(TYPE_KEY, PowerTypes.SIMPLE)
-			.set("name", Component.empty())
-			.set("description", Component.empty())
-			.set("hidden", true));
+	public static PowerReference of(ResourceLocation id) {
+		return new PowerReference(id, DataResult::success);
 	}
 
 	public static PowerReference resource(ResourceLocation id) {
-		return new PowerReference(id) {
-			@Override
-			public void validate() throws Exception {
-				PowerUtil.validateResource(create(null)).getOrThrow();
-			}
-		};
-	}
-
-	public static PowerReference of(String namespace, String path) {
-		return new PowerReference(ResourceLocation.fromNamespaceAndPath(namespace, path));
-	}
-
-	public static PowerReference of(String str) {
-		return new PowerReference(ResourceLocation.parse(str));
-	}
-
-	public static PowerReference of(ResourceLocation identifier) {
-		return new PowerReference(identifier);
-	}
-
-	@Override
-	public PowerTypeFactory<? extends PowerType>.Instance getFactoryInstance() {
-		return this.getStrictReference().getFactoryInstance();
-	}
-
-	@Nullable
-	@Override
-	public PowerType getType(Entity entity) {
-		Power power = this.getReference();
-		return power != null
-			? power.getType(entity)
-			: null;
-	}
-
-	@Nullable
-	public Power getReference() {
-		return getOptionalReference().orElse(null);
-	}
-
-	public Optional<Power> getOptionalReference() {
-		return PowerManager.getOptional(this.getId());
-	}
-
-	public Power getStrictReference() {
-		return PowerManager.get(this.getId());
+		return new PowerReference(id, PowerUtil::validateResource);
 	}
 
 	@Override
 	public void validate() throws Exception {
-		getStrictReference();
+		getResultReference()
+			.map(Power::getPowerType)
+			.flatMap(condition())
+			.getOrThrow();
+	}
+
+	@Nullable
+	public PowerType getPowerTypeFrom(Entity entity) {
+		return getOptionalReference()
+			.flatMap(power -> Optional.ofNullable(power.getPowerTypeFrom(entity)))
+			.orElse(null);
+	}
+
+	public DataResult<Power> getResultReference() {
+		return PowerManager.getResult(id());
+	}
+
+	public Optional<Power> getOptionalReference() {
+		return PowerManager.getOptional(id());
+	}
+
+	public Power getStrictReference() {
+		return PowerManager.get(id());
+	}
+
+	@Nullable
+	public Power getReference() {
+		return PowerManager.getNullable(id());
+	}
+
+	public boolean isActive(Entity entity) {
+		return getOptionalReference()
+			.map(power -> power.isActive(entity))
+			.orElse(false);
 	}
 
 }

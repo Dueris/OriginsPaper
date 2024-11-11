@@ -2,51 +2,66 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.action.BiEntityAction;
+import io.github.dueris.originspaper.condition.BiEntityCondition;
+import io.github.dueris.originspaper.condition.DamageCondition;
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class ActionOnDeathPowerType extends PowerType {
 
-	private final Predicate<Tuple<DamageSource, Float>> damageCondition;
-	private final Predicate<Tuple<Entity, Entity>> bientityCondition;
-	private final Consumer<Tuple<Entity, Entity>> bientityAction;
+	public static final TypedDataObjectFactory<ActionOnDeathPowerType> DATA_FACTORY = PowerType.createConditionedDataFactory(
+		new SerializableData()
+			.add("bientity_action", BiEntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("bientity_condition", BiEntityCondition.DATA_TYPE.optional(), Optional.empty())
+			.add("damage_condition", DamageCondition.DATA_TYPE.optional(), Optional.empty()),
+		(data, condition) -> new ActionOnDeathPowerType(
+			data.get("bientity_action"),
+			data.get("bientity_condition"),
+			data.get("damage_condition"),
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("bientity_action", powerType.biEntityAction)
+			.set("bientity_condition", powerType.biEntityCondition)
+			.set("damage_condition", powerType.damageCondition)
+	);
 
-	public ActionOnDeathPowerType(Power power, LivingEntity entity, Consumer<Tuple<Entity, Entity>> bientityAction, Predicate<Tuple<Entity, Entity>> bientityCondition, Predicate<Tuple<DamageSource, Float>> damageCondition) {
-		super(power, entity);
+	private final Optional<DamageCondition> damageCondition;
+	private final Optional<BiEntityCondition> biEntityCondition;
+	private final Optional<BiEntityAction> biEntityAction;
+
+	public ActionOnDeathPowerType(Optional<BiEntityAction> biEntityAction, Optional<BiEntityCondition> biEntityCondition, Optional<DamageCondition> damageCondition, Optional<EntityCondition> condition) {
+		super(condition);
 		this.damageCondition = damageCondition;
-		this.bientityAction = bientityAction;
-		this.bientityCondition = bientityCondition;
+		this.biEntityAction = biEntityAction;
+		this.biEntityCondition = biEntityCondition;
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("action_on_death"),
-			new SerializableData()
-				.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION)
-				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
-				.add("damage_condition", ApoliDataTypes.DAMAGE_CONDITION, null),
-			data -> (power, entity) -> new ActionOnDeathPowerType(power, entity,
-				data.get("bientity_action"),
-				data.get("bientity_condition"),
-				data.get("damage_condition")
-			)
-		).allowCondition();
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.ACTION_ON_DEATH;
 	}
 
 	public boolean doesApply(Entity actor, DamageSource damageSource, float damageAmount) {
-		return (bientityCondition == null || bientityCondition.test(new Tuple<>(actor, entity)))
-			&& (damageCondition == null || damageCondition.test(new Tuple<>(damageSource, damageAmount)));
+		return damageCondition.map(condition -> condition.test(damageSource, damageAmount)).orElse(true)
+			&& biEntityCondition.map(condition -> condition.test(actor, getHolder())).orElse(true);
 	}
 
 	public void onDeath(Entity actor) {
-		bientityAction.accept(new Tuple<>(actor, entity));
+		biEntityAction.ifPresent(action -> action.execute(actor, getHolder()));
 	}
+
 }

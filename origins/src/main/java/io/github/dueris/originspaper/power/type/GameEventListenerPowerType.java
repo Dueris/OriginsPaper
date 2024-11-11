@@ -4,10 +4,17 @@ import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.action.BiEntityAction;
+import io.github.dueris.originspaper.action.BlockAction;
+import io.github.dueris.originspaper.condition.BiEntityCondition;
+import io.github.dueris.originspaper.condition.BlockCondition;
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.HudRender;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -33,104 +40,131 @@ import java.util.function.Predicate;
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class GameEventListenerPowerType extends CooldownPowerType implements VibrationSystem {
 
-	private final Consumer<Triple<Level, BlockPos, Direction>> blockAction;
-	private final Consumer<Tuple<Entity, Entity>> biEntityAction;
+	public static final TypedDataObjectFactory<GameEventListenerPowerType> DATA_FACTORY = PowerType.createConditionedDataFactory(
+		new SerializableData()
+			.add("bientity_action", BiEntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("bientity_condition", BiEntityCondition.DATA_TYPE.optional(), Optional.empty())
+			.add("block_action", BlockAction.DATA_TYPE.optional(), Optional.empty())
+			.add("block_condition", BlockCondition.DATA_TYPE.optional(), Optional.empty())
+			.add("event", SerializableDataTypes.GAME_EVENT_ENTRY.optional(), Optional.empty())
+			.add("events", SerializableDataTypes.GAME_EVENT_ENTRIES.optional(), Optional.empty())
+			.add("event_tag", SerializableDataTypes.GAME_EVENT_TAG.optional(), Optional.empty())
+			.add("trigger_order", SerializableDataType.enumValue(GameEventListener.DeliveryMode.class), GameEventListener.DeliveryMode.UNSPECIFIED)
+			.add("hud_render", HudRender.DATA_TYPE, HudRender.DONT_RENDER)
+			.add("cooldown", SerializableDataTypes.POSITIVE_INT, 1)
+			.add("show_particle", SerializableDataTypes.BOOLEAN, true)
+			.add("range", SerializableDataTypes.POSITIVE_INT, 16),
+		(data, condition) -> new GameEventListenerPowerType(
+			data.get("bientity_action"),
+			data.get("bientity_condition"),
+			data.get("block_action"),
+			data.get("block_condition"),
+			data.get("event"),
+			data.get("events"),
+			data.get("event_tag"),
+			data.get("trigger_order"),
+			data.get("hud_render"),
+			data.get("cooldown"),
+			data.get("show_particle"),
+			data.get("range"),
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("bientity_action", powerType.biEntityAction)
+			.set("bientity_condition", powerType.biEntityCondition)
+			.set("block_action", powerType.blockAction)
+			.set("block_condition", powerType.blockCondition)
+			.set("event", powerType.gameEvent)
+			.set("events", powerType.gameEvents)
+			.set("event_tag", powerType.gameEventTag)
+			.set("trigger_order", powerType.triggerOrder)
+			.set("hud_render", powerType.getRenderSettings())
+			.set("cooldown", powerType.getCooldown())
+			.set("show_particle", powerType.showParticle)
+			.set("range", powerType.range)
+	);
 
-	private final Predicate<BlockInWorld> blockCondition;
-	private final Predicate<Tuple<Entity, Entity>> biEntityCondition;
+	private final Optional<BiEntityAction> biEntityAction;
+	private final Optional<BlockAction> blockAction;
 
-	private final List<Holder<GameEvent>> acceptedGameEvents;
-	private final Optional<TagKey<GameEvent>> acceptedGameEventTag;
+	private final Optional<BiEntityCondition> biEntityCondition;
+	private final Optional<BlockCondition> blockCondition;
+
+	private final Optional<Holder<GameEvent>> gameEvent;
+	private final Optional<List<Holder<GameEvent>>> gameEvents;
+
+	private final ObjectOpenHashSet<Holder<GameEvent>> allGameEvents;
+	private final Optional<TagKey<GameEvent>> gameEventTag;
 
 	private final GameEventListener.DeliveryMode triggerOrder;
+
 	private final ListenerData vibrationListenerData;
 	private final Callback vibrationCallback;
 
 	private final boolean showParticle;
 	private final int range;
 
-	private DynamicGameEventListener<VibrationSystem.Listener> gameEventHandler;
+	private DynamicGameEventListener<net.minecraft.world.level.gameevent.vibrations.VibrationSystem.Listener> gameEventHandler;
 
-	public GameEventListenerPowerType(Power power, LivingEntity entity, Consumer<Tuple<Entity, Entity>> biEntityAction, Consumer<Triple<Level, BlockPos, Direction>> blockAction, Predicate<Tuple<Entity, Entity>> biEntityCondition, Predicate<BlockInWorld> blockCondition, int cooldownDuration, HudRender hudRender, int range, @NotNull Optional<Holder<GameEvent>> acceptedGameEvent, @NotNull Optional<List<Holder<GameEvent>>> acceptedGameEvents, Optional<TagKey<GameEvent>> acceptedGameEventTag, boolean showParticle, GameEventListener.DeliveryMode triggerOrder) {
-		super(power, entity, cooldownDuration, hudRender);
+	public GameEventListenerPowerType(Optional<BiEntityAction> biEntityAction, Optional<BlockAction> blockAction, Optional<BiEntityCondition> biEntityCondition, Optional<BlockCondition> blockCondition, Optional<Holder<GameEvent>> gameEvent, Optional<List<Holder<GameEvent>>> gameEvents, Optional<TagKey<GameEvent>> gameEventTag, GameEventListener.DeliveryMode triggerOrder, HudRender hudRender, int cooldownDuration, boolean showParticle, int range, Optional<EntityCondition> condition) {
+		super(cooldownDuration, hudRender, condition);
 
-		this.blockAction = blockAction;
 		this.biEntityAction = biEntityAction;
-		this.blockCondition = blockCondition;
+		this.blockAction = blockAction;
+
 		this.biEntityCondition = biEntityCondition;
-		this.range = range;
+		this.blockCondition = blockCondition;
 
-		this.acceptedGameEvents = new LinkedList<>();
-		acceptedGameEvent.ifPresent(this.acceptedGameEvents::add);
-		acceptedGameEvents.ifPresent(this.acceptedGameEvents::addAll);
+		this.gameEvent = gameEvent;
+		this.gameEvents = gameEvents;
 
-		this.gameEventHandler = null;
+		this.allGameEvents = new ObjectOpenHashSet<>();
+		this.gameEventTag = gameEventTag;
+
+		this.gameEvent.ifPresent(this.allGameEvents::add);
+		this.gameEvents.ifPresent(this.allGameEvents::addAll);
+
+		this.allGameEvents.trim();
 		this.triggerOrder = triggerOrder;
 
-		this.vibrationCallback = new Callback();
 		this.vibrationListenerData = new ListenerData();
-		this.vibrationListenerData.setReloadVibrationParticle(false);
+		this.vibrationCallback = new Callback();
 
-		this.acceptedGameEventTag = acceptedGameEventTag;
 		this.showParticle = showParticle;
-		this.setTicking();
+		this.range = range;
 
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("game_event_listener"),
-			new SerializableData()
-				.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION, null)
-				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
-				.add("block_action", ApoliDataTypes.BLOCK_ACTION, null)
-				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
-				.add("cooldown", SerializableDataTypes.NON_NEGATIVE_INT, 1)
-				.add("hud_render", ApoliDataTypes.HUD_RENDER, HudRender.DONT_RENDER)
-				.add("range", SerializableDataTypes.POSITIVE_INT, 16)
-				.add("event", SerializableDataTypes.GAME_EVENT_ENTRY.optional(), Optional.empty())
-				.add("events", SerializableDataTypes.GAME_EVENT_ENTRIES.optional(), Optional.empty())
-				.add("event_tag", SerializableDataTypes.GAME_EVENT_TAG.optional(), Optional.empty())
-				.add("show_particle", SerializableDataTypes.BOOLEAN, true)
-				.add("trigger_order", SerializableDataType.enumValue(GameEventListener.DeliveryMode.class), GameEventListener.DeliveryMode.UNSPECIFIED),
-			data -> (power, entity) -> new GameEventListenerPowerType(power, entity,
-				data.getOrElse("bientity_action", actorAndTarget -> {
-				}),
-				data.getOrElse("block_action", block -> {
-				}),
-				data.getOrElse("bientity_condition", actorAndTarget -> true),
-				data.getOrElse("block_condition", block -> true),
-				data.get("cooldown"),
-				data.get("hud_render"),
-				data.get("range"),
-				data.get("event"),
-				data.get("events"),
-				data.get("event_tag"),
-				data.get("show_particle"),
-				data.get("trigger_order")
-			)
-		).allowCondition();
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.GAME_EVENT_LISTENER;
 	}
 
 	@Override
 	public void onAdded() {
-		if (entity.level() instanceof ServerLevel serverWorld) {
+
+		if (getHolder().level() instanceof ServerLevel serverWorld) {
 			getGameEventHandler().move(serverWorld);
 		}
+
 	}
 
 	@Override
 	public void onRemoved() {
-		if (entity.level() instanceof ServerLevel serverWorld) {
+
+		if (getHolder().level() instanceof ServerLevel serverWorld) {
 			getGameEventHandler().remove(serverWorld);
 		}
+
 	}
 
 	@Override
-	public void tick() {
+	public void serverTick() {
+
 		if (canUse()) {
-			Ticker.tick(entity.level(), getVibrationData(), getVibrationUser());
+			Ticker.tick(getHolder().level(), getVibrationData(), getVibrationUser());
 		}
+
 	}
 
 	@Override
@@ -139,16 +173,16 @@ public class GameEventListenerPowerType extends CooldownPowerType implements Vib
 	}
 
 	@Override
-	public @NotNull ListenerData getVibrationData() {
+	public @NotNull Data getVibrationData() {
 		return vibrationListenerData;
 	}
 
 	@Override
-	public @NotNull Callback getVibrationUser() {
+	public Callback getVibrationUser() {
 		return vibrationCallback;
 	}
 
-	public DynamicGameEventListener<net.minecraft.world.level.gameevent.vibrations.VibrationSystem.Listener> getGameEventHandler() {
+	public DynamicGameEventListener<VibrationSystem.Listener> getGameEventHandler() {
 
 		if (gameEventHandler == null) {
 			gameEventHandler = new DynamicGameEventListener<>(new GameEventListenerPowerType.Listener());
@@ -169,7 +203,7 @@ public class GameEventListenerPowerType extends CooldownPowerType implements Vib
 		}
 
 		@Override
-		public @NotNull DeliveryMode getDeliveryMode() {
+		public DeliveryMode getDeliveryMode() {
 			return triggerOrder;
 		}
 
@@ -183,29 +217,30 @@ public class GameEventListenerPowerType extends CooldownPowerType implements Vib
 		}
 
 		@Override
-		public @NotNull PositionSource getPositionSource() {
-			return new EntityPositionSource(entity, entity.getEyeHeight(entity.getPose()));
+		public PositionSource getPositionSource() {
+			LivingEntity holder = getHolder();
+			return new EntityPositionSource(holder, holder.getEyeHeight(holder.getPose()));
 		}
 
 		@Override
-		public boolean canReceiveVibration(@NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull Holder<GameEvent> event, GameEvent.@NotNull Context emitter) {
-			return blockCondition.test(new BlockInWorld(world, pos, true))
-				&& biEntityCondition.test(new Tuple<>(emitter.sourceEntity(), entity));
+		public boolean canReceiveVibration(ServerLevel world, BlockPos pos, Holder<GameEvent> event, GameEvent.Context emitter) {
+			return blockCondition.map(condition -> condition.test(world, pos)).orElse(true)
+				&& biEntityCondition.map(condition -> condition.test(emitter.sourceEntity(), getHolder())).orElse(true);
 		}
 
 		@Override
-		public void onReceiveVibration(@NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull Holder<GameEvent> event, @Nullable Entity sourceEntity, @Nullable Entity entity, float distance) {
+		public void onReceiveVibration(ServerLevel world, BlockPos pos, Holder<GameEvent> event, @Nullable Entity sourceEntity, @Nullable Entity entity, float distance) {
 
 			GameEventListenerPowerType.this.use();
 
-			blockAction.accept(Triple.of(world, pos, Direction.UP));
-			biEntityAction.accept(new Tuple<>(sourceEntity, GameEventListenerPowerType.this.entity));
+			blockAction.ifPresent(action -> action.execute(world, pos, Optional.empty()));
+			biEntityAction.ifPresent(action -> action.execute(sourceEntity, getHolder()));
 
 		}
 
 		@Override
-		public @NotNull TagKey<GameEvent> getListenableEvents() {
-			return acceptedGameEventTag.orElse(VibrationSystem.User.super.getListenableEvents());
+		public TagKey<GameEvent> getListenableEvents() {
+			return gameEventTag.orElse(VibrationSystem.User.super.getListenableEvents());
 		}
 
 		public boolean shouldAccept(Holder<GameEvent> gameEvent) {
@@ -213,9 +248,9 @@ public class GameEventListenerPowerType extends CooldownPowerType implements Vib
 				&& this.isAccepted(gameEvent);
 		}
 
-		public boolean isAccepted(@NotNull Holder<GameEvent> gameEvent) {
-			return acceptedGameEventTag.map(gameEvent::is).orElse(true)
-				&& (acceptedGameEvents.isEmpty() || acceptedGameEvents.contains(gameEvent));
+		public boolean isAccepted(Holder<GameEvent> gameEvent) {
+			return gameEventTag.map(gameEvent::is).orElse(true)
+				&& (allGameEvents.isEmpty() || allGameEvents.contains(gameEvent));
 		}
 
 	}

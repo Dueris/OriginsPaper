@@ -39,9 +39,17 @@ public abstract class BlockStateBaseMixin extends StateHolder<Block, BlockState>
 
 	@ModifyReturnValue(method = "getCollisionShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;", at = @At("RETURN"))
 	private VoxelShape apoli$phaseThroughBlocks(VoxelShape original, BlockGetter blockView, BlockPos blockPos, CollisionContext context) {
-		return !apoli$queryOriginal && PhasingPowerType.shouldPhase(context, original, blockPos)
-			? Shapes.empty()
-			: original;
+
+		if (context == CollisionContext.empty()) {
+			return original;
+		}
+
+		else {
+			return !apoli$queryOriginal && PhasingPowerType.shouldPhase(context, original, blockPos)
+				? Shapes.empty()
+				: original;
+		}
+
 	}
 
 	@WrapWithCondition(method = "entityInside", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;entityInside(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/Entity;)V"))

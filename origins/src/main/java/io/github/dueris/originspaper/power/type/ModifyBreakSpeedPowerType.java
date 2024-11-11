@@ -2,11 +2,16 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.condition.BlockCondition;
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
+import io.github.dueris.originspaper.util.Util;
 import io.github.dueris.originspaper.util.modifier.Modifier;
 import io.github.dueris.originspaper.util.modifier.ModifierUtil;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -18,63 +23,35 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 // TODO - Make this more plugin-compatible
 public class ModifyBreakSpeedPowerType extends ValueModifyingPowerType {
 
-	private final Predicate<BlockInWorld> blockCondition;
+	public static final TypedDataObjectFactory<ModifyBreakSpeedPowerType> DATA_FACTORY = createConditionedModifyingDataFactory(
+		new SerializableData()
+			.add("block_condition", BlockCondition.DATA_TYPE.optional(), Optional.empty())
+			.add("hardness_modifier", Modifier.DATA_TYPE, null)
+			.addFunctionedDefault("hardness_modifiers", Modifier.LIST_TYPE, data -> Util.singletonListOrEmpty(data.get("hardness_modifier"))),
+		(data, modifiers, condition) -> new ModifyBreakSpeedPowerType(
+			data.get("block_condition"),
+			data.get("hardness_modifiers"),
+			modifiers,
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("block_condition", powerType.blockCondition)
+			.set("hardness_modifiers", powerType.hardnessModifiers)
+	);
+
+	private final Optional<BlockCondition> blockCondition;
 	private final List<Modifier> hardnessModifiers;
 
-	public ModifyBreakSpeedPowerType(Power power, LivingEntity entity, Predicate<BlockInWorld> blockCondition, Modifier deltaModifier, List<Modifier> deltaModifiers, Modifier hardnessModifier, List<Modifier> hardnessModifiers) {
-		super(power, entity);
-
-		if (deltaModifier != null) {
-			this.addModifier(deltaModifier);
-		}
-
-		if (deltaModifiers != null) {
-			deltaModifiers.forEach(this::addModifier);
-		}
-
+	public ModifyBreakSpeedPowerType(Optional<BlockCondition> blockCondition, List<Modifier> hardnessModifiers, List<Modifier> modifiers, Optional<EntityCondition> condition) {
+		super(modifiers, condition);
 		this.blockCondition = blockCondition;
-		this.hardnessModifiers = new LinkedList<>();
-
-		if (hardnessModifier != null) {
-			this.hardnessModifiers.add(hardnessModifier);
-		}
-
-		if (hardnessModifiers != null) {
-			this.hardnessModifiers.addAll(hardnessModifiers);
-		}
-
-		List<Modifier> copy = new LinkedList<>(getModifiers());
-		getModifiers().clear();
-		for (Modifier m : copy) {
-			double original = m.getData().getDouble("amount");
-			getModifiers().add(new Modifier(m.getOperation(), m.getData().set("amount", original * 10)));
-		}
-	}
-
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("modify_break_speed"),
-			new SerializableData()
-				.add("block_condition", ApoliDataTypes.BLOCK_CONDITION, null)
-				.add("modifier", Modifier.DATA_TYPE, null)
-				.add("modifiers", Modifier.LIST_TYPE, null)
-				.addFunctionedDefault("delta_modifier", Modifier.DATA_TYPE, data -> data.get("modifier"))
-				.addFunctionedDefault("delta_modifiers", Modifier.LIST_TYPE, data -> data.get("modifiers"))
-				.add("hardness_modifier", Modifier.DATA_TYPE, null)
-				.add("hardness_modifiers", Modifier.LIST_TYPE, null),
-			data -> (power, entity) -> new ModifyBreakSpeedPowerType(power, entity,
-				data.get("block_condition"),
-				data.get("delta_modifier"),
-				data.get("delta_modifiers"),
-				data.get("hardness_modifier"),
-				data.get("hardness_modifiers")
-			)
-		).allowCondition();
+		this.hardnessModifiers = hardnessModifiers;
 	}
 
 	public void applyPower(@NotNull BlockPos pos, @NotNull Player player, boolean modifyHardness) {
@@ -91,19 +68,25 @@ public class ModifyBreakSpeedPowerType extends ValueModifyingPowerType {
 
 	}
 
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.MODIFY_BREAK_SPEED;
+	}
+
 	public List<Modifier> getHardnessModifiers() {
-		return hardnessModifiers;
+		return new ObjectArrayList<>(hardnessModifiers);
 	}
 
 	public boolean doesApply(BlockPos pos) {
-		return blockCondition == null || blockCondition.test(new BlockInWorld(entity.level(), pos, true));
+		return blockCondition
+			.map(condition -> condition.test(getHolder().level(), pos))
+			.orElse(true);
 	}
 
 	@Override
 	public void onRemoved() {
-		if (entity instanceof Player player) {
+		if (getHolder() instanceof Player player) {
 			player.getBukkitLivingEntity().getAttribute(Attribute.PLAYER_BLOCK_BREAK_SPEED).setBaseValue(1.0F);
 		}
 	}
-
 }

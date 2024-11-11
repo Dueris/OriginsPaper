@@ -57,7 +57,7 @@ public class AddPowerLootFunction extends LootItemConditionalFunction {
 			// Is it possible to fake data to the client to prevent kick? - Dueris
 			ItemPowersComponent component = new ItemPowersComponent(stack);
 			for (EquipmentSlotGroup slot : slots) {
-				component.mutate().add(power().getId(), slot);
+				component.mutate().add(power().id(), slot);
 			}
 		});
 

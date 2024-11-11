@@ -3,9 +3,13 @@ package io.github.dueris.originspaper.power.type;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.condition.EntityCondition;
+import io.github.dueris.originspaper.condition.ItemCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
+import io.github.dueris.originspaper.util.InventoryUtil;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,51 +24,112 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class RestrictArmorPowerType extends PowerType implements Listener {
 
-	protected final Map<EquipmentSlot, Predicate<Tuple<Level, ItemStack>>> armorConditions;
+	public static final TypedDataObjectFactory<RestrictArmorPowerType> DATA_FACTORY = TypedDataObjectFactory.simple(
+		createSerializableData(),
+		data -> {
 
-	public RestrictArmorPowerType(Power power, LivingEntity entity, Map<EquipmentSlot, Predicate<Tuple<Level, ItemStack>>> armorConditions) {
-		super(power, entity);
+			EnumMap<EquipmentSlot, Optional<ItemCondition>> conditions = Arrays.stream(EquipmentSlot.values())
+				.filter(EquipmentSlot::isArmor)
+				.collect(Collectors.toMap(Function.identity(), slot -> data.get(slot.getName()), (o1, o2) -> o2, () -> new EnumMap<>(EquipmentSlot.class)));
+
+			return new RestrictArmorPowerType(conditions);
+
+		},
+		(powerType, serializableData) -> {
+
+			SerializableData.Instance data = serializableData.instance();
+			powerType.armorConditions.forEach((equipmentSlot, itemCondition) -> data.set(equipmentSlot.getName(), itemCondition));
+
+			return data;
+
+		}
+	);
+
+	protected final EnumMap<EquipmentSlot, Optional<ItemCondition>> armorConditions;
+
+	public RestrictArmorPowerType(EnumMap<EquipmentSlot, Optional<ItemCondition>> armorConditions, Optional<EntityCondition> condition) {
+		super(condition);
 		this.armorConditions = armorConditions;
 	}
 
-	public static @NotNull PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("restrict_armor"),
-			new SerializableData()
-				.add("head", ApoliDataTypes.ITEM_CONDITION, null)
-				.add("chest", ApoliDataTypes.ITEM_CONDITION, null)
-				.add("legs", ApoliDataTypes.ITEM_CONDITION, null)
-				.add("feet", ApoliDataTypes.ITEM_CONDITION, null),
-			data -> (power, entity) -> {
+	public RestrictArmorPowerType(EnumMap<EquipmentSlot, Optional<ItemCondition>> armorConditions) {
+		this(armorConditions, Optional.empty());
+	}
 
-				Map<EquipmentSlot, Predicate<Tuple<Level, ItemStack>>> restrictions = new HashMap<>();
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.RESTRICT_ARMOR;
+	}
 
-				if (data.isPresent("head")) {
-					restrictions.put(EquipmentSlot.HEAD, data.get("head"));
-				}
+	@Override
+	public void onGained() {
+		dropEquippedStacks();
+	}
 
-				if (data.isPresent("chest")) {
-					restrictions.put(EquipmentSlot.CHEST, data.get("chest"));
-				}
+	@Override
+	public void serverTick() {
 
-				if (data.isPresent("legs")) {
-					restrictions.put(EquipmentSlot.LEGS, data.get("legs"));
-				}
+		dropEquippedStacks();
 
-				if (data.isPresent("feet")) {
-					restrictions.put(EquipmentSlot.FEET, data.get("feet"));
-				}
+	}
 
-				return new RestrictArmorPowerType(power, entity, restrictions);
+	public boolean doesRestrict(ItemStack stack, EquipmentSlot slot) {
+		return armorConditions.getOrDefault(slot, Optional.empty())
+			.map(condition -> condition.test(getHolder().level(), stack))
+			.orElse(false);
+	}
 
+	public void dropEquippedStacks() {
+
+		for (Map.Entry<EquipmentSlot, Optional<ItemCondition>> armorConditionEntry : armorConditions.entrySet()) {
+
+			EquipmentSlot equipmentSlot = armorConditionEntry.getKey();
+			Optional<ItemCondition> itemCondition = armorConditionEntry.getValue();
+
+			ItemStack equippedStack = getHolder().getItemBySlot(equipmentSlot);
+
+			if (equippedStack.isEmpty() && itemCondition.map(condition -> condition.test(getHolder().level(), equippedStack)).orElse(false)) {
+				moveEquipmentInventory((org.bukkit.entity.Player) getHolder().getBukkitEntity(), CraftEquipmentSlot.getSlot(equipmentSlot));
 			}
-		);
+
+		}
+
+	}
+
+	@EventHandler
+	public void tickArmorChange(@NotNull PlayerArmorChangeEvent e) {
+		org.bukkit.entity.Player p = e.getPlayer();
+		Player nms = ((CraftPlayer) p).getHandle();
+		if (getHolder() == nms && isActive() && !e.getNewItem().isEmpty()) {
+			ItemStack stack = CraftItemStack.unwrap(e.getNewItem());
+			EquipmentSlot slot = switch (e.getSlotType()) {
+				case CHEST -> EquipmentSlot.CHEST;
+				case LEGS -> EquipmentSlot.LEGS;
+				case FEET -> EquipmentSlot.FEET;
+				case HEAD -> EquipmentSlot.HEAD;
+			};
+			if (doesRestrict(stack, slot)) {
+				moveEquipmentInventory(p, CraftEquipmentSlot.getSlot(slot));
+			}
+		}
+	}
+
+	protected static SerializableData createSerializableData() {
+
+		SerializableData serializableData = new SerializableData();
+		Arrays.stream(EquipmentSlot.values())
+			.filter(EquipmentSlot::isArmor)
+			.forEach(slot -> serializableData.add(slot.getName(), ItemCondition.DATA_TYPE.optional(), Optional.empty()));
+
+		return serializableData;
+
 	}
 
 	private static void moveEquipmentInventory(@NotNull org.bukkit.entity.Player player, org.bukkit.inventory.EquipmentSlot equipmentSlot) {
@@ -80,59 +145,4 @@ public class RestrictArmorPowerType extends PowerType implements Listener {
 			}
 		}
 	}
-
-	@Override
-	public void onGained() {
-		dropEquippedStacks();
-	}
-
-	@Override
-	public void tick() {
-
-		dropEquippedStacks();
-
-	}
-
-	public void dropEquippedStacks() {
-
-		for (EquipmentSlot slot : armorConditions.keySet()) {
-
-			ItemStack equippedStack = entity.getItemBySlot(slot);
-
-			if (!equippedStack.isEmpty() && this.shouldDrop(equippedStack, slot)) {
-				moveEquipmentInventory((org.bukkit.entity.Player) entity.getBukkitEntity(), CraftEquipmentSlot.getSlot(slot));
-			}
-
-		}
-
-	}
-
-	public boolean shouldDrop(ItemStack stack, EquipmentSlot slot) {
-		return this.doesRestrict(stack, slot);
-	}
-
-	public boolean doesRestrict(ItemStack stack, EquipmentSlot slot) {
-		Predicate<Tuple<Level, ItemStack>> armorCondition = armorConditions.get(slot);
-		return armorCondition != null && armorCondition.test(new Tuple<>(entity.level(), stack));
-	}
-
-	@EventHandler
-	public void tickArmorChange(@NotNull PlayerArmorChangeEvent e) {
-		org.bukkit.entity.Player p = e.getPlayer();
-		Player nms = ((CraftPlayer) p).getHandle();
-		if (entity == nms && isActive() && !e.getNewItem().isEmpty()) {
-			ItemStack stack = CraftItemStack.unwrap(e.getNewItem());
-			EquipmentSlot slot = switch (e.getSlotType()) {
-				case CHEST -> EquipmentSlot.CHEST;
-				case LEGS -> EquipmentSlot.LEGS;
-				case FEET -> EquipmentSlot.FEET;
-				case HEAD -> EquipmentSlot.HEAD;
-			};
-			if (doesRestrict(stack, slot)) {
-				moveEquipmentInventory(p, CraftEquipmentSlot.getSlot(slot));
-			}
-		}
-	}
-
 }
-

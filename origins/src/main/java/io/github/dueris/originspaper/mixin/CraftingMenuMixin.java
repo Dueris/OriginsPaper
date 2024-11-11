@@ -73,10 +73,10 @@ public abstract class CraftingMenuMixin extends RecipeBookMenu<CraftingInput, Cr
 		}
 
 		component.getPowerTypes(ModifyCraftingPowerType.class).stream().filter(p -> p.doesApply(recipeHolder == null ? null : recipeHolder.id(), result)).forEach(p -> {
-			if (p.getNewStack() != null) {
-				SlotAccess access = InventoryUtil.createStackReference(p.getNewStack().copy());
-				if (p.getItemAction() != null) {
-					p.getItemAction().accept(new Tuple<>(player.level(), access));
+			if (p.getResultStack().isPresent()) {
+				SlotAccess access = InventoryUtil.createStackReference(p.getResultStack().get().copy());
+				if (p.getItemAction().isPresent()) {
+					p.getItemAction().get().execute(player.level(), access);
 				}
 				newResult.set(access.get());
 			}

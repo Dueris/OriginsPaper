@@ -5,89 +5,59 @@ import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.client.MinecraftClient;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.HudRender;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class CooldownPowerType extends PowerType implements HudRendered {
 
-	public final int cooldownDuration;
+	public static final TypedDataObjectFactory<CooldownPowerType> DATA_FACTORY = TypedDataObjectFactory.simple(
+		new SerializableData()
+			.add("hud_render", HudRender.DATA_TYPE, HudRender.DONT_RENDER)
+			.add("cooldown", SerializableDataTypes.INT),
+		data -> new CooldownPowerType(
+			data.get("cooldown"),
+			data.get("hud_render")
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("hud_render", powerType.hudRender)
+			.set("cooldown", powerType.cooldown)
+	);
+
 	private final HudRender hudRender;
+	private final int cooldown;
+
 	protected long lastUseTime;
 
-	public CooldownPowerType(Power power, LivingEntity entity, int cooldownDuration, HudRender hudRender) {
-		super(power, entity);
-		this.cooldownDuration = cooldownDuration;
+	public CooldownPowerType(int cooldown, HudRender hudRender) {
+		this(cooldown, hudRender, Optional.empty());
+	}
+
+	public CooldownPowerType(int cooldown, HudRender hudRender, Optional<EntityCondition> condition) {
+		super(condition);
+		this.cooldown = cooldown;
 		this.hudRender = hudRender;
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("cooldown"),
-			new SerializableData()
-				.add("cooldown", SerializableDataTypes.INT)
-				.add("hud_render", ApoliDataTypes.HUD_RENDER, HudRender.DONT_RENDER),
-			data -> (power, entity) -> new CooldownPowerType(power, entity,
-				data.get("cooldown"),
-				data.get("hud_render")
-			)
-		).allowCondition();
-	}
-
-	public boolean canUse() {
-		return entity.getCommandSenderWorld().getGameTime() >= lastUseTime + cooldownDuration && isActive();
-	}
-
-	public void use() {
-		lastUseTime = entity.getCommandSenderWorld().getGameTime();
-		PowerHolderComponent.syncPower(entity, this.power);
-		if (entity instanceof ServerPlayer player) {
-			MinecraftClient.HUD_RENDER.setRender(player.getBukkitEntity(), CraftNamespacedKey.fromMinecraft(getPowerId()));
-		}
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.COOLDOWN;
 	}
 
 	@Override
-	public int getRuntimeMax() {
-		return cooldownDuration;
-	}
-
-	@Override
-	public boolean shouldTick() {
-		return true;
-	}
-
-	public float getProgress() {
-		float time = entity.getCommandSenderWorld().getGameTime() - lastUseTime;
-		return Math.min(1F, Math.max(time / (float) cooldownDuration, 0F));
-	}
-
-	public int getRemainingTicks() {
-		return (int) Math.max(0, cooldownDuration - (entity.getCommandSenderWorld().getGameTime() - lastUseTime));
-	}
-
-	public void modify(int changeInTicks) {
-		this.lastUseTime += changeInTicks;
-		long currentTime = entity.getCommandSenderWorld().getGameTime();
-		if (entity instanceof ServerPlayer player) {
-			MinecraftClient.HUD_RENDER.setRender(player.getBukkitEntity(), CraftNamespacedKey.fromMinecraft(getPowerId()), Math.toIntExact(currentTime - lastUseTime));
-		}
-		if (this.lastUseTime > currentTime) {
-			lastUseTime = currentTime;
-		}
-	}
-
-	public void setCooldown(int cooldownInTicks) {
-		long currentTime = entity.getCommandSenderWorld().getGameTime();
-		this.lastUseTime = currentTime - Math.min(cooldownInTicks, cooldownDuration);
-		if (entity instanceof ServerPlayer player) {
-			MinecraftClient.HUD_RENDER.setRender(player.getBukkitEntity(), CraftNamespacedKey.fromMinecraft(getPowerId()), cooldownInTicks);
-		}
+	public boolean isActive() {
+		return canUse();
 	}
 
 	@Override
@@ -97,7 +67,7 @@ public class CooldownPowerType extends PowerType implements HudRendered {
 
 	@Override
 	public void fromTag(Tag tag) {
-		lastUseTime = ((LongTag) tag).getAsLong();
+		lastUseTime = ((LongTag)tag).getAsLong();
 	}
 
 	@Override
@@ -112,7 +82,61 @@ public class CooldownPowerType extends PowerType implements HudRendered {
 
 	@Override
 	public boolean shouldRender() {
-		return (entity.getCommandSenderWorld().getGameTime() - lastUseTime) <= cooldownDuration;
+		return (getHolder().getCommandSenderWorld().getGameTime() - lastUseTime) <= cooldown;
+	}
+
+	@Override
+	public int getRuntimeMax() {
+		return cooldown;
+	}
+
+	public boolean canUse() {
+		return isInitialized()
+			&& getHolder().level().getGameTime() >= lastUseTime + cooldown
+			&& super.isActive();
+	}
+
+	public void use() {
+		this.lastUseTime = getHolder().level().getGameTime();
+		PowerHolderComponent.syncPower(getHolder(), getPower());
+		if (getHolder() instanceof ServerPlayer player) {
+			MinecraftClient.HUD_RENDER.setRender(player.getBukkitEntity(), CraftNamespacedKey.fromMinecraft(getPower().getId()));
+		}
+	}
+
+	public float getProgress() {
+		float time = getHolder().getCommandSenderWorld().getGameTime() - lastUseTime;
+		return Math.min(1F, Math.max(time / (float) cooldown, 0F));
+	}
+
+	public int getRemainingTicks() {
+		return (int) Math.max(0, cooldown - (getHolder().level().getGameTime() - lastUseTime));
+	}
+
+	public int getCooldown() {
+		return cooldown;
+	}
+
+	public void modify(int changeInTicks) {
+
+		this.lastUseTime += changeInTicks;
+		long currentTime = getHolder().level().getGameTime();
+		if (getHolder() instanceof ServerPlayer player) {
+			MinecraftClient.HUD_RENDER.setRender(player.getBukkitEntity(), CraftNamespacedKey.fromMinecraft(getPower().getId()), Math.toIntExact(currentTime - lastUseTime));
+		}
+
+		if (this.lastUseTime > currentTime) {
+			lastUseTime = currentTime;
+		}
+
+	}
+
+	public void setCooldown(int cooldownInTicks) {
+		long currentTime = getHolder().level().getGameTime();
+		this.lastUseTime = currentTime - Math.min(cooldownInTicks, cooldown);
+		if (getHolder() instanceof ServerPlayer player) {
+			MinecraftClient.HUD_RENDER.setRender(player.getBukkitEntity(), CraftNamespacedKey.fromMinecraft(getPower().getId()), cooldownInTicks);
+		}
 	}
 
 }

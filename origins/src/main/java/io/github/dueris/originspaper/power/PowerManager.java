@@ -12,6 +12,7 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.power.type.PowerType;
 import io.github.dueris.originspaper.power.type.PowerTypes;
+import io.github.dueris.originspaper.registry.ApoliRegistries;
 import io.github.dueris.originspaper.util.fabric.IdentifiableResourceReloadListener;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.*;
@@ -21,11 +22,13 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.Entity;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,284 +42,25 @@ public class PowerManager extends IdentifiableMultiJsonDataLoader implements Ide
 
 	public static final Set<ResourceLocation> DEPENDENCIES = new HashSet<>();
 	public static final ResourceLocation ID = OriginsPaper.apoliIdentifier("powers");
+
 	private static final Gson GSON = new GsonBuilder()
 		.disableHtmlEscaping()
 		.setPrettyPrinting()
 		.create();
+
 	private static final Set<String> FIELDS_TO_IGNORE = Set.of(
 		"condition",
 		"loading_priority",
 		"fabric:load_conditions"
 	);
+
 	private static final Map<ResourceLocation, Integer> LOADING_PRIORITIES = new HashMap<>();
+
 	private static final Object2ObjectOpenHashMap<ResourceLocation, Power> POWERS_BY_ID = new Object2ObjectOpenHashMap<>();
-	public static final Codec<ResourceLocation> VALIDATING_CODEC = ResourceLocation.CODEC.comapFlatMap(id -> contains(id) ? DataResult.success(id) : DataResult.error(() -> "Couldn't get power from ID \"" + id + "\", as it wasn't registered!"), Function.identity());
-	public static final Codec<Power> DISPATCH_CODEC = ResourceLocation.CODEC.comapFlatMap(
-		PowerManager::getResult,
-		Power::getId
-	);
-	public static final StreamCodec<ByteBuf, Power> DISPATCH_PACKET_CODEC = ResourceLocation.STREAM_CODEC.map(
-		PowerManager::get,
-		Power::getId
-	);
 	private static final ObjectOpenHashSet<ResourceLocation> DISABLED_POWERS = new ObjectOpenHashSet<>();
-	private static boolean building;
-	private static boolean validated;
 
 	public PowerManager() {
 		super(GSON, "powers", PackType.SERVER_DATA);
-	}
-
-	public static void updateData(@NotNull Entity entity, boolean initialize) {
-
-		RegistryOps<JsonElement> jsonOps = entity.registryAccess().createSerializationContext(JsonOps.INSTANCE);
-		PowerHolderComponent component = PowerHolderComponent.KEY.getNullable(entity);
-
-		if (component == null) {
-			return;
-		}
-
-		boolean mismatch = false;
-		for (Power oldPower : component.getPowers(true)) {
-
-			ResourceLocation powerId = oldPower.getId();
-
-			if (!contains(powerId)) {
-
-				OriginsPaper.LOGGER.error("Removed unregistered power \"{}\" from entity {}!", powerId, entity.getName().getString());
-				mismatch = true;
-
-				for (ResourceLocation sourceId : component.getSources(oldPower)) {
-					component.removePower(oldPower, sourceId);
-				}
-
-				continue;
-
-			}
-
-			Power newPower = get(powerId);
-			PowerType oldPowerType = component.getPowerType(oldPower);
-
-			JsonElement oldPowerJson = Power.CODEC.encodeStart(jsonOps, oldPower).getOrThrow(JsonParseException::new);
-			JsonElement newPowerJson = Power.CODEC.encodeStart(jsonOps, newPower).getOrThrow(JsonParseException::new);
-
-			if (oldPowerJson.equals(newPowerJson)) {
-				continue;
-			}
-
-			OriginsPaper.LOGGER.warn("Mismatched data fields of power \"{}\" from entity {}! Updating...", powerId, entity.getName().getString());
-			mismatch = true;
-
-			for (ResourceLocation source : component.getSources(oldPower)) {
-				component.removePower(oldPower, source);
-				component.addPower(newPower, source);
-			}
-
-			PowerType newPowerType = component.getPowerType(newPower);
-			if (oldPowerType.getClass().isAssignableFrom(newPowerType.getClass())) {
-				//  Transfer the data of the old power to the new power if the old power is an instance of the new power
-				OriginsPaper.LOGGER.info("Successfully transferred old data of power \"{}\"!", powerId);
-				newPowerType.fromTag(oldPowerType.toTag());
-			} else {
-				//  Output a warning that the data of the old power couldn't be transferred to the new power. This usually
-				//  occurs if the power no longer uses the same power type as it used to
-				OriginsPaper.LOGGER.warn("Couldn't transfer old data of power \"{}\", as it's using a different power type!", powerId);
-			}
-
-		}
-
-		if (initialize || mismatch) {
-
-			if (mismatch) {
-				OriginsPaper.LOGGER.info("Finished updating power data of entity {}.", entity.getName().getString());
-			}
-
-		}
-
-	}
-
-	private static Power register(ResourceLocation id, Power power) {
-
-		if (!building) {
-			return power;
-		} else if (POWERS_BY_ID.containsKey(id)) {
-			throw new IllegalArgumentException("Tried to register duplicate power with ID \"" + id + "\"");
-		} else {
-
-			DISABLED_POWERS.remove(id);
-			POWERS_BY_ID.put(id, power);
-
-			return power;
-
-		}
-
-	}
-
-	private static Power update(ResourceLocation id, Power power) {
-
-		if (!building) {
-			return power;
-		} else {
-
-			if (remove(id) instanceof MultiplePower removedMultiplePower) {
-				removedMultiplePower.getSubPowers()
-					.stream()
-					.map(Power::getId)
-					.forEach(PowerManager::remove);
-			}
-
-			return register(id, power);
-
-		}
-
-	}
-
-	private static @Nullable Power remove(ResourceLocation id) {
-
-		if (building) {
-			return POWERS_BY_ID.remove(id);
-		} else {
-			return null;
-		}
-
-	}
-
-	public static void disable(ResourceLocation id) {
-		remove(id);
-		DISABLED_POWERS.add(id);
-	}
-
-	/**
-	 * Validates all registered powers.
-	 */
-	public static void validate() {
-
-		if (POWERS_BY_ID.isEmpty()) {
-			return;
-		}
-
-		OriginsPaper.LOGGER.info("Validating {} powers...", size());
-
-		Iterator<Map.Entry<ResourceLocation, Power>> powerTypeIterator = POWERS_BY_ID.entrySet().iterator();
-		validated = true;
-
-		while (powerTypeIterator.hasNext()) {
-
-			Map.Entry<ResourceLocation, Power> powerTypeEntry = powerTypeIterator.next();
-
-			ResourceLocation id = powerTypeEntry.getKey();
-			Power power = powerTypeEntry.getValue();
-
-			try {
-				power.validate();
-			} catch (Exception e) {
-
-				StringBuilder errorBuilder = new StringBuilder("There was a problem validating ");
-				powerTypeIterator.remove();
-
-				if (power instanceof SubPower subPowerType) {
-					errorBuilder
-						.append("sub-power \"")
-						.append(subPowerType.getSubName())
-						.append("\" in power \"")
-						.append(subPowerType.getSuperPowerId())
-						.append("\"");
-				} else {
-					errorBuilder
-						.append("power \"")
-						.append(id)
-						.append("\"");
-				}
-
-				OriginsPaper.LOGGER.error(errorBuilder
-					.append(" (removing): ")
-					.append(e.getMessage()));
-
-			}
-
-		}
-
-	}
-
-	private static void startBuilding() {
-
-		if (building) {
-			return;
-		}
-
-		building = true;
-		validated = false;
-
-		POWERS_BY_ID.clear();
-		DISABLED_POWERS.clear();
-
-		LOADING_PRIORITIES.clear();
-
-	}
-
-	private static void endBuilding() {
-		building = false;
-	}
-
-	public static DataResult<Power> getResult(ResourceLocation id) {
-
-		try {
-			return DataResult.success(get(id));
-		} catch (Exception e) {
-			return DataResult.error(e::getMessage);
-		}
-
-	}
-
-	public static Optional<Power> getOptional(ResourceLocation id) {
-		return Optional.ofNullable(POWERS_BY_ID.get(id));
-	}
-
-	public static Power get(ResourceLocation id) {
-		return getOptional(id).orElseThrow(() -> new IllegalArgumentException("Couldn't get power from ID \"" + id + "\", as it wasn't registered!"));
-	}
-
-	public static @NotNull Set<Map.Entry<ResourceLocation, Power>> entrySet() {
-		return new ObjectArraySet<>(POWERS_BY_ID.entrySet());
-	}
-
-	public static @NotNull Collection<Power> values() {
-		return new ObjectArrayList<>(POWERS_BY_ID.values());
-	}
-
-	public static Stream<ResourceLocation> streamIds() {
-		return new ObjectArraySet<>(POWERS_BY_ID.keySet()).stream();
-	}
-
-	public static void forEach(BiConsumer<ResourceLocation, Power> biConsumer) {
-		POWERS_BY_ID.forEach(biConsumer);
-	}
-
-	public static boolean isDisabled(ResourceLocation id) {
-		return DISABLED_POWERS.contains(id);
-	}
-
-	public static boolean contains(ResourceLocation id) {
-		return POWERS_BY_ID.containsKey(id);
-	}
-
-	public static Set<ResourceLocation> keySet() {
-		return new ObjectOpenHashSet<>(POWERS_BY_ID.keySet());
-	}
-
-	public static boolean contains(@NotNull Power power) {
-		return contains(power.getId());
-	}
-
-	public static int size() {
-		return POWERS_BY_ID.size();
-	}
-
-	public static boolean shouldIgnoreField(@NotNull String field) {
-		return field.isEmpty()
-			|| field.startsWith("$")
-			|| FIELDS_TO_IGNORE.contains(field)
-			|| Power.DATA.containsField(field);
 	}
 
 	@Override
@@ -324,8 +68,8 @@ public class PowerManager extends IdentifiableMultiJsonDataLoader implements Ide
 
 		OriginsPaper.LOGGER.info("Reading powers from data packs...");
 
-		startBuilding();
 		RegistryAccess dynamicRegistries = CraftCalio.getDynamicRegistries().orElse(null);
+		startBuilding();
 
 		if (dynamicRegistries == null) {
 
@@ -345,11 +89,15 @@ public class PowerManager extends IdentifiableMultiJsonDataLoader implements Ide
 
 				if (jsonElement instanceof JsonObject jsonObject) {
 					this.readMultipleOrNormalPower(dynamicRegistries, packName, id, jsonObject);
-				} else {
+				}
+
+				else {
 					throw new JsonSyntaxException("Not a JSON object: " + jsonElement);
 				}
 
-			} catch (Exception e) {
+			}
+
+			catch (Exception e) {
 				OriginsPaper.LOGGER.error("There was a problem reading power \"{}\" from data pack [{}]: {}", id, packName, e.getMessage());
 			}
 
@@ -358,14 +106,10 @@ public class PowerManager extends IdentifiableMultiJsonDataLoader implements Ide
 		SerializableData.CURRENT_NAMESPACE = null;
 		SerializableData.CURRENT_PATH = null;
 
-		endBuilding();
 		OriginsPaper.LOGGER.info("Finished reading powers from data packs. Registry contains {} powers.", size());
 
 		validate();
-
-		if (validated) {
-			OriginsPaper.LOGGER.info("Finished validating powers from data packs. Registry contains {} powers.", size());
-		}
+		endBuilding();
 
 	}
 
@@ -388,11 +132,94 @@ public class PowerManager extends IdentifiableMultiJsonDataLoader implements Ide
 		return DEPENDENCIES;
 	}
 
-	private void readMultipleOrNormalPower(HolderLookup.@NotNull Provider wrapperLookup, String packName, @NotNull ResourceLocation powerId, @NotNull JsonObject powerJson) {
+	public static void updateData(Entity entity, boolean initialize) {
+
+		RegistryOps<JsonElement> jsonOps = entity.registryAccess().createSerializationContext(JsonOps.INSTANCE);
+		PowerHolderComponent component = PowerHolderComponent.KEY.getNullable(entity);
+
+		if (component == null) {
+			return;
+		}
+
+		int mismatches = 0;
+
+		for (Power oldPower : component.getPowers(true)) {
+
+			StringBuilder oldPowerString = new StringBuilder();
+			if (oldPower instanceof SubPower subPower) {
+				oldPowerString.append("sub-power \"")
+					.append(subPower.getSubName())
+					.append("\" of power \"")
+					.append(subPower.getSuperPowerId())
+					.append("\"");
+			}
+
+			else {
+				oldPowerString.append("power \"")
+					.append(oldPower.getId())
+					.append("\"");
+			}
+
+			if (!contains(oldPower)) {
+
+				OriginsPaper.LOGGER.error("Removed unregistered {} from entity {}!", oldPowerString, entity.getName().getString());
+
+				for (ResourceLocation sourceId : component.getSources(oldPower)) {
+					component.removePower(oldPower, sourceId);
+				}
+
+			}
+
+			else {
+
+				Power newPower = get(oldPower.getId());
+				PowerType oldPowerType = component.getPowerType(oldPower);
+
+				JsonElement oldPowerJson = Power.DATA_TYPE.write(jsonOps, oldPower).getOrThrow(JsonParseException::new);
+				JsonElement newPowerJson = Power.DATA_TYPE.write(jsonOps, newPower).getOrThrow(JsonParseException::new);
+
+				if (oldPowerJson.equals(newPowerJson)) {
+					continue;
+				}
+
+				OriginsPaper.LOGGER.warn("{} from entity {} has mismatched data fields! Updating...", StringUtils.capitalize(oldPowerString.toString()), entity.getName().getString());
+				mismatches++;
+
+				for (ResourceLocation source : component.getSources(oldPower)) {
+					component.removePower(oldPower, source);
+					component.addPower(newPower, source);
+				}
+
+				PowerType newPowerType = component.getPowerType(newPower);
+				if (oldPowerType.getClass().isAssignableFrom(newPowerType.getClass())) {
+					//  Transfer the data of the old power to the new power if the old power is an instance of the new power
+					OriginsPaper.LOGGER.info("Successfully transferred old data of {}!", oldPowerString);
+					newPowerType.fromTag(oldPowerType.toTag());
+				}
+
+				else {
+					//  Output a warning that the data of the old power couldn't be transferred to the new power. This usually
+					//  occurs if the power no longer uses the same power type as it used to
+					OriginsPaper.LOGGER.warn("Couldn't transfer old data of {}, as it's using a different power type!", oldPowerString);
+				}
+
+			}
+
+		}
+
+		if (mismatches > 0) {
+			OriginsPaper.LOGGER.info("Finished updating {} powers with mismatched data fields from entity {}!", mismatches, entity.getName().getString());
+		}
+
+		component.sync();
+
+	}
+
+	private void readMultipleOrNormalPower(HolderLookup.Provider wrapperLookup, String packName, ResourceLocation powerId, JsonObject powerJson) {
 
 		powerJson.addProperty("id", powerId.toString());
 
-		Power basePower = Power.CODEC.parse(wrapperLookup.createSerializationContext(JsonOps.INSTANCE), powerJson).getOrThrow(JsonParseException::new);
+		Power basePower = Power.DATA_TYPE.read(wrapperLookup.createSerializationContext(JsonOps.INSTANCE), powerJson).getOrThrow(JsonParseException::new);
 
 		if (basePower.isMultiple()) {
 
@@ -409,7 +236,9 @@ public class PowerManager extends IdentifiableMultiJsonDataLoader implements Ide
 
 					if (!ResourceLocation.isValidPath(key)) {
 						throw new ResourceLocationException("Non [a-z0-9/._-] character in sub-power name \"" + key + "\"!");
-					} else if (jsonElement instanceof JsonObject subPowerJson) {
+					}
+
+					else if (jsonElement instanceof JsonObject subPowerJson) {
 
 						ResourceLocation subPowerId = powerId.withSuffix("_" + key);
 
@@ -417,11 +246,15 @@ public class PowerManager extends IdentifiableMultiJsonDataLoader implements Ide
 							subPowerIds.add(subPowerId);
 						}
 
-					} else {
+					}
+
+					else {
 						throw new JsonSyntaxException("Not a JSON object: " + jsonElement);
 					}
 
-				} catch (Exception e) {
+				}
+
+				catch (Exception e) {
 					OriginsPaper.LOGGER.error("There was a problem reading sub-power \"{}\" in power \"{}\" from data pack [{}]: {}", key, powerId, packName, e.getMessage());
 				}
 
@@ -429,45 +262,57 @@ public class PowerManager extends IdentifiableMultiJsonDataLoader implements Ide
 
 			if (supposedMultiplePower instanceof MultiplePower multiplePower) {
 				multiplePower.setSubPowerIds(subPowerIds);
-			} else if (isDisabled(powerId)) {
+			}
+
+			else if (isDisabled(powerId)) {
 				subPowerIds.forEach(PowerManager::disable);
 			}
 
-		} else {
+		}
+
+		else {
 			this.readPower(packName, basePower, powerJson);
 		}
 
 	}
 
-	private boolean readSubPower(HolderLookup.@NotNull Provider wrapperLookup, String packName, ResourceLocation superPowerId, @NotNull ResourceLocation subPowerId, String name, @NotNull JsonObject subPowerJson) {
+	private boolean readSubPower(HolderLookup.Provider wrapperLookup, String packName, ResourceLocation superPowerId, ResourceLocation subPowerId, String name, JsonObject subPowerJson) {
+
 		subPowerJson.addProperty("id", subPowerId.toString());
-		Power basePower = Power.CODEC.parse(wrapperLookup.createSerializationContext(JsonOps.INSTANCE), subPowerJson).getOrThrow(JsonParseException::new);
+		Power basePower = Power.DATA_TYPE.read(wrapperLookup.createSerializationContext(JsonOps.INSTANCE), subPowerJson).getOrThrow(JsonParseException::new);
 
 		SubPower subPower = switch (this.readPower(packName, new SubPower(superPowerId, name, basePower), subPowerJson)) {
-			case SubPower selfSubPower -> selfSubPower;
-			case Power power -> new SubPower(superPowerId, name, power);
-			case null -> null;
+			case SubPower selfSubPower ->
+				selfSubPower;
+			case Power power ->
+				new SubPower(superPowerId, name, power);
+			case null ->
+				null;
 		};
 
 		if (subPower != null && subPower.isMultiple()) {
-			throw new IllegalStateException("Using the '" + PowerTypes.MULTIPLE.getSerializerId() + "' power type in sub-powers is not allowed!");
-		} else {
+			throw new IllegalStateException("Using the '" + PowerTypes.MULTIPLE.id() + "' power type in sub-powers is not allowed!");
+		}
+
+		else {
 			return subPower != null;
 		}
 
 	}
 
 	@Nullable
-	private <P extends Power> Power readPower(String packName, @NotNull P power, JsonObject powerJson) {
+	private <P extends Power> Power readPower(String packName, P power, JsonObject powerJson) {
 
 		ResourceLocation powerId = power.getId();
 
+		int previousPriority = LOADING_PRIORITIES.getOrDefault(powerId, 0);
 		int priority = GsonHelper.getAsInt(powerJson, "loading_priority", 0);
-		int previousPriority = LOADING_PRIORITIES.computeIfAbsent(powerId, k -> priority);
 
 		if (!contains(powerId)) {
 			return this.finishReadingPower(PowerManager::register, powerId, power, powerJson, priority);
-		} else if (previousPriority < priority) {
+		}
+
+		else if (previousPriority < priority) {
 
 			StringBuilder overrideMessage = new StringBuilder("Overriding ");
 			if (power instanceof SubPower subPower) {
@@ -477,7 +322,9 @@ public class PowerManager extends IdentifiableMultiJsonDataLoader implements Ide
 					.append("\" of power \"")
 					.append(subPower.getSuperPowerId())
 					.append("\"");
-			} else {
+			}
+
+			else {
 				overrideMessage.append("power \"")
 					.append(power.getId())
 					.append("\"");
@@ -494,7 +341,9 @@ public class PowerManager extends IdentifiableMultiJsonDataLoader implements Ide
 
 			return this.finishReadingPower(PowerManager::update, powerId, power, powerJson, priority);
 
-		} else {
+		}
+
+		else {
 
 			StringBuilder overrideHint = new StringBuilder("Ignoring ");
 			if (power instanceof SubPower subPower) {
@@ -504,7 +353,9 @@ public class PowerManager extends IdentifiableMultiJsonDataLoader implements Ide
 					.append("\" of power \"")
 					.append(subPower.getSuperPowerId())
 					.append("\"");
-			} else {
+			}
+
+			else {
 				overrideHint.append("power \"")
 					.append(power.getId())
 					.append("\"");
@@ -525,13 +376,183 @@ public class PowerManager extends IdentifiableMultiJsonDataLoader implements Ide
 
 	}
 
-	private <P extends Power> P finishReadingPower(@NotNull BiFunction<ResourceLocation, Power, Power> powerTypeProcessor, ResourceLocation powerId, P power, JsonObject jsonObject, int priority) {
+	private <P extends Power> P finishReadingPower(BiFunction<ResourceLocation, Power, Power> powerProcessor, ResourceLocation powerId, P power, JsonObject jsonObject, int priority) {
 
-		powerTypeProcessor.apply(powerId, power);
+		ResourceLocation powerTypeId = power.getPowerType().getConfig().id();
+		boolean subPower = power.isSubPower();
+
+		powerProcessor.apply(powerId, power);
 		LOADING_PRIORITIES.put(powerId, priority);
 
 		return power;
 
+	}
+
+	private static Power register(ResourceLocation id, Power power) {
+
+		if (contains(id)) {
+			throw new IllegalArgumentException("Tried to register duplicate power with ID \"" + id + "\"");
+		}
+
+		else {
+
+			DISABLED_POWERS.remove(id);
+			POWERS_BY_ID.put(id, power);
+
+			return power;
+
+		}
+
+	}
+
+	private static Power update(ResourceLocation id, Power power) {
+
+		if (remove(id) instanceof MultiplePower removedMultiplePower) {
+			removedMultiplePower.getSubPowers()
+				.stream()
+				.map(Power::getId)
+				.forEach(PowerManager::remove);
+		}
+
+		return register(id, power);
+
+	}
+
+	private static Power remove(ResourceLocation id) {
+		return POWERS_BY_ID.remove(id);
+	}
+
+	public static void disable(ResourceLocation id) {
+		remove(id);
+		DISABLED_POWERS.add(id);
+	}
+
+	/**
+	 *  Validates all registered powers.
+	 */
+	public static void validate() {
+
+		if (POWERS_BY_ID.isEmpty()) {
+			return;
+		}
+
+		OriginsPaper.LOGGER.info("Validating {} powers...", size());
+		Iterator<Map.Entry<ResourceLocation, Power>> powerTypeIterator = POWERS_BY_ID.entrySet().iterator();
+
+		while (powerTypeIterator.hasNext()) {
+
+			Map.Entry<ResourceLocation, Power> powerTypeEntry = powerTypeIterator.next();
+
+			ResourceLocation id = powerTypeEntry.getKey();
+			Power power = powerTypeEntry.getValue();
+
+			try {
+				power.validate();
+			}
+
+			catch (Exception e) {
+
+				StringBuilder errorBuilder = new StringBuilder("There was a problem validating ");
+				powerTypeIterator.remove();
+
+				if (power instanceof SubPower subPowerType) {
+					errorBuilder
+						.append("sub-power \"")
+						.append(subPowerType.getSubName())
+						.append("\" in power \"")
+						.append(subPowerType.getSuperPowerId())
+						.append("\"");
+				}
+
+				else {
+					errorBuilder
+						.append("power \"")
+						.append(id)
+						.append("\"");
+				}
+
+				OriginsPaper.LOGGER.error(errorBuilder
+					.append(" (removing): ")
+					.append(e.getMessage()));
+
+			}
+
+		}
+
+		OriginsPaper.LOGGER.info("Finished validating powers from data packs. Registry contains {} powers.", size());
+
+	}
+
+	private static void startBuilding() {
+
+		LOADING_PRIORITIES.clear();
+
+		POWERS_BY_ID.clear();
+		DISABLED_POWERS.clear();
+
+	}
+
+	private static void endBuilding() {
+
+		LOADING_PRIORITIES.clear();
+
+		POWERS_BY_ID.trim();
+		DISABLED_POWERS.trim();
+
+	}
+
+	public static DataResult<Power> getResult(ResourceLocation id) {
+		return contains(id)
+			? DataResult.success(POWERS_BY_ID.get(id))
+			: DataResult.error(() -> "Couldn't get power from ID \"" + id + "\", as it wasn't registered!");
+	}
+
+	public static Optional<Power> getOptional(ResourceLocation id) {
+		return getResult(id).result();
+	}
+
+	@Nullable
+	public static Power getNullable(ResourceLocation id) {
+		return POWERS_BY_ID.get(id);
+	}
+
+	public static Power get(ResourceLocation id) {
+		return getResult(id).getOrThrow();
+	}
+
+	public static Set<Map.Entry<ResourceLocation, Power>> entrySet() {
+		return new ObjectOpenHashSet<>(POWERS_BY_ID.entrySet());
+	}
+
+	public static Set<ResourceLocation> keySet() {
+		return new ObjectOpenHashSet<>(POWERS_BY_ID.keySet());
+	}
+
+	public static Collection<Power> values() {
+		return new ObjectOpenHashSet<>(POWERS_BY_ID.values());
+	}
+
+	public static boolean isDisabled(ResourceLocation id) {
+		return DISABLED_POWERS.contains(id);
+	}
+
+	public static boolean contains(Power power) {
+		return contains(power.getId());
+	}
+
+	public static boolean contains(ResourceLocation id) {
+		return POWERS_BY_ID.containsKey(id);
+	}
+
+	public static int size() {
+		return POWERS_BY_ID.size();
+	}
+
+	public static boolean shouldIgnoreField(String field) {
+		return field.isEmpty()
+			|| field.startsWith("$")
+			|| FIELDS_TO_IGNORE.contains(field)
+			|| Power.SERIALIZABLE_DATA.containsField(field);
 	}
 
 }

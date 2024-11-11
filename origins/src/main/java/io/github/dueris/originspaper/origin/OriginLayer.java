@@ -5,7 +5,8 @@ import io.github.dueris.calio.data.CompoundSerializableDataType;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
+import io.github.dueris.originspaper.action.EntityAction;
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.OriginsDataTypes;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
@@ -347,12 +348,12 @@ public class OriginLayer implements Comparable<OriginLayer> {
 
 	}
 
-	public record ConditionedOrigin(@Nullable ConditionTypeFactory<Entity>.Instance condition,
+	public record ConditionedOrigin(Optional<EntityCondition> condition,
 									List<ResourceLocation> origins) {
 
 		public static final CompoundSerializableDataType<ConditionedOrigin> DATA_TYPE = SerializableDataType.compound(
 			new SerializableData()
-				.add("condition", ApoliDataTypes.ENTITY_CONDITION, null)
+				.add("condition", EntityAction.DATA_TYPE.optional(), Optional.empty())
 				.add("origins", SerializableDataTypes.IDENTIFIERS),
 			data -> new ConditionedOrigin(
 				data.get("condition"),
@@ -364,7 +365,7 @@ public class OriginLayer implements Comparable<OriginLayer> {
 		);
 
 		public boolean isConditionFulfilled(Player playerEntity) {
-			return condition == null || condition.test(playerEntity);
+			return condition.isEmpty() || condition.get().test(playerEntity);
 		}
 
 	}

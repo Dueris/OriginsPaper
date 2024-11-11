@@ -2,7 +2,9 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.power.Power;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -17,10 +19,17 @@ import org.bukkit.craftbukkit.util.CraftVector;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 public class GroundedPowerType extends PowerType {
 
-	public GroundedPowerType(Power power, LivingEntity entity) {
-		super(power, entity);
+	public GroundedPowerType(Optional<EntityCondition> condition) {
+		super(condition);
+	}
+
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.GROUNDED;
 	}
 
 	public static void action(Player entity) {
@@ -64,7 +73,7 @@ public class GroundedPowerType extends PowerType {
 
 	@Override
 	public void onRemoved() {
-		if (entity instanceof ServerPlayer player) {
+		if (getHolder() instanceof ServerPlayer player) {
 			player.getAbilities().mayfly = false;
 			player.onUpdateAbilities();
 		}

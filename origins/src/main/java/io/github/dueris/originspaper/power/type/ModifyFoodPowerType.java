@@ -3,10 +3,16 @@ package io.github.dueris.originspaper.power.type;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.action.EntityAction;
+import io.github.dueris.originspaper.action.ItemAction;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
+import io.github.dueris.originspaper.condition.EntityCondition;
+import io.github.dueris.originspaper.condition.ItemCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
+import io.github.dueris.originspaper.util.Util;
 import io.github.dueris.originspaper.util.modifier.Modifier;
 import io.github.dueris.originspaper.util.modifier.ModifierUtil;
 import net.minecraft.core.component.DataComponents;
@@ -17,10 +23,12 @@ import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -28,58 +36,116 @@ import java.util.function.Predicate;
 // TODO - improve impl for full server-sided operations
 public class ModifyFoodPowerType extends PowerType {
 
-	private final Predicate<Tuple<Level, ItemStack>> itemCondition;
-	private final ItemStack replaceStack;
-	private final Consumer<Tuple<Level, SlotAccess>> itemAction;
+	public static final TypedDataObjectFactory<ModifyFoodPowerType> DATA_FACTORY = createConditionedDataFactory(
+		new SerializableData()
+			.add("entity_action", EntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("item_action", ItemAction.DATA_TYPE.optional(), Optional.empty())
+			.add("item_condition", ItemCondition.DATA_TYPE.optional(), Optional.empty())
+			.add("food_modifier", Modifier.DATA_TYPE, null)
+			.addFunctionedDefault("food_modifiers", Modifier.LIST_TYPE, data -> Util.singletonListOrEmpty(data.get("food_modifier")))
+			.add("saturation_modifier", Modifier.DATA_TYPE, null)
+			.addFunctionedDefault("saturation_modifiers", Modifier.LIST_TYPE, data -> Util.singletonListOrEmpty(data.get("saturation_modifier")))
+			.add("eat_ticks_modifier", Modifier.DATA_TYPE, null)
+			.addFunctionedDefault("eat_ticks_modifiers", Modifier.LIST_TYPE, data -> Util.singletonListOrEmpty(data.get("eat_ticks_modifier")))
+			.add("replace_stack", SerializableDataTypes.ITEM_STACK.optional(), Optional.empty())
+			.add("prevent_effects", SerializableDataTypes.BOOLEAN, false)
+			.add("always_edible", SerializableDataTypes.BOOLEAN, false)
+			.addFunctionedDefault("can_always_eat", SerializableDataTypes.BOOLEAN, data -> data.getBoolean("always_edible")),
+		(data, condition) -> new ModifyFoodPowerType(
+			data.get("entity_action"),
+			data.get("item_action"),
+			data.get("item_condition"),
+			data.get("food_modifiers"),
+			data.get("saturation_modifiers"),
+			data.get("eat_ticks_modifiers"),
+			data.get("replace_stack"),
+			data.get("prevent_effects"),
+			data.get("can_always_eat"),
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("entity_action", powerType.entityAction)
+			.set("item_action", powerType.itemAction)
+			.set("item_condition", powerType.itemCondition)
+			.set("food_modifiers", powerType.foodModifiers)
+			.set("saturaton_modifiers", powerType.saturationModifiers)
+			.set("eat_ticks_modifiers", powerType.eatTicksModifiers)
+			.set("replace_stack", powerType.replaceStack)
+			.set("prevent_effects", powerType.preventFoodEffects)
+			.set("can_always_eat", powerType.canAlwaysEat)
+	);
+
+	private final Optional<EntityAction> entityAction;
+	private final Optional<ItemAction> itemAction;
+
+	private final Optional<ItemCondition> itemCondition;
+
 	private final List<Modifier> foodModifiers;
 	private final List<Modifier> saturationModifiers;
 	private final List<Modifier> eatTicksModifiers;
-	private final Consumer<Entity> entityActionWhenEaten;
+
+	private final Optional<ItemStack> replaceStack;
+
 	private final boolean preventFoodEffects;
-	private final boolean makeAlwaysEdible;
+	private final boolean canAlwaysEat;
 
-	public ModifyFoodPowerType(Power power, LivingEntity entity, Predicate<Tuple<Level, ItemStack>> itemCondition, ItemStack replaceStack, Consumer<Tuple<Level, SlotAccess>> itemAction, Modifier foodModifier, List<Modifier> foodModifiers, Modifier saturationModifier, List<Modifier> saturationModifiers, Modifier eatSecondsModifier, List<Modifier> eatTicksModifiers, Consumer<Entity> entityActionWhenEaten, boolean makeAlwaysEdible, boolean preventFoodEffects) {
+	public ModifyFoodPowerType(Optional<EntityAction> entityAction, Optional<ItemAction> itemAction, Optional<ItemCondition> itemCondition, List<Modifier> foodModifiers, List<Modifier> saturationModifiers, List<Modifier> eatTicksModifiers, Optional<ItemStack> replaceStack, boolean preventFoodEffects, boolean canAlwaysEat, Optional<EntityCondition> condition) {
+		super(condition);
 
-		super(power, entity);
-
-		this.itemCondition = itemCondition;
-		this.replaceStack = replaceStack;
+		this.entityAction = entityAction;
 		this.itemAction = itemAction;
 
-		this.foodModifiers = new LinkedList<>();
+		this.itemCondition = itemCondition;
 
-		if (foodModifier != null) {
-			this.foodModifiers.add(foodModifier);
-		}
+		this.foodModifiers = foodModifiers;
+		this.saturationModifiers = saturationModifiers;
+		this.eatTicksModifiers = eatTicksModifiers;
 
-		if (foodModifiers != null) {
-			this.foodModifiers.addAll(foodModifiers);
-		}
+		this.replaceStack = replaceStack;
 
-		this.saturationModifiers = new LinkedList<>();
-
-		if (saturationModifier != null) {
-			this.saturationModifiers.add(saturationModifier);
-		}
-
-		if (saturationModifiers != null) {
-			this.saturationModifiers.addAll(saturationModifiers);
-		}
-
-		this.eatTicksModifiers = new LinkedList<>();
-
-		if (eatSecondsModifier != null) {
-			this.eatTicksModifiers.add(eatSecondsModifier);
-		}
-
-		if (eatTicksModifiers != null) {
-			this.eatTicksModifiers.addAll(eatTicksModifiers);
-		}
-
-		this.entityActionWhenEaten = entityActionWhenEaten;
-		this.makeAlwaysEdible = makeAlwaysEdible;
 		this.preventFoodEffects = preventFoodEffects;
+		this.canAlwaysEat = canAlwaysEat;
 
+	}
+
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.MODIFY_FOOD;
+	}
+
+	public boolean doesApply(ItemStack stack) {
+		return itemCondition
+			.map(condition -> condition.test(getHolder().level(), stack))
+			.orElse(true);
+	}
+
+	public void setConsumedItemStackReference(SlotAccess stackReference) {
+		replaceStack.ifPresent(stackReference::set);
+		itemAction.ifPresent(action -> action.execute(getHolder().level(), stackReference));
+	}
+
+	public void eat() {
+		entityAction.ifPresent(action -> action.execute(getHolder()));
+	}
+
+	public List<Modifier> getFoodModifiers() {
+		return foodModifiers;
+	}
+
+	public List<Modifier> getSaturationModifiers() {
+		return saturationModifiers;
+	}
+
+	public List<Modifier> getEatTicksModifiers() {
+		return eatTicksModifiers;
+	}
+
+	public boolean doesMakeAlwaysEdible() {
+		return canAlwaysEat;
+	}
+
+	public boolean doesPreventEffects() {
+		return preventFoodEffects;
 	}
 
 	public static OptionalInt modifyEatTicks(@Nullable Entity entity, ItemStack stack) {
@@ -102,75 +168,4 @@ public class ModifyFoodPowerType extends PowerType {
 
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(OriginsPaper.apoliIdentifier("modify_food"),
-			new SerializableData()
-				.add("item_condition", ApoliDataTypes.ITEM_CONDITION, null)
-				.add("replace_stack", SerializableDataTypes.ITEM_STACK, null)
-				.add("item_action", ApoliDataTypes.ITEM_ACTION, null)
-				.add("food_modifier", Modifier.DATA_TYPE, null)
-				.add("food_modifiers", Modifier.LIST_TYPE, null)
-				.add("saturation_modifier", Modifier.DATA_TYPE, null)
-				.add("saturation_modifiers", Modifier.LIST_TYPE, null)
-				.add("eat_ticks_modifier", Modifier.DATA_TYPE, null)
-				.add("eat_ticks_modifiers", Modifier.LIST_TYPE, null)
-				.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null)
-				.add("always_edible", SerializableDataTypes.BOOLEAN, false)
-				.add("prevent_effects", SerializableDataTypes.BOOLEAN, false),
-			data -> (power, entity) -> new ModifyFoodPowerType(power, entity,
-				data.get("item_condition"),
-				data.get("replace_stack"),
-				data.get("item_action"),
-				data.get("food_modifier"),
-				data.get("food_modifiers"),
-				data.get("saturation_modifier"),
-				data.get("saturation_modifiers"),
-				data.get("eat_ticks_modifier"),
-				data.get("eat_ticks_modifiers"),
-				data.get("entity_action"),
-				data.get("always_edible"),
-				data.get("prevent_effects")
-			)
-		).allowCondition();
-	}
-
-	public boolean doesApply(ItemStack stack) {
-		return itemCondition == null || itemCondition.test(new Tuple<>(entity.level(), stack));
-	}
-
-	public void setConsumedItemStackReference(SlotAccess stack) {
-
-		if (replaceStack != null) {
-			stack.set(this.replaceStack);
-		}
-
-		if (itemAction != null) {
-			itemAction.accept(new Tuple<>(entity.level(), stack));
-		}
-
-	}
-
-	public void eat() {
-		if (entityActionWhenEaten != null) entityActionWhenEaten.accept(entity);
-	}
-
-	public List<Modifier> getFoodModifiers() {
-		return foodModifiers;
-	}
-
-	public List<Modifier> getSaturationModifiers() {
-		return saturationModifiers;
-	}
-
-	public List<Modifier> getEatTicksModifiers() {
-		return eatTicksModifiers;
-	}
-
-	public boolean doesMakeAlwaysEdible() {
-		return makeAlwaysEdible;
-	}
-
-	public boolean doesPreventEffects() {
-		return preventFoodEffects;
-	}
 }

@@ -57,7 +57,9 @@
     "TargetGoalAccessor",
     "NearestAttackableTargetGoalAccessor",
     "TargetingConditionsAccessor",
-    "LivingEntityAccessor"
+    "LivingEntityAccessor",
+    "AdvancementCommandsAccessor",
+    "ServerPlayerGameModeAccessor"
   ],
   "compatibilityLevel": "JAVA_17"
 }

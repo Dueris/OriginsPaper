@@ -7,6 +7,8 @@ import com.mojang.serialization.DataResult;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.access.ThrownEnderianPearlEntity;
+import io.github.dueris.originspaper.condition.context.BlockConditionContext;
+import it.unimi.dsi.fastutil.ints.IntCollection;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -32,6 +34,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownEnderpearl;
+import net.minecraft.world.inventory.SlotRange;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -62,6 +65,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Util {
 	public static MinecraftServer server = OriginsPaper.server;
@@ -74,63 +78,6 @@ public class Util {
 				return biome.getPrecipitationAt(blockPos) == Biome.Precipitation.SNOW
 					&& isRainingAndExposed(world, blockPos);
 			});
-	}
-
-	public static double apoli$getFluidHeightLoosely(Entity entity, TagKey<Fluid> tag) {
-		if (tag == null) return 0;
-		Optional<Object2DoubleMap<TagKey<Fluid>>> fluidHeightMap = getFluidHeightMap(entity);
-		if (fluidHeightMap.isPresent()) {
-			Object2DoubleMap<TagKey<Fluid>> fluidHeight = fluidHeightMap.get();
-			if (fluidHeight.containsKey(tag)) {
-				return fluidHeight.getDouble(tag);
-			}
-
-			for (TagKey<Fluid> ft : fluidHeight.keySet()) {
-				if (areTagsEqual(ft, tag)) {
-					return fluidHeight.getDouble(ft);
-				}
-			}
-		}
-		return 0;
-	}
-
-	public static boolean apoli$isSubmergedInLoosely(Entity entity, TagKey<Fluid> tag) {
-		if (tag == null) {
-			return false;
-		} else {
-			Optional<Set<TagKey<Fluid>>> submergedSet = getSubmergedSet(entity);
-			return submergedSet.isPresent() && submergedSet.get().contains(tag);
-		}
-	}
-
-	public static <T> boolean areTagsEqual(TagKey<T> tag1, TagKey<T> tag2) {
-		if (tag1 == tag2) {
-			return true;
-		} else if (tag1 != null && tag2 != null) {
-			return tag1.registry().equals(tag2.registry()) && tag1.location().equals(tag2.location());
-		} else {
-			return false;
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	protected static Optional<Object2DoubleMap<TagKey<Fluid>>> getFluidHeightMap(Entity entity) {
-		try {
-			return Optional.ofNullable(Reflector.accessField("fluidHeight", Entity.class, entity, Object2DoubleMap.class));
-		} catch (Exception var2) {
-			var2.printStackTrace();
-			return Optional.empty();
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	protected static Optional<Set<TagKey<Fluid>>> getSubmergedSet(Entity entity) {
-		try {
-			return Optional.ofNullable(Reflector.accessField("fluidOnEyes", Entity.class, entity, Set.class));
-		} catch (Exception var2) {
-			var2.printStackTrace();
-			return Optional.empty();
-		}
 	}
 
 	public static boolean inThunderstorm(Level world, BlockPos... blockPositions) {
@@ -224,6 +171,32 @@ public class Util {
 
 		return null;
 
+	}
+
+	@Nullable
+	public static ExplosionDamageCalculator createExplosionBehavior(@Nullable Predicate<BlockConditionContext> indestructibleCondition, float resistance) {
+		return indestructibleCondition == null ? null : new ExplosionDamageCalculator() {
+
+			@Override
+			public @NotNull Optional<Float> getBlockExplosionResistance(@NotNull Explosion explosion, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState blockState, @NotNull FluidState fluidState) {
+
+				Optional<Float> defaultValue = super.getBlockExplosionResistance(explosion, world, pos, blockState, fluidState);
+				Optional<Float> newValue = indestructibleCondition.test(new BlockConditionContext((Level) world, pos))
+					? Optional.of(resistance)
+					: Optional.empty();
+
+				return defaultValue
+					.flatMap(defVal -> newValue
+						.map(newVal -> defVal > newVal ? defVal : newVal));
+
+			}
+
+			@Override
+			public boolean shouldBlockExplode(@NotNull Explosion explosion, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, float power) {
+				return !indestructibleCondition.test(new BlockConditionContext((Level) world, pos));
+			}
+
+		};
 	}
 
 	public static void createExplosion(Level world, Vec3 pos, float power, boolean createFire, Explosion.BlockInteraction destructionType, ExplosionDamageCalculator behavior) {
@@ -480,6 +453,42 @@ public class Util {
 			: DataResult.error(() -> "Recipe is not a crafting recipe!"));
 	}
 
+	public static Function<SerializableData.Instance, DataResult<SerializableData.Instance>> validateAnyFieldsPresent(String... fields) {
+		return data -> {
+
+			if (anyPresent(data, fields)) {
+				return DataResult.success(data);
+			}
+
+			else {
+
+				StringBuilder message = new StringBuilder(fields.length > 1 ? "Any of the " : "The ");
+				String separator = "";
+
+				for (int i = 0; i < fields.length; i++) {
+
+					String field = fields[i];
+					message
+						.append(separator)
+						.append("'").append(field).append("'");
+
+					separator = i == fields.length - 2
+						? ", and "
+						: ", ";
+
+				}
+
+				message
+					.append(" field").append(fields.length > 1 ? "s" : "")
+					.append(" must be defined!");
+
+				return DataResult.error(message::toString);
+
+			}
+
+		};
+	}
+
 	public static boolean hasSpaceInInventory(@NotNull Player player, ItemStack stack) {
 		Inventory inventory = player.getInventory();
 		return inventory.getSlotWithRemainingSpace(stack) != -1
@@ -491,6 +500,30 @@ public class Util {
 			coll1.addAll(coll2);
 			return coll1;
 		};
+	}
+
+	@Nullable
+	public static <T> List<T> singletonListOrNull(@Nullable T value) {
+		return mapOr(value, List::of, () -> null);
+	}
+
+	public static <T> List<T> singletonListOrEmpty(@Nullable T value) {
+		return mapOr(value, List::of, List::of);
+	}
+
+	public static <T, U> U mapOr(@Nullable T value, Function<T, U> mapper, Supplier<U> defaultValue) {
+		return Optional.ofNullable(value)
+			.map(mapper)
+			.orElseGet(defaultValue);
+	}
+
+	public static Set<Integer> toSlotIdSet(Collection<SlotRange> slotRanges) {
+		return slotRanges
+			.stream()
+			.map(SlotRange::slots)
+			.map(IntCollection::intStream)
+			.flatMap(IntStream::boxed)
+			.collect(Collectors.toSet());
 	}
 
 	public static @NotNull Collection<? extends Entity> getEntities(CommandContext<io.papermc.paper.command.brigadier.CommandSourceStack> context, String name) throws CommandSyntaxException {

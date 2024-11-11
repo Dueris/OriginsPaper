@@ -1,50 +1,69 @@
 package io.github.dueris.originspaper.power.type;
 
+import com.mojang.serialization.DataResult;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.AttributedEntityAttributeModifier;
+import io.github.dueris.originspaper.util.Util;
 import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ConditionedAttributePowerType extends AttributePowerType {
 
-	private final int tickRate;
+	public static final TypedDataObjectFactory<ConditionedAttributePowerType> DATA_FACTORY = PowerType.createConditionedDataFactory(
+		new SerializableData()
+			.add("modifier", ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIER, null)
+			.addFunctionedDefault("modifiers", ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIERS, data -> Util.singletonListOrNull(data.get("modifier")))
+			.add("update_health", SerializableDataTypes.BOOLEAN, true)
+			.add("tick_rate", SerializableDataTypes.POSITIVE_INT, 20)
+			.validate(data -> {
 
-	public ConditionedAttributePowerType(Power power, LivingEntity entity, int tickRate, boolean updateHealth) {
-		super(power, entity, updateHealth);
+				if (Util.anyPresent(data, "modifier", "modifiers")) {
+					return DataResult.success(data);
+				}
+
+				else {
+					return DataResult.error(() -> "Any of the 'modifier' and 'modifiers' fields must be defined!");
+				}
+
+			}),
+		(data, condition) -> new ConditionedAttributePowerType(
+			data.get("modifiers"),
+			data.get("update_health"),
+			data.get("tick_rate"),
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("modifiers", powerType.attributedModifiers())
+			.set("update_health", powerType.shouldUpdateHealth())
+			.set("tick_rate", powerType.tickRate)
+	);
+
+	protected final int tickRate;
+
+	private Integer startTicks = null;
+	private Integer endTicks = null;
+
+	private boolean wasActive = false;
+
+	public ConditionedAttributePowerType(List<AttributedEntityAttributeModifier> attributedModifiers, boolean updateHealth, int tickRate, Optional<EntityCondition> condition) {
+		super(attributedModifiers, updateHealth, condition);
 		this.tickRate = tickRate;
 		this.setTicking(true);
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("conditioned_attribute"),
-			new SerializableData()
-				.add("modifier", ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIER, null)
-				.add("modifiers", ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIERS, null)
-				.add("tick_rate", SerializableDataTypes.POSITIVE_INT, 20)
-				.add("update_health", SerializableDataTypes.BOOLEAN, true),
-			data -> (power, entity) -> {
-
-				ConditionedAttributePowerType conditionedAttributePower = new ConditionedAttributePowerType(
-					power,
-					entity,
-					data.get("tick_rate"),
-					data.get("update_health")
-				);
-
-				data.<AttributedEntityAttributeModifier>ifPresent("modifier", conditionedAttributePower::addModifier);
-				data.<List<AttributedEntityAttributeModifier>>ifPresent("modifiers", mods -> mods.forEach(conditionedAttributePower::addModifier));
-
-				return conditionedAttributePower;
-
-			}
-		).allowCondition();
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.CONDITIONED_ATTRIBUTE;
 	}
 
 	@Override
@@ -59,23 +78,40 @@ public class ConditionedAttributePowerType extends AttributePowerType {
 
 	@Override
 	public void onLost() {
-		this.removeTempMods();
+		removeTempModifiers(getHolder());
 	}
 
 	@Override
-	public void tick() {
+	public void serverTick() {
 
-		if (entity.tickCount % tickRate != 0) {
-			return;
+		if (isActive()) {
+
+			if (startTicks == null) {
+				startTicks = getHolder().tickCount % tickRate;
+				endTicks = null;
+			}
+
+			else if (!wasActive && getHolder().tickCount % tickRate == startTicks) {
+				applyTempModifiers(getHolder());
+				this.wasActive = true;
+			}
+
 		}
 
-		if (this.isActive()) {
-			this.applyTempMods();
-		} else {
-			this.removeTempMods();
+		else if (wasActive) {
+
+			if (endTicks == null) {
+				startTicks = null;
+				endTicks = getHolder().tickCount % tickRate;
+			}
+
+			else if (getHolder().tickCount % tickRate == endTicks) {
+				removeTempModifiers(getHolder());
+				this.wasActive = false;
+			}
+
 		}
 
 	}
 
 }
-

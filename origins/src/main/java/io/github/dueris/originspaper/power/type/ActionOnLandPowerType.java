@@ -2,37 +2,46 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.action.EntityAction;
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ActionOnLandPowerType extends PowerType {
 
-	private final Consumer<Entity> entityAction;
+	public static final TypedDataObjectFactory<ActionOnLandPowerType> DATA_FACTORY = PowerType.createConditionedDataFactory(
+		new SerializableData()
+			.add("entity_action", EntityAction.DATA_TYPE),
+		(data, condition) -> new ActionOnLandPowerType(
+			data.get("entity_action"),
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("entity_action", powerType.entityAction)
+	);
 
-	public ActionOnLandPowerType(Power power, LivingEntity entity, Consumer<Entity> entityAction) {
-		super(power, entity);
+	private final EntityAction entityAction;
+
+	public ActionOnLandPowerType(EntityAction entityAction, Optional<EntityCondition> condition) {
+		super(condition);
 		this.entityAction = entityAction;
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("action_on_land"),
-			new SerializableData()
-				.add("entity_action", ApoliDataTypes.ENTITY_ACTION, null),
-			data -> (power, entity) -> new ActionOnLandPowerType(power, entity,
-				data.get("entity_action")
-			)
-		).allowCondition();
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.ACTION_ON_LAND;
 	}
 
 	public void executeAction() {
-		entityAction.accept(entity);
+		entityAction.execute(getHolder());
 	}
 
 }
-

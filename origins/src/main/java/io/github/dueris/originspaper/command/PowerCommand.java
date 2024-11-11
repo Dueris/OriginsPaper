@@ -495,10 +495,11 @@ public class PowerCommand {
 			Power power = PowerArgumentType.getPower(context, "power");
 			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
 
-			commandSource.sendSuccess(() -> new JsonTextFormatter(indent).apply(
-				Power.CODEC.encodeStart(commandSource.registryAccess().createSerializationContext(JsonOps.INSTANCE), power).getOrThrow()
-			), false);
-			return 1;
+			return Power.DATA_TYPE.write(commandSource.registryAccess().createSerializationContext(JsonOps.INSTANCE), power)
+				.ifSuccess(powerJson -> commandSource.sendSuccess(() -> new JsonTextFormatter(indent).apply(powerJson), false))
+				.ifError(error -> commandSource.sendFailure(Component.literal(error.message())))
+				.mapOrElse(jsonElement -> 1, error -> 0);
+
 		}
 
 	}

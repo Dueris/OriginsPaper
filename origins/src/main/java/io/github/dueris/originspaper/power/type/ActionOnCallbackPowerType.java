@@ -2,24 +2,52 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.action.EntityAction;
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ActionOnCallbackPowerType extends PowerType {
 
-	private final Consumer<Entity> entityActionRespawned;
-	private final Consumer<Entity> entityActionRemoved;
-	private final Consumer<Entity> entityActionGained;
-	private final Consumer<Entity> entityActionLost;
-	private final Consumer<Entity> entityActionAdded;
+	public static final TypedDataObjectFactory<ActionOnCallbackPowerType> DATA_FACTORY = PowerType.createConditionedDataFactory(
+		new SerializableData()
+			.add("entity_action_respawned", EntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("entity_action_removed", EntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("entity_action_gained", EntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("entity_action_lost", EntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("entity_action_added", EntityAction.DATA_TYPE.optional(), Optional.empty()),
+		(data, condition) -> new ActionOnCallbackPowerType(
+			data.get("entity_action_respawned"),
+			data.get("entity_action_removed"),
+			data.get("entity_action_gained"),
+			data.get("entity_action_lost"),
+			data.get("entity_action_added"),
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("entity_action_respawned", powerType.entityActionRespawned)
+			.set("entity_action_removed", powerType.entityActionRemoved)
+			.set("entity_action_gained", powerType.entityActionGained)
+			.set("entity_action_lost", powerType.entityActionLost)
+			.set("entity_action_added", powerType.entityActionAdded)
+	);
 
-	public ActionOnCallbackPowerType(Power power, LivingEntity entity, Consumer<Entity> entityActionRespawned, Consumer<Entity> entityActionRemoved, Consumer<Entity> entityActionGained, Consumer<Entity> entityActionLost, Consumer<Entity> entityActionAdded) {
-		super(power, entity);
+	private final Optional<EntityAction> entityActionRespawned;
+	private final Optional<EntityAction> entityActionRemoved;
+	private final Optional<EntityAction> entityActionGained;
+	private final Optional<EntityAction> entityActionLost;
+	private final Optional<EntityAction> entityActionAdded;
+
+	public ActionOnCallbackPowerType(Optional<EntityAction> entityActionRespawned, Optional<EntityAction> entityActionRemoved, Optional<EntityAction> entityActionGained, Optional<EntityAction> entityActionLost, Optional<EntityAction> entityActionAdded, Optional<EntityCondition> condition) {
+		super(condition);
 		this.entityActionRespawned = entityActionRespawned;
 		this.entityActionRemoved = entityActionRemoved;
 		this.entityActionGained = entityActionGained;
@@ -27,68 +55,44 @@ public class ActionOnCallbackPowerType extends PowerType {
 		this.entityActionAdded = entityActionAdded;
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("action_on_callback"),
-			new SerializableData()
-				.add("entity_action_respawned", ApoliDataTypes.ENTITY_ACTION, null)
-				.add("entity_action_removed", ApoliDataTypes.ENTITY_ACTION, null)
-				.add("entity_action_gained", ApoliDataTypes.ENTITY_ACTION, null)
-				.add("entity_action_lost", ApoliDataTypes.ENTITY_ACTION, null)
-				.add("entity_action_added", ApoliDataTypes.ENTITY_ACTION, null),
-			data -> (power, entity) -> new ActionOnCallbackPowerType(power, entity,
-				data.get("entity_action_respawned"),
-				data.get("entity_action_removed"),
-				data.get("entity_action_gained"),
-				data.get("entity_action_lost"),
-				data.get("entity_action_added")
-			)
-		).allowCondition();
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.ACTION_ON_CALLBACK;
 	}
 
 	@Override
 	public void onRespawn() {
-
-		if (this.isActive() && entityActionRespawned != null) {
-			entityActionRespawned.accept(entity);
-		}
-
+		entityActionRespawned
+			.filter(action -> this.isActive())
+			.ifPresent(action -> action.execute(getHolder()));
 	}
 
 	@Override
 	public void onGained() {
-
-		if (this.isActive() && entityActionGained != null) {
-			entityActionGained.accept(entity);
-		}
-
+		entityActionGained
+			.filter(action -> this.isActive())
+			.ifPresent(action -> action.execute(getHolder()));
 	}
 
 	@Override
 	public void onRemoved() {
-
-		if (this.isActive() && entityActionRemoved != null) {
-			entityActionRemoved.accept(entity);
-		}
-
+		entityActionRemoved
+			.filter(action -> this.isActive())
+			.ifPresent(action -> action.execute(getHolder()));
 	}
 
 	@Override
 	public void onLost() {
-
-		if (this.isActive() && entityActionLost != null) {
-			entityActionLost.accept(entity);
-		}
-
+		entityActionLost
+			.filter(action -> this.isActive())
+			.ifPresent(action -> action.execute(getHolder()));
 	}
 
 	@Override
 	public void onAdded() {
-
-		if (this.isActive() && entityActionAdded != null) {
-			entityActionAdded.accept(entity);
-		}
-
+		entityActionAdded
+			.filter(action -> this.isActive())
+			.ifPresent(action -> action.execute(getHolder()));
 	}
 
 }

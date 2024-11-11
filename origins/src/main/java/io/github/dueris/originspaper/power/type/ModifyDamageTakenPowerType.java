@@ -2,32 +2,70 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.action.BiEntityAction;
+import io.github.dueris.originspaper.action.EntityAction;
+import io.github.dueris.originspaper.condition.BiEntityCondition;
+import io.github.dueris.originspaper.condition.DamageCondition;
+import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.Power;
-import io.github.dueris.originspaper.power.PowerTypeFactory;
+import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.modifier.Modifier;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class ModifyDamageTakenPowerType extends ValueModifyingPowerType {
 
-	private final Consumer<Entity> selfAction;
-	private final Consumer<Entity> attackerAction;
-	private final Consumer<Tuple<Entity, Entity>> biEntityAction;
+	public static final TypedDataObjectFactory<ModifyDamageTakenPowerType> DATA_FACTORY = createConditionedModifyingDataFactory(
+		new SerializableData()
+			.add("self_action", EntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("attacker_action", EntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("bientity_action", BiEntityAction.DATA_TYPE.optional(), Optional.empty())
+			.add("apply_armor_condition", EntityCondition.DATA_TYPE.optional(), Optional.empty())
+			.add("damage_armor_condition", EntityCondition.DATA_TYPE.optional(), Optional.empty())
+			.add("bientity_condition", BiEntityCondition.DATA_TYPE.optional(), Optional.empty())
+			.add("damage_condition", DamageCondition.DATA_TYPE.optional(), Optional.empty()),
+		(data, modifiers, condition) -> new ModifyDamageTakenPowerType(
+			data.get("self_action"),
+			data.get("attacker_action"),
+			data.get("bientity_action"),
+			data.get("apply_armor_condition"),
+			data.get("damage_armor_condition"),
+			data.get("bientity_condition"),
+			data.get("damage_condition"),
+			modifiers,
+			condition
+		),
+		(powerType, serializableData) -> serializableData.instance()
+			.set("self_action", powerType.selfAction)
+			.set("attacker_action", powerType.attackerAction)
+			.set("bientity_action", powerType.biEntityAction)
+			.set("apply_armor_condition", powerType.applyArmorCondition)
+			.set("damage_armor_condition", powerType.damageArmorCondition)
+			.set("bientity_condition", powerType.biEntityCondition)
+			.set("damage_condition", powerType.damageCondition)
+	);
 
-	private final Predicate<Entity> applyArmorCondition;
-	private final Predicate<Entity> damageArmorCondition;
-	private final Predicate<Tuple<Entity, Entity>> biEntityCondition;
-	private final Predicate<Tuple<DamageSource, Float>> damageCondition;
+	private final Optional<EntityAction> selfAction;
+	private final Optional<EntityAction> attackerAction;
+	private final Optional<BiEntityAction> biEntityAction;
 
-	public ModifyDamageTakenPowerType(Power power, LivingEntity entity, Consumer<Entity> selfAction, Consumer<Entity> attackerAction, Consumer<Tuple<Entity, Entity>> biEntityAction, Predicate<Entity> applyArmorCondition, Predicate<Entity> damageArmorCondition, Predicate<Tuple<Entity, Entity>> biEntityCondition, Predicate<Tuple<DamageSource, Float>> damageCondition, Modifier modifier, List<Modifier> modifiers) {
-		super(power, entity);
+	private final Optional<EntityCondition> applyArmorCondition;
+	private final Optional<EntityCondition> damageArmorCondition;
+	private final Optional<BiEntityCondition> biEntityCondition;
+	private final Optional<DamageCondition> damageCondition;
+
+	public ModifyDamageTakenPowerType(Optional<EntityAction> selfAction, Optional<EntityAction> attackerAction, Optional<BiEntityAction> biEntityAction, Optional<EntityCondition> applyArmorCondition, Optional<EntityCondition> damageArmorCondition, Optional<BiEntityCondition> biEntityCondition, Optional<DamageCondition> damageCondition, List<Modifier> modifiers, Optional<EntityCondition> condition) {
+		super(modifiers, condition);
 
 		this.selfAction = selfAction;
 		this.attackerAction = attackerAction;
@@ -37,83 +75,48 @@ public class ModifyDamageTakenPowerType extends ValueModifyingPowerType {
 		this.biEntityCondition = biEntityCondition;
 		this.damageCondition = damageCondition;
 
-		if (modifier != null) {
-			this.addModifier(modifier);
-		}
-
-		if (modifiers != null) {
-			modifiers.forEach(this::addModifier);
-		}
-
 	}
 
-	public static PowerTypeFactory<?> getFactory() {
-		return new PowerTypeFactory<>(
-			OriginsPaper.apoliIdentifier("modify_damage_taken"),
-			new SerializableData()
-				.add("self_action", ApoliDataTypes.ENTITY_ACTION, null)
-				.add("attacker_action", ApoliDataTypes.ENTITY_ACTION, null)
-				.add("bientity_action", ApoliDataTypes.BIENTITY_ACTION, null)
-				.add("apply_armor_condition", ApoliDataTypes.ENTITY_CONDITION, null)
-				.add("damage_armor_condition", ApoliDataTypes.ENTITY_CONDITION, null)
-				.add("bientity_condition", ApoliDataTypes.BIENTITY_CONDITION, null)
-				.add("damage_condition", ApoliDataTypes.DAMAGE_CONDITION, null)
-				.add("modifier", Modifier.DATA_TYPE, null)
-				.add("modifiers", Modifier.LIST_TYPE, null),
-			data -> (power, entity) -> new ModifyDamageTakenPowerType(power, entity,
-				data.get("self_action"),
-				data.get("attacker_action"),
-				data.get("bientity_action"),
-				data.get("apply_armor_condition"),
-				data.get("damage_armor_condition"),
-				data.get("bientity_condition"),
-				data.get("damage_condition"),
-				data.get("modifier"),
-				data.get("modifiers")
-			)
-		).allowCondition();
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.MODIFY_DAMAGE_TAKEN;
 	}
 
 	public boolean modifiesArmorApplicance() {
-		return this.applyArmorCondition != null;
+		return this.applyArmorCondition.isPresent();
 	}
 
 	public boolean shouldApplyArmor() {
-		return applyArmorCondition != null && applyArmorCondition.test(entity);
+		return applyArmorCondition
+			.map(condition -> condition.test(getHolder()))
+			.orElse(false);
 	}
 
 	public boolean modifiesArmorDamaging() {
-		return this.damageArmorCondition != null;
+		return this.damageArmorCondition.isPresent();
 	}
 
 	public boolean shouldDamageArmor() {
-		return damageArmorCondition != null && damageArmorCondition.test(entity);
+		return damageArmorCondition
+			.map(condition -> condition.test(getHolder()))
+			.orElse(false);
 	}
 
 	public boolean doesApply(DamageSource source, float damageAmount) {
-
 		Entity attacker = source.getEntity();
-		Tuple<DamageSource, Float> damageAndAmount = new Tuple<>(source, damageAmount);
-
 		return attacker == null
-			? (damageCondition == null || damageCondition.test(damageAndAmount)) && biEntityCondition == null
-			: (damageCondition == null || damageCondition.test(damageAndAmount)) && (biEntityCondition == null || biEntityCondition.test(new Tuple<>(attacker, entity)));
-
+			? damageCondition.map(condition -> condition.test(source, damageAmount)).orElse(true)
+			&& biEntityCondition.isEmpty()
+			: damageCondition.map(condition -> condition.test(source, damageAmount)).orElse(true)
+			&& biEntityCondition.map(condition -> condition.test(attacker, getHolder())).orElse(true);
 	}
 
 	public void executeActions(Entity attacker) {
 
-		if (selfAction != null) {
-			selfAction.accept(entity);
-		}
+		selfAction.ifPresent(action -> action.execute(getHolder()));
+		attackerAction.ifPresent(action -> action.execute(getHolder()));
 
-		if (attackerAction != null && attacker != null) {
-			attackerAction.accept(attacker);
-		}
-
-		if (biEntityAction != null) {
-			biEntityAction.accept(new Tuple<>(attacker, entity));
-		}
+		biEntityAction.ifPresent(action -> action.execute(attacker, getHolder()));
 
 	}
 

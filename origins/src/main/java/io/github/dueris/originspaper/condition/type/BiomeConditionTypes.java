@@ -1,41 +1,52 @@
 package io.github.dueris.originspaper.condition.type;
 
-import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.util.IdentifierAlias;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.condition.factory.ConditionTypeFactory;
-import io.github.dueris.originspaper.condition.type.biome.InTagConditionType;
-import io.github.dueris.originspaper.condition.type.biome.PrecipitationConditionType;
-import io.github.dueris.originspaper.condition.type.biome.TemperatureConditionType;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
+import io.github.dueris.originspaper.condition.BiomeCondition;
+import io.github.dueris.originspaper.condition.ConditionConfiguration;
+import io.github.dueris.originspaper.condition.type.biome.HighHumidityBiomeConditionType;
+import io.github.dueris.originspaper.condition.type.biome.InTagBiomeConditionType;
+import io.github.dueris.originspaper.condition.type.biome.PrecipitationBiomeConditionType;
+import io.github.dueris.originspaper.condition.type.biome.TemperatureBiomeConditionType;
+import io.github.dueris.originspaper.condition.type.biome.meta.AllOfBiomeConditionType;
+import io.github.dueris.originspaper.condition.type.biome.meta.AnyOfBiomeConditionType;
+import io.github.dueris.originspaper.condition.type.biome.meta.ConstantBiomeConditionType;
+import io.github.dueris.originspaper.condition.type.biome.meta.RandomChanceBiomeConditionType;
+import io.github.dueris.originspaper.condition.type.meta.AllOfMetaConditionType;
+import io.github.dueris.originspaper.condition.type.meta.AnyOfMetaConditionType;
+import io.github.dueris.originspaper.condition.type.meta.ConstantMetaConditionType;
+import io.github.dueris.originspaper.condition.type.meta.RandomChanceMetaConditionType;
 import io.github.dueris.originspaper.registry.ApoliRegistries;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
+import io.github.dueris.calio.data.SerializableDataType;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Tuple;
-import net.minecraft.world.level.biome.Biome;
-
-import java.util.function.Predicate;
 
 public class BiomeConditionTypes {
 
-	public static final IdentifierAlias ALIASES = new IdentifierAlias();
+    public static final IdentifierAlias ALIASES = new IdentifierAlias();
+    public static final SerializableDataType<ConditionConfiguration<BiomeConditionType>> DATA_TYPE = SerializableDataType.registry(ApoliRegistries.BIOME_CONDITION_TYPE, "apoli", ALIASES, (configurations, id) -> "Biome condition type \"" + id + "\" is undefined!");
 
-	public static void register() {
-		MetaConditionTypes.register(ApoliDataTypes.BIOME_CONDITION, BiomeConditionTypes::register);
-		register(createSimpleFactory(OriginsPaper.apoliIdentifier("high_humidity"), biomeEntry -> biomeEntry.value().climateSettings.downfall() > 0.85F));
-		register(TemperatureConditionType.getFactory());
-		register(PrecipitationConditionType.getFactory());
-		register(InTagConditionType.getFactory());
-	}
+    public static final ConditionConfiguration<AllOfBiomeConditionType> ALL_OF = register(AllOfMetaConditionType.createConfiguration(BiomeCondition.DATA_TYPE, AllOfBiomeConditionType::new));
+    public static final ConditionConfiguration<AnyOfBiomeConditionType> ANY_OF = register(AnyOfMetaConditionType.createConfiguration(BiomeCondition.DATA_TYPE, AnyOfBiomeConditionType::new));
+    public static final ConditionConfiguration<ConstantBiomeConditionType> CONSTANT = register(ConstantMetaConditionType.createConfiguration(ConstantBiomeConditionType::new));
+    public static final ConditionConfiguration<RandomChanceBiomeConditionType> RANDOM_CHANCE = register(RandomChanceMetaConditionType.createConfiguration(RandomChanceBiomeConditionType::new));
+    
+    public static final ConditionConfiguration<HighHumidityBiomeConditionType> HIGH_HUMIDITY = register(ConditionConfiguration.simple(OriginsPaper.apoliIdentifier("high_humidity"), HighHumidityBiomeConditionType::new));
+    public static final ConditionConfiguration<InTagBiomeConditionType> IN_TAG = register(ConditionConfiguration.of(OriginsPaper.apoliIdentifier("in_tag"), InTagBiomeConditionType.DATA_FACTORY));
+    public static final ConditionConfiguration<PrecipitationBiomeConditionType> PRECIPITATION = register(ConditionConfiguration.of(OriginsPaper.apoliIdentifier("precipitation"), PrecipitationBiomeConditionType.DATA_FACTORY));
+    public static final ConditionConfiguration<TemperatureBiomeConditionType> TEMPERATURE = register(ConditionConfiguration.of(OriginsPaper.apoliIdentifier("temperature"), TemperatureBiomeConditionType.DATA_FACTORY));
 
-	public static ConditionTypeFactory<Tuple<BlockPos, Holder<Biome>>> createSimpleFactory(ResourceLocation id, Predicate<Holder<Biome>> condition) {
-		return new ConditionTypeFactory<>(id, new SerializableData(), (data, posAndBiome) -> condition.test(posAndBiome.getB()));
-	}
+    public static void register() {
 
-	public static <F extends ConditionTypeFactory<Tuple<BlockPos, Holder<Biome>>>> F register(F conditionFactory) {
-		return Registry.register(ApoliRegistries.BIOME_CONDITION, conditionFactory.getSerializerId(), conditionFactory);
-	}
+    }
+
+    @SuppressWarnings("unchecked")
+	public static <T extends BiomeConditionType> ConditionConfiguration<T> register(ConditionConfiguration<T> config) {
+
+        ConditionConfiguration<BiomeConditionType> casted = (ConditionConfiguration<BiomeConditionType>) config;
+        Registry.register(ApoliRegistries.BIOME_CONDITION_TYPE, casted.id(), casted);
+
+        return config;
+
+    }
 
 }

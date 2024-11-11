@@ -26,7 +26,6 @@ import io.github.dueris.originspaper.plugin.PluginInstances;
 import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerManager;
 import io.github.dueris.originspaper.power.type.PowerTypes;
-import io.github.dueris.originspaper.power.type.origins.OriginsPowerTypes;
 import io.github.dueris.originspaper.registry.ApoliClassData;
 import io.github.dueris.originspaper.registry.ModBlocks;
 import io.github.dueris.originspaper.registry.ModItems;
@@ -112,7 +111,7 @@ public class OriginsPaper {
 		BiEntityActionTypes.register();
 
 		PowerTypes.register();
-		OriginsPowerTypes.register();
+		// OriginsPowerTypes.register();
 		Origin.init();
 
 		ApoliDataHandlers.register();
