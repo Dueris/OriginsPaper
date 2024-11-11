@@ -77,11 +77,6 @@ public class ElytraFlightPowerType extends PowerType implements Listener {
 		return renderElytra;
 	}
 
-	//  TODO: Manually do vanilla elytra flight stuff using the API -eggohito
-	public static boolean integrateCustomCallback(LivingEntity entity, boolean tickElytra) {
-		return PowerHolderComponent.hasPowerType(entity, ElytraFlightPowerType.class);
-	}
-
 	@EventHandler
 	public void executeFlight(@NotNull PlayerToggleFlightEvent e) {
 		CraftPlayer p = (CraftPlayer) e.getPlayer();

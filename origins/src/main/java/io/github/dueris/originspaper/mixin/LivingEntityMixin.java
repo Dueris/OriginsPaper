@@ -13,6 +13,7 @@ import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.component.item.ItemPowersComponent;
 import io.github.dueris.originspaper.data.ApoliDamageTypes;
 import io.github.dueris.originspaper.power.type.*;
+import io.github.dueris.originspaper.power.type.origins.WaterBreathingPowerType;
 import io.github.dueris.originspaper.util.InventoryUtil;
 import io.github.dueris.originspaper.util.modifier.ModifierUtil;
 import net.minecraft.core.BlockPos;
@@ -520,7 +521,7 @@ public abstract class LivingEntityMixin extends Entity implements ModifiableFood
 
 	}
 
-	/* @ModifyReturnValue(method = "canBreatheUnderwater", at = @At("RETURN"))
+	@ModifyReturnValue(method = "canBreatheUnderwater", at = @At("RETURN"))
 	private boolean origins$breatheUnderwater(boolean original) {
 		return original
 			|| PowerHolderComponent.hasPowerType(this, WaterBreathingPowerType.class);
@@ -529,5 +530,5 @@ public abstract class LivingEntityMixin extends Entity implements ModifiableFood
 	@Inject(method = "baseTick", at = @At("TAIL"))
 	private void origins$waterBreathingTick(CallbackInfo ci) {
 		WaterBreathingPowerType.tick((LivingEntity) (Object) this);
-	} */ // TODO
+	}
 }

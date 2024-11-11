@@ -40,11 +40,11 @@ public class ActionOnCallbackPowerType extends PowerType {
 			.set("entity_action_added", powerType.entityActionAdded)
 	);
 
-	private final Optional<EntityAction> entityActionRespawned;
-	private final Optional<EntityAction> entityActionRemoved;
-	private final Optional<EntityAction> entityActionGained;
-	private final Optional<EntityAction> entityActionLost;
-	private final Optional<EntityAction> entityActionAdded;
+	protected final Optional<EntityAction> entityActionRespawned;
+	protected final Optional<EntityAction> entityActionRemoved;
+	protected final Optional<EntityAction> entityActionGained;
+	protected final Optional<EntityAction> entityActionLost;
+	protected final Optional<EntityAction> entityActionAdded;
 
 	public ActionOnCallbackPowerType(Optional<EntityAction> entityActionRespawned, Optional<EntityAction> entityActionRemoved, Optional<EntityAction> entityActionGained, Optional<EntityAction> entityActionLost, Optional<EntityAction> entityActionAdded, Optional<EntityCondition> condition) {
 		super(condition);

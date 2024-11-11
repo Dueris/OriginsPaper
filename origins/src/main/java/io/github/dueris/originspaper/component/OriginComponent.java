@@ -7,6 +7,7 @@ import io.github.dueris.originspaper.origin.OriginManager;
 import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.type.ModifyPlayerSpawnPowerType;
 import io.github.dueris.originspaper.power.type.PowerType;
+import io.github.dueris.originspaper.power.type.origins.OriginsCallbackPowerType;
 import io.github.dueris.originspaper.util.ProvidableComponentKey;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -28,7 +29,7 @@ public interface OriginComponent {
 				.ifPresent(ModifyPlayerSpawnPowerType::teleportToModifiedSpawn);
 		}
 
-//		PowerHolderComponent.withPowerTypes(player, OriginsCallbackPowerType.class, p -> true, p -> p.onChosen(hadOriginBefore)); // TODO
+		PowerHolderComponent.withPowerTypes(player, OriginsCallbackPowerType.class, p -> true, p -> p.onChosen(hadOriginBefore));
 
 	}
 
@@ -42,9 +43,9 @@ public interface OriginComponent {
 
 			if (powerType instanceof ModifyPlayerSpawnPowerType mps && !hadOriginBefore) {
 				mps.teleportToModifiedSpawn();
-			} /* else if (powerType instanceof OriginsCallbackPowerType ocp) {
+			} else if (powerType instanceof OriginsCallbackPowerType ocp) {
 				ocp.onChosen(hadOriginBefore);
-			} */ // TODO
+			}
 
 		}
 
