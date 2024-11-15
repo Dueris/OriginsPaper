@@ -8,18 +8,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class InRainEntityConditionType extends EntityConditionType {
 
-    public static boolean condition(Entity entity) {
-        return entity.isInRain();
-    }
+	public static boolean condition(Entity entity) {
+		return entity.isInRain();
+	}
 
-    @Override
-    public boolean test(Entity entity) {
-        return entity.isInRain();
-    }
+	@Override
+	public boolean test(Entity entity) {
+		return entity.isInRain();
+	}
 
-    @Override
-    public @NotNull ConditionConfiguration<?> getConfig() {
-        return EntityConditionTypes.IN_RAIN;
-    }
+	@Override
+	public @NotNull ConditionConfiguration<?> getConfig() {
+		return EntityConditionTypes.IN_RAIN;
+	}
 
 }

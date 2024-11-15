@@ -13,34 +13,34 @@ import org.jetbrains.annotations.NotNull;
 
 public class TriggerCooldownEntityActionType extends EntityActionType {
 
-    public static final TypedDataObjectFactory<TriggerCooldownEntityActionType> DATA_FACTORY = TypedDataObjectFactory.simple(
-        new SerializableData()
-            .add("power", ApoliDataTypes.POWER_REFERENCE),
-        data -> new TriggerCooldownEntityActionType(
-            data.get("power")
-        ),
-        (actionType, serializableData) -> serializableData.instance()
-            .set("power", actionType.power)
-    );
+	public static final TypedDataObjectFactory<TriggerCooldownEntityActionType> DATA_FACTORY = TypedDataObjectFactory.simple(
+		new SerializableData()
+			.add("power", ApoliDataTypes.POWER_REFERENCE),
+		data -> new TriggerCooldownEntityActionType(
+			data.get("power")
+		),
+		(actionType, serializableData) -> serializableData.instance()
+			.set("power", actionType.power)
+	);
 
-    private final PowerReference power;
+	private final PowerReference power;
 
-    public TriggerCooldownEntityActionType(PowerReference power) {
-        this.power = power;
-    }
+	public TriggerCooldownEntityActionType(PowerReference power) {
+		this.power = power;
+	}
 
-    @Override
-    protected void execute(Entity entity) {
+	@Override
+	protected void execute(Entity entity) {
 
-        if (power.getPowerTypeFrom(entity) instanceof CooldownPowerType cooldownPowerType) {
-            cooldownPowerType.use();
-        }
+		if (power.getPowerTypeFrom(entity) instanceof CooldownPowerType cooldownPowerType) {
+			cooldownPowerType.use();
+		}
 
-    }
+	}
 
-    @Override
-    public @NotNull ActionConfiguration<?> getConfig() {
-        return EntityActionTypes.TRIGGER_COOLDOWN;
-    }
+	@Override
+	public @NotNull ActionConfiguration<?> getConfig() {
+		return EntityActionTypes.TRIGGER_COOLDOWN;
+	}
 
 }

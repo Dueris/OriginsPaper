@@ -15,24 +15,24 @@ import org.jetbrains.annotations.NotNull;
 
 public class EnderChestEntityActionType extends EntityActionType {
 
-    @Override
-    protected void execute(Entity entity) {
+	@Override
+	protected void execute(Entity entity) {
 
-        if (!(entity instanceof Player player)) {
-            return;
-        }
+		if (!(entity instanceof Player player)) {
+			return;
+		}
 
-        PlayerEnderChestContainer enderChestContainer = player.getEnderChestInventory();
-        MenuConstructor handlerFactory = (syncId, playerInventory, _player) -> ChestMenu.threeRows(syncId, playerInventory, enderChestContainer);
+		PlayerEnderChestContainer enderChestContainer = player.getEnderChestInventory();
+		MenuConstructor handlerFactory = (syncId, playerInventory, _player) -> ChestMenu.threeRows(syncId, playerInventory, enderChestContainer);
 
-        player.openMenu(new SimpleMenuProvider(handlerFactory, Component.translatable("container.enderchest")));
-        player.awardStat(Stats.OPEN_ENDERCHEST);
+		player.openMenu(new SimpleMenuProvider(handlerFactory, Component.translatable("container.enderchest")));
+		player.awardStat(Stats.OPEN_ENDERCHEST);
 
-    }
+	}
 
-    @Override
-    public @NotNull ActionConfiguration<?> getConfig() {
-        return EntityActionTypes.ENDER_CHEST;
-    }
+	@Override
+	public @NotNull ActionConfiguration<?> getConfig() {
+		return EntityActionTypes.ENDER_CHEST;
+	}
 
 }

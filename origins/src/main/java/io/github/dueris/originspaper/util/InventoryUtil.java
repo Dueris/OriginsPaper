@@ -1,7 +1,5 @@
 package io.github.dueris.originspaper.util;
 
-import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.util.ArgumentWrapper;
 import io.github.dueris.originspaper.action.EntityAction;
 import io.github.dueris.originspaper.action.ItemAction;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
@@ -12,7 +10,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
@@ -22,44 +19,23 @@ import net.minecraft.world.inventory.SlotRange;
 import net.minecraft.world.inventory.SlotRanges;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.*;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class InventoryUtil {
 
-	public enum InventoryType {
-		INVENTORY,
-		POWER
-	}
-
-	public enum ProcessMode implements ToIntFunction<ItemStack> {
-
-		STACKS {
-
-			@Override
-			public int applyAsInt(ItemStack value) {
-				return 1;
-			}
-
-		},
-
-		ITEMS {
-
-			@Override
-			public int applyAsInt(ItemStack value) {
-				return value.getCount();
-			}
-
-		}
-
-	}
+	private static final List<String> EXEMPT_SLOTS = List.of("weapon", "weapon.mainhand");
 
 	public static int checkInventory(Entity entity, Collection<Integer> slots, Optional<InventoryPowerType> inventoryPowerType, Optional<ItemCondition> itemCondition, ProcessMode processMode) {
 
@@ -200,11 +176,9 @@ public class InventoryUtil {
 			f = random.nextFloat() * 0.5F;
 			g = random.nextFloat() * 6.2831855F;
 
-			itemEntity.setDeltaMovement(- Mth.sin(g) * f, 0.20000000298023224D, Mth.cos(g) * f);
+			itemEntity.setDeltaMovement(-Mth.sin(g) * f, 0.20000000298023224D, Mth.cos(g) * f);
 
-		}
-
-		else {
+		} else {
 
 			f = 0.3F;
 			g = Mth.sin(thrower.getXRot() * 0.017453292F);
@@ -217,7 +191,7 @@ public class InventoryUtil {
 			float l = 0.02F * random.nextFloat();
 
 			itemEntity.setDeltaMovement(
-				(double) (- i * h * f) + Math.cos(k) * (double) l,
+				(double) (-i * h * f) + Math.cos(k) * (double) l,
 				(-g * f + 0.1F + (random.nextFloat() - random.nextFloat()) * 0.1F),
 				(double) (j * h * f) + Math.sin(k) * (double) l
 			);
@@ -294,8 +268,6 @@ public class InventoryUtil {
 
 	}
 
-	private static final List<String> EXEMPT_SLOTS = List.of("weapon", "weapon.mainhand");
-
 	private static void deduplicateSlots(Entity entity, Set<Integer> slots) {
 
 		int selectedHotbarSlot = getDuplicatedSlotIndex(entity);
@@ -310,11 +282,11 @@ public class InventoryUtil {
 	}
 
 	/**
-	 *      <p>For players, their selected hotbar slot will overlap with the `weapon.mainhand` slot reference. This
-	 *      method returns the slot ID of the selected hotbar slot.</p>
+	 * <p>For players, their selected hotbar slot will overlap with the `weapon.mainhand` slot reference. This
+	 * method returns the slot ID of the selected hotbar slot.</p>
 	 *
-	 *      @param entity   The entity to get the slot ID of its selected hotbar slot
-	 *      @return         The slot ID of the hotbar slot or {@link Integer#MIN_VALUE} if the entity is not a player
+	 * @param entity The entity to get the slot ID of its selected hotbar slot
+	 * @return The slot ID of the hotbar slot or {@link Integer#MIN_VALUE} if the entity is not a player
 	 */
 	private static int getDuplicatedSlotIndex(Entity entity) {
 
@@ -329,13 +301,13 @@ public class InventoryUtil {
 	}
 
 	/**
-	 *  <p>Checks whether the specified {@code slot} index is within the bounds of the specified {@link InventoryPowerType},
-	 *  or the entity's {@link SlotAccess}, in that order.</p>
+	 * <p>Checks whether the specified {@code slot} index is within the bounds of the specified {@link InventoryPowerType},
+	 * or the entity's {@link SlotAccess}, in that order.</p>
 	 *
-	 *  @param entity               the entity to check the bounds of its {@link SlotAccess}
-	 *  @param inventoryPowerType   the {@link InventoryPowerType} to check the bounds of (if present)
-	 *  @param slot                 the slot index
-	 *  @return                     {@code true} if the slot index is within the bounds
+	 * @param entity             the entity to check the bounds of its {@link SlotAccess}
+	 * @param inventoryPowerType the {@link InventoryPowerType} to check the bounds of (if present)
+	 * @param slot               the slot index
+	 * @return {@code true} if the slot index is within the bounds
 	 */
 	public static boolean slotNotWithinBounds(Entity entity, Optional<InventoryPowerType> inventoryPowerType, int slot) {
 		return inventoryPowerType
@@ -350,13 +322,13 @@ public class InventoryUtil {
 	}
 
 	/**
-	 *      <p>Creates a stack reference that is not linked to any entity for use with item actions.</p>
+	 * <p>Creates a stack reference that is not linked to any entity for use with item actions.</p>
 	 *
-	 *      <p>Recommended for usage when either you don't have an entity for this operation, or you
-	 *      don't want to set the entity's StackReference.</p>
+	 * <p>Recommended for usage when either you don't have an entity for this operation, or you
+	 * don't want to set the entity's StackReference.</p>
 	 *
-	 *      @param startingStack The ItemStack that this reference will start with.
-	 *      @return A {@linkplain SlotAccess} that contains an ItemStack.
+	 * @param startingStack The ItemStack that this reference will start with.
+	 * @return A {@linkplain SlotAccess} that contains an ItemStack.
 	 */
 	public static SlotAccess createStackReference(ItemStack startingStack) {
 		return new SlotAccess() {
@@ -413,6 +385,31 @@ public class InventoryUtil {
 		}
 
 		return null;
+
+	}
+
+	public enum InventoryType {
+		INVENTORY,
+		POWER
+	}
+
+	public enum ProcessMode implements ToIntFunction<ItemStack> {
+
+		STACKS {
+			@Override
+			public int applyAsInt(ItemStack value) {
+				return 1;
+			}
+
+		},
+
+		ITEMS {
+			@Override
+			public int applyAsInt(ItemStack value) {
+				return value.getCount();
+			}
+
+		}
 
 	}
 

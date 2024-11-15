@@ -3,15 +3,12 @@ package io.github.dueris.originspaper.power.type;
 import com.mojang.serialization.DataResult;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.AttributedEntityAttributeModifier;
 import io.github.dueris.originspaper.util.Util;
-import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -29,9 +26,7 @@ public class ConditionedAttributePowerType extends AttributePowerType {
 
 				if (Util.anyPresent(data, "modifier", "modifiers")) {
 					return DataResult.success(data);
-				}
-
-				else {
+				} else {
 					return DataResult.error(() -> "Any of the 'modifier' and 'modifiers' fields must be defined!");
 				}
 
@@ -89,23 +84,17 @@ public class ConditionedAttributePowerType extends AttributePowerType {
 			if (startTicks == null) {
 				startTicks = getHolder().tickCount % tickRate;
 				endTicks = null;
-			}
-
-			else if (!wasActive && getHolder().tickCount % tickRate == startTicks) {
+			} else if (!wasActive && getHolder().tickCount % tickRate == startTicks) {
 				applyTempModifiers(getHolder());
 				this.wasActive = true;
 			}
 
-		}
-
-		else if (wasActive) {
+		} else if (wasActive) {
 
 			if (endTicks == null) {
 				startTicks = null;
 				endTicks = getHolder().tickCount % tickRate;
-			}
-
-			else if (getHolder().tickCount % tickRate == endTicks) {
+			} else if (getHolder().tickCount % tickRate == endTicks) {
 				removeTempModifiers(getHolder());
 				this.wasActive = false;
 			}

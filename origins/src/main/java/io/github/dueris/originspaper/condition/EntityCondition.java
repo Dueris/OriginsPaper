@@ -1,10 +1,10 @@
 package io.github.dueris.originspaper.condition;
 
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.condition.context.EntityConditionContext;
 import io.github.dueris.originspaper.condition.type.EntityConditionType;
 import io.github.dueris.originspaper.condition.type.EntityConditionTypes;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.calio.data.SerializableDataType;
 import net.minecraft.world.entity.Entity;
 
 public final class EntityCondition extends AbstractCondition<EntityConditionContext, EntityConditionType> {

@@ -5,19 +5,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.DataResult;
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.Scheduler;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.thread.NamedThreadFactory;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -102,6 +99,26 @@ public class ModelColorPowerType extends PowerType {
 		this.alpha = alpha;
 	}
 
+	public static void serializeSkinData(String fileName, SkinData skinData) throws IOException {
+		File directory = new File("cache/skins/");
+		if (!directory.exists()) {
+			directory.mkdirs();
+		}
+
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("cache/skins/" + fileName + ".skin"))) {
+			oos.writeObject(skinData);
+		}
+	}
+
+	public static @Nullable SkinData deserializeSkinData(String fileName) throws IOException, ClassNotFoundException {
+		if (!Paths.get("cache/skins/" + fileName + ".skin").toFile().exists()) {
+			return null;
+		}
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("cache/skins/" + fileName + ".skin"))) {
+			return (SkinData) ois.readObject();
+		}
+	}
+
 	@Override
 	public @NotNull PowerConfiguration<?> getConfig() {
 		return PowerTypes.MODEL_COLOR;
@@ -125,26 +142,6 @@ public class ModelColorPowerType extends PowerType {
 
 	public boolean isTranslucent() {
 		return alpha < 1.0F;
-	}
-
-	public static void serializeSkinData(String fileName, SkinData skinData) throws IOException {
-		File directory = new File("cache/skins/");
-		if (!directory.exists()) {
-			directory.mkdirs();
-		}
-
-		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("cache/skins/" + fileName + ".skin"))) {
-			oos.writeObject(skinData);
-		}
-	}
-
-	public static @Nullable SkinData deserializeSkinData(String fileName) throws IOException, ClassNotFoundException {
-		if (!Paths.get("cache/skins/" + fileName + ".skin").toFile().exists()) {
-			return null;
-		}
-		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("cache/skins/" + fileName + ".skin"))) {
-			return (SkinData) ois.readObject();
-		}
 	}
 
 	@Override

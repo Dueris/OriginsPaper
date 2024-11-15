@@ -1,6 +1,9 @@
 package io.github.dueris.originspaper.condition.type.meta;
 
 import com.mojang.datafixers.util.Either;
+import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataType;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.AbstractCondition;
 import io.github.dueris.originspaper.condition.ConditionConfiguration;
@@ -11,9 +14,6 @@ import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.util.Comparison;
 import io.github.dueris.originspaper.util.Shape;
 import io.github.dueris.originspaper.util.context.TypeConditionContext;
-import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataType;
-import io.github.dueris.calio.data.SerializableDataTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -23,28 +23,79 @@ import java.math.RoundingMode;
 import java.util.Optional;
 
 /**
- *	@author Alluysl
- * 	@author (refactored by) eggohito
+ * @author Alluysl
+ * @author (refactored by) eggohito
  */
 public interface DistanceFromCoordinatesMetaConditionType {
 
+	static <T extends TypeConditionContext, C extends AbstractCondition<T, CT>, CT extends AbstractConditionType<T, C>, M extends AbstractConditionType<T, C> & DistanceFromCoordinatesMetaConditionType> ConditionConfiguration<M> createConfiguration(Constructor<M> constructor) {
+		return ConditionConfiguration.of(
+			OriginsPaper.apoliIdentifier("distance_from_coordinates"),
+			new SerializableData()
+				.add("reference", SerializableDataType.enumValue(Reference.class), Reference.WORLD_ORIGIN)    //	The reference point for comparison
+				.add("shape", SerializableDataType.enumValue(Shape.class), Shape.CUBE)    //	The shape used for comparing the distance
+				.add("round_to_digit", SerializableDataTypes.INT.optional(), Optional.empty())    //	Rounds the calculated distance to this amount of digits (e.g: 0 for unitary values, 1 for decimals, -1 for multiples of ten)
+				.add("offset", SerializableDataTypes.VECTOR, Vec3.ZERO)    //	The offset for the reference point
+				.add("comparison", ApoliDataTypes.COMPARISON)
+				.add("compare_to", SerializableDataTypes.DOUBLE)
+//				.add("result_on_wrong_dimension", SerializableDataTypes.BOOLEAN.optional(), Optional.empty())	//	The value to be used as the result if the dimension is not the same as the reference's
+//				.add("check_modified_spawn", SerializableDataTypes.BOOLEAN, true)	//	Determines whether to check for modified spawns
+				.add("scale_reference_to_dimension", SerializableDataTypes.BOOLEAN, true)    //	Determines whether to scale the reference's coordinates according to the dimension it's in and the player is in
+				.add("scale_distance_to_dimension", SerializableDataTypes.BOOLEAN, false)    //	Determines whether to scale the calculated distance to the current dimension
+				.add("ignore_x", SerializableDataTypes.BOOLEAN, false)
+				.add("ignore_y", SerializableDataTypes.BOOLEAN, false)
+				.add("ignore_z", SerializableDataTypes.BOOLEAN, false),
+			data -> constructor.create(
+				data.get("reference"),
+				data.get("shape"),
+				data.get("round_to_digit"),
+				data.get("offset"),
+				data.get("comparison"),
+				data.get("compare_to"),
+				data.get("scale_reference_to_dimension"),
+				data.get("scale_distance_to_dimension"),
+				data.get("ignore_x"),
+				data.get("ignore_y"),
+				data.get("ignore_z")
+			),
+			(m, serializableData) -> serializableData.instance()
+				.set("reference", m.reference())
+				.set("shape", m.shape())
+				.set("round_to_digit", m.roundToDigit())
+				.set("offset", m.offset())
+				.set("comparison", m.comparison())
+				.set("compare_to", m.compareTo())
+				.set("scale_reference_to_dimension", m.scaleReferenceToDimension())
+				.set("scale_distance_to_dimension", m.scaleDistanceToDimension())
+				.set("ignore_x", m.ignoreX())
+				.set("ignore_y", m.ignoreY())
+				.set("ignore_z", m.ignoreZ())
+		);
+	}
+
 	Reference reference();
+
 	Shape shape();
 
 	Optional<Integer> roundToDigit();
-	Vec3 offset();
 
 //	Optional<Boolean> resultOnWrongDimension();
 //	boolean checkModifiedSpawns();
 
+	Vec3 offset();
+
 	Comparison comparison();
+
 	double compareTo();
 
 	boolean scaleReferenceToDimension();
+
 	boolean scaleDistanceToDimension();
 
 	boolean ignoreX();
+
 	boolean ignoreY();
+
 	boolean ignoreZ();
 
 	default boolean testCondition(Either<BlockConditionContext, EntityConditionContext> context) {
@@ -123,60 +174,15 @@ public interface DistanceFromCoordinatesMetaConditionType {
 
 	}
 
-	static <T extends TypeConditionContext, C extends AbstractCondition<T, CT>, CT extends AbstractConditionType<T, C>, M extends AbstractConditionType<T, C> & DistanceFromCoordinatesMetaConditionType> ConditionConfiguration<M> createConfiguration(Constructor<M> constructor) {
-		return ConditionConfiguration.of(
-			OriginsPaper.apoliIdentifier("distance_from_coordinates"),
-			new SerializableData()
-				.add("reference", SerializableDataType.enumValue(Reference.class), Reference.WORLD_ORIGIN)	//	The reference point for comparison
-				.add("shape", SerializableDataType.enumValue(Shape.class), Shape.CUBE)	//	The shape used for comparing the distance
-				.add("round_to_digit", SerializableDataTypes.INT.optional(), Optional.empty())	//	Rounds the calculated distance to this amount of digits (e.g: 0 for unitary values, 1 for decimals, -1 for multiples of ten)
-				.add("offset", SerializableDataTypes.VECTOR, Vec3.ZERO)	//	The offset for the reference point
-				.add("comparison", ApoliDataTypes.COMPARISON)
-				.add("compare_to", SerializableDataTypes.DOUBLE)
-//				.add("result_on_wrong_dimension", SerializableDataTypes.BOOLEAN.optional(), Optional.empty())	//	The value to be used as the result if the dimension is not the same as the reference's
-//				.add("check_modified_spawn", SerializableDataTypes.BOOLEAN, true)	//	Determines whether to check for modified spawns
-				.add("scale_reference_to_dimension", SerializableDataTypes.BOOLEAN, true)	//	Determines whether to scale the reference's coordinates according to the dimension it's in and the player is in
-				.add("scale_distance_to_dimension", SerializableDataTypes.BOOLEAN, false)	//	Determines whether to scale the calculated distance to the current dimension
-				.add("ignore_x", SerializableDataTypes.BOOLEAN, false)
-				.add("ignore_y", SerializableDataTypes.BOOLEAN, false)
-				.add("ignore_z", SerializableDataTypes.BOOLEAN, false),
-			data -> constructor.create(
-				data.get("reference"),
-				data.get("shape"),
-				data.get("round_to_digit"),
-				data.get("offset"),
-				data.get("comparison"),
-				data.get("compare_to"),
-				data.get("scale_reference_to_dimension"),
-				data.get("scale_distance_to_dimension"),
-				data.get("ignore_x"),
-				data.get("ignore_y"),
-				data.get("ignore_z")
-			),
-			(m, serializableData) -> serializableData.instance()
-				.set("reference", m.reference())
-				.set("shape", m.shape())
-				.set("round_to_digit", m.roundToDigit())
-				.set("offset", m.offset())
-				.set("comparison", m.comparison())
-				.set("compare_to", m.compareTo())
-				.set("scale_reference_to_dimension", m.scaleReferenceToDimension())
-				.set("scale_distance_to_dimension", m.scaleDistanceToDimension())
-				.set("ignore_x", m.ignoreX())
-				.set("ignore_y", m.ignoreY())
-				.set("ignore_z", m.ignoreZ())
-		);
+	enum Reference {
+		//		PLAYER_SPAWN,
+//		PLAYER_NATURAL_SPAWN,
+		WORLD_SPAWN,
+		WORLD_ORIGIN
 	}
 
 	interface Constructor<M extends AbstractConditionType<?, ?> & DistanceFromCoordinatesMetaConditionType> {
 		M create(Reference reference, Shape shape, Optional<Integer> roundToDigit, Vec3 offset, Comparison comparison, double compareTo, boolean scaleReferenceToDimension, boolean scaleDistanceToDimension, boolean ignoreX, boolean ignoreY, boolean ignoreZ);
-	}
-
-	enum Reference {
-//		PLAYER_SPAWN,
-//		PLAYER_NATURAL_SPAWN,
-		WORLD_SPAWN,
-		WORLD_ORIGIN
 	}
 
 }

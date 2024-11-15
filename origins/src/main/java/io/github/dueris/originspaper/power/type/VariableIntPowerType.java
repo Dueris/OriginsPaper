@@ -1,11 +1,9 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.originspaper.condition.EntityCondition;
-import io.github.dueris.originspaper.power.Power;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Optional;
 

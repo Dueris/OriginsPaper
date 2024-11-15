@@ -1,20 +1,13 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.EntityAction;
-import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.condition.EntityCondition;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 public class PreventElytraFlightPowerType extends PowerType {
 

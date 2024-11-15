@@ -2,10 +2,8 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.nbt.IntTag;
@@ -80,9 +78,7 @@ public class StackingStatusEffectPowerType extends StatusEffectPowerType {
 			if (startTicks == null) {
 				this.startTicks = holder.tickCount % tickRate;
 				this.endTicks = null;
-			}
-
-			else if (holder.tickCount % tickRate == startTicks) {
+			} else if (holder.tickCount % tickRate == startTicks) {
 
 				this.currentStack = Math.clamp(++currentStack, minStacks, maxStacks);
 				this.wasActive = true;
@@ -93,16 +89,12 @@ public class StackingStatusEffectPowerType extends StatusEffectPowerType {
 
 			}
 
-		}
-
-		else if (wasActive) {
+		} else if (wasActive) {
 
 			if (endTicks == null) {
 				this.startTicks = null;
 				this.endTicks = holder.tickCount % tickRate;
-			}
-
-			else if (holder.tickCount % tickRate == endTicks) {
+			} else if (holder.tickCount % tickRate == endTicks) {
 				this.currentStack = Math.clamp(--currentStack, minStacks, maxStacks);
 				this.wasActive = currentStack <= minStacks;
 			}

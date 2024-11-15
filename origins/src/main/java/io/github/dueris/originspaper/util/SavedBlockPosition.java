@@ -1,6 +1,7 @@
 package io.github.dueris.originspaper.util;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,8 +29,8 @@ public final class SavedBlockPosition extends BlockInWorld {
 		this(world, pos, _pos -> blockState, _pos -> blockEntity);
 	}
 
-	public SavedBlockPosition(LevelReader world, BlockPos pos) {
-		this(world, pos, _pos -> world.hasChunkAt(_pos) ? world.getBlockState(pos) : null, world::getBlockEntity);
+	public SavedBlockPosition(ServerLevel world, BlockPos pos) {
+		this(world, pos, _pos -> world.hasChunkAt(_pos) ? world.getBlockState(pos) : null, _pos -> world.getChunkAt(pos).blockEntities.get(pos));
 	}
 
 	public static SavedBlockPosition fromLootContext(LootContext context) {

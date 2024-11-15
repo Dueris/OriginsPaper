@@ -155,9 +155,7 @@ public class ModifyPlayerSpawnPowerType extends PowerType implements Prioritized
 		if (placement == null) {
 			OriginsPaper.LOGGER.warn("Power \"{}\" could not find a suitable spawn point for player {}! Teleporting to the found location directly...", this.getPower().getId(), serverPlayer.getName().getString());
 			serverPlayer.teleportTo(spawnPointDimension, spawnPointPosition.getX(), spawnPointPosition.getY(), spawnPointPosition.getZ(), pitch, yaw);
-		}
-
-		else {
+		} else {
 			serverPlayer.teleportTo(spawnPointDimension, placement.x(), placement.y(), placement.z(), pitch, yaw);
 		}
 
@@ -232,9 +230,7 @@ public class ModifyPlayerSpawnPowerType extends PowerType implements Prioritized
 
 		if (targetBiomePos != null) {
 			return Optional.of(targetBiomePos.getFirst());
-		}
-
-		else {
+		} else {
 
 			LivingEntity holder = getHolder();
 			StringBuilder name = new StringBuilder();
@@ -434,6 +430,7 @@ public class ModifyPlayerSpawnPowerType extends PowerType implements Prioritized
 		});
 
 		final TriFunction<BlockPos, Integer, Float, BlockPos> strategyApplier;
+
 		SpawnStrategy(TriFunction<BlockPos, Integer, Float, BlockPos> strategyApplier) {
 			this.strategyApplier = strategyApplier;
 		}

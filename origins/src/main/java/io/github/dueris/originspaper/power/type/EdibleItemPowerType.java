@@ -13,14 +13,11 @@ import io.github.dueris.originspaper.action.ItemAction;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.condition.ItemCondition;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.InventoryUtil;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
@@ -45,8 +42,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class EdibleItemPowerType extends PowerType implements Prioritized<EdibleItemPowerType>, Listener {
 
@@ -113,16 +108,6 @@ public class EdibleItemPowerType extends PowerType implements Prioritized<Edible
 		this.priority = priority;
 	}
 
-	@Override
-	public @NotNull PowerConfiguration<?> getConfig() {
-		return PowerTypes.EDIBLE_ITEM;
-	}
-
-	@Override
-	public int getPriority() {
-		return priority;
-	}
-
 	public static @NotNull Optional<EdibleItemPowerType> get(ItemStack stack, @Nullable Entity holder) {
 		return PowerHolderComponent.getPowerTypes(holder, EdibleItemPowerType.class)
 			.stream()
@@ -135,6 +120,16 @@ public class EdibleItemPowerType extends PowerType implements Prioritized<Edible
 		return get(stack, stackHolder);
 	}
 
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.EDIBLE_ITEM;
+	}
+
+	@Override
+	public int getPriority() {
+		return priority;
+	}
+
 	@EventHandler
 	public void setFoodable(@NotNull PlayerItemHeldEvent e) {
 		org.bukkit.inventory.ItemStack stack = e.getPlayer().getInventory().getItem(e.getNewSlot());
@@ -142,7 +137,7 @@ public class EdibleItemPowerType extends PowerType implements Prioritized<Edible
 			Player p = e.getPlayer();
 			boolean isModified = stack.getItemMeta().getPersistentDataContainer().has(EDIBLE_ITEM_MODIFIED_KEY);
 			boolean isValid = getHolder() == ((CraftPlayer) p).getHandle();
-			boolean conditions = !(itemCondition.orElse(null) == null ? true : itemCondition.get().test(getHolder().level(), CraftItemStack.unwrap(stack))) || !isActive();
+			boolean conditions = !(itemCondition.orElse(null) == null || itemCondition.get().test(getHolder().level(), CraftItemStack.unwrap(stack))) || !isActive();
 			if (isValid && !isModified && conditions) {
 				ItemMeta meta = stack.getItemMeta();
 				FoodComponent food = new CraftFoodComponent(foodComponent);

@@ -21,7 +21,7 @@ public record BlockConditionContext(SavedBlockPosition savedBlockPosition) imple
 	}
 
 	public BlockConditionContext(Level world, BlockPos pos) {
-		this(world, pos, world.getBlockState(pos), world.getBlockEntity(pos));
+		this(world, pos, world.getBlockState(pos), Optional.ofNullable(world.getChunkAt(pos).blockEntities.get(pos)));
 	}
 
 	public Level world() {

@@ -2,12 +2,10 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.EntityAction;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.HudRender;
 import io.github.dueris.originspaper.util.Util;
@@ -28,7 +26,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 @Deprecated
 public class FireProjectilePowerType extends ActiveCooldownPowerType {
@@ -121,7 +118,7 @@ public class FireProjectilePowerType extends ActiveCooldownPowerType {
 
 	@Override
 	public void onUse() {
-		if(canUse()) {
+		if (canUse()) {
 			isFiringProjectiles = true;
 			use();
 		}
@@ -146,9 +143,7 @@ public class FireProjectilePowerType extends ActiveCooldownPowerType {
 
 		if (tag instanceof LongTag nbtLong) {
 			this.lastUseTime = nbtLong.getAsLong();
-		}
-
-		else if (tag instanceof CompoundTag nbtCompound) {
+		} else if (tag instanceof CompoundTag nbtCompound) {
 			this.lastUseTime = nbtCompound.getLong("LastUseTime");
 			this.shotProjectiles = nbtCompound.getInt("ShotProjectiles");
 			this.finishedStartDelay = nbtCompound.getBoolean("FinishedStartDelay");
@@ -180,23 +175,19 @@ public class FireProjectilePowerType extends ActiveCooldownPowerType {
 						fireProjectile();
 					}
 
-				}
-
-				else {
+				} else {
 					shotProjectiles = 0;
 					finishedStartDelay = false;
 					isFiringProjectiles = false;
 				}
 
-			}
-
-			else if(interval == 0 && finishedStartDelay) {
+			} else if (interval == 0 && finishedStartDelay) {
 
 				soundEvent.ifPresent(event -> holder.level().playSound(null, holder.getX(), holder.getY(), holder.getZ(), event, SoundSource.NEUTRAL, 0.5F, 0.4F / (holder.getRandom().nextFloat() * 0.4F + 0.8F)));
 
 				if (!holder.level().isClientSide()) {
 
-					for(; shotProjectiles < projectileCount; shotProjectiles++) {
+					for (; shotProjectiles < projectileCount; shotProjectiles++) {
 						fireProjectile();
 					}
 
@@ -206,9 +197,7 @@ public class FireProjectilePowerType extends ActiveCooldownPowerType {
 				this.finishedStartDelay = false;
 				this.isFiringProjectiles = false;
 
-			}
-
-			else if (finishedStartDelay && (holder.getCommandSenderWorld().getGameTime() - lastUseTime) % interval == 0) {
+			} else if (finishedStartDelay && (holder.getCommandSenderWorld().getGameTime() - lastUseTime) % interval == 0) {
 
 				this.shotProjectiles++;
 
@@ -220,9 +209,7 @@ public class FireProjectilePowerType extends ActiveCooldownPowerType {
 						fireProjectile();
 					}
 
-				}
-
-				else {
+				} else {
 					shotProjectiles = 0;
 					finishedStartDelay = false;
 					isFiringProjectiles = false;
@@ -266,16 +253,14 @@ public class FireProjectilePowerType extends ActiveCooldownPowerType {
 			projectileToSpawn.setOwner(holder);
 			projectileToSpawn.shootFromRotation(holder, pitch, yaw, 0F, speed, divergence);
 
-		}
+		} else {
 
-		else {
-
-			float  j = 0.017453292F;
+			float j = 0.017453292F;
 			double k = 0.007499999832361937D;
 
 			float l = -Mth.sin(yaw * j) * Mth.cos(pitch * j);
 			float m = -Mth.sin(pitch * j);
-			float n =  Mth.cos(yaw * j) * Mth.cos(pitch * j);
+			float n = Mth.cos(yaw * j) * Mth.cos(pitch * j);
 
 			Vec3 velocityToApply = new Vec3(l, m, n)
 				.normalize()

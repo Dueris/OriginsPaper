@@ -12,36 +12,36 @@ import java.util.function.BiFunction;
 
 public interface SideMetaActionType<T extends TypeActionContext<?>, A extends AbstractAction<T, ?>> {
 
-    A action();
+	static <T extends TypeActionContext<?>, A extends AbstractAction<T, AT>, AT extends AbstractActionType<T, A>, M extends AbstractActionType<T, A> & SideMetaActionType<T, A>> ActionConfiguration<M> createConfiguration(SerializableDataType<A> actionDataType, BiFunction<A, Side, M> constructor) {
+		return ActionConfiguration.of(
+			OriginsPaper.apoliIdentifier("side"),
+			new SerializableData()
+				.add("action", actionDataType)
+				.add("side", SerializableDataType.enumValue(Side.class)),
+			data -> constructor.apply(
+				data.get("action"),
+				data.get("side")
+			),
+			(m, serializableData) -> serializableData.instance()
+				.set("action", m.action())
+				.set("side", m.side())
+		);
+	}
 
-    Side side();
+	A action();
 
-    default void executeAction(T context) {
+	Side side();
 
-        if (!((side() == Side.CLIENT))) {
-            action().accept(context);
-        }
+	default void executeAction(T context) {
 
-    }
+		if (!((side() == Side.CLIENT))) {
+			action().accept(context);
+		}
 
-    static <T extends TypeActionContext<?>, A extends AbstractAction<T, AT>, AT extends AbstractActionType<T, A>, M extends AbstractActionType<T, A> & SideMetaActionType<T, A>> ActionConfiguration<M> createConfiguration(SerializableDataType<A> actionDataType, BiFunction<A, Side, M> constructor) {
-        return ActionConfiguration.of(
-            OriginsPaper.apoliIdentifier("side"),
-            new SerializableData()
-                .add("action", actionDataType)
-                .add("side", SerializableDataType.enumValue(Side.class)),
-            data -> constructor.apply(
-                data.get("action"),
-                data.get("side")
-            ),
-            (m, serializableData) -> serializableData.instance()
-                .set("action", m.action())
-                .set("side", m.side())
-        );
-    }
+	}
 
-    enum Side {
-        CLIENT, SERVER
-    }
+	enum Side {
+		CLIENT, SERVER
+	}
 
 }

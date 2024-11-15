@@ -10,7 +10,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public record ActionConfiguration<T extends AbstractActionType<?, ?>>(ResourceLocation id, TypedDataObjectFactory<T> dataFactory) implements TypeConfiguration<T> {
+public record ActionConfiguration<T extends AbstractActionType<?, ?>>(ResourceLocation id,
+																	  TypedDataObjectFactory<T> dataFactory) implements TypeConfiguration<T> {
 
 	public static <T extends AbstractActionType<?, ?>> ActionConfiguration<T> of(ResourceLocation id, SerializableData serializableData, Function<SerializableData.Instance, T> fromData, BiFunction<T, SerializableData, SerializableData.Instance> toData) {
 		TypedDataObjectFactory<T> dataFactory = TypedDataObjectFactory.simple(serializableData, fromData, toData);

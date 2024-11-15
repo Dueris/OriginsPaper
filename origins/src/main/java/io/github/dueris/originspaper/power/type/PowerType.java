@@ -8,18 +8,13 @@ import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.Predicate;
 
 public abstract class PowerType implements Validatable {
 
@@ -39,6 +34,19 @@ public abstract class PowerType implements Validatable {
 
 	public PowerType(Optional<EntityCondition> condition) {
 		this.condition = condition;
+	}
+
+	public static <T extends PowerType> TypedDataObjectFactory<T> createConditionedDataFactory(SerializableData serializableData, BiFunction<SerializableData.Instance, Optional<EntityCondition>, T> fromData, BiFunction<T, SerializableData, SerializableData.Instance> toData) {
+		return TypedDataObjectFactory.simple(
+			serializableData
+				.add("condition", EntityCondition.DATA_TYPE.optional(), Optional.empty()),
+			data -> fromData.apply(
+				data,
+				data.get("condition")
+			),
+			(t, _serializableData) -> toData.apply(t, _serializableData)
+				.set("condition", t.condition)
+		);
 	}
 
 	@Override
@@ -74,9 +82,7 @@ public abstract class PowerType implements Validatable {
 
 		if (initialized) {
 			return Objects.requireNonNull(power, "Power of initialized power type \"" + getConfig().id() + "\" was null!");
-		}
-
-		else {
+		} else {
 			throw new IllegalStateException("Power type \"" + getConfig().id() + "\" wasn't initialized yet!");
 		}
 
@@ -86,9 +92,7 @@ public abstract class PowerType implements Validatable {
 
 		if (initialized) {
 			return Objects.requireNonNull(holder, "Holder of initialized power type \"" + getConfig().id() + "\" was null!");
-		}
-
-		else {
+		} else {
 			throw new IllegalStateException("Power type \"" + getConfig().id() + "\" wasn't initialized yet!");
 		}
 
@@ -167,19 +171,6 @@ public abstract class PowerType implements Validatable {
 	public final void setTicking(boolean whenInActive) {
 		this.ticking = true;
 		this.tickingWhenInActive = whenInActive;
-	}
-
-	public static <T extends PowerType> TypedDataObjectFactory<T> createConditionedDataFactory(SerializableData serializableData, BiFunction<SerializableData.Instance, Optional<EntityCondition>, T> fromData, BiFunction<T, SerializableData, SerializableData.Instance> toData) {
-		return TypedDataObjectFactory.simple(
-			serializableData
-				.add("condition", EntityCondition.DATA_TYPE.optional(), Optional.empty()),
-			data -> fromData.apply(
-				data,
-				data.get("condition")
-			),
-			(t, _serializableData) -> toData.apply(t, _serializableData)
-				.set("condition", t.condition)
-		);
 	}
 
 }

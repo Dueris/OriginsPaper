@@ -10,35 +10,35 @@ import java.util.Objects;
 
 public class RidingRecursiveBiEntityConditionType extends BiEntityConditionType {
 
-    @Override
-    public @NotNull ConditionConfiguration<?> getConfig() {
-        return BiEntityConditionTypes.RIDING_RECURSIVE;
-    }
+	public static boolean condition(Entity actor, Entity target) {
 
-    @Override
-    public boolean test(Entity actor, Entity target) {
-        return condition(actor, target);
-    }
+		if (actor == null || target == null || !actor.isPassenger()) {
+			return false;
+		}
 
-    public static boolean condition(Entity actor, Entity target) {
+		Entity vehicle = actor.getVehicle();
+		while (vehicle != null) {
 
-        if (actor == null || target == null || !actor.isPassenger()) {
-            return false;
-        }
+			if (Objects.equals(vehicle, target)) {
+				return true;
+			}
 
-        Entity vehicle = actor.getVehicle();
-        while (vehicle != null) {
+			vehicle = vehicle.getVehicle();
 
-            if (Objects.equals(vehicle, target)) {
-                return true;
-            }
+		}
 
-            vehicle = vehicle.getVehicle();
+		return false;
 
-        }
+	}
 
-        return false;
+	@Override
+	public @NotNull ConditionConfiguration<?> getConfig() {
+		return BiEntityConditionTypes.RIDING_RECURSIVE;
+	}
 
-    }
+	@Override
+	public boolean test(Entity actor, Entity target) {
+		return condition(actor, target);
+	}
 
 }

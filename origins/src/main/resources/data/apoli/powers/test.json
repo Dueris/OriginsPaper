@@ -1,16 +1,8 @@
 {
-  "type": "origins:replace_loot_table",
-  "replace": {
-    "minecraft:entities/creeper": "minecraft:entities/chicken"
+  "type": "origins:modify_block_render",
+  "block_condition": {
+    "type": "origins:block",
+    "block": "minecraft:dirt"
   },
-  "condition": {
-    "type": "origins:equipped_item",
-    "equipment_slot": "mainhand",
-    "item_condition": {
-      "type": "origins:ingredient",
-      "ingredient": {
-        "item": "minecraft:wooden_sword"
-      }
-    }
-  }
+  "block": "minecraft:diamond_block"
 }

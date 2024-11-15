@@ -42,9 +42,7 @@ public abstract class BlockStateBaseMixin extends StateHolder<Block, BlockState>
 
 		if (context == CollisionContext.empty()) {
 			return original;
-		}
-
-		else {
+		} else {
 			return !apoli$queryOriginal && PhasingPowerType.shouldPhase(context, original, blockPos)
 				? Shapes.empty()
 				: original;

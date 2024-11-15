@@ -2,32 +2,23 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.BiEntityAction;
 import io.github.dueris.originspaper.action.ItemAction;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.condition.BiEntityCondition;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.condition.ItemCondition;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.mixin.ItemEntityAccessor;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.InventoryUtil;
 import io.github.dueris.originspaper.util.Util;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class ActionOnItemPickupPowerType extends PowerType implements Prioritized<ActionOnItemPickupPowerType> {
 
@@ -71,6 +62,24 @@ public class ActionOnItemPickupPowerType extends PowerType implements Prioritize
 		this.priority = priority;
 	}
 
+	public static void executeActions(ItemEntity itemEntity, Entity entity) {
+
+		if (!PowerHolderComponent.KEY.isProvidedBy(entity)) {
+			return;
+		}
+
+		ItemStack stack = itemEntity.getItem();
+		Entity throwerEntity = Util.getEntityByUuid(((ItemEntityAccessor) itemEntity).getThrower(), entity.getServer());
+
+		CallInstance<ActionOnItemPickupPowerType> aoippci = new CallInstance<>();
+		aoippci.add(entity, ActionOnItemPickupPowerType.class, p -> p.doesApply(stack, throwerEntity));
+
+		for (int i = aoippci.getMaxPriority(); i >= aoippci.getMinPriority(); i--) {
+			aoippci.forEach(i, p -> p.executeActions(stack, throwerEntity));
+		}
+
+	}
+
 	@Override
 	public @NotNull PowerConfiguration<?> getConfig() {
 		return PowerTypes.ACTION_ON_ITEM_PICKUP;
@@ -89,24 +98,6 @@ public class ActionOnItemPickupPowerType extends PowerType implements Prioritize
 	public void executeActions(ItemStack stack, Entity thrower) {
 		itemAction.ifPresent(action -> action.execute(getHolder().level(), InventoryUtil.getStackReferenceFromStack(getHolder(), stack)));
 		biEntityAction.ifPresent(action -> action.execute(thrower, getHolder()));
-	}
-
-	public static void executeActions(ItemEntity itemEntity, Entity entity) {
-
-		if (!PowerHolderComponent.KEY.isProvidedBy(entity)) {
-			return;
-		}
-
-		ItemStack stack = itemEntity.getItem();
-		Entity throwerEntity = Util.getEntityByUuid(((ItemEntityAccessor) itemEntity).getThrower(), entity.getServer());
-
-		CallInstance<ActionOnItemPickupPowerType> aoippci = new CallInstance<>();
-		aoippci.add(entity, ActionOnItemPickupPowerType.class, p -> p.doesApply(stack, throwerEntity));
-
-		for (int i = aoippci.getMaxPriority(); i >= aoippci.getMinPriority(); i--) {
-			aoippci.forEach(i, p -> p.executeActions(stack, throwerEntity));
-		}
-
 	}
 
 }

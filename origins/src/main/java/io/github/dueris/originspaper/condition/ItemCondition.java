@@ -1,10 +1,10 @@
 package io.github.dueris.originspaper.condition;
 
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.condition.context.ItemConditionContext;
 import io.github.dueris.originspaper.condition.type.ItemConditionType;
 import io.github.dueris.originspaper.condition.type.ItemConditionTypes;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.calio.data.SerializableDataType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 

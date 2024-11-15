@@ -12,13 +12,14 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public record PowerConfiguration<T extends PowerType>(ResourceLocation id, TypedDataObjectFactory<T> dataFactory) implements TypeConfiguration<T> {
+public record PowerConfiguration<T extends PowerType>(ResourceLocation id,
+													  TypedDataObjectFactory<T> dataFactory) implements TypeConfiguration<T> {
 
 	public static <T extends PowerType> PowerConfiguration<T> of(ResourceLocation id, SerializableData serializableData, Function<SerializableData.Instance, T> fromData, BiFunction<T, SerializableData, SerializableData.Instance> toData) {
 		return dataFactory(id, TypedDataObjectFactory.simple(serializableData, fromData, toData));
 	}
 
-	public static <T extends PowerType> PowerConfiguration<T> conditionedOf(ResourceLocation id, SerializableData serializableData, BiFunction<SerializableData.Instance, Optional<EntityCondition>,  T> fromData, BiFunction<T, SerializableData, SerializableData.Instance> toData) {
+	public static <T extends PowerType> PowerConfiguration<T> conditionedOf(ResourceLocation id, SerializableData serializableData, BiFunction<SerializableData.Instance, Optional<EntityCondition>, T> fromData, BiFunction<T, SerializableData, SerializableData.Instance> toData) {
 		return dataFactory(id, PowerType.createConditionedDataFactory(serializableData, fromData, toData));
 	}
 

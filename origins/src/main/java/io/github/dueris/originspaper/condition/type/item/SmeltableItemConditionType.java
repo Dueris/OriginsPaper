@@ -11,16 +11,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class SmeltableItemConditionType extends ItemConditionType {
 
-    @Override
-    public boolean test(Level world, ItemStack stack) {
-        return world.getRecipeManager()
-            .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), world)
-            .isPresent();
-    }
+	@Override
+	public boolean test(Level world, ItemStack stack) {
+		return world.getRecipeManager()
+			.getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), world)
+			.isPresent();
+	}
 
-    @Override
-    public @NotNull ConditionConfiguration<?> getConfig() {
-        return ItemConditionTypes.SMELTABLE;
-    }
+	@Override
+	public @NotNull ConditionConfiguration<?> getConfig() {
+		return ItemConditionTypes.SMELTABLE;
+	}
 
 }

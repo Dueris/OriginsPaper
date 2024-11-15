@@ -118,10 +118,10 @@ public class GlobalPowerSet implements Comparable<GlobalPowerSet> {
 	}
 
 	/**
-	 *  Checks the defined power references of this global power set whether they all exist and have been loaded correctly.
-	 *  Invalid powers will be removed from this global power set as a side effect.
+	 * Checks the defined power references of this global power set whether they all exist and have been loaded correctly.
+	 * Invalid powers will be removed from this global power set as a side effect.
 	 *
-	 *  @return a {@link List} of {@link Power Powers} that were removed from this global power set.
+	 * @return a {@link List} of {@link Power Powers} that were removed from this global power set.
 	 */
 	public List<Power> validate() {
 

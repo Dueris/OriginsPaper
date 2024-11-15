@@ -11,7 +11,6 @@ import io.github.dueris.originspaper.power.PowerManager;
 import io.github.dueris.originspaper.power.type.ModifyCraftingPowerType;
 import io.github.dueris.originspaper.power.type.RecipePowerType;
 import io.github.dueris.originspaper.util.InventoryUtil;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;

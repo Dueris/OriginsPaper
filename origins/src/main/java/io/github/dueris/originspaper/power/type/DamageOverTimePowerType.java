@@ -5,7 +5,6 @@ import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -15,7 +14,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -105,9 +103,7 @@ public class DamageOverTimePowerType extends PowerType {
 
 		if (this.isActive()) {
 			doDamage();
-		}
-
-		else {
+		} else {
 			resetDamage();
 		}
 
@@ -135,9 +131,7 @@ public class DamageOverTimePowerType extends PowerType {
 
 		if (outOfDamageTicks >= 20) {
 			this.inDamageTicks = 0;
-		}
-
-		else {
+		} else {
 			this.outOfDamageTicks++;
 		}
 

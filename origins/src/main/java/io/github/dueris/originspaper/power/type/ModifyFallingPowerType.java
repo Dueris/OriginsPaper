@@ -2,19 +2,15 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.modifier.Modifier;
 import io.github.dueris.originspaper.util.modifier.ModifierOperation;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,17 +18,17 @@ import java.util.function.Predicate;
 
 public class ModifyFallingPowerType extends ValueModifyingPowerType {
 
-	public static final TypedDataObjectFactory<ModifyFallingPowerType> DATA_FACTORY = createConditionedModifyingDataFactory(
-		new SerializableData()
+	public static final TypedDataObjectFactory<ModifyFallingPowerType> DATA_FACTORY = createConditionedDataFactory(
+		ValueModifyingPowerType.addModifierFields(new SerializableData()
 			.add("velocity", SerializableDataTypes.DOUBLE.optional(), Optional.empty())
-			.add("take_fall_damage", SerializableDataTypes.BOOLEAN, true),
-		(data, modifiers, condition) -> new ModifyFallingPowerType(
+			.add("take_fall_damage", SerializableDataTypes.BOOLEAN, true)),
+		(data, condition) -> new ModifyFallingPowerType(
 			data.get("velocity"),
 			data.get("take_fall_damage"),
-			modifiers,
+			data.get("modifiers"),
 			condition
 		),
-		(powerType, serializableData) -> serializableData.instance()
+		(powerType, serializableData) -> powerType.setModifiersField(serializableData.instance())
 			.set("velocity", powerType.velocity)
 			.set("take_fall_damage", powerType.takeFallDamage)
 	);
@@ -51,6 +47,10 @@ public class ModifyFallingPowerType extends ValueModifyingPowerType {
 			.map(ObjectArrayList::of);
 	}
 
+	public static boolean shouldNegateFallDamage(Entity entity) {
+		return PowerHolderComponent.hasPowerType(entity, ModifyFallingPowerType.class, Predicate.not(ModifyFallingPowerType::shouldTakeFallDamage));
+	}
+
 	@Override
 	public @NotNull PowerConfiguration<?> getConfig() {
 		return PowerTypes.MODIFY_FALLING;
@@ -63,10 +63,6 @@ public class ModifyFallingPowerType extends ValueModifyingPowerType {
 
 	public boolean shouldTakeFallDamage() {
 		return takeFallDamage;
-	}
-
-	public static boolean shouldNegateFallDamage(Entity entity) {
-		return PowerHolderComponent.hasPowerType(entity, ModifyFallingPowerType.class, Predicate.not(ModifyFallingPowerType::shouldTakeFallDamage));
 	}
 
 }

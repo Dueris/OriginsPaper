@@ -6,10 +6,10 @@ import io.github.dueris.originspaper.action.context.EntityActionContext;
 import io.github.dueris.originspaper.action.type.EntityActionType;
 import io.github.dueris.originspaper.action.type.EntityActionTypes;
 import io.github.dueris.originspaper.action.type.meta.AndMetaActionType;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import net.minecraft.world.entity.Entity;
 
 public class AndEntityActionType extends EntityActionType implements AndMetaActionType<EntityActionContext, EntityAction> {
 

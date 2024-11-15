@@ -14,6 +14,10 @@ public interface Active extends Listener {
 
 	}
 
+	default boolean canUse() {
+		return true;
+	}
+
 	class Key {
 
 		public String key = "key.origins.primary_active";

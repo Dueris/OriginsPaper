@@ -1,51 +1,46 @@
 package io.github.dueris.originspaper.power.type;
 
-import com.destroystokyo.paper.event.server.ServerTickEndEvent;
+import com.mojang.serialization.DataResult;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.BlockCondition;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
-import io.github.dueris.originspaper.util.Shape;
-import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
+import io.github.dueris.originspaper.util.Util;
 import io.papermc.paper.math.Position;
+import io.papermc.paper.util.MCUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.network.PlayerChunkSender;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.util.CraftLocation;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-public class ModifyBlockRenderPowerType extends PowerType implements Listener {
-	public static LinkedList<Runnable> que = new LinkedList<>();
-
+// TODO - constant updates for chunks - Dueris
+public class ModifyBlockRenderPowerType extends PowerType {
+	private static boolean sentMessage = false;
 	public static final TypedDataObjectFactory<ModifyBlockRenderPowerType> DATA_FACTORY = TypedDataObjectFactory.simple(
 		new SerializableData()
 			.add("block_condition", BlockCondition.DATA_TYPE.optional(), Optional.empty())
-			.add("block", SerializableDataTypes.BLOCK_STATE),
+			.add("block", SerializableDataTypes.BLOCK_STATE)
+			.validate((data) -> {
+				if (!sentMessage) {
+					sentMessage = true;
+					OriginsPaper.LOGGER.warn("ModifyBlockRender power type was detected in validation, please keep in mind this power is very performance-heavy with chunk senders.");
+				}
+				return DataResult.success(data);
+			}),
 		data -> new ModifyBlockRenderPowerType(
 			data.get("block_condition"),
 			data.get("block")
@@ -54,13 +49,14 @@ public class ModifyBlockRenderPowerType extends PowerType implements Listener {
 			.set("block_condition", powerType.blockCondition)
 			.set("block", powerType.blockState)
 	);
-
 	private final Optional<BlockCondition> blockCondition;
 	private final BlockState blockState;
+	private boolean refreshingChunks = false;
 
 	public ModifyBlockRenderPowerType(Optional<BlockCondition> blockCondition, BlockState state) {
 		this.blockCondition = blockCondition;
 		this.blockState = state;
+		setTicking(true);
 	}
 
 	@Override
@@ -68,71 +64,26 @@ public class ModifyBlockRenderPowerType extends PowerType implements Listener {
 		return PowerTypes.MODIFY_BLOCK_RENDER;
 	}
 
-	@EventHandler
-	public void chunkLoad(@NotNull PlayerChunkLoadEvent e) {
-		Player p = e.getPlayer();
-		if (this.getHolder() != ((CraftPlayer) p).getHandle()) return;
-		ServerLevel level = ((CraftWorld) e.getWorld()).getHandle();
-		que.add(() -> {
-			Map<Position, BlockData> updates = new ConcurrentHashMap<>();
-			BlockData toSend = getBlockState().createCraftBlockData();
-			for (Block block : getAllBlocksInChunk(e.getChunk())) {
-				if (block == null) continue;
-				Location location = block.getLocation();
-				if (!doesPrevent(level, CraftLocation.toBlockPosition(location)))
-					continue;
-				updates.put(location, toSend);
-			}
-			p.sendMultiBlockChange(updates);
-		});
-	}
-
-	public Block[] getAllBlocksInChunk(@NotNull Chunk chunk) {
-		World world = chunk.getWorld();
-		int chunkX = chunk.getX();
-		int chunkZ = chunk.getZ();
-
-		Block[] blocks = new Block[16 * 256 * 16];
-		int index = 0;
-
-		for (int x = 0; x < 16; x++) {
-			for (int y = 0; y < 256; y++) {
-				for (int z = 0; z < 16; z++) {
-					Location blockLocation = new Location(world, chunkX * 16 + x, y, chunkZ * 16 + z);
-					Block block = blockLocation.getBlock();
-					if (block.getType().isAir()) continue;
-					blocks[index++] = block;
-				}
-			}
-		}
-
-		return blocks;
+	@Override
+	public void onAdded() {
+		refreshChunks(false);
 	}
 
 	@Override
-	public void serverTick() {
-		if (getHolder() instanceof ServerPlayer) {
-			Player p = (CraftPlayer) getHolder().getBukkitLivingEntity();
-			Map<Position, BlockData> updates = new ConcurrentHashMap<>();
-			BlockData toSend = getBlockState().createCraftBlockData();
-			ServerLevel level = ((CraftWorld) p.getWorld()).getHandle();
-			Shape.executeAtPositions(CraftLocation.toBlockPosition(p.getLocation()), Shape.SPHERE, 10, (pos) -> {
-				Block block = p.getWorld().getBlockAt(CraftLocation.toBukkit(pos));
-				if (block == null || block.getType().isAir()) return;
-				Location location = block.getLocation();
-				if (!doesPrevent(level, CraftLocation.toBlockPosition(location))) return;
-				updates.put(location, toSend);
-			});
-			p.sendMultiBlockChange(updates);
-		}
+	public void onRemoved() {
+		refreshChunks(true);
 	}
 
-	@EventHandler
-	public void tickEnd(ServerTickEndEvent e) {
-		if (!que.isEmpty()) {
-			que.getFirst().run();
-			que.removeFirst();
+	private void refreshChunks(boolean removing) {
+		refreshingChunks = removing;
+		if (getHolder() instanceof ServerPlayer player && player.moonrise$getChunkLoader() != null) {
+			PlayerChunkSender sender = player.connection.chunkSender;
+			for (ChunkPos chunkPos : player.getBukkitEntity().getSentChunks().stream().map(Util::bukkitChunk2ChunkPos).collect(Collectors.toSet())) {
+				sender.dropChunk(player, chunkPos);
+				PlayerChunkSender.sendChunk(player.connection, player.serverLevel(), player.level().getChunk(chunkPos.x, chunkPos.z));
+			}
 		}
+		refreshingChunks = false;
 	}
 
 	public boolean doesPrevent(Level world, BlockPos pos) {
@@ -145,4 +96,18 @@ public class ModifyBlockRenderPowerType extends PowerType implements Listener {
 		return blockState;
 	}
 
+	public record RenderUpdate(Chunk chunk, ServerLevel level,
+							   ServerPlayer player) implements Consumer<ModifyBlockRenderPowerType> {
+
+		@Override
+		public void accept(@NotNull ModifyBlockRenderPowerType mbrpt) {
+			if (player.hasDisconnected() || mbrpt.refreshingChunks) return;
+
+			Map<Position, BlockData> updates = new ConcurrentHashMap<>();
+			BlockData toSend = mbrpt.getBlockState().createCraftBlockData();
+			Util.runOnAllMatchingBlocks(chunk, mbrpt::doesPrevent, (pos) -> updates.put(MCUtil.toPosition(pos), toSend));
+
+			player.getBukkitEntity().sendMultiBlockChange(updates);
+		}
+	}
 }

@@ -10,20 +10,20 @@ import java.util.Objects;
 
 public class RidingRootBiEntityConditionType extends BiEntityConditionType {
 
-    @Override
-    public @NotNull ConditionConfiguration<?> getConfig() {
-        return BiEntityConditionTypes.RIDING_ROOT;
-    }
+	public static boolean condition(Entity actor, Entity target) {
+		return actor != null
+			&& target != null
+			&& Objects.equals(actor.getRootVehicle(), target);
+	}
 
-    @Override
-    public boolean test(Entity actor, Entity target) {
-        return condition(actor, target);
-    }
+	@Override
+	public @NotNull ConditionConfiguration<?> getConfig() {
+		return BiEntityConditionTypes.RIDING_ROOT;
+	}
 
-    public static boolean condition(Entity actor, Entity target) {
-        return actor != null
-            && target != null
-            && Objects.equals(actor.getRootVehicle(), target);
-    }
+	@Override
+	public boolean test(Entity actor, Entity target) {
+		return condition(actor, target);
+	}
 
 }

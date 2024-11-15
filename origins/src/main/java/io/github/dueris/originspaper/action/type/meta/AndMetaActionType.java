@@ -13,23 +13,23 @@ import java.util.function.Function;
 
 public interface AndMetaActionType<T extends TypeActionContext<?>, A extends AbstractAction<T, ? extends AbstractActionType<T, A>>> {
 
-    List<A> actions();
+	static <T extends TypeActionContext<?>, A extends AbstractAction<T, AT>, AT extends AbstractActionType<T, A>, M extends AbstractActionType<T, A> & AndMetaActionType<T, A>> ActionConfiguration<M> createConfiguration(SerializableDataType<A> actionDataType, Function<List<A>, M> constructor) {
+		return ActionConfiguration.of(
+			OriginsPaper.apoliIdentifier("and"),
+			new SerializableData()
+				.add("actions", actionDataType.list()),
+			data -> constructor.apply(
+				data.get("actions")
+			),
+			(m, serializableData) -> serializableData.instance()
+				.set("actions", m.actions())
+		);
+	}
 
-    default void executeActions(T context) {
-        actions().forEach(action -> action.accept(context));
-    }
+	List<A> actions();
 
-    static <T extends TypeActionContext<?>, A extends AbstractAction<T, AT>, AT extends AbstractActionType<T, A>, M extends AbstractActionType<T, A> & AndMetaActionType<T, A>> ActionConfiguration<M> createConfiguration(SerializableDataType<A> actionDataType, Function<List<A>, M> constructor) {
-        return ActionConfiguration.of(
-            OriginsPaper.apoliIdentifier("and"),
-            new SerializableData()
-                .add("actions", actionDataType.list()),
-            data -> constructor.apply(
-                data.get("actions")
-            ),
-            (m, serializableData) -> serializableData.instance()
-                .set("actions", m.actions())
-        );
-    }
+	default void executeActions(T context) {
+		actions().forEach(action -> action.accept(context));
+	}
 
 }

@@ -1,5 +1,6 @@
 package io.github.dueris.originspaper.mixin;
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
@@ -32,8 +33,11 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.craftbukkit.CraftEquipmentSlot;
 import org.bukkit.craftbukkit.attribute.CraftAttribute;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -530,5 +534,27 @@ public abstract class LivingEntityMixin extends Entity implements ModifiableFood
 	@Inject(method = "baseTick", at = @At("TAIL"))
 	private void origins$waterBreathingTick(CallbackInfo ci) {
 		WaterBreathingPowerType.tick((LivingEntity) (Object) this);
+	}
+
+	@WrapOperation(method = "collectEquipmentChanges", at = @At(value = "INVOKE", target = "Lcom/destroystokyo/paper/event/player/PlayerArmorChangeEvent;callEvent()Z"))
+	public boolean apoli$callRestrictArmorTick(@NotNull PlayerArmorChangeEvent event, Operation<Boolean> original) {
+		org.bukkit.entity.Player p = event.getPlayer();
+		Player nms = ((CraftPlayer) p).getHandle();
+		for (RestrictArmorPowerType powerType : PowerHolderComponent.getPowerTypes(nms, RestrictArmorPowerType.class, true)) {
+			if (powerType.isActive() && !event.getNewItem().isEmpty()) {
+				ItemStack stack = CraftItemStack.unwrap(event.getNewItem());
+				EquipmentSlot slot = switch (event.getSlotType()) {
+					case CHEST -> EquipmentSlot.CHEST;
+					case LEGS -> EquipmentSlot.LEGS;
+					case FEET -> EquipmentSlot.FEET;
+					case HEAD -> EquipmentSlot.HEAD;
+				};
+				if (powerType.doesRestrict(stack, slot)) {
+					RestrictArmorPowerType.moveEquipmentInventory(p, CraftEquipmentSlot.getSlot(slot));
+				}
+			}
+		}
+
+		return original.call(event);
 	}
 }

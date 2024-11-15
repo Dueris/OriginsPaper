@@ -8,11 +8,11 @@ import io.github.dueris.originspaper.action.type.ItemActionTypes;
 import io.github.dueris.originspaper.action.type.meta.IfElseMetaActionType;
 import io.github.dueris.originspaper.condition.ItemCondition;
 import io.github.dueris.originspaper.condition.context.ItemConditionContext;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
-import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.level.Level;
 
 public class IfElseItemActionType extends ItemActionType implements IfElseMetaActionType<ItemActionContext, ItemConditionContext, ItemAction, ItemCondition> {
 

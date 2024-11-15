@@ -1,24 +1,18 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.BlockCondition;
 import io.github.dueris.originspaper.condition.EntityCondition;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.modifier.Modifier;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public class ModifySlipperinessPowerType extends ValueModifyingPowerType {
 

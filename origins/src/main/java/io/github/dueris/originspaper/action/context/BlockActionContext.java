@@ -8,7 +8,8 @@ import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
-public record BlockActionContext(Level world, BlockPos pos, Optional<Direction> direction) implements TypeActionContext<BlockConditionContext> {
+public record BlockActionContext(Level world, BlockPos pos,
+								 Optional<Direction> direction) implements TypeActionContext<BlockConditionContext> {
 
 	@Override
 	public BlockConditionContext forCondition() {

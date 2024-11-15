@@ -11,11 +11,11 @@ import io.github.dueris.calio.registry.DataObjectFactories;
 import io.github.dueris.calio.util.ArgumentWrapper;
 import io.github.dueris.originspaper.action.AbstractAction;
 import io.github.dueris.originspaper.action.ActionConfiguration;
-import io.github.dueris.originspaper.action.type.*;
+import io.github.dueris.originspaper.action.type.AbstractActionType;
 import io.github.dueris.originspaper.action.type.meta.AndMetaActionType;
 import io.github.dueris.originspaper.condition.AbstractCondition;
 import io.github.dueris.originspaper.condition.ConditionConfiguration;
-import io.github.dueris.originspaper.condition.type.*;
+import io.github.dueris.originspaper.condition.type.AbstractConditionType;
 import io.github.dueris.originspaper.power.PowerReference;
 import io.github.dueris.originspaper.power.type.Active;
 import io.github.dueris.originspaper.registry.ApoliRegistries;
@@ -127,9 +127,7 @@ public class ApoliDataTypes {
 
 					return DataResult.success(com.mojang.datafixers.util.Pair.of(key, input));
 
-				}
-
-				else {
+				} else {
 					return KEY.codec().decode(ops, input);
 				}
 
@@ -144,10 +142,10 @@ public class ApoliDataTypes {
 	);
 
 	/**
-	 *  <p>A HUD render data type that accepts either a single HUD render or multiple HUD renders. The first HUD render will be considered
-	 *  the <b>"parent"</b> and the following HUD renders will be considered its <b>"children."</b></p>
+	 * <p>A HUD render data type that accepts either a single HUD render or multiple HUD renders. The first HUD render will be considered
+	 * the <b>"parent"</b> and the following HUD renders will be considered its <b>"children."</b></p>
 	 *
-	 *  <p>If the children don't specify an order value, the order value of the parent will be inherited instead.</p>
+	 * <p>If the children don't specify an order value, the order value of the parent will be inherited instead.</p>
 	 */
 	public static final SerializableDataType<HudRender> HUD_RENDER = HudRender.DATA_TYPE;
 
@@ -202,9 +200,7 @@ public class ApoliDataTypes {
 					return inputString
 						.map(Component::translatable)
 						.map(text -> com.mojang.datafixers.util.Pair.of(text, input));
-				}
-
-				else {
+				} else {
 					return SerializableDataTypes.TEXT.codec().decode(ops, input);
 				}
 
@@ -227,12 +223,9 @@ public class ApoliDataTypes {
 	public static final SerializableDataType<EnumSet<BlockUsagePhase>> BLOCK_USAGE_PHASE_SET = SerializableDataType.enumSet(BLOCK_USAGE_PHASE);
 
 	public static final SerializableDataType<Pose> ENTITY_POSE = SerializableDataType.enumValue(Pose.class);
-
-	public static SerializableDataType<CraftingRecipe> DISALLOWING_INTERNAL_CRAFTING_RECIPE = SerializableDataTypes.RECIPE.comapFlatMap(RecipeUtil::validateCraftingRecipe, Function.identity());
-
 	public static final SerializableDataType<Float> NORMALIZED_FLOAT = SerializableDataType.boundNumber(SerializableDataTypes.FLOAT, 0F, 1F);
-
 	public static final SerializableDataType<ContainerType> CONTAINER_TYPE = SerializableDataType.registry(ApoliRegistries.CONTAINER_TYPE, "apoli", true);
+	public static SerializableDataType<CraftingRecipe> DISALLOWING_INTERNAL_CRAFTING_RECIPE = SerializableDataTypes.RECIPE.comapFlatMap(RecipeUtil::validateCraftingRecipe, Function.identity());
 
 	@SuppressWarnings("unchecked")
 	public static <T extends TypeConditionContext, C extends AbstractCondition<T, CT>, CT extends AbstractConditionType<T, C>> CompoundSerializableDataType<C> condition(String typeField, SerializableDataType<ConditionConfiguration<CT>> registryDataType, BiFunction<CT, Boolean, C> constructor) {
@@ -339,9 +332,7 @@ public class ApoliDataTypes {
 							.map(actionsAndInput -> actionsAndInput
 								.mapFirst(multiActionsConstructor)
 								.mapFirst(m -> constructor.apply((AT) m)));
-					}
-
-					else {
+					} else {
 						return dataType.setRoot(self.isRoot()).codec().decode(ops, input);
 					}
 

@@ -3,26 +3,20 @@ package io.github.dueris.originspaper.power.type;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
-import io.github.dueris.originspaper.access.IdentifiedLootTable;
 import io.github.dueris.originspaper.condition.BiEntityCondition;
 import io.github.dueris.originspaper.condition.BlockCondition;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.condition.ItemCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.SavedBlockPosition;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -31,17 +25,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 public class ReplaceLootTablePowerType extends PowerType implements Prioritized<ReplaceLootTablePowerType> {
 
 	public static final ResourceKey<LootTable> REPLACED_TABLE_KEY = ResourceKey.create(Registries.LOOT_TABLE, OriginsPaper.apoliIdentifier("replaced_loot_table"));
-	public static ResourceLocation LAST_REPLACED_TABLE_ID;
-
-	private static final Stack<LootTable> REPLACEMENT_STACK = new Stack<>();
-	private static final Stack<LootTable> BACKTRACK_STACK = new Stack<>();
-
 	public static final TypedDataObjectFactory<ReplaceLootTablePowerType> DATA_FACTORY = PowerType.createConditionedDataFactory(
 		new SerializableData()
 			.add("replace", ApoliDataTypes.REGEX_MAP, null)
@@ -66,7 +54,9 @@ public class ReplaceLootTablePowerType extends PowerType implements Prioritized<
 			.set("item_condition", powerType.itemCondition)
 			.set("priority", powerType.getPriority())
 	);
-
+	private static final Stack<LootTable> REPLACEMENT_STACK = new Stack<>();
+	private static final Stack<LootTable> BACKTRACK_STACK = new Stack<>();
+	public static ResourceLocation LAST_REPLACED_TABLE_ID;
 	private final Map<Pattern, ResourceLocation> replacements;
 	private final Optional<BiEntityCondition> biEntityCondition;
 
@@ -82,6 +72,51 @@ public class ReplaceLootTablePowerType extends PowerType implements Prioritized<
 		this.blockCondition = blockCondition;
 		this.itemCondition = itemCondition;
 		this.priority = priority;
+	}
+
+	public static void clearStack() {
+		REPLACEMENT_STACK.clear();
+		BACKTRACK_STACK.clear();
+	}
+
+	public static void addToStack(LootTable lootTable) {
+		REPLACEMENT_STACK.add(lootTable);
+	}
+
+	public static LootTable pop() {
+
+		if (REPLACEMENT_STACK.isEmpty()) {
+			return LootTable.EMPTY;
+		}
+
+		LootTable table = REPLACEMENT_STACK.pop();
+		BACKTRACK_STACK.push(table);
+
+		return table;
+
+	}
+
+	public static LootTable restore() {
+
+		if (BACKTRACK_STACK.isEmpty()) {
+			return LootTable.EMPTY;
+		}
+
+		LootTable table = BACKTRACK_STACK.pop();
+		REPLACEMENT_STACK.push(table);
+
+		return table;
+
+	}
+
+	public static LootTable peek() {
+
+		if (REPLACEMENT_STACK.isEmpty()) {
+			return LootTable.EMPTY;
+		} else {
+			return REPLACEMENT_STACK.peek();
+		}
+
 	}
 
 	@Override
@@ -128,53 +163,6 @@ public class ReplaceLootTablePowerType extends PowerType implements Prioritized<
 			.findFirst()
 			.map(entry -> ResourceKey.create(Registries.LOOT_TABLE, entry.getValue()))
 			.orElseThrow();
-	}
-
-	public static void clearStack() {
-		REPLACEMENT_STACK.clear();
-		BACKTRACK_STACK.clear();
-	}
-
-	public static void addToStack(LootTable lootTable) {
-		REPLACEMENT_STACK.add(lootTable);
-	}
-
-	public static LootTable pop() {
-
-		if (REPLACEMENT_STACK.isEmpty()) {
-			return LootTable.EMPTY;
-		}
-
-		LootTable table = REPLACEMENT_STACK.pop();
-		BACKTRACK_STACK.push(table);
-
-		return table;
-
-	}
-
-	public static LootTable restore() {
-
-		if (BACKTRACK_STACK.isEmpty()) {
-			return LootTable.EMPTY;
-		}
-
-		LootTable table = BACKTRACK_STACK.pop();
-		REPLACEMENT_STACK.push(table);
-
-		return table;
-
-	}
-
-	public static LootTable peek() {
-
-		if (REPLACEMENT_STACK.isEmpty()) {
-			return LootTable.EMPTY;
-		}
-
-		else {
-			return REPLACEMENT_STACK.peek();
-		}
-
 	}
 
 }

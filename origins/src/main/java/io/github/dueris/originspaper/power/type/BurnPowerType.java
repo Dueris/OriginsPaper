@@ -2,12 +2,9 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
-import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -56,23 +53,17 @@ public class BurnPowerType extends PowerType {
 			if (startTicks == null) {
 				this.startTicks = getHolder().tickCount % interval;
 				this.endTicks = null;
-			}
-
-			else if (getHolder().tickCount % interval == startTicks) {
+			} else if (getHolder().tickCount % interval == startTicks) {
 				getHolder().igniteForSeconds(burnDuration);
 				this.wasActive = true;
 			}
 
-		}
-
-		else if (wasActive) {
+		} else if (wasActive) {
 
 			if (endTicks == null) {
 				this.startTicks = null;
 				this.endTicks = getHolder().tickCount % interval;
-			}
-
-			else if (getHolder().tickCount % interval == endTicks) {
+			} else if (getHolder().tickCount % interval == endTicks) {
 				this.wasActive = false;
 			}
 

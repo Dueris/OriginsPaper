@@ -1,11 +1,11 @@
 package io.github.dueris.originspaper.condition;
 
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.condition.context.BlockConditionContext;
 import io.github.dueris.originspaper.condition.type.BlockConditionType;
 import io.github.dueris.originspaper.condition.type.BlockConditionTypes;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.util.SavedBlockPosition;
-import io.github.dueris.calio.data.SerializableDataType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 

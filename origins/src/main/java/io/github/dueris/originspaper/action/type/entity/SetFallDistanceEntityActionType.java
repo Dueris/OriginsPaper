@@ -11,30 +11,30 @@ import org.jetbrains.annotations.NotNull;
 
 public class SetFallDistanceEntityActionType extends EntityActionType {
 
-    public static final TypedDataObjectFactory<SetFallDistanceEntityActionType> DATA_FACTORY = TypedDataObjectFactory.simple(
-        new SerializableData()
-            .add("fall_distance", SerializableDataTypes.FLOAT),
-        data -> new SetFallDistanceEntityActionType(
-            data.get("fall_distance")
-        ),
-        (actionType, serializableData) -> serializableData.instance()
-            .set("fall_distance", actionType.fallDistance)
-    );
+	public static final TypedDataObjectFactory<SetFallDistanceEntityActionType> DATA_FACTORY = TypedDataObjectFactory.simple(
+		new SerializableData()
+			.add("fall_distance", SerializableDataTypes.FLOAT),
+		data -> new SetFallDistanceEntityActionType(
+			data.get("fall_distance")
+		),
+		(actionType, serializableData) -> serializableData.instance()
+			.set("fall_distance", actionType.fallDistance)
+	);
 
-    private final float fallDistance;
+	private final float fallDistance;
 
-    public SetFallDistanceEntityActionType(float fallDistance) {
-        this.fallDistance = fallDistance;
-    }
+	public SetFallDistanceEntityActionType(float fallDistance) {
+		this.fallDistance = fallDistance;
+	}
 
-    @Override
-    protected void execute(Entity entity) {
-        entity.fallDistance = fallDistance;
-    }
+	@Override
+	protected void execute(Entity entity) {
+		entity.fallDistance = fallDistance;
+	}
 
-    @Override
-    public @NotNull ActionConfiguration<?> getConfig() {
-        return EntityActionTypes.SET_FALL_DISTANCE;
-    }
+	@Override
+	public @NotNull ActionConfiguration<?> getConfig() {
+		return EntityActionTypes.SET_FALL_DISTANCE;
+	}
 
 }

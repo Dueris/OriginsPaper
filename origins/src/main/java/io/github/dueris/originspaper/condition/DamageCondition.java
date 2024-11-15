@@ -1,10 +1,10 @@
 package io.github.dueris.originspaper.condition;
 
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.condition.context.DamageConditionContext;
 import io.github.dueris.originspaper.condition.type.DamageConditionType;
 import io.github.dueris.originspaper.condition.type.DamageConditionTypes;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.calio.data.SerializableDataType;
 import net.minecraft.world.damagesource.DamageSource;
 
 public final class DamageCondition extends AbstractCondition<DamageConditionContext, DamageConditionType> {

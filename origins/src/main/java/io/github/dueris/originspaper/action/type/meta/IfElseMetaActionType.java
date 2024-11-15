@@ -15,45 +15,43 @@ import java.util.Optional;
 
 public interface IfElseMetaActionType<AX extends TypeActionContext<CX>, CX extends TypeConditionContext, A extends AbstractAction<AX, ?>, C extends AbstractCondition<CX, ?>> {
 
-    C condition();
+	static <AX extends TypeActionContext<CX>, CX extends TypeConditionContext, A extends AbstractAction<AX, AT>, AT extends AbstractActionType<AX, A>, C extends AbstractCondition<CX, CT>, CT extends AbstractConditionType<CX, C>, M extends AbstractActionType<AX, A> & IfElseMetaActionType<AX, CX, A, C>> ActionConfiguration<M> createConfiguration(SerializableDataType<A> actionDataType, SerializableDataType<C> conditionDataType, Constructor<AX, CX, A, C, M> constructor) {
+		return ActionConfiguration.of(
+			OriginsPaper.apoliIdentifier("if_else"),
+			new SerializableData()
+				.add("condition", conditionDataType)
+				.add("if_action", actionDataType)
+				.add("else_action", actionDataType.optional(), Optional.empty()),
+			data -> constructor.create(
+				data.get("condition"),
+				data.get("if_action"),
+				data.get("else_action")
+			),
+			(m, serializableData) -> serializableData.instance()
+				.set("condition", m.condition())
+				.set("if_action", m.ifAction())
+				.set("else_action", m.elseAction())
+		);
+	}
 
-    A ifAction();
+	C condition();
 
-    Optional<A> elseAction();
+	A ifAction();
 
-    default void executeAction(AX actionContext) {
+	Optional<A> elseAction();
 
-        if (condition().test(actionContext.forCondition())) {
-            ifAction().accept(actionContext);
-        }
+	default void executeAction(AX actionContext) {
 
-        else {
-            elseAction().ifPresent(action -> action.accept(actionContext));
-        }
+		if (condition().test(actionContext.forCondition())) {
+			ifAction().accept(actionContext);
+		} else {
+			elseAction().ifPresent(action -> action.accept(actionContext));
+		}
 
-    }
+	}
 
-    static <AX extends TypeActionContext<CX>, CX extends TypeConditionContext, A extends AbstractAction<AX, AT>, AT extends AbstractActionType<AX, A>, C extends AbstractCondition<CX, CT>, CT extends AbstractConditionType<CX, C>, M extends AbstractActionType<AX, A> & IfElseMetaActionType<AX, CX, A, C>> ActionConfiguration<M> createConfiguration(SerializableDataType<A> actionDataType, SerializableDataType<C> conditionDataType, Constructor<AX, CX, A, C, M> constructor) {
-        return ActionConfiguration.of(
-            OriginsPaper.apoliIdentifier("if_else"),
-            new SerializableData()
-                .add("condition", conditionDataType)
-                .add("if_action", actionDataType)
-                .add("else_action", actionDataType.optional(), Optional.empty()),
-            data -> constructor.create(
-                data.get("condition"),
-                data.get("if_action"),
-                data.get("else_action")
-            ),
-            (m, serializableData) -> serializableData.instance()
-                .set("condition", m.condition())
-                .set("if_action", m.ifAction())
-                .set("else_action", m.elseAction())
-        );
-    }
-
-    interface Constructor<AX extends TypeActionContext<CX>, CX extends TypeConditionContext, A extends AbstractAction<AX, ?>, C extends AbstractCondition<CX, ?>, M extends AbstractActionType<AX, ?> & IfElseMetaActionType<AX, CX, A, C>> {
-        M create(C condition, A ifAction, Optional<A> elseAction);
-    }
+	interface Constructor<AX extends TypeActionContext<CX>, CX extends TypeConditionContext, A extends AbstractAction<AX, ?>, C extends AbstractCondition<CX, ?>, M extends AbstractActionType<AX, ?> & IfElseMetaActionType<AX, CX, A, C>> {
+		M create(C condition, A ifAction, Optional<A> elseAction);
+	}
 
 }

@@ -1,7 +1,5 @@
 package io.github.dueris.originspaper.action;
 
-import java.util.Optional;
-
 import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.action.context.BlockActionContext;
 import io.github.dueris.originspaper.action.type.BlockActionType;
@@ -11,6 +9,8 @@ import io.github.dueris.originspaper.data.ApoliDataTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+
+import java.util.Optional;
 
 public final class BlockAction extends AbstractAction<BlockActionContext, BlockActionType> {
 

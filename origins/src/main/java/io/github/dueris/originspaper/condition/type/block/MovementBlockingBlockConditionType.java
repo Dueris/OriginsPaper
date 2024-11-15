@@ -13,15 +13,15 @@ import java.util.Optional;
 
 public class MovementBlockingBlockConditionType extends BlockConditionType {
 
-    @Override
-    public boolean test(Level world, BlockPos pos, BlockState blockState, Optional<BlockEntity> blockEntity) {
-        return blockState.blocksMotion()
-            && !blockState.getCollisionShape(world, pos).isEmpty();
-    }
+	@Override
+	public boolean test(Level world, BlockPos pos, BlockState blockState, Optional<BlockEntity> blockEntity) {
+		return blockState.blocksMotion()
+			&& !blockState.getCollisionShape(world, pos).isEmpty();
+	}
 
-    @Override
-    public @NotNull ConditionConfiguration<?> getConfig() {
-        return BlockConditionTypes.MOVEMENT_BLOCKING;
-    }
+	@Override
+	public @NotNull ConditionConfiguration<?> getConfig() {
+		return BlockConditionTypes.MOVEMENT_BLOCKING;
+	}
 
 }

@@ -1,24 +1,16 @@
 package io.github.dueris.originspaper.power.type;
 
-import com.mojang.datafixers.util.Pair;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.AttributedEntityAttributeModifier;
 import io.github.dueris.originspaper.util.Util;
-import net.minecraft.core.Holder;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -53,6 +45,23 @@ public class AttributePowerType extends PowerType implements AttributeModifying 
 		this(attributedModifiers, updateHealth, Optional.empty());
 	}
 
+	public static <T extends AttributePowerType> TypedDataObjectFactory<T> createAttributeModifyingDataFactory(SerializableData serializableData, TriFunction<SerializableData.Instance, List<AttributedEntityAttributeModifier>, Boolean, T> fromData, BiFunction<T, SerializableData, SerializableData.Instance> toData) {
+		return TypedDataObjectFactory.simple(
+			serializableData
+				.add("modifier", ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIER, null)
+				.addFunctionedDefault("modifiers", ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIERS, data -> Util.singletonListOrNull(data.get("modifier")))
+				.add("update_health", SerializableDataTypes.BOOLEAN, true)
+				.validate(Util.validateAnyFieldsPresent("modifier", "modifiers")),
+			data -> fromData.apply(
+				data,
+				data.get("modifiers"),
+				data.get("update_health")
+			),
+			(t, _serializableData) -> toData.apply(t, _serializableData)
+				.set("modifier", t.attributedModifiers())
+		);
+	}
+
 	@Override
 	public @NotNull PowerConfiguration<?> getConfig() {
 		return PowerTypes.ATTRIBUTE;
@@ -76,23 +85,6 @@ public class AttributePowerType extends PowerType implements AttributeModifying 
 	@Override
 	public boolean shouldUpdateHealth() {
 		return updateHealth;
-	}
-
-	public static <T extends AttributePowerType> TypedDataObjectFactory<T> createAttributeModifyingDataFactory(SerializableData serializableData, TriFunction<SerializableData.Instance, List<AttributedEntityAttributeModifier>, Boolean, T> fromData, BiFunction<T, SerializableData, SerializableData.Instance> toData) {
-		return TypedDataObjectFactory.simple(
-			serializableData
-				.add("modifier", ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIER, null)
-				.addFunctionedDefault("modifiers", ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIERS, data -> Util.singletonListOrNull(data.get("modifier")))
-				.add("update_health", SerializableDataTypes.BOOLEAN, true)
-				.validate(Util.validateAnyFieldsPresent("modifier", "modifiers")),
-			data -> fromData.apply(
-				data,
-				data.get("modifiers"),
-				data.get("update_health")
-			),
-			(t, _serializableData) -> toData.apply(t, _serializableData)
-				.set("modifier", t.attributedModifiers())
-		);
 	}
 
 }

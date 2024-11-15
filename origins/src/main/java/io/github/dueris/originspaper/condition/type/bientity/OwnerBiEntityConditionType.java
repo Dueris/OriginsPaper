@@ -12,6 +12,11 @@ import java.util.Objects;
 
 public class OwnerBiEntityConditionType extends BiEntityConditionType {
 
+	public static boolean condition(Entity actor, Entity target) {
+		return (target instanceof OwnableEntity tameable && Objects.equals(actor, tameable.getOwner()))
+			|| (target instanceof TraceableEntity ownable && Objects.equals(actor, ownable.getOwner()));
+	}
+
 	@Override
 	public @NotNull ConditionConfiguration<?> getConfig() {
 		return BiEntityConditionTypes.OWNER;
@@ -20,11 +25,6 @@ public class OwnerBiEntityConditionType extends BiEntityConditionType {
 	@Override
 	public boolean test(Entity actor, Entity target) {
 		return condition(actor, target);
-	}
-
-	public static boolean condition(Entity actor, Entity target) {
-		return (target instanceof OwnableEntity tameable && Objects.equals(actor, tameable.getOwner()))
-			|| (target instanceof TraceableEntity ownable && Objects.equals(actor, ownable.getOwner()));
 	}
 
 }

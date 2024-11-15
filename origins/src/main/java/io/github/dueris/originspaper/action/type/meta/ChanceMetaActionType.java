@@ -15,41 +15,39 @@ import java.util.Optional;
 
 public interface ChanceMetaActionType<T extends TypeActionContext<?>, A extends AbstractAction<T, ? extends AbstractActionType<T, A>>> {
 
-    A successAction();
+	static <T extends TypeActionContext<?>, A extends AbstractAction<T, AT>, AT extends AbstractActionType<T, A>, M extends AbstractActionType<T, A> & ChanceMetaActionType<T, A>> ActionConfiguration<M> createConfiguration(SerializableDataType<A> actionDataType, TriFunction<A, Optional<A>, Float, M> constructor) {
+		return ActionConfiguration.of(
+			OriginsPaper.apoliIdentifier("chance"),
+			new SerializableData()
+				.add("success_action", actionDataType)
+				.add("fail_action", actionDataType.optional(), Optional.empty())
+				.add("chance", SerializableDataType.boundNumber(SerializableDataTypes.FLOAT, 0F, 1F)),
+			data -> constructor.apply(
+				data.get("success_action"),
+				data.get("fail_action"),
+				data.get("chance")
+			),
+			(m, serializableData) -> serializableData.instance()
+				.set("success_action", m.successAction())
+				.set("fail_action", m.failAction())
+				.set("chance", m.chance())
+		);
+	}
 
-    Optional<A> failAction();
+	A successAction();
 
-    float chance();
+	Optional<A> failAction();
 
-    default void executeAction(T context) {
+	float chance();
 
-        if (RandomSource.create().nextFloat() < chance()) {
-            successAction().accept(context);
-        }
+	default void executeAction(T context) {
 
-        else {
-            failAction().ifPresent(action -> action.accept(context));
-        }
+		if (RandomSource.create().nextFloat() < chance()) {
+			successAction().accept(context);
+		} else {
+			failAction().ifPresent(action -> action.accept(context));
+		}
 
-    }
-
-    static <T extends TypeActionContext<?>, A extends AbstractAction<T, AT>, AT extends AbstractActionType<T, A>, M extends AbstractActionType<T, A> & ChanceMetaActionType<T, A>> ActionConfiguration<M> createConfiguration(SerializableDataType<A> actionDataType, TriFunction<A, Optional<A>, Float, M> constructor) {
-        return ActionConfiguration.of(
-            OriginsPaper.apoliIdentifier("chance"),
-            new SerializableData()
-                .add("success_action", actionDataType)
-                .add("fail_action", actionDataType.optional(), Optional.empty())
-                .add("chance", SerializableDataType.boundNumber(SerializableDataTypes.FLOAT, 0F, 1F)),
-            data -> constructor.apply(
-                data.get("success_action"),
-                data.get("fail_action"),
-                data.get("chance")
-            ),
-            (m, serializableData) -> serializableData.instance()
-                .set("success_action", m.successAction())
-                .set("fail_action", m.failAction())
-                .set("chance", m.chance())
-        );
-    }
+	}
 
 }

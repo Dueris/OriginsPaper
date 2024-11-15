@@ -9,8 +9,8 @@ import java.util.function.Supplier;
 
 public interface NothingMetaActionType {
 
-    static <T extends TypeActionContext<?>, M extends AbstractActionType<T, ?> & NothingMetaActionType> ActionConfiguration<M> createConfiguration(Supplier<M> constructor) {
-        return ActionConfiguration.simple(OriginsPaper.apoliIdentifier("nothing"), constructor);
-    }
+	static <T extends TypeActionContext<?>, M extends AbstractActionType<T, ?> & NothingMetaActionType> ActionConfiguration<M> createConfiguration(Supplier<M> constructor) {
+		return ActionConfiguration.simple(OriginsPaper.apoliIdentifier("nothing"), constructor);
+	}
 
 }

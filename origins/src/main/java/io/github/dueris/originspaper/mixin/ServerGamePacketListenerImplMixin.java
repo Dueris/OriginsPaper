@@ -3,12 +3,10 @@ package io.github.dueris.originspaper.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.access.EndRespawningEntity;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
-import io.github.dueris.originspaper.power.type.ActionOnItemUsePowerType;
-import io.github.dueris.originspaper.power.type.GroundedPowerType;
-import io.github.dueris.originspaper.power.type.ModifyCraftingPowerType;
-import io.github.dueris.originspaper.power.type.PhasingPowerType;
+import io.github.dueris.originspaper.power.type.*;
 import io.github.dueris.originspaper.util.InventoryUtil;
 import io.github.dueris.originspaper.util.PriorityPhase;
 import net.minecraft.core.BlockPos;
@@ -20,18 +18,19 @@ import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.apache.commons.lang3.tuple.Triple;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
@@ -87,6 +86,23 @@ public abstract class ServerGamePacketListenerImplMixin {
 			}
 		}
 		return original;
+	}
+
+	@WrapOperation(method = "handlePlayerAbilities", at = @At(value = "INVOKE", target = "Lorg/bukkit/plugin/PluginManager;callEvent(Lorg/bukkit/event/Event;)V"))
+	public void apoli$elytraFlightPower(PluginManager instance, Event event, Operation<Void> original) {
+		PlayerToggleFlightEvent e = (PlayerToggleFlightEvent) event;
+		for (ElytraFlightPowerType powerType : PowerHolderComponent.getPowerTypes(this.player, ElytraFlightPowerType.class, true)) {
+			CraftPlayer p = (CraftPlayer) e.getPlayer();
+			if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
+			e.setCancelled(true);
+			p.setFlying(false);
+			if (powerType.isActive() && !PowerHolderComponent.hasPowerType(player, PreventElytraFlightPowerType.class)) {
+				if (!p.isGliding() && !p.getLocation().add(0, 1, 0).getBlock().isCollidable()) {
+					powerType.createRunnable().runTaskTimer(OriginsPaper.getPlugin(), 0L, 1L);
+				}
+			}
+		}
+		original.call(instance, event);
 	}
 
 	@WrapOperation(method = "handleContainerClick", at = @At(value = "INVOKE", target = "Lorg/bukkit/plugin/PluginManager;callEvent(Lorg/bukkit/event/Event;)V"))

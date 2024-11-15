@@ -14,26 +14,26 @@ import java.util.Optional;
 
 public class AttachableBlockConditionType extends BlockConditionType {
 
-    @Override
-    public boolean test(Level world, BlockPos pos, BlockState blockState, Optional<BlockEntity> blockEntity) {
+	@Override
+	public boolean test(Level world, BlockPos pos, BlockState blockState, Optional<BlockEntity> blockEntity) {
 
-        for (Direction direction : Direction.values()) {
+		for (Direction direction : Direction.values()) {
 
-            BlockPos offsetPos = pos.relative(direction);
+			BlockPos offsetPos = pos.relative(direction);
 
-            if (world.hasChunkAt(offsetPos) && world.getBlockState(offsetPos).isFaceSturdy(world, pos, direction.getOpposite())) {
-                return true;
-            }
+			if (world.hasChunkAt(offsetPos) && world.getBlockState(offsetPos).isFaceSturdy(world, pos, direction.getOpposite())) {
+				return true;
+			}
 
-        }
+		}
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public @NotNull ConditionConfiguration<?> getConfig() {
-        return BlockConditionTypes.ATTACHABLE;
-    }
+	@Override
+	public @NotNull ConditionConfiguration<?> getConfig() {
+		return BlockConditionTypes.ATTACHABLE;
+	}
 
 }

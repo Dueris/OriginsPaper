@@ -11,19 +11,19 @@ import java.util.Objects;
 
 public class AttackerBiEntityConditionType extends BiEntityConditionType {
 
-    @Override
-    public @NotNull ConditionConfiguration<?> getConfig() {
-        return BiEntityConditionTypes.ATTACKER;
-    }
+	public static boolean condition(Entity actor, Entity target) {
+		return target instanceof Attackable attackable
+			&& Objects.equals(actor, attackable.getLastAttacker());
+	}
 
-    @Override
-    public boolean test(Entity actor, Entity target) {
-        return condition(actor, target);
-    }
+	@Override
+	public @NotNull ConditionConfiguration<?> getConfig() {
+		return BiEntityConditionTypes.ATTACKER;
+	}
 
-    public static boolean condition(Entity actor, Entity target) {
-        return target instanceof Attackable attackable
-            && Objects.equals(actor, attackable.getLastAttacker());
-    }
+	@Override
+	public boolean test(Entity actor, Entity target) {
+		return condition(actor, target);
+	}
 
 }

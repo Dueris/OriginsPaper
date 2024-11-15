@@ -3,14 +3,12 @@ package io.github.dueris.originspaper.power.type;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.condition.EntityCondition;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,11 +23,6 @@ public class GroundedPowerType extends PowerType {
 
 	public GroundedPowerType(Optional<EntityCondition> condition) {
 		super(condition);
-	}
-
-	@Override
-	public @NotNull PowerConfiguration<?> getConfig() {
-		return PowerTypes.GROUNDED;
 	}
 
 	public static void action(Player entity) {
@@ -69,6 +62,11 @@ public class GroundedPowerType extends PowerType {
 			}
 		} else
 			return new BlockPos(Mth.floor(entity.position().x), Mth.floor(entity.position().y - (double) offset), Mth.floor(entity.position().z));
+	}
+
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.GROUNDED;
 	}
 
 	@Override

@@ -2,18 +2,14 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.BiEntityAction;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.Util;
 import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class EntitySetPowerType extends PowerType {
@@ -66,6 +61,37 @@ public class EntitySetPowerType extends PowerType {
 		this.setTicking(true);
 	}
 
+	public static void integrateLoadCallback(Entity loadedEntity, ServerLevel world) {
+		PowerHolderComponent.syncPowers(loadedEntity, PowerHolderComponent.getPowerTypes(loadedEntity, EntitySetPowerType.class, true)
+			.stream()
+			.filter(Predicate.not(EntitySetPowerType::validateEntities))
+			.map(PowerType::getPower)
+			.toList());
+	}
+
+	public static void integrateUnloadCallback(Entity unloadedEntity, ServerLevel world) {
+
+		Entity.RemovalReason removalReason = unloadedEntity.getRemovalReason();
+		if (removalReason == null || !removalReason.shouldDestroy() || unloadedEntity instanceof Player) {
+			return;
+		}
+
+		for (ServerLevel otherWorld : world.getServer().getAllLevels()) {
+
+			for (Entity entity : otherWorld.getAllEntities()) {
+
+				PowerHolderComponent.syncPowers(entity, PowerHolderComponent.getPowerTypes(entity, EntitySetPowerType.class, true)
+					.stream()
+					.filter(p -> p.remove(unloadedEntity, false))
+					.map(PowerType::getPower)
+					.toList());
+
+			}
+
+		}
+
+	}
+
 	@Override
 	public @NotNull PowerConfiguration<?> getConfig() {
 		return PowerTypes.ENTITY_SET;
@@ -103,9 +129,7 @@ public class EntitySetPowerType extends PowerType {
 
 			this.wasActive = true;
 
-		}
-
-		else if (wasActive) {
+		} else if (wasActive) {
 			this.startTicks = null;
 			this.wasActive = false;
 		}
@@ -334,37 +358,6 @@ public class EntitySetPowerType extends PowerType {
 		}
 
 		removedTemps = rootNbt.getBoolean("RemovedTemps");
-
-	}
-
-	public static void integrateLoadCallback(Entity loadedEntity, ServerLevel world) {
-		PowerHolderComponent.syncPowers(loadedEntity, PowerHolderComponent.getPowerTypes(loadedEntity, EntitySetPowerType.class, true)
-			.stream()
-			.filter(Predicate.not(EntitySetPowerType::validateEntities))
-			.map(PowerType::getPower)
-			.toList());
-	}
-
-	public static void integrateUnloadCallback(Entity unloadedEntity, ServerLevel world) {
-
-		Entity.RemovalReason removalReason = unloadedEntity.getRemovalReason();
-		if (removalReason == null || !removalReason.shouldDestroy() || unloadedEntity instanceof Player) {
-			return;
-		}
-
-		for (ServerLevel otherWorld : world.getServer().getAllLevels()) {
-
-			for (Entity entity : otherWorld.getAllEntities()) {
-
-				PowerHolderComponent.syncPowers(entity, PowerHolderComponent.getPowerTypes(entity, EntitySetPowerType.class, true)
-					.stream()
-					.filter(p -> p.remove(unloadedEntity, false))
-					.map(PowerType::getPower)
-					.toList());
-
-			}
-
-		}
 
 	}
 

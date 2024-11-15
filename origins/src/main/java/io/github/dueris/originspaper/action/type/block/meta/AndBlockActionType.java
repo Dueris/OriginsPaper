@@ -6,13 +6,13 @@ import io.github.dueris.originspaper.action.context.BlockActionContext;
 import io.github.dueris.originspaper.action.type.BlockActionType;
 import io.github.dueris.originspaper.action.type.BlockActionTypes;
 import io.github.dueris.originspaper.action.type.meta.AndMetaActionType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
 
 public class AndBlockActionType extends BlockActionType implements AndMetaActionType<BlockActionContext, BlockAction> {
 

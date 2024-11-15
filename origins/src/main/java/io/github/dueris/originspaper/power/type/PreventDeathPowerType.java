@@ -1,24 +1,17 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.EntityAction;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.condition.DamageCondition;
 import io.github.dueris.originspaper.condition.EntityCondition;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class PreventDeathPowerType extends PowerType {
 
@@ -45,21 +38,6 @@ public class PreventDeathPowerType extends PowerType {
 		this.damageCondition = damageCondition;
 	}
 
-	@Override
-	public @NotNull PowerConfiguration<?> getConfig() {
-		return PowerTypes.PREVENT_DEATH;
-	}
-
-	public boolean doesApply(DamageSource source, float amount) {
-		return damageCondition
-			.map(condition -> condition.test(source, amount))
-			.orElse(true);
-	}
-
-	public void executeAction() {
-		entityAction.ifPresent(action -> action.execute(getHolder()));
-	}
-
 	public static boolean doesPrevent(Entity entity, DamageSource source, float amount) {
 
 		boolean prevented = false;
@@ -76,6 +54,21 @@ public class PreventDeathPowerType extends PowerType {
 
 		return prevented;
 
+	}
+
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.PREVENT_DEATH;
+	}
+
+	public boolean doesApply(DamageSource source, float amount) {
+		return damageCondition
+			.map(condition -> condition.test(source, amount))
+			.orElse(true);
+	}
+
+	public void executeAction() {
+		entityAction.ifPresent(action -> action.execute(getHolder()));
 	}
 
 }

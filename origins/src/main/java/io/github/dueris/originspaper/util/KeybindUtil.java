@@ -3,10 +3,8 @@ package io.github.dueris.originspaper.util;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
-import io.github.dueris.originspaper.event.KeybindTriggerEvent;
 import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.type.Active;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -15,7 +13,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -81,7 +78,15 @@ public class KeybindUtil implements Listener {
 
 	public static void triggerExecution(String key, Player player) {
 		triggerActiveKey(player, key);
-		Bukkit.getPluginManager().callEvent(new KeybindTriggerEvent(player, key));
+		net.minecraft.world.entity.player.Player nms = ((CraftPlayer) player).getHandle();
+		if (!PowerHolderComponent.KEY.isProvidedBy(nms)) return;
+		for (Power power : PowerHolderComponent.KEY.get(nms).getPowers(true)) {
+			if (power.getPowerTypeFrom(nms) instanceof Active active) {
+				if (active.getKey().key.equalsIgnoreCase(key) && active.canUse()) {
+					active.onUse();
+				}
+			}
+		}
 	}
 
 	private static void triggerActiveKey(Player player, String key) {
@@ -158,19 +163,6 @@ public class KeybindUtil implements Listener {
 
 	private static NamespacedKey identifier(String id) {
 		return new NamespacedKey(OriginsPaper.getPlugin(), id);
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onTrigger(KeybindTriggerEvent e) {
-		net.minecraft.world.entity.player.Player nms = ((CraftPlayer) e.getPlayer()).getHandle();
-		if (!PowerHolderComponent.KEY.isProvidedBy(nms)) return;
-		for (Power power : PowerHolderComponent.KEY.get(nms).getPowers(true)) {
-			if (power.getPowerTypeFrom(nms) instanceof Active active) {
-				if (active.getKey().key.equalsIgnoreCase(e.getKey())) {
-					active.onUse();
-				}
-			}
-		}
 	}
 
 	@EventHandler

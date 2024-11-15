@@ -14,30 +14,30 @@ import java.util.function.BiFunction;
 
 public interface DelayMetaActionType<T extends TypeActionContext<?>, A extends AbstractAction<T, ? extends AbstractActionType<T, A>>> {
 
-    Scheduler SCHEDULER = new Scheduler();
+	Scheduler SCHEDULER = new Scheduler();
 
-    A action();
+	static <T extends TypeActionContext<?>, A extends AbstractAction<T, AT>, AT extends AbstractActionType<T, A>, M extends AbstractActionType<T, A> & DelayMetaActionType<T, A>> ActionConfiguration<M> createConfiguration(SerializableDataType<A> actionDataType, BiFunction<A, Integer, M> constructor) {
+		return ActionConfiguration.of(
+			OriginsPaper.apoliIdentifier("delay"),
+			new SerializableData()
+				.add("action", actionDataType)
+				.add("ticks", SerializableDataTypes.POSITIVE_INT),
+			data -> constructor.apply(
+				data.get("action"),
+				data.get("ticks")
+			),
+			(m, serializableData) -> serializableData.instance()
+				.set("action", m.action())
+				.set("ticks", m.ticks())
+		);
+	}
 
-    int ticks();
+	A action();
 
-    default void executeAction(T context) {
-        SCHEDULER.queue(server -> action().accept(context), ticks());
-    }
+	int ticks();
 
-    static <T extends TypeActionContext<?>, A extends AbstractAction<T, AT>, AT extends AbstractActionType<T, A>, M extends AbstractActionType<T, A> & DelayMetaActionType<T, A>> ActionConfiguration<M> createConfiguration(SerializableDataType<A> actionDataType, BiFunction<A, Integer, M> constructor) {
-        return ActionConfiguration.of(
-            OriginsPaper.apoliIdentifier("delay"),
-            new SerializableData()
-                .add("action", actionDataType)
-                .add("ticks", SerializableDataTypes.POSITIVE_INT),
-            data -> constructor.apply(
-                data.get("action"),
-                data.get("ticks")
-            ),
-            (m, serializableData) -> serializableData.instance()
-                .set("action", m.action())
-                .set("ticks", m.ticks())
-        );
-    }
+	default void executeAction(T context) {
+		SCHEDULER.queue(server -> action().accept(context), ticks());
+	}
 
 }

@@ -2,12 +2,9 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,23 +58,17 @@ public class ExhaustOverTimePowerType extends PowerType {
 			if (startTicks == null) {
 				this.startTicks = holderPlayer.tickCount % exhaustInterval;
 				this.endTicks = null;
-			}
-
-			else if (holderPlayer.tickCount % exhaustInterval == startTicks) {
+			} else if (holderPlayer.tickCount % exhaustInterval == startTicks) {
 				holderPlayer.causeFoodExhaustion(exhaustion);
 				this.wasActive = true;
 			}
 
-		}
-
-		else if (wasActive) {
+		} else if (wasActive) {
 
 			if (endTicks == null) {
 				this.startTicks = null;
 				this.endTicks = holderPlayer.tickCount % exhaustInterval;
-			}
-
-			else if (holderPlayer.tickCount % exhaustInterval == endTicks) {
+			} else if (holderPlayer.tickCount % exhaustInterval == endTicks) {
 				this.wasActive = false;
 			}
 

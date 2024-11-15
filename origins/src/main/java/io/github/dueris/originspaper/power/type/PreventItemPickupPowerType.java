@@ -77,31 +77,6 @@ public class PreventItemPickupPowerType extends PowerType implements Prioritized
 		this.priority = priority;
 	}
 
-	@Override
-	public @NotNull PowerConfiguration<?> getConfig() {
-		return PowerTypes.PREVENT_ITEM_PICKUP;
-	}
-
-	@Override
-	public int getPriority() {
-		return priority;
-	}
-
-	public boolean doesPrevent(ItemStack stack, Entity thrower) {
-		return itemCondition.map(condition -> condition.test(getHolder().level(), stack)).orElse(true)
-			&& biEntityCondition.map(condition -> condition.test(getHolder(), thrower)).orElse(true);
-	}
-
-	public void executeActions(ItemEntity itemEntity, Entity thrower) {
-
-		SlotAccess itemEntityStackReference = InventoryUtil.createStackReference(itemEntity.getItem());
-		itemAction.ifPresent(action -> action.execute(getHolder().level(), itemEntityStackReference));
-
-		biEntityActionThrower.ifPresent(action -> action.execute(thrower, getHolder()));
-		biEntityActionItem.ifPresent(action -> action.execute(getHolder(), itemEntity));
-
-	}
-
 	public static boolean doesPrevent(ItemEntity itemEntity, Entity entity) {
 
 		if (!PowerHolderComponent.KEY.isProvidedBy(entity)) {
@@ -127,6 +102,31 @@ public class PreventItemPickupPowerType extends PowerType implements Prioritized
 		}
 
 		return prevented;
+
+	}
+
+	@Override
+	public @NotNull PowerConfiguration<?> getConfig() {
+		return PowerTypes.PREVENT_ITEM_PICKUP;
+	}
+
+	@Override
+	public int getPriority() {
+		return priority;
+	}
+
+	public boolean doesPrevent(ItemStack stack, Entity thrower) {
+		return itemCondition.map(condition -> condition.test(getHolder().level(), stack)).orElse(true)
+			&& biEntityCondition.map(condition -> condition.test(getHolder(), thrower)).orElse(true);
+	}
+
+	public void executeActions(ItemEntity itemEntity, Entity thrower) {
+
+		SlotAccess itemEntityStackReference = InventoryUtil.createStackReference(itemEntity.getItem());
+		itemAction.ifPresent(action -> action.execute(getHolder().level(), itemEntityStackReference));
+
+		biEntityActionThrower.ifPresent(action -> action.execute(thrower, getHolder()));
+		biEntityActionItem.ifPresent(action -> action.execute(getHolder(), itemEntity));
 
 	}
 

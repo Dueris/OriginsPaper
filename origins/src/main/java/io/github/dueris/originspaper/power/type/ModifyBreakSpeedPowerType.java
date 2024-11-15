@@ -1,30 +1,23 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.BlockCondition;
 import io.github.dueris.originspaper.condition.EntityCondition;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.Util;
 import io.github.dueris.originspaper.util.modifier.Modifier;
 import io.github.dueris.originspaper.util.modifier.ModifierUtil;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 // TODO - Make this more plugin-compatible
 public class ModifyBreakSpeedPowerType extends ValueModifyingPowerType {

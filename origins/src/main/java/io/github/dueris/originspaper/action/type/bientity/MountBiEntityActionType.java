@@ -8,20 +8,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class MountBiEntityActionType extends BiEntityActionType {
 
-    @Override
+	@Override
 	protected void execute(Entity actor, Entity target) {
 
-        if (actor == null || target == null) {
-            return;
-        }
+		if (actor == null || target == null) {
+			return;
+		}
 
-        actor.startRiding(target, true);
+		actor.startRiding(target, true);
 
-    }
+	}
 
-    @Override
-    public @NotNull ActionConfiguration<?> getConfig() {
-        return BiEntityActionTypes.MOUNT;
-    }
+	@Override
+	public @NotNull ActionConfiguration<?> getConfig() {
+		return BiEntityActionTypes.MOUNT;
+	}
 
 }

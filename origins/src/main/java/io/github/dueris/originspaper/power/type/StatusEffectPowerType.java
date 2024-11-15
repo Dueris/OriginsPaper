@@ -1,11 +1,9 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.originspaper.condition.EntityCondition;
-import io.github.dueris.originspaper.power.Power;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.LivingEntity;
 
 import java.util.LinkedList;
 import java.util.List;

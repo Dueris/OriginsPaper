@@ -10,16 +10,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class ExposedToSkyEntityConditionType extends EntityConditionType {
 
-    @Override
-    public boolean test(Entity entity) {
-        Level world = entity.level();
-        return world.canSeeSky(BlockPos.containing(entity.getEyePosition()))
-            || world.canSeeSky(entity.blockPosition());
-    }
+	@Override
+	public boolean test(Entity entity) {
+		Level world = entity.level();
+		return world.canSeeSky(BlockPos.containing(entity.getEyePosition()))
+			|| world.canSeeSky(entity.blockPosition());
+	}
 
-    @Override
-    public @NotNull ConditionConfiguration<?> getConfig() {
-        return EntityConditionTypes.EXPOSED_TO_SKY;
-    }
+	@Override
+	public @NotNull ConditionConfiguration<?> getConfig() {
+		return EntityConditionTypes.EXPOSED_TO_SKY;
+	}
 
 }

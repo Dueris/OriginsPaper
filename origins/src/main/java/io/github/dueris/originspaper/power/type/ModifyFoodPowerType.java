@@ -2,36 +2,27 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.EntityAction;
 import io.github.dueris.originspaper.action.ItemAction;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.condition.ItemCondition;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.Util;
 import io.github.dueris.originspaper.util.modifier.Modifier;
 import io.github.dueris.originspaper.util.modifier.ModifierUtil;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 // TODO - improve impl for full server-sided operations
 public class ModifyFoodPowerType extends PowerType {
@@ -108,6 +99,26 @@ public class ModifyFoodPowerType extends PowerType {
 
 	}
 
+	public static OptionalInt modifyEatTicks(@Nullable Entity entity, ItemStack stack) {
+
+		FoodProperties foodComponent = EdibleItemPowerType.get(stack)
+			.map(EdibleItemPowerType::getFoodComponent)
+			.orElseGet(() -> stack.get(DataComponents.FOOD));
+
+		if (foodComponent == null) {
+			return OptionalInt.empty();
+		}
+
+		List<Modifier> modifiers = PowerHolderComponent.getPowerTypes(entity, ModifyFoodPowerType.class)
+			.stream()
+			.filter(p -> p.doesApply(stack))
+			.flatMap(p -> p.getEatTicksModifiers().stream())
+			.toList();
+
+		return OptionalInt.of((int) ModifierUtil.applyModifiers(entity, modifiers, foodComponent.eatDurationTicks()));
+
+	}
+
 	@Override
 	public @NotNull PowerConfiguration<?> getConfig() {
 		return PowerTypes.MODIFY_FOOD;
@@ -146,26 +157,6 @@ public class ModifyFoodPowerType extends PowerType {
 
 	public boolean doesPreventEffects() {
 		return preventFoodEffects;
-	}
-
-	public static OptionalInt modifyEatTicks(@Nullable Entity entity, ItemStack stack) {
-
-		FoodProperties foodComponent = EdibleItemPowerType.get(stack)
-			.map(EdibleItemPowerType::getFoodComponent)
-			.orElseGet(() -> stack.get(DataComponents.FOOD));
-
-		if (foodComponent == null) {
-			return OptionalInt.empty();
-		}
-
-		List<Modifier> modifiers = PowerHolderComponent.getPowerTypes(entity, ModifyFoodPowerType.class)
-			.stream()
-			.filter(p -> p.doesApply(stack))
-			.flatMap(p -> p.getEatTicksModifiers().stream())
-			.toList();
-
-		return OptionalInt.of((int) ModifierUtil.applyModifiers(entity, modifiers, foodComponent.eatDurationTicks()));
-
 	}
 
 }

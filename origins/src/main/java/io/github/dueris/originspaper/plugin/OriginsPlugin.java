@@ -4,7 +4,9 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.client.MinecraftClient;
 import io.github.dueris.originspaper.client.resource.ResourceManager;
 import io.github.dueris.originspaper.command.PehukiCommandImpl;
+import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.content.item.OrbOfOriginsItemTracker;
+import io.github.dueris.originspaper.power.type.ElytraFlightPowerType;
 import io.github.dueris.originspaper.power.type.RecipePowerType;
 import io.github.dueris.originspaper.registry.ModItems;
 import io.github.dueris.originspaper.screen.ScreenListener;
@@ -12,10 +14,15 @@ import io.github.dueris.originspaper.util.BstatsMetrics;
 import io.github.dueris.originspaper.util.GlowingEntitiesUtils;
 import io.github.dueris.originspaper.util.KeybindUtil;
 import io.github.dueris.originspaper.util.Scheduler;
+import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 public final class OriginsPlugin extends JavaPlugin implements Listener {
 	public static OriginsPlugin plugin;
@@ -61,4 +68,14 @@ public final class OriginsPlugin extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(new OrbOfOriginsItemTracker(), this);
 	}
 
+	@EventHandler
+	public void fixBlockGlitch(@NotNull PlayerFailMoveEvent e) {
+		ServerPlayer player = ((CraftPlayer) e.getPlayer()).getHandle();
+		for (ElytraFlightPowerType powerType : PowerHolderComponent.getPowerTypes(player, ElytraFlightPowerType.class, true)) {
+			if (powerType.overwritingFlight) {
+				e.setAllowed(true);
+				e.setLogWarning(false);
+			}
+		}
+	}
 }

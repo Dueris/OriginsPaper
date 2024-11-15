@@ -1,10 +1,10 @@
 package io.github.dueris.originspaper.condition;
 
+import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.originspaper.condition.context.BiomeConditionContext;
 import io.github.dueris.originspaper.condition.type.BiomeConditionType;
 import io.github.dueris.originspaper.condition.type.BiomeConditionTypes;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
-import io.github.dueris.calio.data.SerializableDataType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;

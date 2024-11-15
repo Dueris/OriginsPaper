@@ -6,10 +6,10 @@ import io.github.dueris.originspaper.action.context.BiEntityActionContext;
 import io.github.dueris.originspaper.action.type.BiEntityActionType;
 import io.github.dueris.originspaper.action.type.BiEntityActionTypes;
 import io.github.dueris.originspaper.action.type.meta.AndMetaActionType;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import net.minecraft.world.entity.Entity;
 
 public class AndBiEntityActionType extends BiEntityActionType implements AndMetaActionType<BiEntityActionContext, BiEntityAction> {
 

@@ -1,18 +1,14 @@
 package io.github.dueris.originspaper.power.type;
 
-import io.github.dueris.calio.data.ClassDataRegistry;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.registry.ApoliClassData;
 import io.github.dueris.originspaper.util.modifier.Modifier;
 import io.github.dueris.originspaper.util.modifier.ModifierUtil;
 import net.minecraft.core.Holder;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;

@@ -16,30 +16,30 @@ import org.jetbrains.annotations.NotNull;
 
 public class CraftingTableEntityActionType extends EntityActionType {
 
-    @Override
-    protected void execute(Entity entity) {
+	@Override
+	protected void execute(Entity entity) {
 
-        if (!(entity instanceof Player player)) {
-            return;
-        }
+		if (!(entity instanceof Player player)) {
+			return;
+		}
 
-        MenuConstructor handlerFactory = (syncId, playerInventory, _player) -> {
+		MenuConstructor handlerFactory = (syncId, playerInventory, _player) -> {
 
-            CraftingMenu craftingScreenHandler = new CraftingMenu(syncId, playerInventory, ContainerLevelAccess.create(player.level(), player.blockPosition()));
-            ((ScreenHandlerUsabilityOverride) craftingScreenHandler).apoli$canUse(true);
+			CraftingMenu craftingScreenHandler = new CraftingMenu(syncId, playerInventory, ContainerLevelAccess.create(player.level(), player.blockPosition()));
+			((ScreenHandlerUsabilityOverride) craftingScreenHandler).apoli$canUse(true);
 
-            return craftingScreenHandler;
+			return craftingScreenHandler;
 
-        };
+		};
 
-        player.openMenu(new SimpleMenuProvider(handlerFactory, Component.translatable("container.crafting")));
-        player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
+		player.openMenu(new SimpleMenuProvider(handlerFactory, Component.translatable("container.crafting")));
+		player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
 
-    }
+	}
 
-    @Override
-    public @NotNull ActionConfiguration<?> getConfig() {
-        return EntityActionTypes.CRAFTING_TABLE;
-    }
+	@Override
+	public @NotNull ActionConfiguration<?> getConfig() {
+		return EntityActionTypes.CRAFTING_TABLE;
+	}
 
 }

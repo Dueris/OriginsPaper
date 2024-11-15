@@ -11,15 +11,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class FoodItemConditionType extends ItemConditionType {
 
-    @Override
-    public boolean test(Level world, ItemStack stack) {
-        return EdibleItemPowerType.get(stack).isPresent()
-            || stack.has(DataComponents.FOOD);
-    }
+	@Override
+	public boolean test(Level world, ItemStack stack) {
+		return EdibleItemPowerType.get(stack).isPresent()
+			|| stack.has(DataComponents.FOOD);
+	}
 
-    @Override
-    public @NotNull ConditionConfiguration<?> getConfig() {
-        return ItemConditionTypes.FOOD;
-    }
+	@Override
+	public @NotNull ConditionConfiguration<?> getConfig() {
+		return ItemConditionTypes.FOOD;
+	}
 
 }

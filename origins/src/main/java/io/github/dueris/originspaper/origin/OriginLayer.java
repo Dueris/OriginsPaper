@@ -7,12 +7,10 @@ import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.action.EntityAction;
 import io.github.dueris.originspaper.condition.EntityCondition;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.OriginsDataTypes;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 

@@ -10,22 +10,22 @@ import org.jetbrains.annotations.NotNull;
 
 public class ExposedToSunEntityConditionType extends EntityConditionType {
 
-    private static final InRainEntityConditionType IN_RAIN = new InRainEntityConditionType();
-    private static final BrightnessEntityConditionType BRIGHTNESS = new BrightnessEntityConditionType(Comparison.GREATER_THAN, 0.5F);
-    private static final ExposedToSkyEntityConditionType EXPOSED_TO_SKY = new ExposedToSkyEntityConditionType();
+	private static final InRainEntityConditionType IN_RAIN = new InRainEntityConditionType();
+	private static final BrightnessEntityConditionType BRIGHTNESS = new BrightnessEntityConditionType(Comparison.GREATER_THAN, 0.5F);
+	private static final ExposedToSkyEntityConditionType EXPOSED_TO_SKY = new ExposedToSkyEntityConditionType();
 
-    @Override
-    public boolean test(Entity entity) {
-        Level world = entity.level();
-        return world.isDay()
-            && !IN_RAIN.test(entity)
-            && BRIGHTNESS.test(entity)
-            && EXPOSED_TO_SKY.test(entity);
-    }
+	@Override
+	public boolean test(Entity entity) {
+		Level world = entity.level();
+		return world.isDay()
+			&& !IN_RAIN.test(entity)
+			&& BRIGHTNESS.test(entity)
+			&& EXPOSED_TO_SKY.test(entity);
+	}
 
-    @Override
-    public @NotNull ConditionConfiguration<?> getConfig() {
-        return EntityConditionTypes.EXPOSED_TO_SUN;
-    }
+	@Override
+	public @NotNull ConditionConfiguration<?> getConfig() {
+		return EntityConditionTypes.EXPOSED_TO_SUN;
+	}
 
 }

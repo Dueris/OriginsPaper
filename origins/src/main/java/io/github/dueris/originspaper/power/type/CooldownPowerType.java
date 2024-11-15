@@ -2,19 +2,15 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.client.MinecraftClient;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.condition.EntityCondition;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.HudRender;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,7 +63,7 @@ public class CooldownPowerType extends PowerType implements HudRendered {
 
 	@Override
 	public void fromTag(Tag tag) {
-		lastUseTime = ((LongTag)tag).getAsLong();
+		lastUseTime = ((LongTag) tag).getAsLong();
 	}
 
 	@Override
@@ -117,6 +113,14 @@ public class CooldownPowerType extends PowerType implements HudRendered {
 		return cooldown;
 	}
 
+	public void setCooldown(int cooldownInTicks) {
+		long currentTime = getHolder().level().getGameTime();
+		this.lastUseTime = currentTime - Math.min(cooldownInTicks, cooldown);
+		if (getHolder() instanceof ServerPlayer player) {
+			MinecraftClient.HUD_RENDER.setRender(player.getBukkitEntity(), CraftNamespacedKey.fromMinecraft(getPower().getId()), cooldownInTicks);
+		}
+	}
+
 	public void modify(int changeInTicks) {
 
 		this.lastUseTime += changeInTicks;
@@ -129,14 +133,6 @@ public class CooldownPowerType extends PowerType implements HudRendered {
 			lastUseTime = currentTime;
 		}
 
-	}
-
-	public void setCooldown(int cooldownInTicks) {
-		long currentTime = getHolder().level().getGameTime();
-		this.lastUseTime = currentTime - Math.min(cooldownInTicks, cooldown);
-		if (getHolder() instanceof ServerPlayer player) {
-			MinecraftClient.HUD_RENDER.setRender(player.getBukkitEntity(), CraftNamespacedKey.fromMinecraft(getPower().getId()), cooldownInTicks);
-		}
 	}
 
 }

@@ -45,6 +45,21 @@ public abstract class EntityMixin implements MovingEntity, SubmergableEntity {
 
 	@Shadow
 	public boolean onGround;
+	@Shadow
+	protected Object2DoubleMap<TagKey<Fluid>> fluidHeight;
+	@Shadow
+	@Final
+	private Set<TagKey<Fluid>> fluidOnEyes;
+	@Unique
+	private boolean apoli$movingHorizontally;
+	@Unique
+	private boolean apoli$movingVertically;
+	@Unique
+	private double apoli$horizontalMovementValue;
+	@Unique
+	private double apoli$verticalMovementValue;
+	@Unique
+	private Vec3 apoli$prevPos;
 
 	@Shadow
 	public abstract CraftEntity getBukkitEntity();
@@ -55,17 +70,17 @@ public abstract class EntityMixin implements MovingEntity, SubmergableEntity {
 	@Shadow
 	public abstract void remove(Entity.RemovalReason reason);
 
-	@Shadow @Final private Set<TagKey<Fluid>> fluidOnEyes;
+	@Shadow
+	public abstract Vec3 position();
 
-	@Shadow protected Object2DoubleMap<TagKey<Fluid>> fluidHeight;
+	@Shadow
+	public abstract double getX();
 
-	@Shadow public abstract Vec3 position();
+	@Shadow
+	public abstract double getY();
 
-	@Shadow public abstract double getX();
-
-	@Shadow public abstract double getY();
-
-	@Shadow public abstract double getZ();
+	@Shadow
+	public abstract double getZ();
 
 	@ModifyReturnValue(method = "getType", at = @At("RETURN"))
 	private EntityType<?> apoli$modifyTypeTag(EntityType<?> original) {
@@ -194,34 +209,19 @@ public abstract class EntityMixin implements MovingEntity, SubmergableEntity {
 
 	@Override
 	public double apoli$getFluidHeightLoosely(TagKey<Fluid> tag) {
-		if(tag == null) {
+		if (tag == null) {
 			return 0;
 		}
-		if(fluidHeight.containsKey(tag)) {
+		if (fluidHeight.containsKey(tag)) {
 			return fluidHeight.getDouble(tag);
 		}
-		for(TagKey<Fluid> ft : fluidHeight.keySet()) {
-			if(CraftCalio.areTagsEqual(Registries.FLUID, ft, tag)) {
+		for (TagKey<Fluid> ft : fluidHeight.keySet()) {
+			if (CraftCalio.areTagsEqual(Registries.FLUID, ft, tag)) {
 				return fluidHeight.getDouble(ft);
 			}
 		}
 		return 0;
 	}
-
-	@Unique
-	private boolean apoli$movingHorizontally;
-
-	@Unique
-	private boolean apoli$movingVertically;
-
-	@Unique
-	private double apoli$horizontalMovementValue;
-
-	@Unique
-	private double apoli$verticalMovementValue;
-
-	@Unique
-	private Vec3 apoli$prevPos;
 
 	@Override
 	public boolean apoli$isMovingHorizontally() {

@@ -3,27 +3,19 @@ package io.github.dueris.originspaper.power.type;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.EntityAction;
 import io.github.dueris.originspaper.action.ItemAction;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.condition.ItemCondition;
-import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.PriorityPhase;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class ActionOnItemUsePowerType extends PowerType implements Prioritized<ActionOnItemUsePowerType> {
 
@@ -67,6 +59,21 @@ public class ActionOnItemUsePowerType extends PowerType implements Prioritized<A
 		this.priority = priority;
 	}
 
+	public static void executeActions(Entity user, SlotAccess useStack, ItemStack checkStack, TriggerType triggerType, PriorityPhase phase) {
+
+		if (user.level().isClientSide()) {
+			return;
+		}
+
+		ActionOnItemUsePowerType.CallInstance<ActionOnItemUsePowerType> aoiupci = new ActionOnItemUsePowerType.CallInstance<>();
+		aoiupci.add(user, ActionOnItemUsePowerType.class, p -> p.doesApply(checkStack, triggerType, phase));
+
+		for (int i = aoiupci.getMaxPriority(); i >= aoiupci.getMinPriority(); i--) {
+			aoiupci.forEach(i, aoiup -> aoiup.executeActions(useStack));
+		}
+
+	}
+
 	@Override
 	public @NotNull PowerConfiguration<?> getConfig() {
 		return PowerTypes.ACTION_ON_ITEM_USE;
@@ -90,21 +97,6 @@ public class ActionOnItemUsePowerType extends PowerType implements Prioritized<A
 
 	public enum TriggerType {
 		INSTANT, START, STOP, FINISH, DURING
-	}
-
-	public static void executeActions(Entity user, SlotAccess useStack, ItemStack checkStack, TriggerType triggerType, PriorityPhase phase) {
-
-		if (user.level().isClientSide()) {
-			return;
-		}
-
-		ActionOnItemUsePowerType.CallInstance<ActionOnItemUsePowerType> aoiupci = new ActionOnItemUsePowerType.CallInstance<>();
-		aoiupci.add(user, ActionOnItemUsePowerType.class, p -> p.doesApply(checkStack, triggerType, phase));
-
-		for (int i = aoiupci.getMaxPriority(); i >= aoiupci.getMinPriority(); i--) {
-			aoiupci.forEach(i, aoiup -> aoiup.executeActions(useStack));
-		}
-
 	}
 
 }

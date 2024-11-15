@@ -7,13 +7,11 @@ import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataType;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.calio.util.Validatable;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.power.type.PowerType;
 import io.github.dueris.originspaper.power.type.PowerTypes;
 import io.github.dueris.originspaper.power.type.meta.MultiplePowerType;
-import io.netty.handler.codec.DecoderException;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -21,8 +19,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -145,13 +141,9 @@ public class Power implements Validatable {
 
 		if (this == obj) {
 			return true;
-		}
-
-		else if (obj instanceof Power that) {
+		} else if (obj instanceof Power that) {
 			return Objects.equals(this.getId(), that.getId());
-		}
-
-		else {
+		} else {
 			return false;
 		}
 
@@ -207,7 +199,8 @@ public class Power implements Validatable {
 		return description.copy();
 	}
 
-	public record Entry(PowerConfiguration<?> typeConfig, PowerReference powerReference, Tag nbtData, List<ResourceLocation> sources) {
+	public record Entry(PowerConfiguration<?> typeConfig, PowerReference powerReference, Tag nbtData,
+						List<ResourceLocation> sources) {
 
 		private static final SerializableDataType<List<ResourceLocation>> MUTABLE_IDENTIFIERS = SerializableDataTypes.IDENTIFIER.list(1, Integer.MAX_VALUE).xmap(LinkedList::new, Function.identity());
 
@@ -225,17 +218,11 @@ public class Power implements Validatable {
 
 					if (!data.isPresent("type")) {
 						return CraftCalio.createMissingRequiredFieldError("type");
-					}
-
-					else if (!data.isPresent("id")) {
+					} else if (!data.isPresent("id")) {
 						return CraftCalio.createMissingRequiredFieldError("id");
-					}
-
-					else if (!data.isPresent("sources")) {
+					} else if (!data.isPresent("sources")) {
 						return CraftCalio.createMissingRequiredFieldError("sources");
-					}
-
-					else {
+					} else {
 						return DataResult.success(data);
 					}
 

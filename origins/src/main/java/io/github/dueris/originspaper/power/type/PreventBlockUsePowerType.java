@@ -2,7 +2,6 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.BlockAction;
 import io.github.dueris.originspaper.action.EntityAction;
 import io.github.dueris.originspaper.action.ItemAction;
@@ -11,29 +10,20 @@ import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.condition.ItemCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.BlockUsagePhase;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.phys.BlockHitResult;
-import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class PreventBlockUsePowerType extends ActiveInteractionPowerType {
 
@@ -83,6 +73,19 @@ public class PreventBlockUsePowerType extends ActiveInteractionPowerType {
 		this.usePhases = usePhases;
 	}
 
+	public static boolean doesPrevent(Entity holder, BlockUsagePhase usePhase, BlockHitResult hitResult, ItemStack heldStack, InteractionHand hand) {
+
+		CallInstance<ActiveInteractionPowerType> aipci = new CallInstance<>();
+		aipci.add(holder, PreventBlockUsePowerType.class, p -> p.doesPrevent(usePhase, hitResult, heldStack, hand));
+
+		for (int i = aipci.getMaxPriority(); i >= aipci.getMinPriority(); i--) {
+			aipci.forEach(i, p -> ((PreventBlockUsePowerType) p).executeActions(hitResult, hand));
+		}
+
+		return !aipci.isEmpty();
+
+	}
+
 	@Override
 	public @NotNull PowerConfiguration<?> getConfig() {
 		return PowerTypes.PREVENT_BLOCK_USE;
@@ -106,19 +109,6 @@ public class PreventBlockUsePowerType extends ActiveInteractionPowerType {
 			&& directions.contains(hitResult.getDirection())
 			&& super.shouldExecute(hand, heldStack)
 			&& blockCondition.map(condition -> condition.test(getHolder().level(), hitResult.getBlockPos())).orElse(true);
-	}
-
-	public static boolean doesPrevent(Entity holder, BlockUsagePhase usePhase, BlockHitResult hitResult, ItemStack heldStack, InteractionHand hand) {
-
-		CallInstance<ActiveInteractionPowerType> aipci = new CallInstance<>();
-		aipci.add(holder, PreventBlockUsePowerType.class, p -> p.doesPrevent(usePhase, hitResult, heldStack, hand));
-
-		for (int i = aipci.getMaxPriority(); i >= aipci.getMinPriority(); i--) {
-			aipci.forEach(i, p -> ((PreventBlockUsePowerType) p).executeActions(hitResult, hand));
-		}
-
-		return !aipci.isEmpty();
-
 	}
 
 }

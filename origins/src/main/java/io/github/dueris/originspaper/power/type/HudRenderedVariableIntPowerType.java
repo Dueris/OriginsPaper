@@ -1,10 +1,8 @@
 package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.originspaper.client.MinecraftClient;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.util.HudRender;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 
 public abstract class HudRenderedVariableIntPowerType extends VariableIntPowerType implements HudRendered {
@@ -23,7 +21,7 @@ public abstract class HudRenderedVariableIntPowerType extends VariableIntPowerTy
 
 	@Override
 	public float getFill() {
-		return (this.getValue() - this.getMin()) / (float)(this.getMax() - this.getMin());
+		return (this.getValue() - this.getMin()) / (float) (this.getMax() - this.getMin());
 	}
 
 	@Override

@@ -11,26 +11,24 @@ import org.jetbrains.annotations.NotNull;
 
 public class TameBiEntityActionType extends BiEntityActionType {
 
-    @Override
+	@Override
 	protected void execute(Entity actor, Entity target) {
 
-        if (actor instanceof Player actorPlayer) {
+		if (actor instanceof Player actorPlayer) {
 
-            if (target instanceof TamableAnimal tameableTarget && !tameableTarget.isTame()) {
-                tameableTarget.tame(actorPlayer);
-            }
+			if (target instanceof TamableAnimal tameableTarget && !tameableTarget.isTame()) {
+				tameableTarget.tame(actorPlayer);
+			} else if (target instanceof AbstractHorse targetHorseLike && !targetHorseLike.isTamed()) {
+				targetHorseLike.tameWithName(actorPlayer);
+			}
 
-            else if (target instanceof AbstractHorse targetHorseLike && !targetHorseLike.isTamed()) {
-                targetHorseLike.tameWithName(actorPlayer);
-            }
+		}
 
-        }
+	}
 
-    }
-
-    @Override
-    public @NotNull ActionConfiguration<?> getConfig() {
-        return BiEntityActionTypes.TAME;
-    }
+	@Override
+	public @NotNull ActionConfiguration<?> getConfig() {
+		return BiEntityActionTypes.TAME;
+	}
 
 }

@@ -9,7 +9,6 @@ import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.access.ThrownEnderianPearlEntity;
 import io.github.dueris.originspaper.condition.context.BlockConditionContext;
 import it.unimi.dsi.fastutil.ints.IntCollection;
-import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ScoreHolderArgument;
@@ -24,10 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.TagKey;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -43,9 +39,7 @@ import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Objective;
@@ -53,7 +47,9 @@ import net.minecraft.world.scores.ScoreHolder;
 import net.minecraft.world.scores.Scoreboard;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -380,66 +376,23 @@ public class Util {
 		return a.and(b);
 	}
 
-	public static boolean attemptToTeleport(Entity entity, ServerLevel serverWorld, double destX, double destY, double destZ, double offsetX, double offsetY, double offsetZ, double areaHeight, boolean loadedChunksOnly, Heightmap.Types heightmap, Predicate<BlockInWorld> landingBlockCondition, Predicate<Entity> landingCondition) {
+	public static void runOnAllMatchingBlocks(@NotNull Chunk chunk, @Nullable BiPredicate<Level, BlockPos> condition, @NotNull Consumer<BlockPos> posConsumer) {
+		ServerLevel world = ((CraftWorld) chunk.getWorld()).getHandle();
+		int minY = world.getMinBuildHeight();
+		int maxY = world.getMaxBuildHeight();
+		int cXF = chunk.getX() * 16;
+		int cZF = chunk.getZ() * 16;
 
-		BlockPos.MutableBlockPos blockPos = BlockPos.containing(destX, destY, destZ).mutable();
-		boolean foundSurface = false;
-		if (heightmap != null) {
-			blockPos.set(serverWorld.getHeightmapPos(heightmap, blockPos).below());
-			if (landingBlockCondition.test(new BlockInWorld(serverWorld, blockPos, true))) {
-				blockPos.set(blockPos.above());
-				foundSurface = true;
-			}
-		} else {
-
-			for (double decrements = 0; decrements < areaHeight / 2; ++decrements) {
-
-				blockPos.set(blockPos.below());
-				if (landingBlockCondition.test(new BlockInWorld(serverWorld, blockPos, true))) {
-					blockPos.set(blockPos.above());
-					foundSurface = true;
-					break;
+		for (int x = 0; x < 16; x++) {
+			for (int y = minY; y < maxY; y++) {
+				for (int z = 0; z < 16; z++) {
+					BlockPos position = new BlockPos(cXF + x, y, cZF + z);
+					if (condition == null || condition.test(world, position)) {
+						posConsumer.accept(position);
+					}
 				}
 			}
 		}
-
-		destX = offsetX == 0 ? destX : Mth.floor(destX) + offsetX;
-		destY = blockPos.getY() + offsetY;
-		destZ = offsetZ == 0 ? destZ : Mth.floor(destZ) + offsetZ;
-
-		blockPos.set(destX, destY, destZ);
-		if (!foundSurface) {
-			return false;
-		}
-
-		double prevX = entity.getX();
-		double prevY = entity.getY();
-		double prevZ = entity.getZ();
-
-		ChunkPos chunkPos = new ChunkPos(blockPos);
-		if (!serverWorld.hasChunk(chunkPos.x, chunkPos.z)) {
-
-			if (loadedChunksOnly) {
-				return false;
-			}
-
-			serverWorld.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkPos, 0, entity.getId());
-			serverWorld.getChunk(chunkPos.x, chunkPos.z);
-
-		}
-
-		entity.teleportTo(destX, destY, destZ);
-
-		if (!landingCondition.test(entity)) {
-			entity.teleportTo(prevX, prevY, prevZ);
-			return false;
-		}
-
-		if (entity instanceof PathfinderMob pathAwareEntity) {
-			pathAwareEntity.getNavigation().stop();
-		}
-
-		return true;
 
 	}
 
@@ -458,9 +411,7 @@ public class Util {
 
 			if (anyPresent(data, fields)) {
 				return DataResult.success(data);
-			}
-
-			else {
+			} else {
 
 				StringBuilder message = new StringBuilder(fields.length > 1 ? "Any of the " : "The ");
 				String separator = "";
@@ -590,5 +541,9 @@ public class Util {
 
 	public static @NotNull ServerPlayer getPlayer(@NotNull CommandContext<io.papermc.paper.command.brigadier.CommandSourceStack> context, String name) throws CommandSyntaxException {
 		return context.getArgument(name, EntitySelector.class).findSinglePlayer((CommandSourceStack) context.getSource());
+	}
+
+	public static @NotNull ChunkPos bukkitChunk2ChunkPos(@NotNull Chunk chunk) {
+		return new ChunkPos(chunk.getX(), chunk.getZ());
 	}
 }

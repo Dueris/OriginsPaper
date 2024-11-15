@@ -36,7 +36,7 @@ public abstract class AbstractActionType<T extends TypeActionContext<?>, A exten
 	@Override
 	public void validate() throws Exception {
 
-		TypedDataObjectFactory<AbstractActionType<T, A>> dataFactory = (TypedDataObjectFactory<AbstractActionType<T,A>>) getConfig().dataFactory();
+		TypedDataObjectFactory<AbstractActionType<T, A>> dataFactory = (TypedDataObjectFactory<AbstractActionType<T, A>>) getConfig().dataFactory();
 		SerializableData.Instance data = dataFactory.toData(this);
 
 		data.validate();
@@ -50,9 +50,7 @@ public abstract class AbstractActionType<T extends TypeActionContext<?>, A exten
 
 		if (initialized) {
 			return Objects.requireNonNull(action, "Action of initialized action type \"" + getConfig().id() + "\" was null!");
-		}
-
-		else {
+		} else {
 			throw new IllegalStateException("Action type \"" + getConfig().id() + "\" wasn't initialized yet!");
 		}
 

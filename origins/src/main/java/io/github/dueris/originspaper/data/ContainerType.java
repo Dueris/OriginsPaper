@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import io.github.dueris.originspaper.util.TextAlignment;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.MenuConstructor;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -16,6 +15,10 @@ public record ContainerType(TextAlignment titleAlignment, int columns, int rows,
 		Preconditions.checkArgument(rows > 0, "Container type must have at least 1 row!");
 	}
 
+	public static @NotNull ContainerType preset(int columns, int rows, @NotNull Factory factory) {
+		return new ContainerType(TextAlignment.NONE, columns, rows, Optional.of(factory));
+	}
+
 	public MenuConstructor create(Container inventory) {
 		return factory()
 			.map(factory -> factory.create(inventory, columns(), rows()))
@@ -24,10 +27,6 @@ public record ContainerType(TextAlignment titleAlignment, int columns, int rows,
 
 	public int size() {
 		return columns() * rows();
-	}
-
-	public static @NotNull ContainerType preset(int columns, int rows, @NotNull Factory factory) {
-		return new ContainerType(TextAlignment.NONE, columns, rows, Optional.of(factory));
 	}
 
 	@FunctionalInterface

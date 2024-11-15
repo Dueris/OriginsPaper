@@ -11,30 +11,30 @@ import org.jetbrains.annotations.NotNull;
 
 public class InvertBiEntityActionType extends BiEntityActionType {
 
-    public static final TypedDataObjectFactory<InvertBiEntityActionType> DATA_FACTORY = TypedDataObjectFactory.simple(
-        new SerializableData()
-            .add("action", BiEntityAction.DATA_TYPE),
-        data -> new InvertBiEntityActionType(
-            data.get("action")
-        ),
-        (actionType, serializableData) -> serializableData.instance()
-            .set("action", actionType.action)
-    );
+	public static final TypedDataObjectFactory<InvertBiEntityActionType> DATA_FACTORY = TypedDataObjectFactory.simple(
+		new SerializableData()
+			.add("action", BiEntityAction.DATA_TYPE),
+		data -> new InvertBiEntityActionType(
+			data.get("action")
+		),
+		(actionType, serializableData) -> serializableData.instance()
+			.set("action", actionType.action)
+	);
 
-    private final BiEntityAction action;
+	private final BiEntityAction action;
 
-    public InvertBiEntityActionType(BiEntityAction action) {
-        this.action = action;
-    }
+	public InvertBiEntityActionType(BiEntityAction action) {
+		this.action = action;
+	}
 
-    @Override
+	@Override
 	protected void execute(Entity actor, Entity target) {
-        action.execute(target, actor);
-    }
+		action.execute(target, actor);
+	}
 
-    @Override
-    public @NotNull ActionConfiguration<?> getConfig() {
-        return BiEntityActionTypes.INVERT;
-    }
+	@Override
+	public @NotNull ActionConfiguration<?> getConfig() {
+		return BiEntityActionTypes.INVERT;
+	}
 
 }

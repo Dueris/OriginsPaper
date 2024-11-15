@@ -4,12 +4,12 @@ import io.github.dueris.originspaper.action.ActionConfiguration;
 import io.github.dueris.originspaper.action.type.BlockActionType;
 import io.github.dueris.originspaper.action.type.BlockActionTypes;
 import io.github.dueris.originspaper.action.type.meta.NothingMetaActionType;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class NothingBlockActionType extends BlockActionType implements NothingMetaActionType {
 

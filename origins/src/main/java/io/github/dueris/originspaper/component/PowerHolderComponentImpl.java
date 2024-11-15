@@ -83,9 +83,7 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 
 		if (powerSources.containsKey(power)) {
 			return List.copyOf(powerSources.get(power));
-		}
-
-		else {
+		} else {
 			return List.of();
 		}
 
@@ -235,9 +233,7 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 
 					try {
 						powerType.fromTag(powerEntry.nbtData());
-					}
-
-					catch (ClassCastException cce) {
+					} catch (ClassCastException cce) {
 						//  Occurs when the power was overridden by a data pack since last resource reload,
 						//  where the overridden power may encode/decode different NBT types
 						OriginsPaper.LOGGER.warn("Data type of power \"{}\" has changed, skipping data for that power on entity {} (UUID: {})", powerReference.id(), owner.getName().getString(), owner.getStringUUID());
@@ -246,15 +242,11 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 					powerSources.put(power, powerEntry.sources());
 					powers.put(power, powerType);
 
-				}
-
-				catch (Throwable t) {
+				} catch (Throwable t) {
 					OriginsPaper.LOGGER.warn("Unregistered power \"{}\" found on entity {} (UUID: {}), skipping...", powerReference.id(), owner.getName().getString(), owner.getStringUUID());
 				}
 
-			}
-
-			catch (Throwable t) {
+			} catch (Throwable t) {
 				OriginsPaper.LOGGER.warn("Error trying to decode NBT element ({}) at index {} into a power from NBT of entity {} (UUID: {}) (skipping): {}", powerTag, i, owner.getName().getString(), owner.getStringUUID(), t.getMessage());
 			}
 

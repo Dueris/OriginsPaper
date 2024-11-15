@@ -1,13 +1,13 @@
 package io.github.dueris.originspaper.condition.type.item;
 
+import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.condition.ConditionConfiguration;
 import io.github.dueris.originspaper.condition.type.ItemConditionType;
 import io.github.dueris.originspaper.condition.type.ItemConditionTypes;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.util.Comparison;
-import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;

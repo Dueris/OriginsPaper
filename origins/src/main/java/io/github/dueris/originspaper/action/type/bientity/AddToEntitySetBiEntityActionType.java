@@ -17,39 +17,39 @@ import java.util.Optional;
 
 public class AddToEntitySetBiEntityActionType extends BiEntityActionType {
 
-    public static final TypedDataObjectFactory<AddToEntitySetBiEntityActionType> DATA_FACTORY = TypedDataObjectFactory.simple(
-        new SerializableData()
-            .add("set", ApoliDataTypes.POWER_REFERENCE)
-            .add("time_limit", SerializableDataTypes.POSITIVE_INT.optional(), Optional.empty()),
-        data -> new AddToEntitySetBiEntityActionType(
-            data.get("set"),
-            data.get("time_limit")
-        ),
-        (actionType, serializableData) -> serializableData.instance()
-            .set("set", actionType.set)
-            .set("time_limit", actionType.timeLimit)
-    );
+	public static final TypedDataObjectFactory<AddToEntitySetBiEntityActionType> DATA_FACTORY = TypedDataObjectFactory.simple(
+		new SerializableData()
+			.add("set", ApoliDataTypes.POWER_REFERENCE)
+			.add("time_limit", SerializableDataTypes.POSITIVE_INT.optional(), Optional.empty()),
+		data -> new AddToEntitySetBiEntityActionType(
+			data.get("set"),
+			data.get("time_limit")
+		),
+		(actionType, serializableData) -> serializableData.instance()
+			.set("set", actionType.set)
+			.set("time_limit", actionType.timeLimit)
+	);
 
-    private final PowerReference set;
-    private final Optional<Integer> timeLimit;
+	private final PowerReference set;
+	private final Optional<Integer> timeLimit;
 
-    public AddToEntitySetBiEntityActionType(PowerReference set, Optional<Integer> timeLimit) {
-        this.set = set;
-        this.timeLimit = timeLimit;
-    }
+	public AddToEntitySetBiEntityActionType(PowerReference set, Optional<Integer> timeLimit) {
+		this.set = set;
+		this.timeLimit = timeLimit;
+	}
 
-    @Override
+	@Override
 	protected void execute(Entity actor, Entity target) {
 
-        if (set.getPowerTypeFrom(actor) instanceof EntitySetPowerType entitySet && entitySet.add(target, timeLimit)) {
-            PowerHolderComponent.syncPower(actor, set);
-        }
+		if (set.getPowerTypeFrom(actor) instanceof EntitySetPowerType entitySet && entitySet.add(target, timeLimit)) {
+			PowerHolderComponent.syncPower(actor, set);
+		}
 
-    }
+	}
 
-    @Override
-    public @NotNull ActionConfiguration<?> getConfig() {
-        return BiEntityActionTypes.ADD_TO_ENTITY_SET;
-    }
+	@Override
+	public @NotNull ActionConfiguration<?> getConfig() {
+		return BiEntityActionTypes.ADD_TO_ENTITY_SET;
+	}
 
 }

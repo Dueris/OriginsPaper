@@ -59,7 +59,9 @@
     "TargetingConditionsAccessor",
     "LivingEntityAccessor",
     "AdvancementCommandsAccessor",
-    "ServerPlayerGameModeAccessor"
+    "ServerPlayerGameModeAccessor",
+    "PlayerChunkSenderMixin",
+    "CraftEventFactoryMixin"
   ],
   "compatibilityLevel": "JAVA_17"
 }

@@ -6,10 +6,10 @@ import io.github.dueris.originspaper.condition.context.BiEntityConditionContext;
 import io.github.dueris.originspaper.condition.type.BiEntityConditionType;
 import io.github.dueris.originspaper.condition.type.BiEntityConditionTypes;
 import io.github.dueris.originspaper.condition.type.meta.AnyOfMetaConditionType;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import net.minecraft.world.entity.Entity;
 
 public class AnyOfBiEntityConditionType extends BiEntityConditionType implements AnyOfMetaConditionType<BiEntityConditionContext, BiEntityCondition> {
 

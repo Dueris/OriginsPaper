@@ -3,9 +3,7 @@ package io.github.dueris.originspaper.power;
 import com.mojang.serialization.DataResult;
 import io.github.dueris.calio.util.Validatable;
 import io.github.dueris.originspaper.power.type.PowerType;
-import io.github.dueris.originspaper.power.type.PowerTypes;
 import io.github.dueris.originspaper.util.PowerUtil;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +11,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.function.Function;
 
-public record PowerReference(ResourceLocation id, Function<PowerType, DataResult<PowerType>> condition) implements Validatable {
+public record PowerReference(ResourceLocation id,
+							 Function<PowerType, DataResult<PowerType>> condition) implements Validatable {
 
 	public static PowerReference of(ResourceLocation id) {
 		return new PowerReference(id, DataResult::success);

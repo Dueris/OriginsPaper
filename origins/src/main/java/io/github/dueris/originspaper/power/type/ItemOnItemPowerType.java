@@ -2,33 +2,26 @@ package io.github.dueris.originspaper.power.type;
 
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
-import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.EntityAction;
 import io.github.dueris.originspaper.action.ItemAction;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.condition.ItemCondition;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.InventoryUtil;
 import io.github.dueris.originspaper.util.PriorityPhase;
 import io.github.dueris.originspaper.util.StackClickPhase;
-import net.minecraft.util.Tuple;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class ItemOnItemPowerType extends PowerType implements Prioritized<ItemOnItemPowerType> {
 
@@ -104,6 +97,19 @@ public class ItemOnItemPowerType extends PowerType implements Prioritized<ItemOn
 		this.priority = priority;
 	}
 
+	public static boolean executeActions(Player user, PriorityPhase priorityPhase, StackClickPhase clickPhase, ClickAction clickType, Slot slot, SlotAccess slotStackReference, SlotAccess cursorStackReference) {
+
+		CallInstance<ItemOnItemPowerType> ioipci = new CallInstance<>();
+		ioipci.add(user, ItemOnItemPowerType.class, p -> p.doesApply(cursorStackReference.get(), slotStackReference.get(), clickType, clickPhase, priorityPhase));
+
+		for (int i = ioipci.getMaxPriority(); i >= ioipci.getMinPriority(); i--) {
+			ioipci.forEach(i, p -> p.execute(cursorStackReference, slotStackReference, slot));
+		}
+
+		return !ioipci.isEmpty();
+
+	}
+
 	@Override
 	public @NotNull PowerConfiguration<?> getConfig() {
 		return PowerTypes.ITEM_ON_ITEM;
@@ -141,28 +147,13 @@ public class ItemOnItemPowerType extends PowerType implements Prioritized<ItemOn
 
 			if (slot.hasItem()) {
 				player.getInventory().placeItemBackInInventory(resultStackReference.get());
-			}
-
-			else {
+			} else {
 				slot.set(resultStackReference.get());
 			}
 
 		}
 
 		entityAction.ifPresent(action -> action.execute(holder));
-
-	}
-
-	public static boolean executeActions(Player user, PriorityPhase priorityPhase, StackClickPhase clickPhase, ClickAction clickType, Slot slot, SlotAccess slotStackReference, SlotAccess cursorStackReference) {
-
-		CallInstance<ItemOnItemPowerType> ioipci = new CallInstance<>();
-		ioipci.add(user, ItemOnItemPowerType.class, p -> p.doesApply(cursorStackReference.get(), slotStackReference.get(), clickType, clickPhase, priorityPhase));
-
-		for (int i = ioipci.getMaxPriority(); i >= ioipci.getMinPriority(); i--) {
-			ioipci.forEach(i, p -> p.execute(cursorStackReference, slotStackReference, slot));
-		}
-
-		return !ioipci.isEmpty();
 
 	}
 

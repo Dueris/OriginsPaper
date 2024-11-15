@@ -19,6 +19,7 @@ import java.util.Objects;
 
 public class SlotRangesUtil {
 
+	public static final StreamCodec<ByteBuf, SlotRange> PACKET_CODEC = ByteBufCodecs.STRING_UTF8.map(SlotRanges::nameToIds, StringRepresentable::getSerializedName);
 	private static final Codec<SlotRange> SINGLE_BY_INDEX_CODEC = Codec.INT.flatXmap(
 		id -> {
 
@@ -44,7 +45,27 @@ public class SlotRangesUtil {
 				: DataResult.success(index);
 		}
 	);
+	public static final Codec<SlotRange> SINGLE_INDEX_OR_STRING_CODEC = new Codec<>() {
 
+		@Override
+		public <T> DataResult<Pair<SlotRange, T>> decode(@NotNull DynamicOps<T> ops, T input) {
+
+			if (ops.getNumberValue(input).isSuccess()) {
+				return SINGLE_BY_INDEX_CODEC.decode(ops, input);
+			} else {
+				return SlotRanges.CODEC.parse(ops, input)
+					.flatMap(SlotRangesUtil::validateSingleSlot)
+					.map(slotRange -> Pair.of(slotRange, input));
+			}
+
+		}
+
+		@Override
+		public <T> DataResult<T> encode(SlotRange input, DynamicOps<T> ops, T prefix) {
+			return SlotRanges.CODEC.encode(input, ops, prefix);
+		}
+
+	};
 	private static final Codec<SlotRange> BY_INDEX_CODEC = Codec.INT.flatXmap(
 		id -> {
 
@@ -74,31 +95,6 @@ public class SlotRangesUtil {
 				: DataResult.success(index);
 		}
 	);
-
-	public static final Codec<SlotRange> SINGLE_INDEX_OR_STRING_CODEC = new Codec<>() {
-
-		@Override
-		public <T> DataResult<Pair<SlotRange, T>> decode(@NotNull DynamicOps<T> ops, T input) {
-
-			if (ops.getNumberValue(input).isSuccess()) {
-				return SINGLE_BY_INDEX_CODEC.decode(ops, input);
-			}
-
-			else {
-				return SlotRanges.CODEC.parse(ops, input)
-					.flatMap(SlotRangesUtil::validateSingleSlot)
-					.map(slotRange -> Pair.of(slotRange, input));
-			}
-
-		}
-
-		@Override
-		public <T> DataResult<T> encode(SlotRange input, DynamicOps<T> ops, T prefix) {
-			return SlotRanges.CODEC.encode(input, ops, prefix);
-		}
-
-	};
-
 	public static final Codec<SlotRange> INDEX_OR_STRING_CODEC = new Codec<>() {
 
 		@Override
@@ -106,9 +102,7 @@ public class SlotRangesUtil {
 
 			if (ops.getNumberValue(input).isSuccess()) {
 				return BY_INDEX_CODEC.decode(ops, input);
-			}
-
-			else {
+			} else {
 				return SlotRanges.CODEC.decode(ops, input);
 			}
 
@@ -120,8 +114,6 @@ public class SlotRangesUtil {
 		}
 
 	};
-
-	public static final StreamCodec<ByteBuf, SlotRange> PACKET_CODEC = ByteBufCodecs.STRING_UTF8.map(SlotRanges::nameToIds, StringRepresentable::getSerializedName);
 
 	public static DataResult<SlotRange> validateSingleSlot(@NotNull SlotRange slotRange) {
 		return slotRange.size() == 1

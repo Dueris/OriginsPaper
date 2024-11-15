@@ -16,53 +16,53 @@ import java.util.function.Function;
 
 public interface IfElseListMetaActionType<AX extends TypeActionContext<CX>, CX extends TypeConditionContext, A extends AbstractAction<AX, ?>, C extends AbstractCondition<CX, ?>> {
 
-    List<ConditionedAction<A, C>> conditionedActions();
+	static <AX extends TypeActionContext<CX>, CX extends TypeConditionContext, A extends AbstractAction<AX, AT>, AT extends AbstractActionType<AX, A>, C extends AbstractCondition<CX, CT>, CT extends AbstractConditionType<CX, C>, M extends AbstractActionType<AX, A> & IfElseListMetaActionType<AX, CX, A, C>> ActionConfiguration<M> createConfiguration(SerializableDataType<A> actionDataType, SerializableDataType<C> conditionDataType, Function<List<ConditionedAction<A, C>>, M> constructor) {
 
-    default void executeActions(AX actionContext) {
+		SerializableDataType<ConditionedAction<A, C>> conditionedActionDataType = SerializableDataType.compound(
+			new SerializableData()
+				.add("action", actionDataType)
+				.add("condition", conditionDataType),
+			data -> new ConditionedAction<>(
+				data.get("action"),
+				data.get("condition")
+			),
+			(conditionedAction, serializableData) -> serializableData.instance()
+				.set("action", conditionedAction.action())
+				.set("condition", conditionedAction.condition())
+		);
 
-        CX convertedContext = actionContext.forCondition();
+		return ActionConfiguration.of(
+			OriginsPaper.apoliIdentifier("if_else_list"),
+			new SerializableData()
+				.add("actions", conditionedActionDataType.list()),
+			data -> constructor.apply(
+				data.get("actions")
+			),
+			(m, serializableData) -> serializableData.instance()
+				.set("actions", m.conditionedActions())
+		);
 
-        for (ConditionedAction<A, C> conditionedAction : conditionedActions()) {
+	}
 
-            if (conditionedAction.condition().test(convertedContext)) {
-                conditionedAction.action().accept(actionContext);
-                break;
-            }
+	List<ConditionedAction<A, C>> conditionedActions();
 
-        }
+	default void executeActions(AX actionContext) {
 
-    }
+		CX convertedContext = actionContext.forCondition();
 
-    static <AX extends TypeActionContext<CX>, CX extends TypeConditionContext, A extends AbstractAction<AX, AT>, AT extends AbstractActionType<AX, A>, C extends AbstractCondition<CX, CT>, CT extends AbstractConditionType<CX, C>, M extends AbstractActionType<AX, A> & IfElseListMetaActionType<AX, CX, A, C>> ActionConfiguration<M> createConfiguration(SerializableDataType<A> actionDataType, SerializableDataType<C> conditionDataType, Function<List<ConditionedAction<A, C>>, M> constructor) {
+		for (ConditionedAction<A, C> conditionedAction : conditionedActions()) {
 
-        SerializableDataType<ConditionedAction<A, C>> conditionedActionDataType = SerializableDataType.compound(
-            new SerializableData()
-                .add("action", actionDataType)
-                .add("condition", conditionDataType),
-            data -> new ConditionedAction<>(
-                data.get("action"),
-                data.get("condition")
-            ),
-            (conditionedAction, serializableData) -> serializableData.instance()
-                .set("action", conditionedAction.action())
-                .set("condition", conditionedAction.condition())
-        );
+			if (conditionedAction.condition().test(convertedContext)) {
+				conditionedAction.action().accept(actionContext);
+				break;
+			}
 
-        return ActionConfiguration.of(
-            OriginsPaper.apoliIdentifier("if_else_list"),
-            new SerializableData()
-                .add("actions", conditionedActionDataType.list()),
-            data -> constructor.apply(
-                data.get("actions")
-            ),
-            (m, serializableData) -> serializableData.instance()
-                .set("actions", m.conditionedActions())
-        );
+		}
 
-    }
+	}
 
-    record ConditionedAction<A extends AbstractAction<?, ?>, C extends AbstractCondition<?, ?>>(A action, C condition) {
+	record ConditionedAction<A extends AbstractAction<?, ?>, C extends AbstractCondition<?, ?>>(A action, C condition) {
 
-    }
+	}
 
 }

@@ -8,10 +8,10 @@ import io.github.dueris.originspaper.action.type.BiEntityActionTypes;
 import io.github.dueris.originspaper.action.type.meta.IfElseMetaActionType;
 import io.github.dueris.originspaper.condition.BiEntityCondition;
 import io.github.dueris.originspaper.condition.context.BiEntityConditionContext;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
-import net.minecraft.world.entity.Entity;
 
 public class IfElseBiEntityActionType extends BiEntityActionType implements IfElseMetaActionType<BiEntityActionContext, BiEntityConditionContext, BiEntityAction, BiEntityCondition> {
 

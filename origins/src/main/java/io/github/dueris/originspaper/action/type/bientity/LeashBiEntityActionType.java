@@ -9,22 +9,22 @@ import org.jetbrains.annotations.NotNull;
 
 public class LeashBiEntityActionType extends BiEntityActionType {
 
-    @Override
+	@Override
 	protected void execute(Entity actor, Entity target) {
 
-        if (actor == null || !(target instanceof Leashable leashable)) {
-            return;
-        }
+		if (actor == null || !(target instanceof Leashable leashable)) {
+			return;
+		}
 
-        if (!leashable.isLeashed()) {
-            leashable.setLeashedTo(actor, true);
-        }
+		if (!leashable.isLeashed()) {
+			leashable.setLeashedTo(actor, true);
+		}
 
-    }
+	}
 
-    @Override
-    public @NotNull ActionConfiguration<?> getConfig() {
-        return BiEntityActionTypes.LEASH;
-    }
+	@Override
+	public @NotNull ActionConfiguration<?> getConfig() {
+		return BiEntityActionTypes.LEASH;
+	}
 
 }

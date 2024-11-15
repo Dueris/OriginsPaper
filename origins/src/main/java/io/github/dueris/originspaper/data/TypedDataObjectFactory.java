@@ -11,8 +11,6 @@ import java.util.function.Function;
 
 public interface TypedDataObjectFactory<T> extends DataObjectFactory<T> {
 
-	CompoundSerializableDataType<T> getDataType();
-
 	static <T> @NotNull TypedDataObjectFactory<T> simple(SerializableData serializableData, Function<SerializableData.Instance, T> fromData, BiFunction<T, SerializableData, SerializableData.Instance> toData) {
 		CompoundSerializableDataType<T> dataType = SerializableDataType.compound(serializableData, fromData, toData);
 		return new TypedDataObjectFactory<>() {
@@ -39,5 +37,7 @@ public interface TypedDataObjectFactory<T> extends DataObjectFactory<T> {
 
 		};
 	}
+
+	CompoundSerializableDataType<T> getDataType();
 
 }

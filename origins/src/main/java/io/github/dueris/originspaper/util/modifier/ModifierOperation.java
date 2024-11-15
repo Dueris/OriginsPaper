@@ -9,7 +9,6 @@ import io.github.dueris.originspaper.util.PowerUtil;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.entity.Entity;
 import org.apache.commons.lang3.function.TriFunction;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Optional;

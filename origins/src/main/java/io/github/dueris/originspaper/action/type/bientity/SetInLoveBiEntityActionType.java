@@ -10,18 +10,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class SetInLoveBiEntityActionType extends BiEntityActionType {
 
-    @Override
+	@Override
 	protected void execute(Entity actor, Entity target) {
 
-        if (target instanceof Animal targetAnimal && actor instanceof Player actorPlayer) {
-            targetAnimal.setInLove(actorPlayer);
-        }
+		if (target instanceof Animal targetAnimal && actor instanceof Player actorPlayer) {
+			targetAnimal.setInLove(actorPlayer);
+		}
 
-    }
+	}
 
-    @Override
-    public @NotNull ActionConfiguration<?> getConfig() {
-        return BiEntityActionTypes.SET_IN_LOVE;
-    }
+	@Override
+	public @NotNull ActionConfiguration<?> getConfig() {
+		return BiEntityActionTypes.SET_IN_LOVE;
+	}
 
 }

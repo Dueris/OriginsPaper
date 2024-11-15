@@ -1,11 +1,11 @@
 package io.github.dueris.originspaper.condition.type;
 
+import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.util.Validatable;
 import io.github.dueris.originspaper.condition.AbstractCondition;
 import io.github.dueris.originspaper.condition.ConditionConfiguration;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.util.context.TypeConditionContext;
-import io.github.dueris.calio.data.SerializableData;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +36,7 @@ public abstract class AbstractConditionType<T extends TypeConditionContext, C ex
 	@Override
 	public void validate() throws Exception {
 
-		TypedDataObjectFactory<AbstractConditionType<T, C>> dataFactory = (TypedDataObjectFactory<AbstractConditionType<T,C>>) getConfig().dataFactory();
+		TypedDataObjectFactory<AbstractConditionType<T, C>> dataFactory = (TypedDataObjectFactory<AbstractConditionType<T, C>>) getConfig().dataFactory();
 		SerializableData.Instance data = dataFactory.toData(this);
 
 		data.validate();
@@ -50,9 +50,7 @@ public abstract class AbstractConditionType<T extends TypeConditionContext, C ex
 
 		if (initialized) {
 			return Objects.requireNonNull(condition, "Condition of initialized condition type \"" + getConfig().id() + "\" was null!");
-		}
-
-		else {
+		} else {
 			throw new IllegalStateException("Condition type \"" + getConfig().id() + "\" wasn't initialized yet!");
 		}
 
