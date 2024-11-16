@@ -28,7 +28,6 @@ import io.github.dueris.originspaper.power.PowerManager;
 import io.github.dueris.originspaper.power.type.PowerTypes;
 import io.github.dueris.originspaper.power.type.origins.OriginsPowerTypes;
 import io.github.dueris.originspaper.registry.ApoliClassData;
-import io.github.dueris.originspaper.registry.ModBlocks;
 import io.github.dueris.originspaper.registry.ModItems;
 import io.github.dueris.originspaper.registry.ModTags;
 import io.github.dueris.originspaper.util.ChoseOriginCriterion;
@@ -125,7 +124,6 @@ public class OriginsPaper {
 		IdentifierAlias.GLOBAL.addNamespaceAlias("apoli", "calio");
 		IdentifierAlias.GLOBAL.addNamespaceAlias("origins", "apoli");
 
-		ModBlocks.register();
 		ModTags.register();
 		ModItems.register();
 		EnderianPearlEntity.bootstrap();
