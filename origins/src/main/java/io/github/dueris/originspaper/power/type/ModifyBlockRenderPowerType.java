@@ -27,7 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-// TODO - constant updates for chunks - Dueris
 public class ModifyBlockRenderPowerType extends PowerType {
 	private static boolean sentMessage = false;
 	public static final TypedDataObjectFactory<ModifyBlockRenderPowerType> DATA_FACTORY = TypedDataObjectFactory.simple(
