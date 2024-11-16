@@ -105,7 +105,7 @@ public class ModifyBlockRenderPowerType extends PowerType {
 
 		@Override
 		public void accept(@NotNull ModifyBlockRenderPowerType mbrpt) {
-			if (player.hasDisconnected() || mbrpt.refreshingChunks) return; // TODO - dueris - remove
+			if (player.hasDisconnected() || mbrpt.refreshingChunks) return;
 
 			Map<Position, BlockData> updates = new ConcurrentHashMap<>();
 			BlockData toSend = mbrpt.getBlockState().createCraftBlockData();
