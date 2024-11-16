@@ -52,6 +52,7 @@ public class ModifyBlockRenderPowerType extends PowerType {
 	private final Optional<BlockCondition> blockCondition;
 	private final BlockState blockState;
 	private boolean refreshingChunks = false;
+	private boolean sending;
 
 	public ModifyBlockRenderPowerType(Optional<BlockCondition> blockCondition, BlockState state) {
 		this.blockCondition = blockCondition;
@@ -96,18 +97,24 @@ public class ModifyBlockRenderPowerType extends PowerType {
 		return blockState;
 	}
 
+	public boolean isSending() {
+		return this.sending;
+	}
+
 	public record RenderUpdate(Chunk chunk, ServerLevel level,
 							   ServerPlayer player) implements Consumer<ModifyBlockRenderPowerType> {
 
 		@Override
 		public void accept(@NotNull ModifyBlockRenderPowerType mbrpt) {
-			if (player.hasDisconnected() || mbrpt.refreshingChunks) return;
+			if (player.hasDisconnected() || mbrpt.refreshingChunks) return; // TODO - dueris - remove
 
 			Map<Position, BlockData> updates = new ConcurrentHashMap<>();
 			BlockData toSend = mbrpt.getBlockState().createCraftBlockData();
 			Util.runOnAllMatchingBlocks(chunk, mbrpt::doesPrevent, (pos) -> updates.put(MCUtil.toPosition(pos), toSend));
 
+			mbrpt.sending = true;
 			player.getBukkitEntity().sendMultiBlockChange(updates);
+			mbrpt.sending = false;
 		}
 	}
 }

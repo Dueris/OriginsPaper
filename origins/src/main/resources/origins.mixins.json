@@ -61,7 +61,10 @@
     "AdvancementCommandsAccessor",
     "ServerPlayerGameModeAccessor",
     "PlayerChunkSenderMixin",
-    "CraftEventFactoryMixin"
+    "CraftEventFactoryMixin",
+    "ClientboundBlockUpdatePacketMixin",
+    "ServerCommonPacketListenerImplMixin",
+    "ClientboundSectionBlocksUpdatePacketMixin"
   ],
   "compatibilityLevel": "JAVA_17"
 }
