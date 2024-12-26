@@ -45,7 +45,7 @@ public final class OriginsPlugin extends JavaPlugin implements Listener {
 		}.runTaskTimerAsynchronously(this, 0L, 1L);
 
 		PehukiCommandImpl.onLoad();
-		MinecraftClient.init(OriginsPaper.context);
+		MinecraftClient.init();
 		RecipePowerType.registerAll();
 		ModItems.registerServer();
 	}

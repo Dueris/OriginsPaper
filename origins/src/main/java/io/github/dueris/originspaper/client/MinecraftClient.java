@@ -21,8 +21,8 @@ public final class MinecraftClient {
 		this.entityRenderer = new EntityRenderer(player);
 	}
 
-	public static void init(BootstrapContext context) {
-		TexturesImpl.init(context);
+	public static void init() {
+		TexturesImpl.init();
 		HudRenderManager.init();
 	}
 

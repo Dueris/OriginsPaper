@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import io.github.dueris.calio.CraftCalio;
 import io.github.dueris.calio.util.IdentifierAlias;
+import io.github.dueris.eclipse.api.mod.ModContainer;
+import io.github.dueris.eclipse.loader.EclipseLauncher;
 import io.github.dueris.originspaper.action.type.BiEntityActionTypes;
 import io.github.dueris.originspaper.action.type.BlockActionTypes;
 import io.github.dueris.originspaper.action.type.EntityActionTypes;
@@ -58,7 +60,7 @@ public class OriginsPaper {
 	public static final Logger LOGGER = LogManager.getLogger("OriginsPaper");
 	public static MinecraftServer server;
 	public static Path jarFile;
-	public static BootstrapContext context;
+	public static ModContainer modContainer;
 	public static String version = "v1.3.0";
 	public static OriginsPaper.ServerConfig config;
 
@@ -74,16 +76,17 @@ public class OriginsPaper {
 		return OriginsPlugin.plugin;
 	}
 
-	public static void initialize(@NotNull BootstrapContext context) {
-		jarFile = context.getPluginSource();
-		OriginsPaper.context = context;
+	public static void initialize() {
+		ModContainer container = EclipseLauncher.INSTANCE.modEngine().container("origins").orElseThrow();
+		jarFile = container.resource().path().toAbsolutePath().normalize(); // Normalize path to complete.
+		modContainer = container;
 		PluginInstances.init();
 
 		CraftCalio.initialize();
 
 		final JsonConfigAPI jsonConfigAPI = new JsonConfigAPI(true);
-		File serverJson = new File(context.getDataDirectory().toFile(), "origins_server.json");
-		String parentPath = context.getDataDirectory().toFile().getAbsolutePath() + File.separator;
+		File serverJson = new File(jarFile.getParent().resolve("Origins").toFile(), "origins_server.json");
+		String parentPath = jarFile.getParent().resolve("Origins").toFile().getAbsolutePath() + File.separator;
 
 		jsonConfigAPI.registerConfig(
 			new OriginsPaper.ServerConfig(),
@@ -128,16 +131,18 @@ public class OriginsPaper {
 		ModItems.register();
 		EnderianPearlEntity.bootstrap();
 
+		CriteriaTriggers.register(GainedPowerCriterion.ID.toString(), GainedPowerCriterion.INSTANCE);
+		CriteriaTriggers.register(ChoseOriginCriterion.ID.toString(), ChoseOriginCriterion.INSTANCE);
+		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, identifier("origin"), OriginLootCondition.TYPE);
+		LOGGER.info("OriginsPaper, version {}, is initialized and ready to power up your game!", version);
+	}
+
+	public static void registerCommands(@NotNull BootstrapContext context) {
 		context.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS.newHandler(event -> {
 			event.registrar().register(PluginInstances.APOLI_META, PowerCommand.node(), null, new ArrayList<>());
 			event.registrar().register(PluginInstances.APOLI_META, ResourceCommand.node(), null, new ArrayList<>());
 		}));
 		context.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS.newHandler(event -> event.registrar().register(context.getPluginMeta(), OriginCommand.node(), null, new ArrayList<>())));
-
-		CriteriaTriggers.register(GainedPowerCriterion.ID.toString(), GainedPowerCriterion.INSTANCE);
-		CriteriaTriggers.register(ChoseOriginCriterion.ID.toString(), ChoseOriginCriterion.INSTANCE);
-		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, identifier("origin"), OriginLootCondition.TYPE);
-		LOGGER.info("OriginsPaper, version {}, is initialized and ready to power up your game!", version);
 	}
 
 	public static class ServerConfig implements JsonConfig {

@@ -27,8 +27,8 @@ public class TexturesImpl {
 		}
 	};
 
-	public static void init(BootstrapContext bootContext) {
-		try (JarFile originsPaper = new JarFile(bootContext.getPluginSource().toFile())) {
+	public static void init() {
+		try (JarFile originsPaper = new JarFile(OriginsPaper.jarFile.toFile())) {
 			for (GuiLocation value : GuiLocation.values()) {
 				JarEntry entry = originsPaper.getJarEntry("assets/origins/" + value.location);
 				if (entry == null) {

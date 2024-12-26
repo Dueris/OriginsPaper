@@ -8,9 +8,9 @@ import kotlin.io.path.isDirectory
 plugins {
     java
     `maven-publish`
-    id("io.papermc.paperweight.userdev") version "1.7.4" apply true
-    id("com.gradleup.shadow") version "8.3.5" apply true
-    id("io.github.dueris.eclipse.gradle") version "1.1.0-beta82" apply true
+    id("io.papermc.paperweight.userdev") version "1.7.7" apply true
+    id("com.gradleup.shadow") version "9.0.0-beta4" apply true
+    id("io.github.dueris.eclipse.gradle") version "1.2.2" apply true
 }
 
 version = "v1.3.0"
@@ -94,7 +94,7 @@ allprojects {
     }
 
     eclipse {
-        minecraft = MinecraftVersion.MC1_21_1
+        minecraft.set(MinecraftVersion.MC1_21_1.version)
         wideners = files("origins.accesswidener", "calio.accesswidener", "fabricapi.accesswidener")
     }
 

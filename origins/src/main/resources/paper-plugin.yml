@@ -37,5 +37,8 @@ mixins: [
 # mod entrypoints
 datapack-entry: true
 main: "io.github.dueris.originspaper.plugin.OriginsPlugin"
-bootstrapper: "io.github.dueris.originspaper.Bootstrap"
+bootstrapper: "io.github.dueris.originspaper.plugin.PaperPluginBootstrap" # We use eclipse bootstrap now. Use plugin bootstrap instance instead
 loader: "io.github.dueris.originspaper.DependencyLoader"
+
+entrypoints:
+  bootstrap: "io.github.dueris.originspaper.Bootstrap"
