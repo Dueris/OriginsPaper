@@ -22,15 +22,7 @@ public class ConditionedAttributePowerType extends AttributePowerType {
 			.addFunctionedDefault("modifiers", ApoliDataTypes.ATTRIBUTED_ATTRIBUTE_MODIFIERS, data -> Util.singletonListOrNull(data.get("modifier")))
 			.add("update_health", SerializableDataTypes.BOOLEAN, true)
 			.add("tick_rate", SerializableDataTypes.POSITIVE_INT, 20)
-			.validate(data -> {
-
-				if (Util.anyPresent(data, "modifier", "modifiers")) {
-					return DataResult.success(data);
-				} else {
-					return DataResult.error(() -> "Any of the 'modifier' and 'modifiers' fields must be defined!");
-				}
-
-			}),
+			.validate(Util.validateAnyFieldsPresent("modifier", "modifiers")),
 		(data, condition) -> new ConditionedAttributePowerType(
 			data.get("modifiers"),
 			data.get("update_health"),

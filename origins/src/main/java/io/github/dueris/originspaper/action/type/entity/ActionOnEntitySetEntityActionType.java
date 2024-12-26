@@ -65,7 +65,7 @@ public class ActionOnEntitySetEntityActionType extends EntityActionType {
 	@Override
 	protected void execute(Entity entity) {
 
-		if (!(set.getPowerTypeFrom(entity) instanceof EntitySetPowerType entitySet)) {
+		if (!(set.getNullablePowerType(entity) instanceof EntitySetPowerType entitySet)) {
 			return;
 		}
 

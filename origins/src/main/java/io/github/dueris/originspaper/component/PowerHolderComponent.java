@@ -145,8 +145,8 @@ public interface PowerHolderComponent {
 
 	}
 
-	static void syncPower(Entity entity, PowerReference powerReference) {
-		syncPower(entity, powerReference.getReference());
+	static void syncPower(Entity entity, @NotNull PowerReference powerReference) {
+		syncPower(entity, powerReference.getPower());
 	}
 
 	static void syncPower(@Nullable Entity entity, @Nullable Power power) {
@@ -298,7 +298,7 @@ public interface PowerHolderComponent {
 	boolean removePower(Power power, ResourceLocation source);
 
 	default boolean removePower(PowerReference powerReference, ResourceLocation source) {
-		return powerReference.getResultReference()
+		return powerReference.getResultPower()
 			.mapError(err -> "Couldn't revoke non-existing power with ID \"" + powerReference.id() + "\"!")
 			.resultOrPartial(OriginsPaper.LOGGER::warn)
 			.map(power -> removePower(power, source))
@@ -312,7 +312,7 @@ public interface PowerHolderComponent {
 	boolean addPower(Power power, ResourceLocation source);
 
 	default boolean addPower(PowerReference powerReference, ResourceLocation source) {
-		return powerReference.getResultReference()
+		return powerReference.getResultPower()
 			.mapError(error -> "Couldn't grant non-existing power with ID \"" + powerReference.id() + "\"!")
 			.resultOrPartial(OriginsPaper.LOGGER::warn)
 			.map(power -> addPower(power, source))
@@ -322,7 +322,7 @@ public interface PowerHolderComponent {
 	boolean hasPower(Power power);
 
 	default boolean hasPower(PowerReference powerReference) {
-		return powerReference.getOptionalReference()
+		return powerReference.getOptionalPower()
 			.map(this::hasPower)
 			.orElse(false);
 	}
@@ -330,7 +330,7 @@ public interface PowerHolderComponent {
 	boolean hasPower(Power power, ResourceLocation source);
 
 	default boolean hasPower(PowerReference powerReference, ResourceLocation source) {
-		return powerReference.getOptionalReference()
+		return powerReference.getOptionalPower()
 			.map(power -> hasPower(power, source))
 			.orElse(false);
 	}
@@ -348,7 +348,7 @@ public interface PowerHolderComponent {
 	List<ResourceLocation> getSources(Power power);
 
 	default List<ResourceLocation> getSources(PowerReference powerReference) {
-		return powerReference.getOptionalReference()
+		return powerReference.getOptionalPower()
 			.map(this::getSources)
 			.orElseGet(ArrayList::new);
 	}

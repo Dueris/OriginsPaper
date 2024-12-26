@@ -36,7 +36,7 @@ public class InEntitySetBiEntityConditionType extends BiEntityConditionType {
 
 	@Override
 	public boolean test(Entity actor, Entity target) {
-		return set.getPowerTypeFrom(actor) instanceof EntitySetPowerType entitySet
+		return set.getNullablePowerType(actor) instanceof EntitySetPowerType entitySet
 			&& entitySet.contains(target);
 	}
 

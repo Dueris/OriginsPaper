@@ -65,7 +65,7 @@ public class ResourceCommand {
 			Power power = PowerArgumentType.getResource(context, "resource");
 
 			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
-			PowerType powerType = power.getPowerTypeFrom(target);
+			PowerType powerType = PowerUtil.getOptionalPowerType(power, target).orElseThrow(() -> PowerArgumentType.POWER_NOT_GRANTED.create(target.getName(), power.getId().toString()));
 
 			if (powerType != null) {
 				commandSource.sendSuccess(() -> Component.translatable("commands.execute.conditional.pass"), false);
@@ -96,7 +96,7 @@ public class ResourceCommand {
 			Power power = PowerArgumentType.getResource(context, "resource");
 
 			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
-			PowerType powerType = power.getPowerTypeFrom(target);
+			PowerType powerType = PowerUtil.getOptionalPowerType(power, target).orElseThrow(() -> PowerArgumentType.POWER_NOT_GRANTED.create(target.getName(), power.getId().toString()));
 
 			if (powerType != null) {
 
@@ -134,9 +134,7 @@ public class ResourceCommand {
 			int newValue;
 
 			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
-			PowerType powerType = Optional
-				.ofNullable(power.getPowerTypeFrom(target))
-				.orElseThrow(() -> PowerArgumentType.POWER_NOT_GRANTED.create(target.getName(), power.getId().toString()));
+			PowerType powerType = PowerUtil.getOptionalPowerType(power, target).orElseThrow(() -> PowerArgumentType.POWER_NOT_GRANTED.create(target.getName(), power.getId().toString()));
 
 			if (PowerUtil.setResourceValue(powerType, value)) {
 				PowerHolderComponent.syncPower(target, power);
@@ -171,9 +169,7 @@ public class ResourceCommand {
 			int newValue;
 
 			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
-			PowerType powerType = Optional
-				.ofNullable(resource.getPowerTypeFrom(target))
-				.orElseThrow(() -> PowerArgumentType.POWER_NOT_GRANTED.create(target.getName(), resource.getId().toString()));
+			PowerType powerType = PowerUtil.getOptionalPowerType(resource, target).orElseThrow(() -> PowerArgumentType.POWER_NOT_GRANTED.create(target.getName(), resource.getId().toString()));
 
 			if (PowerUtil.changeResourceValue(powerType, value)) {
 				PowerHolderComponent.syncPower(target, resource);
@@ -212,9 +208,7 @@ public class ResourceCommand {
 			Objective objective = Util.getObjective(context, "objective");
 
 			net.minecraft.commands.CommandSourceStack commandSource = (net.minecraft.commands.CommandSourceStack) context.getSource();
-			PowerType powerType = Optional
-				.ofNullable(resource.getPowerTypeFrom(target))
-				.orElseThrow(() -> PowerArgumentType.POWER_NOT_GRANTED.create(target.getName(), resource.getId().toString()));
+			PowerType powerType = PowerUtil.getOptionalPowerType(resource, target).orElseThrow(() -> PowerArgumentType.POWER_NOT_GRANTED.create(target.getName(), resource.getId().toString()));
 
 			ScoreAccess scoreAccess = commandSource.getServer().getScoreboard().getOrCreatePlayerScore(source, objective);
 

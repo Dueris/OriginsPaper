@@ -25,7 +25,7 @@ public class AreaOfEffectBlockActionType extends BlockActionType {
 			.add("block_action", BlockAction.DATA_TYPE)
 			.add("block_condition", BlockCondition.DATA_TYPE.optional(), Optional.empty())
 			.add("shape", SerializableDataType.enumValue(Shape.class), Shape.CUBE)
-			.add("radius", SerializableDataTypes.POSITIVE_INT, 16),
+			.add("radius", SerializableDataTypes.NON_NEGATIVE_INT, 16),
 		data -> new AreaOfEffectBlockActionType(
 			data.get("block_action"),
 			data.get("block_condition"),

@@ -9,6 +9,7 @@ import io.github.dueris.originspaper.action.type.AbstractActionType;
 import io.github.dueris.originspaper.util.context.TypeActionContext;
 import net.minecraft.world.entity.ai.behavior.ShufflingList;
 
+import java.util.Iterator;
 import java.util.function.Function;
 
 public interface ChoiceMetaActionType<T extends TypeActionContext<?>, A extends AbstractAction<T, ? extends AbstractActionType<T, A>>> {
@@ -31,11 +32,11 @@ public interface ChoiceMetaActionType<T extends TypeActionContext<?>, A extends 
 	default void executeActions(T context) {
 
 		actions().shuffle();
+		Iterator<A> actionIterator = actions().iterator();
 
-		for (A a : actions()) {
-			a.accept(context);
+		if (actionIterator.hasNext()) {
+			actionIterator.next().accept(context);
 		}
-
 	}
 
 }

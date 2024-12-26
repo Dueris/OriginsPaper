@@ -22,9 +22,10 @@ public class SpawnParticlesEntityActionType extends EntityActionType {
 		new SerializableData()
 			.add("bientity_condition", BiEntityCondition.DATA_TYPE.optional(), Optional.empty())
 			.add("particle", SerializableDataTypes.PARTICLE_EFFECT_OR_TYPE)
-			.add("offset_x", SerializableDataTypes.DOUBLE, 0.5D)
+			.add("offset_x", SerializableDataTypes.DOUBLE, 0.0D)
 			.add("offset_y", SerializableDataTypes.DOUBLE, 0.5D)
-			.add("offset_z", SerializableDataTypes.DOUBLE, 0.5D)
+			.add("offset_z", SerializableDataTypes.DOUBLE, 0.0D)
+			.addFunctionedDefault("offset", SerializableDataTypes.VECTOR, data -> new Vec3(data.getDouble("offset_x"), data.getDouble("offset_y"), data.getDouble("offset_z")))
 			.add("spread", SerializableDataTypes.VECTOR, new Vec3(0.5D, 0.5D, 0.5D))
 			.add("force", SerializableDataTypes.BOOLEAN, false)
 			.add("speed", SerializableDataTypes.FLOAT, 0.0F)
@@ -32,11 +33,7 @@ public class SpawnParticlesEntityActionType extends EntityActionType {
 		data -> new SpawnParticlesEntityActionType(
 			data.get("bientity_condition"),
 			data.get("particle"),
-			new Vec3(
-				data.get("offset_x"),
-				data.get("offset_y"),
-				data.get("offset_z")
-			),
+			data.get("offset"),
 			data.get("spread"),
 			data.get("force"),
 			data.get("speed"),
@@ -44,10 +41,8 @@ public class SpawnParticlesEntityActionType extends EntityActionType {
 		),
 		(actionType, serializableData) -> serializableData.instance()
 			.set("bientity_condition", actionType.biEntityCondition)
-			.set("particle", actionType.particle)
-			.set("offset_x", actionType.offset.x)
-			.set("offset_y", actionType.offset.y)
-			.set("offset_z", actionType.offset.z)
+			.set("particle", actionType.particle) // TODO - eggo response
+			.set("offset", actionType.offset)
 			.set("spread", actionType.spread)
 			.set("force", actionType.force)
 			.set("speed", actionType.speed)

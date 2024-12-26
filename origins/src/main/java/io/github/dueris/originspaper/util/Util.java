@@ -440,10 +440,65 @@ public class Util {
 		};
 	}
 
+	public static Function<SerializableData.Instance, DataResult<SerializableData.Instance>> validateAllFieldsPresent(String... fields) {
+		return data -> {
+
+			if (allPresent(data, fields)) {
+				return DataResult.success(data);
+			}
+
+			else {
+
+				StringBuilder message = new StringBuilder(fields.length > 1 ? "All of " : "The ");
+				String separator = "";
+
+				for (int i = 0; i < fields.length; i++) {
+
+					String field = fields[i];
+					message
+						.append(separator)
+						.append("'").append(field).append("'");
+
+					separator = i == fields.length - 2
+						? ", and "
+						: ", ";
+
+				}
+
+				message
+					.append(" field").append(fields.length > 1 ? "s" : "")
+					.append(" must be defined!");
+
+				return DataResult.error(message::toString);
+
+			}
+
+		};
+	}
+
 	public static boolean hasSpaceInInventory(@NotNull Player player, ItemStack stack) {
-		Inventory inventory = player.getInventory();
-		return inventory.getSlotWithRemainingSpace(stack) != -1
-			|| inventory.getFreeSlot() != -1;
+		return getSpaceInInventory(player, stack).isPresent();
+	}
+
+	public static boolean hasSpaceInInventory(Inventory playerInventory, ItemStack stack) {
+		return getSpaceInInventory(playerInventory, stack).isPresent();
+	}
+
+	public static OptionalInt getSpaceInInventory(@NotNull Player player, ItemStack stack) {
+		return getSpaceInInventory(player.getInventory(), stack);
+	}
+
+	public static OptionalInt getSpaceInInventory(@NotNull Inventory playerInventory, ItemStack stack) {
+
+		int slot = playerInventory.getSlotWithRemainingSpace(stack);
+		if (slot == -1) {
+			slot = playerInventory.getFreeSlot();
+		}
+
+		return slot == -1
+			? OptionalInt.empty()
+			: OptionalInt.of(slot);
+
 	}
 
 	public static <E, C extends Collection<E>> @NotNull BinaryOperator<C> mergeCollections() {

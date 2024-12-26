@@ -96,7 +96,7 @@ public class ModifyInventoryEntityActionType extends EntityActionType {
 
 		Optional<InventoryPowerType> inventoryPowerType = power
 			.filter(ipt -> inventoryType == InventoryType.POWER)
-			.map(p -> p.getPowerTypeFrom(entity))
+			.flatMap(p -> p.getOptionalPowerType(entity))
 			.filter(InventoryPowerType.class::isInstance)
 			.map(InventoryPowerType.class::cast);
 

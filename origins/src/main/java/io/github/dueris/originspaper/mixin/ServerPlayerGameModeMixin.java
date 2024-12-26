@@ -66,7 +66,7 @@ public class ServerPlayerGameModeMixin {
 			.stream()
 			.filter(mhp -> mhp.doesApply(cachedMinedBlockRef.get()))
 			.max(ModifyHarvestPowerType::compareTo)
-			.map(ModifyHarvestPowerType::isHarvestAllowed)
+			.map(ModifyHarvestPowerType::isAllowed)
 			.orElse(original);
 
 		modifiedCanHarvestRef.set(result);
@@ -79,12 +79,16 @@ public class ServerPlayerGameModeMixin {
 		this.apoli$blockBreakDirection = direction;
 	}
 
-	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lorg/bukkit/plugin/PluginManager;callEvent(Lorg/bukkit/event/Event;)V"))
-	private void apoli$actionOnBlockBreak(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(ordinal = 0) boolean blockRemoved, @Share("cachedMinedBlock") LocalRef<SavedBlockPosition> cachedMinedBlockRef, @Share("modifiedCanHarvest") LocalBooleanRef modifiedCanHarvestRef) {
-		boolean harvestedSuccessfully = blockRemoved && modifiedCanHarvestRef.get();
-		PowerHolderComponent.withPowerTypes(this.player, ActionOnBlockBreakPowerType.class,
-			aobbp -> aobbp.doesApply(cachedMinedBlockRef.get()),
-			aobbp -> aobbp.executeActions(harvestedSuccessfully, pos, apoli$blockBreakDirection));
+	@ModifyExpressionValue(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;removeBlock(Lnet/minecraft/core/BlockPos;Z)Z"))
+	private boolean apoli$cacheBlockRemovedResult(boolean original, @Share("blockRemoved") @NotNull LocalBooleanRef blockRemovedRef) {
+		blockRemovedRef.set(original);
+		return original;
+	}
+
+	@Inject(method = "destroyBlock", at = {@At(value = "RETURN", ordinal = 3), @At(value = "RETURN", ordinal = 4)})
+	private void apoli$actionOnBlockBreak(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Share(value = "breakingBlock", namespace = "apoli") LocalRef<SavedBlockPosition> breakingBlockRef, @Share(value = "modifiedHarvest", namespace = "apoli") LocalBooleanRef modifiedHarvestRef, @Share("blockRemoved") @NotNull LocalBooleanRef blockRemovedRef) {
+		boolean harvestedSuccessfully = blockRemovedRef.get() && modifiedHarvestRef.get();
+		PowerHolderComponent.withPowerTypes(this.player, ActionOnBlockBreakPowerType.class, powerType -> powerType.doesApply(breakingBlockRef.get(), harvestedSuccessfully), powerType -> powerType.executeActions(pos, apoli$blockBreakDirection));
 	}
 
 	@WrapOperation(method = "useItemOn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;useWithoutItem(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;"))

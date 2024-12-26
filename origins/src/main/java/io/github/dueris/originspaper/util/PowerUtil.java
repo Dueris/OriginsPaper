@@ -1,6 +1,7 @@
 package io.github.dueris.originspaper.util;
 
 import com.mojang.serialization.DataResult;
+import io.github.dueris.originspaper.component.PowerHolderComponent;
 import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.SubPower;
 import io.github.dueris.originspaper.power.type.CooldownPowerType;
@@ -9,9 +10,11 @@ import io.github.dueris.originspaper.power.type.VariableIntPowerType;
 import io.github.dueris.originspaper.util.modifier.Modifier;
 import io.github.dueris.originspaper.util.modifier.ModifierUtil;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class PowerUtil {
 
@@ -131,5 +134,13 @@ public class PowerUtil {
 
 	}
 
+	@Nullable
+	public static PowerType getNullablePowerType(Power power, Entity holder) {
+		return getOptionalPowerType(power, holder).orElse(null);
+	}
+
+	public static Optional<PowerType> getOptionalPowerType(Power power, Entity holder) {
+		return PowerHolderComponent.getOptional(holder).map(powerComponent -> powerComponent.getPowerType(power));
+	}
 }
 

@@ -5,33 +5,24 @@ import io.github.dueris.originspaper.util.TextAlignment;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.MenuConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.util.Optional;
 
-public record ContainerType(TextAlignment titleAlignment, int columns, int rows, Optional<Factory> factory) {
+public interface ContainerType {
 
-	public ContainerType {
-		Preconditions.checkArgument(columns > 0, "Container type must have at least 1 column!");
-		Preconditions.checkArgument(rows > 0, "Container type must have at least 1 row!");
-	}
+	TextAlignment titleAlignment();
 
-	public static @NotNull ContainerType preset(int columns, int rows, @NotNull Factory factory) {
-		return new ContainerType(TextAlignment.NONE, columns, rows, Optional.of(factory));
-	}
+	MenuConstructor create(Container inventory);
 
-	public MenuConstructor create(Container inventory) {
-		return factory()
-			.map(factory -> factory.create(inventory, columns(), rows()))
-			.orElseThrow(() -> new IllegalStateException("Dynamic screen handler for dynamic container types aren't implemented yet!"));
-	}
-
-	public int size() {
+	default int size() {
 		return columns() * rows();
 	}
 
-	@FunctionalInterface
-	public interface Factory {
-		MenuConstructor create(Container inventory, int columns, int rows);
-	}
+	@Range(from = 1, to = Integer.MAX_VALUE)
+	int columns();
+
+	@Range(from = 1, to = Integer.MAX_VALUE)
+	int rows();
 
 }

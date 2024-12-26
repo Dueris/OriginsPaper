@@ -25,6 +25,7 @@ import io.github.dueris.originspaper.util.context.TypeConditionContext;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.SlotArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
+import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.commands.AdvancementCommands;
@@ -36,6 +37,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameType;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -224,11 +228,87 @@ public class ApoliDataTypes {
 
 	public static final SerializableDataType<Pose> ENTITY_POSE = SerializableDataType.enumValue(Pose.class);
 	public static final SerializableDataType<Float> NORMALIZED_FLOAT = SerializableDataType.boundNumber(SerializableDataTypes.FLOAT, 0F, 1F);
-	public static final SerializableDataType<ContainerType> CONTAINER_TYPE = SerializableDataType.registry(ApoliRegistries.CONTAINER_TYPE, "apoli", true);
+	private static final SerializableDataType<ContainerType> CONTAINER_TYPE_FROM_REGISTRY = SerializableDataType.registry(ApoliRegistries.CONTAINER_TYPE, "apoli", true);
+
+	private static final SerializableDataType<DynamicContainerType> DYNAMIC_CONTAINER_TYPE = DynamicContainerType.DATA_FACTORY.getDataType();
+
+	public static final SerializableDataType<ContainerType> CONTAINER_TYPE = new SerializableDataType<>(
+		new Codec<>() {
+
+			@Override
+			public <T> DataResult<com.mojang.datafixers.util.Pair<ContainerType, T>> decode(DynamicOps<T> ops, T input) {
+
+				DataResult<String> stringInput = ops.getStringValue(input);
+				var stringInputError = stringInput.error();
+
+				if (stringInput.isSuccess()) {
+					return CONTAINER_TYPE_FROM_REGISTRY.codec().decode(ops, input);
+				}
+
+				DataResult<MapLike<T>> mapInput = ops.getMap(input);
+				var mapInputError = mapInput.error();
+
+				if (mapInput.isSuccess()) {
+					return DYNAMIC_CONTAINER_TYPE.codec().decode(ops, input)
+						.map(containerTypeAndInput -> containerTypeAndInput
+							.mapFirst(Function.identity()));
+				}
+
+				return DataResult.error(() -> "Couldn't decode as a container type (" + stringInputError.orElseThrow() + ") or as a dynamic container type (" + mapInputError.orElseThrow() + ")!");
+
+			}
+
+			@Override
+			public <T> DataResult<T> encode(ContainerType input, DynamicOps<T> ops, T prefix) {
+
+				if (input instanceof DynamicContainerType dynamicContainerType) {
+					return DYNAMIC_CONTAINER_TYPE.write(ops, dynamicContainerType);
+				}
+
+				else {
+					return CONTAINER_TYPE_FROM_REGISTRY.write(ops, input);
+				}
+
+			}
+
+		}
+	);
+
+	public static final SerializableDataType<Vec3i> VECTOR_3_INT = SerializableDataType.compound(
+		new SerializableData()
+			.add("x", SerializableDataTypes.INT, 0)
+			.add("y", SerializableDataTypes.INT, 0)
+			.add("z", SerializableDataTypes.INT, 0),
+		data -> new Vec3i(
+			data.get("x"),
+			data.get("y"),
+			data.get("z")
+		),
+		(vec3i, serializableData) -> serializableData.instance()
+			.set("x", vec3i.getX())
+			.set("y", vec3i.getY())
+			.set("z", vec3i.getZ())
+	);
+
+	public static final SerializableDataType<Vector3f> VECTOR_3_FLOAT = SerializableDataType.compound(
+		new SerializableData()
+			.add("x", SerializableDataTypes.FLOAT, 0F)
+			.add("y", SerializableDataTypes.FLOAT, 0F)
+			.add("z", SerializableDataTypes.FLOAT, 0F),
+		data -> new Vector3f(
+			data.get("x"),
+			data.get("y"),
+			data.get("z")
+		),
+		(vector3f, serializableData) -> serializableData.instance()
+			.set("x", vector3f.x())
+			.set("y", vector3f.y())
+			.set("z", vector3f.z())
+	);
 	public static SerializableDataType<CraftingRecipe> DISALLOWING_INTERNAL_CRAFTING_RECIPE = SerializableDataTypes.RECIPE.comapFlatMap(RecipeUtil::validateCraftingRecipe, Function.identity());
 
 	@SuppressWarnings("unchecked")
-	public static <T extends TypeConditionContext, C extends AbstractCondition<T, CT>, CT extends AbstractConditionType<T, C>> CompoundSerializableDataType<C> condition(String typeField, SerializableDataType<ConditionConfiguration<CT>> registryDataType, BiFunction<CT, Boolean, C> constructor) {
+	public static <T extends TypeConditionContext, C extends AbstractCondition<T, CT>, CT extends AbstractConditionType<T, C>> @NotNull CompoundSerializableDataType<C> condition(String typeField, SerializableDataType<ConditionConfiguration<CT>> registryDataType, BiFunction<CT, Boolean, C> constructor) {
 		return new CompoundSerializableDataType<>(
 			new SerializableData()
 				.add(typeField, registryDataType)

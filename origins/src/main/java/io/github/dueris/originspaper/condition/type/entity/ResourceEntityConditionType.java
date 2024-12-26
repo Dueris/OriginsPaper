@@ -44,7 +44,7 @@ public class ResourceEntityConditionType extends EntityConditionType {
 
 	@Override
 	public boolean test(Entity entity) {
-		return comparison.compare(PowerUtil.getResourceValue(resource.getPowerTypeFrom(entity)), compareTo);
+		return comparison.compare(PowerUtil.getResourceValue(resource.getNullablePowerType(entity)), compareTo);
 	}
 
 	@Override

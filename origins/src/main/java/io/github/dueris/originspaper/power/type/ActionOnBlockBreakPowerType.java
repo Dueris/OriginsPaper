@@ -57,21 +57,14 @@ public class ActionOnBlockBreakPowerType extends PowerType {
 		return PowerTypes.ACTION_ON_BLOCK_BREAK;
 	}
 
-	public boolean doesApply(SavedBlockPosition savedBlock) {
-		return blockCondition
-			.map(condition -> condition.test((Level) savedBlock.getLevel(), savedBlock.getPos()))
-			.orElse(true);
+	public boolean doesApply(SavedBlockPosition savedBlock, boolean harvestedSuccessfully) {
+		return (!onlyWhenHarvested || harvestedSuccessfully)
+			&& blockCondition.map(condition -> condition.test(savedBlock)).orElse(true);
 	}
 
-	public void executeActions(boolean successfulHarvest, BlockPos pos, Direction direction) {
-
-		if (!successfulHarvest && onlyWhenHarvested) {
-			return;
-		}
-
+	public void executeActions(BlockPos pos, Direction direction) {
 		blockAction.ifPresent(action -> action.execute(getHolder().level(), pos, Optional.of(direction)));
 		entityAction.ifPresent(action -> action.execute(getHolder()));
-
 	}
 
 }

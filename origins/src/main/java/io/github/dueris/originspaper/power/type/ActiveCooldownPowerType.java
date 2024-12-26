@@ -37,4 +37,9 @@ public abstract class ActiveCooldownPowerType extends CooldownPowerType implemen
 	public boolean canUse() {
 		return super.canUse();
 	}
+
+	@Override
+	public boolean canTrigger() {
+		return super.isActive();
+	}
 }

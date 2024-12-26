@@ -38,7 +38,7 @@ public class RevokePowerEntityActionType extends EntityActionType {
 
 	@Override
 	protected void execute(Entity entity) {
-		PowerHolderComponent.revokePower(entity, power.getStrictReference(), source, true);
+		PowerHolderComponent.revokePower(entity, power.getPower(), source, true);
 	}
 
 	@Override

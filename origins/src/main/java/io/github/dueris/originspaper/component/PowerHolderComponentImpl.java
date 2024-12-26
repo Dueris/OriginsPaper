@@ -1,12 +1,15 @@
 package io.github.dueris.originspaper.component;
 
+import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.OriginsPaper;
+import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.MultiplePower;
 import io.github.dueris.originspaper.power.Power;
 import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.power.PowerReference;
 import io.github.dueris.originspaper.power.type.PowerType;
 import io.github.dueris.originspaper.util.GainedPowerCriterion;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -27,7 +30,7 @@ import java.util.stream.Collectors;
 public class PowerHolderComponentImpl implements PowerHolderComponent {
 
 	private final ConcurrentHashMap<Power, PowerType> powers = new ConcurrentHashMap<>();
-	private final ConcurrentHashMap<Power, List<ResourceLocation>> powerSources = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<Power, Set<ResourceLocation>> powerSources = new ConcurrentHashMap<>();
 
 	private final LivingEntity owner;
 
@@ -104,7 +107,7 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 
 	protected boolean removePower(Power power, ResourceLocation source, Consumer<Power> adder) {
 
-		List<ResourceLocation> sources = powerSources.getOrDefault(power, new ArrayList<>());
+		Set<ResourceLocation> sources = powerSources.getOrDefault(power, new ObjectOpenHashSet<>());
 
 		if (!sources.remove(source)) {
 			return false;
@@ -170,21 +173,21 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 
 	protected boolean addPower(Power power, ResourceLocation source, BiConsumer<Power, PowerType> adder) {
 
-		List<ResourceLocation> sources = powerSources.computeIfAbsent(power, pt -> new LinkedList<>());
-
-		if (sources.contains(source)) {
+		Set<ResourceLocation> sources = powerSources.computeIfAbsent(power, pt -> new ObjectOpenHashSet<>());
+		if (!sources.add(source)) {
 			return false;
 		}
 
-		PowerType powerType = power.getPowerType();
-		powerType.init(owner, power);
+		PowerType powerType = shallowCopy(power.getPowerType());
 
-		sources.add(source);
-
-		powerSources.put(power, sources);
-		powers.put(power, powerType);
+		powerType.setPower(power);
+		powerType.setHolder(owner);
+		powerType.onInit();
 
 		adder.accept(power, powerType);
+
+		powers.put(power, powerType);
+		powerSources.put(power, sources);
 
 		if (power instanceof MultiplePower multiplePower) {
 			multiplePower.getSubPowers().forEach(subPower -> this.addPower(subPower, source, adder));
@@ -208,6 +211,7 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 	public void readFromNbt(@NotNull CompoundTag compoundTag, HolderLookup.Provider lookup) {
 
 		powers.clear();
+		powerSources.clear();
 		ListTag powersTag = compoundTag.getList("powers", Tag.TAG_COMPOUND);
 
 		//  Migrate compound NBTs from the old 'Powers' NBT path to the new 'powers' NBT path
@@ -221,26 +225,29 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 
 			try {
 
-				Power.Entry powerEntry = Power.Entry.CODEC.read(lookup.createSerializationContext(NbtOps.INSTANCE), powerTag).getOrThrow();
-				PowerReference powerReference = powerEntry.powerReference();
+				Power.DataEntry powerDataEntry = Power.DataEntry.CODEC.read(lookup.createSerializationContext(NbtOps.INSTANCE), powerTag).getOrThrow();
+				PowerReference powerReference = powerDataEntry.powerReference();
 
 				try {
 
-					Power power = powerReference.getStrictReference();
-					PowerType powerType = power.getPowerType();
+					Power power = powerReference.getPower();
+					PowerType powerType = shallowCopy(power.getPowerType());
 
-					powerType.init(owner, power);
+					powerType.setPower(power);
+					powerType.setHolder(owner);
+
+					powerType.onInit();
 
 					try {
-						powerType.fromTag(powerEntry.nbtData());
+						powerType.fromTag(powerDataEntry.nbtData());
 					} catch (ClassCastException cce) {
 						//  Occurs when the power was overridden by a data pack since last resource reload,
 						//  where the overridden power may encode/decode different NBT types
 						OriginsPaper.LOGGER.warn("Data type of power \"{}\" has changed, skipping data for that power on entity {} (UUID: {})", powerReference.id(), owner.getName().getString(), owner.getStringUUID());
 					}
 
-					powerSources.put(power, powerEntry.sources());
 					powers.put(power, powerType);
+					powerSources.put(power, powerDataEntry.sources());
 
 				} catch (Throwable t) {
 					OriginsPaper.LOGGER.warn("Unregistered power \"{}\" found on entity {} (UUID: {}), skipping...", powerReference.id(), owner.getName().getString(), owner.getStringUUID());
@@ -263,7 +270,7 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 			PowerConfiguration<?> typeConfig = power.getPowerType().getConfig();
 			PowerReference powerReference = PowerReference.of(power.getId());
 
-			Power.Entry.CODEC.codec().encodeStart(lookup.createSerializationContext(NbtOps.INSTANCE), new Power.Entry(typeConfig, powerReference, powerType.toTag(), powerSources.get(power)))
+			Power.DataEntry.CODEC.codec().encodeStart(lookup.createSerializationContext(NbtOps.INSTANCE), new Power.DataEntry(typeConfig, powerReference, powerType.toTag(), powerSources.get(power)))
 				.mapError(err -> "Error encoding power \"" + power.getId() + "\" to NBT of entity " + owner.getName().getString() + " (UUID: " + owner.getStringUUID() + ") (skipping): " + err)
 				.resultOrPartial(OriginsPaper.LOGGER::warn)
 				.ifPresent(powersTag::add);
@@ -271,6 +278,17 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 		});
 
 		compoundTag.put("powers", powersTag);
+
+	}
+
+	private static PowerType shallowCopy(@NotNull PowerType powerType) {
+
+		//noinspection unchecked
+		PowerConfiguration<PowerType> config = (PowerConfiguration<PowerType>) powerType.getConfig();
+		TypedDataObjectFactory<PowerType> dataFactory = config.dataFactory();
+
+		SerializableData.Instance data = dataFactory.toData(powerType);
+		return dataFactory.fromData(data);
 
 	}
 

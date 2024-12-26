@@ -11,6 +11,8 @@ import io.github.dueris.originspaper.util.HudRender;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +55,7 @@ public class CooldownPowerType extends PowerType implements HudRendered {
 
 	@Override
 	public boolean isActive() {
-		return canUse();
+		return canUse() && super.isActive();
 	}
 
 	@Override
@@ -88,20 +90,27 @@ public class CooldownPowerType extends PowerType implements HudRendered {
 
 	public boolean canUse() {
 		return isInitialized()
-			&& getHolder().level().getGameTime() >= lastUseTime + cooldown
-			&& super.isActive();
+			&& getHolder().level().getGameTime() >= lastUseTime + cooldown;
 	}
 
 	public void use() {
-		this.lastUseTime = getHolder().level().getGameTime();
-		PowerHolderComponent.syncPower(getHolder(), getPower());
+		LivingEntity holder = getHolder();
+		Level world = holder.level();
+
+		if (world.isClientSide) {
+			return;
+		}
+
+		this.lastUseTime = world.getGameTime();
+		PowerHolderComponent.syncPower(holder, getPower());
+		// OriginsPaper - render
 		if (getHolder() instanceof ServerPlayer player) {
 			MinecraftClient.HUD_RENDER.setRender(player.getBukkitEntity(), CraftNamespacedKey.fromMinecraft(getPower().getId()));
 		}
 	}
 
 	public float getProgress() {
-		float time = getHolder().getCommandSenderWorld().getGameTime() - lastUseTime;
+		float time = getHolder().level().getGameTime() - lastUseTime;
 		return Math.min(1F, Math.max(time / (float) cooldown, 0F));
 	}
 
@@ -122,15 +131,10 @@ public class CooldownPowerType extends PowerType implements HudRendered {
 	}
 
 	public void modify(int changeInTicks) {
-
-		this.lastUseTime += changeInTicks;
 		long currentTime = getHolder().level().getGameTime();
+		this.lastUseTime = Math.min(lastUseTime + changeInTicks, currentTime);
 		if (getHolder() instanceof ServerPlayer player) {
 			MinecraftClient.HUD_RENDER.setRender(player.getBukkitEntity(), CraftNamespacedKey.fromMinecraft(getPower().getId()), Math.toIntExact(currentTime - lastUseTime));
-		}
-
-		if (this.lastUseTime > currentTime) {
-			lastUseTime = currentTime;
 		}
 
 	}

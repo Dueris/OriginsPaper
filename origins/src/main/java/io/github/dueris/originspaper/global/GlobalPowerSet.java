@@ -73,11 +73,11 @@ public class GlobalPowerSet implements Comparable<GlobalPowerSet> {
 		for (PowerReference powerReference : powerReferences) {
 
 			//  Add the reference as is to the resulting set
-			powerReference.getOptionalReference().ifPresent(result::add);
+			powerReference.getOptionalPower().ifPresent(result::add);
 
 			//  If the reference is referring to a multiple power, query its sub-powers and add those to the
 			//  resulting set
-			powerReference.getOptionalReference()
+			powerReference.getOptionalPower()
 				.filter(MultiplePower.class::isInstance)
 				.map(MultiplePower.class::cast)
 				.map(MultiplePower::getSubPowers)

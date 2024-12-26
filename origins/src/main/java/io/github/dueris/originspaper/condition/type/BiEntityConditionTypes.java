@@ -35,7 +35,7 @@ public class BiEntityConditionTypes {
 	public static final ConditionConfiguration<AttackerBiEntityConditionType> ATTACKER = register(ConditionConfiguration.simple(OriginsPaper.apoliIdentifier("attacker"), AttackerBiEntityConditionType::new));
 	public static final ConditionConfiguration<CanSeeBiEntityConditionType> CAN_SEE = register(ConditionConfiguration.of(OriginsPaper.apoliIdentifier("can_see"), CanSeeBiEntityConditionType.DATA_FACTORY));
 	public static final ConditionConfiguration<DistanceBiEntityConditionType> DISTANCE = register(ConditionConfiguration.of(OriginsPaper.apoliIdentifier("distance"), DistanceBiEntityConditionType.DATA_FACTORY));
-	public static final ConditionConfiguration<EqualBiEntityConditionType> EQUAL = ConditionConfiguration.simple(OriginsPaper.apoliIdentifier("equal"), EqualBiEntityConditionType::new);
+	public static final ConditionConfiguration<EqualBiEntityConditionType> EQUAL = register(ConditionConfiguration.simple(OriginsPaper.apoliIdentifier("equal"), EqualBiEntityConditionType::new));
 	public static final ConditionConfiguration<InEntitySetBiEntityConditionType> IN_ENTITY_SET = register(ConditionConfiguration.of(OriginsPaper.apoliIdentifier("in_entity_set"), InEntitySetBiEntityConditionType.DATA_FACTORY));
 	public static final ConditionConfiguration<OwnerBiEntityConditionType> OWNER = register(ConditionConfiguration.simple(OriginsPaper.apoliIdentifier("owner"), OwnerBiEntityConditionType::new));
 	public static final ConditionConfiguration<RelativeRotationBiEntityConditionType> RELATIVE_ROTATION = register(ConditionConfiguration.of(OriginsPaper.apoliIdentifier("relative_rotation"), RelativeRotationBiEntityConditionType.DATA_FACTORY));

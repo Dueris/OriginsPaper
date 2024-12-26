@@ -100,7 +100,7 @@ public class DropInventoryEntityActionType extends EntityActionType {
 
 		Optional<InventoryPowerType> inventoryPowerType = power
 			.filter(ivp -> inventoryType == InventoryType.POWER)
-			.map(p -> p.getPowerTypeFrom(entity))
+			.flatMap(p -> p.getOptionalPowerType(entity))
 			.filter(InventoryPowerType.class::isInstance)
 			.map(InventoryPowerType.class::cast);
 

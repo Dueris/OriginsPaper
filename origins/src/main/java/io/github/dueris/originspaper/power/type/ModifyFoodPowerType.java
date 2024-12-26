@@ -59,7 +59,7 @@ public class ModifyFoodPowerType extends PowerType {
 			.set("item_action", powerType.itemAction)
 			.set("item_condition", powerType.itemCondition)
 			.set("food_modifiers", powerType.foodModifiers)
-			.set("saturaton_modifiers", powerType.saturationModifiers)
+			.set("saturation_modifiers", powerType.saturationModifiers)
 			.set("eat_ticks_modifiers", powerType.eatTicksModifiers)
 			.set("replace_stack", powerType.replaceStack)
 			.set("prevent_effects", powerType.preventFoodEffects)

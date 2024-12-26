@@ -32,7 +32,7 @@ public class TriggerCooldownEntityActionType extends EntityActionType {
 	@Override
 	protected void execute(Entity entity) {
 
-		if (power.getPowerTypeFrom(entity) instanceof CooldownPowerType cooldownPowerType) {
+		if (power.getNullablePowerType(entity) instanceof CooldownPowerType cooldownPowerType) {
 			cooldownPowerType.use();
 		}
 

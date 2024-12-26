@@ -1,13 +1,15 @@
 package io.github.dueris.originspaper.mixin;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.dueris.originspaper.power.type.ActionOnItemPickupPowerType;
 import io.github.dueris.originspaper.power.type.PreventItemPickupPowerType;
+import io.github.dueris.originspaper.power.type.Prioritized;
 import io.github.dueris.originspaper.power.type.origins.ScareCreepersPowerType;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Targeting;
+import io.github.dueris.originspaper.util.InventoryUtil;
+import io.github.dueris.originspaper.util.Util;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.Level;
@@ -24,14 +26,21 @@ public abstract class MobMixin extends LivingEntity implements Targeting {
 	}
 
 	@WrapWithCondition(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;pickUpItem(Lnet/minecraft/world/entity/item/ItemEntity;)V"))
-	private boolean apoli$onItemPickup(Mob instance, ItemEntity itemEntity) {
+	private boolean apoli$preventItemPickup(Mob mobEntity, ItemEntity itemEntity) {
+		return !PreventItemPickupPowerType.doesPrevent(itemEntity, this);
+	}
 
-		if (PreventItemPickupPowerType.doesPrevent(itemEntity, this)) {
-			return false;
-		}
+	@WrapOperation(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;pickUpItem(Lnet/minecraft/world/entity/item/ItemEntity;)V"))
+	private void apoli$actionOnItemPickup(Mob mobEntity, ItemEntity itemEntity, Operation<Void> original) {
 
-		ActionOnItemPickupPowerType.executeActions(itemEntity, this);
-		return true;
+		SlotAccess stackReference = InventoryUtil.createStackReference(itemEntity.getItem());
+		Entity thrower = Util.getEntityByUuid(((ItemEntityAccessor) itemEntity).getThrower(), this.getServer());
+
+		Prioritized.CallInstance<ActionOnItemPickupPowerType> callInstance = ActionOnItemPickupPowerType.executeItemAction(thrower, stackReference, this);
+		itemEntity.setItem(stackReference.get());
+
+		original.call(mobEntity, itemEntity);
+		ActionOnItemPickupPowerType.executeBiEntityAction(callInstance, thrower);
 
 	}
 

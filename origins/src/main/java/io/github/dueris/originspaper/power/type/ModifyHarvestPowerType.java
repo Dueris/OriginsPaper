@@ -6,6 +6,7 @@ import io.github.dueris.originspaper.condition.BlockCondition;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.PowerConfiguration;
+import io.github.dueris.originspaper.util.SavedBlockPosition;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -55,7 +56,7 @@ public class ModifyHarvestPowerType extends PowerType implements Prioritized<Mod
 		int priorityResult = Integer.compare(this.getPriority(), other.getPriority());
 		return priorityResult != 0
 			? priorityResult
-			: Boolean.compare(this.isHarvestAllowed(), other.isHarvestAllowed());
+			: Boolean.compare(this.isAllowed(), other.isAllowed());
 	}
 
 	@Override
@@ -69,11 +70,13 @@ public class ModifyHarvestPowerType extends PowerType implements Prioritized<Mod
 			.orElse(true);
 	}
 
-	public boolean doesApply(BlockInWorld cachedBlock) {
-		return doesApply(cachedBlock.getLevel(), cachedBlock.getPos());
+	public boolean doesApply(SavedBlockPosition savedBlockPosition) {
+		return blockCondition
+			.map(condition -> condition.test(savedBlockPosition))
+			.orElse(true);
 	}
 
-	public boolean isHarvestAllowed() {
+	public boolean isAllowed() {
 		return allow;
 	}
 

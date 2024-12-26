@@ -45,7 +45,7 @@ public class EntitySetSizeEntityConditionType extends EntityConditionType {
 	@Override
 	public boolean test(Entity entity) {
 
-		if (set.getPowerTypeFrom(entity) instanceof EntitySetPowerType entitySet) {
+		if (set.getNullablePowerType(entity) instanceof EntitySetPowerType entitySet) {
 			return comparison.compare(entitySet.size(), compareTo);
 		} else {
 			return false;

@@ -47,7 +47,7 @@ public class ChangeResourceEntityActionType extends EntityActionType {
 	@Override
 	protected void execute(Entity entity) {
 
-		PowerType powerType = resource.getPowerTypeFrom(entity);
+		PowerType powerType = resource.getNullablePowerType(entity);
 		boolean modified = switch (operation) {
 			case ADD -> PowerUtil.changeResourceValue(powerType, change);
 			case SET -> PowerUtil.setResourceValue(powerType, change);

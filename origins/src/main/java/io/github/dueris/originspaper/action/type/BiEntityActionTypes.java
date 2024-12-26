@@ -36,7 +36,7 @@ public class BiEntityActionTypes {
 	public static final ActionConfiguration<LeashBiEntityActionType> LEASH = register(ActionConfiguration.simple(OriginsPaper.apoliIdentifier("leash"), LeashBiEntityActionType::new));
 	public static final ActionConfiguration<MountBiEntityActionType> MOUNT = register(ActionConfiguration.simple(OriginsPaper.apoliIdentifier("mount"), MountBiEntityActionType::new));
 	public static final ActionConfiguration<RemoveFromEntitySetBiEntityActionType> REMOVE_FROM_ENTITY_SET = register(ActionConfiguration.of(OriginsPaper.apoliIdentifier("remove_from_entity_set"), RemoveFromEntitySetBiEntityActionType.DATA_FACTORY));
-	public static final ActionConfiguration<TameBiEntityActionType> TAME = ActionConfiguration.simple(OriginsPaper.apoliIdentifier("tame"), TameBiEntityActionType::new);
+	public static final ActionConfiguration<TameBiEntityActionType> TAME = register(ActionConfiguration.simple(OriginsPaper.apoliIdentifier("tame"), TameBiEntityActionType::new));
 	public static final ActionConfiguration<SetInLoveBiEntityActionType> SET_IN_LOVE = register(ActionConfiguration.simple(OriginsPaper.apoliIdentifier("set_in_love"), SetInLoveBiEntityActionType::new));
 
 	public static void register() {

@@ -92,7 +92,7 @@ public class InventoryEntityConditionType extends EntityConditionType {
 		if (inventoryTypes.contains(InventoryUtil.InventoryType.POWER)) {
 
 			Optional<InventoryPowerType> inventoryPowerType = power
-				.map(p -> p.getPowerTypeFrom(entity))
+				.map(p -> p.getNullablePowerType(entity))
 				.filter(InventoryPowerType.class::isInstance)
 				.map(InventoryPowerType.class::cast);
 

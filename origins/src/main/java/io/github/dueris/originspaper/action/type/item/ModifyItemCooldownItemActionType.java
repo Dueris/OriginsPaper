@@ -23,7 +23,8 @@ public class ModifyItemCooldownItemActionType extends ItemActionType {
 	public static final TypedDataObjectFactory<ModifyItemCooldownItemActionType> DATA_FACTORY = TypedDataObjectFactory.simple(
 		new SerializableData()
 			.add("modifier", Modifier.DATA_TYPE, null)
-			.addFunctionedDefault("modifiers", Modifier.LIST_TYPE, data -> Util.singletonListOrNull(data.get("modifier"))),
+			.addFunctionedDefault("modifiers", Modifier.LIST_TYPE, data -> Util.singletonListOrNull(data.get("modifier")))
+			.validate(Util.validateAnyFieldsPresent("modifier", "modifiers")),
 		data -> new ModifyItemCooldownItemActionType(
 			data.get("modifiers")
 		),

@@ -24,7 +24,7 @@ public class AreaOfEffectEntityActionType extends EntityActionType {
 			.add("bientity_action", BiEntityAction.DATA_TYPE)
 			.add("bientity_condition", BiEntityCondition.DATA_TYPE.optional(), Optional.empty())
 			.add("shape", SerializableDataType.enumValue(Shape.class), Shape.CUBE)
-			.add("radius", SerializableDataTypes.POSITIVE_DOUBLE, 16.0D)
+			.add("radius", SerializableDataTypes.NON_NEGATIVE_DOUBLE, 16.0D)
 			.add("include_actor", SerializableDataTypes.BOOLEAN, false),
 		data -> new AreaOfEffectEntityActionType(
 			data.get("bientity_action"),

@@ -24,38 +24,40 @@ public record PowerReference(ResourceLocation id,
 
 	@Override
 	public void validate() throws Exception {
-		getResultReference()
+		getResultPower()
 			.map(Power::getPowerType)
 			.flatMap(condition())
 			.getOrThrow();
 	}
 
-	@Nullable
-	public PowerType getPowerTypeFrom(Entity entity) {
-		return getOptionalReference()
-			.flatMap(power -> Optional.ofNullable(power.getPowerTypeFrom(entity)))
-			.orElse(null);
+	public Optional<PowerType> getOptionalPowerType(Entity entity) {
+		return getOptionalPower().flatMap(power -> PowerUtil.getOptionalPowerType(power, entity));
 	}
 
-	public DataResult<Power> getResultReference() {
+	@Nullable
+	public PowerType getNullablePowerType(Entity entity) {
+		return getOptionalPowerType(entity).orElse(null);
+	}
+
+	public DataResult<Power> getResultPower() {
 		return PowerManager.getResult(id());
 	}
 
-	public Optional<Power> getOptionalReference() {
+	public Optional<Power> getOptionalPower() {
 		return PowerManager.getOptional(id());
 	}
 
-	public Power getStrictReference() {
-		return PowerManager.get(id());
-	}
-
 	@Nullable
-	public Power getReference() {
+	public Power getNullablePower() {
 		return PowerManager.getNullable(id());
 	}
 
+	public Power getPower() {
+		return PowerManager.get(id());
+	}
+
 	public boolean isActive(Entity entity) {
-		return getOptionalReference()
+		return getOptionalPower()
 			.map(power -> power.isActive(entity))
 			.orElse(false);
 	}

@@ -14,6 +14,10 @@ public interface Active extends Listener {
 
 	}
 
+	default boolean canTrigger() {
+		return true;
+	}
+
 	default boolean canUse() {
 		return true;
 	}

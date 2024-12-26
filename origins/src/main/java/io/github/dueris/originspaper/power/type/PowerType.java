@@ -26,8 +26,6 @@ public abstract class PowerType implements Validatable {
 	private boolean ticking;
 	private boolean tickingWhenInActive;
 
-	private boolean initialized;
-
 	public PowerType() {
 		this(Optional.empty());
 	}
@@ -51,51 +49,46 @@ public abstract class PowerType implements Validatable {
 
 	@Override
 	public void validate() throws Exception {
-
-		//noinspection unchecked
-		TypedDataObjectFactory<PowerType> dataFactory = (TypedDataObjectFactory<PowerType>) getConfig().dataFactory();
-		SerializableData.Instance data = dataFactory.toData(this);
-
-		data.validate();
-
+		this.toData().validate();
 	}
 
 	@NotNull
 	public abstract PowerConfiguration<?> getConfig();
 
 	@ApiStatus.Internal
-	public final void init(@NotNull final LivingEntity holder, @NotNull final Power power) {
+	public final void setPower(@NotNull final Power power) {
 
-		if (power.getPowerType() != this) {
-			throw new IllegalArgumentException("Cannot initialize power type with a mismatched power!");
+		if (this.power == null && !this.getConfig().equals(power.getPowerType().getConfig())) {
+			throw new IllegalArgumentException("Couldn't initialize power type \"" + this.getConfig().id() + "\" with a power that has a mismatching power type! (power type data: " + this.toData() + ")");
 		}
 
-		this.holder = holder;
-		this.power = power;
+		else if (!Objects.equals(this.power, power)) {
+			this.power = power;
+		}
 
-		this.initialized = true;
-		onInit();
+	}
+
+	@ApiStatus.Internal
+	public final void setHolder(@NotNull final LivingEntity holder) {
+		this.holder = holder;
+	}
+
+	public SerializableData.Instance toData() {
+
+		//noinspection unchecked
+		PowerConfiguration<PowerType> config = (PowerConfiguration<PowerType>) this.getConfig();
+		TypedDataObjectFactory<PowerType> dataFactory = config.dataFactory();
+
+		return dataFactory.toData(this);
 
 	}
 
 	public final Power getPower() {
-
-		if (initialized) {
-			return Objects.requireNonNull(power, "Power of initialized power type \"" + getConfig().id() + "\" was null!");
-		} else {
-			throw new IllegalStateException("Power type \"" + getConfig().id() + "\" wasn't initialized yet!");
-		}
-
+		return Objects.requireNonNull(power, "Couldn't get power of power type \"" + getConfig().id() + "\" as it wasn't initialized yet! (power type data: " + this.toData() + ")");
 	}
 
 	public final LivingEntity getHolder() {
-
-		if (initialized) {
-			return Objects.requireNonNull(holder, "Holder of initialized power type \"" + getConfig().id() + "\" was null!");
-		} else {
-			throw new IllegalStateException("Power type \"" + getConfig().id() + "\" wasn't initialized yet!");
-		}
-
+		return Objects.requireNonNull(holder, "Couldn't get holder of power type \"" + getConfig().id() + " as it wasn't initialized yet! (power type data: " + this.toData() + ")");
 	}
 
 	public void serverTick() {
@@ -153,7 +146,8 @@ public abstract class PowerType implements Validatable {
 	}
 
 	public boolean isInitialized() {
-		return initialized;
+		return holder != null
+			&& power != null;
 	}
 
 	public boolean shouldTick() {

@@ -48,7 +48,7 @@ public class AddPowerLootFunction extends LootItemConditionalFunction {
 	@Override
 	public ItemStack run(ItemStack stack, LootContext context) {
 
-		power().getOptionalReference().ifPresent(power -> {
+		power().getOptionalPower().ifPresent(power -> {
 
 			/* ItemPowersComponent itemPowers = stack.getOrDefault(PowerHolderComponent.POWERS, ItemPowersComponent.DEFAULT);
 			stack.set(PowerHolderComponent.POWERS, ItemPowersComponent.builder(itemPowers)

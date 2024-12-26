@@ -39,7 +39,7 @@ public class SetResourceEntityActionType extends EntityActionType {
 	@Override
 	protected void execute(Entity entity) {
 
-		if (PowerUtil.setResourceValue(resource.getPowerTypeFrom(entity), value)) {
+		if (PowerUtil.setResourceValue(resource.getNullablePowerType(entity), value)) {
 			PowerHolderComponent.syncPower(entity, resource);
 		}
 

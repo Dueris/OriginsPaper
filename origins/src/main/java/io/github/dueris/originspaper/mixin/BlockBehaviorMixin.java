@@ -73,7 +73,7 @@ public abstract class BlockBehaviorMixin implements BlockStateCollisionShapeAcce
 			.stream()
 			.filter(mhp -> mhp.doesApply(world, pos))
 			.max(ModifyHarvestPowerType::compareTo)
-			.map(ModifyHarvestPowerType::isHarvestAllowed)
+			.map(ModifyHarvestPowerType::isAllowed)
 			.orElse(original);
 	}
 }

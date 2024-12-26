@@ -20,21 +20,16 @@ public class AddVelocityEntityActionType extends EntityActionType {
 			.add("x", SerializableDataTypes.FLOAT, 0F)
 			.add("y", SerializableDataTypes.FLOAT, 0F)
 			.add("z", SerializableDataTypes.FLOAT, 0F)
+			.addFunctionedDefault("velocity", ApoliDataTypes.VECTOR_3_FLOAT, data -> new Vector3f(data.getFloat("x"), data.getFloat("y"), data.getFloat("z")))
 			.add("space", ApoliDataTypes.SPACE, Space.WORLD)
 			.add("set", SerializableDataTypes.BOOLEAN, false),
 		data -> new AddVelocityEntityActionType(
-			new Vector3f(
-				data.get("x"),
-				data.get("y"),
-				data.get("z")
-			),
+			data.get("velocity"),
 			data.get("space"),
 			data.get("set")
 		),
 		(actionType, serializableData) -> serializableData.instance()
-			.set("x", actionType.velocity.x())
-			.set("y", actionType.velocity.y())
-			.set("z", actionType.velocity.z())
+			.set("velocity", actionType.velocity)
 			.set("space", actionType.space)
 			.set("set", actionType.set)
 	);
@@ -53,12 +48,13 @@ public class AddVelocityEntityActionType extends EntityActionType {
 	@Override
 	protected void execute(Entity entity) {
 
+		Vector3f velocityCopy = new Vector3f(velocity);
 		TriConsumer<Float, Float, Float> method = set
 			? entity::setDeltaMovement
 			: entity::push;
 
-		space.toGlobal(velocity, entity);
-		method.accept(velocity.x(), velocity.y(), velocity.z());
+		space.toGlobal(velocityCopy, entity);
+		method.accept(velocityCopy.x(), velocityCopy.y(), velocityCopy.z());
 
 		entity.hurtMarked = true;
 

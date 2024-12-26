@@ -41,7 +41,7 @@ public class ModifyResourceEntityActionType extends EntityActionType {
 	@Override
 	protected void execute(Entity entity) {
 
-		if (PowerUtil.modifyResourceValue(resource.getPowerTypeFrom(entity), List.of(modifier))) {
+		if (PowerUtil.modifyResourceValue(resource.getNullablePowerType(entity), List.of(modifier))) {
 			PowerHolderComponent.syncPower(entity, resource);
 		}
 

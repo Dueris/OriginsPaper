@@ -38,7 +38,7 @@ public class GrantPowerEntityActionType extends EntityActionType {
 
 	@Override
 	protected void execute(Entity entity) {
-		PowerHolderComponent.grantPower(entity, power.getStrictReference(), source, true);
+		PowerHolderComponent.grantPower(entity, power.getPower(), source, true);
 	}
 
 	@Override

@@ -23,6 +23,7 @@ public class EntityActionTypes {
 	public static final ActionConfiguration<DelayEntityActionType> DELAY = register(DelayMetaActionType.createConfiguration(EntityAction.DATA_TYPE, DelayEntityActionType::new));
 	public static final ActionConfiguration<IfElseListEntityActionType> IF_ELSE_LIST = register(IfElseListMetaActionType.createConfiguration(EntityAction.DATA_TYPE, EntityCondition.DATA_TYPE, IfElseListEntityActionType::new));
 	public static final ActionConfiguration<IfElseEntityActionType> IF_ELSE = register(IfElseMetaActionType.createConfiguration(EntityAction.DATA_TYPE, EntityCondition.DATA_TYPE, IfElseEntityActionType::new));
+	public static final ActionConfiguration<NothingEntityActionType> NOTHING = register(NothingMetaActionType.createConfiguration(NothingEntityActionType::new));
 	public static final ActionConfiguration<SideEntityActionType> SIDE = register(SideMetaActionType.createConfiguration(EntityAction.DATA_TYPE, SideEntityActionType::new));
 
 	public static final ActionConfiguration<ActionOnEntitySetEntityActionType> ACTION_ON_ENTITY_SET = register(ActionConfiguration.of(OriginsPaper.apoliIdentifier("action_on_entity_set"), ActionOnEntitySetEntityActionType.DATA_FACTORY));

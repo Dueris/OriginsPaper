@@ -79,7 +79,7 @@ public class PreventItemPickupPowerType extends PowerType implements Prioritized
 
 	public static boolean doesPrevent(ItemEntity itemEntity, Entity entity) {
 
-		if (!PowerHolderComponent.KEY.isProvidedBy(entity)) {
+		if (PowerHolderComponent.getOptional(entity).isEmpty()) {
 			return false;
 		}
 
@@ -122,12 +122,13 @@ public class PreventItemPickupPowerType extends PowerType implements Prioritized
 
 	public void executeActions(ItemEntity itemEntity, Entity thrower) {
 
-		SlotAccess itemEntityStackReference = InventoryUtil.createStackReference(itemEntity.getItem());
-		itemAction.ifPresent(action -> action.execute(getHolder().level(), itemEntityStackReference));
+		SlotAccess stackReference = InventoryUtil.createStackReference(itemEntity.getItem());
+		itemAction.ifPresent(action -> action.execute(getHolder().level(), stackReference));
 
 		biEntityActionThrower.ifPresent(action -> action.execute(thrower, getHolder()));
 		biEntityActionItem.ifPresent(action -> action.execute(getHolder(), itemEntity));
 
+		itemEntity.setItem(stackReference.get());
 	}
 
 }

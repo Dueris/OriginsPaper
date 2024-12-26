@@ -32,7 +32,7 @@ public class PowerTypes {
 	public static final PowerConfiguration<ActionOverTimePowerType> ACTION_OVER_TIME = register(PowerConfiguration.dataFactory(OriginsPaper.apoliIdentifier("action_over_time"), ActionOverTimePowerType.DATA_FACTORY));
 	public static final PowerConfiguration<ActionWhenDamageTakenPowerType> ACTION_WHEN_DAMAGE_TAKEN = register(PowerConfiguration.dataFactory(OriginsPaper.apoliIdentifier("action_when_damage_taken"), ActionWhenDamageTakenPowerType.DATA_FACTORY));
 	public static final PowerConfiguration<ActionWhenHitPowerType> ACTION_WHEN_HIT = register(PowerConfiguration.dataFactory(OriginsPaper.apoliIdentifier("action_when_hit"), ActionWhenHitPowerType.DATA_FACTORY));
-	public static final PowerConfiguration<ActiveSelfPowerType> ACTIVE_SELF = register(PowerConfiguration.dataFactory(OriginsPaper.apoliIdentifier("active_self"), ActiveSelfPowerType.DATA_FACTORY));
+	public static final PowerConfiguration<ActionOnKeyPressPowerType> ACTION_ON_KEY_PRESS = register(PowerConfiguration.dataFactory(OriginsPaper.apoliIdentifier("active_self"), ActionOnKeyPressPowerType.DATA_FACTORY));
 	public static final PowerConfiguration<AttackerActionWhenHitPowerType> ATTACKER_ACTION_WHEN_HIT = register(PowerConfiguration.dataFactory(OriginsPaper.apoliIdentifier("attacker_action_when_hit"), AttackerActionWhenHitPowerType.DATA_FACTORY));
 	public static final PowerConfiguration<AttributeModifyTransferPowerType> ATTRIBUTE_MODIFY_TRANSFER = register(PowerConfiguration.dataFactory(OriginsPaper.apoliIdentifier("attribute_modify_transfer"), AttributeModifyTransferPowerType.DATA_FACTORY));
 	public static final PowerConfiguration<AttributePowerType> ATTRIBUTE = register(PowerConfiguration.dataFactory(OriginsPaper.apoliIdentifier("attribute"), AttributePowerType.DATA_FACTORY));
@@ -135,7 +135,9 @@ public class PowerTypes {
 //	public static final PowerConfiguration<WalkOnFluidPowerType> WALK_ON_FLUID = register(PowerConfiguration.dataFactory(OriginsPaper.apoliIdentifier("walk_on_fluid"), WalkOnFluidPowerType.DATA_FACTORY));
 
 	public static void register() {
-		ALIASES.addPathAlias("self_action_when_hit", "action_when_damage_taken");
+		ALIASES.addPathAlias("simple", DUMMY.id().getPath());
+		ALIASES.addPathAlias("self_action_when_hit", ACTION_WHEN_DAMAGE_TAKEN.id().getPath());
+		ALIASES.addPathAlias("active_self", ACTION_ON_KEY_PRESS.id().getPath());
 	}
 
 	@SuppressWarnings("unchecked")

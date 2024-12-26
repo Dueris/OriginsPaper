@@ -48,7 +48,7 @@ public class Modifier implements Comparable<Modifier> {
 
 		}
 	));
-	public static final SerializableDataType<List<Modifier>> LIST_TYPE = DATA_TYPE.list(1, Integer.MAX_VALUE);
+	public static final SerializableDataType<List<Modifier>> LIST_TYPE = DATA_TYPE.list();
 	private final IModifierOperation operation;
 	private final SerializableData.Instance data;
 

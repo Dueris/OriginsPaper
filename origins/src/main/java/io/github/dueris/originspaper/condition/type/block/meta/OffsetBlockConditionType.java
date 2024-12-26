@@ -7,6 +7,7 @@ import io.github.dueris.originspaper.condition.ConditionConfiguration;
 import io.github.dueris.originspaper.condition.context.BlockConditionContext;
 import io.github.dueris.originspaper.condition.type.BlockConditionType;
 import io.github.dueris.originspaper.condition.type.BlockConditionTypes;
+import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -26,7 +27,7 @@ public class OffsetBlockConditionType extends BlockConditionType {
 			.add("x", SerializableDataTypes.INT, 0)
 			.add("y", SerializableDataTypes.INT, 0)
 			.add("z", SerializableDataTypes.INT, 0)
-			.addFunctionedDefault("offset", SerializableDataTypes.VECTOR, data -> new Vec3(data.get("x"), data.get("y"), data.get("z"))),
+			.addFunctionedDefault("offset", ApoliDataTypes.VECTOR_3_INT, data -> new Vec3i(data.get("x"), data.get("y"), data.get("z"))),
 		data -> new OffsetBlockConditionType(
 			data.get("condition"),
 			data.get("offset")

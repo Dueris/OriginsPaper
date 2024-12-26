@@ -14,8 +14,8 @@ plugins {
 }
 
 version = "v1.3.0"
-val apoli = "2.12.0-alpha.12+mc.1.21.x"
-val calio = "1.14.0-alpha.7+mc.1.21.x"
+val apoli = "2.12.0-alpha.14+mc.1.21.1"
+val calio = "1.14.0-alpha.8+mc.1.21.x"
 val mcMajor = "21"
 val mcMinor = "1"
 val paper: String = "1.$mcMajor-R0.1-SNAPSHOT"

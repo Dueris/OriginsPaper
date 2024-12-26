@@ -32,7 +32,7 @@ public class ToggleEntityActionType extends EntityActionType {
 	@Override
 	protected void execute(Entity entity) {
 
-		if (power.getPowerTypeFrom(entity) instanceof TogglePowerType togglePowerType) {
+		if (power.getNullablePowerType(entity) instanceof TogglePowerType togglePowerType) {
 			togglePowerType.onUse();
 		}
 

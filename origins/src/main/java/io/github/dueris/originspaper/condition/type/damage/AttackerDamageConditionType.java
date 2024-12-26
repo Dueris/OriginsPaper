@@ -10,11 +10,13 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 public class AttackerDamageConditionType extends DamageConditionType {
 
 	public static final TypedDataObjectFactory<AttackerDamageConditionType> DATA_FACTORY = TypedDataObjectFactory.simple(
 		new SerializableData()
-			.add("entity_condition", EntityCondition.DATA_TYPE),
+			.add("entity_condition", EntityCondition.DATA_TYPE.optional(), Optional.empty()),
 		data -> new AttackerDamageConditionType(
 			data.get("entity_condition")
 		),
@@ -22,17 +24,17 @@ public class AttackerDamageConditionType extends DamageConditionType {
 			.set("entity_condition", conditionType.entityCondition)
 	);
 
-	private final EntityCondition entityCondition;
+	private final Optional<EntityCondition> entityCondition;
 
-	public AttackerDamageConditionType(EntityCondition entityCondition) {
+	public AttackerDamageConditionType(Optional<EntityCondition> entityCondition) {
 		this.entityCondition = entityCondition;
 	}
 
 	@Override
-	public boolean test(DamageSource source, float amount) {
+	public boolean test(@NotNull DamageSource source, float amount) {
 		Entity attacker = source.getEntity();
 		return attacker != null
-			&& entityCondition.test(attacker);
+			&& entityCondition.map(condition -> condition.test(attacker)).orElse(true);
 	}
 
 	@Override
