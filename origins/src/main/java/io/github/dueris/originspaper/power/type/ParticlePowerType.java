@@ -86,6 +86,7 @@ public class ParticlePowerType extends PowerType {
 		this.visibleInFirstPerson = visibleInFirstPerson;
 		this.visibleWhileInvisible = visibleWhileInvisible;
 		this.force = force;
+		this.setTicking(true);
 	}
 
 	@Override
