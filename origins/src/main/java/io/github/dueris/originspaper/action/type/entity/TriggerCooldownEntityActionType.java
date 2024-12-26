@@ -1,5 +1,6 @@
 package io.github.dueris.originspaper.action.type.entity;
 
+import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.originspaper.action.ActionConfiguration;
 import io.github.dueris.originspaper.action.type.EntityActionType;
 import io.github.dueris.originspaper.action.type.EntityActionTypes;
@@ -7,7 +8,6 @@ import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.power.PowerReference;
 import io.github.dueris.originspaper.power.type.CooldownPowerType;
-import io.github.dueris.calio.data.SerializableData;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 

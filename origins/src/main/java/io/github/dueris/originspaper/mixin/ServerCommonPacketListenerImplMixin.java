@@ -21,7 +21,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerCommonPacketListenerImpl.class)
 public class ServerCommonPacketListenerImplMixin {
 
-	@Shadow @Final protected ServerPlayer player;
+	@Shadow
+	@Final
+	protected ServerPlayer player;
 
 	@Inject(method = "send(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketSendListener;)V", at = @At("HEAD"))
 	public void apoli$modifyBlockRender(Packet<?> packet, PacketSendListener callbacks, CallbackInfo ci) {

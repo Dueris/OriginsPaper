@@ -55,24 +55,6 @@ public abstract class PowerType implements Validatable {
 	@NotNull
 	public abstract PowerConfiguration<?> getConfig();
 
-	@ApiStatus.Internal
-	public final void setPower(@NotNull final Power power) {
-
-		if (this.power == null && !this.getConfig().equals(power.getPowerType().getConfig())) {
-			throw new IllegalArgumentException("Couldn't initialize power type \"" + this.getConfig().id() + "\" with a power that has a mismatching power type! (power type data: " + this.toData() + ")");
-		}
-
-		else if (!Objects.equals(this.power, power)) {
-			this.power = power;
-		}
-
-	}
-
-	@ApiStatus.Internal
-	public final void setHolder(@NotNull final LivingEntity holder) {
-		this.holder = holder;
-	}
-
 	public SerializableData.Instance toData() {
 
 		//noinspection unchecked
@@ -87,8 +69,24 @@ public abstract class PowerType implements Validatable {
 		return Objects.requireNonNull(power, "Couldn't get power of power type \"" + getConfig().id() + "\" as it wasn't initialized yet! (power type data: " + this.toData() + ")");
 	}
 
+	@ApiStatus.Internal
+	public final void setPower(@NotNull final Power power) {
+
+		if (this.power == null && !this.getConfig().equals(power.getPowerType().getConfig())) {
+			throw new IllegalArgumentException("Couldn't initialize power type \"" + this.getConfig().id() + "\" with a power that has a mismatching power type! (power type data: " + this.toData() + ")");
+		} else if (!Objects.equals(this.power, power)) {
+			this.power = power;
+		}
+
+	}
+
 	public final LivingEntity getHolder() {
 		return Objects.requireNonNull(holder, "Couldn't get holder of power type \"" + getConfig().id() + " as it wasn't initialized yet! (power type data: " + this.toData() + ")");
+	}
+
+	@ApiStatus.Internal
+	public final void setHolder(@NotNull final LivingEntity holder) {
+		this.holder = holder;
 	}
 
 	public void serverTick() {

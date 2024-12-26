@@ -1,6 +1,5 @@
 package io.github.dueris.originspaper.power.type;
 
-import com.mojang.serialization.DataResult;
 import io.github.dueris.calio.data.SerializableData;
 import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.condition.EntityCondition;

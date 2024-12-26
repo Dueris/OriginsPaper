@@ -1,7 +1,6 @@
 package io.github.dueris.originspaper.client.texture;
 
 import io.github.dueris.originspaper.OriginsPaper;
-import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 

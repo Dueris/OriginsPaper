@@ -7,7 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.MenuConstructor;
 
-public record DynamicContainerType(TextAlignment titleAlignment, ResourceLocation texture, int columns, int rows) implements ContainerType {
+public record DynamicContainerType(TextAlignment titleAlignment, ResourceLocation texture, int columns,
+								   int rows) implements ContainerType {
 
 	public static final TypedDataObjectFactory<DynamicContainerType> DATA_FACTORY = TypedDataObjectFactory.simple(
 		new SerializableData()

@@ -1,7 +1,6 @@
 package io.github.dueris.originspaper.mixin;
 
 import io.github.dueris.originspaper.access.BlockStateOwner;
-import net.minecraft.core.SectionPos;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,5 +1,7 @@
 package io.github.dueris.originspaper.action.type.entity;
 
+import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.OriginsPaper;
 import io.github.dueris.originspaper.action.ActionConfiguration;
 import io.github.dueris.originspaper.action.type.EntityActionType;
@@ -7,8 +9,6 @@ import io.github.dueris.originspaper.action.type.EntityActionTypes;
 import io.github.dueris.originspaper.data.ApoliDataTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
 import io.github.dueris.originspaper.util.AdvancementUtil;
-import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataTypes;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;

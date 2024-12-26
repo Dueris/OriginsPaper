@@ -38,6 +38,17 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 		this.owner = owner;
 	}
 
+	private static PowerType shallowCopy(@NotNull PowerType powerType) {
+
+		//noinspection unchecked
+		PowerConfiguration<PowerType> config = (PowerConfiguration<PowerType>) powerType.getConfig();
+		TypedDataObjectFactory<PowerType> dataFactory = config.dataFactory();
+
+		SerializableData.Instance data = dataFactory.toData(powerType);
+		return dataFactory.fromData(data);
+
+	}
+
 	@Override
 	public boolean hasPower(Power power) {
 		return powers.containsKey(power);
@@ -278,17 +289,6 @@ public class PowerHolderComponentImpl implements PowerHolderComponent {
 		});
 
 		compoundTag.put("powers", powersTag);
-
-	}
-
-	private static PowerType shallowCopy(@NotNull PowerType powerType) {
-
-		//noinspection unchecked
-		PowerConfiguration<PowerType> config = (PowerConfiguration<PowerType>) powerType.getConfig();
-		TypedDataObjectFactory<PowerType> dataFactory = config.dataFactory();
-
-		SerializableData.Instance data = dataFactory.toData(powerType);
-		return dataFactory.fromData(data);
 
 	}
 

@@ -9,13 +9,9 @@ import io.github.dueris.originspaper.condition.BiEntityCondition;
 import io.github.dueris.originspaper.condition.EntityCondition;
 import io.github.dueris.originspaper.condition.ItemCondition;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.originspaper.mixin.ItemEntityAccessor;
 import io.github.dueris.originspaper.power.PowerConfiguration;
-import io.github.dueris.originspaper.util.InventoryUtil;
-import io.github.dueris.originspaper.util.Util;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,16 +59,33 @@ public class ActionOnItemPickupPowerType extends PowerType implements Prioritize
 		this.priority = priority;
 	}
 
-	public void executeItemAction(SlotAccess stackReference) {
-		itemAction.ifPresent(action -> action.execute(getHolder().level(), stackReference));
-	}
-
 	public static void executeBiEntityAction(CallInstance<ActionOnItemPickupPowerType> callInstance, Entity throwerEntity) {
 
 		for (int i = callInstance.getMaxPriority(); i >= callInstance.getMinPriority(); i--) {
 			callInstance.forEach(i, powerType -> powerType.executeBiEntityAction(throwerEntity));
 		}
 
+	}
+
+	public static CallInstance<ActionOnItemPickupPowerType> executeItemAction(Entity throwerEntity, SlotAccess stackReference, Entity entity) {
+
+		if (PowerHolderComponent.getOptional(entity).isEmpty()) {
+			return new CallInstance<>();
+		}
+
+		CallInstance<ActionOnItemPickupPowerType> callInstance = new CallInstance<>();
+		callInstance.add(entity, ActionOnItemPickupPowerType.class, powerType -> powerType.doesApply(stackReference.get(), throwerEntity));
+
+		for (int i = callInstance.getMaxPriority(); i >= callInstance.getMinPriority(); i--) {
+			callInstance.forEach(i, powerType -> powerType.executeItemAction(stackReference));
+		}
+
+		return callInstance;
+
+	}
+
+	public void executeItemAction(SlotAccess stackReference) {
+		itemAction.ifPresent(action -> action.execute(getHolder().level(), stackReference));
 	}
 
 	@Override
@@ -92,22 +105,5 @@ public class ActionOnItemPickupPowerType extends PowerType implements Prioritize
 
 	public void executeBiEntityAction(Entity thrower) {
 		biEntityAction.ifPresent(action -> action.execute(thrower, getHolder()));
-	}
-
-	public static CallInstance<ActionOnItemPickupPowerType> executeItemAction(Entity throwerEntity, SlotAccess stackReference, Entity entity) {
-
-		if (PowerHolderComponent.getOptional(entity).isEmpty()) {
-			return new CallInstance<>();
-		}
-
-		CallInstance<ActionOnItemPickupPowerType> callInstance = new CallInstance<>();
-		callInstance.add(entity, ActionOnItemPickupPowerType.class, powerType -> powerType.doesApply(stackReference.get(), throwerEntity));
-
-		for (int i = callInstance.getMaxPriority(); i >= callInstance.getMinPriority(); i--) {
-			callInstance.forEach(i, powerType -> powerType.executeItemAction(stackReference));
-		}
-
-		return callInstance;
-
 	}
 }

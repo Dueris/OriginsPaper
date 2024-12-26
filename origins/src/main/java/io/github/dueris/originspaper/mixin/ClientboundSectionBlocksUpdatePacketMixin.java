@@ -1,6 +1,5 @@
 package io.github.dueris.originspaper.mixin;
 
-import io.github.dueris.originspaper.access.BlockStateOwner;
 import io.github.dueris.originspaper.access.SectionBlocksOwner;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.protocol.game.ClientboundSectionBlocksUpdatePacket;
@@ -14,11 +13,17 @@ import org.spongepowered.asm.mixin.Shadow;
  */
 @Mixin(ClientboundSectionBlocksUpdatePacket.class)
 public class ClientboundSectionBlocksUpdatePacketMixin implements SectionBlocksOwner {
-	@Shadow @Final private BlockState[] states;
+	@Shadow
+	@Final
+	private BlockState[] states;
 
-	@Shadow @Final private SectionPos sectionPos;
+	@Shadow
+	@Final
+	private SectionPos sectionPos;
 
-	@Shadow @Final private short[] positions;
+	@Shadow
+	@Final
+	private short[] positions;
 
 	@Override
 	public void apoli$setBlockStates(BlockState[] states) {

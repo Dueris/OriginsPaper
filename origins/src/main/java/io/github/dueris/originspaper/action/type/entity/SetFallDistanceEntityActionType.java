@@ -1,11 +1,11 @@
 package io.github.dueris.originspaper.action.type.entity;
 
+import io.github.dueris.calio.data.SerializableData;
+import io.github.dueris.calio.data.SerializableDataTypes;
 import io.github.dueris.originspaper.action.ActionConfiguration;
 import io.github.dueris.originspaper.action.type.EntityActionType;
 import io.github.dueris.originspaper.action.type.EntityActionTypes;
 import io.github.dueris.originspaper.data.TypedDataObjectFactory;
-import io.github.dueris.calio.data.SerializableData;
-import io.github.dueris.calio.data.SerializableDataTypes;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 

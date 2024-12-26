@@ -26,24 +26,26 @@ import java.util.UUID;
 @Mixin(ItemEntity.class)
 public abstract class ItemEntityMixin extends Entity {
 
-	@Shadow @Nullable public UUID thrower;
-
-	@Shadow public abstract void setItem(ItemStack stack);
-
-	@Shadow public abstract ItemStack getItem();
+	@Shadow
+	@Nullable
+	public UUID thrower;
 
 	public ItemEntityMixin(EntityType<?> type, Level world) {
 		super(type, world);
 	}
+
+	@Shadow
+	public abstract ItemStack getItem();
+
+	@Shadow
+	public abstract void setItem(ItemStack stack);
 
 	@WrapOperation(method = "playerTouch", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Inventory;add(Lnet/minecraft/world/item/ItemStack;)Z"))
 	private boolean apoli$onItemPickup(Inventory playerInventory, ItemStack stack, Operation<Boolean> original, Player player) {
 
 		if (PreventItemPickupPowerType.doesPrevent(originspaper$thisAsItemEntity(), player)) {
 			return false;
-		}
-
-		else if (Util.hasSpaceInInventory(playerInventory, stack)) {
+		} else if (Util.hasSpaceInInventory(playerInventory, stack)) {
 
 			SlotAccess stackReference = InventoryUtil.createStackReference(stack);
 			Entity thrower = Util.getEntityByUuid(this.thrower, this.getServer());

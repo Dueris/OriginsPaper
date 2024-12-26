@@ -37,7 +37,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameType;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
@@ -228,10 +227,38 @@ public class ApoliDataTypes {
 
 	public static final SerializableDataType<Pose> ENTITY_POSE = SerializableDataType.enumValue(Pose.class);
 	public static final SerializableDataType<Float> NORMALIZED_FLOAT = SerializableDataType.boundNumber(SerializableDataTypes.FLOAT, 0F, 1F);
+	public static final SerializableDataType<Vec3i> VECTOR_3_INT = SerializableDataType.compound(
+		new SerializableData()
+			.add("x", SerializableDataTypes.INT, 0)
+			.add("y", SerializableDataTypes.INT, 0)
+			.add("z", SerializableDataTypes.INT, 0),
+		data -> new Vec3i(
+			data.get("x"),
+			data.get("y"),
+			data.get("z")
+		),
+		(vec3i, serializableData) -> serializableData.instance()
+			.set("x", vec3i.getX())
+			.set("y", vec3i.getY())
+			.set("z", vec3i.getZ())
+	);
+	public static final SerializableDataType<Vector3f> VECTOR_3_FLOAT = SerializableDataType.compound(
+		new SerializableData()
+			.add("x", SerializableDataTypes.FLOAT, 0F)
+			.add("y", SerializableDataTypes.FLOAT, 0F)
+			.add("z", SerializableDataTypes.FLOAT, 0F),
+		data -> new Vector3f(
+			data.get("x"),
+			data.get("y"),
+			data.get("z")
+		),
+		(vector3f, serializableData) -> serializableData.instance()
+			.set("x", vector3f.x())
+			.set("y", vector3f.y())
+			.set("z", vector3f.z())
+	);
 	private static final SerializableDataType<ContainerType> CONTAINER_TYPE_FROM_REGISTRY = SerializableDataType.registry(ApoliRegistries.CONTAINER_TYPE, "apoli", true);
-
 	private static final SerializableDataType<DynamicContainerType> DYNAMIC_CONTAINER_TYPE = DynamicContainerType.DATA_FACTORY.getDataType();
-
 	public static final SerializableDataType<ContainerType> CONTAINER_TYPE = new SerializableDataType<>(
 		new Codec<>() {
 
@@ -263,47 +290,13 @@ public class ApoliDataTypes {
 
 				if (input instanceof DynamicContainerType dynamicContainerType) {
 					return DYNAMIC_CONTAINER_TYPE.write(ops, dynamicContainerType);
-				}
-
-				else {
+				} else {
 					return CONTAINER_TYPE_FROM_REGISTRY.write(ops, input);
 				}
 
 			}
 
 		}
-	);
-
-	public static final SerializableDataType<Vec3i> VECTOR_3_INT = SerializableDataType.compound(
-		new SerializableData()
-			.add("x", SerializableDataTypes.INT, 0)
-			.add("y", SerializableDataTypes.INT, 0)
-			.add("z", SerializableDataTypes.INT, 0),
-		data -> new Vec3i(
-			data.get("x"),
-			data.get("y"),
-			data.get("z")
-		),
-		(vec3i, serializableData) -> serializableData.instance()
-			.set("x", vec3i.getX())
-			.set("y", vec3i.getY())
-			.set("z", vec3i.getZ())
-	);
-
-	public static final SerializableDataType<Vector3f> VECTOR_3_FLOAT = SerializableDataType.compound(
-		new SerializableData()
-			.add("x", SerializableDataTypes.FLOAT, 0F)
-			.add("y", SerializableDataTypes.FLOAT, 0F)
-			.add("z", SerializableDataTypes.FLOAT, 0F),
-		data -> new Vector3f(
-			data.get("x"),
-			data.get("y"),
-			data.get("z")
-		),
-		(vector3f, serializableData) -> serializableData.instance()
-			.set("x", vector3f.x())
-			.set("y", vector3f.y())
-			.set("z", vector3f.z())
 	);
 	public static SerializableDataType<CraftingRecipe> DISALLOWING_INTERNAL_CRAFTING_RECIPE = SerializableDataTypes.RECIPE.comapFlatMap(RecipeUtil::validateCraftingRecipe, Function.identity());
 

@@ -11,7 +11,6 @@ import io.github.dueris.originspaper.power.PowerConfiguration;
 import io.github.dueris.originspaper.util.SavedBlockPosition;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;

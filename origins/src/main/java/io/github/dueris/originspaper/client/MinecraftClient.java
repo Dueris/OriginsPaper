@@ -3,7 +3,6 @@ package io.github.dueris.originspaper.client;
 import io.github.dueris.originspaper.client.render.ClientHudRenderer;
 import io.github.dueris.originspaper.client.render.EntityRenderer;
 import io.github.dueris.originspaper.client.texture.TexturesImpl;
-import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.concurrent.ConcurrentHashMap;

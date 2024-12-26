@@ -87,7 +87,6 @@ public class AddVelocityBiEntityActionType extends BiEntityActionType {
 	public enum Reference implements BiFunction<Entity, Entity, Vec3> {
 
 		POSITION {
-
 			@Override
 			public Vec3 apply(Entity actor, Entity target) {
 				return target.position().subtract(actor.position());
@@ -96,7 +95,6 @@ public class AddVelocityBiEntityActionType extends BiEntityActionType {
 		},
 
 		ROTATION {
-
 			@Override
 			public Vec3 apply(Entity actor, Entity target) {
 
@@ -107,7 +105,7 @@ public class AddVelocityBiEntityActionType extends BiEntityActionType {
 
 				float j = -Mth.sin(yaw * i) * Mth.cos(pitch * i);
 				float k = -Mth.sin(pitch * i);
-				float l =  Mth.cos(yaw * i) * Mth.cos(pitch * i);
+				float l = Mth.cos(yaw * i) * Mth.cos(pitch * i);
 
 				return new Vec3(j, k, l);
 

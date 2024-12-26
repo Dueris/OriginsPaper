@@ -445,9 +445,7 @@ public class Util {
 
 			if (allPresent(data, fields)) {
 				return DataResult.success(data);
-			}
-
-			else {
+			} else {
 
 				StringBuilder message = new StringBuilder(fields.length > 1 ? "All of " : "The ");
 				String separator = "";
