@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import io.github.dueris.calio.CraftCalio;
 import io.github.dueris.calio.util.IdentifierAlias;
+import io.github.dueris.eclipse.api.entrypoint.BootstrapInitializer;
 import io.github.dueris.eclipse.api.mod.ModContainer;
 import io.github.dueris.eclipse.loader.EclipseLauncher;
 import io.github.dueris.originspaper.action.type.BiEntityActionTypes;
@@ -61,7 +62,7 @@ public class OriginsPaper {
 	public static MinecraftServer server;
 	public static Path jarFile;
 	public static ModContainer modContainer;
-	public static String version = "v1.3.0";
+	public static String version = "v1.3.1";
 	public static OriginsPaper.ServerConfig config;
 
 	public static @NotNull ResourceLocation identifier(String path) {
@@ -76,17 +77,16 @@ public class OriginsPaper {
 		return OriginsPlugin.plugin;
 	}
 
-	public static void initialize() {
-		ModContainer container = EclipseLauncher.INSTANCE.modEngine().container("origins").orElseThrow();
-		jarFile = container.resource().path().toAbsolutePath().normalize(); // Normalize path to complete.
-		modContainer = container;
+	public static void initialize(BootstrapInitializer.@NotNull BootstrapContext bootstrapContext) {
+		jarFile = bootstrapContext.getModSource();
+		modContainer = bootstrapContext.getModContainer();
 		PluginInstances.init();
 
 		CraftCalio.initialize();
 
 		final JsonConfigAPI jsonConfigAPI = new JsonConfigAPI(true);
-		File serverJson = new File(jarFile.getParent().resolve("Origins").toFile(), "origins_server.json");
-		String parentPath = jarFile.getParent().resolve("Origins").toFile().getAbsolutePath() + File.separator;
+		File serverJson = new File(bootstrapContext.getDataDirectory().toFile(), "origins_server.json");
+		String parentPath = bootstrapContext.getDataDirectory().toFile().getAbsolutePath() + File.separator;
 
 		jsonConfigAPI.registerConfig(
 			new OriginsPaper.ServerConfig(),

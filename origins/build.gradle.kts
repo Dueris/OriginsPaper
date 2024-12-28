@@ -4,7 +4,7 @@ description = "A full, but unofficial, port of Calio/Apoli/Origins to PaperMC se
 dependencies {
     implementation("com.github.DavidNiessen:JsonConfigAPI:1.0")
     compileOnly("org.mineskin:java-client-jsoup:2.0.0-SNAPSHOT")
-    compileOnly(files("../depends/eclipse-2.0.0-all.jar"))
+    compileOnly(files("../depends/eclipse-2.0.3-SNAPSHOT-all.jar"))
     compileOnly("org.mineskin:java-client:2.0.0-SNAPSHOT")
     project("calio")
 }

@@ -10,10 +10,10 @@ plugins {
     `maven-publish`
     id("io.papermc.paperweight.userdev") version "1.7.7" apply true
     id("com.gradleup.shadow") version "9.0.0-beta4" apply true
-    id("io.github.dueris.eclipse.gradle") version "1.2.2" apply true
+    id("io.github.dueris.eclipse.gradle") version "1.2.3" apply true
 }
 
-version = "v1.3.0"
+version = "v1.3.1"
 val apoli = "2.12.0-alpha.14+mc.1.21.1"
 val calio = "1.14.0-alpha.8+mc.1.21.x"
 val mcMajor = "21"

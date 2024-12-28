@@ -9,8 +9,8 @@ public class Bootstrap implements BootstrapInitializer {
 	private static final Logger log = LogManager.getLogger(Bootstrap.class);
 
 	@Override
-	public void onInitializeBootstrap() {
+	public void onInitializeBootstrap(BootstrapContext bootstrapContext) {
 		// Eclipse entrypoint.
-		OriginsPaper.initialize();
+		OriginsPaper.initialize(bootstrapContext);
 	}
 }
